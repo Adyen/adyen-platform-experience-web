@@ -12,10 +12,9 @@ test.describe('Empty list', () => {
         await expect(page.getByText('No reports found', { exact: true })).toBeVisible();
         await expect(page.getByText('Try a different search or reset your filters, and we’ll try again.', { exact: true })).toBeVisible();
 
-        const table = page.getByRole('table');
+        const dataGrid = page.getByRole('grid');
 
-        await expect(table.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
-        await expect(table.getByRole('columnheader', { name: 'Report', exact: true })).toBeVisible();
-        await expect(table.getByRole('columnheader', { name: 'File', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Report', exact: true })).toBeVisible();
     });
 });

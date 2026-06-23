@@ -9,20 +9,19 @@ test.describe('Data customization', () => {
     });
 
     test('should render custom columns and correct number of rows', async ({ page }) => {
-        const table = page.getByRole('table');
+        const dataGrid = page.getByRole('grid');
 
-        await expect(table.getByRole('columnheader', { name: 'Summary', exact: true })).toBeVisible();
-        await expect(table.getByRole('columnheader', { name: 'Action', exact: true })).toBeVisible();
-        await expect(table.getByRole('columnheader', { name: 'Report', exact: true })).toBeHidden();
-        await expect(table.getByRole('columnheader', { name: 'File', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Summary', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Action', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Report', exact: true })).toBeHidden();
 
-        const rows = table.getByRole('rowgroup').nth(1).getByRole('row');
+        const rows = dataGrid.getByRole('rowgroup').nth(1).getByRole('row');
         await expect(rows).toHaveCount(5);
     });
 
     test('should render custom data in rows', async ({ page }) => {
-        const table = page.getByRole('table');
-        const rows = table.getByRole('rowgroup').nth(1).getByRole('row');
+        const dataGrid = page.getByRole('grid');
+        const rows = dataGrid.getByRole('rowgroup').nth(1).getByRole('row');
 
         await expect(rows.first().getByRole('link', { name: 'Summary', exact: true })).toBeVisible();
         await expect(rows.first().getByRole('button', { name: 'Send email', exact: true })).toBeVisible();

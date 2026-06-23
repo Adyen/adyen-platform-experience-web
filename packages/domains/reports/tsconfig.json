@@ -13,6 +13,7 @@
     "include": [
         "./domain/src/**/*.ts",
         "./domain/tests/**/*.ts",
+        "./fixtures/**/*.ts",
         "./mocks/**/*.ts",
         "./publish/src/**/*.ts",
         "./publish/src/**/*.tsx",
