@@ -1,6 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 import { ITransactionCategory } from '@integration-components/types';
-import { expectAnalyticsEvents, sleep } from '@integration-components/testing/playwright/utils';
+import { sleep } from '@integration-components/testing/fixtures/utils';
+import { expectAnalyticsEvents } from '@integration-components/testing/playwright/utils';
 import { expect, type PageAnalyticsEvent } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import {
     sharedTransactionDetailsAnalyticsEventProperties,

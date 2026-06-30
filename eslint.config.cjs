@@ -127,7 +127,7 @@ module.exports = [
                         '{src,packages}/**/{__testing__,testing}/**/*.{ts,tsx}',
                         'packages/domains/*/{domain,preact,vue}/tests/**/*.{ts,tsx}',
                         'packages/domains/*/**/stories/**/*.{ts,tsx}',
-                        'packages/domains/*/mocks/**/*.{ts,tsx}',
+                        'packages/domains/*/{fixtures,mocks}/**/*.{ts,tsx}',
                         'src/**/*.{ts,tsx}',
                     ],
                     includeTypes: false,
