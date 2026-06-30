@@ -27,4 +27,5 @@ export interface SemanticMapping {
     variable: string;
     category: ColorCategory;
     step: LightnessStep;
+    fallback?: ColorCategory;
 }

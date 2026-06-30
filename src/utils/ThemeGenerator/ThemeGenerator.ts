@@ -112,7 +112,7 @@ export class ThemeGenerator {
             const usePrimaryForOutlinePrimaryActive = shouldUsePrimaryForOutlinePrimaryActive && mapping.variable === 'color-outline-primary-active';
             const usePrimaryFallback = shouldFallbackToPrimary && outlineFallbackVariables.has(mapping.variable);
             const usePrimary = usePrimaryForOutlinePrimaryActive || usePrimaryFallback;
-            const ramp = usePrimary ? ramps.primary : ramps[mapping.category];
+            const ramp = usePrimary ? ramps.primary : (ramps[mapping.category] ?? (mapping.fallback ? ramps[mapping.fallback] : undefined));
             if (ramp) {
                 const varName = `${CSS_VAR_PREFIX}${mapping.variable}`;
                 const step = usePrimary ? ANCHOR_STEP : mapping.step;

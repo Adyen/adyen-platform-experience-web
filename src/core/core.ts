@@ -25,6 +25,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
     public getCdnDataset: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
 
     private readyCustomTranslationsAnalytics: boolean;
+    private themeGenerator = new ThemeGenerator();
 
     // [TODO]: Change the error handling strategy.
 
@@ -123,9 +124,8 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
      * Apply theme configuration using ThemeGenerator
      */
     private applyTheme = (theme: CoreOptions['theme']): void => {
-        console.log(theme);
         if (theme) {
-            new ThemeGenerator().create(theme);
+            this.themeGenerator.create(theme);
         }
     };
 

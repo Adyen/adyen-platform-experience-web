@@ -93,7 +93,9 @@ describe('ThemeGenerator', () => {
 
             for (const mapping of SEMANTIC_MAPPINGS) {
                 const usePrimaryForOutlinePrimaryActive = mapping.variable === 'color-outline-primary-active' && ramps.primary && ramps.outline;
-                const ramp = usePrimaryForOutlinePrimaryActive ? ramps.primary! : ramps[mapping.category]!;
+                const ramp = usePrimaryForOutlinePrimaryActive
+                    ? ramps.primary!
+                    : (ramps[mapping.category] ?? (mapping.fallback ? ramps[mapping.fallback] : undefined))!;
                 const step = usePrimaryForOutlinePrimaryActive ? ANCHOR_STEP : mapping.step;
                 const expectedColor = ramp[String(step)];
                 expect(style.textContent).toContain(`--adyen-sdk-${mapping.variable}: ${expectedColor}`);
@@ -124,6 +126,37 @@ describe('ThemeGenerator', () => {
             const expected = LIGHT_THEME_PROPS.primary!.toLowerCase();
 
             expect(style.textContent).toContain(`--adyen-sdk-color-outline-primary-active: ${expected}`);
+        });
+
+        test('neutral-derived tokens use the neutral ramp when neutral is provided', () => {
+            generator.create(LIGHT_THEME_PROPS);
+            const ramps = generator.getRamps()!;
+            const style = document.getElementById('adyen-sdk-theme-generator') as HTMLStyleElement;
+
+            const neutralTokens = SEMANTIC_MAPPINGS.filter(mapping => mapping.category === 'neutral');
+            expect(neutralTokens.length).toBeGreaterThan(0);
+
+            for (const mapping of neutralTokens) {
+                const expectedColor = ramps.neutral![String(mapping.step)];
+                expect(style.textContent).toContain(`--adyen-sdk-${mapping.variable}: ${expectedColor}`);
+            }
+        });
+
+        test('neutral-derived tokens fall back to their original category when neutral is omitted', () => {
+            const themeWithoutNeutral: ThemeProps = { ...LIGHT_THEME_PROPS, neutral: undefined };
+            generator.create(themeWithoutNeutral);
+            const ramps = generator.getRamps()!;
+            const style = document.getElementById('adyen-sdk-theme-generator') as HTMLStyleElement;
+
+            expect(ramps.neutral).toBeUndefined();
+
+            for (const mapping of SEMANTIC_MAPPINGS) {
+                if (mapping.category !== 'neutral' || !mapping.fallback) continue;
+                const fallbackRamp = ramps[mapping.fallback];
+                if (!fallbackRamp) continue;
+                const expectedColor = fallbackRamp[String(mapping.step)];
+                expect(style.textContent).toContain(`--adyen-sdk-${mapping.variable}: ${expectedColor}`);
+            }
         });
     });
 
