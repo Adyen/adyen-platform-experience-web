@@ -17,19 +17,14 @@ import Typography from '@integration-components/ui-components-preact/Typography/
 import type { CustomColumn } from '@integration-components/types';
 import { DisputeDetailsCustomization } from '../../types';
 import {
+    DISPUTE_DETAILS_RESERVED_FIELDS_SET,
     getDefenseDocumentContent,
     getDefenseReasonContent,
     getDisputeReason,
     isDisputeActionNeeded,
     TranslationConfigItem,
 } from '@integration-components/disputes/domain';
-import {
-    DISPUTE_DATA_LABEL,
-    DISPUTE_DATA_LIST,
-    DISPUTE_DATA_LIST_EVIDENCE,
-    DISPUTE_DETAILS_RESERVED_FIELDS_SET,
-    DISPUTE_DATA_LIST_EVIDENCE_ERROR_MESSAGE,
-} from './constants';
+import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DATA_LIST_EVIDENCE, DISPUTE_DATA_LIST_EVIDENCE_ERROR_MESSAGE } from './constants';
 import { useCoreContext } from '@integration-components/core/preact';
 import SVGIcon from '@integration-components/ui-components-preact/Icon';
 import { useDisputeFlow } from '../../context/dispute/context';

@@ -1,11 +1,11 @@
 import type { Meta } from '@storybook/vue3';
-import { DisputeManagement } from '../../src';
-import { DisputeManagementMeta } from '../components/disputeManagement';
+import { DisputeManagementMeta } from './meta';
+import type { DisputeManagementExternalProps } from '../../src';
 import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT, SessionControls } from '@integration-components/testing/storybook-helpers';
 
-const meta: Meta<ElementProps<typeof DisputeManagement>> = { ...DisputeManagementMeta, title: 'API-connected/Disputes/Dispute Management' };
+const meta: Meta<ElementProps<DisputeManagementExternalProps>> = { ...DisputeManagementMeta, title: 'API-connected/Disputes/Dispute Management' };
 
-export const Default: ElementStory<typeof DisputeManagement, SessionControls> = {
+export const Default: ElementStory<DisputeManagementExternalProps, SessionControls> = {
     name: 'Default',
     argTypes: {
         session: { control: 'object' },

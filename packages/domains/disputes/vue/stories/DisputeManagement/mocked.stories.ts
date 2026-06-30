@@ -1,19 +1,19 @@
-import { Meta } from '@storybook/preact';
-import { DisputeManagement } from '../../src';
+import type { Meta } from '@storybook/vue3';
 import { DisputeManagementMeta } from './meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
+import type { DisputeManagementExternalProps } from '../../src';
 import { DISPUTE_DETAILS_HANDLERS } from '../../../mocks/mock-server/disputes';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, INITIAL_DISPUTE_ID } from '../../../fixtures/data/DisputeManagement';
 
-const meta: Meta<ElementProps<typeof DisputeManagement>> = { ...DisputeManagementMeta, title: 'Mocked/Disputes/Dispute Management' };
+const meta: Meta<ElementProps<DisputeManagementExternalProps>> = { ...DisputeManagementMeta, title: 'Mocked/Disputes/Dispute Management' };
 const sharedArgs = { mockedApi: true };
 
-export const Default: ElementStory<typeof DisputeManagement> = {
+export const Default: ElementStory<DisputeManagementExternalProps> = {
     name: 'Default',
     args: sharedArgs,
 };
 
-export const ChargebackAcceptable: ElementStory<typeof DisputeManagement> = {
+export const ChargebackAcceptable: ElementStory<DisputeManagementExternalProps> = {
     name: 'Chargeback - Acceptable',
     args: sharedArgs,
     parameters: {
@@ -21,7 +21,7 @@ export const ChargebackAcceptable: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const ChargebackDefendable: ElementStory<typeof DisputeManagement> = {
+export const ChargebackDefendable: ElementStory<DisputeManagementExternalProps> = {
     name: 'Chargeback - Defendable',
     args: sharedArgs,
     parameters: {
@@ -29,7 +29,7 @@ export const ChargebackDefendable: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const ChargebackDefendableExternally: ElementStory<typeof DisputeManagement> = {
+export const ChargebackDefendableExternally: ElementStory<DisputeManagementExternalProps> = {
     name: 'Chargeback - Defendable externally',
     args: sharedArgs,
     parameters: {
@@ -37,7 +37,7 @@ export const ChargebackDefendableExternally: ElementStory<typeof DisputeManageme
     },
 };
 
-export const ChargebackLost: ElementStory<typeof DisputeManagement> = {
+export const ChargebackLost: ElementStory<DisputeManagementExternalProps> = {
     name: 'Chargeback - Lost',
     args: sharedArgs,
     parameters: {
@@ -45,7 +45,7 @@ export const ChargebackLost: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const ChargebackLostWithIssuerFeedback: ElementStory<typeof DisputeManagement> = {
+export const ChargebackLostWithIssuerFeedback: ElementStory<DisputeManagementExternalProps> = {
     name: 'Chargeback - Lost (with issuer feedback)',
     args: sharedArgs,
     parameters: {
@@ -53,7 +53,7 @@ export const ChargebackLostWithIssuerFeedback: ElementStory<typeof DisputeManage
     },
 };
 
-export const ChargebackLostNotDefended: ElementStory<typeof DisputeManagement> = {
+export const ChargebackLostNotDefended: ElementStory<DisputeManagementExternalProps> = {
     name: 'Chargeback - Lost (not defended)',
     args: sharedArgs,
     parameters: {
@@ -61,7 +61,7 @@ export const ChargebackLostNotDefended: ElementStory<typeof DisputeManagement> =
     },
 };
 
-export const ChargebackDefended: ElementStory<typeof DisputeManagement> = {
+export const ChargebackDefended: ElementStory<DisputeManagementExternalProps> = {
     name: 'Chargeback - Defended',
     args: sharedArgs,
     parameters: {
@@ -69,7 +69,7 @@ export const ChargebackDefended: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const ChargebackAutoDefended: ElementStory<typeof DisputeManagement> = {
+export const ChargebackAutoDefended: ElementStory<DisputeManagementExternalProps> = {
     name: 'Chargeback - Auto defended',
     args: sharedArgs,
     parameters: {
@@ -77,7 +77,7 @@ export const ChargebackAutoDefended: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const ChargebackNotDefendable: ElementStory<typeof DisputeManagement> = {
+export const ChargebackNotDefendable: ElementStory<DisputeManagementExternalProps> = {
     name: 'Chargeback - Not defendable',
     args: sharedArgs,
     parameters: {
@@ -85,7 +85,7 @@ export const ChargebackNotDefendable: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const RFIUnresponded: ElementStory<typeof DisputeManagement> = {
+export const RFIUnresponded: ElementStory<DisputeManagementExternalProps> = {
     name: 'RFI - Unresponded',
     args: sharedArgs,
     parameters: {
@@ -93,7 +93,7 @@ export const RFIUnresponded: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const RFIExpired: ElementStory<typeof DisputeManagement> = {
+export const RFIExpired: ElementStory<DisputeManagementExternalProps> = {
     name: 'RFI - Expired',
     args: sharedArgs,
     parameters: {
@@ -101,7 +101,7 @@ export const RFIExpired: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const RFIAcceptable: ElementStory<typeof DisputeManagement> = {
+export const RFIAcceptable: ElementStory<DisputeManagementExternalProps> = {
     name: 'RFI - Acceptable',
     args: sharedArgs,
     parameters: {
@@ -109,7 +109,7 @@ export const RFIAcceptable: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const RFIAccepted: ElementStory<typeof DisputeManagement> = {
+export const RFIAccepted: ElementStory<DisputeManagementExternalProps> = {
     name: 'RFI - Accepted',
     args: sharedArgs,
     parameters: {
@@ -117,7 +117,7 @@ export const RFIAccepted: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const RFIDefendable: ElementStory<typeof DisputeManagement> = {
+export const RFIDefendable: ElementStory<DisputeManagementExternalProps> = {
     name: 'RFI - Defendable',
     args: sharedArgs,
     parameters: {
@@ -125,7 +125,7 @@ export const RFIDefendable: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const NotificationOfFraud: ElementStory<typeof DisputeManagement> = {
+export const NotificationOfFraud: ElementStory<DisputeManagementExternalProps> = {
     name: 'Notification of fraud',
     args: sharedArgs,
     parameters: {
@@ -133,7 +133,7 @@ export const NotificationOfFraud: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const ServerError: ElementStory<typeof DisputeManagement> = {
+export const ServerError: ElementStory<DisputeManagementExternalProps> = {
     name: 'Error - Server error',
     args: {
         ...sharedArgs,
@@ -144,7 +144,7 @@ export const ServerError: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const NetworkError: ElementStory<typeof DisputeManagement> = {
+export const NetworkError: ElementStory<DisputeManagementExternalProps> = {
     name: 'Error - Network error',
     args: sharedArgs,
     parameters: {
@@ -152,7 +152,7 @@ export const NetworkError: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const UnprocessableEntityError: ElementStory<typeof DisputeManagement> = {
+export const UnprocessableEntityError: ElementStory<DisputeManagementExternalProps> = {
     name: 'Error - Unprocessable entity',
     args: {
         ...sharedArgs,
@@ -163,7 +163,7 @@ export const UnprocessableEntityError: ElementStory<typeof DisputeManagement> = 
     },
 };
 
-export const DownloadEvidenceError: ElementStory<typeof DisputeManagement> = {
+export const DownloadEvidenceError: ElementStory<DisputeManagementExternalProps> = {
     name: 'Error - Download evidence',
     args: sharedArgs,
     parameters: {
@@ -171,7 +171,7 @@ export const DownloadEvidenceError: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const DefenseServerError: ElementStory<typeof DisputeManagement> = {
+export const DefenseServerError: ElementStory<DisputeManagementExternalProps> = {
     name: 'Error - Defense server error',
     args: sharedArgs,
     parameters: {
@@ -179,7 +179,7 @@ export const DefenseServerError: ElementStory<typeof DisputeManagement> = {
     },
 };
 
-export const DataCustomization: ElementStory<typeof DisputeManagement> = {
+export const DataCustomization: ElementStory<DisputeManagementExternalProps> = {
     name: 'Data Customization',
     args: {
         ...sharedArgs,

@@ -1,8 +1,9 @@
 import type { Meta } from '@storybook/vue3';
-import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
+import type { DisputeManagementExternalProps } from '../../src';
 import DisputeManagement from '../../src/DisputeManagement/DisputeManagementWrapper.vue';
+import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
-export const DisputeManagementMeta: Meta<ElementProps<typeof DisputeManagement>> = {
+export const DisputeManagementMeta: Meta<ElementProps<DisputeManagementExternalProps>> = {
     title: 'Components/Disputes/Dispute Management',
     component: DisputeManagement,
     argTypes: {
@@ -14,7 +15,6 @@ export const DisputeManagementMeta: Meta<ElementProps<typeof DisputeManagement>>
     args: {
         component: DisputeManagement,
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
-        compact: true,
     },
     parameters: {
         controls: {
