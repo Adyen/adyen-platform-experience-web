@@ -215,6 +215,7 @@ module.exports = [
         },
         rules: {
             'vue/html-indent': ['warn', 4],
+            'vue/html-self-closing': ['warn', { html: { void: 'any', normal: 'always', component: 'always' }, svg: 'always', math: 'always' }],
             'vue/max-attributes-per-line': 'off',
             'vue/multi-word-component-names': 'off',
             'vue/require-default-prop': 'off',

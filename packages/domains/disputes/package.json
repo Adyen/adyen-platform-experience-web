@@ -10,9 +10,14 @@
     "exports": {
         "./publish": "./publish/src/index.ts",
         "./preact": "./preact/src/index.ts",
+        "./vue": "./vue/src/index.ts",
         "./domain": "./domain/src/index.ts"
     },
     "dependencies": {
+        "@adyen/bento-vue3": "catalog:",
+        "@adyen/ui-assets-icons-16": "catalog:",
+        "@adyen/ui-assets-icons-40": "catalog:",
+        "@integration-components/composables-vue": "workspace:*",
         "@integration-components/core": "workspace:*",
         "@integration-components/hooks-preact": "workspace:*",
         "@integration-components/sdk-internal": "workspace:*",

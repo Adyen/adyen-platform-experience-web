@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'vitest';
-import { Content, getDefenseDocumentContent, getDefenseReasonContent } from './index';
+import { getDefenseDocumentContent, getDefenseReasonContent, type TranslationConfigContent } from './utils';
 import Localization from '@integration-components/core/Localization';
-import defenseDocumentContent from '../../../../domain/src/config/defenseDocumentConfig.json';
-import defenseReasonContent from '../../../../domain/src/config/defenseReasonConfig.json';
+import defenseDocumentContent from '../config/defenseDocumentConfig.json';
+import defenseReasonContent from '../config/defenseReasonConfig.json';
 
 const localization = new Localization();
 
@@ -14,14 +14,14 @@ describe('getDefenseDocumentContent', () => {
 
     test('should return the right content for defense document with "title" field', () => {
         const result = getDefenseDocumentContent(defenseDocumentContent, localization.i18n, 'ChargebackCodeNotApplicable');
-        expect(result).toEqual<Content>({
+        expect(result).toEqual<TranslationConfigContent>({
             title: 'Documentation to support that the chargeback code is not applicable',
         });
     });
 
     test('should return the right content for defense document with "title" field and "help" field of "string" type', () => {
         const result = getDefenseDocumentContent(defenseDocumentContent, localization.i18n, 'AcquirerMemberMessageText');
-        expect(result).toEqual<Content>({
+        expect(result).toEqual<TranslationConfigContent>({
             title: 'Clearing Text',
             primaryDescriptionItems: ['A description of the dispute reason'],
         });
@@ -29,7 +29,7 @@ describe('getDefenseDocumentContent', () => {
 
     test('should return the right content for defense document with "title", "help", and "helpitems" fields', () => {
         const result = getDefenseDocumentContent(defenseDocumentContent, localization.i18n, 'CardholderIdentification');
-        expect(result).toEqual<Content>({
+        expect(result).toEqual<TranslationConfigContent>({
             title: 'Compelling Evidence of Card holder Participation',
             primaryDescriptionItems: ['Documentation proving the card holder participated in the transacion. This can be:'],
             secondaryDescriptionItems: [
@@ -49,14 +49,14 @@ describe('getDefenseReasonContent', () => {
 
     test('should return the right content for defense reason with "title" field', () => {
         const result = getDefenseReasonContent(defenseReasonContent, localization.i18n, 'CardPresentFraud');
-        expect(result).toEqual<Content>({
+        expect(result).toEqual<TranslationConfigContent>({
             title: 'Card Present Fraud Evidence',
         });
     });
 
     test('should return the right content for defense reason with "title" field and "help" field of "string" type', () => {
         const result = getDefenseReasonContent(defenseReasonContent, localization.i18n, 'ATMDispute');
-        expect(result).toEqual<Content>({
+        expect(result).toEqual<TranslationConfigContent>({
             title: 'ATM Dispute',
             primaryDescriptionItems: ['Invalid chargeback reason code for E-commerce/ POS payment'],
         });
@@ -64,7 +64,7 @@ describe('getDefenseReasonContent', () => {
 
     test('should return the right content for defense reason with "title" field and "help" field of "array" type', () => {
         const result = getDefenseReasonContent(defenseReasonContent, localization.i18n, 'IdentifiedAddendum');
-        expect(result).toEqual<Content>({
+        expect(result).toEqual<TranslationConfigContent>({
             title: 'Identified Addendum',
             primaryDescriptionItems: [
                 'Merchants may remedy the dispute with documentation substantiating the cardholder has participated in the original transaction and documentation to establish the cardholder is responsible for the addendum transaction.',
@@ -76,7 +76,7 @@ describe('getDefenseReasonContent', () => {
 
     test('should return the right content for defense reason with "title", "help", and "helpitems" fields', () => {
         const result = getDefenseReasonContent(defenseReasonContent, localization.i18n, 'CancellationOrReturns');
-        expect(result).toEqual<Content>({
+        expect(result).toEqual<TranslationConfigContent>({
             title: 'Cancellation or Returns',
             primaryDescriptionItems: ['Use this defense reason if one of the following is applicable:'],
             secondaryDescriptionItems: [

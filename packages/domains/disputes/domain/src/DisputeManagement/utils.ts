@@ -1,4 +1,4 @@
-import Localization from '@integration-components/core/Localization';
+import type Localization from '@integration-components/core/Localization';
 
 export type TranslationConfigItem = {
     title: string;
@@ -6,7 +6,7 @@ export type TranslationConfigItem = {
     helpitems?: string[];
 };
 
-export type Content = {
+export type TranslationConfigContent = {
     title: string;
     primaryDescriptionItems?: string[];
     secondaryDescriptionItems?: string[];
@@ -22,30 +22,26 @@ const getContent = (
     config: Record<string, TranslationConfigItem>,
     configItemKey: string,
     translationPrefix: string
-): Content | undefined => {
+): TranslationConfigContent | undefined => {
     const configItem = config[configItemKey];
     if (!configItem) return undefined;
 
     const title = getTranslationIfExists(i18n, translationPrefix, configItem.title);
-
     const descriptionKeys = configItem.help ? (Array.isArray(configItem.help) ? configItem.help : [configItem.help]) : undefined;
-    const primaryDescriptionItems: string[] | undefined = descriptionKeys
+    const primaryDescriptionItems = descriptionKeys
         ?.map(key => getTranslationIfExists(i18n, translationPrefix, key))
-        .filter((k): k is string => k !== undefined);
-
+        .filter((translation): translation is string => translation !== undefined);
     const secondaryDescriptionItems: string[] = [];
 
-    if (configItem.helpitems) {
-        configItem.helpitems.forEach(item => {
-            const translation = getTranslationIfExists(i18n, translationPrefix, item);
-            if (translation) secondaryDescriptionItems.push(translation);
-        });
-    }
+    configItem.helpitems?.forEach(item => {
+        const translation = getTranslationIfExists(i18n, translationPrefix, item);
+        if (translation) secondaryDescriptionItems.push(translation);
+    });
 
     return {
         title: title || '',
         ...(primaryDescriptionItems?.length ? { primaryDescriptionItems } : {}),
-        ...(secondaryDescriptionItems?.length ? { secondaryDescriptionItems } : {}),
+        ...(secondaryDescriptionItems.length ? { secondaryDescriptionItems } : {}),
     };
 };
 
@@ -53,14 +49,10 @@ export const getDefenseDocumentContent = (
     defenseDocumentConfig: Record<string, TranslationConfigItem>,
     i18n: Localization['i18n'],
     defenseDocumentKey: string
-) => {
-    return getContent(i18n, defenseDocumentConfig, defenseDocumentKey, 'disputes.management.common.defenseDocuments');
-};
+) => getContent(i18n, defenseDocumentConfig, defenseDocumentKey, 'disputes.management.common.defenseDocuments');
 
 export const getDefenseReasonContent = (
     defenseReasonConfig: Record<string, TranslationConfigItem>,
     i18n: Localization['i18n'],
     defenseReasonKey: string
-) => {
-    return getContent(i18n, defenseReasonConfig, defenseReasonKey, 'disputes.management.common.defenseReasons');
-};
+) => getContent(i18n, defenseReasonConfig, defenseReasonKey, 'disputes.management.common.defenseReasons');
