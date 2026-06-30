@@ -1,6 +1,4 @@
-// [TODO]: Export TransactionsListCustomization type from '../../domain/src'
-import type { TransactionsListCustomization } from '../../preact/src/TransactionsOverview/types';
-import type { TransactionDetailsCustomization /*, TransactionsListCustomization*/ } from '../../domain/src';
+import type { TransactionDetailsCustomization, TransactionsListCustomization } from '../../domain/src';
 import { getCustomDetailsData, getCustomListData } from '../../mocks/mock-data/customData';
 import { sleep } from '@integration-components/testing/fixtures/utils';
 import { TRANSACTIONS } from '../../mocks/mock-data/transactions';
