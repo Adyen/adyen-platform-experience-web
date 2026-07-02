@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
+import { expectCustomDisputeDetails } from '../shared/customDataAssertions';
 
 const STORY_ID = 'mocked-disputes-disputes-overview--data-customization';
 
@@ -13,7 +14,6 @@ test.describe('Disputes Overview - Data customization', () => {
 
         await Promise.all([
             expect(grid.getByRole('columnheader', { name: 'Summary' })).toBeVisible(),
-            expect(grid.getByRole('columnheader', { name: 'Country' })).toBeVisible(),
             expect(grid.getByRole('columnheader', { name: 'Action' })).toBeVisible(),
         ]);
     });
@@ -61,8 +61,28 @@ test.describe('Disputes Overview - Data customization', () => {
         await expect(grid.getByRole('columnheader', { name: 'Respond by' })).toBeVisible();
         await expect(grid.getByRole('columnheader', { name: 'Reason', exact: true })).toBeHidden();
 
+        await page.getByRole('radio', { name: 'Fraud alerts' }).click();
+        await expect(grid.getByRole('columnheader', { name: 'Total payment amount' })).toBeVisible();
+        await expect(grid.getByRole('columnheader', { name: 'Reason', exact: true })).toBeHidden();
+
         await page.getByRole('radio', { name: 'Ongoing & closed' }).click();
         await expect(grid.getByRole('columnheader', { name: 'Status' })).toBeVisible();
         await expect(grid.getByRole('columnheader', { name: 'Reason', exact: true })).toBeHidden();
+    });
+
+    test('should pass details customization to the dispute management modal', async ({ page }) => {
+        const grid = page.getByRole('grid');
+        const customizedRow = grid.getByRole('row').filter({ has: page.getByRole('link', { name: 'Summary', exact: true }) });
+
+        await customizedRow.getByRole('gridcell').first().click();
+
+        const dialog = page.getByRole('dialog');
+        await expect(dialog).toBeVisible();
+
+        await expectCustomDisputeDetails({
+            root: dialog,
+            summaryLinkName: 'Summary',
+            hiddenLabels: ['Dispute reference'],
+        });
     });
 });

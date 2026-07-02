@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
-const STORY_ID = 'mocked-disputes-disputes-overview--error-list';
+const STORY_ID = 'mocked-disputes-disputes-overview--internal-server-error';
 
 test.describe('Disputes Overview - Error list', () => {
     test('should render the list error message', async ({ page }) => {
