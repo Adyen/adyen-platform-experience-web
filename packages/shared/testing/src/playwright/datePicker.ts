@@ -162,7 +162,7 @@ const extractTodayDateFromBentoDatePicker = async (datePicker: Locator) => {
     await expect(datePicker).toBeVisible();
 
     const monthAndYear = (await datePicker.getByRole('heading').first().textContent()) ?? '';
-    const date = (await datePicker.getByRole('gridcell', { selected: true }).last().textContent()) ?? '';
+    const date = (await datePicker.getByRole('gridcell', { selected: true }).last().textContent())?.padStart(2, '0') ?? '';
     const month = monthAndYear.slice(0, 3);
     const year = monthAndYear.slice(-4);
 
