@@ -1,0 +1,21 @@
+@use '@integration-components/style' as style;
+
+.adyen-pe-disputes-overview {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    &--xs {
+        gap: style.token(spacer-080);
+    }
+
+    &__tabs-container {
+        display: flex;
+    }
+
+    &__toolbar {
+        display: flex;
+        align-items: center;
+        gap: style.token(spacer-040);
+    }
+}
