@@ -2,7 +2,7 @@ export {
     sharedCapitalOfferAnalyticsEventProperties,
     sharedCapitalOfferSelectionAnalyticsEventProperties,
     sharedCapitalOfferSummaryAnalyticsEventProperties,
-} from '../../capitalOffer/constants/analytics';
+} from '../../CapitalOffer/constants/analytics';
 
 const sharedCapitalOverviewAnalyticsEventProperties = {
     componentName: 'capitalOverview',

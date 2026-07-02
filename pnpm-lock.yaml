@@ -370,10 +370,22 @@ importers:
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.3(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/domains/disputes:
     dependencies:
+      '@adyen/bento-vue3':
+        specifier: 'catalog:'
+        version: 1.96.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+      '@adyen/ui-assets-icons-16':
+        specifier: 'catalog:'
+        version: 7.9.3(vue@3.5.31(typescript@5.8.3))
+      '@adyen/ui-assets-icons-40':
+        specifier: 'catalog:'
+        version: 4.9.2(vue@3.5.31(typescript@5.8.3))
+      '@integration-components/composables-vue':
+        specifier: workspace:*
+        version: link:../../shared/composables-vue
       '@integration-components/core':
         specifier: workspace:*
         version: link:../../shared/core
@@ -425,7 +437,7 @@ importers:
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.3(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/domains/payByLink:
     dependencies:
@@ -480,7 +492,7 @@ importers:
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.3(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/domains/payouts:
     dependencies:
@@ -550,7 +562,7 @@ importers:
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.3(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/domains/reports:
     dependencies:
@@ -612,6 +624,18 @@ importers:
 
   packages/domains/transactions:
     dependencies:
+      '@adyen/bento-vue3':
+        specifier: 'catalog:'
+        version: 1.96.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+      '@adyen/ui-assets-icons-16':
+        specifier: 'catalog:'
+        version: 7.9.3(vue@3.5.31(typescript@5.8.3))
+      '@adyen/ui-assets-icons-40':
+        specifier: 'catalog:'
+        version: 4.9.2(vue@3.5.31(typescript@5.8.3))
+      '@integration-components/composables-vue':
+        specifier: workspace:*
+        version: link:../../shared/composables-vue
       '@integration-components/core':
         specifier: workspace:*
         version: link:../../shared/core
@@ -663,7 +687,7 @@ importers:
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.3(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
       vue:
         specifier: 'catalog:'
         version: 3.5.31(typescript@5.8.3)
@@ -680,6 +704,9 @@ importers:
       '@preact/preset-vite':
         specifier: ^2.10.2
         version: 2.10.2(@babel/core@7.26.10)(preact@10.29.1)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+      tsc-alias:
+        specifier: ^1.8.17
+        version: 1.8.17
       vite:
         specifier: 'catalog:'
         version: 7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
@@ -740,7 +767,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.3(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/shared/hooks-preact:
     dependencies:
@@ -762,7 +789,7 @@ importers:
         version: 3.2.3(preact@10.29.1)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.3(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/shared/lib: {}
 
@@ -902,11 +929,14 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))
       storybook:
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
+      vite:
+        specifier: 'catalog:'
+        version: 7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
       vite-plugin-svgr:
         specifier: ^4.5.0
         version: 4.5.0(rollup@4.59.0)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
@@ -939,14 +969,6 @@ packages:
   '@adyen/openbankingsdk@0.2.3':
     resolution: {}
     engines: {node: '>=18'}
-
-  '@adyen/ui-assets-icons-16@7.9.0':
-    resolution: {}
-    peerDependencies:
-      vue: ~2.7 || ~3
-    peerDependenciesMeta:
-      vue:
-        optional: true
 
   '@adyen/ui-assets-icons-16@7.9.3':
     resolution: {}
@@ -1749,6 +1771,12 @@ packages:
     cpu: [ppc64]
     os: [aix]
 
+  '@esbuild/aix-ppc64@0.27.7':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [ppc64]
+    os: [aix]
+
   '@esbuild/android-arm64@0.27.1':
     resolution: {}
     engines: {node: '>=18'}
@@ -1756,6 +1784,12 @@ packages:
     os: [android]
 
   '@esbuild/android-arm64@0.27.4':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [android]
+
+  '@esbuild/android-arm64@0.27.7':
     resolution: {}
     engines: {node: '>=18'}
     cpu: [arm64]
@@ -1773,6 +1807,12 @@ packages:
     cpu: [arm]
     os: [android]
 
+  '@esbuild/android-arm@0.27.7':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [arm]
+    os: [android]
+
   '@esbuild/android-x64@0.27.1':
     resolution: {}
     engines: {node: '>=18'}
@@ -1780,6 +1820,12 @@ packages:
     os: [android]
 
   '@esbuild/android-x64@0.27.4':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [android]
+
+  '@esbuild/android-x64@0.27.7':
     resolution: {}
     engines: {node: '>=18'}
     cpu: [x64]
@@ -1797,6 +1843,12 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
+  '@esbuild/darwin-arm64@0.27.7':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [darwin]
+
   '@esbuild/darwin-x64@0.27.1':
     resolution: {}
     engines: {node: '>=18'}
@@ -1804,6 +1856,12 @@ packages:
     os: [darwin]
 
   '@esbuild/darwin-x64@0.27.4':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@esbuild/darwin-x64@0.27.7':
     resolution: {}
     engines: {node: '>=18'}
     cpu: [x64]
@@ -1821,6 +1879,12 @@ packages:
     cpu: [arm64]
     os: [freebsd]
 
+  '@esbuild/freebsd-arm64@0.27.7':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [freebsd]
+
   '@esbuild/freebsd-x64@0.27.1':
     resolution: {}
     engines: {node: '>=18'}
@@ -1828,6 +1892,12 @@ packages:
     os: [freebsd]
 
   '@esbuild/freebsd-x64@0.27.4':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [freebsd]
+
+  '@esbuild/freebsd-x64@0.27.7':
     resolution: {}
     engines: {node: '>=18'}
     cpu: [x64]
@@ -1845,6 +1915,12 @@ packages:
     cpu: [arm64]
     os: [linux]
 
+  '@esbuild/linux-arm64@0.27.7':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [linux]
+
   '@esbuild/linux-arm@0.27.1':
     resolution: {}
     engines: {node: '>=18'}
@@ -1852,6 +1928,12 @@ packages:
     os: [linux]
 
   '@esbuild/linux-arm@0.27.4':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [arm]
+    os: [linux]
+
+  '@esbuild/linux-arm@0.27.7':
     resolution: {}
     engines: {node: '>=18'}
     cpu: [arm]
@@ -1869,6 +1951,12 @@ packages:
     cpu: [ia32]
     os: [linux]
 
+  '@esbuild/linux-ia32@0.27.7':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [ia32]
+    os: [linux]
+
   '@esbuild/linux-loong64@0.27.1':
     resolution: {}
     engines: {node: '>=18'}
@@ -1876,6 +1964,12 @@ packages:
     os: [linux]
 
   '@esbuild/linux-loong64@0.27.4':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [loong64]
+    os: [linux]
+
+  '@esbuild/linux-loong64@0.27.7':
     resolution: {}
     engines: {node: '>=18'}
     cpu: [loong64]
@@ -1893,6 +1987,12 @@ packages:
     cpu: [mips64el]
     os: [linux]
 
+  '@esbuild/linux-mips64el@0.27.7':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [mips64el]
+    os: [linux]
+
   '@esbuild/linux-ppc64@0.27.1':
     resolution: {}
     engines: {node: '>=18'}
@@ -1900,6 +2000,12 @@ packages:
     os: [linux]
 
   '@esbuild/linux-ppc64@0.27.4':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [ppc64]
+    os: [linux]
+
+  '@esbuild/linux-ppc64@0.27.7':
     resolution: {}
     engines: {node: '>=18'}
     cpu: [ppc64]
@@ -1917,6 +2023,12 @@ packages:
     cpu: [riscv64]
     os: [linux]
 
+  '@esbuild/linux-riscv64@0.27.7':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [riscv64]
+    os: [linux]
+
   '@esbuild/linux-s390x@0.27.1':
     resolution: {}
     engines: {node: '>=18'}
@@ -1924,6 +2036,12 @@ packages:
     os: [linux]
 
   '@esbuild/linux-s390x@0.27.4':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [s390x]
+    os: [linux]
+
+  '@esbuild/linux-s390x@0.27.7':
     resolution: {}
     engines: {node: '>=18'}
     cpu: [s390x]
@@ -1941,6 +2059,12 @@ packages:
     cpu: [x64]
     os: [linux]
 
+  '@esbuild/linux-x64@0.27.7':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [linux]
+
   '@esbuild/netbsd-arm64@0.27.1':
     resolution: {}
     engines: {node: '>=18'}
@@ -1948,6 +2072,12 @@ packages:
     os: [netbsd]
 
   '@esbuild/netbsd-arm64@0.27.4':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [netbsd]
+
+  '@esbuild/netbsd-arm64@0.27.7':
     resolution: {}
     engines: {node: '>=18'}
     cpu: [arm64]
@@ -1965,6 +2095,12 @@ packages:
     cpu: [x64]
     os: [netbsd]
 
+  '@esbuild/netbsd-x64@0.27.7':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [netbsd]
+
   '@esbuild/openbsd-arm64@0.27.1':
     resolution: {}
     engines: {node: '>=18'}
@@ -1972,6 +2108,12 @@ packages:
     os: [openbsd]
 
   '@esbuild/openbsd-arm64@0.27.4':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [openbsd]
+
+  '@esbuild/openbsd-arm64@0.27.7':
     resolution: {}
     engines: {node: '>=18'}
     cpu: [arm64]
@@ -1989,6 +2131,12 @@ packages:
     cpu: [x64]
     os: [openbsd]
 
+  '@esbuild/openbsd-x64@0.27.7':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [openbsd]
+
   '@esbuild/openharmony-arm64@0.27.1':
     resolution: {}
     engines: {node: '>=18'}
@@ -1996,6 +2144,12 @@ packages:
     os: [openharmony]
 
   '@esbuild/openharmony-arm64@0.27.4':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [openharmony]
+
+  '@esbuild/openharmony-arm64@0.27.7':
     resolution: {}
     engines: {node: '>=18'}
     cpu: [arm64]
@@ -2013,6 +2167,12 @@ packages:
     cpu: [x64]
     os: [sunos]
 
+  '@esbuild/sunos-x64@0.27.7':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [sunos]
+
   '@esbuild/win32-arm64@0.27.1':
     resolution: {}
     engines: {node: '>=18'}
@@ -2020,6 +2180,12 @@ packages:
     os: [win32]
 
   '@esbuild/win32-arm64@0.27.4':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@esbuild/win32-arm64@0.27.7':
     resolution: {}
     engines: {node: '>=18'}
     cpu: [arm64]
@@ -2037,6 +2203,12 @@ packages:
     cpu: [ia32]
     os: [win32]
 
+  '@esbuild/win32-ia32@0.27.7':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [ia32]
+    os: [win32]
+
   '@esbuild/win32-x64@0.27.1':
     resolution: {}
     engines: {node: '>=18'}
@@ -2044,6 +2216,12 @@ packages:
     os: [win32]
 
   '@esbuild/win32-x64@0.27.4':
+    resolution: {}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [win32]
+
+  '@esbuild/win32-x64@0.27.7':
     resolution: {}
     engines: {node: '>=18'}
     cpu: [x64]
@@ -3339,6 +3517,10 @@ packages:
     resolution: {}
     engines: {node: '>=12'}
 
+  anymatch@3.1.3:
+    resolution: {}
+    engines: {node: '>= 8'}
+
   argparse@1.0.10:
     resolution: {}
 
@@ -3517,6 +3699,10 @@ packages:
   big.js@5.2.2:
     resolution: {}
 
+  binary-extensions@2.3.0:
+    resolution: {}
+    engines: {node: '>=8'}
+
   birpc@2.9.0:
     resolution: {}
 
@@ -3617,6 +3803,10 @@ packages:
   check-error@2.1.1:
     resolution: {}
     engines: {node: '>= 16'}
+
+  chokidar@3.6.0:
+    resolution: {}
+    engines: {node: '>= 8.10.0'}
 
   chokidar@4.0.3:
     resolution: {}
@@ -4074,6 +4264,11 @@ packages:
     hasBin: true
 
   esbuild@0.27.4:
+    resolution: {}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  esbuild@0.27.7:
     resolution: {}
     engines: {node: '>=18'}
     hasBin: true
@@ -4667,6 +4862,10 @@ packages:
   is-bigint@1.1.0:
     resolution: {}
     engines: {node: '>= 0.4'}
+
+  is-binary-path@2.1.0:
+    resolution: {}
+    engines: {node: '>=8'}
 
   is-boolean-object@1.2.2:
     resolution: {}
@@ -5348,6 +5547,10 @@ packages:
     resolution: {}
     engines: {node: ^18.17.0 || >=20.5.0}
 
+  mylas@2.1.14:
+    resolution: {}
+    engines: {node: '>=16.0.0'}
+
   named-slots@0.4.2:
     resolution: {}
 
@@ -5620,6 +5823,10 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  plimit-lit@1.6.1:
+    resolution: {}
+    engines: {node: '>=12'}
+
   pluralize@8.0.0:
     resolution: {}
     engines: {node: '>=4'}
@@ -5785,6 +5992,10 @@ packages:
   querystringify@2.2.0:
     resolution: {}
 
+  queue-lit@1.5.2:
+    resolution: {}
+    engines: {node: '>=12'}
+
   queue-microtask@1.2.3:
     resolution: {}
 
@@ -5813,6 +6024,10 @@ packages:
   readable-stream@3.6.2:
     resolution: {}
     engines: {node: '>= 6'}
+
+  readdirp@3.6.0:
+    resolution: {}
+    engines: {node: '>=8.10.0'}
 
   readdirp@4.1.2:
     resolution: {}
@@ -6368,6 +6583,10 @@ packages:
     resolution: {}
     engines: {node: '>=12.0.0'}
 
+  tinyglobby@0.2.16:
+    resolution: {}
+    engines: {node: '>=12.0.0'}
+
   tinyrainbow@2.0.0:
     resolution: {}
     engines: {node: '>=14.0.0'}
@@ -6445,6 +6664,11 @@ packages:
 
   ts-map@1.0.3:
     resolution: {}
+
+  tsc-alias@1.8.17:
+    resolution: {}
+    engines: {node: '>=16.20.2'}
+    hasBin: true
 
   tsconfig-paths@4.2.0:
     resolution: {}
@@ -6670,6 +6894,46 @@ packages:
       yaml:
         optional: true
 
+  vite@7.3.3:
+    resolution: {}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': 24.10.13
+      jiti: '>=1.21.0'
+      less: ^4.0.0
+      lightningcss: ^1.21.0
+      sass: ^1.70.0
+      sass-embedded: ^1.70.0
+      stylus: '>=0.54.8'
+      sugarss: ^5.0.0
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+
   vitest@4.1.0:
     resolution: {}
     engines: {node: ^20.0.0 || ^22.0.0 || >=24.0.0}
@@ -6723,7 +6987,7 @@ packages:
   vue-component-type-helpers@2.2.12:
     resolution: {}
 
-  vue-component-type-helpers@3.2.9:
+  vue-component-type-helpers@3.3.2:
     resolution: {}
 
   vue-demi@0.14.10:
@@ -7026,7 +7290,7 @@ snapshots:
     dependencies:
       '@adyen/adyen-document-viewer': 1.4.2
       '@adyen/openbankingsdk': 0.2.3
-      '@adyen/ui-assets-icons-16': 7.9.0(vue@3.5.31(typescript@5.8.3))
+      '@adyen/ui-assets-icons-16': 7.9.3(vue@3.5.31(typescript@5.8.3))
       '@preact/signals': 2.9.0(preact@10.29.1)
       '@tanstack/preact-query': 5.96.1(preact@10.29.1)
       classnames: 2.5.1
@@ -7044,10 +7308,6 @@ snapshots:
       - vue
 
   '@adyen/openbankingsdk@0.2.3': {}
-
-  '@adyen/ui-assets-icons-16@7.9.0(vue@3.5.31(typescript@5.8.3))':
-    optionalDependencies:
-      vue: 3.5.31(typescript@5.8.3)
 
   '@adyen/ui-assets-icons-16@7.9.3(vue@3.5.31(typescript@5.8.3))':
     optionalDependencies:
@@ -8126,10 +8386,16 @@ snapshots:
   '@esbuild/aix-ppc64@0.27.4':
     optional: true
 
+  '@esbuild/aix-ppc64@0.27.7':
+    optional: true
+
   '@esbuild/android-arm64@0.27.1':
     optional: true
 
   '@esbuild/android-arm64@0.27.4':
+    optional: true
+
+  '@esbuild/android-arm64@0.27.7':
     optional: true
 
   '@esbuild/android-arm@0.27.1':
@@ -8138,10 +8404,16 @@ snapshots:
   '@esbuild/android-arm@0.27.4':
     optional: true
 
+  '@esbuild/android-arm@0.27.7':
+    optional: true
+
   '@esbuild/android-x64@0.27.1':
     optional: true
 
   '@esbuild/android-x64@0.27.4':
+    optional: true
+
+  '@esbuild/android-x64@0.27.7':
     optional: true
 
   '@esbuild/darwin-arm64@0.27.1':
@@ -8150,10 +8422,16 @@ snapshots:
   '@esbuild/darwin-arm64@0.27.4':
     optional: true
 
+  '@esbuild/darwin-arm64@0.27.7':
+    optional: true
+
   '@esbuild/darwin-x64@0.27.1':
     optional: true
 
   '@esbuild/darwin-x64@0.27.4':
+    optional: true
+
+  '@esbuild/darwin-x64@0.27.7':
     optional: true
 
   '@esbuild/freebsd-arm64@0.27.1':
@@ -8162,10 +8440,16 @@ snapshots:
   '@esbuild/freebsd-arm64@0.27.4':
     optional: true
 
+  '@esbuild/freebsd-arm64@0.27.7':
+    optional: true
+
   '@esbuild/freebsd-x64@0.27.1':
     optional: true
 
   '@esbuild/freebsd-x64@0.27.4':
+    optional: true
+
+  '@esbuild/freebsd-x64@0.27.7':
     optional: true
 
   '@esbuild/linux-arm64@0.27.1':
@@ -8174,10 +8458,16 @@ snapshots:
   '@esbuild/linux-arm64@0.27.4':
     optional: true
 
+  '@esbuild/linux-arm64@0.27.7':
+    optional: true
+
   '@esbuild/linux-arm@0.27.1':
     optional: true
 
   '@esbuild/linux-arm@0.27.4':
+    optional: true
+
+  '@esbuild/linux-arm@0.27.7':
     optional: true
 
   '@esbuild/linux-ia32@0.27.1':
@@ -8186,10 +8476,16 @@ snapshots:
   '@esbuild/linux-ia32@0.27.4':
     optional: true
 
+  '@esbuild/linux-ia32@0.27.7':
+    optional: true
+
   '@esbuild/linux-loong64@0.27.1':
     optional: true
 
   '@esbuild/linux-loong64@0.27.4':
+    optional: true
+
+  '@esbuild/linux-loong64@0.27.7':
     optional: true
 
   '@esbuild/linux-mips64el@0.27.1':
@@ -8198,10 +8494,16 @@ snapshots:
   '@esbuild/linux-mips64el@0.27.4':
     optional: true
 
+  '@esbuild/linux-mips64el@0.27.7':
+    optional: true
+
   '@esbuild/linux-ppc64@0.27.1':
     optional: true
 
   '@esbuild/linux-ppc64@0.27.4':
+    optional: true
+
+  '@esbuild/linux-ppc64@0.27.7':
     optional: true
 
   '@esbuild/linux-riscv64@0.27.1':
@@ -8210,10 +8512,16 @@ snapshots:
   '@esbuild/linux-riscv64@0.27.4':
     optional: true
 
+  '@esbuild/linux-riscv64@0.27.7':
+    optional: true
+
   '@esbuild/linux-s390x@0.27.1':
     optional: true
 
   '@esbuild/linux-s390x@0.27.4':
+    optional: true
+
+  '@esbuild/linux-s390x@0.27.7':
     optional: true
 
   '@esbuild/linux-x64@0.27.1':
@@ -8222,10 +8530,16 @@ snapshots:
   '@esbuild/linux-x64@0.27.4':
     optional: true
 
+  '@esbuild/linux-x64@0.27.7':
+    optional: true
+
   '@esbuild/netbsd-arm64@0.27.1':
     optional: true
 
   '@esbuild/netbsd-arm64@0.27.4':
+    optional: true
+
+  '@esbuild/netbsd-arm64@0.27.7':
     optional: true
 
   '@esbuild/netbsd-x64@0.27.1':
@@ -8234,10 +8548,16 @@ snapshots:
   '@esbuild/netbsd-x64@0.27.4':
     optional: true
 
+  '@esbuild/netbsd-x64@0.27.7':
+    optional: true
+
   '@esbuild/openbsd-arm64@0.27.1':
     optional: true
 
   '@esbuild/openbsd-arm64@0.27.4':
+    optional: true
+
+  '@esbuild/openbsd-arm64@0.27.7':
     optional: true
 
   '@esbuild/openbsd-x64@0.27.1':
@@ -8246,10 +8566,16 @@ snapshots:
   '@esbuild/openbsd-x64@0.27.4':
     optional: true
 
+  '@esbuild/openbsd-x64@0.27.7':
+    optional: true
+
   '@esbuild/openharmony-arm64@0.27.1':
     optional: true
 
   '@esbuild/openharmony-arm64@0.27.4':
+    optional: true
+
+  '@esbuild/openharmony-arm64@0.27.7':
     optional: true
 
   '@esbuild/sunos-x64@0.27.1':
@@ -8258,10 +8584,16 @@ snapshots:
   '@esbuild/sunos-x64@0.27.4':
     optional: true
 
+  '@esbuild/sunos-x64@0.27.7':
+    optional: true
+
   '@esbuild/win32-arm64@0.27.1':
     optional: true
 
   '@esbuild/win32-arm64@0.27.4':
+    optional: true
+
+  '@esbuild/win32-arm64@0.27.7':
     optional: true
 
   '@esbuild/win32-ia32@0.27.1':
@@ -8270,10 +8602,16 @@ snapshots:
   '@esbuild/win32-ia32@0.27.4':
     optional: true
 
+  '@esbuild/win32-ia32@0.27.7':
+    optional: true
+
   '@esbuild/win32-x64@0.27.1':
     optional: true
 
   '@esbuild/win32-x64@0.27.4':
+    optional: true
+
+  '@esbuild/win32-x64@0.27.7':
     optional: true
 
   '@eslint-community/eslint-utils@4.9.0(eslint@9.39.2)':
@@ -8960,7 +9298,7 @@ snapshots:
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       type-fest: 2.19.0
       vue: 3.5.31(typescript@5.8.3)
-      vue-component-type-helpers: 3.2.9
+      vue-component-type-helpers: 3.3.2
 
   '@stylistic/stylelint-plugin@5.0.1(stylelint@17.5.0(typescript@5.8.3))':
     dependencies:
@@ -9420,6 +9758,15 @@ snapshots:
       msw: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       vite: 7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
 
+  '@vitest/mocker@4.1.0(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.3(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))':
+    dependencies:
+      '@vitest/spy': 4.1.0
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+    optionalDependencies:
+      msw: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
+      vite: 7.3.3(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+
   '@vitest/pretty-format@3.2.4':
     dependencies:
       tinyrainbow: 2.0.0
@@ -9781,6 +10128,11 @@ snapshots:
 
   ansi-styles@6.2.1: {}
 
+  anymatch@3.1.3:
+    dependencies:
+      normalize-path: 3.0.0
+      picomatch: 4.0.4
+
   argparse@1.0.10:
     dependencies:
       sprintf-js: 1.0.3
@@ -9990,6 +10342,8 @@ snapshots:
 
   big.js@5.2.2: {}
 
+  binary-extensions@2.3.0: {}
+
   birpc@2.9.0:
     optional: true
 
@@ -10101,6 +10455,18 @@ snapshots:
   chardet@2.1.0: {}
 
   check-error@2.1.1: {}
+
+  chokidar@3.6.0:
+    dependencies:
+      anymatch: 3.1.3
+      braces: 3.0.3
+      glob-parent: 5.1.2
+      is-binary-path: 2.1.0
+      is-glob: 4.0.3
+      normalize-path: 3.0.0
+      readdirp: 3.6.0
+    optionalDependencies:
+      fsevents: 2.3.3
 
   chokidar@4.0.3:
     dependencies:
@@ -10675,6 +11041,35 @@ snapshots:
       '@esbuild/win32-arm64': 0.27.4
       '@esbuild/win32-ia32': 0.27.4
       '@esbuild/win32-x64': 0.27.4
+
+  esbuild@0.27.7:
+    optionalDependencies:
+      '@esbuild/aix-ppc64': 0.27.7
+      '@esbuild/android-arm': 0.27.7
+      '@esbuild/android-arm64': 0.27.7
+      '@esbuild/android-x64': 0.27.7
+      '@esbuild/darwin-arm64': 0.27.7
+      '@esbuild/darwin-x64': 0.27.7
+      '@esbuild/freebsd-arm64': 0.27.7
+      '@esbuild/freebsd-x64': 0.27.7
+      '@esbuild/linux-arm': 0.27.7
+      '@esbuild/linux-arm64': 0.27.7
+      '@esbuild/linux-ia32': 0.27.7
+      '@esbuild/linux-loong64': 0.27.7
+      '@esbuild/linux-mips64el': 0.27.7
+      '@esbuild/linux-ppc64': 0.27.7
+      '@esbuild/linux-riscv64': 0.27.7
+      '@esbuild/linux-s390x': 0.27.7
+      '@esbuild/linux-x64': 0.27.7
+      '@esbuild/netbsd-arm64': 0.27.7
+      '@esbuild/netbsd-x64': 0.27.7
+      '@esbuild/openbsd-arm64': 0.27.7
+      '@esbuild/openbsd-x64': 0.27.7
+      '@esbuild/openharmony-arm64': 0.27.7
+      '@esbuild/sunos-x64': 0.27.7
+      '@esbuild/win32-arm64': 0.27.7
+      '@esbuild/win32-ia32': 0.27.7
+      '@esbuild/win32-x64': 0.27.7
 
   escalade@3.2.0: {}
 
@@ -11306,6 +11701,10 @@ snapshots:
   is-bigint@1.1.0:
     dependencies:
       has-bigints: 1.1.0
+
+  is-binary-path@2.1.0:
+    dependencies:
+      binary-extensions: 2.3.0
 
   is-boolean-object@1.2.2:
     dependencies:
@@ -12157,6 +12556,8 @@ snapshots:
 
   mute-stream@2.0.0: {}
 
+  mylas@2.1.14: {}
+
   named-slots@0.4.2: {}
 
   nanoid@3.3.11: {}
@@ -12468,6 +12869,10 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.2
 
+  plimit-lit@1.6.1:
+    dependencies:
+      queue-lit: 1.5.2
+
   pluralize@8.0.0: {}
 
   possible-typed-array-names@1.1.0: {}
@@ -12649,6 +13054,8 @@ snapshots:
 
   querystringify@2.2.0: {}
 
+  queue-lit@1.5.2: {}
+
   queue-microtask@1.2.3: {}
 
   react-dom@19.2.0(react@19.2.0):
@@ -12676,6 +13083,10 @@ snapshots:
       inherits: 2.0.4
       string_decoder: 1.3.0
       util-deprecate: 1.0.2
+
+  readdirp@3.6.0:
+    dependencies:
+      picomatch: 4.0.4
 
   readdirp@4.1.2: {}
 
@@ -13345,6 +13756,11 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
 
+  tinyglobby@0.2.16:
+    dependencies:
+      fdir: 6.5.0(picomatch@4.0.4)
+      picomatch: 4.0.4
+
   tinyrainbow@2.0.0: {}
 
   tinyrainbow@3.0.3: {}
@@ -13407,6 +13823,16 @@ snapshots:
       webpack: 5.106.2
 
   ts-map@1.0.3: {}
+
+  tsc-alias@1.8.17:
+    dependencies:
+      chokidar: 3.6.0
+      commander: 9.5.0
+      get-tsconfig: 4.13.6
+      globby: 11.1.0
+      mylas: 2.1.14
+      normalize-path: 3.0.0
+      plimit-lit: 1.6.1
 
   tsconfig-paths@4.2.0:
     dependencies:
@@ -13681,6 +14107,22 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.3
 
+  vite@7.3.3(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3):
+    dependencies:
+      esbuild: 0.27.7
+      fdir: 6.5.0(picomatch@4.0.4)
+      picomatch: 4.0.4
+      postcss: 8.5.12
+      rollup: 4.59.0
+      tinyglobby: 0.2.16
+    optionalDependencies:
+      '@types/node': 24.10.13
+      fsevents: 2.3.3
+      sass: 1.79.3
+      terser: 5.46.2
+      tsx: 4.21.0
+      yaml: 2.8.3
+
   vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)):
     dependencies:
       '@vitest/expect': 4.1.0
@@ -13709,6 +14151,34 @@ snapshots:
     transitivePeerDependencies:
       - msw
 
+  vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.3(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)):
+    dependencies:
+      '@vitest/expect': 4.1.0
+      '@vitest/mocker': 4.1.0(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.3(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+      '@vitest/pretty-format': 4.1.0
+      '@vitest/runner': 4.1.0
+      '@vitest/snapshot': 4.1.0
+      '@vitest/spy': 4.1.0
+      '@vitest/utils': 4.1.0
+      es-module-lexer: 2.1.0
+      expect-type: 1.3.0
+      magic-string: 0.30.21
+      obug: 2.1.1
+      pathe: 2.0.3
+      picomatch: 4.0.4
+      std-env: 4.1.0
+      tinybench: 2.9.0
+      tinyexec: 1.1.2
+      tinyglobby: 0.2.15
+      tinyrainbow: 3.0.3
+      vite: 7.3.3(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+      why-is-node-running: 2.3.0
+    optionalDependencies:
+      '@types/node': 24.10.13
+      jsdom: 26.1.0
+    transitivePeerDependencies:
+      - msw
+
   void-elements@3.1.0: {}
 
   vscode-uri@3.1.0: {}
@@ -13724,7 +14194,7 @@ snapshots:
 
   vue-component-type-helpers@2.2.12: {}
 
-  vue-component-type-helpers@3.2.9: {}
+  vue-component-type-helpers@3.3.2: {}
 
   vue-demi@0.14.10(vue@3.5.31(typescript@5.8.3)):
     dependencies:

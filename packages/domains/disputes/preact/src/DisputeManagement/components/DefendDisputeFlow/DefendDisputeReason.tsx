@@ -13,7 +13,7 @@ import { SelectChangeEvent } from '@integration-components/ui-components-preact/
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { useDisputeFlow } from '../../context/dispute/context';
-import { getDefenseReasonContent } from '../../utils';
+import { getDefenseReasonContent } from '@integration-components/disputes/domain';
 
 const BASE_CLASS = 'adyen-pe-defend-dispute-reason';
 

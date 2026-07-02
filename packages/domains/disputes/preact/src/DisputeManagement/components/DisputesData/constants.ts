@@ -24,20 +24,3 @@ export const DISPUTE_DATA_STATUS_BOX_AMOUNT = 'adyen-pe-dispute-data__status-box
 export const DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD = 'adyen-pe-dispute-data__status-box-payment-method';
 export const DISPUTE_DATA_SKELETON_CONTAINER = 'adyen-pe-dispute-data__skeleton-container';
 export const DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD_CONTAINER = 'adyen-pe-dispute-data__status-box-payment-method-container';
-
-export const DISPUTE_DETAILS_RESERVED_FIELDS_SET = new Set([
-    'allowedDefenseReasons',
-    'balanceAccount',
-    'amount',
-    'createdAt',
-    'defensibility',
-    'dueDate',
-    'id',
-    'latestDefense',
-    'paymentMerchantReference',
-    'paymentMethod',
-    'paymentPspReference',
-    'reasonCode',
-    'reasonGroup',
-    'status',
-] as const);

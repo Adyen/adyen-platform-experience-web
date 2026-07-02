@@ -3,7 +3,6 @@
 export const BASE_CLASS = 'adyen-pe-payouts-overview';
 export const CONTAINER_CLASS = `${BASE_CLASS}-container`;
 export const TABLE_CLASS = 'adyen-pe-payouts-table';
-export const NET_PAYOUT_CLASS = `${TABLE_CLASS}__net-payout`;
 
 // ── Domain constants ──
 

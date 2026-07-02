@@ -1,6 +1,6 @@
 import { getMySessionToken, ElementProps, ElementStory, SetupControls } from '@integration-components/testing/storybook-helpers';
 import { Meta } from '@storybook/preact';
-import { CapitalOverview } from '@integration-components/capital/preact';
+import { CapitalOverview } from '../../src';
 import { AdyenPlatformExperience } from '@integration-components/sdk-internal';
 import { ILegalEntity } from '@integration-components/types';
 import { CapitalOverviewWithSetupMeta } from './meta';

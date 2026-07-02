@@ -1,7 +1,7 @@
 import { Meta } from '@storybook/preact';
 import { ElementProps, ElementStory, getMySessionToken, SetupControls } from '@integration-components/testing/storybook-helpers';
 import { capitalOfferWithSetupMeta } from './meta';
-import { CapitalOffer, CapitalOverview } from '@integration-components/capital/preact';
+import { CapitalOffer, CapitalOverview } from '../../src';
 import { ILegalEntity } from '@integration-components/types';
 import { CapitalOfferMockedResponses } from '../../../mocks/mock-server/capital';
 import { useEffect } from 'preact/compat';

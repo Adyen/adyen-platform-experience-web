@@ -107,6 +107,7 @@ export default defineConfig(({ mode }) => {
             include: [
                 'src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'config/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/domains/*/domain/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/domains/*/preact/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
             ],
