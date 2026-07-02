@@ -1,10 +1,10 @@
 import { getMySessionToken, ElementProps, ElementStory, SetupControls } from '@integration-components/testing/storybook-helpers';
 import { Meta } from '@storybook/preact';
-import { CapitalOverview } from '../src';
+import { CapitalOverview } from '@integration-components/capital/preact';
 import { AdyenPlatformExperience } from '@integration-components/sdk-internal';
 import { ILegalEntity } from '@integration-components/types';
-import { CapitalOverviewWithSetupMeta } from './components/capitalOverview';
-import { CapitalOverviewMockedResponses } from '../../mocks/mock-server/capital';
+import { CapitalOverviewWithSetupMeta } from './meta';
+import { CapitalOverviewMockedResponses } from '../../../mocks/mock-server/capital';
 import { useEffect } from 'preact/compat';
 
 const meta: Meta<ElementProps<typeof CapitalOverview> & SetupControls> = {

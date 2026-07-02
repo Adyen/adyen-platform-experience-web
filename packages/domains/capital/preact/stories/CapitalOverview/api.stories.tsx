@@ -1,7 +1,7 @@
 import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT, SessionControls } from '@integration-components/testing/storybook-helpers';
 import { Meta } from '@storybook/preact';
-import { CapitalOverview } from '../src';
-import { CapitalOverviewMeta } from './components/capitalOverview';
+import { CapitalOverview } from '@integration-components/capital/preact';
+import { CapitalOverviewMeta } from './meta';
 
 const meta: Meta<ElementProps<typeof CapitalOverview>> = { ...CapitalOverviewMeta, title: 'API-connected/Capital/Capital Overview' };
 

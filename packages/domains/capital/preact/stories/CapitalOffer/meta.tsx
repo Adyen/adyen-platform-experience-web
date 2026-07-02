@@ -6,7 +6,7 @@ import {
     enabledDisabledCallbackRadioControls,
     SetupControls,
 } from '@integration-components/testing/storybook-helpers';
-import { CapitalOffer } from '../../src';
+import { CapitalOffer } from '@integration-components/capital/preact';
 import { action } from 'storybook/actions';
 
 export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
