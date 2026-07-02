@@ -13,6 +13,7 @@ import { CapitalHeader } from '../../../internal/CapitalHeader';
 import { CapitalOfferSelection } from '../CapitalOfferSelection/CapitalOfferSelection';
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
 import './CapitalOffer.scss';
+import { getEnhancedCapitalState } from '../../../utils/capital/getCapitalState';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
 
@@ -42,7 +43,10 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
         }, [getCapitalState]),
     });
 
-    const state = externalCapitalState || internalCapitalState;
+    const state = useMemo(
+        () => externalCapitalState || (internalCapitalState && getEnhancedCapitalState(internalCapitalState)),
+        [externalCapitalState, internalCapitalState]
+    );
 
     const onOfferSelectHandler = useCallback(
         (data: IGrantOfferResponseDTO) => {
@@ -84,6 +88,7 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             {capitalOfferState === 'OfferSummary' && (
                 <CapitalOfferSummary
                     grantOffer={selectedOffer!}
+                    capitalState={state}
                     onBack={() => setSelectedOffer(undefined)}
                     onFundsRequest={onFundsRequest}
                     onContactSupport={onContactSupport}

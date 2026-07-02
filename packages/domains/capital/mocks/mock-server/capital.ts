@@ -20,9 +20,15 @@ import {
     CAPITAL_STATE_FIRST_OFFER,
     CAPITAL_STATE_FIRST_OFFER_CAD,
     CAPITAL_STATE_GRANTS,
-    CAPITAL_STATE_GRANTS_WITH_OFFER,
+    CAPITAL_STATE_PENDING_GRANT,
+    CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS,
+    CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION,
+    CAPITAL_STATE_ACTIVE_GRANT,
+    CAPITAL_STATE_CLOSED_GRANTS,
+    CAPITAL_STATE_RENEWABLE_GRANT,
+    RENEWABLE_GRANT,
 } from '../mock-data/capital';
-import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
+import { DefaultBodyType, http, HttpResponse, JsonBodyType, StrictRequest } from 'msw';
 import { calculateSelectedOffer, calculateOffers } from './utils/utils';
 import { delay, getHandlerCallback, mocksFactory } from '@integration-components/testing/msw';
 import { paths as capitalGrantOffersPaths } from '@integration-components/types/api/resources/CapitalGrantOffersResourceV2';
@@ -98,17 +104,22 @@ const getErrorHandler = (error: AdyenPlatformExperienceError, status = 500) => {
 
 const genericError = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
 
-const getAsyncGrantsHandler = () => {
+const getAsyncHandler = (initialResponse: JsonBodyType, finalResponse: JsonBodyType) => {
     let firstCallTime: number | undefined;
     return async () => {
         if (!firstCallTime) {
             firstCallTime = Date.now();
         }
         const elapsedTime = Date.now() - firstCallTime;
-        const grant = elapsedTime < ASYNC_ACTION_DELAY_MS ? PENDING_GRANT_WITH_SINGLE_ACTION : PENDING_GRANT_WITH_MULTIPLE_ACTIONS;
-        return getHandlerCallback({ response: { data: [grant] }, status: 200 })();
+        const response = elapsedTime < ASYNC_ACTION_DELAY_MS ? initialResponse : finalResponse;
+        return getHandlerCallback({ response, status: 200 })();
     };
 };
+
+const getAsyncGrantsHandler = () => getAsyncHandler({ data: [PENDING_GRANT_WITH_SINGLE_ACTION] }, { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] });
+
+const getAsyncCapitalStateHandler = () =>
+    getAsyncHandler(CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION, CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS);
 
 const commonHandlers = {
     errorStateNoOfferCapability: [
@@ -137,7 +148,8 @@ const capitalFactory = mocksFactory<
 
 export const CapitalOfferMockedResponses = capitalFactory({
     ...commonHandlers,
-    default: [{ endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER }],
+    default: [{ endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_CLOSED_GRANTS }],
+    earlyRenewal: [{ endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_RENEWABLE_GRANT }],
     aprField: [{ endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER_CAD }],
     errorDynamicOfferExceededRetries: [
         { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER },
@@ -199,38 +211,38 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.grants, handler: EMPTY_GRANTS_LIST },
     ],
     grantPending: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_PENDING_GRANT },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT] } },
     ],
     grantMultipleActionsEmbedded: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, handler: getAsyncCapitalStateHandler() },
         { endpoint: mockEndpoints.grants, handler: getAsyncGrantsHandler() },
         { endpoint: mockEndpoints.onboardingConfiguration, response: ONBOARDING_CONFIGURATION },
     ],
     grantMultipleActionsHosted: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, handler: getAsyncCapitalStateHandler() },
         { endpoint: mockEndpoints.grants, handler: getAsyncGrantsHandler() },
         { endpoint: mockEndpoints.onboardingConfiguration, handler: getHandlerCallback({ response: undefined, status: 204 }) },
         { endpoint: mockEndpoints.signToS, handler: getHandlerCallback({ response: SIGN_TOS_ACTION_DETAILS, status: 200 }) },
         { endpoint: mockEndpoints.anaCredit, handler: getHandlerCallback({ response: ANACREDIT_ACTION_DETAILS, status: 200 }) },
     ],
     grantSingleActionEmbedded: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SINGLE_ACTION] } },
         { endpoint: mockEndpoints.onboardingConfiguration, response: ONBOARDING_CONFIGURATION },
     ],
     grantSingleActionHosted: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SINGLE_ACTION] } },
         { endpoint: mockEndpoints.onboardingConfiguration, handler: getHandlerCallback({ response: undefined, status: 204 }) },
         { endpoint: mockEndpoints.signToS, handler: getHandlerCallback({ response: SIGN_TOS_ACTION_DETAILS, status: 200 }) },
     ],
     grantActive: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_ACTIVE_GRANT },
         { endpoint: mockEndpoints.grants, response: { data: [ACTIVE_GRANT] } },
     ],
     repaymentNL: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_ACTIVE_GRANT },
         {
             endpoint: mockEndpoints.grants,
             response: {
@@ -239,7 +251,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         },
     ],
     repaymentGB: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_ACTIVE_GRANT },
         {
             endpoint: mockEndpoints.grants,
             response: {
@@ -248,7 +260,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         },
     ],
     repaymentUS: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_ACTIVE_GRANT },
         {
             endpoint: mockEndpoints.grants,
             response: {
@@ -257,7 +269,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         },
     ],
     repaymentNoTransferInstruments: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_ACTIVE_GRANT },
         {
             endpoint: mockEndpoints.grants,
             response: {
@@ -266,23 +278,27 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         },
     ],
     grantFailed: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_CLOSED_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [FAILED_GRANT] } },
     ],
     grantRepaid: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_CLOSED_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
     ],
     grantRevoked: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_CLOSED_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [REVOKED_GRANT] } },
     ],
     grantWrittenOff: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_CLOSED_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [WRITTEN_OFF_GRANT] } },
     ],
+    earlyRenewal: [
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_RENEWABLE_GRANT },
+        { endpoint: mockEndpoints.grants, response: { data: [RENEWABLE_GRANT] } },
+    ],
     newOffer: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS_WITH_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_CLOSED_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
     ],
     grants: [
@@ -290,7 +306,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.grants, response: { data: GRANTS } },
     ],
     errorActionsEmbedded: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] } },
         {
             endpoint: mockEndpoints.onboardingConfiguration,
@@ -300,7 +316,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.signToS, handler: getHandlerCallback({ response: SIGN_TOS_ACTION_DETAILS, status: 200 }) },
     ],
     errorActionsHosted: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] } },
         { endpoint: mockEndpoints.onboardingConfiguration, handler: getHandlerCallback({ response: undefined, status: 204 }) },
         {

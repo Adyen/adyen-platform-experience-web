@@ -1,8 +1,10 @@
-import { ICapitalState, IGrant, IGrantOfferResponseDTO, UIElementProps } from '@integration-components/types';
+import { IGrantOfferResponseDTO, UIElementProps } from '@integration-components/types';
+import { EnhancedCapitalState } from '../utils/capital/getCapitalState';
+import { OnFundsRequestCallback } from '../types';
 
 export interface CapitalOfferProps extends UIElementProps {
-    externalCapitalState?: ICapitalState;
-    onFundsRequest: (data: IGrant) => void;
+    externalCapitalState?: EnhancedCapitalState;
+    onFundsRequest: OnFundsRequestCallback;
     onOfferDismiss?: () => void;
     onOfferSelect?: (data: IGrantOfferResponseDTO) => void;
 }

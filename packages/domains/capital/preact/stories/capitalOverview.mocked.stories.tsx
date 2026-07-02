@@ -228,6 +228,16 @@ export const GrantWrittenOff: ElementStory<typeof CapitalOverview> = {
     },
 };
 
+export const EarlyRenewal: ElementStory<typeof CapitalOverview> = {
+    name: 'Early renewal',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.earlyRenewal,
+    },
+};
+
 export const NewOffer: ElementStory<typeof CapitalOverview> = {
     name: 'New offer',
     args: {

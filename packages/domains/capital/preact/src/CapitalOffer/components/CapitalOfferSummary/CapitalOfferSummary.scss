@@ -6,38 +6,6 @@
     flex-direction: column;
     gap: style.token(spacer-070);
 
-    &__grant-summary {
-        align-items: stretch;
-        background-color: style.token(color-background-selected);
-        border-radius: style.token(border-radius-m);
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding: style.token(spacer-070) style.token(spacer-090);
-
-        @include adyen-pe-screen-sm-and-down {
-            flex-direction: column;
-            gap: style.token(spacer-060);
-        }
-
-        &-item {
-            align-items: center;
-            display: flex;
-            flex: 1;
-            flex-direction: column;
-
-            @include adyen-pe-screen-sm-and-down {
-                align-items: flex-start;
-            }
-        }
-
-        &-label {
-            color: style.token(color-label-secondary);
-            text-align: center;
-            width: max-content;
-        }
-    }
-
     &__terms {
         display: flex;
         flex-direction: column;
