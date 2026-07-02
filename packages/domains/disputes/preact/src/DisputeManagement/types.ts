@@ -1,19 +1,6 @@
-import { DetailsWithExtraData, CustomDataRetrieved, DetailsDataCustomizationObject } from '@integration-components/types';
-import { IDisputeDetail } from '@integration-components/types/api/models/disputes';
-import { DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './components/DisputesData/constants';
-
-export type DisputeDetailsFields = typeof DISPUTE_DETAILS_RESERVED_FIELDS_SET extends Set<infer T> ? T : never;
-
-export type DisputeDetailsCustomization = DetailsDataCustomizationObject<DisputeDetailsFields, IDisputeDetail, CustomDataRetrieved>;
-
-export type DisputeCallbackData = {
-    id: IDisputeDetail['dispute']['pspReference'];
-};
-
-export type DisputeManagementProps = {
-    id: string;
-    onContactSupport?: () => void;
-    onDisputeAccept?: <T extends DisputeCallbackData>(dispute: T) => void;
-    onDisputeDefend?: <T extends DisputeCallbackData>(dispute: T) => void;
-    onDismiss?: () => void;
-} & DetailsWithExtraData<DisputeDetailsCustomization>;
+export type {
+    DisputeCallbackData,
+    DisputeDetailsCustomization,
+    DisputeDetailsFields,
+    DisputeManagementProps,
+} from '../../../domain/src/DisputeManagement';

@@ -9,11 +9,9 @@ test.describe('Error - list', () => {
     });
 
     test('should show error message', async ({ page }) => {
-        await Promise.all([
-            expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible(),
-            expect(page.getByText("We couldn't load your reports.", { exact: false })).toBeVisible(),
-            expect(page.getByText('Try refreshing the page or come back later.', { exact: false })).toBeVisible(),
-            expect(page.getByRole('button', { name: 'Refresh', exact: true })).toBeVisible(),
-        ]);
+        await expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible();
+        await expect(page.getByText("We couldn't load your reports.", { exact: false })).toBeVisible();
+        await expect(page.getByText('Try refreshing the page or come back later.', { exact: false })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Refresh', exact: true })).toBeVisible();
     });
 });

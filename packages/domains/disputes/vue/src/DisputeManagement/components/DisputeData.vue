@@ -19,18 +19,13 @@ import {
 } from '@integration-components/disputes/domain';
 import { isFunction, parsePaymentMethodType } from '@integration-components/utils';
 import type { CustomButtonObject, CustomDataRetrieved } from '@integration-components/types';
-import { useDisputeDetails } from '../composables/useDisputeDetails';
-import { useDisputeFlow } from '../composables/useDisputeFlow';
+import { useDisputeDetails, type DisputeError } from '../composables/useDisputeDetails';
+import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import DisputeDataAlert from './DisputeDataAlert.vue';
 import DisputeDataProperties from './DisputeDataProperties.vue';
 import DisputeIssuerComments from './DisputeIssuerComments.vue';
 import DisputeStatusTag from './DisputeStatusTag.vue';
 import type { DisputeDataAlertMode, DisputeManagementProps } from '../types';
-
-type DisputeError = Error & {
-    errorCode?: string;
-    requestId?: string;
-};
 
 const props = defineProps<{
     disputeId: string;
@@ -145,11 +140,11 @@ watch(
 const extraButtons = computed(() => Object.values(extraFields.value ?? {}).filter(isButtonType));
 
 function onAcceptClick() {
-    setFlowState('accept');
+    setFlowState(DisputeFlowState.Accept);
 }
 
 function onDefendClick() {
-    setFlowState('defendReasonSelectionView');
+    setFlowState(DisputeFlowState.DefendReasonSelection);
 }
 
 const actionButtons = computed(() => {
@@ -182,7 +177,7 @@ function retryFetch() {
 }
 
 const errorState = computed(() => {
-    const currentError = error.value as DisputeError | undefined;
+    const currentError: DisputeError | undefined = error.value;
     if (!currentError) return undefined;
 
     if (currentError.errorCode === '30_112') {
@@ -216,11 +211,9 @@ const errorState = computed(() => {
 });
 
 const paymentMethodType = computed(() => dispute.value?.payment.paymentMethod?.type ?? null);
-const paymentMethodDetail = computed(() => {
-    const pm = dispute.value?.payment.paymentMethod;
-    if (pm) return parsePaymentMethodType(pm, 'detail');
-    return null;
-});
+const paymentMethodDetail = computed(() =>
+    dispute.value?.payment.paymentMethod ? parsePaymentMethodType(dispute.value.payment.paymentMethod, 'detail') : null
+);
 </script>
 
 <template>
