@@ -3,7 +3,13 @@ import { ref, computed, onUnmounted, watch } from 'vue';
 import { BentoButton, BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
-import { useCustomColumnsData, useTableColumns, CustomDataCell } from '@integration-components/composables-vue';
+import {
+    useCustomColumnsData,
+    useTableColumns,
+    CustomDataCell,
+    useResponsiveContainer,
+    containerQueries,
+} from '@integration-components/composables-vue';
 import { DATE_FORMAT_REPORTS } from '@integration-components/utils';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import type { BentoDatagridDataItem, BentoDataGridRowActionsProp } from '@adyen/bento-vue3';
@@ -115,8 +121,15 @@ async function handleDownload(item: IReport) {
     }
 }
 
+// ── Responsive ──
+const isMobile = useResponsiveContainer(containerQueries.down.sm);
+
 // ── Custom columns ──
-const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
+const {
+    columns: desktopColumns,
+    customFieldKeys,
+    hasCustomColumn,
+} = useTableColumns({
     fields: REPORTS_TABLE_FIELDS,
     customColumns: () => props.customColumns,
     fieldsKeys: {
@@ -144,6 +157,13 @@ const { customRecords, loadingCustomRecords } = useCustomColumnsData<IReport>({
 });
 
 // ── Grid columns ──
+const columns = computed(() => {
+    if (isMobile.value) {
+        return [{ field: 'dateAndReportType', label: i18n.get('reports.overview.list.fields.reportType'), autoWidth: true }];
+    }
+    return desktopColumns.value;
+});
+
 const isLoading = computed(() => props.loading || config.refreshing || loadingCustomRecords.value);
 
 // ── Grid data ──
@@ -261,6 +281,16 @@ watch(
             </template>
             <template #item-reportType="{ item }">
                 {{ item.reportType }}
+            </template>
+            <template #item-dateAndReportType="{ item }">
+                <div :class="REPORTS_TABLE_CLASS_NAMES.dateReportType">
+                    <BentoTypography v-if="item.reportType" variant="body" stronger>{{ item.reportType }}</BentoTypography>
+                    <time v-if="item.createdAt" :datetime="item.createdAt">
+                        <BentoTypography variant="body" :class="REPORTS_TABLE_CLASS_NAMES.dateReportTypeDate">{{
+                            formatDate(item.createdAt)
+                        }}</BentoTypography>
+                    </time>
+                </div>
             </template>
             <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">
                 <CustomDataCell :value="item[key]" />

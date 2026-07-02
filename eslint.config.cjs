@@ -127,7 +127,7 @@ module.exports = [
                         '{src,packages}/**/{__testing__,testing}/**/*.{ts,tsx}',
                         'packages/domains/*/{domain,preact,vue}/tests/**/*.{ts,tsx}',
                         'packages/domains/*/**/stories/**/*.{ts,tsx}',
-                        'packages/domains/*/mocks/**/*.{ts,tsx}',
+                        'packages/domains/*/{fixtures,mocks}/**/*.{ts,tsx}',
                         'src/**/*.{ts,tsx}',
                     ],
                     includeTypes: false,
@@ -193,10 +193,11 @@ module.exports = [
 
     // Vue Composition API files written as plain .ts (not .vue SFCs)
     {
-        files: ['**/vue/src/**/*.{ts,tsx}'],
+        files: ['**/{vue,composables-vue}/src/**/*.{ts,tsx}'],
         rules: {
             'react-hooks/rules-of-hooks': 'off',
             'react-hooks/exhaustive-deps': 'off',
+            'react-hooks/purity': 'off',
         },
     },
 
@@ -214,6 +215,7 @@ module.exports = [
         },
         rules: {
             'vue/html-indent': ['warn', 4],
+            'vue/html-self-closing': ['warn', { html: { void: 'any', normal: 'always', component: 'always' }, svg: 'always', math: 'always' }],
             'vue/max-attributes-per-line': 'off',
             'vue/multi-word-component-names': 'off',
             'vue/require-default-prop': 'off',

@@ -9,6 +9,7 @@ on:
       - main
       - develop
       - group/*
+      - pre-release/*
 
 env:
   CI: true
@@ -19,27 +20,104 @@ env:
 jobs:
   is-pr-approved:
     permissions:
+      actions: read
       contents: read
       pull-requests: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
+      - id: approval-status
+        run: |
+          # Automated release sync PRs only merge already-released main changes back
+          # into develop. Keep required checks green, but skip the expensive work.
+          if [[ "$PR_AUTHOR" == "github-actions[bot]" &&
+                "$HEAD_REF" == chore/sync-main-into-develop* &&
+                "$PR_TITLE" == "chore(release): sync main into develop"* ]]; then
+            echo "Skipping integration tests (automated sync PR)"
+            echo "should_run_jobs=true" >> "$GITHUB_OUTPUT"
+            echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          
+          # Set safe defaults to prevent downstream script crashes
+          APPROVALS_FOR_HEAD=0
+          PRIOR_APPROVALS_FOR_HEAD=0
 
-      - id: check-approval
-        run: gh pr status --json reviews -q '.currentBranch.reviews' | jq '.[]' | jq '.state' | grep APPROVED
+          # Check if the command succeeded and returned valid JSON
+          if ! REVIEWS=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews" --paginate) \
+             || ! echo "$REVIEWS" | jq -e . >/dev/null 2>&1; then
+            echo "Failed to fetch reviews or received invalid JSON from GitHub API."
+          else
+            if ! read -r APPROVALS_FOR_HEAD PRIOR_APPROVALS_FOR_HEAD < <(
+              echo "$REVIEWS" | jq -r \
+                --arg head_sha "$HEAD_SHA" \
+                --arg review_id "$REVIEW_ID" \
+                '
+                  # Count approvals for the current commit only. Approvals for older commits
+                  # should not allow integration tests to run after new code is pushed.
+                  [ .[] | select(.state == "APPROVED" and .commit_id == $head_sha)] as $current
+                  
+                  # Count previous approvals for the current commit, excluding the review
+                  # that triggered this workflow. This identifies additional approvals
+                  # where the reviewed code has not changed.
+                  | [ $current[] | select((.id | tostring) != $review_id)] as $prior
+                
+                  # Return both lengths as a single space-separated string
+                  | ($current | length | tostring) + " " + ($prior | length | tostring)
+                '
+            ); then
+              echo "Failed to parse review counts from GitHub API response; defaulting to 0."
+            fi
+          fi
+
+          # Check whether integration tests have already passed for this exact
+          # commit. Additional approvals can skip tests only when the same code
+          # has already been verified successfully.
+          SUCCESSFUL_RUNS_FOR_HEAD=$(
+            gh run list \
+              --workflow "$WORKFLOW_NAME" \
+              --commit "$HEAD_SHA" \
+              --status completed \
+              --json conclusion \
+              --jq '[.[] | select(.conclusion == "success")] | length' \
+            || echo "0"
+          )
+
+          # A second approval for unchanged, already-tested code should not spend
+          # CI time again. Keep required checks green, but skip the expensive work.
+          if [[ "$EVENT_NAME" == "pull_request_review" &&
+                "$REVIEW_STATE" == "approved" &&
+                "$PRIOR_APPROVALS_FOR_HEAD" -gt 0 &&
+                "$SUCCESSFUL_RUNS_FOR_HEAD" -gt 0 ]]; then
+            echo "Skipping integration tests (additional approval without code changes)"
+            echo "should_run_jobs=true" >> "$GITHUB_OUTPUT"
+            echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Run integration tests when the current commit has at least one approval.
+          # Otherwise skip the downstream jobs until the PR is approved.
+          SHOULD_RUN="false"
+          [[ "$APPROVALS_FOR_HEAD" -gt 0 ]] && SHOULD_RUN="true"
+          echo "should_run_jobs=$SHOULD_RUN" >> "$GITHUB_OUTPUT"
+          echo "should_run_tests=$SHOULD_RUN" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ github.token }}
-        continue-on-error: true
-
-      - run: echo ${{ steps.check-approval.outcome == 'success' }}
+          EVENT_NAME: ${{ github.event_name }}
+          REVIEW_STATE: ${{ github.event.review.state }}
+          REVIEW_ID: ${{ github.event.review.id }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
     outputs:
-      approved: ${{ steps.check-approval.outcome == 'success' }}
+      should_run_jobs: ${{ steps.approval-status.outputs.should_run_jobs }}
+      should_run_tests: ${{ steps.approval-status.outputs.should_run_tests }}
 
   build-storybook-static:
     needs: is-pr-approved
-    if: needs.is-pr-approved.outputs.approved == 'true'
+    if: needs.is-pr-approved.outputs.should_run_jobs == 'true'
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -50,19 +128,28 @@ jobs:
     env:
       TEST_ENV: 1
       USE_CDN: false
+      SHOULD_RUN_TESTS: ${{ needs.is-pr-approved.outputs.should_run_tests }}
     steps:
+      - if: env.SHOULD_RUN_TESTS != 'true'
+        id: skip
+        run: echo "Skipping build (integration tests not required)"
+
       - name: Checkout the repo
+        if: env.SHOULD_RUN_TESTS == 'true'
         uses: actions/checkout@v3
 
       - name: Run the preliminary setup steps
+        if: env.SHOULD_RUN_TESTS == 'true'
         uses: ./.github/actions/setup-env
         with:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Build Storybook static files
+        if: env.SHOULD_RUN_TESTS == 'true'
         run: pnpm run storybook:build:${{ matrix.framework }}
 
       - name: Upload Storybook static artifact
+        if: env.SHOULD_RUN_TESTS == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: storybook-static-${{ matrix.framework }}-${{ github.sha }}
@@ -73,7 +160,7 @@ jobs:
     needs:
       - is-pr-approved
       - build-storybook-static
-    if: needs.is-pr-approved.outputs.approved == 'true'
+    if: needs.is-pr-approved.outputs.should_run_jobs == 'true'
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -89,26 +176,35 @@ jobs:
     env:
       PLAYWRIGHT_WORKERS: 1
       PLAYWRIGHT_WEB_SERVER_COMMAND: pnpm exec vite preview --outDir storybook-static --config packages/tools/storybook/vite.config.ts
+      SHOULD_RUN_TESTS: ${{ needs.is-pr-approved.outputs.should_run_tests }}
     steps:
+      - if: env.SHOULD_RUN_TESTS != 'true'
+        id: skip
+        run: echo "Skipping tests (integration tests not required)"
+
       - name: Checkout the repo
+        if: env.SHOULD_RUN_TESTS == 'true'
         uses: actions/checkout@v3
 
       - name: Run the preliminary setup steps
+        if: env.SHOULD_RUN_TESTS == 'true'
         uses: ./.github/actions/setup-env
         with:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Download Storybook static artifact
+        if: env.SHOULD_RUN_TESTS == 'true'
         uses: actions/download-artifact@v4
         with:
           name: storybook-static-${{ matrix.framework }}-${{ github.sha }}
           path: storybook-static
 
       - name: Run tests (shard ${{ matrix.shard.index }}/${{ matrix.shard.total }})
+        if: env.SHOULD_RUN_TESTS == 'true'
         run: pnpm run test:integration:${{ matrix.framework }} --shard=${{ matrix.shard.index }}/${{ matrix.shard.total }}
 
       - name: Upload Playwright report (on failure)
-        if: failure()
+        if: failure() && env.SHOULD_RUN_TESTS == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-${{ matrix.framework }}-${{ github.sha }}-shard-${{ matrix.shard.index }}

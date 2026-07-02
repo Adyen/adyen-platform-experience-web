@@ -124,10 +124,6 @@ export const setTime = async (page: Page) => {
     await page.clock.setFixedTime('2025-01-01T00:00:00.00Z');
 };
 
-export const sleep = async (ms: number = 100) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-};
-
 export const getComponentRoot = (page: Page) => page.getByTestId('component-root');
 
 export const clickOutsideDialog = async (dialog: Locator) => {
@@ -139,7 +135,13 @@ export const clickOutsideDialog = async (dialog: Locator) => {
 export const selectFirstUnselectedBalanceAccount = async (balanceAccountSelectorDialog: Locator) => {
     await expect(balanceAccountSelectorDialog).toBeVisible();
     const firstUnselectedOption = balanceAccountSelectorDialog.getByRole('option', { selected: false, disabled: false }).nth(0);
+    const applyButton = balanceAccountSelectorDialog.getByRole('button', { name: 'Apply', exact: true, disabled: false });
 
     await firstUnselectedOption.click();
+
+    if (await applyButton.isVisible()) {
+        await applyButton.click();
+    }
+
     await expect(balanceAccountSelectorDialog).toBeHidden();
 };

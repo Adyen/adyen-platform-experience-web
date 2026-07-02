@@ -1,0 +1,25 @@
+import type { Meta } from '@storybook/vue3';
+import type { ReportsOverviewExternalProps } from '../../src';
+import ReportsOverview from '../../src/ReportsOverview/ReportsOverviewWrapper.vue';
+import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
+
+export const ReportsOverviewMeta: Meta<ElementProps<ReportsOverviewExternalProps>> = {
+    title: 'Components/Reports/Reports Overview',
+    component: ReportsOverview,
+    argTypes: {
+        onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
+        onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
+        preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
+        hideTitle: { control: 'boolean' },
+        allowLimitSelection: { control: 'boolean' },
+    },
+    args: {
+        component: ReportsOverview,
+        allowLimitSelection: true,
+    },
+    parameters: {
+        controls: {
+            sort: 'alpha',
+        },
+    },
+};

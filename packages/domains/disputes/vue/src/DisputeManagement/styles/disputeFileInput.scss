@@ -1,0 +1,7 @@
+@use '@integration-components/style';
+
+.adyen-pe-defend-dispute-file-input {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-030);
+}
