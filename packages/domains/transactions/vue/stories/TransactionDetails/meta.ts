@@ -13,6 +13,7 @@ export const TransactionDetailsMeta: Meta<ElementProps<TransactionDetailsExterna
     },
     args: {
         component: TransactionDetails,
+        compact: true,
     },
     parameters: {
         controls: {

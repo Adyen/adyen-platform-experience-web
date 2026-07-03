@@ -1,0 +1,14 @@
+@use '@integration-components/style' as style;
+
+.adyen-pe-payment-link-creation-form {
+    &__field {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
+    }
+
+    &__field-error {
+        color: style.token(color-label-critical);
+        font-size: style.token(text-caption-font-size);
+    }
+}
