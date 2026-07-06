@@ -64,7 +64,7 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
 
     const requestFundsCallback = useCallback(
         (id: string) => {
-            void requestFundsMutation.mutate(
+            requestFundsMutation.mutate(
                 {
                     body: renewsGrantId ? { renewsGrantId } : EMPTY_OBJECT,
                     contentType: 'application/json',
@@ -139,7 +139,7 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
             const maximumRepaymentPeriodDate = date && dateFormat(date, DATE_FORMAT_CAPITAL_OVERVIEW);
 
             return [
-                ...(capitalState?.renewableGrants.length
+                ...(capitalState?.renewableGrants?.length
                     ? [
                           {
                               key: 'capital.common.fields.financing',
@@ -188,7 +188,7 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
                 { key: 'capital.common.fields.account', value: i18n.get('capital.common.values.primaryAccount') },
             ] as StructuredListItem[];
         },
-        [dateFormat, capitalState?.renewableGrants.length, i18n, formatTermLabel]
+        [dateFormat, capitalState?.renewableGrants?.length, i18n, formatTermLabel]
     );
 
     const renderLabel = useCallback(
@@ -294,14 +294,12 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
                 id: 'currentLoan',
                 label: 'capital.offer.summary.earlyRenewal.tabs.currentGrant',
                 content: (
-                    <>
-                        <StructuredList
-                            classNames="adyen-pe-capital-offer-summary__details"
-                            renderLabel={renderLabel}
-                            renderValue={renderValue}
-                            items={currentSimplifiedGrant ? getStructuredListItems(currentSimplifiedGrant) : []}
-                        />
-                    </>
+                    <StructuredList
+                        classNames="adyen-pe-capital-offer-summary__details"
+                        renderLabel={renderLabel}
+                        renderValue={renderValue}
+                        items={currentSimplifiedGrant ? getStructuredListItems(currentSimplifiedGrant) : []}
+                    />
                 ),
             },
         ],
@@ -345,7 +343,7 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
                 </Alert>
             )}
             <CapitalOfferLegalNotice />
-            {!!capitalState?.renewableGrants.length && (
+            {!!capitalState?.renewableGrants?.length && (
                 <Alert
                     type={AlertTypeOption.HIGHLIGHT}
                     title={i18n.get('capital.offer.summary.earlyRenewalNotice.title')}

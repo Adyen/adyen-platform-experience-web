@@ -1,8 +1,9 @@
-import { IGrant, IMissingActionType, UIElementProps } from '@integration-components/types';
+import { IMissingActionType, UIElementProps } from '@integration-components/types';
 import { TranslationKey } from '@integration-components/core';
+import { OnFundsRequestCallback } from '../types';
 
 export interface CapitalOverviewProps extends UIElementProps {
-    onFundsRequest?: (data: IGrant) => void;
+    onFundsRequest?: OnFundsRequestCallback;
     onOfferDismiss?: () => void;
     onOfferOptionsRequest?: () => void;
     skipPreQualifiedIntro?: boolean;

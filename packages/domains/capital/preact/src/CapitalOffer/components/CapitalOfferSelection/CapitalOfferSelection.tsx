@@ -330,6 +330,11 @@ export const CapitalOfferSelection = ({
         ];
     }, [capitalState, i18n, matchedOffer?.grantAmount.currency, matchedOffer?.grantAmount.value]);
 
+    const renderHighlightedFields = () => {
+        if (!capitalState?.renewableGrants?.length) return null;
+        return isLoadingIndicatorVisible ? <HighlightedFieldsLoadingSkeleton /> : <CapitalHighlightedFields fields={highlightedFields} />;
+    };
+
     return (
         <div className="adyen-pe-capital-offer-selection">
             {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || isUnqualified || capitalStateError || termsError ? (
@@ -349,13 +354,7 @@ export const CapitalOfferSelection = ({
                                 onValueChange={onChangeHandler}
                                 onRelease={handleSliderRelease}
                             />
-                            {capitalState?.renewableGrants.length ? (
-                                isLoadingIndicatorVisible ? (
-                                    <HighlightedFieldsLoadingSkeleton />
-                                ) : (
-                                    <CapitalHighlightedFields fields={highlightedFields} />
-                                )
-                            ) : null}
+                            {renderHighlightedFields()}
                         </>
                     )}
                     {allTerms.length > 1 && (
