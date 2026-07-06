@@ -1,6 +1,6 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedAnalyticsEventProperties } from './shared/constants';
+import { sharedAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionDetails';
 
 const STORY_ID = 'mocked-transactions-transaction-details--refunded-partially';
 
@@ -17,6 +17,6 @@ test.describe('Refunded - Partially', () => {
         await expect(page.getByText('You already refunded €473.75', { exact: true })).toBeVisible();
         await expect(page.getByRole('alert')).toHaveCount(1);
 
-        await expect(page.getByRole('button', { name: 'Refund payment', exact: true })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Refund payment', exact: true, disabled: false })).toBeVisible();
     });
 });
