@@ -1,6 +1,6 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedTransactionsListAnalyticsEventProperties } from './shared/constants';
+import { sharedTransactionsListAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionsOverview';
 import { downloadTransactions, openExportPopover } from './shared/utils';
 
 const STORY_ID = 'mocked-transactions-transactions-overview--error-export';
@@ -15,17 +15,15 @@ test.describe('Error - Export', () => {
 
     test('should render export error alert', async ({ page }) => {
         const alert = page.getByTestId('transactions-export-error-alert');
-
         await expect(alert).toBeVisible();
-        await expect(alert.getByText('Download has failed. Please try again.', { exact: true })).toBeVisible();
-        await expect(alert.getByRole('button', { name: 'Dismiss', exact: true })).toBeVisible();
-
         await expect(alert).toHaveCount(1);
+        await expect(alert.getByText('Download has failed. Please try again.', { exact: true })).toBeVisible();
+        await expect(alert.getByRole('button', { name: 'Dismiss', exact: true, disabled: false })).toBeVisible();
     });
 
     test('should dismiss the export error alert when the "x" button is clicked', async ({ page }) => {
         const alert = page.getByTestId('transactions-export-error-alert');
-        const dismissButton = alert.getByRole('button', { name: 'Dismiss', exact: true });
+        const dismissButton = alert.getByRole('button', { name: 'Dismiss', exact: true, disabled: false });
         await dismissButton.click();
         await expect(alert).toBeHidden();
     });
