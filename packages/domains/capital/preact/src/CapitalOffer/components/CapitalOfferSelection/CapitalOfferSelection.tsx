@@ -349,7 +349,7 @@ export const CapitalOfferSelection = ({
                                 onValueChange={onChangeHandler}
                                 onRelease={handleSliderRelease}
                             />
-                            {capitalState?.renewableGrants.length ? (
+                            {capitalState?.renewableGrants?.length ? (
                                 isLoadingIndicatorVisible ? (
                                     <HighlightedFieldsLoadingSkeleton />
                                 ) : (
