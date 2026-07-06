@@ -5,14 +5,19 @@ import { openPayoutDetailsModal } from './shared/utils';
 
 const STORY_ID = 'mocked-payouts-payouts-overview--default';
 const NOW = Date.now();
+const YESTERDAY = NOW - 86_400_000;
 
 test.describe('Default', () => {
     test.beforeEach(async ({ page }) => {
-        await page.clock.setFixedTime(NOW);
         await goToStory(page, { id: STORY_ID });
     });
 
     test.describe('Render', () => {
+        test.beforeEach(async ({ page }) => {
+            await page.clock.setFixedTime(NOW);
+            await goToStory(page, { id: STORY_ID });
+        });
+
         test('should render transactions overview', async ({ page }) => {
             const information = 'Payout information is generated each day at midnight, UTC time.';
             const toolbar = page.getByRole('toolbar');
@@ -51,6 +56,8 @@ test.describe('Default', () => {
 
     test.describe('Details modal', () => {
         test.beforeEach(async ({ page }) => {
+            await page.clock.setFixedTime(NOW);
+            await goToStory(page, { id: STORY_ID });
             await openPayoutDetailsModal(page, 0);
         });
 
@@ -68,6 +75,8 @@ test.describe('Default', () => {
 
     test.describe('Filter: Balance account', () => {
         test.beforeEach(async ({ page }) => {
+            await page.clock.setFixedTime(NOW);
+            await goToStory(page, { id: STORY_ID });
             await page.getByRole('button', { name: /^Balance account/, disabled: false }).click();
             await expect(page.getByRole('dialog')).toBeVisible();
         });
@@ -103,6 +112,8 @@ test.describe('Default', () => {
 
     test.describe('Filter: Date range', () => {
         test.beforeEach(async ({ page }) => {
+            await page.clock.setFixedTime(YESTERDAY);
+            await goToStory(page, { id: STORY_ID });
             await page.getByRole('button', { name: /^Date range/, disabled: false }).click();
             await expect(page.getByRole('dialog')).toBeVisible();
         });

@@ -70,7 +70,7 @@ test.describe('Prequalified', () => {
         analyticsEvents,
     }) => {
         await goToOfferSummary(page, analyticsEvents);
-        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
+        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
@@ -91,7 +91,7 @@ test.describe('onFundsRequest argument', () => {
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedPrequalifiedAnalyticsEventProperties]]);
 
         await goToOfferSummary(page, analyticsEvents);
-        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
+        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],

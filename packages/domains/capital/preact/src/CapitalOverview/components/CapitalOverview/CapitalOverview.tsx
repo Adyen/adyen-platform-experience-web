@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { isCapitalRegionSupported } from '../../../internal/CapitalHeader/helpers';
-import { ExternalUIComponentProps, IGrant } from '@integration-components/types';
+import { ExternalUIComponentProps, ICapitalState, IGrant } from '@integration-components/types';
 import { useConfigContext } from '@integration-components/core/preact';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
 import { useFetch } from '@integration-components/hooks-preact';
@@ -16,6 +16,8 @@ import { PreQualified } from '../PreQualified/PreQualified';
 import { GrantList } from '../GrantList/GrantList';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import { getCapitalErrorMessage } from '../../../utils/capital/getCapitalErrorMessage';
+import { getEnhancedCapitalState } from '../../../utils/capital/getCapitalState';
+import { OnFundsRequestCallback } from '../../../types';
 
 type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified' | 'GrantList' | 'UnsupportedRegion';
 
@@ -30,82 +32,78 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const legalEntity = useConfigContext()?.extraConfig?.legalEntity;
     const isRegionSupported = useMemo(() => isCapitalRegionSupported(legalEntity), [legalEntity]);
 
-    const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useConfigContext().endpoints;
+    const { getCapitalState: capitalStateEndpointCall, getGrants: grantsEndpointCall } = useConfigContext().endpoints;
+
+    const capitalStateQuery = useFetch({
+        fetchOptions: { enabled: isRegionSupported && !!capitalStateEndpointCall },
+        queryFn: useCallback(async () => {
+            return capitalStateEndpointCall?.(EMPTY_OBJECT, { query: EMPTY_OBJECT });
+        }, [capitalStateEndpointCall]),
+    });
+
+    const [requestedGrant, setRequestedGrant] = useState<IGrant>();
+
+    const capitalState = useMemo(
+        () =>
+            getEnhancedCapitalState(
+                capitalStateQuery.data &&
+                    ({
+                        ...capitalStateQuery.data,
+                        activeOrPendingGrants: requestedGrant
+                            ? [requestedGrant, ...capitalStateQuery.data.activeOrPendingGrants]
+                            : capitalStateQuery.data.activeOrPendingGrants,
+                    } as ICapitalState)
+            ),
+        [capitalStateQuery.data, requestedGrant]
+    );
+
+    const hasGrantsOnServer = useMemo(
+        () => !!(capitalStateQuery.data?.activeOrPendingGrants?.length || capitalStateQuery.data?.hasClosedGrants),
+        [capitalStateQuery.data]
+    );
 
     const grantsQuery = useFetch({
-        fetchOptions: { enabled: !!grantsEndpointCall && isRegionSupported },
+        fetchOptions: {
+            enabled: isRegionSupported && hasGrantsOnServer && !!grantsEndpointCall,
+        },
         queryFn: useCallback(async () => {
             return grantsEndpointCall?.(EMPTY_OBJECT);
         }, [grantsEndpointCall]),
     });
 
-    const dynamicOfferQuery = useFetch({
-        fetchOptions: { enabled: !!dynamicConfigurationEndpointCall && isRegionSupported },
-        queryFn: useCallback(async () => {
-            return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT, { query: EMPTY_OBJECT });
-        }, [dynamicConfigurationEndpointCall]),
-    });
+    const grantList = useMemo(() => {
+        const grants = requestedGrant ? [requestedGrant, ...(grantsQuery.data?.data || [])] : grantsQuery.data?.data;
+        return grants?.filter(grant => !capitalState.renewsGrantIds.has(grant.id));
+    }, [capitalState.renewsGrantIds, grantsQuery.data?.data, requestedGrant]);
 
-    const dynamicOffer = dynamicOfferQuery.data;
-
-    const [requestedGrant, setRequestedGrant] = useState<IGrant>();
-    const grantList = useMemo(
-        () => (requestedGrant ? [requestedGrant, ...(grantsQuery.data?.data || [])] : grantsQuery.data?.data),
-        [grantsQuery.data?.data, requestedGrant]
-    );
-
-    const handlePreQualifiedFundsRequest = useCallback(
-        (data: IGrant) => {
+    const handlePreQualifiedFundsRequest = useCallback<OnFundsRequestCallback>(
+        (data, renewsGrantId) => {
             if (onFundsRequest) {
-                onFundsRequest(data);
+                onFundsRequest(data, renewsGrantId);
             } else {
-                setRequestedGrant(data);
+                setRequestedGrant({ ...data, renewsGrantId });
             }
         },
         [onFundsRequest]
     );
 
-    const showError = useMemo(() => {
-        if (dynamicOfferQuery.error && grantsQuery.error) return true;
-        if (dynamicOfferQuery.error && !grantList?.length) return true;
-        return false;
-    }, [dynamicOfferQuery.error, grantList?.length, grantsQuery.error]);
-
     const state = useMemo<CapitalOverviewState>(() => {
         if (!isRegionSupported) {
             return 'UnsupportedRegion';
-        } else if (showError) {
+        } else if (capitalStateQuery.error || grantsQuery.error) {
             return 'Error';
         } else if (
-            (!grantsEndpointCall && !dynamicConfigurationEndpointCall) ||
-            (!dynamicOffer && !grantList) ||
-            grantsQuery.isFetching ||
-            dynamicOfferQuery.isFetching
+            (!capitalStateEndpointCall && !grantsEndpointCall) ||
+            (!capitalState && !grantList) ||
+            capitalStateQuery.isFetching ||
+            grantsQuery.isFetching
         ) {
             return 'Loading';
-        } else if (grantList?.length) {
+        } else if (capitalState?.hasGrants || grantList?.length) {
             return 'GrantList';
-        } else if (dynamicOffer?.maxAmount && dynamicOffer?.minAmount) {
-            return 'PreQualified';
         }
-        return 'Unqualified';
-    }, [
-        dynamicConfigurationEndpointCall,
-        dynamicOffer,
-        dynamicOfferQuery.isFetching,
-        grantList,
-        grantsEndpointCall,
-        grantsQuery.isFetching,
-        showError,
-        isRegionSupported,
-    ]);
-
-    // TODO: Remove active grant check after integrating capital state endpoint
-    const newOfferAvailable = useMemo(() => {
-        const hasOffer = !!(dynamicOffer?.minAmount && dynamicOffer?.maxAmount);
-        const hasActiveGrant = grantList?.some(grant => grant.status === 'Active') ?? false;
-        return hasOffer && !hasActiveGrant;
-    }, [dynamicOffer, grantList]);
+        return capitalState?.dynamicOffer ? 'PreQualified' : 'Unqualified';
+    }, [capitalState, capitalStateEndpointCall, capitalStateQuery, grantList, grantsEndpointCall, grantsQuery, isRegionSupported]);
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
@@ -127,7 +125,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                                     outlined={false}
                                     withImage
                                     onContactSupport={onContactSupport}
-                                    {...getCapitalErrorMessage(dynamicOfferQuery.error as AdyenPlatformExperienceError, onContactSupport)}
+                                    {...getCapitalErrorMessage(capitalStateQuery.error as AdyenPlatformExperienceError, onContactSupport)}
                                 />
                             </div>
                         );
@@ -135,10 +133,9 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                         return (
                             grantList && (
                                 <GrantList
-                                    externalDynamicOffersConfig={dynamicOffer}
+                                    capitalState={capitalState}
                                     grantList={grantList}
                                     hideTitle={hideTitle}
-                                    newOfferAvailable={newOfferAvailable}
                                     onFundsRequest={onFundsRequest}
                                     onGrantListUpdateRequest={setRequestedGrant}
                                     onOfferDismiss={onOfferDismiss}
@@ -152,7 +149,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                                 onOfferOptionsRequest={onOfferOptionsRequest}
                                 skipPreQualifiedIntro={skipPreQualifiedIntro}
                                 hideTitle={hideTitle}
-                                dynamicOffer={dynamicOffer!}
+                                capitalState={capitalState!}
                                 onFundsRequest={handlePreQualifiedFundsRequest}
                             />
                         );

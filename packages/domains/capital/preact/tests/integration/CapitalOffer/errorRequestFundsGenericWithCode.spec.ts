@@ -7,7 +7,7 @@ test.describe('Error - Request funds - Generic with code', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await page.getByRole('button', { name: 'Review request' }).click();
-        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
+        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
     });
 
     test('should render an error message', async ({ page }) => {
@@ -29,17 +29,17 @@ test.describe('Error - Request funds - Generic with code', () => {
 });
 
 test.describe('"onContactSupport" prop', () => {
-    test('should render ""Reach out to support"" button when argument is set', async ({ page }) => {
+    test('should render "Reach out to support" button when argument is set', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
         await page.getByRole('button', { name: 'Review request' }).click();
-        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
+        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
     });
 
-    test('should not render ""Reach out to support"" button when unset', async ({ page }) => {
+    test('should not render "Reach out to support" button when unset', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await page.getByRole('button', { name: 'Review request' }).click();
-        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
+        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeHidden();
     });
 });

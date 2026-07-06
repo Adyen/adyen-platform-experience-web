@@ -7,7 +7,7 @@ test.describe('Error - Request funds - Generic', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await page.getByRole('button', { name: 'Review request' }).click();
-        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
+        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
     });
 
     test('should render an error message', async ({ page }) => {
