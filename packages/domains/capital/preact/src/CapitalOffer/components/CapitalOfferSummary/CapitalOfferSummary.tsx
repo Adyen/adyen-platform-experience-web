@@ -64,7 +64,7 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
 
     const requestFundsCallback = useCallback(
         (id: string) => {
-            void requestFundsMutation.mutate(
+            requestFundsMutation.mutate(
                 {
                     body: renewsGrantId ? { renewsGrantId } : EMPTY_OBJECT,
                     contentType: 'application/json',
@@ -294,14 +294,12 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
                 id: 'currentLoan',
                 label: 'capital.offer.summary.earlyRenewal.tabs.currentGrant',
                 content: (
-                    <>
-                        <StructuredList
-                            classNames="adyen-pe-capital-offer-summary__details"
-                            renderLabel={renderLabel}
-                            renderValue={renderValue}
-                            items={currentSimplifiedGrant ? getStructuredListItems(currentSimplifiedGrant) : []}
-                        />
-                    </>
+                    <StructuredList
+                        classNames="adyen-pe-capital-offer-summary__details"
+                        renderLabel={renderLabel}
+                        renderValue={renderValue}
+                        items={currentSimplifiedGrant ? getStructuredListItems(currentSimplifiedGrant) : []}
+                    />
                 ),
             },
         ],
