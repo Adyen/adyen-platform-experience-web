@@ -22,5 +22,7 @@
     "@integration-components/utils": "0.0.1",
     "@integration-components/tools-storybook": "0.0.1"
   },
-  "changesets": []
+  "changesets": [
+    "tame-experts-tell"
+  ]
 }
