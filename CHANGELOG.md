@@ -1,5 +1,11 @@
 # @adyen/adyen-platform-experience-web
 
+§§## 1.13.0
+
+### Minor Changes
+
+- 31bcf74: In the Capital Overview component, we added an early renewal feature that allows eligible users to request a subsequent grant before their active grant is fully repaid. This action is available provided you meet the [eligibility criteria](https://docs.adyen.com/capital/additional-financing#eligibility).
+
 ## 1.13.0-rc.0
 
 ### Minor Changes
