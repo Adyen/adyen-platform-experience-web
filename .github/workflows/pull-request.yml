@@ -30,7 +30,7 @@ jobs:
         id: skip-check
         if: >-
           github.event.pull_request.user.login == 'github-actions[bot]'
-          && github.event.pull_request.head.ref == 'main'
+          && startsWith(github.event.pull_request.head.ref, 'chore/sync-main-into-develop')
           && startsWith(github.event.pull_request.title, 'chore(release): sync main into develop')
         run: echo "Skipping build (automated sync PR)"
 

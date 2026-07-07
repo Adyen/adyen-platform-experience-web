@@ -86,18 +86,22 @@ jobs:
           # Strips everything up to and including the last @ (the package name), then prepends v, e.g. v1.0.0
           SEMVER_TAG="v${SCOPED_TAG##*@}"
 
-          # Recreate the tag under the semver name and remove the scoped one
+          # Create the semver tag pointing at the same commit as the scoped one
           git tag "$SEMVER_TAG" "$SCOPED_TAG"
           git push origin "$SEMVER_TAG"
-          git tag -d "$SCOPED_TAG"
-          git push origin --delete "$SCOPED_TAG"
 
-          # Update the GitHub release to point to the new tag and publish it
+          # Update the GitHub release to point to the new tag and publish it.
+          # This must run before deleting the scoped tag so the release is still
+          # findable by its tag_name via the GitHub API.
           PRERELEASE_FLAG=""
           if [[ "${{ env.IS_PRERELEASE }}" == "true" ]]; then
             PRERELEASE_FLAG="--prerelease"
           fi
           gh release edit "$SCOPED_TAG" --tag "$SEMVER_TAG" --title "$SEMVER_TAG" --draft=false $PRERELEASE_FLAG
+
+          # Remove the scoped tag now that the release points to the semver tag
+          git tag -d "$SCOPED_TAG"
+          git push origin --delete "$SCOPED_TAG"
 
       - name: Upload Release Asset
         env:
@@ -156,18 +160,26 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ needs.create-github-release.outputs.release_version }}
         run: |
+          SYNC_BRANCH="chore/sync-main-into-develop-v$VERSION"
+
           # Check if a sync PR already exists
-          EXISTING=$(gh pr list --base develop --head main --state open --json number --jq '.[0].number')
+          EXISTING=$(gh pr list --base develop --head "$SYNC_BRANCH" --state open --json number --jq '.[0].number')
           if [ -n "$EXISTING" ]; then
             echo "Sync PR #$EXISTING already exists, skipping."
             exit 0
           fi
 
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git checkout -b "$SYNC_BRANCH" origin/main
+          git push origin "$SYNC_BRANCH"
+
           gh pr create \
             --base develop \
-            --head main \
+            --head "$SYNC_BRANCH" \
             --title "chore(release): sync main into develop after v$VERSION" \
-            --body "Syncs version bump and consumed changesets from pre-release v$VERSION into develop."
+            --body "Syncs version bump and consumed changesets from v$VERSION into develop."
 
   upload-assets:
     if: needs.create-github-release.outputs.is_prerelease != 'true'

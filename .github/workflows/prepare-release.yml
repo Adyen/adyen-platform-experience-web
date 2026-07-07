@@ -11,7 +11,6 @@ on:
         options:
           - stable
           - pre-release
-          - promote
       prerelease_tag:
         description: 'Pre-release tag (only for pre-release type)'
         required: false
@@ -46,6 +45,11 @@ jobs:
       - name: Fetch main branch
         run: git fetch origin main:main
 
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       # ── Pre-release: create/update pre-release branch, enter pre-release mode ──
       - name: Set up pre-release branch
         if: inputs.release_type == 'pre-release'
@@ -53,10 +57,7 @@ jobs:
           TAG: ${{ inputs.prerelease_tag }}
         run: |
           PRERELEASE_BRANCH="pre-release/$TAG"
-          echo "PRERELEASE_BRANCH=$PRERELEASE_BRANCH" >> "$GITHUB_ENV"
-
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          echo "HEAD_BRANCH=$PRERELEASE_BRANCH" >> "$GITHUB_ENV"
 
           # Create or update the pre-release branch from develop
           if git ls-remote --heads origin "$PRERELEASE_BRANCH" | grep -q "$PRERELEASE_BRANCH"; then
@@ -76,39 +77,43 @@ jobs:
 
           git push origin "$PRERELEASE_BRANCH"
 
-      # ── Promote: exit pre-release mode on the pre-release branch ──
-      - name: Promote pre-release to stable
-        if: inputs.release_type == 'promote'
+      # ── Stable: if pre-release mode is active, exit it on a promotion branch (auto-promote) ──
+      - name: Prepare stable release
+        if: inputs.release_type == 'stable'
         env:
           TAG: ${{ inputs.prerelease_tag }}
         run: |
-          PRERELEASE_BRANCH="pre-release/$TAG"
-          echo "PRERELEASE_BRANCH=$PRERELEASE_BRANCH" >> "$GITHUB_ENV"
+          if [ -f .changeset/pre.json ]; then
+            echo "Pre-release mode detected, promoting to stable from main..."
+            PROMOTE_BRANCH="chore/promote-$TAG-to-stable"
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+            # Create the promote branch from main (pre-releases are already merged there)
+            git checkout main
+            if git ls-remote --heads origin "$PROMOTE_BRANCH" | grep -q "$PROMOTE_BRANCH"; then
+              git fetch origin "$PROMOTE_BRANCH"
+              git checkout "$PROMOTE_BRANCH"
+              git merge main --no-edit
+            else
+              git checkout -b "$PROMOTE_BRANCH"
+            fi
 
-          # Checkout the existing pre-release branch
-          if ! git ls-remote --heads origin "$PRERELEASE_BRANCH" | grep -q "$PRERELEASE_BRANCH"; then
-            echo "::error::Branch $PRERELEASE_BRANCH does not exist. Run a pre-release first."
-            exit 1
+            # Strip internal workspace packages from pre.json so that only the
+            # root package is bumped when exiting pre-release mode.
+            jq '.initialVersions |= with_entries(select(.key == "@adyen/adyen-platform-experience-web"))' \
+              .changeset/pre.json > .changeset/pre.json.tmp \
+              && mv .changeset/pre.json.tmp .changeset/pre.json
+
+            pnpm changeset pre exit
+            git add .changeset/pre.json
+            git commit -m "chore(release): exit pre-release mode"
+            git push origin "$PROMOTE_BRANCH"
+
+            echo "HEAD_BRANCH=$PROMOTE_BRANCH" >> "$GITHUB_ENV"
+          else
+            echo "HEAD_BRANCH=develop" >> "$GITHUB_ENV"
           fi
-
-          git fetch origin "$PRERELEASE_BRANCH"
-          git checkout "$PRERELEASE_BRANCH"
-
-          if [ ! -f .changeset/pre.json ]; then
-            echo "::error::No pre.json found on $PRERELEASE_BRANCH. Pre-release mode is not active."
-            exit 1
-          fi
-
-          pnpm changeset pre exit
-          git add .changeset/pre.json
-          git commit -m "chore(release): exit pre-release mode"
-          git push origin "$PRERELEASE_BRANCH"
 
       - name: Validate changesets exist
-        if: inputs.release_type != 'promote'
         run: |
           pnpm changeset status || {
             echo "::error::No changesets found. Cannot proceed with release."
@@ -124,27 +129,17 @@ jobs:
 
       - name: Create Pull Request
         run: |
-          case "${{ inputs.release_type }}" in
-            pre-release)
-              HEAD_BRANCH="$PRERELEASE_BRANCH"
-              TITLE="Start pre-release v${{ env.NEW_VERSION }}"
-              BODY="Pre-release v${{ env.NEW_VERSION }} from \`$PRERELEASE_BRANCH\`"
-              ;;
-            promote)
-              HEAD_BRANCH="$PRERELEASE_BRANCH"
-              TITLE="Start release v${{ env.NEW_VERSION }}"
-              BODY="Promote pre-release to stable v${{ env.NEW_VERSION }}"
-              ;;
-            *)
-              HEAD_BRANCH="develop"
-              TITLE="Start release v${{ env.NEW_VERSION }}"
-              BODY="Merge develop into main for release v${{ env.NEW_VERSION }}"
-              ;;
-          esac
+          if [[ "${{ inputs.release_type }}" == "pre-release" ]]; then
+            TITLE="Start pre-release v${{ env.NEW_VERSION }}"
+            BODY="Pre-release v${{ env.NEW_VERSION }} from \`${{ env.HEAD_BRANCH }}\`"
+          else
+            TITLE="Start release v${{ env.NEW_VERSION }}"
+            BODY="Merge \`${{ env.HEAD_BRANCH }}\` into main for release v${{ env.NEW_VERSION }}"
+          fi
 
           gh pr create \
             --base main \
-            --head "$HEAD_BRANCH" \
+            --head "${{ env.HEAD_BRANCH }}" \
             --title "$TITLE" \
             --body "$BODY"
         env:

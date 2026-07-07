@@ -1,0 +1,13 @@
+@use '@integration-components/style';
+
+.adyen-pe-accept-dispute {
+    &__input {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-040);
+    }
+
+    &__label {
+        cursor: pointer;
+    }
+}

@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    '/v1/capital/capitalStates': {
+    '/v1/capital/capitalState': {
         parameters: {
             query?: never;
             header?: never;
@@ -37,12 +37,10 @@ export interface components {
              */
             value: number;
         };
-        /** @enum {string} */
-        CapitalState: 'NOT_ELIGIBLE' | 'OFFER_ELIGIBLE' | 'REQUESTED_OR_ACTIVE_GRANT' | 'EARLY_RENEWAL_ELIGIBLE';
         CapitalStateDTO: {
-            activeOrRequestedGrants: components['schemas']['GrantResponseDTO'][];
-            capitalState: components['schemas']['CapitalState'];
+            activeOrPendingGrants: components['schemas']['GrantResponseDTO'][];
             dynamicOffer?: components['schemas']['DynamicOffersResponseV2DTO'];
+            hasClosedGrants: boolean;
         };
         DynamicOffersResponseV2DTO: {
             estimatedRepaymentTermsInDays: number[];
@@ -87,6 +85,7 @@ export interface components {
             remainingGrantAmount: components['schemas']['Amount'];
             remainingTotalAmount: components['schemas']['Amount'];
             renewal?: components['schemas']['RenewalDTO'];
+            renewsGrantId?: string;
             repaidFeesAmount: components['schemas']['Amount'];
             repaidGrantAmount: components['schemas']['Amount'];
             repaidTotalAmount: components['schemas']['Amount'];
@@ -125,8 +124,6 @@ export interface components {
         RenewalDTO: {
             eligible: boolean;
             minimumRenewalAmount?: components['schemas']['Amount'];
-            /** Format: int32 */
-            targetRepaymentPercentage: number;
         };
         TransferInstrumentReference: {
             /** @description The masked IBAN or bank account number. */
