@@ -46,6 +46,7 @@
     "capital.offer.selection.title": "Title of an interface that allows the user to select a grant offer",
     "capital.offer.summary.actions.requestFunds": "Label for a button that enables the user to request funds",
     "capital.offer.summary.actions.requestFunds.states.loading": "Label for a button that enables the user to request funds, when the request is in progress",
+    "capital.offer.summary.actions.requestFundsWithAmount": "Label for a button that enables the user to request a specific funds amount",
     "capital.offer.summary.earlyRenewal.tabs.currentGrant": "Tab label for displaying details of the user's current active loan in the offer summary",
     "capital.offer.summary.earlyRenewal.tabs.newGrant": "Tab label for displaying details of the new loan being requested in the offer summary",
     "capital.offer.summary.earlyRenewalNotice.description": "Description of the legal notice shown in the offer summary when the user is taking an early renewal loan",

@@ -5,7 +5,7 @@ import { openPayoutDetailsModal } from './shared/utils';
 
 const STORY_ID = 'mocked-payouts-payouts-overview--default';
 const NOW = Date.now();
-const YESTERDAY = NOW - 86_400_000;
+const FIXED_TIME = '2024-07-17T00:00:00.000Z';
 
 test.describe('Default', () => {
     test.beforeEach(async ({ page }) => {
@@ -112,7 +112,7 @@ test.describe('Default', () => {
 
     test.describe('Filter: Date range', () => {
         test.beforeEach(async ({ page }) => {
-            await page.clock.setFixedTime(YESTERDAY);
+            await page.clock.setFixedTime(FIXED_TIME);
             await goToStory(page, { id: STORY_ID });
             await page.getByRole('button', { name: /^Date range/, disabled: false }).click();
             await expect(page.getByRole('dialog')).toBeVisible();
