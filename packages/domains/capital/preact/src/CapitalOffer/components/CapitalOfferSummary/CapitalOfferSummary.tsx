@@ -362,7 +362,7 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
                 >
                     {requestFundsMutation.isLoading
                         ? i18n.get('capital.offer.summary.actions.requestFunds.states.loading')
-                        : i18n.get('capital.offer.summary.actions.requestFunds', {
+                        : i18n.get('capital.offer.summary.actions.requestFundsWithAmount', {
                               values: { amount: financingAmount },
                           })}
                 </Button>
