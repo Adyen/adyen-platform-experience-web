@@ -1,0 +1,31 @@
+{
+    "name": "@integration-components/integration-demo",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "packages/integration-demo/src",
+    "tags": ["type:tool"],
+    "targets": {
+        "demo:dev": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "demo:dev"
+            }
+        },
+        "demo:build": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "demo:build"
+            },
+            "outputs": ["{projectRoot}/dist"],
+            "cache": true
+        },
+        "demo:typecheck": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "demo:typecheck"
+            },
+            "outputs": [],
+            "cache": true
+        }
+    }
+}
