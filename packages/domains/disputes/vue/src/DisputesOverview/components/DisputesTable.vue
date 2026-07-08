@@ -171,6 +171,9 @@ function getTimeToDeadline(dueDate: string): string {
     const deadline = new Date(dueDate).getTime();
     const diffInDays = Math.ceil((deadline - Date.now()) / DAY_MS);
     const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
+    if (diffInDays < 0) {
+        return formattedDate;
+    }
     return diffInDays <= 1
         ? i18n.get('disputes.overview.common.actionNeeded.respondToday', { values: { date: formattedDate } })
         : i18n.get('disputes.overview.common.actionNeeded.respondDays', { values: { days: diffInDays, date: formattedDate } });
@@ -266,11 +269,11 @@ function handleRowClick(item: BentoDatagridDataItem) {
             </template>
 
             <template #item-disputeReason="{ item }">
-                <span>{{ getDisputeReason(i18n, getDispute(item).reason.category) }}</span>
+                <span>{{ getDisputeReason(i18n, getDispute(item).reason?.category) }}</span>
             </template>
 
             <template #item-reason="{ item }">
-                <span>{{ getDispute(item).reason.title }}</span>
+                <span>{{ getDispute(item).reason?.title }}</span>
             </template>
 
             <template #item-currency="{ item }">

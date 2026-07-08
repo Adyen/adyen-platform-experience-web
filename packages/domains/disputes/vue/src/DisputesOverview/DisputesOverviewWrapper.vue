@@ -8,7 +8,7 @@ const props = defineProps<DisputesOverviewExternalProps>();
 </script>
 
 <template>
-    <UIElementProvider :core="props.core" component-name="DisputesOverview">
+    <UIElementProvider :core="props.core" component-name="disputes">
         <DisputesOverviewContainer
             :balance-account-id="props.balanceAccountId"
             :allow-limit-selection="props.allowLimitSelection"

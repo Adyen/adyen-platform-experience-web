@@ -31,8 +31,6 @@ export function useDisputesList(props: () => UseDisputesListProps) {
     const hasPrevious = ref(false);
     const page = ref(0);
     let abortController: AbortController | null = null;
-    let isPaginating = false;
-    let pendingFetchAfterPaginate = false;
 
     const getDisputeList = computed(() => config.endpoints.getDisputeList);
     const canFetch = computed(() => isFunction(getDisputeList.value) && props().fetchEnabled);
@@ -83,20 +81,11 @@ export function useDisputesList(props: () => UseDisputesListProps) {
             if (!signal.aborted) {
                 fetching.value = false;
             }
-            isPaginating = false;
-            if (pendingFetchAfterPaginate && !signal.aborted) {
-                pendingFetchAfterPaginate = false;
-                page.value = 0;
-                cursor.value = undefined;
-                prevCursor.value = undefined;
-                fetchDisputes();
-            }
         }
     }
 
     const goToNextPage = () => {
         if (hasNext.value && cursor.value) {
-            isPaginating = true;
             page.value++;
             fetchDisputes(cursor.value);
         }
@@ -104,7 +93,6 @@ export function useDisputesList(props: () => UseDisputesListProps) {
 
     const goToPreviousPage = () => {
         if (hasPrevious.value && prevCursor.value) {
-            isPaginating = true;
             page.value--;
             fetchDisputes(prevCursor.value);
         }
@@ -136,10 +124,6 @@ export function useDisputesList(props: () => UseDisputesListProps) {
         fetchKey,
         (newKey, oldKey) => {
             if (!newKey) return;
-            if (isPaginating) {
-                pendingFetchAfterPaginate = true;
-                return;
-            }
             if (oldKey !== null && oldKey !== undefined) {
                 page.value = 0;
                 cursor.value = undefined;
