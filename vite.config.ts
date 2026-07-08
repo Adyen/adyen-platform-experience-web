@@ -45,7 +45,7 @@ export default defineConfig(({ mode }) => {
             minify: true,
             lib: {
                 name: 'AdyenPlatformExperienceWeb',
-                // The UMD/CDN bundle must include every domain component (and its styles), so it uses the
+                // The UMD bundle must include every domain component (and its styles), so it uses the
                 // same barrel as the npm build (packages/sdk/src/index.ts). The root src/index.ts entry only
                 // pulls in core + global styles and cannot re-export the domains itself, because shared/lib
                 // re-exports root src/, which would create a circular re-export    .
