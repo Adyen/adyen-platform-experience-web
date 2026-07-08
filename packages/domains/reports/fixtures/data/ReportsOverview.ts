@@ -5,7 +5,7 @@ import { REPORTS } from '../../mocks/mock-data/reports';
 
 const DEFAULT_REPORTS = REPORTS['BA32272223222B5CTDQPM6W2H']!;
 
-export const CUSTOM_DATA_REPORTS = [
+export const getCustomDataReports = () => [
     { ...DEFAULT_REPORTS?.[0], createdAt: Date.now() },
     { ...DEFAULT_REPORTS?.[4], createdAt: Date.now() },
     { ...DEFAULT_REPORTS?.[6], createdAt: Date.now() },

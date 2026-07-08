@@ -1,6 +1,6 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedTransactionsListAnalyticsEventProperties } from './shared/constants';
+import { sharedTransactionsListAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionsOverview';
 import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
 import { openTransactionDetailsModal } from './shared/utils';
 
@@ -54,20 +54,18 @@ test.describe('Data customization', () => {
 
         const [newPage] = await Promise.all([
             page.context().waitForEvent('page'), // Waits for a new 'page' event in this browser context
-            referenceCell.click(), // This click opens the link in a new tab
+            referenceCell.getByRole('link').click(), // This click opens the link in a new tab
         ]);
 
         await newPage.waitForLoadState();
         expect(newPage.url()).toContain(CUSTOM_URL_EXAMPLE);
 
-        const messages: string[] = [];
-
-        page.once('console', message => {
-            messages.push(message.text());
+        const actionPromise = page.waitForEvent('console', {
+            predicate: message => message.text() === 'Action',
         });
 
         await actionCell.getByRole('button').click();
-        expect(messages).toContain('Action');
+        await actionPromise;
     });
 
     test('should render transaction details modal for clicked row', async ({ page, analyticsEvents }) => {

@@ -8,7 +8,7 @@ const props = defineProps<DisputeManagementExternalProps>();
 </script>
 
 <template>
-    <UIElementProvider :core="props.core" component-name="DisputeManagement">
+    <UIElementProvider :core="props.core" component-name="disputesManagement">
         <DisputeDetailsContainer
             :id="props.id"
             :hide-title="props.hideTitle"

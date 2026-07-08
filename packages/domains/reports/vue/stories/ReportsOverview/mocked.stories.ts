@@ -3,7 +3,7 @@ import { ReportsOverviewMeta } from './meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { ReportsOverviewExternalProps } from '../../src';
 import { REPORTS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/reports';
-import { CUSTOM_DATA_REPORTS, CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION } from '../../../fixtures/data/ReportsOverview';
+import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, getCustomDataReports } from '../../../fixtures/data/ReportsOverview';
 import { REPORTS_ENDPOINTS } from '../../../mocks/endpoints';
 import { http, HttpResponse } from 'msw';
 
@@ -32,7 +32,7 @@ export const DataCustomization: ElementStory<ReportsOverviewExternalProps> = {
         msw: {
             handlers: [
                 http.get(REPORTS_ENDPOINTS.reports, () => {
-                    return HttpResponse.json({ data: CUSTOM_DATA_REPORTS, _links: {} });
+                    return HttpResponse.json({ data: getCustomDataReports(), _links: {} });
                 }),
             ],
         },

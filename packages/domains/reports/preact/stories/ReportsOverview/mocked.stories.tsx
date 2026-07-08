@@ -5,7 +5,7 @@ import { ReportsOverviewMeta } from './meta';
 import { http, HttpResponse } from 'msw';
 import { REPORTS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/reports';
 import { REPORTS_ENDPOINTS } from '../../../mocks/endpoints';
-import { CUSTOM_DATA_REPORTS, CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION } from '../../../fixtures/data/ReportsOverview';
+import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, getCustomDataReports } from '../../../fixtures/data/ReportsOverview';
 
 const meta: Meta<ElementProps<typeof ReportsOverview>> = { ...ReportsOverviewMeta, title: 'Mocked/Reports/Reports Overview' };
 const defaultArgs = { mockedApi: true } as const;
@@ -28,7 +28,7 @@ export const DataCustomization: ElementStory<typeof ReportsOverview> = {
         msw: {
             handlers: [
                 http.get(REPORTS_ENDPOINTS.reports, () => {
-                    return HttpResponse.json({ data: CUSTOM_DATA_REPORTS, _links: {} });
+                    return HttpResponse.json({ data: getCustomDataReports(), _links: {} });
                 }),
             ],
         },

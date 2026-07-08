@@ -1,24 +1,24 @@
 import {
     applyPspReferenceFilter,
     downloadTransactions,
-    extractTodayDateFromDatePicker,
-    goToView,
     openExportPopover,
     openTransactionDetailsModal,
     resetPspReferenceFilter,
-    selectFirstUnselectedBalanceAccount,
     selectSingleCategoryFromMultiSelectFilter,
     selectSingleCurrencyFromMultiSelectFilter,
     setExactPspReference,
 } from './shared/utils';
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedTransactionsListAnalyticsEventProperties } from './shared/constants';
+import { testBalanceAccountFilter, testDateRangeFilter } from '../../../../fixtures/integration/filters';
+import { sharedTransactionsListAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionsOverview';
+import { goToView } from '../../../../fixtures/integration/utils';
 
 const STORY_ID = 'mocked-transactions-transactions-overview--default';
-const NOW = Date.now();
 
 test.describe('Default', () => {
+    const NOW = Date.now();
+
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await page.clock.setFixedTime(NOW);
         await goToStory(page, { id: STORY_ID });
@@ -157,168 +157,6 @@ test.describe('Default', () => {
         test('should return to transactions view when "Transactions" button is clicked', async ({ page, analyticsEvents }) => {
             await goToView(page, analyticsEvents, 'Transactions');
             await expect(page.getByRole('button', { name: 'Export', exact: true })).toBeVisible(); // Transactions export button
-        });
-    });
-
-    test.describe('Filter: Balance account', () => {
-        test.beforeEach(async ({ page }) => {
-            await page.getByRole('button', { name: 'Balance account', exact: true }).click();
-            await expect(page.getByRole('dialog')).toBeVisible();
-        });
-
-        test('should render balance account options', async ({ page }) => {
-            const filterDialog = page.getByRole('dialog');
-            await expect(filterDialog.getByRole('option', { selected: true })).toHaveCount(1);
-            await expect(filterDialog.getByRole('option', { selected: false })).toHaveCount(2);
-        });
-
-        test('should select another balance account option (Transactions View)', async ({ page, analyticsEvents }) => {
-            await selectFirstUnselectedBalanceAccount(page, analyticsEvents, 'Transactions');
-        });
-
-        test('should select another balance account option (Insights View)', async ({ page, analyticsEvents }) => {
-            await goToView(page, analyticsEvents, 'Insights');
-            await page.getByRole('button', { name: 'Balance account', exact: true }).click();
-            await expect(page.getByRole('dialog')).toBeVisible();
-            await selectFirstUnselectedBalanceAccount(page, analyticsEvents, 'Insights');
-        });
-
-        test('should close filter dialog when the filter button is clicked again', async ({ page }) => {
-            const filterDialog = page.getByRole('dialog');
-            await expect(filterDialog).toBeVisible();
-            await page.getByRole('button', { name: 'Balance account', exact: true }).click();
-            await expect(filterDialog).toBeHidden();
-        });
-
-        test('should close filter dialog when clicked outside', async ({ page }) => {
-            const filterDialog = page.getByRole('dialog');
-            await expect(filterDialog).toBeVisible();
-            await page.click('body', { position: { x: 0, y: 0 } });
-            await expect(filterDialog).toBeHidden();
-        });
-    });
-
-    test.describe('Filter: Date range', () => {
-        const sharedModifiedDateFilterEventProperties = {
-            ...sharedTransactionsListAnalyticsEventProperties,
-            label: 'Date filter',
-            actionType: 'update',
-        };
-
-        test.beforeEach(async ({ page }) => {
-            await page.getByRole('button', { name: 'Date range', exact: true }).click();
-            await expect(page.getByRole('dialog')).toBeVisible();
-        });
-
-        test('should render datepicker', async ({ page }) => {
-            const datePicker = page.getByRole('dialog').nth(0);
-            const dateRangeOptionsDialog = page.getByRole('dialog').nth(1);
-            const dateRangeSelectorButton = datePicker.getByRole('button', { name: 'Preset range select', exact: true });
-
-            await dateRangeSelectorButton.click();
-
-            const customDateRangeOption = dateRangeOptionsDialog.getByRole('option', { name: 'Custom', exact: true });
-            const defaultDateRangeOption = dateRangeOptionsDialog.getByRole('option', { selected: true });
-            const dateRange = 'Year to date';
-
-            await expect(customDateRangeOption).toBeHidden();
-            await expect(defaultDateRangeOption).toHaveText('Last 180 days');
-            await expect(defaultDateRangeOption).toHaveCount(1);
-
-            await dateRangeOptionsDialog.getByRole('option', { name: dateRange, exact: true }).click();
-            await expect(dateRangeSelectorButton).toHaveText(dateRange);
-            await expect(dateRangeOptionsDialog).toBeHidden();
-
-            await datePicker.getByTestId('calendar-current-day').click();
-            await expect(dateRangeSelectorButton).toHaveText('Custom');
-            await dateRangeSelectorButton.click();
-
-            await expect(customDateRangeOption).toBeVisible();
-            await expect(defaultDateRangeOption).toHaveText('Custom');
-            await expect(defaultDateRangeOption).toHaveCount(1);
-        });
-
-        test('should select another date range option (Transactions View)', async ({ page, analyticsEvents }) => {
-            const datePicker = page.getByRole('dialog').nth(0);
-            const dateRangeOptionsDialog = page.getByRole('dialog').nth(1);
-            const filterButton = page.getByRole('button', { name: 'Date range', exact: true });
-            const dateRangeSelectorButton = datePicker.getByRole('button', { name: 'Preset range select', exact: true });
-
-            const dateRange = 'Year to date';
-
-            await dateRangeSelectorButton.click();
-            await dateRangeOptionsDialog.getByRole('option', { name: dateRange, exact: true }).click();
-            await expect(dateRangeSelectorButton).toHaveText(dateRange);
-            await expect(dateRangeOptionsDialog).toBeHidden();
-
-            await datePicker.getByRole('button', { name: 'Apply', exact: true }).click();
-            await expect(filterButton).toHaveText(dateRange);
-            await expect(datePicker).toBeHidden();
-
-            await expectAnalyticsEvents(analyticsEvents, [['Modified filter', { ...sharedModifiedDateFilterEventProperties, value: dateRange }]]);
-        });
-
-        test('should select custom date range (Transactions View)', async ({ page, analyticsEvents }) => {
-            const datePicker = page.getByRole('dialog').nth(0);
-            const filterButton = page.getByRole('button', { name: 'Date range', exact: true });
-            const dateRangeSelectorButton = datePicker.getByRole('button', { name: 'Preset range select', exact: true });
-            const today = await extractTodayDateFromDatePicker(datePicker, NOW);
-
-            await datePicker.getByTestId('calendar-current-day').click();
-            await expect(dateRangeSelectorButton).toHaveText('Custom');
-
-            await datePicker.getByRole('button', { name: 'Apply', exact: true }).click();
-            await expect(filterButton).toHaveText(today.formattedDate);
-            await expect(datePicker).toBeHidden();
-
-            await expectAnalyticsEvents(analyticsEvents, [
-                ['Modified filter', { ...sharedModifiedDateFilterEventProperties, value: `${today.timestamps}` }],
-            ]);
-        });
-
-        test('should reset date range (Transactions View)', async ({ page, analyticsEvents }) => {
-            const datePicker = page.getByRole('dialog').nth(0);
-            const filterButton = page.getByRole('button', { name: 'Date range', exact: true });
-            const dateRangeSelectorButton = datePicker.getByRole('button', { name: 'Preset range select', exact: true });
-            const today = await extractTodayDateFromDatePicker(datePicker, NOW);
-
-            await datePicker.getByTestId('calendar-current-day').click();
-            await expect(dateRangeSelectorButton).toHaveText('Custom');
-
-            await datePicker.getByRole('button', { name: 'Apply', exact: true }).click();
-            await expect(filterButton).toHaveText(today.formattedDate);
-            await expect(datePicker).toBeHidden();
-
-            await expectAnalyticsEvents(analyticsEvents, [
-                ['Modified filter', { ...sharedModifiedDateFilterEventProperties, value: `${today.timestamps}` }],
-            ]);
-
-            // reopen and reset datepicker
-            await filterButton.click();
-            await expect(datePicker).toBeVisible();
-
-            await datePicker.getByRole('button', { name: 'Reset', exact: true }).click();
-            await expect(filterButton).toHaveText('Last 180 days');
-            await expect(datePicker).toBeHidden();
-
-            await expectAnalyticsEvents(analyticsEvents, [
-                ['Modified filter', { ...sharedModifiedDateFilterEventProperties, value: 'Last 180 days' }],
-                ['Modified filter', { ...sharedModifiedDateFilterEventProperties, actionType: 'reset' }],
-            ]);
-        });
-
-        test('should close datepicker when the filter button is clicked again', async ({ page }) => {
-            const filterDialog = page.getByRole('dialog');
-            await expect(filterDialog).toBeVisible();
-            await page.getByRole('button', { name: 'Date range', exact: true }).click();
-            await expect(filterDialog).toBeHidden();
-        });
-
-        test('should close datepicker when clicked outside', async ({ page }) => {
-            const filterDialog = page.getByRole('dialog');
-            await expect(filterDialog).toBeVisible();
-            await page.click('body', { position: { x: 0, y: 0 } });
-            await expect(filterDialog).toBeHidden();
         });
     });
 
@@ -641,4 +479,18 @@ test.describe('Default', () => {
             await expect(page.getByRole('cell')).toHaveCount(0);
         });
     });
+});
+
+test.describe('Filters', () => {
+    const now = Date.now();
+    const variant = 'Default';
+
+    test.beforeEach(async ({ page, analyticsEvents }) => {
+        await page.clock.setFixedTime(now);
+        await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedTransactionsListAnalyticsEventProperties]]);
+    });
+
+    testBalanceAccountFilter({ variant });
+    testDateRangeFilter({ variant, now });
 });
