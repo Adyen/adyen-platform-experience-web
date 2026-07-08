@@ -1,20 +1,21 @@
-import { IDynamicOffersConfig, IGrant } from '@integration-components/types';
 import PreQualifiedIntro from '../PreQualifiedIntro';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
+import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
+import { OnFundsRequestCallback } from '../../../types';
 
 type PreQualifiedProps = {
-    dynamicOffer: Required<IDynamicOffersConfig>;
+    capitalState: EnhancedCapitalState;
     hideTitle: boolean | undefined;
-    onFundsRequest: (data: IGrant) => void;
+    onFundsRequest: OnFundsRequestCallback;
     onOfferDismiss?: () => void;
     onOfferOptionsRequest?: () => void;
     skipPreQualifiedIntro?: boolean;
 };
 
 export const PreQualified = ({
+    capitalState,
     hideTitle,
-    dynamicOffer,
     skipPreQualifiedIntro,
     onOfferOptionsRequest,
     onFundsRequest,
@@ -41,13 +42,17 @@ export const PreQualified = ({
 
     return (
         <>
-            {state === 'intro' ? (
-                <PreQualifiedIntro hideTitle={hideTitle} dynamicOfferConfig={dynamicOffer} onOfferOptionsRequest={handleOfferOptionsRequest} />
+            {state === 'intro' && capitalState.dynamicOffer?.maxAmount ? (
+                <PreQualifiedIntro
+                    hideTitle={hideTitle}
+                    maxAmount={capitalState.dynamicOffer.maxAmount}
+                    onOfferOptionsRequest={handleOfferOptionsRequest}
+                />
             ) : (
                 <CapitalOffer
                     onFundsRequest={onFundsRequest}
                     onOfferDismiss={isOfferDismissButtonVisible ? handleOfferDismiss : undefined}
-                    externalDynamicOffersConfig={dynamicOffer}
+                    externalCapitalState={capitalState}
                 />
             )}
         </>

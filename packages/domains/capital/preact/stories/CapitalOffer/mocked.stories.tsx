@@ -1,9 +1,11 @@
 import { Meta } from '@storybook/preact';
-import { ElementProps, ElementStory, SetupControls } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, ElementStory, getMySessionToken, SetupControls } from '@integration-components/testing/storybook-helpers';
 import { capitalOfferWithSetupMeta } from './meta';
 import { CapitalOffer, CapitalOverview } from '../../src';
 import { ILegalEntity } from '@integration-components/types';
 import { CapitalOfferMockedResponses } from '../../../mocks/mock-server/capital';
+import { useEffect } from 'preact/compat';
+import { AdyenPlatformExperience } from '../../../../../../src';
 
 const meta: Meta<ElementProps<typeof CapitalOffer> & SetupControls> = { ...capitalOfferWithSetupMeta, title: 'Mocked/Capital/Capital Offer' };
 
@@ -19,15 +21,14 @@ export const Default: ElementStory<typeof CapitalOffer> = {
     },
 };
 
-export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean; legalEntity: ILegalEntity }> = {
-    name: 'Unsupported region',
+export const EarlyRenewal: ElementStory<typeof CapitalOffer> = {
+    name: 'Early renewal',
     args: {
         mockedApi: true,
-        skipDecorators: true,
-        mountIfInUnsupportedRegion: true,
-        legalEntity: {
-            countryCode: 'TR',
-            regions: [{ type: 'capital', value: 'Middle East' }],
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalOfferMockedResponses.earlyRenewal,
         },
     },
 };
@@ -48,38 +49,94 @@ export const WithAPRField: ElementStory<typeof CapitalOffer, { legalEntity: ILeg
     },
 };
 
-export const ErrorDynamicOfferConfigNoConfig: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Dynamic offer config - No config',
+export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean; legalEntity: ILegalEntity }> = {
+    name: 'Unsupported region',
+    args: {
+        mockedApi: true,
+        skipDecorators: true,
+        mountIfInUnsupportedRegion: true,
+        legalEntity: {
+            countryCode: 'TR',
+            regions: [{ type: 'capital', value: 'Middle East' }],
+        },
+    },
+    decorators: [
+        (story, context) => {
+            useEffect(() => {
+                const getAdyenPlatformExperienceComponent = async () => {
+                    const core = await AdyenPlatformExperience({
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        onSessionCreate: getMySessionToken as any,
+                    });
+                    const capitalOffer = new CapitalOffer({ core, onFundsRequest: () => undefined });
+                    const { state } = await capitalOffer.getState();
+
+                    if (state !== 'isInUnsupportedRegion' || context.args.mountIfInUnsupportedRegion) {
+                        capitalOffer.mount('#capital-overview');
+                    }
+                };
+                void getAdyenPlatformExperienceComponent();
+            }, [context.args.mountIfInUnsupportedRegion]);
+
+            return <div className="component-wrapper" id="capital-overview"></div>;
+        },
+    ],
+};
+
+export const Unqualified: ElementStory<typeof CapitalOffer, { mountIfUnqualified: boolean }> = {
+    name: 'Unqualified',
+    args: {
+        mockedApi: true,
+        skipDecorators: true,
+        mountIfUnqualified: true,
+    },
+    decorators: [
+        (story, context) => {
+            useEffect(() => {
+                const getAdyenPlatformExperienceComponent = async () => {
+                    const core = await AdyenPlatformExperience({
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        onSessionCreate: getMySessionToken as any,
+                    });
+                    const capitalOffer = new CapitalOffer({
+                        core,
+                        onFundsRequest: () => undefined,
+                        onContactSupport: context.args.onContactSupport,
+                    });
+                    const { state } = await capitalOffer.getState();
+
+                    if (state !== 'isUnqualified' || context.args.mountIfUnqualified) {
+                        capitalOffer.mount('#capital-overview');
+                    }
+                };
+                void getAdyenPlatformExperienceComponent();
+            }, [context.args.mountIfUnqualified, context.args.onContactSupport]);
+
+            return <div className="component-wrapper" id="capital-overview"></div>;
+        },
+    ],
+};
+
+export const ErrorStateNoOfferCapability: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - State - No offer capability',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.errorDynamicOfferConfigNoConfig,
+            handlers: CapitalOfferMockedResponses.errorStateNoOfferCapability,
         },
     },
 };
 
-export const ErrorDynamicOfferConfigNoCapability: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Dynamic offer config - No capability',
+export const ErrorStateInactiveAccountHolder: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - State - Inactive account holder',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.errorDynamicOfferConfigNoCapability,
-        },
-    },
-};
-
-export const ErrorDynamicOfferConfigInactiveAccountHolder: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Dynamic offer config - Inactive account holder',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            handlers: CapitalOfferMockedResponses.errorDynamicOfferConfigInactiveAccountHolder,
+            handlers: CapitalOfferMockedResponses.errorStateInactiveAccountHolder,
         },
     },
 };

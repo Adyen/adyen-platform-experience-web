@@ -36,7 +36,7 @@ test.describe('Default', () => {
         await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('Select the amount for the loan')).toBeVisible();
-        await expect(page.getByText('€12,500')).toBeVisible();
+        await expect(page.getByText('€13,000')).toBeVisible();
         await expect(page.getByRole('slider')).toBeVisible();
         await expect(page.getByText('min', { exact: true })).toBeVisible();
         await expect(page.getByText('€1,000')).toBeVisible();
@@ -51,9 +51,9 @@ test.describe('Default', () => {
         await expect(page.getByText('15% daily rate')).toBeVisible();
         await expect(page.getByText('Financing terms')).toBeVisible();
         await expect(page.getByText('Fees')).toBeVisible();
-        await expect(page.getByText('€1,375.00')).toBeVisible();
+        await expect(page.getByText('€1,430.00')).toBeVisible();
         await expect(page.getByText('Total repayment amount')).toBeVisible();
-        await expect(page.getByText('€13,875.00')).toBeVisible();
+        await expect(page.getByText('€14,430.00')).toBeVisible();
         await expect(page.getByText('Daily repayment rate')).toBeVisible();
         await expect(page.getByText('11%', { exact: true })).toBeVisible();
         await expect(page.getByText('Maximum repayment date')).toBeVisible();
@@ -125,8 +125,8 @@ test.describe('Default', () => {
             ],
         ]);
 
-        await expect(page.getByText('€1,000.00')).toBeVisible();
-        await expect(page.getByText('€13,500.00')).toBeVisible();
+        await expect(page.getByText('€1,040.00')).toBeVisible();
+        await expect(page.getByText('€14,040.00')).toBeVisible();
         await expect(page.getByText('8%', { exact: true })).toBeVisible();
         await expect(page.getByText('Jun 30, 2025')).toBeVisible();
     });
@@ -153,17 +153,17 @@ test.describe('Default', () => {
         await goToOfferSummary(page, analyticsEvents);
         await expect(page.getByText('Business financing summary')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
-        await expect(page.getByText('€12,500', { exact: true })).toBeVisible();
         await expect(page.getByText('Financing', { exact: true })).toBeVisible();
-        await expect(page.getByText('€1,375')).toBeVisible();
+        await expect(page.getByText('€13,000', { exact: true })).toBeVisible();
         await expect(page.getByText('Fees')).toBeVisible();
-        await expect(page.getByText('€13,875', { exact: true })).toBeVisible();
+        await expect(page.getByText('€1,430')).toBeVisible();
         await expect(page.getByText('Total repayment amount')).toBeVisible();
+        await expect(page.getByText('€14,430', { exact: true })).toBeVisible();
         await expect(page.getByText('Financing terms')).toBeVisible();
         await expect(page.getByText('Daily repayment rate')).toBeVisible();
         await expect(page.getByText('11%')).toBeVisible();
         await expect(page.getByText('30-day repayment minimum')).toBeVisible();
-        await expect(page.getByText('€2,312.50', { exact: true })).toBeVisible();
+        await expect(page.getByText('€2,405.00', { exact: true })).toBeVisible();
         await expect(page.getByText('Expected repayment period')).toBeVisible();
         await expect(page.getByText('6 months')).toBeVisible();
         await expect(page.getByText('Maximum repayment date')).toBeVisible();
@@ -171,7 +171,7 @@ test.describe('Default', () => {
         await expect(page.getByText('Account', { exact: true })).toBeVisible();
         await expect(page.getByText('Primary account')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Submit request (€12,500)' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Submit request (€13,000)' })).toBeVisible();
     });
 
     test('should show a tooltip when "30-day repayment minimum" label is hovered', async ({ page, analyticsEvents }) => {
@@ -195,7 +195,7 @@ test.describe('Default', () => {
 
     test('should disable request submit button after funds request call succeeds', async ({ page, analyticsEvents }) => {
         await goToOfferSummary(page, analyticsEvents);
-        const requestFundsButton = page.getByRole('button', { name: 'Submit request (€12,500)' });
+        const requestFundsButton = page.getByRole('button', { name: 'Submit request (€13,000)' });
         await requestFundsButton.click();
 
         await expectAnalyticsEvents(analyticsEvents, [

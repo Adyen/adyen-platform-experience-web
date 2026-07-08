@@ -2,7 +2,7 @@ import { useCallback } from 'preact/hooks';
 import { CAPITAL_OVERVIEW_CLASS_NAMES, sharedCapitalOverviewAnalyticsEventProperties } from '../constants';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { useLandedPageEvent } from '@integration-components/hooks-preact/useEventDispatcher/useLandedPageEvent';
-import { IDynamicOffersConfig } from '@integration-components/types';
+import { IAmount } from '@integration-components/types';
 import InfoBox from '@integration-components/ui-components-preact/InfoBox';
 import Button from '@integration-components/ui-components-preact/Button/Button';
 import { CapitalHeader } from '../../internal/CapitalHeader';
@@ -15,11 +15,11 @@ const sharedAnalyticsEventProperties = {
 } as const;
 
 const PreQualifiedIntro = ({
-    dynamicOfferConfig,
     hideTitle,
+    maxAmount,
     onOfferOptionsRequest,
 }: {
-    dynamicOfferConfig: Required<IDynamicOffersConfig>;
+    maxAmount: IAmount;
     hideTitle?: boolean;
     onOfferOptionsRequest: () => void;
 }) => {
@@ -46,7 +46,7 @@ const PreQualifiedIntro = ({
                         <strong>
                             {i18n.get('capital.overview.prequalified.alreadyQualifyInfo.part2', {
                                 values: {
-                                    amount: i18n.amount(dynamicOfferConfig.maxAmount.value, dynamicOfferConfig.maxAmount.currency, {
+                                    amount: i18n.amount(maxAmount.value, maxAmount.currency, {
                                         minimumFractionDigits: 0,
                                     }),
                                 },

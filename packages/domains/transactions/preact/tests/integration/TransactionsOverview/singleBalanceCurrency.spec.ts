@@ -1,7 +1,7 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedTransactionsListAnalyticsEventProperties } from './shared/constants';
-import { goToView } from './shared/utils';
+import { sharedTransactionsListAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionsOverview';
+import { goToView } from '../../../../fixtures/integration/utils';
 
 const STORY_ID = 'mocked-transactions-transactions-overview--single-balance-currency';
 
@@ -13,11 +13,12 @@ test.describe('Single balance currency', () => {
 
     test.describe('Transactions view', () => {
         test('should not render currency selector in the filter bar', async ({ page }) => {
-            await expect(page.getByRole('button', { name: 'Balance account', exact: true })).toBeHidden();
-            await expect(page.getByRole('button', { name: 'Date range', exact: true })).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Type', exact: true })).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Currency', exact: true })).toBeHidden(); // hidden currency
-            await expect(page.getByRole('button', { name: 'PSP reference', exact: true })).toBeVisible();
+            const filters = page.getByRole('group', { name: 'Transactions filters', exact: true });
+            await expect(filters.getByRole('button', { name: 'Balance account', exact: true })).toBeHidden();
+            await expect(filters.getByRole('button', { name: 'Date range', exact: true, disabled: false, expanded: false })).toBeVisible();
+            await expect(filters.getByRole('button', { name: 'Type', exact: true, disabled: false, expanded: false })).toBeVisible();
+            await expect(filters.getByRole('button', { name: 'Currency', exact: true })).toBeHidden(); // hidden currency
+            await expect(filters.getByRole('button', { name: 'PSP reference', exact: true, disabled: false, expanded: false })).toBeVisible();
         });
 
         test('should not render currency column in the data grid', async ({ page }) => {
@@ -51,9 +52,10 @@ test.describe('Single balance currency', () => {
         });
 
         test('should not render currency selector in the filter bar', async ({ page }) => {
-            await expect(page.getByRole('button', { name: 'Balance account', exact: true })).toBeHidden();
-            await expect(page.getByRole('button', { name: 'Date range', exact: true })).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Currency', exact: true })).toBeHidden(); // hidden currency
+            const filters = page.getByRole('group', { name: 'Transactions filters', exact: true });
+            await expect(filters.getByRole('button', { name: 'Balance account', exact: true })).toBeHidden();
+            await expect(filters.getByRole('button', { name: 'Date range', exact: true, disabled: false, expanded: false })).toBeVisible();
+            await expect(filters.getByRole('button', { name: 'Currency', exact: true })).toBeHidden(); // hidden currency
         });
 
         test('should render period totals', async ({ page }) => {

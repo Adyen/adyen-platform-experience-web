@@ -120,6 +120,11 @@ export const CapitalComponentManage = {
         url: 'capital/grants',
         versions: [1],
     },
+    getCapitalState: {
+        method: 'GET' as HttpMethod,
+        url: 'capital/capitalState',
+        versions: [1],
+    },
     getOnboardingConfiguration: {
         method: 'GET' as HttpMethod,
         url: 'capital/onboardingConfiguration',

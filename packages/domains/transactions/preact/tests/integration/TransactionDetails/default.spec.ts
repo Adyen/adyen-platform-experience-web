@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, getClipboardContent, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedAnalyticsEventProperties, sharedCopyButtonAnalyticsEventProperties } from './shared/constants';
+import { sharedAnalyticsEventProperties, sharedCopyButtonAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionDetails';
 
 const STORY_ID = 'mocked-transactions-transaction-details--default';
 
@@ -19,23 +19,14 @@ test.describe('Default', () => {
     const expectBeforePaymentRefundDetailsRendering = async (page: Page) => {
         await expect(page.getByText('You already refunded €473.75', { exact: true })).toBeVisible();
         await expect(page.getByRole('alert')).toHaveCount(1);
-
-        const refundButton = page.getByRole('button', { name: 'Refund payment', exact: true });
-
-        await expect(refundButton).toBeVisible();
-        await expect(refundButton).toBeEnabled();
+        await expect(page.getByRole('button', { name: 'Refund payment', exact: true, disabled: false })).toBeVisible();
     };
 
     const expectAfterPaymentRefundDetailsRendering = async (page: Page) => {
         await expect(page.getByText('You already refunded €473.75', { exact: true })).toBeVisible();
         await expect(page.getByText('The refund is being processed. Please come back later.', { exact: true })).toBeVisible();
-
         await expect(page.getByRole('alert')).toHaveCount(2);
-
-        const lockedRefundButton = page.getByRole('button', { name: 'Refund payment', exact: true });
-
-        await expect(lockedRefundButton).toBeVisible();
-        await expect(lockedRefundButton).toBeDisabled();
+        await expect(page.getByRole('button', { name: 'Refund payment', exact: true, disabled: true })).toBeVisible();
     };
 
     const expectSamePaymentDetailsRendering = async (page: Page) => {
@@ -70,41 +61,26 @@ test.describe('Default', () => {
             // Grant clipboard permissions to browser context
             await context.grantPermissions(['clipboard-read', 'clipboard-write']);
 
-            await page.getByRole('button', { name: 'Copy reference ID', exact: true }).click();
-            await expect(page.getByText('Copied', { exact: true })).toBeVisible();
+            const copyButtons = [
+                { name: 'Copy reference ID', subSectionName: 'Reference ID', value: '4B7N9Q2Y6R1W5M8T' },
+                { name: 'Copy merchant reference', subSectionName: 'Merchant reference', value: 'TX-F9X2V8L7P1K6W' },
+                { name: 'Copy PSP reference', subSectionName: 'PSP reference', value: 'PSP0000000000990' },
+            ];
 
-            await expectAnalyticsEvents(analyticsEvents, [
-                ['Clicked button', { ...sharedCopyButtonAnalyticsEventProperties, subSectionName: 'Reference ID' }],
-            ]);
+            for (const { name, subSectionName, value } of copyButtons) {
+                await page.getByRole('button', { name, exact: true, disabled: false }).click();
+                await expect(page.getByText('Copied', { exact: true })).toBeVisible();
 
-            const copiedReferenceID = await getClipboardContent(page);
-            expect(copiedReferenceID).toBe('4B7N9Q2Y6R1W5M8T');
+                await expectAnalyticsEvents(analyticsEvents, [['Clicked button', { ...sharedCopyButtonAnalyticsEventProperties, subSectionName }]]);
 
-            await page.getByRole('button', { name: 'Copy merchant reference', exact: true }).click();
-            await expect(page.getByText('Copied', { exact: true })).toBeVisible();
-
-            await expectAnalyticsEvents(analyticsEvents, [
-                ['Clicked button', { ...sharedCopyButtonAnalyticsEventProperties, subSectionName: 'Merchant reference' }],
-            ]);
-
-            const copiedMerchantReference = await getClipboardContent(page);
-            expect(copiedMerchantReference).toBe('TX-F9X2V8L7P1K6W');
-
-            await page.getByRole('button', { name: 'Copy PSP reference', exact: true }).click();
-            await expect(page.getByText('Copied', { exact: true })).toBeVisible();
-
-            await expectAnalyticsEvents(analyticsEvents, [
-                ['Clicked button', { ...sharedCopyButtonAnalyticsEventProperties, subSectionName: 'PSP reference' }],
-            ]);
-
-            const copiedPSPReference = await getClipboardContent(page);
-            expect(copiedPSPReference).toBe('PSP0000000000990');
+                const copiedValue = await getClipboardContent(page);
+                expect(copiedValue).toBe(value);
+            }
         });
 
         test('should switch to payment refund view and back', async ({ page, analyticsEvents }) => {
-            await page.getByRole('button', { name: 'Refund payment', exact: true }).click();
+            await page.getByRole('button', { name: 'Refund payment', exact: true, disabled: false }).click();
             await expectAnalyticsEvents(analyticsEvents, [['Switched to refund view', sharedAnalyticsEventProperties]]);
-            await expect(page.getByRole('button', { name: 'Refund €133.75', exact: true })).toBeVisible();
 
             const refundNotice = 'Refunds can take up to 40 days depending on the payment method. Fees are included.';
 
@@ -120,8 +96,8 @@ test.describe('Default', () => {
 
             const amountInput = page.getByLabel('Amount to refund', { exact: true });
             const reasonSelect = page.getByLabel('Reason for refund', { exact: true });
-            const backButton = page.getByRole('button', { name: 'Go back', exact: true });
-            const refundButton = page.getByRole('button', { name: 'Refund €133.75', exact: true });
+            const backButton = page.getByRole('button', { name: 'Go back', exact: true, disabled: false });
+            const refundButton = page.getByRole('button', { name: 'Refund €133.75', exact: true, disabled: false });
 
             await expect(reasonSelect).toBeVisible();
             await expect(reasonSelect).toBeEnabled();
@@ -131,10 +107,7 @@ test.describe('Default', () => {
             await expect(amountInput).toHaveValue('133.75');
 
             await expect(backButton).toBeVisible();
-            await expect(backButton).toBeEnabled();
-
             await expect(refundButton).toBeVisible();
-            await expect(refundButton).toBeEnabled();
 
             await backButton.click();
             await expectAnalyticsEvents(analyticsEvents, [['Cancelled refund', sharedAnalyticsEventProperties]]);
@@ -148,9 +121,8 @@ test.describe('Default', () => {
 
     test.describe('refund', () => {
         test.beforeEach(async ({ page, analyticsEvents }) => {
-            await page.getByRole('button', { name: 'Refund payment', exact: true }).click();
+            await page.getByRole('button', { name: 'Refund payment', exact: true, disabled: false }).click();
             await expectAnalyticsEvents(analyticsEvents, [['Switched to refund view', sharedAnalyticsEventProperties]]);
-            await expect(page.getByRole('button', { name: 'Refund €133.75', exact: true })).toBeVisible();
         });
 
         test('should select refund reason', async ({ page }) => {
@@ -171,7 +143,7 @@ test.describe('Default', () => {
                     await expect(dropdownList.getByRole('option', { name: refundReason, exact: true })).toBeVisible();
                 }
 
-                await dropdownList.getByRole('option', { name: chosenRefundReason }).click();
+                await dropdownList.getByRole('option', { name: chosenRefundReason, disabled: false }).click();
                 await expect(dropdownList).toBeHidden();
 
                 for (const refundReason of refundReasons) {
@@ -191,40 +163,34 @@ test.describe('Default', () => {
             await amountInput.fill('');
             await expect(amountInput).toHaveValue('');
             await expect(page.getByText('Enter a refund amount')).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Refund payment' })).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Refund payment' })).toBeDisabled();
+            await expect(page.getByRole('button', { name: 'Refund payment', exact: true, disabled: true })).toBeVisible();
 
             // negative amount
             await amountInput.fill('-10');
             await expect(amountInput).toHaveValue('-10');
             await expect(page.getByText('No negative numbers allowed')).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Refund payment' })).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Refund payment' })).toBeDisabled();
+            await expect(page.getByRole('button', { name: 'Refund payment', exact: true, disabled: true })).toBeVisible();
 
             // zero amount
             await amountInput.fill('0');
             await expect(amountInput).toHaveValue('0');
-            await expect(page.getByRole('button', { name: 'Refund payment' })).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Refund payment' })).toBeDisabled();
+            await expect(page.getByRole('button', { name: 'Refund payment', exact: true, disabled: true })).toBeVisible();
 
             // too large amount
             await amountInput.fill('133.76');
             await expect(amountInput).toHaveValue('133.76');
             await expect(page.getByText('You cannot exceed the available amount of €133.75')).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Refund payment' })).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Refund payment' })).toBeDisabled();
+            await expect(page.getByRole('button', { name: 'Refund payment', exact: true, disabled: true })).toBeVisible();
 
             // excess amount precision is truncated
             await amountInput.fill('133.7599');
             await expect(amountInput).toHaveValue('133.75');
-            await expect(page.getByRole('button', { name: 'Refund €133.75' })).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Refund €133.75' })).toBeEnabled();
+            await expect(page.getByRole('button', { name: 'Refund €133.75', exact: true, disabled: false })).toBeVisible();
 
             // integer amount (within limit)
             await amountInput.fill('100');
             await expect(amountInput).toHaveValue('100');
-            await expect(page.getByRole('button', { name: 'Refund €100.00' })).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Refund €100.00' })).toBeEnabled();
+            await expect(page.getByRole('button', { name: 'Refund €100.00', exact: true, disabled: false })).toBeVisible();
         });
 
         test('should freeze interactions when refund is in progress', async ({ page }) => {
@@ -232,16 +198,20 @@ test.describe('Default', () => {
             const reasonSelect = page.getByLabel('Reason for refund', { exact: true });
             const refundButton = page.getByRole('button', { name: 'Refund €133.75', exact: true });
 
+            await expect(amountInput).toBeEnabled();
+            await expect(reasonSelect).toBeEnabled();
+            await expect(refundButton).toBeEnabled();
+
             await refundButton.click();
 
-            await expect(refundButton).toBeDisabled();
-            await expect(reasonSelect).toBeDisabled();
             await expect(amountInput).toBeDisabled();
+            await expect(reasonSelect).toBeDisabled();
+            await expect(refundButton).toBeDisabled();
             await expect(refundButton).toHaveText('In progress..');
         });
 
         test('should refund payment', async ({ page, analyticsEvents }) => {
-            await page.getByRole('button', { name: 'Refund €133.75', exact: true }).click();
+            await page.getByRole('button', { name: 'Refund €133.75', exact: true, disabled: false }).click();
             await expectAnalyticsEvents(analyticsEvents, [['Completed refund', sharedAnalyticsEventProperties]]);
 
             const successMessage =
@@ -249,9 +219,11 @@ test.describe('Default', () => {
 
             await expect(page.getByText(successMessage, { exact: true })).toBeVisible();
             await expect(page.getByText('Refund is sent!', { exact: true })).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Go back', exact: true })).toBeVisible();
 
-            await page.getByRole('button', { name: 'Go back' }).click();
+            const backButton = page.getByRole('button', { name: 'Go back', exact: true, disabled: false });
+
+            await expect(backButton).toBeVisible();
+            await backButton.click();
 
             // Return to payment details (refund will be locked)
             await expectSamePaymentStatusBoxRendering(page);

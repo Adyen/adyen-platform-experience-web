@@ -2,6 +2,8 @@ import { _UIComponentProps, ExternalComponentType } from '@integration-component
 import { UIElement } from '@integration-components/core/preact';
 import { CapitalOfferElementProps } from './types';
 import { CapitalOffer } from './components/CapitalOffer/CapitalOffer';
+import { CapitalComponentState } from '../CapitalOverview/types';
+import { getCapitalState } from '../utils/capital/getCapitalState';
 
 export class CapitalOfferElement extends UIElement<CapitalOfferElementProps> {
     public static type: ExternalComponentType = 'capitalOffer';
@@ -15,6 +17,11 @@ export class CapitalOfferElement extends UIElement<CapitalOfferElementProps> {
     public componentToRender = () => {
         return <CapitalOffer {...this.props} />;
     };
+
+    public async getState(): Promise<CapitalComponentState> {
+        const { session } = this.props.core;
+        return await getCapitalState(session);
+    }
 }
 
 export default CapitalOfferElement;
