@@ -67,13 +67,14 @@ function onRowClick(transaction: ITransaction) {
 }
 
 const showExport = computed(() => state.isTransactionsView.value);
+const canExport = computed(() => state.transactionsListResult.records.value.length || state.transactionsListResult.hasPrevious.value);
 </script>
 
 <template>
     <TransactionsOverviewShell :hide-title="props.hideTitle">
         <div role="toolbar" class="adyen-pe-transactions-overview__toolbar">
             <TransactionsFilters :balance-accounts="props.balanceAccounts" />
-            <TransactionsExport v-if="showExport" :disabled="!state.transactionsListResult.page.value" />
+            <TransactionsExport v-if="showExport" :disabled="!canExport" />
         </div>
         <TransactionsOverviewList
             v-if="state.isTransactionsView.value"
