@@ -4,6 +4,7 @@ export * from './TransactionDetails/constants';
 export * from './TransactionDetails/utils';
 export * from './TransactionsOverview/analyticsConstants';
 export * from './TransactionsOverview/fields';
+export * from './TransactionsOverview/types';
 export * from './shared/inputNormalizer';
 export * from './shared/refundLineItemHelpers';
 export * from './shared/transactionNavigator';
