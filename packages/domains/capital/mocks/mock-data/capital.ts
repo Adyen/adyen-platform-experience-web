@@ -1,4 +1,5 @@
 import {
+    ICapitalState,
     IDynamicOffersConfig,
     IGBCapitalFundsCollection,
     IGrant,
@@ -21,19 +22,6 @@ export const DYNAMIC_CAPITAL_OFFER = {
     maxAmount: {
         value: 2500000,
         currency: 'EUR',
-    },
-    step: 10000,
-} satisfies IDynamicOffersConfig;
-
-export const CAD_CAPITAL_OFFER = {
-    estimatedRepaymentTermsInDays: REPAYMENT_TERMS,
-    minAmount: {
-        value: 100000,
-        currency: 'CAD',
-    },
-    maxAmount: {
-        value: 2500000,
-        currency: 'CAD',
     },
     step: 10000,
 } satisfies IDynamicOffersConfig;
@@ -106,7 +94,7 @@ export const DEFAULT_GRANT: IGrant = {
     },
     repaymentRate: 1100,
     expectedRepaymentPeriodDays: 180,
-    maximumRepaymentPeriodDays: 540,
+    maximumRepaymentPeriodDays: 270,
     repaymentPeriodLeft: 135,
     termEndsAt: '2025-02-15',
     balanceAccountCode: 'BA1234567',
@@ -137,6 +125,20 @@ export const ACTIVE_GRANT: IGrant = {
     remainingTotalAmount: {
         value: 822000,
         currency: 'EUR',
+    },
+};
+
+export const RENEWABLE_GRANT: IGrant = {
+    ...ACTIVE_GRANT,
+    repaymentRate: 1500,
+    expectedRepaymentPeriodDays: 360,
+    maximumRepaymentPeriodDays: 450,
+    renewal: {
+        eligible: true,
+        minimumRenewalAmount: {
+            value: ACTIVE_GRANT.remainingGrantAmount.value * 1.5,
+            currency: 'EUR',
+        },
     },
 };
 
@@ -234,4 +236,73 @@ export const ANACREDIT_ACTION_DETAILS = {
 export const ONBOARDING_CONFIGURATION: IOnboardingConfiguration = {
     token: 'test-onboarding-token',
     legalEntityId: 'test-legal-entity-id',
+};
+
+export const CAPITAL_STATE_UNQUALIFIED: ICapitalState = {
+    activeOrPendingGrants: [],
+    hasClosedGrants: false,
+};
+
+export const CAPITAL_STATE_FIRST_OFFER: ICapitalState = {
+    activeOrPendingGrants: [],
+    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
+    hasClosedGrants: false,
+};
+
+export const CAPITAL_STATE_FIRST_OFFER_CAD: ICapitalState = {
+    activeOrPendingGrants: [],
+    dynamicOffer: {
+        ...DYNAMIC_CAPITAL_OFFER,
+        minAmount: {
+            ...DYNAMIC_CAPITAL_OFFER.minAmount,
+            currency: 'CAD',
+        },
+        maxAmount: {
+            ...DYNAMIC_CAPITAL_OFFER.maxAmount,
+            currency: 'CAD',
+        },
+    },
+    hasClosedGrants: false,
+};
+
+export const CAPITAL_STATE_ACTIVE_GRANT: ICapitalState = {
+    activeOrPendingGrants: [ACTIVE_GRANT],
+    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
+    hasClosedGrants: false,
+};
+
+export const CAPITAL_STATE_RENEWABLE_GRANT: ICapitalState = {
+    activeOrPendingGrants: [RENEWABLE_GRANT],
+    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
+    hasClosedGrants: false,
+};
+
+export const CAPITAL_STATE_PENDING_GRANT: ICapitalState = {
+    activeOrPendingGrants: [PENDING_GRANT],
+    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
+    hasClosedGrants: false,
+};
+
+export const CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION: ICapitalState = {
+    activeOrPendingGrants: [PENDING_GRANT_WITH_SINGLE_ACTION],
+    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
+    hasClosedGrants: false,
+};
+
+export const CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS: ICapitalState = {
+    activeOrPendingGrants: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS],
+    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
+    hasClosedGrants: false,
+};
+
+export const CAPITAL_STATE_GRANTS: ICapitalState = {
+    activeOrPendingGrants: [ACTIVE_GRANT],
+    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
+    hasClosedGrants: true,
+};
+
+export const CAPITAL_STATE_CLOSED_GRANTS: ICapitalState = {
+    activeOrPendingGrants: [],
+    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
+    hasClosedGrants: true,
 };

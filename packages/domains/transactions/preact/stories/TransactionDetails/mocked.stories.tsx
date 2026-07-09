@@ -1,8 +1,9 @@
 import { Meta } from '@storybook/preact';
 import { TransactionDetails } from '../../src';
-import { CUSTOM_URL_EXAMPLE, ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { TRANSACTION_DETAILS_HANDLERS } from '../../../mocks/mock-server/transactions';
 import { TransactionDetailsMeta } from './meta';
+import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION } from '../../../fixtures/data/TransactionDetails';
 
 const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDetailsMeta, title: 'Mocked/Transactions/Transaction Details' };
 const sharedArgs = { id: '4B7N9Q2Y6R1W5M8T', mockedApi: true };
@@ -124,59 +125,9 @@ export const DataCustomization: ElementStory<typeof TransactionDetails> = {
     args: {
         ...sharedArgs,
         coreOptions: {
-            translations: {
-                en_US: {
-                    _store: 'Store',
-                    _product: 'Product',
-                    _summary: 'Summary link',
-                    _sendEmail: 'Email',
-                    _country: 'Country',
-                },
-            },
+            translations: { en_US: CUSTOM_TRANSLATIONS },
         },
-        dataCustomization: {
-            details: {
-                fields: [
-                    { key: 'description', visibility: 'hidden' },
-                    { key: 'id', visibility: 'hidden' },
-                    { key: '_store' },
-                    { key: '_product' },
-                    { key: '_summary' },
-                    { key: '_sendEmail' },
-                    { key: '_country' },
-                ],
-                onDataRetrieve: data => {
-                    return new Promise(resolve => {
-                        return resolve({
-                            ...data,
-                            _store: 'Sydney',
-                            _product: 'Coffee',
-                            _summary: {
-                                type: 'link',
-                                value: 'See summary',
-                                config: {
-                                    href: CUSTOM_URL_EXAMPLE,
-                                },
-                            },
-                            _sendEmail: {
-                                type: 'button',
-                                value: 'Send email',
-                                config: {
-                                    action: () => console.log('Action'),
-                                },
-                            },
-                            _country: {
-                                type: 'icon',
-                                value: '',
-                                config: {
-                                    src: `https://flagicons.lipis.dev/flags/4x3/es.svg`,
-                                },
-                            },
-                        });
-                    });
-                },
-            },
-        },
+        dataCustomization: { details: DATA_CUSTOMIZATION },
     },
     parameters: {
         msw: { ...TRANSACTION_DETAILS_HANDLERS.default },

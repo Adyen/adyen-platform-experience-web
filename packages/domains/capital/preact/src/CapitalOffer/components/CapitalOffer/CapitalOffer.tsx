@@ -1,7 +1,7 @@
 import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { isCapitalRegionSupported } from '../../../internal/CapitalHeader/helpers';
-import { ExternalUIComponentProps, IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
+import { ExternalUIComponentProps, IGrantOfferResponseDTO } from '@integration-components/types';
 import { useConfigContext } from '@integration-components/core/preact';
 import { useFetch } from '@integration-components/hooks-preact';
 import { useLandedPageEvent } from '@integration-components/hooks-preact/useEventDispatcher/useLandedPageEvent';
@@ -13,6 +13,7 @@ import { CapitalHeader } from '../../../internal/CapitalHeader';
 import { CapitalOfferSelection } from '../CapitalOfferSelection/CapitalOfferSelection';
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
 import './CapitalOffer.scss';
+import { getEnhancedCapitalState } from '../../../utils/capital/getCapitalState';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
 
@@ -22,37 +23,30 @@ const sharedAnalyticsEventProperties = {
 } as const;
 
 const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = ({
-    externalDynamicOffersConfig,
+    externalCapitalState,
     hideTitle,
     onContactSupport,
     onFundsRequest,
     onOfferDismiss,
     onOfferSelect,
 }) => {
-    const [emptyGrantOffer, setEmptyGrantOffer] = useState(false);
     const [selectedAmount, setSelectedAmount] = useState<number | undefined>(undefined);
     const [selectedTerm, setSelectedTerm] = useState<number | undefined>(undefined);
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
 
-    const { getDynamicGrantOffersConfiguration } = useConfigContext().endpoints;
+    const { getCapitalState } = useConfigContext().endpoints;
 
-    const onSuccess = useCallback((data: IDynamicOffersConfig | undefined) => {
-        if (data) {
-            setEmptyGrantOffer(false);
-        } else setEmptyGrantOffer(true);
-    }, []);
-
-    const { data: internalDynamicOffersConfig, error: dynamicOffersConfigError } = useFetch({
-        fetchOptions: {
-            enabled: !externalDynamicOffersConfig && !!getDynamicGrantOffersConfiguration,
-            onSuccess: onSuccess,
-        },
+    const { data: internalCapitalState, error: capitalStateError } = useFetch({
+        fetchOptions: { enabled: !externalCapitalState && !!getCapitalState },
         queryFn: useCallback(async () => {
-            return getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT, { query: EMPTY_OBJECT });
-        }, [getDynamicGrantOffersConfiguration]),
+            return getCapitalState?.(EMPTY_OBJECT, { query: EMPTY_OBJECT });
+        }, [getCapitalState]),
     });
 
-    const config = externalDynamicOffersConfig || internalDynamicOffersConfig;
+    const state = useMemo(
+        () => externalCapitalState || (internalCapitalState && getEnhancedCapitalState(internalCapitalState)),
+        [externalCapitalState, internalCapitalState]
+    );
 
     const onOfferSelectHandler = useCallback(
         (data: IGrantOfferResponseDTO) => {
@@ -84,17 +78,17 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                     onSelectedAmountChange={setSelectedAmount}
                     selectedTerm={selectedTerm}
                     onSelectedTermChange={setSelectedTerm}
-                    dynamicOffersConfig={config}
-                    dynamicOffersConfigError={dynamicOffersConfigError}
+                    capitalState={state}
+                    capitalStateError={capitalStateError}
                     onOfferDismiss={onOfferDismiss}
                     onOfferSelect={onOfferSelectHandler}
-                    emptyGrantOffer={emptyGrantOffer}
                     onContactSupport={onContactSupport}
                 />
             )}
             {capitalOfferState === 'OfferSummary' && (
                 <CapitalOfferSummary
                     grantOffer={selectedOffer!}
+                    capitalState={state}
                     onBack={() => setSelectedOffer(undefined)}
                     onFundsRequest={onFundsRequest}
                     onContactSupport={onContactSupport}

@@ -4,12 +4,13 @@ import type { CoreInstance } from './types';
 import CoreProvider from './Context/CoreProvider.vue';
 import ConfigProvider from './ConfigContext/ConfigProvider.vue';
 import EventDispatcherProvider from './Context/eventDispatcher/EventDispatcherProvider.vue';
+import type { ExternalComponentType } from '@integration-components/types';
 import { COMPONENT_REF_KEY } from './Context/constants';
 import './UIElement.scss';
 
 interface Props {
     core: CoreInstance;
-    componentName?: string;
+    componentName?: ExternalComponentType;
     customClassNames?: string;
 }
 

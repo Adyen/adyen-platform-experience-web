@@ -9,10 +9,8 @@ test.describe('Error - Details', () => {
 
         const errorText = "We couldn't load the payout details. Try refreshing the page or come back later.";
 
-        await Promise.all([
-            expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible(),
-            expect(page.getByText(errorText, { exact: true })).toBeVisible(),
-            expect(page.getByRole('button', { name: 'Refresh', exact: true, disabled: false })).toBeVisible(),
-        ]);
+        await expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible();
+        await expect(page.getByText(errorText, { exact: true })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Refresh', exact: true, disabled: false })).toBeVisible();
     });
 });

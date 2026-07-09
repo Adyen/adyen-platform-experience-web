@@ -13,18 +13,16 @@ test.describe('Data customization', () => {
     test('should render custom data grid columns', async ({ page }) => {
         const dataGrid = page.getByRole('table');
 
-        await Promise.all([
-            // (1) Standard columns (visible & hidden)
-            expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible(),
-            expect(dataGrid.getByRole('columnheader', { name: 'Funds captured (€)', exact: true })).toBeVisible(),
-            expect(dataGrid.getByRole('columnheader', { name: 'Adjustments (€)', exact: true })).toBeHidden(), // hidden column
-            expect(dataGrid.getByRole('columnheader', { name: 'Net payout (€)', exact: true })).toBeVisible(),
+        // (1) Standard columns (visible & hidden)
+        await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Funds captured (€)', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Adjustments (€)', exact: true })).toBeHidden(); // hidden column
+        await expect(dataGrid.getByRole('columnheader', { name: 'Net payout (€)', exact: true })).toBeVisible();
 
-            // (2) Custom columns
-            expect(dataGrid.getByRole('columnheader', { name: 'Summary', exact: true })).toBeVisible(),
-            expect(dataGrid.getByRole('columnheader', { name: 'Country', exact: true })).toBeVisible(),
-            expect(dataGrid.getByRole('columnheader', { name: 'Action', exact: true })).toBeVisible(),
-        ]);
+        // (2) Custom columns
+        await expect(dataGrid.getByRole('columnheader', { name: 'Summary', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Country', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Action', exact: true })).toBeVisible();
     });
 
     test('should render correct data for each custom column', async ({ page }) => {
@@ -40,23 +38,22 @@ test.describe('Data customization', () => {
         const summaryLink = summaryCell.getByRole('link', { name: 'Summary', exact: true, disabled: false });
         const countryIcon = countryCell.getByAltText('', { exact: true });
 
-        await Promise.all([
-            expect(summaryCell).toHaveText('Summary'),
-            expect(summaryLink).toBeVisible(),
-            expect(countryIcon).toBeAttached(),
-            expect(actionButton).toBeVisible(),
-        ]);
+        await expect(summaryCell).toHaveText('Summary');
+        await expect(summaryLink).toBeVisible();
+        await expect(countryIcon).toBeAttached();
+        await expect(actionButton).toBeVisible();
 
         const [newPage] = await Promise.all([page.context().waitForEvent('page'), summaryLink.click()]);
 
         await newPage.waitForLoadState();
         expect(newPage.url()).toContain(CUSTOM_URL_EXAMPLE);
 
-        const messages: string[] = [];
-        page.once('console', message => messages.push(message.text()));
+        const actionPromise = page.waitForEvent('console', {
+            predicate: message => message.text() === 'Action',
+        });
 
         await actionButton.click();
-        expect(messages).toContain('Action');
+        await actionPromise;
     });
 
     test('should render transaction details modal for clicked row', async ({ page }) => {

@@ -7,6 +7,7 @@ import { operations as disputesOps } from './resources/DisputesResourceV1';
 import { operations as capitalGrantOfferOps } from './resources/CapitalGrantOffersResourceV2';
 import { operations as capitalGrantsOps } from './resources/CapitalGrantsResourceV1';
 import { operations as capitalMissingActionsOps } from './resources/CapitalMissingActionsResourceV1';
+import { operations as capitalStateOps } from './resources/CapitalStateResourceV1';
 import { operations as analyticsOps } from './resources/PlatformComponentsUxdsResourceV1';
 import { operations as payByLinkOps } from './resources/PayByLinkResourceV1';
 import { operations as onboardingConfigurationOps } from './resources/OnboardingConfigurationResourceV1';
@@ -17,6 +18,7 @@ export type EndpointsOperations = analyticsOps &
     capitalGrantOfferOps &
     capitalGrantsOps &
     capitalMissingActionsOps &
+    capitalStateOps &
     onboardingConfigurationOps &
     payoutsOps &
     reportsOps &

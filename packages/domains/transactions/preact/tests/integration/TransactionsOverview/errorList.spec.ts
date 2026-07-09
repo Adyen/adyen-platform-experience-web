@@ -1,6 +1,6 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedTransactionsListAnalyticsEventProperties } from './shared/constants';
+import { sharedTransactionsListAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionsOverview';
 
 const STORY_ID = 'mocked-transactions-transactions-overview--error-list';
 
@@ -15,13 +15,6 @@ test.describe('Error - list', () => {
         await expect(page.getByText("We couldn't load your transactions. Contact support for help and share error code")).toBeVisible();
     });
 
-    test('should render error message with support button when "onContactSupport" is enabled', async ({ page }) => {
-        await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
-        await expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible();
-        await expect(page.getByText("We couldn't load your transactions. The error code is")).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Reach out to support', exact: true })).toBeVisible();
-    });
-
     test('should render data grid columns', async ({ page }) => {
         const dataGrid = page.getByRole('table');
         await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
@@ -33,20 +26,15 @@ test.describe('Error - list', () => {
     });
 
     test('should render disabled pagination buttons', async ({ page }) => {
-        const prevPageButton = page.getByRole('button', { name: 'Previous page', exact: true });
-        const nextPageButton = page.getByRole('button', { name: 'Next page', exact: true });
-
-        await expect(prevPageButton).toBeVisible();
-        await expect(nextPageButton).toBeVisible();
-
-        await expect(prevPageButton).toBeDisabled();
-        await expect(nextPageButton).toBeDisabled();
+        const disabledPrevPageButton = page.getByRole('button', { name: 'Previous page', exact: true, disabled: true });
+        const disabledNextPageButton = page.getByRole('button', { name: 'Next page', exact: true, disabled: true });
+        await expect(disabledPrevPageButton).toBeVisible();
+        await expect(disabledNextPageButton).toBeVisible();
     });
 
     test('should render disabled "Export" button', async ({ page }) => {
-        const exportButton = page.getByRole('button', { name: 'Export', exact: true });
-        await expect(exportButton).toBeVisible();
-        await expect(exportButton).toBeDisabled();
+        const disabledExportButton = page.getByRole('button', { name: 'Export', exact: true, disabled: true, expanded: false });
+        await expect(disabledExportButton).toBeVisible();
     });
 
     test('should render zero transaction totals', async ({ page }) => {
@@ -82,6 +70,6 @@ test.describe('onContactSupport argument', () => {
 
         await expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible();
         await expect(page.getByText("We couldn't load your transactions. The error code is")).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Reach out to support', exact: true })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Reach out to support', exact: true, disabled: false })).toBeVisible();
     });
 });

@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedAnalyticsEventProperties } from './shared/constants';
+import { sharedAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionDetails';
 
 const STORY_ID = 'mocked-transactions-transaction-details--tabbed-details';
 
@@ -19,11 +19,7 @@ test.describe('Tabbed details', () => {
     const expectBeforePaymentRefundDetailsRendering = async (page: Page) => {
         await expect(page.getByText('You already refunded €473.75', { exact: true })).toBeVisible();
         await expect(page.getByRole('alert')).toHaveCount(1);
-
-        const refundButton = page.getByRole('button', { name: 'Refund payment', exact: true });
-
-        await expect(refundButton).toBeVisible();
-        await expect(refundButton).toBeEnabled();
+        await expect(page.getByRole('button', { name: 'Refund payment', exact: true, disabled: false })).toBeVisible();
     };
 
     const expectSamePaymentSummaryRendering = async (page: Page) => {
@@ -78,51 +74,38 @@ test.describe('Tabbed details', () => {
     };
 
     const expectSamePaymentTimelineRendering = async (page: Page) => {
-        for (const text of ['Aug 29, 2022, 09:47', 'Amount', 'Status']) {
-            const elems = page.getByText(text, { exact: true });
-            const allElems = await elems.all();
+        const expectTimelineItems = async (count: number) => {
+            for (const text of ['Aug 29, 2022, 09:47', 'Amount', 'Status']) {
+                const elems = page.getByText(text, { exact: true });
+                const allElems = await elems.all();
 
-            await expect(elems).toHaveCount(2);
+                await expect(elems).toHaveCount(count);
 
-            for (const label of allElems) {
-                await expect(label).toBeVisible();
+                for (const label of allElems) {
+                    await expect(label).toBeVisible();
+                }
             }
-        }
+        };
 
-        const showMoreButton = page.getByRole('button', { name: 'Show 1 more', exact: true });
+        await expectTimelineItems(2);
+
+        const showMoreButton = page.getByRole('button', { name: 'Show 1 more', exact: true, disabled: false });
+        const showLessButton = page.getByRole('button', { name: 'Show less', exact: true, disabled: false });
 
         await expect(showMoreButton).toBeVisible();
-        await expect(showMoreButton).toBeEnabled();
+        await expect(showLessButton).toBeHidden();
 
         await showMoreButton.click();
         await expect(showMoreButton).toBeHidden();
-        await expect(page.getByRole('button', { name: 'Show less', exact: true })).toBeVisible();
+        await expect(showLessButton).toBeVisible();
 
-        for (const text of ['Aug 29, 2022, 09:47', 'Amount', 'Status']) {
-            const elems = page.getByText(text, { exact: true });
-            const allElems = await elems.all();
+        await expectTimelineItems(3);
 
-            await expect(elems).toHaveCount(3);
-
-            for (const label of allElems) {
-                await expect(label).toBeVisible();
-            }
-        }
-
-        await page.getByRole('button', { name: 'Show less', exact: true }).click();
+        await showLessButton.click();
         await expect(showMoreButton).toBeVisible();
-        await expect(showMoreButton).toBeEnabled();
+        await expect(showLessButton).toBeHidden();
 
-        for (const text of ['Aug 29, 2022, 09:47', 'Amount', 'Status']) {
-            const elems = page.getByText(text, { exact: true });
-            const allElems = await elems.all();
-
-            await expect(elems).toHaveCount(2);
-
-            for (const label of allElems) {
-                await expect(label).toBeVisible();
-            }
-        }
+        await expectTimelineItems(2);
     };
 
     const navigateToTab = async (page: Page, name: 'Details' | 'Summary' | 'Timeline') => {
@@ -174,8 +157,8 @@ test.describe('Tabbed details', () => {
 
     test('should return to "Summary" tab from refund view', async ({ page }) => {
         await navigateToTab(page, 'Details');
-        await page.getByRole('button', { name: 'Refund payment', exact: true }).click();
-        await page.getByRole('button', { name: 'Go back', exact: true }).click();
+        await page.getByRole('button', { name: 'Refund payment', exact: true, disabled: false }).click();
+        await page.getByRole('button', { name: 'Go back', exact: true, disabled: false }).click();
 
         // Back to payment summary (same)
         await expectSamePaymentStatusBoxRendering(page);

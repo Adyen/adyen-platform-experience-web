@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
-import { createPayoutBreakdownGroup, getFormattedPayoutDate } from './shared/utils';
+import { DefaultPayoutBreakdown } from '../../../../fixtures/utils/breakdown';
+import { getFormattedPayoutDate } from '../../../../fixtures/utils/dateFormat';
 
 const STORY_ID = 'mocked-payouts-payout-details--default';
 const NOW = Date.now();
@@ -12,173 +13,129 @@ test.describe('Default', () => {
     });
 
     test('should render payout details', async ({ page }) => {
-        const formattedPayoutDate = getFormattedPayoutDate();
+        const formattedPayoutDate = getFormattedPayoutDate(new Date(NOW));
 
-        await Promise.all([
-            // Using first here to prevent clashes with other same texts displayed on page
-            expect(page.getByText('Net payout', { exact: true }).first()).toBeVisible(),
-            expect(page.getByText('900.00 EUR', { exact: true }).first()).toBeVisible(),
-            expect(page.getByText(formattedPayoutDate.withDay, { exact: true })).toBeVisible(),
+        // Using first here to prevent clashes with other same texts displayed on page
+        await expect(page.getByText('Net payout', { exact: true }).first()).toBeVisible();
+        await expect(page.getByText('900.00 EUR', { exact: true }).first()).toBeVisible();
+        await expect(page.getByText(formattedPayoutDate.withDay, { exact: true })).toBeVisible();
 
-            expect(page.getByText('S. Hopper - Main Account', { exact: true })).toBeVisible(),
-            expect(page.getByText('BA32272223222B5CTDQPM6W2H', { exact: true })).toBeVisible(),
+        await expect(page.getByText('S. Hopper - Main Account', { exact: true })).toBeVisible();
+        await expect(page.getByText('BA32272223222B5CTDQPM6W2H', { exact: true })).toBeVisible();
 
-            expect(page.getByText('Funds captured', { exact: true })).toBeVisible(),
-            expect(page.getByText('€1,000.00', { exact: true })).toBeVisible(),
+        await expect(page.getByText('Funds captured', { exact: true })).toBeVisible();
+        await expect(page.getByText('€1,000.00', { exact: true })).toBeVisible();
 
-            expect(page.getByText('Adjustments', { exact: true })).toBeVisible(),
-            expect(page.getByText('- €100.00', { exact: true })).toBeVisible(),
+        await expect(page.getByText('Adjustments', { exact: true })).toBeVisible();
+        await expect(page.getByText('- €100.00', { exact: true })).toBeVisible();
 
-            expect(page.getByText('Remaining amount', { exact: true })).toBeVisible(),
-            expect(page.getByText('€900.00', { exact: true }).first()).toBeVisible(),
-        ]);
+        await expect(page.getByText('Remaining amount', { exact: true })).toBeVisible();
+        await expect(page.getByText('€900.00', { exact: true }).first()).toBeVisible();
     });
 
     test('should render expandable payout breakdowns', async ({ page }) => {
-        const fundsCaptured = createPayoutBreakdownGroup(page, 'Funds captured');
-        const adjustments = createPayoutBreakdownGroup(page, 'Adjustments');
+        const fundsCaptured = new DefaultPayoutBreakdown(page, 'Funds captured');
+        const adjustments = new DefaultPayoutBreakdown(page, 'Adjustments');
 
-        await Promise.all([fundsCaptured.expectToBeCollapsed(), adjustments.expectToBeCollapsed()]);
+        await fundsCaptured.expectToBeCollapsed();
+        await adjustments.expectToBeCollapsed();
 
         // Expand "Funds captured"
-        await fundsCaptured.toggleBreakdown();
-        await Promise.all([fundsCaptured.expectToBeExpanded(), adjustments.expectToBeCollapsed()]);
+        await fundsCaptured.toggle();
+        await fundsCaptured.expectToBeExpanded();
+        await adjustments.expectToBeCollapsed();
 
         // Collapse "Funds captured"
-        await fundsCaptured.toggleBreakdown();
-        await Promise.all([fundsCaptured.expectToBeCollapsed(), adjustments.expectToBeCollapsed()]);
+        await fundsCaptured.toggle();
+        await fundsCaptured.expectToBeCollapsed();
+        await adjustments.expectToBeCollapsed();
 
         // Expand "Adjustments"
-        await adjustments.toggleBreakdown();
-        await Promise.all([fundsCaptured.expectToBeCollapsed(), adjustments.expectToBeExpanded()]);
+        await adjustments.toggle();
+        await fundsCaptured.expectToBeCollapsed();
+        await adjustments.expectToBeExpanded();
 
         // Expand "Funds captured"
-        await fundsCaptured.toggleBreakdown();
-        await Promise.all([fundsCaptured.expectToBeExpanded(), adjustments.expectToBeExpanded()]);
+        await fundsCaptured.toggle();
+        await fundsCaptured.expectToBeExpanded();
+        await adjustments.expectToBeExpanded();
 
         // Collapse "Adjustments"
-        await adjustments.toggleBreakdown();
-        await Promise.all([fundsCaptured.expectToBeExpanded(), adjustments.expectToBeCollapsed()]);
+        await adjustments.toggle();
+        await fundsCaptured.expectToBeExpanded();
+        await adjustments.expectToBeCollapsed();
 
         // Collapse "Funds captured"
-        await fundsCaptured.toggleBreakdown();
-        await Promise.all([fundsCaptured.expectToBeCollapsed(), adjustments.expectToBeCollapsed()]);
+        await fundsCaptured.toggle();
+        await fundsCaptured.expectToBeCollapsed();
+        await adjustments.expectToBeCollapsed();
     });
 
     test('should render "Funds captured" breakdown', async ({ page }) => {
-        const fundsCaptured = createPayoutBreakdownGroup(page, 'Funds captured');
-        const breakdown = page.getByRole('region', { name: 'Funds captured', exact: true });
-        const breakdownList = breakdown.getByTestId('payout-funds-captured-breakdown');
+        const breakdown = new DefaultPayoutBreakdown(page, 'Funds captured');
+        const list = breakdown.toggleContent;
 
-        const capture = breakdownList.getByTestId('capture');
-        const chargeback = breakdownList.getByTestId('chargeback');
-        const correction = breakdownList.getByTestId('correction');
-        const refund = breakdownList.getByTestId('refund');
-
-        const fundsCapturedBreakdown = [
-            capture.getByText('Captured', { exact: true }),
-            capture.getByText('1,200.00', { exact: true }),
-
-            chargeback.getByText('Chargebacks', { exact: true }),
-            chargeback.getByText('- 300.00', { exact: true }),
-
-            correction.getByText('Corrections', { exact: true }),
-            correction.getByText('- 10.00', { exact: true }),
-
-            refund.getByText('Refunds', { exact: true }),
-            refund.getByText('110.00', { exact: true }),
+        const locators = [
+            ...DefaultPayoutBreakdown.getPairwiseLocators(list, ['Captured', '1,200.00']),
+            ...DefaultPayoutBreakdown.getPairwiseLocators(list, ['Chargebacks', '- 300.00']),
+            ...DefaultPayoutBreakdown.getPairwiseLocators(list, ['Corrections', '- 10.00']),
+            ...DefaultPayoutBreakdown.getPairwiseLocators(list, ['Refunds', '110.00']),
         ];
 
-        await Promise.all([
-            fundsCaptured.expectToBeCollapsed(),
-            expect(breakdownList).toBeVisible(),
-            ...fundsCapturedBreakdown.map(locator => expect(locator).not.toBeInViewport()),
-        ]);
+        await breakdown.expectToBeCollapsed();
+        await expect(list).toBeInViewport();
+        for (const locator of locators) await expect(locator).not.toBeInViewport();
 
-        await fundsCaptured.toggleBreakdown();
+        await breakdown.toggle();
 
-        await Promise.all([
-            fundsCaptured.expectToBeExpanded(),
-            expect(breakdownList).toBeVisible(),
-            ...fundsCapturedBreakdown.map(locator => expect(locator).toBeInViewport()),
-        ]);
+        await breakdown.expectToBeExpanded();
+        await expect(list).toBeInViewport();
+        for (const locator of locators) await expect(locator).toBeInViewport();
 
-        await fundsCaptured.toggleBreakdown();
+        await breakdown.toggle();
 
-        await Promise.all([
-            fundsCaptured.expectToBeCollapsed(),
-            expect(breakdownList).toBeVisible(),
-            ...fundsCapturedBreakdown.map(locator => expect(locator).not.toBeInViewport()),
-        ]);
+        await breakdown.expectToBeCollapsed();
+        await expect(list).toBeInViewport();
+        for (const locator of locators) await expect(locator).not.toBeInViewport();
     });
 
     test('should render "Adjustments" breakdown', async ({ page }) => {
-        const adjustments = createPayoutBreakdownGroup(page, 'Adjustments');
-        const breakdown = page.getByRole('region', { name: 'Adjustments', exact: true });
-        const additionsBreakdownList = breakdown.getByTestId('payout-adjustments-additions-breakdown');
-        const subtractionsBreakdownList = breakdown.getByTestId('payout-adjustments-subtractions-breakdown');
+        const breakdown = new DefaultPayoutBreakdown(page, 'Adjustments');
+        const additions = breakdown.toggleContent.getByTestId('payout-adjustments-additions-breakdown');
+        const subtractions = breakdown.toggleContent.getByTestId('payout-adjustments-subtractions-breakdown');
 
-        const correction = additionsBreakdownList.getByTestId('correction');
-        const grantRepayment = additionsBreakdownList.getByTestId('grantRepayment');
-        const refund = additionsBreakdownList.getByTestId('refund');
-
-        const fee = subtractionsBreakdownList.getByTestId('fee');
-        const grantIssued = subtractionsBreakdownList.getByTestId('grantIssued');
-        const other = subtractionsBreakdownList.getByTestId('other');
-        const transfer = subtractionsBreakdownList.getByTestId('transfer');
-
-        const adjustmentsBreakdown = [
+        const locators = [
             // Additions
-            breakdown.getByText('Additions', { exact: true }),
-
-            correction.getByText('Corrections', { exact: true }),
-            correction.getByText('10.00', { exact: true }),
-
-            grantRepayment.getByText('Grant repayments', { exact: true }),
-            grantRepayment.getByText('600.00', { exact: true }),
-
-            refund.getByText('Refunds', { exact: true }),
-            refund.getByText('100.00', { exact: true }),
+            breakdown.toggleContent.getByText('Additions', { exact: true }),
+            ...DefaultPayoutBreakdown.getPairwiseLocators(additions, ['Corrections', '10.00']),
+            ...DefaultPayoutBreakdown.getPairwiseLocators(additions, ['Grant repayments', '600.00']),
+            ...DefaultPayoutBreakdown.getPairwiseLocators(additions, ['Refunds', '100.00']),
 
             // Subtractions
-            breakdown.getByText('Subtractions', { exact: true }),
-
-            fee.getByText('Fees', { exact: true }),
-            fee.getByText('- 100.00', { exact: true }),
-
-            grantIssued.getByText('Grant issued', { exact: true }),
-            grantIssued.getByText('- 550.00', { exact: true }),
-
-            other.getByText('Other', { exact: true }),
-            other.getByText('- 10.00', { exact: true }),
-
-            transfer.getByText('Transfers', { exact: true }),
-            transfer.getByText('- 150.00', { exact: true }),
+            breakdown.toggleContent.getByText('Subtractions', { exact: true }),
+            ...DefaultPayoutBreakdown.getPairwiseLocators(subtractions, ['Fees', '- 100.00']),
+            ...DefaultPayoutBreakdown.getPairwiseLocators(subtractions, ['Grant issued', '- 550.00']),
+            ...DefaultPayoutBreakdown.getPairwiseLocators(subtractions, ['Other', '- 10.00']),
+            ...DefaultPayoutBreakdown.getPairwiseLocators(subtractions, ['Transfers', '- 150.00']),
         ];
 
-        await Promise.all([
-            adjustments.expectToBeCollapsed(),
-            expect(additionsBreakdownList).toBeVisible(),
-            expect(subtractionsBreakdownList).toBeVisible(),
-            ...adjustmentsBreakdown.map(locator => expect(locator).not.toBeInViewport()),
-        ]);
+        await breakdown.expectToBeCollapsed();
+        await expect(additions).not.toBeInViewport();
+        await expect(subtractions).not.toBeInViewport();
+        for (const locator of locators) await expect(locator).not.toBeInViewport();
 
-        await adjustments.toggleBreakdown();
+        await breakdown.toggle();
 
-        await Promise.all([
-            adjustments.expectToBeExpanded(),
-            expect(additionsBreakdownList).toBeVisible(),
-            expect(subtractionsBreakdownList).toBeVisible(),
-            ...adjustmentsBreakdown.map(locator => expect(locator).toBeInViewport()),
-        ]);
+        await breakdown.expectToBeExpanded();
+        await expect(additions).toBeInViewport();
+        await expect(subtractions).toBeInViewport();
+        for (const locator of locators) await expect(locator).toBeInViewport();
 
-        await adjustments.toggleBreakdown();
+        await breakdown.toggle();
 
-        await Promise.all([
-            adjustments.expectToBeCollapsed(),
-            expect(additionsBreakdownList).toBeVisible(),
-            expect(subtractionsBreakdownList).toBeVisible(),
-            ...adjustmentsBreakdown.map(locator => expect(locator).not.toBeInViewport()),
-        ]);
+        await breakdown.expectToBeCollapsed();
+        await expect(additions).not.toBeInViewport();
+        await expect(subtractions).not.toBeInViewport();
+        for (const locator of locators) await expect(locator).not.toBeInViewport();
     });
 });

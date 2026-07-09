@@ -93,6 +93,7 @@ export interface components {
             remainingGrantAmount: components['schemas']['Amount'];
             remainingTotalAmount: components['schemas']['Amount'];
             renewal?: components['schemas']['RenewalDTO'];
+            renewsGrantId?: string;
             repaidFeesAmount: components['schemas']['Amount'];
             repaidGrantAmount: components['schemas']['Amount'];
             repaidTotalAmount: components['schemas']['Amount'];
@@ -134,8 +135,9 @@ export interface components {
         RenewalDTO: {
             eligible: boolean;
             minimumRenewalAmount?: components['schemas']['Amount'];
-            /** Format: int32 */
-            targetRepaymentPercentage: number;
+        };
+        RequestFundsRequestDTO: {
+            renewsGrantId?: string;
         };
         TransferInstrumentReference: {
             /** @description The masked IBAN or bank account number. */
@@ -192,7 +194,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                'application/json': components['schemas']['RequestFundsRequestDTO'];
+            };
+        };
         responses: {
             /** @description OK - the request has succeeded. */
             200: {

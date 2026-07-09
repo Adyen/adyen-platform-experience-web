@@ -9,9 +9,7 @@ test.describe('Single balance account', () => {
 
         const filters = page.getByRole('group', { name: 'Payouts filters', exact: true });
 
-        await Promise.all([
-            expect(filters.getByRole('button', { name: 'Balance account', exact: true })).toBeHidden(),
-            expect(filters.getByRole('button', { name: 'Date range', exact: true, disabled: false, expanded: false })).toBeVisible(),
-        ]);
+        await expect(filters.getByRole('button', { name: 'Balance account', exact: true })).toBeHidden();
+        await expect(filters.getByRole('button', { name: 'Date range', exact: true, disabled: false, expanded: false })).toBeVisible();
     });
 });

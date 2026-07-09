@@ -1,6 +1,6 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedAnalyticsEventProperties } from './shared/constants';
+import { sharedAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionDetails';
 
 const STORY_ID = 'mocked-transactions-transaction-details--data-customization';
 
@@ -48,7 +48,6 @@ test.describe('Data Customization', () => {
     });
 
     test('should render payment transaction details with custom action buttons', async ({ page }) => {
-        await expect(page.getByRole('button', { name: 'Send email', exact: true })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Send email', exact: true })).toBeEnabled();
+        await expect(page.getByRole('button', { name: 'Send email', exact: true, disabled: false })).toBeVisible();
     });
 });

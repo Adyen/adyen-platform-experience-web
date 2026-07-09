@@ -1,0 +1,11 @@
+@use '@integration-components/style' as style;
+
+.adyen-pe-capital-offer-information {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-030);
+
+    .adyen-pe-structured-list dd {
+        text-align: right;
+    }
+}
