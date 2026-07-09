@@ -1,12 +1,10 @@
 import type { CoreInstance } from '@integration-components/core/vue';
-import type { CustomDataRetrieved, DataCustomizationObject, IBalanceAccountBase } from '@integration-components/types';
-import type { IDisputeListItem } from '@integration-components/types/api/models/disputes';
-import type { DisputeDetailsCustomization } from '@integration-components/disputes/domain';
-import type { DisputesTableFields } from './constants';
+import type { IBalanceAccountBase } from '@integration-components/types';
+import type { DisputeDetailsCustomization, DisputesListCustomization } from '@integration-components/disputes/domain';
 
 export type DisputeStatusGroup = 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_CLOSED';
 
-export type DisputesListCustomization = DataCustomizationObject<DisputesTableFields, IDisputeListItem[], CustomDataRetrieved[]>;
+export type { DisputesListCustomization };
 
 export interface DisputesOverviewExternalProps {
     core: CoreInstance;
