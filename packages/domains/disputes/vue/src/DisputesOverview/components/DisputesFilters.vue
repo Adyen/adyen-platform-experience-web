@@ -60,7 +60,6 @@ const quickSelectRanges = [
     { label: i18n.get('common.filters.types.date.rangeSelect.options.last7Days'), value: 'last7Days', data: quickSelectDateRanges.last7Days },
     { label: i18n.get('common.filters.types.date.rangeSelect.options.last30Days'), value: 'last30Days', data: quickSelectDateRanges.last30Days },
     { label: i18n.get('common.filters.types.date.rangeSelect.options.last90Days'), value: 'last90Days', data: last90DaysRange },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.last180Days'), value: 'last180Days', data: quickSelectDateRanges.last180Days },
     { label: i18n.get('common.filters.types.date.rangeSelect.options.thisWeek'), value: 'thisWeek', data: quickSelectDateRanges.thisWeek },
     { label: i18n.get('common.filters.types.date.rangeSelect.options.lastWeek'), value: 'lastWeek', data: quickSelectDateRanges.lastWeek },
     { label: i18n.get('common.filters.types.date.rangeSelect.options.thisMonth'), value: 'thisMonth', data: quickSelectDateRanges.thisMonth },
@@ -169,12 +168,13 @@ function onFilterInput(updatedValues: BentoFilterValues) {
 
 const currentFilterParams = computed(() => {
     const fromMs = Math.max(selectedDateRange.value.startDate.getTime(), earliestDate.getTime());
+    const untilMs = Math.min(selectedDateRange.value.endDate.getTime(), Date.now());
     return {
         balanceAccountId: selectedBalanceAccountId.value,
         schemeCodes: selectedSchemes.value.length ? selectedSchemes.value.join(',') : undefined,
         reasonCategories: showReasonsFilter.value && selectedReasons.value.length ? selectedReasons.value.join(',') : undefined,
         createdSince: toUTCISOStringKeepingLocalDateTime(new Date(fromMs)),
-        createdUntil: toUTCISOStringKeepingLocalDateTime(selectedDateRange.value.endDate),
+        createdUntil: toUTCISOStringKeepingLocalDateTime(new Date(untilMs)),
     };
 });
 
