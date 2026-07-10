@@ -1,6 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoDataGrid, BentoTypography, BentoTag, BentoButton, BentoTooltipDirective } from '@adyen/bento-vue3';
+import {
+    BentoButton,
+    BentoCurrency,
+    BentoDataGrid,
+    BentoEmptyState,
+    BentoList,
+    BentoListItem,
+    BentoLoadingIndicator,
+    BentoPagination,
+    BentoTag,
+    BentoTooltipDirective,
+    BentoTypography,
+} from '@adyen/bento-vue3';
 import WarningFilledIcon from '@adyen/ui-assets-icons-16/vue/warning-filled';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
@@ -79,6 +91,8 @@ const { customRecords, loadingCustomRecords } = useCustomColumnsData<IDisputeLis
 });
 
 const isLoading = computed(() => props.loading || config.refreshing || loadingCustomRecords.value);
+const hasMultipleCurrencies = computed(() => new Set(customRecords.value.map(dispute => dispute.amount.currency)).size > 1);
+const showMobilePagination = computed(() => props.showPagination && (props.hasNext || props.hasPrevious));
 
 function standardColumn(field: DisputesTableFields, defaults: Partial<BentoColumn> & { visible: boolean }): BentoColumn {
     const override = customColumnByKey.value.get(field);
@@ -97,18 +111,17 @@ function standardColumn(field: DisputesTableFields, defaults: Partial<BentoColum
 
 const columns = computed<BentoColumn[]>(() => {
     const sg = props.statusGroup;
-    const mobile = isMobile.value;
 
     const cols: BentoColumn[] = [
-        standardColumn('status', { visible: sg === 'ONGOING_AND_CLOSED' }),
-        standardColumn('respondBy', { visible: sg === 'CHARGEBACKS' }),
-        standardColumn('createdAt', { visible: !mobile || sg === 'FRAUD_ALERTS' }),
-        standardColumn('paymentMethod', { visible: !mobile }),
-        standardColumn('disputeReason', { visible: sg !== 'FRAUD_ALERTS' && !mobile, flex: 1 }),
-        standardColumn('reason', { visible: sg === 'FRAUD_ALERTS' && !mobile, flex: 2 }),
-        standardColumn('currency', { visible: !mobile }),
-        standardColumn('disputedAmount', { visible: sg !== 'FRAUD_ALERTS', numeric: true }),
-        standardColumn('totalPaymentAmount', { visible: sg === 'FRAUD_ALERTS', numeric: true }),
+        standardColumn('status', { visible: sg === 'ONGOING_AND_CLOSED', flex: 1, minWidth: 130 }),
+        standardColumn('respondBy', { visible: sg === 'CHARGEBACKS', flex: 1, minWidth: 120 }),
+        standardColumn('createdAt', { visible: true, flex: 1, minWidth: 120 }),
+        standardColumn('paymentMethod', { visible: true, flex: 1.2, minWidth: 150 }),
+        standardColumn('disputeReason', { visible: sg !== 'FRAUD_ALERTS', flex: 1.5, minWidth: 180 }),
+        standardColumn('reason', { visible: sg === 'FRAUD_ALERTS', flex: 2, minWidth: 220 }),
+        standardColumn('currency', { visible: hasMultipleCurrencies.value, flex: 0.7, minWidth: 90 }),
+        standardColumn('disputedAmount', { visible: sg !== 'FRAUD_ALERTS', flex: 1, minWidth: 140, numeric: true }),
+        standardColumn('totalPaymentAmount', { visible: sg === 'FRAUD_ALERTS', flex: 1, minWidth: 140, numeric: true }),
     ];
 
     for (const column of props.customColumns ?? []) {
@@ -163,8 +176,16 @@ function getDispute(item: BentoDatagridDataItem): IDisputeListItem {
     return item._raw as IDisputeListItem;
 }
 
-function formatAmount(dispute: IDisputeListItem): string {
-    return i18n.amount(dispute.amount.value, dispute.amount.currency, { hideCurrency: false });
+function formatNumericAmount(dispute: IDisputeListItem): string {
+    return i18n.amount(dispute.amount.value, dispute.amount.currency, { hideCurrency: true });
+}
+
+function getMobileDate(dispute: IDisputeListItem): string {
+    return props.statusGroup === 'CHARGEBACKS' && dispute.dueDate ? dispute.dueDate : dispute.createdAt;
+}
+
+function isMobileDateUrgent(dispute: IDisputeListItem): boolean {
+    return props.statusGroup === 'CHARGEBACKS' && !!dispute.dueDate && isDisputeActionNeededUrgently(dispute);
 }
 
 function getTimeToDeadline(dueDate: string): string {
@@ -195,6 +216,10 @@ function handleItemsPage(size: number) {
 function handleRowClick(item: BentoDatagridDataItem) {
     props.onRowClick?.(getDispute(item));
 }
+
+function handleListItemClick(dispute: IDisputeListItem) {
+    props.onRowClick?.(dispute);
+}
 </script>
 
 <template>
@@ -205,6 +230,60 @@ function handleRowClick(item: BentoDatagridDataItem) {
                 {{ i18n.get('common.actions.contactSupport.labels.default') }}
             </BentoButton>
         </div>
+
+        <template v-else-if="isMobile">
+            <div v-if="isLoading" class="adyen-pe-disputes-table__loading" aria-busy="true">
+                <BentoLoadingIndicator />
+            </div>
+
+            <BentoEmptyState
+                v-else-if="!customRecords.length"
+                variant="condensed"
+                :title="emptyStateProps.title"
+                :description="emptyStateProps.description"
+            />
+
+            <template v-else>
+                <BentoList>
+                    <BentoListItem
+                        v-for="dispute in customRecords"
+                        :key="dispute.disputePspReference"
+                        with-chevron
+                        show-bottom-divider
+                        @click="handleListItemClick(dispute)"
+                    >
+                        <template #content>
+                            <div class="adyen-pe-disputes-table__mobile-row">
+                                <div class="adyen-pe-disputes-table__mobile-details">
+                                    <div
+                                        class="adyen-pe-disputes-table__mobile-date"
+                                        :class="{ 'adyen-pe-disputes-table__mobile-date--urgent': isMobileDateUrgent(dispute) }"
+                                    >
+                                        <time :datetime="getMobileDate(dispute)">
+                                            {{ dateFormat(getMobileDate(dispute), DATE_FORMAT_DISPUTES) }}
+                                        </time>
+                                        <WarningFilledIcon v-if="isMobileDateUrgent(dispute)" />
+                                    </div>
+                                    <DisputePaymentMethod :payment-method="dispute.paymentMethod" />
+                                </div>
+                                <BentoTypography class="adyen-pe-disputes-table__mobile-amount" variant="body" stronger>
+                                    <BentoCurrency :currency="dispute.amount.currency" :value="dispute.amount.value" :disable-typography="true" />
+                                </BentoTypography>
+                            </div>
+                        </template>
+                    </BentoListItem>
+                </BentoList>
+
+                <BentoPagination
+                    v-if="showMobilePagination"
+                    :page="props.currentPage"
+                    :size="props.limit"
+                    :has-next="props.hasNext"
+                    hide-page-size
+                    @navigate="handleNavigate"
+                />
+            </template>
+        </template>
 
         <BentoDataGrid
             v-else
@@ -221,19 +300,17 @@ function handleRowClick(item: BentoDatagridDataItem) {
             @items-page="handleItemsPage"
         >
             <template #item-status="{ item }">
-                <div class="adyen-pe-disputes-table__cell-content" :class="{ 'adyen-pe-disputes-table__cell-content--vstack': isMobile }">
+                <div class="adyen-pe-disputes-table__cell-content">
                     <DisputeStatusTag :dispute="getDispute(item)" />
-                    <DisputePaymentMethod v-if="isMobile" :payment-method="getDispute(item).paymentMethod" />
                 </div>
             </template>
 
             <template #item-respondBy="{ item }">
-                <div class="adyen-pe-disputes-table__cell-content" :class="{ 'adyen-pe-disputes-table__cell-content--vstack': isMobile }">
+                <div class="adyen-pe-disputes-table__cell-content">
                     <span
                         v-if="getDispute(item).dueDate"
                         class="adyen-pe-disputes-table__status-content"
                         :class="{
-                            'adyen-pe-disputes-table__cell-text--grey': isMobile && !isDisputeActionNeededUrgently(getDispute(item)),
                             'adyen-pe-disputes-table__status-content--urgent': isDisputeActionNeededUrgently(getDispute(item)),
                         }"
                     >
@@ -247,20 +324,14 @@ function handleRowClick(item: BentoDatagridDataItem) {
                         </span>
                         <time v-else :datetime="getDispute(item).dueDate">{{ dateFormat(getDispute(item).dueDate!, DATE_FORMAT_DISPUTES) }}</time>
                     </span>
-                    <DisputePaymentMethod v-if="isMobile" :payment-method="getDispute(item).paymentMethod" />
                 </div>
             </template>
 
             <template #item-createdAt="{ item }">
-                <div class="adyen-pe-disputes-table__cell-content" :class="{ 'adyen-pe-disputes-table__cell-content--vstack': isMobile }">
-                    <time
-                        :datetime="getDispute(item).createdAt"
-                        class="adyen-pe-disputes-table__status-content"
-                        :class="{ 'adyen-pe-disputes-table__cell-text--grey': isMobile }"
-                    >
+                <div class="adyen-pe-disputes-table__cell-content">
+                    <time :datetime="getDispute(item).createdAt" class="adyen-pe-disputes-table__status-content">
                         <BentoTypography variant="body">{{ dateFormat(getDispute(item).createdAt, DATE_FORMAT_DISPUTES) }}</BentoTypography>
                     </time>
-                    <DisputePaymentMethod v-if="isMobile" :payment-method="getDispute(item).paymentMethod" />
                 </div>
             </template>
 
@@ -282,13 +353,25 @@ function handleRowClick(item: BentoDatagridDataItem) {
 
             <template #item-disputedAmount="{ item }">
                 <BentoTypography variant="body" stronger>
-                    {{ formatAmount(getDispute(item)) }}
+                    <BentoCurrency
+                        v-if="!hasMultipleCurrencies"
+                        :currency="getDispute(item).amount.currency"
+                        :value="getDispute(item).amount.value"
+                        :disable-typography="true"
+                    />
+                    <template v-else>{{ formatNumericAmount(getDispute(item)) }}</template>
                 </BentoTypography>
             </template>
 
             <template #item-totalPaymentAmount="{ item }">
                 <BentoTypography variant="body" stronger>
-                    {{ formatAmount(getDispute(item)) }}
+                    <BentoCurrency
+                        v-if="!hasMultipleCurrencies"
+                        :currency="getDispute(item).amount.currency"
+                        :value="getDispute(item).amount.value"
+                        :disable-typography="true"
+                    />
+                    <template v-else>{{ formatNumericAmount(getDispute(item)) }}</template>
                 </BentoTypography>
             </template>
 

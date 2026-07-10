@@ -10,6 +10,11 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+
+function getPaymentMethodLabel(paymentMethod: IPaymentMethod): string {
+    if (paymentMethod.lastFourDigits) return `•••• ${paymentMethod.lastFourDigits}`;
+    return parsePaymentMethodType(paymentMethod);
+}
 </script>
 
 <template>
@@ -17,7 +22,7 @@ const { i18n } = useCoreContext();
         <template v-if="props.paymentMethod">
             <BentoPaymentMethod :type="props.paymentMethod.type" />
             <BentoTypography variant="body" :stronger="props.stronger">
-                {{ parsePaymentMethodType(props.paymentMethod) }}
+                {{ getPaymentMethodLabel(props.paymentMethod) }}
             </BentoTypography>
         </template>
         <BentoTag v-else variant="grey" :label="i18n.get('common.tags.noData')" />

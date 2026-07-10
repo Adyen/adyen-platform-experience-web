@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { BentoTypography, BentoSegmentedControl } from '@adyen/bento-vue3';
-import type { BentoSegmentedControlValue } from '@adyen/bento-vue3';
+import { BentoCard, BentoTab, BentoTabs, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
 import { DISPUTE_STATUS_GROUPS } from '@integration-components/disputes/domain';
@@ -55,12 +54,14 @@ function onFiltersChange(params: {
     filterParams.value = params;
 }
 
-const statusGroupItems = computed(() => Object.entries(DISPUTE_STATUS_GROUPS).map(([value, labelKey]) => ({ label: i18n.get(labelKey), value })));
-
+const statusGroupItems = computed(() =>
+    Object.entries(DISPUTE_STATUS_GROUPS).map(([value, labelKey]) => ({ label: i18n.get(labelKey), value: value as IDisputeStatusGroup }))
+);
+const activeStatusGroupIndex = computed(() => DISPUTE_STATUS_GROUP_VALUES.indexOf(statusGroup.value));
 const statusGroupAriaLabel = computed(() => i18n.get('disputes.overview.common.filters.types.statusGroup'));
 
-function onStatusGroupChange(value: BentoSegmentedControlValue) {
-    statusGroup.value = value as IDisputeStatusGroup;
+function onStatusGroupChange(index: number) {
+    statusGroup.value = DISPUTE_STATUS_GROUP_VALUES[index] ?? DEFAULT_DISPUTE_STATUS_GROUP;
 }
 
 const activeBalanceAccount = computed(() => {
@@ -113,43 +114,56 @@ function closeModal() {
 
 <template>
     <div :class="[BASE_CLASS, { [BASE_XS_CLASS]: isMobile }]">
-        <BentoTypography v-if="!props.hideTitle" el="h2" variant="title" stronger>
-            {{ i18n.get('disputes.overview.common.title') }}
-        </BentoTypography>
+        <div :class="`${BASE_CLASS}__header`">
+            <BentoTypography v-if="!props.hideTitle" el="h2" variant="title" stronger>
+                {{ i18n.get('disputes.overview.common.title') }}
+            </BentoTypography>
+            <div v-if="isMobile" role="toolbar" :class="[`${BASE_CLASS}__toolbar`, `${BASE_CLASS}__toolbar--compact`]">
+                <DisputesFilters :compact="true" :balance-accounts="props.balanceAccounts" :status-group="statusGroup" :on-change="onFiltersChange" />
+            </div>
+        </div>
 
         <div :class="TABS_CONTAINER_CLASS">
-            <BentoSegmentedControl
-                :aria-label="statusGroupAriaLabel"
-                :items="statusGroupItems"
-                :model-value="statusGroup"
-                @update:model-value="onStatusGroupChange"
-            />
+            <BentoTabs :aria-label="statusGroupAriaLabel" :active-tab-index="activeStatusGroupIndex" @update:active-tab-index="onStatusGroupChange">
+                <BentoTab v-for="item in statusGroupItems" :key="item.value" :title="item.label" />
+            </BentoTabs>
         </div>
 
-        <div role="toolbar" class="adyen-pe-disputes-overview__toolbar">
-            <DisputesFilters :balance-accounts="props.balanceAccounts" :status-group="statusGroup" :on-change="onFiltersChange" />
-        </div>
+        <BentoCard :class="`${BASE_CLASS}__card`">
+            <template #content>
+                <div :class="`${BASE_CLASS}__content`">
+                    <div v-if="!isMobile" role="toolbar" :class="`${BASE_CLASS}__toolbar`">
+                        <DisputesFilters
+                            :compact="false"
+                            :balance-accounts="props.balanceAccounts"
+                            :status-group="statusGroup"
+                            :on-change="onFiltersChange"
+                        />
+                    </div>
 
-        <DisputesTable
-            :status-group="statusGroup"
-            :active-balance-account="activeBalanceAccount"
-            :loading="isLoading"
-            :data="disputesListResult.records.value"
-            :show-pagination="true"
-            :error="disputesError"
-            :on-row-click="onRowClick"
-            :on-contact-support="props.onContactSupport"
-            :custom-columns="props.dataCustomization?.list?.fields"
-            :on-data-retrieve="props.dataCustomization?.list?.onDataRetrieve"
-            :has-next="disputesListResult.hasNext.value"
-            :has-previous="disputesListResult.hasPrevious.value"
-            :go-to-next-page="disputesListResult.goToNextPage"
-            :go-to-previous-page="disputesListResult.goToPreviousPage"
-            :limit="disputesListResult.limit.value"
-            :limit-options="disputesListResult.limitOptions.value"
-            :update-limit="disputesListResult.updateLimit"
-            :current-page="disputesListResult.page.value + 1"
-        />
+                    <DisputesTable
+                        :status-group="statusGroup"
+                        :active-balance-account="activeBalanceAccount"
+                        :loading="isLoading"
+                        :data="disputesListResult.records.value"
+                        :show-pagination="true"
+                        :error="disputesError"
+                        :on-row-click="onRowClick"
+                        :on-contact-support="props.onContactSupport"
+                        :custom-columns="props.dataCustomization?.list?.fields"
+                        :on-data-retrieve="props.dataCustomization?.list?.onDataRetrieve"
+                        :has-next="disputesListResult.hasNext.value"
+                        :has-previous="disputesListResult.hasPrevious.value"
+                        :go-to-next-page="disputesListResult.goToNextPage"
+                        :go-to-previous-page="disputesListResult.goToPreviousPage"
+                        :limit="disputesListResult.limit.value"
+                        :limit-options="disputesListResult.limitOptions.value"
+                        :update-limit="disputesListResult.updateLimit"
+                        :current-page="disputesListResult.page.value + 1"
+                    />
+                </div>
+            </template>
+        </BentoCard>
 
         <DisputeManagementModal
             :dispute-id="selectedDisputeId"

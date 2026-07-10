@@ -4,6 +4,7 @@ import { CoreOptions } from '@integration-components/sdk-internal';
 type GlobalStoriesProps = {
     mockedApi?: boolean;
     balanceAccountId?: string;
+    compact?: boolean;
     component: any;
     coreOptions?: Partial<CoreOptions>;
     skipDecorators?: boolean;

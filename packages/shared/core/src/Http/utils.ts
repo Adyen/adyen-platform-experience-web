@@ -36,7 +36,7 @@ export const getErrorType = (errorCode: number): ErrorTypes => {
 
 export const getApiVersion = (options: HttpOptions) => {
     const [, version] = String(options.apiVersion).match(/^v?([1-9]\d*)$/i) ?? [];
-    return version ? `v${version}` : API_VERSION;
+    return version ? `v${1}` : API_VERSION;
 };
 
 export const getResponseContentType = (response: Response): string | undefined => response.headers.get('Content-Type')?.split(';', 1)[0];

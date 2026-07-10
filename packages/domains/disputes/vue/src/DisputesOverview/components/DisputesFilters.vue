@@ -12,6 +12,7 @@ import { EARLIEST_DISPUTES_SINCE_DATE } from '../constants';
 const props = defineProps<{
     balanceAccounts?: IBalanceAccountBase[];
     statusGroup: IDisputeStatusGroup;
+    compact?: boolean;
     onChange?: (params: {
         balanceAccountId: string | undefined;
         schemeCodes: string | undefined;
@@ -98,7 +99,8 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             field: 'balanceAccountId',
             label: i18n.get('common.filters.types.account.label'),
             type: BentoFilterItemType.SELECT,
-            defaultValue: props.balanceAccounts[0]!.id,
+            visible: !props.compact,
+            ...(!props.compact ? { defaultValue: props.balanceAccounts[0]!.id } : {}),
             options: {
                 listboxItems: props.balanceAccounts.map(a => ({
                     label: a.description || a.id,
@@ -113,7 +115,8 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
         field: 'dateRange',
         label: i18n.get('common.filters.types.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
-        defaultValue: defaultDateRange,
+        visible: !props.compact,
+        ...(!props.compact ? { defaultValue: defaultDateRange } : {}),
         options: { min: earliestDate, max: now, numberOfMonths: 1, quickSelectRanges },
     });
 
@@ -121,6 +124,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
         field: 'schemeCodes',
         label: i18n.get('disputes.overview.common.filters.types.paymentMethod'),
         type: BentoFilterItemType.CHECKBOX_GROUP,
+        visible: !props.compact,
         options: { checkboxItems: schemeItems },
     });
 
@@ -129,6 +133,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             field: 'reasonCategories',
             label: i18n.get('disputes.overview.common.filters.types.disputeReason'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
+            visible: !props.compact,
             options: { checkboxItems: reasonItems.value },
         });
     }
@@ -155,7 +160,7 @@ const filterValues = computed<BentoFilterValues>(() => {
 function onFilterInput(updatedValues: BentoFilterValues) {
     for (const fv of updatedValues) {
         if (fv.field === 'balanceAccountId') {
-            selectedBalanceAccountId.value = fv.value as string | undefined;
+            selectedBalanceAccountId.value = (fv.value as string | undefined) ?? props.balanceAccounts?.[0]?.id;
         } else if (fv.field === 'dateRange') {
             selectedDateRange.value = fv.value ? normalizeDateRange(fv.value as BentoDateRangePickerValue) : cloneDateRange(defaultDateRange);
         } else if (fv.field === 'schemeCodes') {
@@ -188,5 +193,5 @@ watch(
 </script>
 
 <template>
-    <BentoFilterBar :config="filterConfig" :filter-values="filterValues" @input="onFilterInput" />
+    <BentoFilterBar :config="filterConfig" :filter-values="filterValues" :show-applied-hidden-filters="false" @input="onFilterInput" />
 </template>
