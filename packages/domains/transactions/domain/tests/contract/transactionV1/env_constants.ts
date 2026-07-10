@@ -13,29 +13,45 @@ interface TransactionsVariables {
 }
 
 const TEST: TransactionsVariables = {
-    transactionId: 'EVJN42CNJ223224D5PMV3SS3CL75C4EUR',
+    transactionId: 'EVJN4298X223224D5PMV3Q783W4D2SEUR',
     refundTransactionId: 'EVJN42CNJ223224D5PMV3SS3CL75C4EUR',
     transaction_details_response: {
-        id: 'EVJN42CNJ223224D5PMV3SS3CL75C4EUR',
+        id: 'EVJN4298X223224D5PMV3Q783W4D2SEUR',
         balanceAccountId: 'BA32CNP223227N5KZ2NDW77PR',
         amount: {
-            value: -784,
+            value: 784,
             currency: 'EUR',
         },
-        createdAt: '2026-07-10T01:01:52.000+00:00',
-        category: 'Refund',
+        originalAmount: {
+            value: 791,
+            currency: 'EUR',
+        },
+        deductedAmount: {
+            value: 7,
+            currency: 'EUR',
+        },
+        createdAt: '2026-07-10T01:00:45.000+00:00',
+        category: 'Payment',
         status: 'Booked',
         paymentMethod: {
             type: 'mc',
             lastFourDigits: '0008',
             description: 'Mastercard',
         },
-        paymentPspReference: 'NRV62WWPC6BCLGV5',
-        refundMetadata: {
-            refundPspReference: 'X2XNCDS3NK7S2LV5',
-            originalPaymentId: 'EVJN4298X223224D5PMV3Q783W4D2SEUR',
-            refundType: 'full',
+        refundDetails: {
+            refundMode: 'non_refundable',
+            refundStatuses: [
+                {
+                    amount: {
+                        value: -791,
+                        currency: 'EUR',
+                    },
+                    status: 'completed',
+                },
+            ],
+            refundLocked: false,
         },
+        paymentPspReference: 'NRV62WWPC6BCLGV5',
     },
     refund_details_response: {
         id: 'EVJN42CNJ223224D5PMV3SS3CL75C4EUR',
