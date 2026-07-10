@@ -1,0 +1,26 @@
+<script setup lang="ts">
+import type { PaymentLinksOverviewExternalProps } from './types';
+import { UIElementProvider } from '@integration-components/core/vue';
+import PaymentLinksOverviewContainer from './components/PaymentLinksOverviewContainer.vue';
+import '@adyen/bento-vue3/styles/bento-light';
+
+const props = defineProps<PaymentLinksOverviewExternalProps>();
+</script>
+
+<template>
+    <UIElementProvider :core="props.core" component-name="PaymentLinksOverview">
+        <PaymentLinksOverviewContainer
+            :allow-limit-selection="props.allowLimitSelection"
+            :balance-account-id="props.balanceAccountId"
+            :hide-title="props.hideTitle"
+            :preferred-limit="props.preferredLimit"
+            :show-details="props.showDetails"
+            :store-ids="props.storeIds"
+            :on-filters-changed="props.onFiltersChanged"
+            :on-record-selection="props.onRecordSelection"
+            :on-contact-support="props.onContactSupport"
+            :payment-link-creation="props.paymentLinkCreation"
+            :payment-link-settings="props.paymentLinkSettings"
+        />
+    </UIElementProvider>
+</template>
