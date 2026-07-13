@@ -97,7 +97,7 @@ function standardColumn(field: DisputesTableFields, defaults: Partial<BentoColum
     const visible = override?.visibility === 'hidden' ? false : defaults.visible;
     const column: BentoColumn = {
         field,
-        label: i18n.get(FIELD_KEYS[field]),
+        label: i18n.get(field === 'disputeReason' ? 'disputes.overview.common.fields.disputeReasonLabel' : FIELD_KEYS[field]),
         ...defaults,
         visible,
         ...(override?.flex !== undefined ? { flex: override.flex } : {}),
