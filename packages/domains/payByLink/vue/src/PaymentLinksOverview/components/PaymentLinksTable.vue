@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoDataGrid, BentoTag, BentoTypography, BentoButton } from '@adyen/bento-vue3';
+import { BentoDataGrid, BentoTag, BentoTypography, BentoButton, BentoTooltipDirective as vBentoTooltip } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem, BentoTagVariant } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useResponsiveContainer, containerQueries, useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
@@ -237,11 +237,10 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
                     <BentoTypography variant="body">{{ dateFormat(item.creationDate, DATE_FORMAT_PAYMENT_LINKS_OVERVIEW) }}</BentoTypography>
                 </time>
             </template>
-
             <template #item-expirationDate="{ item }">
                 <time
                     v-if="item.expirationDate"
-                    v-bento-tooltip="isActionNeededUrgently(item.expirationDate) ? getTimeToDeadline(item.expirationDate) : undefined"
+                    v-bento-tooltip="isActionNeededUrgently(item.expirationDate) ? getTimeToDeadline(item.expirationDate) : ''"
                     :datetime="item.expirationDate"
                 >
                     <BentoTypography variant="body">
