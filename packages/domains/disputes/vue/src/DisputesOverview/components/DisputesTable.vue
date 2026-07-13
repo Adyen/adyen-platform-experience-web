@@ -19,7 +19,7 @@ import { useCoreContext, useConfigContext } from '@integration-components/core/v
 import { useCustomColumnsData, CustomDataCell, useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { getDisputeReason, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
-import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE, mergeRecords } from '@integration-components/utils';
+import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE, DAY_MS, mergeRecords } from '@integration-components/utils';
 import type { CustomColumn, CustomDataRetrieved, IBalanceAccountBase, OnDataRetrievedCallback } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
@@ -50,8 +50,6 @@ const props = defineProps<{
 }>();
 
 const vBentoTooltip = BentoTooltipDirective;
-
-const DAY_MS = 24 * 60 * 60 * 1000;
 
 const { i18n } = useCoreContext();
 const config = useConfigContext();

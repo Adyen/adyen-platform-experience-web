@@ -3,8 +3,8 @@ import type { DateFunction, DateTimeComponents } from './types';
 
 const MINUTE_IN_MS = 60 * 1000;
 const HOUR_IN_MS = 60 * MINUTE_IN_MS;
-const DAY_IN_MS = 24 * HOUR_IN_MS;
-const WEEK_IN_MS = 7 * DAY_IN_MS;
+export const DAY_MS = 24 * HOUR_IN_MS;
+const WEEK_IN_MS = 7 * DAY_MS;
 
 export const parseDate = ((...args) => {
     const [value] = args;
@@ -27,7 +27,7 @@ export const transformToMS = (unit: string, value: number): number => {
         case 'minute':
             return value * MINUTE_IN_MS;
         case 'day':
-            return value * DAY_IN_MS;
+            return value * DAY_MS;
         case 'week':
             return value * WEEK_IN_MS;
         default:

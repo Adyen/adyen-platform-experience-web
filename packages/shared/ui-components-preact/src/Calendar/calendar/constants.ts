@@ -1,4 +1,4 @@
-export const DAY_MS = 86400000 as const;
+export { DAY_MS } from '@integration-components/utils';
 export const DAY_OF_WEEK_FORMATS = ['narrow', 'short', 'long'] as const;
 export const FIRST_WEEK_DAYS = [0, 1, 6] as const;
 export const FRAME_SIZES = [1, 2, 3, 4, 6, 12] as const;
