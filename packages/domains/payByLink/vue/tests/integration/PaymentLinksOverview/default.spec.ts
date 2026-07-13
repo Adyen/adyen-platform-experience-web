@@ -1,20 +1,18 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
-
-const STORY_ID = 'mocked-pay-by-link-payment-links-overview--default';
+import { applyTextFilter, goToTab, openCreatePaymentLinkModal, openSettingsModal } from '../../../../fixtures/integration/utils';
+import { DEFAULT_STORY_ID, INVALID_PAYMENT_LINK_ID, MERCHANT_REFERENCE, PAYMENT_LINK_ID } from '../../../../fixtures/constants/PaymentLinksOverview';
 
 test.describe('Payment Links Overview', () => {
     test.beforeEach(async ({ page }) => {
-        await goToStory(page, { id: STORY_ID });
+        await goToStory(page, { id: DEFAULT_STORY_ID });
     });
 
     test.describe('Payment Links Overview - Validations', () => {
         test('should display empty list message (not an error) when filtering by paymentLinkId with invalid characters', async ({ page }) => {
             await expect(page.getByText('Payment links')).toBeVisible();
 
-            await page.getByRole('button', { name: 'Payment Link ID' }).click();
-            await page.getByRole('textbox').fill('PL-1234@test!');
-            await page.getByRole('button', { name: 'Apply' }).click();
+            await applyTextFilter(page, 'Payment Link ID', INVALID_PAYMENT_LINK_ID);
 
             await expect(page.getByText('No links to display')).toBeVisible();
         });
@@ -34,7 +32,7 @@ test.describe('Payment Links Overview', () => {
         test('should switch to Inactive tab and display first row with Completed status', async ({ page }) => {
             await expect(page.getByText('Payment links')).toBeVisible();
 
-            await page.getByRole('tab', { name: 'Inactive', exact: true }).click();
+            await goToTab(page, 'Inactive');
 
             const grid = page.getByRole('grid');
             const rows = grid.getByRole('rowgroup').nth(1).getByRole('row');
@@ -61,16 +59,13 @@ test.describe('Payment Links Overview', () => {
         });
 
         test('should open Create Payment Link modal when clicking the create button', async ({ page }) => {
-            await page.getByRole('button', { name: 'Create payment link' }).click();
+            await openCreatePaymentLinkModal(page);
 
-            await expect(page.getByRole('dialog')).toBeVisible();
             await expect(page.getByText('New payment link', { exact: true })).toBeVisible();
         });
 
         test('should open Settings modal when clicking the settings button', async ({ page }) => {
-            await page.getByRole('button', { name: /settings/i }).click();
-
-            await expect(page.getByRole('dialog')).toBeVisible();
+            await openSettingsModal(page);
 
             // [TODO]: PaymentLinkSettings is not yet migrated to Vue; the modal currently renders a placeholder
             await expect(page.getByText('Open link settings', { exact: true })).toBeVisible();
@@ -128,29 +123,21 @@ test.describe('Payment Links Overview', () => {
         });
 
         test('should filter by Merchant Reference text', async ({ page }) => {
-            await page.getByRole('button', { name: 'Merchant reference' }).click();
-
-            const merchantReference = 'REF-001';
-            await page.getByRole('textbox').fill(merchantReference);
-            await page.getByRole('button', { name: 'Apply' }).click();
+            await applyTextFilter(page, 'Merchant reference', MERCHANT_REFERENCE);
 
             const grid = page.getByRole('grid');
             const rows = grid.getByRole('rowgroup').nth(1).getByRole('row');
             await expect(rows).toHaveCount(1);
-            await expect(rows.first().getByText(merchantReference)).toBeVisible();
+            await expect(rows.first().getByText(MERCHANT_REFERENCE)).toBeVisible();
         });
 
         test('should filter by Payment Link ID', async ({ page }) => {
-            await page.getByRole('button', { name: 'Payment Link ID' }).click();
-
-            const paymentId = 'PLTEST001';
-            await page.getByRole('textbox').fill(paymentId);
-            await page.getByRole('button', { name: 'Apply' }).click();
+            await applyTextFilter(page, 'Payment Link ID', PAYMENT_LINK_ID);
 
             const grid = page.getByRole('grid');
             const rows = grid.getByRole('rowgroup').nth(1).getByRole('row');
             await expect(rows).toHaveCount(1);
-            await expect(rows.first().getByText(paymentId)).toBeVisible();
+            await expect(rows.first().getByText(PAYMENT_LINK_ID)).toBeVisible();
         });
     });
 });

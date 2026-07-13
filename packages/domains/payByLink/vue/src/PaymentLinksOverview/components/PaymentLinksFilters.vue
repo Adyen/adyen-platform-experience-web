@@ -113,6 +113,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
         options: {
             min: earliestDate,
             max: now,
+            isDateDisabled: (date: Date) => date.getTime() < earliestDate.getTime() || date.getTime() > now.getTime(),
             numberOfMonths: 1,
             quickSelectRanges,
         },

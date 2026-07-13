@@ -11,6 +11,7 @@ import {
     endOfDay,
     startOfDay,
 } from '@integration-components/utils';
+import { quickSelectDateRanges, toUTCISOStringKeepingLocalDateTime, endOfDay, startOfDay, now } from '@integration-components/utils';
 import {
     TRANSACTION_ANALYTICS_CATEGORY,
     TRANSACTION_ANALYTICS_SUBCATEGORY_LIST,
@@ -128,7 +129,11 @@ const sharedFilterItems = computed<BentoFilterBarModel>(() => {
         label: i18n.get('common.filters.types.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         defaultValue: dateRangeDefaultValue,
-        options: { numberOfMonths: 1, quickSelectRanges },
+        options: {
+            numberOfMonths: 1,
+            quickSelectRanges,
+            isDateDisabled: (date: Date) => date.getTime() > now.getTime(),
+        },
     });
 
     return items;
