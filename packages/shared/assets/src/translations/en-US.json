@@ -150,6 +150,7 @@
     "common.errors.errorCode": "The error code is %{requestId}",
     "common.errors.errorCodeSupport": "Contact support for help and share error code %{requestId}",
     "common.errors.fieldRequired": "This field is required",
+    "common.errors.maxLength": "Must be at most %{maxLength} characters long.",
     "common.errors.minLength": "Must be at least %{minLength} characters long.",
     "common.errors.noResults": "There are no results",
     "common.errors.notFound": "Entity was not found",

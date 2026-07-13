@@ -3,9 +3,8 @@ import { useCallback, useMemo } from 'preact/hooks';
 import StructuredList from '@integration-components/ui-components-preact/StructuredList';
 import { ListValue, StructuredListItem, StructuredListItemType } from '@integration-components/ui-components-preact/StructuredList/types';
 import Tabs from '@integration-components/ui-components-preact/Tabs/Tabs';
-import { DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS } from '@integration-components/utils';
 import { useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
-import { IPaymentLinkDetails, IPaymentLinkShopperAddress } from '@integration-components/types';
+import { IPaymentLinkDetails } from '@integration-components/types';
 import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { PaymentLinkActivity } from '../PaymentLinkActivity/PaymentLinkActivity';
@@ -13,7 +12,7 @@ import { TabProps } from '@integration-components/ui-components-preact/Tabs/type
 import './PaymentLinkTabs.scss';
 import { TranslationKey } from '@integration-components/core';
 import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
-import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '@integration-components/payByLink/domain';
+import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER, buildPaymentLinkListItems } from '@integration-components/payByLink/domain';
 import Link from '@integration-components/ui-components-preact/Link/Link';
 
 const CLASSNAMES = {
@@ -28,161 +27,26 @@ type PaymentLinkTabsProps = {
     paymentLink: IPaymentLinkDetails;
 };
 
-type ListItems = Record<'linkInformation' | 'shopperInformation' | 'shippingAddress' | 'billingAddress', StructuredListItem[]>;
-
 export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
 
-    const isAddressRedacted = useCallback((address: IPaymentLinkShopperAddress) => {
-        return Object.values(address).some(value => value === BACKEND_REDACTED_DATA_MARKER);
-    }, []);
+    const listItems = useMemo(() => {
+        const items = buildPaymentLinkListItems(paymentLink, { i18n, dateFormat });
+        const toStructuredListItems = (categoryItems: (typeof items)['linkInformation']): StructuredListItem[] =>
+            categoryItems.map(({ key, value, isCopyable, linkUrl }) => ({
+                key,
+                value,
+                config: { isCopyable, linkUrl },
+            }));
 
-    const listItems = useMemo<ListItems>(() => {
-        const linkType = paymentLink.linkInformation.linkType;
-        const items: ListItems = {
-            linkInformation: [
-                {
-                    key: 'payByLink.details.fields.paymentLinkId',
-                    value: paymentLink.linkInformation.paymentLinkId,
-                    config: { isCopyable: true, linkUrl: paymentLink.linkInformation.paymentLink },
-                },
-                {
-                    key: 'payByLink.details.fields.store',
-                    value: paymentLink.linkInformation.storeCode,
-                },
-                {
-                    key: 'payByLink.details.fields.merchantReference',
-                    value: paymentLink.linkInformation.merchantReference,
-                },
-                {
-                    key: 'payByLink.details.fields.createdOn',
-                    value: dateFormat(paymentLink.linkInformation.creationDate, DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS),
-                },
-                {
-                    key: 'payByLink.details.fields.expiresOn',
-                    value: dateFormat(paymentLink.linkInformation.expirationDate, DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS),
-                },
-                {
-                    key: 'payByLink.details.fields.linkType',
-                    value: i18n.has(`payByLink.common.linkType.${linkType}`) ? i18n.get(`payByLink.common.linkType.${linkType}`) : linkType,
-                },
-                {
-                    key: 'payByLink.details.fields.description',
-                    value: paymentLink.linkInformation.description,
-                },
-            ],
-            shopperInformation: [
-                {
-                    key: 'payByLink.details.fields.shopper.reference',
-                    value: paymentLink.shopperInformation?.shopperReference,
-                },
-                {
-                    key: 'payByLink.details.fields.shopper.fullName',
-                    value: [paymentLink.shopperInformation?.shopperName?.firstName, paymentLink.shopperInformation?.shopperName?.lastName]
-                        .filter(Boolean)
-                        .join(' '),
-                    config: { isCopyable: true },
-                },
-                {
-                    key: 'payByLink.details.fields.shopper.email',
-                    value: paymentLink.shopperInformation?.shopperEmail,
-                    config: { isCopyable: true },
-                },
-                {
-                    key: 'payByLink.details.fields.shopper.phone',
-                    value: paymentLink.shopperInformation?.telephoneNumber,
-                    config: { isCopyable: true },
-                },
-                {
-                    key: 'payByLink.details.fields.shopper.country',
-                    value: paymentLink.shopperInformation?.shopperCountry,
-                },
-                ...(paymentLink.shopperInformation?.shippingAddress && isAddressRedacted(paymentLink.shopperInformation?.shippingAddress)
-                    ? [
-                          {
-                              key: 'payByLink.details.fields.shippingAddress.title' as TranslationKey,
-                              value: FRONTEND_REDACTED_DATA_MARKER,
-                          },
-                      ]
-                    : []),
-                ...(paymentLink.shopperInformation?.billingAddress && isAddressRedacted(paymentLink.shopperInformation?.billingAddress)
-                    ? [
-                          {
-                              key: 'payByLink.details.fields.billingAddress.title' as TranslationKey,
-                              value: FRONTEND_REDACTED_DATA_MARKER,
-                          },
-                      ]
-                    : []),
-            ],
-            shippingAddress:
-                !paymentLink.shopperInformation?.shippingAddress || isAddressRedacted(paymentLink.shopperInformation?.shippingAddress)
-                    ? []
-                    : [
-                          {
-                              key: 'payByLink.details.fields.shippingAddress.street',
-                              value: paymentLink.shopperInformation?.shippingAddress?.street,
-                              config: { isCopyable: true },
-                          },
-                          {
-                              key: 'payByLink.details.fields.shippingAddress.houseNumberOrName',
-                              value: paymentLink.shopperInformation?.shippingAddress?.houseNumberOrName,
-                              config: { isCopyable: true },
-                          },
-                          {
-                              key: 'payByLink.details.fields.shippingAddress.country',
-                              value: paymentLink.shopperInformation?.shippingAddress?.country,
-                          },
-                          {
-                              key: 'payByLink.details.fields.shippingAddress.city',
-                              value: paymentLink.shopperInformation?.shippingAddress?.city,
-                              config: { isCopyable: true },
-                          },
-                          {
-                              key: 'payByLink.details.fields.shippingAddress.postalCode',
-                              value: paymentLink.shopperInformation?.shippingAddress?.postalCode,
-                              config: { isCopyable: true },
-                          },
-                      ],
-            billingAddress:
-                !paymentLink.shopperInformation?.billingAddress || isAddressRedacted(paymentLink.shopperInformation?.billingAddress)
-                    ? []
-                    : [
-                          {
-                              key: 'payByLink.details.fields.billingAddress.street',
-                              value: paymentLink.shopperInformation?.billingAddress?.street,
-                              config: { isCopyable: true },
-                          },
-                          {
-                              key: 'payByLink.details.fields.billingAddress.houseNumberOrName',
-                              value: paymentLink.shopperInformation?.billingAddress?.houseNumberOrName,
-                              config: { isCopyable: true },
-                          },
-                          {
-                              key: 'payByLink.details.fields.billingAddress.country',
-                              value: paymentLink.shopperInformation?.billingAddress?.country,
-                          },
-                          {
-                              key: 'payByLink.details.fields.billingAddress.city',
-                              value: paymentLink.shopperInformation?.billingAddress?.city,
-                              config: { isCopyable: true },
-                          },
-                          {
-                              key: 'payByLink.details.fields.billingAddress.postalCode',
-                              value: paymentLink.shopperInformation?.billingAddress?.postalCode,
-                              config: { isCopyable: true },
-                          },
-                      ],
+        return {
+            linkInformation: toStructuredListItems(items.linkInformation),
+            shopperInformation: toStructuredListItems(items.shopperInformation),
+            shippingAddress: toStructuredListItems(items.shippingAddress),
+            billingAddress: toStructuredListItems(items.billingAddress),
         };
-
-        // Filter out items with empty values from each group
-        return Object.fromEntries(
-            Object.entries(items).map(([category, categoryItems]) => [
-                category,
-                categoryItems.filter(item => item.value != null && item.value !== '' && item.value !== undefined),
-            ])
-        ) as ListItems;
-    }, [paymentLink, dateFormat, i18n, isAddressRedacted]);
+    }, [paymentLink, dateFormat, i18n]);
 
     const renderListItemLabel = useCallback((label: string) => <div className={CLASSNAMES.listLabel}>{label}</div>, []);
     const renderListItemValue = useCallback((value: ListValue, key: TranslationKey, type: StructuredListItemType | undefined, config: any) => {

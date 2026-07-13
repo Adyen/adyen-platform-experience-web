@@ -2,12 +2,13 @@ import { ValidityField } from './Fields/ValidityField';
 import { AmountField } from './Fields/AmountField';
 import { LinkTypeField } from './Fields/LinkTypeField';
 import { FormTextInput } from '@integration-components/ui-components-preact/FormWrappers/FormTextInput';
-import { PaymentLinkCreationFormValues } from '../../types';
+import { PaymentLinkCreationFormValues } from '../../../types';
 import { useCoreContext } from '@integration-components/core/preact';
 import { FormCalendarInput } from '@integration-components/ui-components-preact/FormWrappers/FormCalendarInput';
-import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../constants';
+
 import './PaymentDetailsForm.scss';
 import { IPaymentLinkConfiguration } from '@integration-components/types';
+import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../domain/src';
 
 interface PaymentDetailsFormProps {
     configuration?: IPaymentLinkConfiguration;

@@ -1,4 +1,4 @@
-import { PaymentLinkCreationFormValues } from '../../../types';
+import { PaymentLinkCreationFormValues } from '../../../../types';
 import { useCoreContext } from '@integration-components/core/preact';
 import { useMemo } from 'preact/hooks';
 import { FunctionalComponent } from 'preact';
