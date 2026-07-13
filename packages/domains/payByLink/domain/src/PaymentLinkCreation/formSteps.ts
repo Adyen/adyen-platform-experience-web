@@ -1,6 +1,6 @@
 import type { Localization, TranslationKey } from '@integration-components/core';
 import type { IPaymentLinkConfiguration, IPaymentLinkConfigurationElement } from '@integration-components/types';
-import type { PaymentLinkFieldName, PaymentLinkFieldsVisibilityConfig } from './types';
+import type { PaymentLinkFieldName, PaymentLinkFieldsVisibilityConfig, PaymentLinkFieldVisibility } from './types';
 
 export interface FormFieldConfig {
     fieldName: PaymentLinkFieldName;
@@ -31,6 +31,16 @@ type FieldVisibilityResult = {
     readOnly: boolean;
 };
 
+const buildFieldVisibilityResult = (
+    visibility: PaymentLinkFieldVisibility | undefined,
+    isFieldInConfigResponse: boolean,
+    canBeHidden = true
+): FieldVisibilityResult => ({
+    visible: isFieldInConfigResponse && (!canBeHidden || visibility !== 'hidden'),
+    includeInApiPayload: isFieldInConfigResponse,
+    readOnly: visibility === 'readOnly',
+});
+
 const resolveFieldVisibility = (
     fieldName: PaymentLinkFieldName,
     isFieldInConfigResponse: boolean,
@@ -38,45 +48,24 @@ const resolveFieldVisibility = (
 ): FieldVisibilityResult => {
     const configVisibility = visibilityConfig?.[fieldName as keyof typeof visibilityConfig];
     if (typeof configVisibility === 'string') {
-        return {
-            visible: configVisibility !== 'hidden' && isFieldInConfigResponse,
-            includeInApiPayload: isFieldInConfigResponse,
-            readOnly: configVisibility === 'readOnly',
-        };
+        return buildFieldVisibilityResult(configVisibility, isFieldInConfigResponse);
     }
 
     const [parentField, childField] = fieldName.split('.') as [keyof typeof visibilityConfig, string | undefined];
     const parentVisibility = visibilityConfig?.[parentField];
 
-    if (parentVisibility) {
-        if (typeof parentVisibility === 'string') {
-            return {
-                visible: parentVisibility !== 'hidden' && isFieldInConfigResponse,
-                includeInApiPayload: isFieldInConfigResponse,
-                readOnly: parentVisibility === 'readOnly',
-            };
-        }
-
-        if (childField && typeof parentVisibility === 'object') {
-            const childVisibility = (parentVisibility as Record<string, string>)[childField];
-            if (childVisibility) {
-                const isAddressField = parentField === 'billingAddress' || parentField === 'deliveryAddress';
-                const canBeHidden = !isAddressField;
-
-                return {
-                    visible: (canBeHidden ? childVisibility !== 'hidden' : true) && isFieldInConfigResponse,
-                    includeInApiPayload: isFieldInConfigResponse,
-                    readOnly: childVisibility === 'readOnly',
-                };
-            }
-        }
+    if (typeof parentVisibility === 'string') {
+        return buildFieldVisibilityResult(parentVisibility, isFieldInConfigResponse);
     }
 
-    return {
-        visible: isFieldInConfigResponse,
-        includeInApiPayload: isFieldInConfigResponse,
-        readOnly: false,
-    };
+    if (!childField || typeof parentVisibility !== 'object') {
+        return buildFieldVisibilityResult(undefined, isFieldInConfigResponse);
+    }
+
+    const childVisibility = (parentVisibility as Partial<Record<string, PaymentLinkFieldVisibility>>)[childField];
+    const canBeHidden = parentField !== 'billingAddress' && parentField !== 'deliveryAddress';
+
+    return buildFieldVisibilityResult(childVisibility, isFieldInConfigResponse, canBeHidden);
 };
 
 export const getFormSteps = ({ getFieldConfig, visibilityConfig }: GetFormStepsParams): ReadonlyArray<FormStepConfig> => {
