@@ -12,6 +12,7 @@ import {
     quickSelectDateRanges,
     startOfDay,
     toUTCISOStringKeepingLocalDateTime,
+    uniqueId,
 } from '@integration-components/utils';
 import type { IBalanceAccountBase } from '@integration-components/types';
 import type { IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
@@ -32,6 +33,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 
+const ALL_BALANCE_ACCOUNTS_VALUE = uniqueId();
 const earliestDate = startOfDay(new Date(EARLIEST_DISPUTES_SINCE_DATE));
 
 const last90DaysRange: BentoDateRangePickerValue = {
@@ -94,7 +96,11 @@ const selectedDateRange = ref<BentoDateRangePickerValue>(cloneDateRange(defaultD
 watch(
     () => props.balanceAccounts,
     accounts => {
-        if (accounts?.length && !accounts.some(account => account.id === selectedBalanceAccountId.value)) {
+        if (
+            accounts?.length &&
+            selectedBalanceAccountId.value !== ALL_BALANCE_ACCOUNTS_VALUE &&
+            !accounts.some(account => account.id === selectedBalanceAccountId.value)
+        ) {
             selectedBalanceAccountId.value = accounts[0]?.id;
         }
     },
@@ -112,11 +118,17 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             visible: !props.compact,
             ...(!props.compact ? { defaultValue: props.balanceAccounts[0]!.id } : {}),
             options: {
-                listboxItems: props.balanceAccounts.map(a => ({
-                    label: a.description || a.id,
-                    value: a.id,
-                    description: a.description ? a.id : undefined,
-                })),
+                listboxItems: [
+                    ...props.balanceAccounts.map(a => ({
+                        label: a.description || a.id,
+                        value: a.id,
+                        description: a.description ? a.id : undefined,
+                    })),
+                    {
+                        label: i18n.get('common.filters.types.account.options.all'),
+                        value: ALL_BALANCE_ACCOUNTS_VALUE,
+                    },
+                ],
             },
         });
     }
@@ -185,7 +197,7 @@ const currentFilterParams = computed(() => {
     const fromMs = Math.max(selectedDateRange.value.startDate.getTime(), earliestDate.getTime());
     const untilMs = Math.min(selectedDateRange.value.endDate.getTime(), Date.now());
     return {
-        balanceAccountId: selectedBalanceAccountId.value,
+        balanceAccountId: selectedBalanceAccountId.value === ALL_BALANCE_ACCOUNTS_VALUE ? undefined : selectedBalanceAccountId.value,
         schemeCodes: selectedSchemes.value.length ? selectedSchemes.value.join(',') : undefined,
         reasonCategories: showReasonsFilter.value && selectedReasons.value.length ? selectedReasons.value.join(',') : undefined,
         createdSince: toUTCISOStringKeepingLocalDateTime(new Date(fromMs)),
