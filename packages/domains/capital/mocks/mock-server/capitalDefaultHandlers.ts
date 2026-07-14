@@ -5,7 +5,7 @@ import { CAPITAL_ENDPOINTS } from '../endpoints';
 import { getCreateOfferResponse, getDynamicOfferResponse } from './utils';
 
 export const capitalDefaultHandlers = [
-    http.all('*', async () => {
+    http.all(`${CAPITAL_ENDPOINTS.all}`, async () => {
         await delay();
     }),
     http.get(CAPITAL_ENDPOINTS.dynamicOffer, ({ request }) => {

@@ -11,34 +11,39 @@ import { ICreateGrantOfferRequest } from '@integration-components/types';
 import { uuid } from '@integration-components/utils';
 import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
 
-let retriesCount = 0;
-let elapsedTimeStart: number | undefined;
+type EndpointState = {
+    retriesCount?: number;
+    elapsedTimeStart?: number;
+};
+
 const ASYNC_ACTION_DELAY_MS = 2000;
+const endpointStates: Record<string, EndpointState> = {};
+
+const getEndpointState = (url: string) => (endpointStates[url] ??= {});
 
 const getResponseAfterRetriesLimit = async (
+    url: string,
     initialResponse: StrictResponse<JsonBodyType>,
     finalResponse: StrictResponse<JsonBodyType>,
     retriesLimit: number = 0
 ) => {
-    const areRetriesExceeded = retriesCount >= retriesLimit;
-    if (areRetriesExceeded) {
-        retriesCount = 0;
-    } else {
-        retriesCount += 1;
-    }
+    const state = getEndpointState(url);
+    const areRetriesExceeded = (state.retriesCount ??= 0) >= retriesLimit;
+    state.retriesCount = areRetriesExceeded ? 0 : state.retriesCount + 1;
     return areRetriesExceeded ? finalResponse : initialResponse;
 };
 
 const getResponseAfterTimeLimit = async (
+    url: string,
     initialResponse: StrictResponse<JsonBodyType>,
     finalResponse: StrictResponse<JsonBodyType>,
     timeLimit: number
 ) => {
     const testSafeTimeLimit = Number(process.env.TEST_ENV) === 1 ? 0 : timeLimit;
-    if (!elapsedTimeStart) elapsedTimeStart = Date.now();
-    const elapsedTime = Date.now() - elapsedTimeStart;
+    const state = getEndpointState(url);
+    const elapsedTime = Date.now() - (state.elapsedTimeStart ??= Date.now());
     const isElapsedTimeExceeded = elapsedTime >= testSafeTimeLimit;
-    if (isElapsedTimeExceeded) elapsedTimeStart = undefined;
+    if (isElapsedTimeExceeded) state.elapsedTimeStart = undefined;
     return isElapsedTimeExceeded ? finalResponse : initialResponse;
 };
 
@@ -50,15 +55,17 @@ export const getGenericError = () => {
 export const getErrorResponse = (error: AdyenPlatformExperienceError, status: number) =>
     HttpResponse.json({ ...error, status, detail: 'detail' }, { status });
 
-export const getAsyncCapitalStateResponse = () =>
+export const getAsyncCapitalStateResponse = (url: string) =>
     getResponseAfterTimeLimit(
+        url,
         HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION),
         HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS),
         ASYNC_ACTION_DELAY_MS
     );
 
-export const getAsyncGrantsResponse = () =>
+export const getAsyncGrantsResponse = (url: string) =>
     getResponseAfterTimeLimit(
+        url,
         HttpResponse.json({ data: [PENDING_GRANT_WITH_SINGLE_ACTION] }),
         HttpResponse.json({ data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] }),
         ASYNC_ACTION_DELAY_MS
@@ -73,7 +80,7 @@ export const getDynamicOfferResponse = (request: StrictRequest<DefaultBodyType>,
 
     const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'ServerError', 'Message', '500');
     const response = calculateOffers(numberAmount, currency, DYNAMIC_CAPITAL_OFFER.maxAmount.value);
-    return getResponseAfterRetriesLimit(getErrorResponse(error, 500), HttpResponse.json(response), retriesLimit);
+    return getResponseAfterRetriesLimit(request.url, getErrorResponse(error, 500), HttpResponse.json(response), retriesLimit);
 };
 
 export const getCreateOfferResponse = async (request: StrictRequest<DefaultBodyType>) => {

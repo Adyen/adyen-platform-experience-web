@@ -58,22 +58,22 @@ export const capitalOverviewHandlers = {
         }),
     ],
     grantMultipleActionsEmbedded: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return getAsyncCapitalStateResponse();
+        http.get(CAPITAL_ENDPOINTS.capitalState, ({ request }) => {
+            return getAsyncCapitalStateResponse(request.url);
         }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return getAsyncGrantsResponse();
+        http.get(CAPITAL_ENDPOINTS.grants, ({ request }) => {
+            return getAsyncGrantsResponse(request.url);
         }),
         http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
             return HttpResponse.json(ONBOARDING_CONFIGURATION);
         }),
     ],
     grantMultipleActionsHosted: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return getAsyncCapitalStateResponse();
+        http.get(CAPITAL_ENDPOINTS.capitalState, ({ request }) => {
+            return getAsyncCapitalStateResponse(request.url);
         }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return getAsyncGrantsResponse();
+        http.get(CAPITAL_ENDPOINTS.grants, ({ request }) => {
+            return getAsyncGrantsResponse(request.url);
         }),
         http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
             return HttpResponse.json(undefined, { status: 204 });
