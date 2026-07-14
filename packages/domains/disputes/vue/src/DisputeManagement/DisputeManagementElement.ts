@@ -6,7 +6,7 @@ export class DisputeManagementElement extends UIElement<DisputeManagementExterna
     public static type = 'disputesManagement' as const;
 
     constructor(props: DisputeManagementExternalProps) {
-        super(DisputeDetailsContainer, props, 'DisputeManagement');
+        super(DisputeDetailsContainer, props, 'disputesManagement');
     }
 }
 

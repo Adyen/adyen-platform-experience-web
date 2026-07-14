@@ -1,23 +1,15 @@
 import { UIElementProps } from '@integration-components/types';
 import { PaymentLinkCreationFieldsConfig } from '../PaymentLinkCreation/types';
+import type { PaymentLinksOverviewFiltersChangedEvent, StoreIds } from '../../../domain/src';
 
-export type StoreIds = string[] | string;
+export type { StoreIds };
 
 type PaymentLinkOverviewSubComponentProps<Props> = Omit<Props, 'onContactSupport' | 'storeIds' | 'ref'>;
 
 export interface PaymentLinksOverviewProps extends UIElementProps {
     allowLimitSelection?: boolean;
     balanceAccountId?: string;
-    onFiltersChanged?: (filters: {
-        balanceAccountId?: string;
-        linkTypes?: string;
-        statuses?: string;
-        createdSince?: string;
-        createdUntil?: string;
-        storeIds?: string;
-        merchantReference?: string;
-        paymentLinkId?: string;
-    }) => any;
+    onFiltersChanged?: (filters: PaymentLinksOverviewFiltersChangedEvent) => any;
     preferredLimit?: 10 | 20;
     showDetails?: boolean;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;

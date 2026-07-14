@@ -4,7 +4,7 @@ import type { TransactionDetailsExternalProps } from './types';
 
 export class TransactionDetailsElement extends UIElement<TransactionDetailsExternalProps> {
     constructor(props: TransactionDetailsExternalProps) {
-        super(TransactionDetailsContainer, props, 'TransactionDetails');
+        super(TransactionDetailsContainer, props, 'transactionDetails');
     }
 }
 

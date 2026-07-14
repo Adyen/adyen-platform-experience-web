@@ -441,9 +441,21 @@ importers:
 
   packages/domains/payByLink:
     dependencies:
+      '@adyen/bento-vue3':
+        specifier: 'catalog:'
+        version: 1.96.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+      '@adyen/ui-assets-icons-16':
+        specifier: 'catalog:'
+        version: 7.9.3(vue@3.5.31(typescript@5.8.3))
+      '@adyen/ui-assets-icons-40':
+        specifier: 'catalog:'
+        version: 4.9.2(vue@3.5.31(typescript@5.8.3))
       '@integration-components/assets':
         specifier: workspace:*
         version: link:../../shared/assets
+      '@integration-components/composables-vue':
+        specifier: workspace:*
+        version: link:../../shared/composables-vue
       '@integration-components/core':
         specifier: workspace:*
         version: link:../../shared/core
@@ -474,6 +486,12 @@ importers:
       preact:
         specifier: ^10.29.1
         version: 10.29.1
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.31(typescript@5.8.3)
+      zod:
+        specifier: 4.2.1
+        version: 4.2.1
     devDependencies:
       '@playwright/test':
         specifier: 'catalog:'
@@ -481,6 +499,9 @@ importers:
       '@storybook/preact':
         specifier: 'catalog:'
         version: 10.2.12(preact@10.29.1)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+      '@storybook/vue3':
+        specifier: 'catalog:'
+        version: 10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.8.3))
       dotenv:
         specifier: 'catalog:'
         version: 17.2.3

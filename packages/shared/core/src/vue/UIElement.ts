@@ -26,7 +26,7 @@ export class UIElement<Props extends Record<string, any>> {
     protected _props: Props;
     protected _app: App | null = null;
     protected _target: Element | null = null;
-    protected _componentName: string | undefined;
+    protected _componentName: ExternalComponentType | undefined;
 
     /**
      * Returns the core instance associated with this element, if any.
@@ -43,7 +43,7 @@ export class UIElement<Props extends Record<string, any>> {
         return this.type;
     }
 
-    constructor(component: Component, props: Props, componentName?: string) {
+    constructor(component: Component, props: Props, componentName?: ExternalComponentType) {
         this._component = component;
         this._props = reactive({ ...(props as Record<string, unknown>) }) as Props;
         this._componentName = componentName;

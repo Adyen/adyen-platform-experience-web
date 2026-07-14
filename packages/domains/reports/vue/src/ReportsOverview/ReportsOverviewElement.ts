@@ -14,7 +14,7 @@ import type { ReportsOverviewExternalProps } from './types';
  */
 export class ReportsOverviewElement extends UIElement<ReportsOverviewExternalProps> {
     constructor(props: ReportsOverviewExternalProps) {
-        super(ReportsOverviewContainer, props, 'ReportsOverview');
+        super(ReportsOverviewContainer, props, 'reports');
     }
 }
 

@@ -1,4 +1,4 @@
-import { PaymentLinkCreationFormValues } from '../../../types';
+import { PaymentLinkCreationFormValues } from '../../../../types';
 import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import { useWatch } from '@integration-components/hooks-preact/form';
 import Icon from '@integration-components/ui-components-preact/Icon';

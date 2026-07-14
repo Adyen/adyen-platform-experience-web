@@ -1,10 +1,10 @@
-import { PaymentLinkCreationFormValues } from '../../../../types';
+import { PaymentLinkCreationFormValues } from '../../../../../types';
 import { useCoreContext } from '@integration-components/core/preact';
 import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import { useCallback } from 'preact/hooks';
 import { TargetedEvent } from 'preact';
 import { FormTextInput } from '@integration-components/ui-components-preact/FormWrappers/FormTextInput';
-import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../constants';
+import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../../../domain/src';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 
 interface BillingCityFieldProps {
