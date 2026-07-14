@@ -4,24 +4,13 @@ import useTransactionsList from './hooks/useTransactionsList';
 import useTransactionsTotals from './hooks/useTransactionsTotals';
 import { useAccountBalances } from '@integration-components/hooks-preact';
 import useTransactionsViewSwitcher from './hooks/useTransactionsViewSwitcher';
-import {
-    CustomDataRetrieved,
-    DataCustomizationObject,
-    DataGridCustomColumnConfig,
-    IAmount,
-    IBalanceAccountBase,
-    ITransaction,
-    ITransactionCategory,
-    ITransactionStatus,
-    UIElementProps,
-} from '@integration-components/types';
+import { IAmount, IBalanceAccountBase, ITransactionCategory, ITransactionStatus, UIElementProps } from '@integration-components/types';
+import { TransactionsListCustomization, TransactionDetailsCustomization } from '../../../domain/src';
 import { RangeTimestamps } from '@integration-components/ui-components-preact/Calendar/calendar/timerange';
 import { TranslationKey } from '@integration-components/core';
 import { PropsWithChildren } from 'preact/compat';
-import { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 
-import { TransactionsTableCols } from '../../../domain/src';
-import { TransactionDetailsCustomization } from '../TransactionDetails';
+export type { TransactionsCustomColumn, TransactionsListCustomization, TransactionsTableFields } from '../../../domain/src';
 
 type _DateRangeKey<T extends TranslationKey> = T;
 
@@ -51,10 +40,6 @@ export const enum TransactionsView {
 }
 
 export type TransactionsOverviewMode = 'overview' | 'insights';
-
-export type TransactionsTableFields = StringWithAutocompleteOptions<TransactionsTableCols>;
-export type TransactionsCustomColumn = DataGridCustomColumnConfig<TransactionsTableFields>;
-export type TransactionsListCustomization = DataCustomizationObject<TransactionsTableFields, ITransaction[], CustomDataRetrieved[]>;
 
 export interface TransactionsOverviewComponentProps extends UIElementProps {
     allowLimitSelection?: boolean;
