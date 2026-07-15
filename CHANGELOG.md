@@ -4,9 +4,9 @@
 
 ### Patch Changes
 
-- 83c5ab1: In the Capital Overview component, we resolved an issue where a closed grant could be incorrectly hidden from the grant list if it was later renewed. Only active grants that are renewed are now filtered out of the list.
+- 83c5ab1: In the Capital Overview component, we resolved an issue where grants that closed after renewal were incorrectly hidden from the closed grants list.
 
-§§## 1.13.0
+## 1.13.0
 
 ### Minor Changes
 
