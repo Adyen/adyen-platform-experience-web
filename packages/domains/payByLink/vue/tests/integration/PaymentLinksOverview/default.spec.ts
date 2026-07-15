@@ -46,7 +46,7 @@ test.describe('Payment Links Overview', () => {
         });
 
         test('should display all filter options', async ({ page }) => {
-            await expect(page.getByRole('button', { name: /date/i })).toBeVisible();
+            await expect(page.getByRole('button', { name: /^Date range/ })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Type' })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Status' })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Merchant reference' })).toBeVisible();

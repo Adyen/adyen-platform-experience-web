@@ -4,7 +4,7 @@ import type { PaymentLinksOverviewExternalProps } from './types';
 
 export class PaymentLinksOverviewElement extends UIElement<PaymentLinksOverviewExternalProps> {
     constructor(props: PaymentLinksOverviewExternalProps) {
-        super(PaymentLinksOverviewContainer, props, 'PaymentLinksOverview');
+        super(PaymentLinksOverviewContainer, props, 'paymentLinksOverview');
     }
 }
 

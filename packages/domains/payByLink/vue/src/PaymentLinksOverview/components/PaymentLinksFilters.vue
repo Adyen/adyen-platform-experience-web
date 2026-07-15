@@ -42,9 +42,20 @@ function cloneDateRange(value: BentoDateRangePickerValue): BentoDateRangePickerV
 const earliestDate = startOfDay(new Date(Date.now() - EARLIEST_PAYMENT_LINK_DATE_DAYS * 24 * 60 * 60 * 1000));
 
 function normalizeDateRange(value: BentoDateRangePickerValue): BentoDateRangePickerValue {
+    if (!value?.startDate || !value?.endDate) {
+        return cloneDateRange(defaultDateRange);
+    }
+
+    const startDate = startOfDay(value.startDate);
+    const endDate = endOfDay(value.endDate);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        return cloneDateRange(defaultDateRange);
+    }
+
     const normalizedRange = {
-        startDate: startOfDay(value.startDate),
-        endDate: endOfDay(value.endDate),
+        startDate,
+        endDate,
         ...(value.granularity ? { granularity: value.granularity } : {}),
         ...(value.range ? { range: value.range } : {}),
     } satisfies BentoDateRangePickerValue;

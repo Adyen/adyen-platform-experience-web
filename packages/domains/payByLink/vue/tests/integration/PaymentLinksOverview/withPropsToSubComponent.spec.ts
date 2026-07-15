@@ -20,6 +20,8 @@ test.describe('PayByLinkOverview - With props to sub-components', () => {
     });
 
     test('should drill the props down to the link creation sub component', async ({ page }) => {
+        // [TODO]: PaymentLinkCreation is not yet migrated to Vue, so paymentLinkCreation props cannot be drilled down yet
+        test.fixme(true, 'PaymentLinkCreation is not yet migrated to Vue');
         await goToStory(page, { id: WITH_PROPS_TO_SUB_COMPONENTS_STORY_ID });
 
         await openCreatePaymentLinkModal(page);
