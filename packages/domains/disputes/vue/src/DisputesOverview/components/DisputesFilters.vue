@@ -6,7 +6,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 import { DISPUTE_PAYMENT_SCHEMES, DISPUTE_REASON_CATEGORIES } from '@integration-components/disputes/domain';
 import {
     createQuickSelectRanges,
-    DAY_MS,
+    DAY_IN_MS as DAY_MS,
     endOfDay,
     now,
     quickSelectDateRanges,
