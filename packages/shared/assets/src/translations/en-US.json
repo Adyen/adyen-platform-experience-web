@@ -935,6 +935,7 @@
     "payByLink.settings.common.action.save": "Save",
     "payByLink.settings.common.alerts.saveError": "The changes have not been saved. Please try again.",
     "payByLink.settings.common.alerts.saveSuccess": "The changes have been saved successfully.",
+    "payByLink.settings.common.alerts.validationError": "There is an error. Correct the highlighted field.",
     "payByLink.settings.errors.couldNotLoadSettings": "We couldn’t load your payment links settings.",
     "payByLink.settings.navigation.termsAndConditions": "Terms and conditions",
     "payByLink.settings.navigation.theme": "Theme",
