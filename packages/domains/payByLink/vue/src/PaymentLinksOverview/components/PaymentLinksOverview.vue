@@ -140,7 +140,7 @@ function onCloseModal() {
 //     hasToRefresh.value = true;
 // }
 
-const hasActionButtons = computed(() => !!(config.endpoints.savePayByLinkSettings || config.endpoints.createPBLPaymentLink));
+const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettings || config.endpoints?.createPBLPaymentLink));
 </script>
 
 <template>
@@ -152,7 +152,7 @@ const hasActionButtons = computed(() => !!(config.endpoints.savePayByLinkSetting
             <div v-else />
             <div class="adyen-pe-payment-links-overview__actions-container">
                 <BentoButton
-                    v-if="isMobile && config.endpoints.createPBLPaymentLink"
+                    v-if="isMobile && config.endpoints?.createPBLPaymentLink"
                     variant="primary"
                     condensed
                     class="adyen-pe-payment-links-overview__action-button--xs"
@@ -162,7 +162,7 @@ const hasActionButtons = computed(() => !!(config.endpoints.savePayByLinkSetting
                     <PlusIcon />
                 </BentoButton>
                 <BentoButton
-                    v-if="isMobile && config.endpoints.savePayByLinkSettings"
+                    v-if="isMobile && config.endpoints?.savePayByLinkSettings"
                     variant="secondary"
                     condensed
                     class="adyen-pe-payment-links-overview__action-button--xs"
@@ -195,11 +195,11 @@ const hasActionButtons = computed(() => !!(config.endpoints.savePayByLinkSetting
                 :on-change="onFiltersChange"
             />
             <div v-if="hasActionButtons && !isMobile" class="adyen-pe-payment-links-overview__action-buttons-container">
-                <BentoButton v-if="config.endpoints.createPBLPaymentLink" variant="primary" @click="openPaymentLinkModal">
+                <BentoButton v-if="config.endpoints?.createPBLPaymentLink" variant="primary" @click="openPaymentLinkModal">
                     {{ i18n.get('payByLink.overview.list.actions.createPaymentLink') }}
                 </BentoButton>
                 <BentoButton
-                    v-if="config.endpoints.savePayByLinkSettings"
+                    v-if="config.endpoints?.savePayByLinkSettings"
                     variant="secondary"
                     :aria-label="i18n.get('payByLink.overview.actions.settings.a11y.label')"
                     @click="openSettingsModal"
