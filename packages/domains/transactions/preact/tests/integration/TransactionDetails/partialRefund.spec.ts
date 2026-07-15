@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedAnalyticsEventProperties } from './shared/constants';
+import { sharedAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionDetails';
 
 const STORY_ID = 'mocked-transactions-transaction-details--partial-refund';
 
@@ -34,7 +34,7 @@ test.describe('Partial refund', () => {
         await expect(page.getByRole('alert')).toHaveCount(0);
 
         await expect(page.getByRole('button', { name: 'Go back', exact: true })).toBeHidden();
-        await expect(page.getByRole('button', { name: 'Go to payment', exact: true })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Go to payment', exact: true, disabled: false })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Return to refund', exact: true })).toBeHidden();
         await expect(page.getByRole('button', { name: 'Refund payment', exact: true })).toBeHidden();
     };
@@ -49,7 +49,7 @@ test.describe('Partial refund', () => {
     });
 
     test('should go to original payment transaction', async ({ page, analyticsEvents }) => {
-        await page.getByRole('button', { name: 'Go to payment', exact: true }).click();
+        await page.getByRole('button', { name: 'Go to payment', exact: true, disabled: false }).click();
         await expectAnalyticsEvents(analyticsEvents, [['Clicked button', { ...sharedAnalyticsEventProperties, label: 'Go to payment' }]]);
 
         await expect(page.getByText('Payment', { exact: true })).toBeVisible();
@@ -76,15 +76,15 @@ test.describe('Partial refund', () => {
 
         await expect(page.getByRole('button', { name: 'Go back', exact: true })).toBeHidden();
         await expect(page.getByRole('button', { name: 'Go to payment', exact: true })).toBeHidden();
-        await expect(page.getByRole('button', { name: 'Return to refund', exact: true })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Refund payment', exact: true })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Return to refund', exact: true, disabled: false })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Refund payment', exact: true, disabled: false })).toBeVisible();
     });
 
     test('should return back to refund from original payment', async ({ page, analyticsEvents }) => {
-        await page.getByRole('button', { name: 'Go to payment', exact: true }).click();
+        await page.getByRole('button', { name: 'Go to payment', exact: true, disabled: false }).click();
         await expectAnalyticsEvents(analyticsEvents, [['Clicked button', { ...sharedAnalyticsEventProperties, label: 'Go to payment' }]]);
 
-        await page.getByRole('button', { name: 'Return to refund', exact: true }).click();
+        await page.getByRole('button', { name: 'Return to refund', exact: true, disabled: false }).click();
         await expectAnalyticsEvents(analyticsEvents, [['Clicked button', { ...sharedAnalyticsEventProperties, label: 'Return to refund' }]]);
 
         await expectExactRefundDetailsRendering(page);

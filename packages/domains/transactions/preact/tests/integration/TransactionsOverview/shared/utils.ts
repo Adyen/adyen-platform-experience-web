@@ -1,23 +1,12 @@
-import type { Locator, Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 import { ITransactionCategory } from '@integration-components/types';
 import { sleep } from '@integration-components/testing/fixtures/utils';
 import { expectAnalyticsEvents } from '@integration-components/testing/playwright/utils';
 import { expect, type PageAnalyticsEvent } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import {
     sharedTransactionDetailsAnalyticsEventProperties,
-    sharedTransactionsInsightsAnalyticsEventProperties,
     sharedTransactionsListAnalyticsEventProperties,
-} from './constants';
-
-export const goToView = async (page: Page, analyticsEvents: PageAnalyticsEvent[], name: 'Transactions' | 'Insights') => {
-    await page.getByRole('radio', { name, exact: true }).click();
-    await expect(page.getByRole('radio', { name, exact: true, checked: true })).toBeVisible();
-
-    await expectAnalyticsEvents(analyticsEvents, [
-        ['Duration', name === 'Insights' ? sharedTransactionsListAnalyticsEventProperties : sharedTransactionsInsightsAnalyticsEventProperties],
-        ['Landed on page', name === 'Insights' ? sharedTransactionsInsightsAnalyticsEventProperties : sharedTransactionsListAnalyticsEventProperties],
-    ]);
-};
+} from '../../../../../fixtures/constants/TransactionsOverview';
 
 export const downloadTransactions = async (
     page: Page,
@@ -28,7 +17,7 @@ export const downloadTransactions = async (
     const popover = page.getByTestId('transactions-export-popover');
     const downloadPromise = fails ? undefined : page.waitForEvent('download');
 
-    await popover.getByRole('button', { name: 'Download', exact: true }).click();
+    await popover.getByRole('button', { name: 'Download', exact: true, disabled: false }).click();
     await expectAnalyticsEvents(analyticsEvents, [['Completed export', { ...sharedTransactionsListAnalyticsEventProperties, exportedFields }]]);
     await expect(popover).toBeHidden();
 
@@ -59,7 +48,7 @@ export const openTransactionDetailsModal = async (page: Page, analyticsEvents: P
 };
 
 export const openExportPopover = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
-    await page.getByRole('button', { name: 'Export', exact: true }).click();
+    await page.getByRole('button', { name: 'Export', exact: true, disabled: false, expanded: false }).click();
     await expect(page.getByTestId('transactions-export-popover')).toBeVisible();
     await expectAnalyticsEvents(analyticsEvents, [['Clicked button', { ...sharedTransactionsListAnalyticsEventProperties, label: 'Export' }]]);
 };
@@ -117,23 +106,6 @@ export const setExactPspReference = async (page: Page, analyticsEvents: PageAnal
     await applyPspReferenceFilter(page, analyticsEvents);
 };
 
-export const selectFirstUnselectedBalanceAccount = async (page: Page, analyticsEvents: PageAnalyticsEvent[], view: 'Insights' | 'Transactions') => {
-    const filterDialog = page.getByRole('dialog');
-    const firstUnselectedOption = filterDialog.getByRole('option', { selected: false }).nth(0);
-    const balanceAccountId = await firstUnselectedOption.getByTestId('balance-account-id').textContent();
-
-    const modifiedFilterEventProperties = {
-        ...(view === 'Insights' ? sharedTransactionsInsightsAnalyticsEventProperties : sharedTransactionsListAnalyticsEventProperties),
-        label: 'Balance account filter',
-        value: balanceAccountId,
-        actionType: 'update',
-    } as const;
-
-    await firstUnselectedOption.click();
-    await expect(filterDialog).toBeHidden();
-    await expectAnalyticsEvents(analyticsEvents, [['Modified filter', modifiedFilterEventProperties]]);
-};
-
 export const selectSingleCategoryFromMultiSelectFilter = async (
     page: Page,
     analyticsEvents: PageAnalyticsEvent[],
@@ -178,18 +150,4 @@ export const selectSingleCurrencyFromMultiSelectFilter = async (page: Page, anal
     await expect(filterDialog).toBeHidden();
 
     await expectAnalyticsEvents(analyticsEvents, [['Modified filter', modifiedFilterEventProperties]]);
-};
-
-export const extractTodayDateFromDatePicker = async (datePicker: Locator, now: number) => {
-    const monthAndYear = (await datePicker.getByTestId('calendar-month-name').textContent()) ?? '';
-    const timezone = (await datePicker.getByTestId('date-picker-timezone').textContent()) ?? '';
-    const date = (await datePicker.getByTestId('calendar-current-day').textContent()) ?? '';
-    const month = monthAndYear.slice(0, 3);
-    const year = monthAndYear.slice(-4);
-
-    const formattedDate = `${month} ${date}, ${year}`;
-    const startTimestamp = new Date(`${formattedDate}, 12:00 AM ${timezone.match(/(GMT\S+)\s/)?.[1] ?? ''}`).getTime();
-    const endTimestamp = Math.min(startTimestamp + 86400000000, now + 1); // +1 here compensates for a time shift
-
-    return { formattedDate, timestamps: [startTimestamp, endTimestamp] } as const;
 };

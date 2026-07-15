@@ -1,6 +1,6 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedTransactionsListAnalyticsEventProperties } from './shared/constants';
+import { sharedTransactionsListAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionsOverview';
 
 const STORY_ID = 'mocked-transactions-transactions-overview--empty-list';
 
@@ -26,20 +26,15 @@ test.describe('Empty list', () => {
     });
 
     test('should render disabled pagination buttons', async ({ page }) => {
-        const prevPageButton = page.getByRole('button', { name: 'Previous page', exact: true });
-        const nextPageButton = page.getByRole('button', { name: 'Next page', exact: true });
-
-        await expect(prevPageButton).toBeVisible();
-        await expect(nextPageButton).toBeVisible();
-
-        await expect(prevPageButton).toBeDisabled();
-        await expect(nextPageButton).toBeDisabled();
+        const disabledPrevPageButton = page.getByRole('button', { name: 'Previous page', exact: true, disabled: true });
+        const disabledNextPageButton = page.getByRole('button', { name: 'Next page', exact: true, disabled: true });
+        await expect(disabledPrevPageButton).toBeVisible();
+        await expect(disabledNextPageButton).toBeVisible();
     });
 
     test('should render disabled "Export" button', async ({ page }) => {
-        const exportButton = page.getByRole('button', { name: 'Export', exact: true });
-        await expect(exportButton).toBeVisible();
-        await expect(exportButton).toBeDisabled();
+        const disabledExportButton = page.getByRole('button', { name: 'Export', exact: true, disabled: true, expanded: false });
+        await expect(disabledExportButton).toBeVisible();
     });
 
     test('should render zero transaction totals', async ({ page }) => {

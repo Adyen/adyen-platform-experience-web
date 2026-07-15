@@ -8,7 +8,7 @@ const props = defineProps<PayoutDetailsExternalProps>();
 </script>
 
 <template>
-    <UIElementProvider :core="props.core" component-name="PayoutDetails">
+    <UIElementProvider :core="props.core" component-name="payoutDetails">
         <PayoutDetailsContainer
             :id="props.id"
             :date="props.date"

@@ -8,7 +8,7 @@ const props = defineProps<ReportsOverviewExternalProps>();
 </script>
 
 <template>
-    <UIElementProvider :core="props.core" component-name="ReportsOverview">
+    <UIElementProvider :core="props.core" component-name="reports">
         <ReportsOverviewContainer
             :balance-account-id="props.balanceAccountId"
             :allow-limit-selection="props.allowLimitSelection"

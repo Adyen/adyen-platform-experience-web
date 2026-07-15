@@ -8,7 +8,7 @@ const props = defineProps<TransactionDetailsExternalProps>();
 </script>
 
 <template>
-    <UIElementProvider :core="props.core" component-name="TransactionDetails">
+    <UIElementProvider :core="props.core" component-name="transactionDetails">
         <TransactionDetailsContainer
             :id="props.id"
             :data-customization="props.dataCustomization"

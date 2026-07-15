@@ -32,7 +32,12 @@ test.describe('Chargeback - Acceptable', () => {
         await page.getByText('I agree').click();
         await page.getByRole('button', { name: 'Accept chargeback' }).click();
 
-        await expect(page.getByText('Chargeback has been accepted')).toBeVisible();
+        const successMessage = page.getByText('Chargeback has been accepted');
+        const successIcon = page.getByTestId('accept-dispute-success-icon');
+
+        await expect(successMessage).toBeVisible();
+        await expect(successIcon).toHaveAttribute('width', '40');
+        await expect(successIcon).toHaveAttribute('height', '40');
         await expect(page.getByRole('button', { name: 'Show details' })).toBeVisible();
     });
 });

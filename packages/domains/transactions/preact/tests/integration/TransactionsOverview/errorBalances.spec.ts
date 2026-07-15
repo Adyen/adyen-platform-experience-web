@@ -1,6 +1,6 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedTransactionsListAnalyticsEventProperties } from './shared/constants';
+import { sharedTransactionsListAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionsOverview';
 
 const STORY_ID = 'mocked-transactions-transactions-overview--error-balances';
 
@@ -12,17 +12,14 @@ test.describe('Error - Balances', () => {
 
     test('should render balances error alert', async ({ page }) => {
         const alert = page.getByRole('alert');
-
         await expect(alert).toBeVisible();
-        await expect(alert.getByText('Something went wrong, we couldn’t load the account balances.', { exact: true })).toBeVisible();
-        await expect(alert.getByRole('button', { name: 'Refresh', exact: true })).toBeVisible();
-
         await expect(alert).toHaveCount(1);
-        await expect(page.getByRole('alert')).toHaveCount(1);
+        await expect(alert.getByText('Something went wrong, we couldn’t load the account balances.', { exact: true })).toBeVisible();
+        await expect(alert.getByRole('button', { name: 'Refresh', exact: true, disabled: false })).toBeVisible();
     });
 
     test('should refresh balances', async ({ page }) => {
-        const refreshButton = page.getByRole('alert').getByRole('button', { name: 'Refresh', exact: true });
+        const refreshButton = page.getByRole('alert').getByRole('button', { name: 'Refresh', exact: true, disabled: false });
         const balancesRequest = page.waitForRequest(request => request.url().endsWith('/balances'));
         await refreshButton.click();
         await balancesRequest;

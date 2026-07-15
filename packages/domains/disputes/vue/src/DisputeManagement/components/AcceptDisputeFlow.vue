@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoAlert, BentoButton, BentoButtonActions, BentoCheckbox, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
-import SuccessIcon from '@adyen/ui-assets-icons-16/vue/checkmark-circle-fill';
+import SuccessIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { DISPUTE_TYPE } from '@integration-components/disputes/domain';
 import { isFunction } from '@integration-components/utils';
@@ -100,7 +100,7 @@ watch(disputeAccepted, accepted => {
 <template>
     <div class="adyen-pe-accept-dispute__container">
         <div v-if="disputeAccepted" class="adyen-pe-accept-dispute__success">
-            <SuccessIcon class="adyen-pe-accept-dispute__success-icon" aria-hidden="true" />
+            <SuccessIcon class="adyen-pe-accept-dispute__success-icon" data-testid="accept-dispute-success-icon" aria-hidden="true" />
             <BentoTypography variant="title">
                 {{ acceptedLabel }}
             </BentoTypography>
