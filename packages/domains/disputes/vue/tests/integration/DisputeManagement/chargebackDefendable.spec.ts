@@ -6,6 +6,12 @@ import path from 'path';
 const STORY_ID = 'mocked-disputes-dispute-management--chargeback-defendable';
 
 test.describe('Chargeback - Defendable', () => {
+    test('should render in the compact component container', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID });
+
+        await expect(page.locator('.compact-component-wrapper')).toBeVisible();
+    });
+
     test('should render button to accept and alert for defending the chargeback', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await expect(page.getByText('Chargeback', { exact: true })).toBeVisible();
