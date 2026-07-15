@@ -149,8 +149,8 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
             props();
         return JSON.stringify({
             statusGroup,
-            statuses: [...statuses].sort(),
-            linkTypes: [...linkTypes].sort(),
+            statuses: [...(statuses || [])].sort(),
+            linkTypes: [...(linkTypes || [])].sort(),
             storeIds: (filterStoreIds.length ? filterStoreIds : (listFrom(propStoreIds) ?? [])).slice().sort(),
             merchantReference,
             paymentLinkId,
