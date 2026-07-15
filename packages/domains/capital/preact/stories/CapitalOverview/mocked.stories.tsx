@@ -4,7 +4,7 @@ import { CapitalOverview } from '../../src';
 import { AdyenPlatformExperience } from '@integration-components/sdk-internal';
 import { ILegalEntity } from '@integration-components/types';
 import { CapitalOverviewWithSetupMeta } from './meta';
-import { CapitalOverviewMockedResponses } from '../../../mocks/mock-server/capital';
+import { capitalOverviewHandlers } from '../../../mocks/mock-server/capitalOverviewHandlers';
 import { useEffect } from 'preact/compat';
 
 const meta: Meta<ElementProps<typeof CapitalOverview> & SetupControls> = {
@@ -53,6 +53,11 @@ export const Unqualified: ElementStory<typeof CapitalOverview, { mountIfUnqualif
         skipDecorators: true,
         mountIfUnqualified: true,
     },
+    parameters: {
+        msw: {
+            handlers: capitalOverviewHandlers.unqualified,
+        },
+    },
     decorators: [
         (story, context) => {
             useEffect(() => {
@@ -83,7 +88,7 @@ export const Prequalified: ElementStory<typeof CapitalOverview> = {
     },
     parameters: {
         msw: {
-            handlers: CapitalOverviewMockedResponses.prequalified,
+            handlers: capitalOverviewHandlers.prequalified,
         },
     },
 };
@@ -94,7 +99,7 @@ export const GrantPending: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantPending,
+        msw: capitalOverviewHandlers.grantPending,
     },
 };
 
@@ -104,7 +109,7 @@ export const GrantMultipleActionsEmbedded: ElementStory<typeof CapitalOverview> 
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantMultipleActionsEmbedded,
+        msw: capitalOverviewHandlers.grantMultipleActionsEmbedded,
     },
 };
 
@@ -114,7 +119,7 @@ export const GrantMultipleActionsHosted: ElementStory<typeof CapitalOverview> = 
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantMultipleActionsHosted,
+        msw: capitalOverviewHandlers.grantMultipleActionsHosted,
     },
 };
 
@@ -124,7 +129,7 @@ export const GrantSingleActionEmbedded: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantSingleActionEmbedded,
+        msw: capitalOverviewHandlers.grantSingleActionEmbedded,
     },
 };
 
@@ -134,7 +139,7 @@ export const GrantSingleActionHosted: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantSingleActionHosted,
+        msw: capitalOverviewHandlers.grantSingleActionHosted,
     },
 };
 
@@ -144,7 +149,7 @@ export const GrantActive: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantActive,
+        msw: capitalOverviewHandlers.grantActive,
     },
 };
 
@@ -154,7 +159,7 @@ export const RepaymentNL: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.repaymentNL,
+        msw: capitalOverviewHandlers.repaymentNL,
     },
 };
 
@@ -164,7 +169,7 @@ export const RepaymentGB: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.repaymentGB,
+        msw: capitalOverviewHandlers.repaymentGB,
     },
 };
 
@@ -174,7 +179,7 @@ export const RepaymentUS: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.repaymentUS,
+        msw: capitalOverviewHandlers.repaymentUS,
     },
 };
 
@@ -184,7 +189,7 @@ export const RepaymentNoTransferInstruments: ElementStory<typeof CapitalOverview
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.repaymentNoTransferInstruments,
+        msw: capitalOverviewHandlers.repaymentNoTransferInstruments,
     },
 };
 
@@ -194,7 +199,7 @@ export const GrantFailed: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantFailed,
+        msw: capitalOverviewHandlers.grantFailed,
     },
 };
 
@@ -204,7 +209,7 @@ export const GrantRepaid: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantRepaid,
+        msw: capitalOverviewHandlers.grantRepaid,
     },
 };
 
@@ -214,7 +219,7 @@ export const GrantRevoked: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantRevoked,
+        msw: capitalOverviewHandlers.grantRevoked,
     },
 };
 
@@ -224,7 +229,7 @@ export const GrantWrittenOff: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantWrittenOff,
+        msw: capitalOverviewHandlers.grantWrittenOff,
     },
 };
 
@@ -234,7 +239,7 @@ export const EarlyRenewal: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.earlyRenewal,
+        msw: capitalOverviewHandlers.earlyRenewal,
     },
 };
 
@@ -244,7 +249,7 @@ export const NewOffer: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.newOffer,
+        msw: capitalOverviewHandlers.newOffer,
     },
 };
 
@@ -254,7 +259,7 @@ export const Grants: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grants,
+        msw: capitalOverviewHandlers.grants,
     },
 };
 
@@ -265,7 +270,7 @@ export const ErrorStateNoOfferCapability: ElementStory<typeof CapitalOverview> =
     },
     parameters: {
         msw: {
-            handlers: CapitalOverviewMockedResponses.errorStateNoOfferCapability,
+            handlers: capitalOverviewHandlers.errorStateNoOfferCapability,
         },
     },
 };
@@ -277,7 +282,7 @@ export const ErrorStateInactiveAccountHolder: ElementStory<typeof CapitalOvervie
     },
     parameters: {
         msw: {
-            handlers: CapitalOverviewMockedResponses.errorStateInactiveAccountHolder,
+            handlers: capitalOverviewHandlers.errorStateInactiveAccountHolder,
         },
     },
 };
@@ -289,7 +294,7 @@ export const ErrorActionsEmbedded: ElementStory<typeof CapitalOverview> = {
     },
     parameters: {
         msw: {
-            handlers: CapitalOverviewMockedResponses.errorActionsEmbedded,
+            handlers: capitalOverviewHandlers.errorActionsEmbedded,
         },
     },
 };
@@ -301,7 +306,7 @@ export const ErrorActionsHosted: ElementStory<typeof CapitalOverview> = {
     },
     parameters: {
         msw: {
-            handlers: CapitalOverviewMockedResponses.errorActionsHosted,
+            handlers: capitalOverviewHandlers.errorActionsHosted,
         },
     },
 };
