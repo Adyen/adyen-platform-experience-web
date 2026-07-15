@@ -1,0 +1,39 @@
+@use '@integration-components/style';
+
+.adyen-pe-error-message-display {
+    border-radius: style.token(border-radius-m);
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+    margin: 0 auto;
+    max-width: 550px;
+    padding: style.token(spacer-090);
+    text-align: center;
+
+    &--outlined {
+        background: style.token(color-background-primary);
+        border: style.token(border-width-s) solid style.token(color-outline-primary);
+        box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
+    }
+
+    &--centered {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    &__title {
+        font-size: style.token(text-title-m-font-size);
+        font-weight: style.token(text-body-strongest-font-weight);
+        letter-spacing: #{style.token(text-title-letter-spacing)};
+        line-height: style.token(text-title-m-mobile-line-height);
+        margin: 0;
+    }
+
+    &__message {
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        letter-spacing: #{style.token(text-body-letter-spacing)};
+        line-height: style.token(text-body-line-height);
+        margin: 0;
+    }
+}

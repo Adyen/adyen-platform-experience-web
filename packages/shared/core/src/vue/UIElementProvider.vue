@@ -28,7 +28,7 @@ provide(COMPONENT_REF_KEY, componentRef);
         :get-cdn-dataset="props.core.getCdnDataset"
         :external-error-handler="props.core.options.onError"
     >
-        <ConfigProvider :session="props.core.session">
+        <ConfigProvider :session="props.core.session" :type="props.componentName">
             <EventDispatcherProvider :component-name="props.componentName" :analytics-enabled="props.core.analyticsEnabled ?? true">
                 <section ref="componentRef" :class="['adyen-pe-component', props.customClassNames]" data-testid="component-root">
                     <div class="adyen-pe-component__container">
