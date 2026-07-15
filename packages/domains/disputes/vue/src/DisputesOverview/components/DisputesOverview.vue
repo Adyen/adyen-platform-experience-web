@@ -29,6 +29,7 @@ const DISPUTE_STATUS_GROUP_VALUES = Object.keys(DISPUTE_STATUS_GROUPS) as IDispu
 const statusGroup = ref<IDisputeStatusGroup>(DEFAULT_DISPUTE_STATUS_GROUP);
 const refreshToken = ref(0);
 const selectedDisputeId = ref<string | undefined>(undefined);
+const filtersInitialized = ref(false);
 
 const filterParams = ref<{
     balanceAccountId: string | undefined;
@@ -52,6 +53,7 @@ function onFiltersChange(params: {
     createdUntil: string;
 }) {
     filterParams.value = params;
+    filtersInitialized.value = true;
 }
 
 const statusGroupItems = computed(() =>
@@ -70,7 +72,7 @@ const activeBalanceAccount = computed(() => {
 });
 
 const disputesListResult = useDisputesList(() => ({
-    fetchEnabled: !!filterParams.value.balanceAccountId,
+    fetchEnabled: filtersInitialized.value,
     balanceAccountId: filterParams.value.balanceAccountId,
     statusGroup: statusGroup.value,
     schemeCodes: filterParams.value.schemeCodes,
@@ -84,7 +86,7 @@ const disputesListResult = useDisputesList(() => ({
 }));
 
 const isLoading = computed(
-    () => disputesListResult.fetching.value || props.isLoadingBalanceAccount || !props.balanceAccounts || !activeBalanceAccount.value
+    () => disputesListResult.fetching.value || props.isLoadingBalanceAccount || !props.balanceAccounts || !filtersInitialized.value
 );
 
 const disputesError = computed(() => disputesListResult.error.value as Error | undefined);

@@ -73,7 +73,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 
     const grantList = useMemo(() => {
         const grants = requestedGrant ? [requestedGrant, ...(grantsQuery.data?.data || [])] : grantsQuery.data?.data;
-        return grants?.filter(grant => !capitalState.renewsGrantIds.has(grant.id));
+        return grants?.filter(grant => !(grant.status === 'Active' && capitalState.renewsGrantIds.has(grant.id)));
     }, [capitalState.renewsGrantIds, grantsQuery.data?.data, requestedGrant]);
 
     const handlePreQualifiedFundsRequest = useCallback<OnFundsRequestCallback>(

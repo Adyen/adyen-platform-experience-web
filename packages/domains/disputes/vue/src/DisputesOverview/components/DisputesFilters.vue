@@ -4,7 +4,16 @@ import { BentoFilterBar, BentoFilterItemType } from '@adyen/bento-vue3';
 import type { BentoFilterBarModel, BentoFilterValues, BentoDateRangePickerValue } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { DISPUTE_PAYMENT_SCHEMES, DISPUTE_REASON_CATEGORIES } from '@integration-components/disputes/domain';
-import { endOfDay, now, quickSelectDateRanges, startOfDay, toUTCISOStringKeepingLocalDateTime } from '@integration-components/utils';
+import {
+    createQuickSelectRanges,
+    DAY_MS,
+    endOfDay,
+    now,
+    quickSelectDateRanges,
+    startOfDay,
+    toUTCISOStringKeepingLocalDateTime,
+    uniqueId,
+} from '@integration-components/utils';
 import type { IBalanceAccountBase } from '@integration-components/types';
 import type { IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 import { EARLIEST_DISPUTES_SINCE_DATE } from '../constants';
@@ -24,7 +33,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 
-const DAY_MS = 24 * 60 * 60 * 1000;
+const ALL_BALANCE_ACCOUNTS_VALUE = uniqueId();
 const earliestDate = startOfDay(new Date(EARLIEST_DISPUTES_SINCE_DATE));
 
 const last90DaysRange: BentoDateRangePickerValue = {
@@ -57,16 +66,19 @@ function normalizeDateRange(value: BentoDateRangePickerValue): BentoDateRangePic
 
 const defaultDateRange: BentoDateRangePickerValue = cloneDateRange(last90DaysRange);
 
-const quickSelectRanges = [
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.last7Days'), value: 'last7Days', data: quickSelectDateRanges.last7Days },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.last30Days'), value: 'last30Days', data: quickSelectDateRanges.last30Days },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.last90Days'), value: 'last90Days', data: last90DaysRange },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.thisWeek'), value: 'thisWeek', data: quickSelectDateRanges.thisWeek },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.lastWeek'), value: 'lastWeek', data: quickSelectDateRanges.lastWeek },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.thisMonth'), value: 'thisMonth', data: quickSelectDateRanges.thisMonth },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.lastMonth'), value: 'lastMonth', data: quickSelectDateRanges.lastMonth },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.yearToDate'), value: 'yearToDate', data: quickSelectDateRanges.yearToDate },
-];
+const quickSelectRanges = createQuickSelectRanges(
+    {
+        last7Days: quickSelectDateRanges.last7Days,
+        last30Days: quickSelectDateRanges.last30Days,
+        last90Days: last90DaysRange,
+        thisWeek: quickSelectDateRanges.thisWeek,
+        lastWeek: quickSelectDateRanges.lastWeek,
+        thisMonth: quickSelectDateRanges.thisMonth,
+        lastMonth: quickSelectDateRanges.lastMonth,
+        yearToDate: quickSelectDateRanges.yearToDate,
+    },
+    key => i18n.get(key)
+);
 
 const schemeItems = Object.entries(DISPUTE_PAYMENT_SCHEMES).map(([value, label]) => ({ label, value }));
 const reasonItems = computed(() => Object.entries(DISPUTE_REASON_CATEGORIES).map(([value, labelKey]) => ({ label: i18n.get(labelKey), value })));
@@ -84,7 +96,11 @@ const selectedDateRange = ref<BentoDateRangePickerValue>(cloneDateRange(defaultD
 watch(
     () => props.balanceAccounts,
     accounts => {
-        if (accounts?.length && !accounts.some(account => account.id === selectedBalanceAccountId.value)) {
+        if (
+            accounts?.length &&
+            selectedBalanceAccountId.value !== ALL_BALANCE_ACCOUNTS_VALUE &&
+            !accounts.some(account => account.id === selectedBalanceAccountId.value)
+        ) {
             selectedBalanceAccountId.value = accounts[0]?.id;
         }
     },
@@ -102,11 +118,17 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             visible: !props.compact,
             ...(!props.compact ? { defaultValue: props.balanceAccounts[0]!.id } : {}),
             options: {
-                listboxItems: props.balanceAccounts.map(a => ({
-                    label: a.description || a.id,
-                    value: a.id,
-                    description: a.description ? a.id : undefined,
-                })),
+                listboxItems: [
+                    ...props.balanceAccounts.map(a => ({
+                        label: a.description || a.id,
+                        value: a.id,
+                        description: a.description ? a.id : undefined,
+                    })),
+                    {
+                        label: i18n.get('common.filters.types.account.options.all'),
+                        value: ALL_BALANCE_ACCOUNTS_VALUE,
+                    },
+                ],
             },
         });
     }
@@ -175,7 +197,7 @@ const currentFilterParams = computed(() => {
     const fromMs = Math.max(selectedDateRange.value.startDate.getTime(), earliestDate.getTime());
     const untilMs = Math.min(selectedDateRange.value.endDate.getTime(), Date.now());
     return {
-        balanceAccountId: selectedBalanceAccountId.value,
+        balanceAccountId: selectedBalanceAccountId.value === ALL_BALANCE_ACCOUNTS_VALUE ? undefined : selectedBalanceAccountId.value,
         schemeCodes: selectedSchemes.value.length ? selectedSchemes.value.join(',') : undefined,
         reasonCategories: showReasonsFilter.value && selectedReasons.value.length ? selectedReasons.value.join(',') : undefined,
         createdSince: toUTCISOStringKeepingLocalDateTime(new Date(fromMs)),

@@ -3,7 +3,7 @@ import { ElementProps, ElementStory, getMySessionToken, SetupControls } from '@i
 import { capitalOfferWithSetupMeta } from './meta';
 import { CapitalOffer, CapitalOverview } from '../../src';
 import { ILegalEntity } from '@integration-components/types';
-import { CapitalOfferMockedResponses } from '../../../mocks/mock-server/capital';
+import { capitalOfferHandlers } from '../../../mocks/mock-server/capitalOfferHandlers';
 import { useEffect } from 'preact/compat';
 import { AdyenPlatformExperience } from '../../../../../../src';
 
@@ -16,7 +16,7 @@ export const Default: ElementStory<typeof CapitalOffer> = {
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.default,
+            handlers: capitalOfferHandlers.default,
         },
     },
 };
@@ -28,7 +28,7 @@ export const EarlyRenewal: ElementStory<typeof CapitalOffer> = {
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.earlyRenewal,
+            handlers: capitalOfferHandlers.earlyRenewal,
         },
     },
 };
@@ -44,7 +44,7 @@ export const WithAPRField: ElementStory<typeof CapitalOffer, { legalEntity: ILeg
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.aprField,
+            handlers: capitalOfferHandlers.aprField,
         },
     },
 };
@@ -90,6 +90,11 @@ export const Unqualified: ElementStory<typeof CapitalOffer, { mountIfUnqualified
         skipDecorators: true,
         mountIfUnqualified: true,
     },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.unqualified,
+        },
+    },
     decorators: [
         (story, context) => {
             useEffect(() => {
@@ -124,7 +129,7 @@ export const ErrorStateNoOfferCapability: ElementStory<typeof CapitalOffer> = {
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.errorStateNoOfferCapability,
+            handlers: capitalOfferHandlers.errorStateNoOfferCapability,
         },
     },
 };
@@ -136,7 +141,7 @@ export const ErrorStateInactiveAccountHolder: ElementStory<typeof CapitalOffer> 
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.errorStateInactiveAccountHolder,
+            handlers: capitalOfferHandlers.errorStateInactiveAccountHolder,
         },
     },
 };
@@ -148,7 +153,7 @@ export const ErrorDynamicOfferExceededRetries: ElementStory<typeof CapitalOffer>
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.errorDynamicOfferExceededRetries,
+            handlers: capitalOfferHandlers.errorDynamicOfferExceededRetries,
         },
     },
 };
@@ -160,7 +165,7 @@ export const ErrorDynamicOfferTemporary: ElementStory<typeof CapitalOffer> = {
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.errorDynamicOfferTemporary,
+            handlers: capitalOfferHandlers.errorDynamicOfferTemporary,
         },
     },
 };
@@ -172,7 +177,7 @@ export const ErrorReviewOfferGeneric: ElementStory<typeof CapitalOffer> = {
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.errorReviewOfferGeneric,
+            handlers: capitalOfferHandlers.errorReviewOfferGeneric,
         },
     },
 };
@@ -184,7 +189,7 @@ export const ErrorRequestFundsGeneric: ElementStory<typeof CapitalOffer> = {
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.errorRequestFundsGeneric,
+            handlers: capitalOfferHandlers.errorRequestFundsGeneric,
         },
     },
 };
@@ -196,7 +201,7 @@ export const ErrorRequestFundsGenericWithCode: ElementStory<typeof CapitalOffer>
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.errorRequestFundsGenericWithCode,
+            handlers: capitalOfferHandlers.errorRequestFundsGenericWithCode,
         },
     },
 };
@@ -208,7 +213,7 @@ export const ErrorRequestFundsNoPrimaryBalanceAccount: ElementStory<typeof Capit
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.errorRequestFundsNoPrimaryBalanceAccount,
+            handlers: capitalOfferHandlers.errorRequestFundsNoPrimaryBalanceAccount,
         },
     },
 };
