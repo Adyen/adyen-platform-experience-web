@@ -1,15 +1,27 @@
 <script setup lang="ts">
-import { provide, reactive, ref, onMounted, onBeforeUnmount } from 'vue';
+import { provide, reactive, ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { CONFIG_CONTEXT_KEY } from './constants';
 import { EMPTY_OBJECT } from '@integration-components/utils';
-import { subscribeToSession } from '../../setupConfig';
+import { checkComponentPermission, subscribeToSession } from '../../setupConfig';
+import componentAvailabilityErrors from '../../session/utils/sessionAwareComponentAvailability/helpers/componentAvailabilityErrors';
+import ErrorMessageDisplay from '../components/ErrorMessageDisplay/ErrorMessageDisplay.vue';
+import type { TranslationKey } from '../../translations';
 import type { ConfigContextValue, ConfigProviderProps } from './types';
 import './Spinner.scss';
 
 const props = defineProps<ConfigProviderProps>();
 
 const initialized = ref(false);
+const hasPermission = ref<boolean | undefined>(undefined);
 let unsubscribe: (() => void) | undefined;
+
+const errorTitle: TranslationKey = 'common.errors.somethingWentWrong';
+const permissionResolved = computed(() => !props.type || hasPermission.value !== undefined);
+const permissionDenied = computed(() => hasPermission.value === false);
+const ready = computed(() => initialized.value && permissionResolved.value && !permissionDenied.value);
+const errorMessages = computed<TranslationKey[]>(() =>
+    props.type ? [componentAvailabilityErrors(props.type), 'common.errors.contactSupport'] : ['common.errors.contactSupport']
+);
 
 const configContextValue = reactive<ConfigContextValue>({
     get endpoints() {
@@ -37,9 +49,9 @@ function subscribe() {
     unsubscribe = subscribeToSession(props.session, {
         onContextChange: () => {
             const ctx = props.session.context;
-            const ready = ctx.endpoints !== EMPTY_OBJECT && !ctx.refreshing && !ctx.hasError;
+            const isReady = ctx.endpoints !== EMPTY_OBJECT && !ctx.refreshing && !ctx.hasError;
 
-            if (ready && !initialized.value) {
+            if (isReady && !initialized.value) {
                 initialized.value = true;
             }
         },
@@ -49,6 +61,14 @@ function subscribe() {
 
 onMounted(() => {
     subscribe();
+
+    if (props.type) {
+        void checkComponentPermission(props.type, props.session).then(result => {
+            hasPermission.value = result;
+        });
+    } else {
+        hasPermission.value = true;
+    }
 });
 
 onBeforeUnmount(() => {
@@ -57,7 +77,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <slot v-if="initialized" />
+    <ErrorMessageDisplay v-if="permissionDenied" centered :title="errorTitle" :message="errorMessages" />
+    <slot v-else-if="ready" />
     <slot v-else name="loading">
         <div class="adyen-pe-spinner__wrapper">
             <!-- TODO: Replace with actual loading indicator -->
