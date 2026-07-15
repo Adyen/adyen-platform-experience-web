@@ -5,7 +5,14 @@ import type { BentoFilterBarModel, BentoFilterValues, BentoDateRangePickerValue 
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IBalanceAccountBase } from '@integration-components/types';
 import { EARLIEST_PAYOUT_SINCE_DATE } from '../../../../domain/src';
-import { endOfDay, now, quickSelectDateRanges, startOfDay, toUTCISOStringKeepingLocalDateTime } from '@integration-components/utils';
+import {
+    createQuickSelectRanges,
+    endOfDay,
+    now,
+    quickSelectDateRanges,
+    startOfDay,
+    toUTCISOStringKeepingLocalDateTime,
+} from '@integration-components/utils';
 
 const props = defineProps<{
     balanceAccounts?: IBalanceAccountBase[];
@@ -40,48 +47,19 @@ function normalizeDateRange(value: BentoDateRangePickerValue): BentoDateRangePic
     return cloneDateRange(matchingQuickSelectRange ?? normalizedRange);
 }
 
-const quickSelectRanges = [
+const quickSelectRanges = createQuickSelectRanges(
     {
-        label: i18n.get('common.filters.types.date.rangeSelect.options.last7Days'),
-        value: 'last7Days',
-        data: quickSelectDateRanges.last7Days,
+        last7Days: quickSelectDateRanges.last7Days,
+        last30Days: quickSelectDateRanges.last30Days,
+        last180Days: quickSelectDateRanges.last180Days,
+        thisWeek: quickSelectDateRanges.thisWeek,
+        lastWeek: quickSelectDateRanges.lastWeek,
+        thisMonth: quickSelectDateRanges.thisMonth,
+        lastMonth: quickSelectDateRanges.lastMonth,
+        yearToDate: quickSelectDateRanges.yearToDate,
     },
-    {
-        label: i18n.get('common.filters.types.date.rangeSelect.options.last30Days'),
-        value: 'last30Days',
-        data: quickSelectDateRanges.last30Days,
-    },
-    {
-        label: i18n.get('common.filters.types.date.rangeSelect.options.last180Days'),
-        value: 'last180Days',
-        data: quickSelectDateRanges.last180Days,
-    },
-    {
-        label: i18n.get('common.filters.types.date.rangeSelect.options.thisWeek'),
-        value: 'thisWeek',
-        data: quickSelectDateRanges.thisWeek,
-    },
-    {
-        label: i18n.get('common.filters.types.date.rangeSelect.options.lastWeek'),
-        value: 'lastWeek',
-        data: quickSelectDateRanges.lastWeek,
-    },
-    {
-        label: i18n.get('common.filters.types.date.rangeSelect.options.thisMonth'),
-        value: 'thisMonth',
-        data: quickSelectDateRanges.thisMonth,
-    },
-    {
-        label: i18n.get('common.filters.types.date.rangeSelect.options.lastMonth'),
-        value: 'lastMonth',
-        data: quickSelectDateRanges.lastMonth,
-    },
-    {
-        label: i18n.get('common.filters.types.date.rangeSelect.options.yearToDate'),
-        value: 'yearToDate',
-        data: quickSelectDateRanges.yearToDate,
-    },
-];
+    key => i18n.get(key)
+);
 
 const defaultDateRange = cloneDateRange(quickSelectDateRanges.last30Days);
 
