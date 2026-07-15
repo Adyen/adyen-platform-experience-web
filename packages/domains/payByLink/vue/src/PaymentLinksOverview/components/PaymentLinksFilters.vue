@@ -4,9 +4,10 @@ import { BentoFilterBar, BentoFilterItemType } from '@adyen/bento-vue3';
 import type { BentoFilterBarModel, BentoFilterValues, BentoDateRangePickerValue } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { endOfDay, now, quickSelectDateRanges, startOfDay, toUTCISOStringKeepingLocalDateTime } from '@integration-components/utils';
-import { EARLIEST_PAYMENT_LINK_DATE_DAYS, PAYMENT_LINK_STATUSES, PAYMENT_LINK_TYPES } from '../constants';
+import { EARLIEST_PAYMENT_LINK_DATE_DAYS } from '../constants';
 import type { IPaymentLinkFilterStatusGroup, IPaymentLinkStatus, IPaymentLinkStatusGroup, IPaymentLinkType } from '@integration-components/types';
 import type { StoreData } from '../../../../domain/src';
+import { usePaymentLinkLabels } from '../composables/usePaymentLinkLabels';
 
 export interface PaymentLinksFiltersValue {
     statuses: string[];
@@ -29,6 +30,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
 
 function cloneDateRange(value: BentoDateRangePickerValue): BentoDateRangePickerValue {
     return {
@@ -136,7 +138,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             label: i18n.get('payByLink.overview.filters.types.linkTypes.label'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
             options: {
-                checkboxItems: (props.availableLinkTypes ?? []).map(type => ({ label: i18n.get(PAYMENT_LINK_TYPES[type]), value: type })),
+                checkboxItems: (props.availableLinkTypes ?? []).map(type => ({ label: getLinkTypeLabel(type), value: type })),
             },
         });
     }
@@ -148,7 +150,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             type: BentoFilterItemType.CHECKBOX_GROUP,
             options: {
                 checkboxItems: (availableStatusesForGroup.value ?? []).map((status: IPaymentLinkStatus) => ({
-                    label: i18n.get(PAYMENT_LINK_STATUSES[status]),
+                    label: getStatusLabel(status),
                     value: status,
                 })),
             },

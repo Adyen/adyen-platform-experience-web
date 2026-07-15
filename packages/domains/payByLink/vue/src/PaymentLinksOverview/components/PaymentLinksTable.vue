@@ -10,7 +10,8 @@ import {
     DATE_FORMAT_PAYMENT_LINKS_OVERVIEW_EXPIRATION_DATE,
     DATE_FORMAT_RESPONSE_DEADLINE,
 } from '@integration-components/utils';
-import { PAYMENT_LINK_STATUSES, PAYMENT_LINK_TYPES, TABLE_CLASS } from '../constants';
+import { TABLE_CLASS } from '../constants';
+import { usePaymentLinkLabels } from '../composables/usePaymentLinkLabels';
 import type { IPaymentLinkItem, IPaymentLinkStatus } from '@integration-components/types';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 
@@ -36,6 +37,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const { dateFormat } = useTimezoneAwareDateFormatting();
+const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
 
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
@@ -207,11 +209,7 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
                     <BentoTypography variant="body" stronger>
                         {{ formatAmount(item.amount) }}
                     </BentoTypography>
-                    <BentoTag
-                        v-if="item.status"
-                        :label="i18n.get(PAYMENT_LINK_STATUSES[item.status as IPaymentLinkStatus])"
-                        :variant="getTagVariantForStatus(item.status)"
-                    />
+                    <BentoTag v-if="item.status" :label="getStatusLabel(item.status)" :variant="getTagVariantForStatus(item.status)" />
                 </div>
                 <BentoTypography v-else variant="body">
                     {{ formatAmount(item.amount) }}
@@ -219,16 +217,12 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             </template>
 
             <template #item-status="{ item }">
-                <BentoTag
-                    v-if="item.status"
-                    :label="i18n.get(PAYMENT_LINK_STATUSES[item.status as IPaymentLinkStatus])"
-                    :variant="getTagVariantForStatus(item.status)"
-                />
+                <BentoTag v-if="item.status" :label="getStatusLabel(item.status)" :variant="getTagVariantForStatus(item.status)" />
             </template>
 
             <template #item-linkType="{ item }">
                 <BentoTypography v-if="item.linkType" variant="body">
-                    {{ i18n.get(PAYMENT_LINK_TYPES[item.linkType as keyof typeof PAYMENT_LINK_TYPES]) }}
+                    {{ getLinkTypeLabel(item.linkType) }}
                 </BentoTypography>
             </template>
 
