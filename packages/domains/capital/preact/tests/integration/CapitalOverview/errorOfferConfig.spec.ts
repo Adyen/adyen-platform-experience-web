@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
-const STORY_ID = 'mocked-capital-capital-overview--error-state-no-offer-capability';
+const STORY_ID = 'mocked-capital-capital-overview--error-offer-config';
 
 test.describe('Error - State - No offer capability', () => {
     test.beforeEach(async ({ page }) => {

@@ -2,28 +2,25 @@ import { test, expect } from '@integration-components/testing/fixtures/eventDisp
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 import { sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 
-const STORY_ID = 'mocked-capital-capital-overview--grant-revoked';
+const STORY_ID = 'mocked-capital-capital-overview--single-hosted-action';
 
-test.describe('Grant: Revoked', () => {
+test.describe('Single hosted action', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
     });
 
-    test('should render revoked grant', async ({ page }) => {
+    test('should render pending grant with actions', async ({ page }) => {
         await expect(page.getByText('Requested funds')).toBeVisible();
         await expect(page.getByText('€20,000.00')).toBeVisible();
-        await expect(page.getByText('Revoked')).toBeVisible();
+        await expect(page.getByText('Action needed')).toBeVisible();
         await expect(page.getByText('Grant ID')).toBeVisible();
         await expect(page.getByTestId('grant-id-copy-text')).toBeVisible();
+        await expect(
+            page.getByText("You're almost ready. To process your funds, we just need your input. Please complete this action by February 15, 2025.")
+        ).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Sign terms & conditions' })).toBeVisible();
         await expect(page.getByRole('progressbar')).toBeHidden();
         await expect(page.getByTestId('expand-button')).toBeHidden();
-    });
-
-    test('should render tooltip when status tag is hovered', async ({ page }) => {
-        await page.getByText('Revoked').hover();
-        const tooltip = page.getByText('You accepted but then returned these funds');
-        await tooltip.waitFor();
-        await expect(tooltip).toBeVisible();
     });
 });

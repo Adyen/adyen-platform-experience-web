@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
-const STORY_ID = 'mocked-capital-capital-offer--error-state-inactive-account-holder';
+const STORY_ID = 'mocked-capital-capital-overview--error-account-holder';
 
 test.describe('Error - State - Inactive account holder', () => {
     test.beforeEach(async ({ page }) => {
@@ -9,7 +9,7 @@ test.describe('Error - State - Inactive account holder', () => {
     });
 
     test('should render an error message', async ({ page }) => {
-        await expect(page.getByText('Business financing request')).toBeVisible();
+        await expect(page.getByText('Business financing')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('Your account is inactive')).toBeVisible();
         await expect(
@@ -20,7 +20,7 @@ test.describe('Error - State - Inactive account holder', () => {
 });
 
 test.describe('onContactSupport argument', () => {
-    test('should render "Reach out to support" button when argument is set', async ({ page }) => {
+    test('should render ""Reach out to support"" button when argument is set', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
     });

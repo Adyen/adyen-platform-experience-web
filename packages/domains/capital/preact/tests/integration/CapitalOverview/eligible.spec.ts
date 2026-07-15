@@ -12,7 +12,7 @@ import {
     sliderChangedAnalyticsEventProperties,
 } from '../CapitalOffer/constants/analytics';
 
-const STORY_ID = 'mocked-capital-capital-overview--new-offer';
+const STORY_ID = 'mocked-capital-capital-overview--eligible';
 
 const goToOfferSelection = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await page.getByRole('button', { name: 'Request a new loan' }).click();
@@ -37,7 +37,7 @@ const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[
     ]);
 };
 
-test.describe('New offer', () => {
+test.describe('Eligible', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);

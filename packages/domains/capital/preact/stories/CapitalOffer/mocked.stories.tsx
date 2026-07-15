@@ -3,51 +3,11 @@ import { ElementProps, ElementStory, getMySessionToken, SetupControls } from '@i
 import { capitalOfferWithSetupMeta } from './meta';
 import { CapitalOffer, CapitalOverview } from '../../src';
 import { ILegalEntity } from '@integration-components/types';
-import { capitalOfferHandlers } from '../../../mocks/mock-server/capitalOfferHandlers';
+import { capitalOfferHandlers } from '../../../mocks/mock-server';
 import { useEffect } from 'preact/compat';
 import { AdyenPlatformExperience } from '../../../../../../src';
 
 const meta: Meta<ElementProps<typeof CapitalOffer> & SetupControls> = { ...capitalOfferWithSetupMeta, title: 'Mocked/Capital/Capital Offer' };
-
-export const Default: ElementStory<typeof CapitalOffer> = {
-    name: 'Default',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            handlers: capitalOfferHandlers.default,
-        },
-    },
-};
-
-export const EarlyRenewal: ElementStory<typeof CapitalOffer> = {
-    name: 'Early renewal',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            handlers: capitalOfferHandlers.earlyRenewal,
-        },
-    },
-};
-
-export const WithAPRField: ElementStory<typeof CapitalOffer, { legalEntity: ILegalEntity }> = {
-    name: 'With APR field',
-    args: {
-        mockedApi: true,
-        legalEntity: {
-            countryCode: 'CA',
-            regions: [],
-        },
-    },
-    parameters: {
-        msw: {
-            handlers: capitalOfferHandlers.aprField,
-        },
-    },
-};
 
 export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean; legalEntity: ILegalEntity }> = {
     name: 'Unsupported region',
@@ -65,7 +25,6 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
             useEffect(() => {
                 const getAdyenPlatformExperienceComponent = async () => {
                     const core = await AdyenPlatformExperience({
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         onSessionCreate: getMySessionToken as any,
                     });
                     const capitalOffer = new CapitalOffer({ core, onFundsRequest: () => undefined });
@@ -83,8 +42,8 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
     ],
 };
 
-export const Unqualified: ElementStory<typeof CapitalOffer, { mountIfUnqualified: boolean }> = {
-    name: 'Unqualified',
+export const Ineligible: ElementStory<typeof CapitalOffer, { mountIfUnqualified: boolean }> = {
+    name: 'Ineligible',
     args: {
         mockedApi: true,
         skipDecorators: true,
@@ -92,7 +51,7 @@ export const Unqualified: ElementStory<typeof CapitalOffer, { mountIfUnqualified
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.unqualified,
+            handlers: capitalOfferHandlers.ineligible,
         },
     },
     decorators: [
@@ -100,7 +59,6 @@ export const Unqualified: ElementStory<typeof CapitalOffer, { mountIfUnqualified
             useEffect(() => {
                 const getAdyenPlatformExperienceComponent = async () => {
                     const core = await AdyenPlatformExperience({
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         onSessionCreate: getMySessionToken as any,
                     });
                     const capitalOffer = new CapitalOffer({
@@ -122,98 +80,150 @@ export const Unqualified: ElementStory<typeof CapitalOffer, { mountIfUnqualified
     ],
 };
 
-export const ErrorStateNoOfferCapability: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - State - No offer capability',
+export const Eligible: ElementStory<typeof CapitalOffer> = {
+    name: 'Eligible',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.errorStateNoOfferCapability,
+            handlers: capitalOfferHandlers.eligible,
         },
     },
 };
 
-export const ErrorStateInactiveAccountHolder: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - State - Inactive account holder',
+export const EligibleWithOngoingGrants: ElementStory<typeof CapitalOffer> = {
+    name: 'Eligible with ongoing grants',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.errorStateInactiveAccountHolder,
+            handlers: capitalOfferHandlers.eligibleWithOngoingGrants,
         },
     },
 };
 
-export const ErrorDynamicOfferExceededRetries: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Dynamic offer - Exceeded retries',
+export const EarlyRenewal: ElementStory<typeof CapitalOffer> = {
+    name: 'Early renewal',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.errorDynamicOfferExceededRetries,
+            handlers: capitalOfferHandlers.earlyRenewal,
         },
     },
 };
 
-export const ErrorDynamicOfferTemporary: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Dynamic offer - Temporary',
+export const APR: ElementStory<typeof CapitalOffer, { legalEntity: ILegalEntity }> = {
+    name: 'APR',
     args: {
         mockedApi: true,
+        legalEntity: {
+            countryCode: 'CA',
+            regions: [],
+        },
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.errorDynamicOfferTemporary,
+            handlers: capitalOfferHandlers.apr,
         },
     },
 };
 
-export const ErrorReviewOfferGeneric: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Review offer - Generic',
+export const ErrorOfferConfig: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Offer config',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.errorReviewOfferGeneric,
+            handlers: capitalOfferHandlers.errorOfferConfig,
         },
     },
 };
 
-export const ErrorRequestFundsGeneric: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Request funds - Generic',
+export const ErrorAccountHolder: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Account holder',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.errorRequestFundsGeneric,
+            handlers: capitalOfferHandlers.errorAccountHolder,
         },
     },
 };
 
-export const ErrorRequestFundsGenericWithCode: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Request funds - Generic with code',
+export const ErrorOffer: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Offer',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.errorRequestFundsGenericWithCode,
+            handlers: capitalOfferHandlers.errorOffer,
         },
     },
 };
 
-export const ErrorRequestFundsNoPrimaryBalanceAccount: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Request funds - No primary balance account',
+export const ErrorTemporaryOffer: ElementStory<typeof CapitalOffer> = {
+    name: 'Error (temporary) - Offer',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.errorRequestFundsNoPrimaryBalanceAccount,
+            handlers: capitalOfferHandlers.errorTemporaryOffer,
+        },
+    },
+};
+
+export const ErrorReview: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Review',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorReview,
+        },
+    },
+};
+
+export const ErrorSubmit: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Submit',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorSubmit,
+        },
+    },
+};
+
+export const ErrorWithCodeSubmit: ElementStory<typeof CapitalOffer> = {
+    name: 'Error (with code) - Submit',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorWithCodeSubmit,
+        },
+    },
+};
+
+export const ErrorBalanceAccount: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Balance account',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorBalanceAccount,
         },
     },
 };

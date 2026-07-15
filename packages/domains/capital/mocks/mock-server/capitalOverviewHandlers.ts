@@ -1,18 +1,11 @@
 import {
     GRANTS,
+    PENDING_GRANT,
     PENDING_GRANT_WITH_SINGLE_ACTION,
     REPAID_GRANT,
     SIGN_TOS_ACTION_DETAILS,
-    PENDING_GRANT,
-    ACTIVE_GRANT,
-    FAILED_GRANT,
-    REVOKED_GRANT,
-    WRITTEN_OFF_GRANT,
-    GRANT_US_ACCOUNT,
-    GRANT_GB_ACCOUNT,
     ANACREDIT_ACTION_DETAILS,
     PENDING_GRANT_WITH_MULTIPLE_ACTIONS,
-    GRANT_NL_ACCOUNT,
     ONBOARDING_CONFIGURATION,
     CAPITAL_STATE_UNQUALIFIED,
     CAPITAL_STATE_FIRST_OFFER,
@@ -24,6 +17,10 @@ import {
     CAPITAL_STATE_CLOSED_GRANTS,
     CAPITAL_STATE_RENEWABLE_GRANT,
     RENEWABLE_GRANT,
+    ACTIVE_GRANT_WITHOUT_TRANSFER_INSTRUMENTS,
+    ACTIVE_GRANT_US,
+    ACTIVE_GRANT_GB,
+    ACTIVE_GRANT_NL,
 } from '../mock-data/capital';
 import { http, HttpResponse } from 'msw';
 import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
@@ -33,7 +30,7 @@ import { getAsyncCapitalStateResponse, getAsyncGrantsResponse, getErrorResponse 
 
 export const capitalOverviewHandlers = {
     ...commonHandlers,
-    unqualified: [
+    ineligible: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_UNQUALIFIED);
         }),
@@ -41,7 +38,7 @@ export const capitalOverviewHandlers = {
             return HttpResponse.json({ data: [] });
         }),
     ],
-    prequalified: [
+    firstTimeEligible: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_FIRST_OFFER);
         }),
@@ -49,7 +46,31 @@ export const capitalOverviewHandlers = {
             return HttpResponse.json({ data: [] });
         }),
     ],
-    grantPending: [
+    earlyRenewal: [
+        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
+            return HttpResponse.json(CAPITAL_STATE_RENEWABLE_GRANT);
+        }),
+        http.get(CAPITAL_ENDPOINTS.grants, () => {
+            return HttpResponse.json({ data: [RENEWABLE_GRANT] });
+        }),
+    ],
+    eligible: [
+        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
+            return HttpResponse.json(CAPITAL_STATE_CLOSED_GRANTS);
+        }),
+        http.get(CAPITAL_ENDPOINTS.grants, () => {
+            return HttpResponse.json({ data: [REPAID_GRANT] });
+        }),
+    ],
+    grants: [
+        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
+            return HttpResponse.json(CAPITAL_STATE_GRANTS);
+        }),
+        http.get(CAPITAL_ENDPOINTS.grants, () => {
+            return HttpResponse.json({ data: GRANTS });
+        }),
+    ],
+    pending: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT);
         }),
@@ -57,7 +78,7 @@ export const capitalOverviewHandlers = {
             return HttpResponse.json({ data: [PENDING_GRANT] });
         }),
     ],
-    grantMultipleActionsEmbedded: [
+    multipleActions: [
         http.get(CAPITAL_ENDPOINTS.capitalState, ({ request }) => {
             return getAsyncCapitalStateResponse(request.url);
         }),
@@ -68,7 +89,18 @@ export const capitalOverviewHandlers = {
             return HttpResponse.json(ONBOARDING_CONFIGURATION);
         }),
     ],
-    grantMultipleActionsHosted: [
+    singleAction: [
+        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
+            return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION);
+        }),
+        http.get(CAPITAL_ENDPOINTS.grants, () => {
+            return HttpResponse.json({ data: [PENDING_GRANT_WITH_SINGLE_ACTION] });
+        }),
+        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
+            return HttpResponse.json(ONBOARDING_CONFIGURATION);
+        }),
+    ],
+    multipleHostedActions: [
         http.get(CAPITAL_ENDPOINTS.capitalState, ({ request }) => {
             return getAsyncCapitalStateResponse(request.url);
         }),
@@ -85,18 +117,7 @@ export const capitalOverviewHandlers = {
             return HttpResponse.json(ANACREDIT_ACTION_DETAILS);
         }),
     ],
-    grantSingleActionEmbedded: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [PENDING_GRANT_WITH_SINGLE_ACTION] });
-        }),
-        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
-            return HttpResponse.json(ONBOARDING_CONFIGURATION);
-        }),
-    ],
-    grantSingleActionHosted: [
+    singleHostedAction: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION);
         }),
@@ -110,22 +131,12 @@ export const capitalOverviewHandlers = {
             return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
         }),
     ],
-    grantActive: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [ACTIVE_GRANT] });
-        }),
-    ],
     repaymentNL: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
         }),
         http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({
-                data: [{ ...ACTIVE_GRANT, unscheduledRepaymentAccounts: [GRANT_NL_ACCOUNT] }],
-            });
+            return HttpResponse.json({ data: [ACTIVE_GRANT_NL] });
         }),
     ],
     repaymentGB: [
@@ -133,9 +144,7 @@ export const capitalOverviewHandlers = {
             return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
         }),
         http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({
-                data: [{ ...ACTIVE_GRANT, unscheduledRepaymentAccounts: [GRANT_GB_ACCOUNT] }],
-            });
+            return HttpResponse.json({ data: [ACTIVE_GRANT_GB] });
         }),
     ],
     repaymentUS: [
@@ -143,78 +152,18 @@ export const capitalOverviewHandlers = {
             return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
         }),
         http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({
-                data: [{ ...ACTIVE_GRANT, unscheduledRepaymentAccounts: [GRANT_US_ACCOUNT] }],
-            });
+            return HttpResponse.json({ data: [ACTIVE_GRANT_US] });
         }),
     ],
-    repaymentNoTransferInstruments: [
+    repaymentWithoutTransferInstruments: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
         }),
         http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({
-                data: [{ ...ACTIVE_GRANT, unscheduledRepaymentAccounts: [GRANT_NL_ACCOUNT], transferInstruments: [] }],
-            });
+            return HttpResponse.json({ data: [ACTIVE_GRANT_WITHOUT_TRANSFER_INSTRUMENTS] });
         }),
     ],
-    grantFailed: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_CLOSED_GRANTS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [FAILED_GRANT] });
-        }),
-    ],
-    grantRepaid: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_CLOSED_GRANTS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [REPAID_GRANT] });
-        }),
-    ],
-    grantRevoked: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_CLOSED_GRANTS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [REVOKED_GRANT] });
-        }),
-    ],
-    grantWrittenOff: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_CLOSED_GRANTS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [WRITTEN_OFF_GRANT] });
-        }),
-    ],
-    earlyRenewal: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_RENEWABLE_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [RENEWABLE_GRANT] });
-        }),
-    ],
-    newOffer: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_CLOSED_GRANTS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [REPAID_GRANT] });
-        }),
-    ],
-    grants: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_GRANTS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: GRANTS });
-        }),
-    ],
-    errorActionsEmbedded: [
+    errorOnboardingConfig: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS);
         }),
@@ -232,7 +181,7 @@ export const capitalOverviewHandlers = {
             return HttpResponse.json(ANACREDIT_ACTION_DETAILS);
         }),
     ],
-    errorActionsHosted: [
+    errorHostedAction: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS);
         }),

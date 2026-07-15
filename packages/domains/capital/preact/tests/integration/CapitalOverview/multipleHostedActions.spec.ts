@@ -2,9 +2,9 @@ import { test, expect } from '@integration-components/testing/fixtures/eventDisp
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 import { sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 
-const STORY_ID = 'mocked-capital-capital-overview--grant-multiple-actions-hosted';
+const STORY_ID = 'mocked-capital-capital-overview--multiple-hosted-actions';
 
-test.describe('Grant: Multiple actions - Hosted', () => {
+test.describe('Multiple hosted actions', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);

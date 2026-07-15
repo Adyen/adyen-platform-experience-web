@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
-const STORY_ID = 'mocked-capital-capital-offer--error-request-funds-generic';
+const STORY_ID = 'mocked-capital-capital-offer--error-submit';
 
-test.describe('Error - Request funds - Generic', () => {
+test.describe('Error - Submit', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await page.getByRole('button', { name: 'Review request' }).click();

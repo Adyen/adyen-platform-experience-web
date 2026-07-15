@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
-const STORY_ID = 'mocked-capital-capital-overview--unqualified';
+const STORY_ID = 'mocked-capital-capital-overview--ineligible';
 
 test.describe('Unqualified', () => {
     test('should render unqualified screen', async ({ page }) => {
