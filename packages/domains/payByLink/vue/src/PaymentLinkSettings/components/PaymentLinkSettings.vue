@@ -69,7 +69,8 @@ const noStoresError = computed<AdyenPlatformExperienceError | undefined>(() => {
 });
 
 const storesFilteredError = computed<AdyenPlatformExperienceError | undefined>(() => {
-    if ((allStores.value && allStores.value.length > 0 && filteredStores.value?.length !== 0) || isLoadingStores.value) return undefined;
+    if (!allStores.value || isLoadingStores.value) return undefined;
+    if (allStores.value.length > 0 && filteredStores.value?.length !== 0) return undefined;
     return { errorCode: WRONG_STORE_IDS, type: 'error', requestId: '' } as AdyenPlatformExperienceError;
 });
 
