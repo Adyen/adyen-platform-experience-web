@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provide, reactive, ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { provide, reactive, ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { CONFIG_CONTEXT_KEY } from './constants';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { checkComponentPermission, subscribeToSession } from '../../setupConfig';
@@ -60,15 +60,36 @@ function subscribe() {
 }
 
 onMounted(() => {
-    subscribe();
+    watch(
+        () => props.session,
+        () => {
+            initialized.value = false;
+            subscribe();
+        },
+        { immediate: true }
+    );
 
-    if (props.type) {
-        void checkComponentPermission(props.type, props.session).then(result => {
-            hasPermission.value = result;
-        });
-    } else {
-        hasPermission.value = true;
-    }
+    watch(
+        () => [props.type, props.session] as const,
+        ([type, session]) => {
+            if (!type) {
+                hasPermission.value = true;
+                return;
+            }
+
+            hasPermission.value = undefined;
+            checkComponentPermission(type, session)
+                .then(result => {
+                    hasPermission.value = result;
+                })
+                // Fail closed: if the availability check errors out, treat the component as unavailable
+                // rather than leaving it stuck on the loading state.
+                .catch(() => {
+                    hasPermission.value = false;
+                });
+        },
+        { immediate: true }
+    );
 });
 
 onBeforeUnmount(() => {
