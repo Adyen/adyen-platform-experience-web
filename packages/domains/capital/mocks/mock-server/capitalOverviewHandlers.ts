@@ -7,7 +7,7 @@ import {
     ANACREDIT_ACTION_DETAILS,
     PENDING_GRANT_WITH_MULTIPLE_ACTIONS,
     ONBOARDING_CONFIGURATION,
-    CAPITAL_STATE_UNQUALIFIED,
+    CAPITAL_STATE_INELIGIBLE,
     CAPITAL_STATE_FIRST_OFFER,
     CAPITAL_STATE_GRANTS,
     CAPITAL_STATE_PENDING_GRANT,
@@ -32,7 +32,7 @@ export const capitalOverviewHandlers = {
     ...commonHandlers,
     ineligible: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_UNQUALIFIED);
+            return HttpResponse.json(CAPITAL_STATE_INELIGIBLE);
         }),
         http.get(CAPITAL_ENDPOINTS.grants, () => {
             return HttpResponse.json({ data: [] });

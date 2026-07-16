@@ -261,7 +261,7 @@ export const ONBOARDING_CONFIGURATION: IOnboardingConfiguration = {
     legalEntityId: 'test-legal-entity-id',
 };
 
-export const CAPITAL_STATE_UNQUALIFIED: ICapitalState = {
+export const CAPITAL_STATE_INELIGIBLE: ICapitalState = {
     activeOrPendingGrants: [],
     hasClosedGrants: false,
 };

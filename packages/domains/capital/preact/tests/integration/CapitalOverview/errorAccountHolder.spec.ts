@@ -3,7 +3,7 @@ import { goToStory } from '@integration-components/testing/playwright/utils';
 
 const STORY_ID = 'mocked-capital-capital-overview--error-account-holder';
 
-test.describe('Error - State - Inactive account holder', () => {
+test.describe('Error - Account holder', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
     });

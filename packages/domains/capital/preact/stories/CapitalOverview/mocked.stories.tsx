@@ -45,12 +45,12 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
     ],
 };
 
-export const Ineligible: ElementStory<typeof CapitalOverview, { mountIfUnqualified: boolean }> = {
+export const Ineligible: ElementStory<typeof CapitalOverview, { mountIfIneligible: boolean }> = {
     name: 'Ineligible',
     args: {
         mockedApi: true,
         skipDecorators: true,
-        mountIfUnqualified: true,
+        mountIfIneligible: true,
     },
     parameters: {
         msw: {
@@ -67,12 +67,12 @@ export const Ineligible: ElementStory<typeof CapitalOverview, { mountIfUnqualifi
                     const capitalOverview = new CapitalOverview({ core });
                     const { state } = await capitalOverview.getState();
 
-                    if (state !== 'isUnqualified' || context.args.mountIfUnqualified) {
+                    if (state !== 'isUnqualified' || context.args.mountIfIneligible) {
                         capitalOverview.mount('#capital-overview');
                     }
                 };
                 void getAdyenPlatformExperienceComponent();
-            }, [context.args.mountIfUnqualified]);
+            }, [context.args.mountIfIneligible]);
 
             return <div className="component-wrapper" id="capital-overview"></div>;
         },

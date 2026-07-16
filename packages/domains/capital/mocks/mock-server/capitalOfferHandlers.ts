@@ -1,5 +1,5 @@
 import {
-    CAPITAL_STATE_UNQUALIFIED,
+    CAPITAL_STATE_INELIGIBLE,
     CAPITAL_STATE_FIRST_OFFER,
     CAPITAL_STATE_FIRST_OFFER_CAD,
     CAPITAL_STATE_CLOSED_GRANTS,
@@ -16,7 +16,7 @@ export const capitalOfferHandlers = {
     ...commonHandlers,
     ineligible: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_UNQUALIFIED);
+            return HttpResponse.json(CAPITAL_STATE_INELIGIBLE);
         }),
     ],
     eligible: [

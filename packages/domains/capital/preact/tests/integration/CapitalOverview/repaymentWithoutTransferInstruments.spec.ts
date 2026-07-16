@@ -4,7 +4,7 @@ import { sharedGrantsOverviewAnalyticsEventProperties, sharedSendRepaymentButton
 
 const STORY_ID = 'mocked-capital-capital-overview--repayment-without-transfer-instruments';
 
-test.describe('Repayment - No transfer instruments', () => {
+test.describe('Repayment without transfer instruments', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });
