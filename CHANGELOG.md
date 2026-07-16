@@ -1,6 +1,12 @@
 # @adyen/adyen-platform-experience-web
 
-§§## 1.13.0
+## 1.13.1
+
+### Patch Changes
+
+- 83c5ab1: In the Capital Overview component, we resolved an issue where grants that closed after renewal were incorrectly hidden from the closed grants list.
+
+## 1.13.0
 
 ### Minor Changes
 
