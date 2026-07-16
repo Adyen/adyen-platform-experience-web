@@ -48,6 +48,11 @@ watch(
         if (!display && current) {
             const [code, ...rest] = current.split(' ');
             const number = rest.join(' ');
+            // Without a separator, the country prefix cannot be inferred reliably because calling codes overlap.
+            if (!code?.trim() || !number.trim()) {
+                wizard.setValue('telephoneNumber', '');
+                return;
+            }
             wizard.setValue('telephoneNumber', `${code}${number}`, `${code} ${number}`);
         }
     },

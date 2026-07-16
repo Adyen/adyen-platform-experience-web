@@ -40,6 +40,8 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
         isFetchingStores.value = true;
         try {
             storesData.value = await fn(EMPTY_OBJECT, {});
+        } catch {
+            storesData.value = undefined;
         } finally {
             isFetchingStores.value = false;
         }
@@ -81,6 +83,8 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
         isFetchingCountries.value = true;
         try {
             countriesData.value = await fn(EMPTY_OBJECT);
+        } catch {
+            countriesData.value = undefined;
         } finally {
             isFetchingCountries.value = false;
         }

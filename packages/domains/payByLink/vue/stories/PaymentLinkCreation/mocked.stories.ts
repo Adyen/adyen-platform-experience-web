@@ -29,6 +29,34 @@ export const Prefilled: ElementStory<PaymentLinkCreationExternalProps> = {
     },
 };
 
+export const AmbiguousPrefilledPhone: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Ambiguous prefilled phone',
+    args: {
+        ...defaultArgs,
+        fieldsConfig: {
+            data: {
+                ...PAYMENT_LINKS_FIELDS_CONFIG.data,
+                telephoneNumber: '+18684106456',
+            },
+        },
+        storeIds: ['STORE_NY_001'],
+    },
+};
+
+export const InvalidPrefilledDate: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Invalid prefilled date',
+    args: {
+        ...defaultArgs,
+        fieldsConfig: {
+            data: {
+                ...PAYMENT_LINKS_FIELDS_CONFIG.data,
+                deliverAt: 'invalid-date',
+            },
+        },
+        storeIds: ['STORE_NY_001'],
+    },
+};
+
 export const WithReadOnlyFields: ElementStory<PaymentLinkCreationExternalProps> = {
     name: 'With read-only fields',
     args: {
@@ -43,6 +71,14 @@ export const StoresMisconfiguration: ElementStory<PaymentLinkCreationExternalPro
     args: defaultArgs,
     parameters: {
         msw: { ...PayByLinkOverviewMockedResponses.storesMisconfiguration },
+    },
+};
+
+export const StoresNetworkError: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Error - Stores Network Error',
+    args: defaultArgs,
+    parameters: {
+        msw: { ...PayByLinkOverviewMockedResponses.storeNetworkError },
     },
 };
 
@@ -89,6 +125,18 @@ export const CountryDatasetError: ElementStory<PaymentLinkCreationExternalProps>
     },
     parameters: {
         msw: { ...PaymentLinkCreationMockedResponses.countryDatasetError },
+    },
+};
+
+export const CountriesNetworkError: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Error - Countries Network Error',
+    args: {
+        ...defaultArgs,
+        storeIds: ['STORE_NY_001'],
+        fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
+    },
+    parameters: {
+        msw: { ...PaymentLinkCreationMockedResponses.countriesError },
     },
 };
 
