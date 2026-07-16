@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// Uses plain elements + token SCSS instead of BentoTypography because shared/core
+// must not depend on @adyen/bento-vue3.
 import { computed } from 'vue';
 import { useCoreContext } from '../../Context/useCoreContext';
 import type { TranslationKey } from '../../../translations';
