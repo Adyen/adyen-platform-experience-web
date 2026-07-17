@@ -52,7 +52,7 @@ test.describe('Payment link creation - Link creation success', () => {
 
         // Phone number with country code
         await page.getByTestId('form-field-telephoneNumber').getByRole('combobox').click();
-        await page.getByRole('combobox', { name: 'Shopper phone' }).fill('co');
+        await page.getByRole('combobox', { name: 'Phone prefix' }).fill('co');
         await page.getByRole('option', { name: 'CO (+57)' }).click();
         await page.getByTestId('form-field-telephoneNumber').getByRole('textbox').fill('3002119220');
 
@@ -193,11 +193,6 @@ test.describe('Payment link creation - Link creation validation', () => {
 
         await shopperReferenceField.fill('SHP000001');
         await page.getByTestId('form-field-shopperEmail').getByRole('textbox').fill('john.doe@adyen.com');
-
-        await page.getByTestId('form-field-telephoneNumber').getByRole('combobox').click();
-        await page.getByRole('combobox', { name: 'Shopper phone' }).fill('co');
-        await page.getByRole('option', { name: 'CO (+57)' }).click();
-        await expect(page.getByRole('listbox')).toBeHidden();
         await shopperPhoneField.fill('3002119220');
 
         await countryField.click();
@@ -216,6 +211,18 @@ test.describe('Payment link creation - Link creation validation', () => {
         await page.getByRole('combobox', { name: 'Language' }).fill('spa');
         await page.getByRole('option', { name: 'Español' }).click();
 
+        await page.getByRole('button', { name: 'Continue' }).click();
+        await expect(page.getByTestId('field-error-telephoneNumber')).toHaveText('You must select a phone prefix');
+
+        await page.getByTestId('form-field-telephoneNumber').getByRole('combobox').click();
+        await page.getByRole('combobox', { name: 'Phone prefix' }).fill('co');
+        await page.getByRole('option', { name: 'CO (+57)' }).click();
+        await expect(page.getByRole('listbox')).toBeHidden();
+        await shopperPhoneField.fill('');
+        await page.getByRole('button', { name: 'Continue' }).click();
+        await expect(page.getByTestId('field-error-telephoneNumber')).toHaveText('You must enter a phone number');
+
+        await shopperPhoneField.fill('3002119220');
         await page.getByRole('button', { name: 'Continue' }).click();
 
         // Step 4: Summary

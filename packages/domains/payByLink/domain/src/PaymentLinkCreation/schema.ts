@@ -155,6 +155,11 @@ const validateSimpleField = (data: FlatValues, field: FormFieldConfig, i18n: I18
         return;
     }
 
+    if (field.fieldName === 'telephoneNumber' && !isEmpty(value) && !String(value).startsWith('+')) {
+        addRequiredIssue(ctx, field.fieldName, i18n.get('payByLink.creation.fields.phoneNumber.errors.requiredPhoneCode'));
+        return;
+    }
+
     const minLength = MIN_LENGTHS[field.fieldName];
     if (minLength && !isEmpty(value) && typeof value === 'string' && value.length < minLength) {
         addRequiredIssue(ctx, field.fieldName, i18n.get('common.errors.minLength', { values: { minLength } }));

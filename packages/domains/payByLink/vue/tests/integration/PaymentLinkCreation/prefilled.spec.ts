@@ -28,8 +28,8 @@ test.describe('Payment link creation - Link creation success', () => {
         await expect(page.getByTestId('form-field-shopperName.firstName').getByRole('textbox')).toHaveValue('John');
         await expect(page.getByTestId('form-field-shopperName.lastName').getByRole('textbox')).toHaveValue('Doe');
         await expect(page.getByTestId('form-field-shopperEmail').getByRole('textbox')).toHaveValue('test@example.com');
-        await expect(page.getByRole('combobox', { name: 'Shopper phone' })).toHaveText('ES (+34)');
-        await expect(page.getByTestId('form-field-telephoneNumber').getByRole('textbox')).toHaveValue('3002119220');
+        await expect(page.getByRole('combobox', { name: 'Phone prefix' })).toHaveText('ES (+34)');
+        await expect(page.getByRole('textbox', { name: 'Shopper phone' })).toHaveValue('3002119220');
         await expect(page.getByRole('combobox', { name: 'Country/Region' })).toHaveText('Spain');
 
         // Billing address (shown first, prefilled from the Colombian billing data)

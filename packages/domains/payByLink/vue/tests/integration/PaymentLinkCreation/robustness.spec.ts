@@ -6,7 +6,7 @@ test.describe('Payment link creation - Robustness', () => {
         await goToStory(page, { id: 'mocked-pay-by-link-payment-link-creation--ambiguous-prefilled-phone' });
         await page.getByRole('button', { name: 'Continue' }).click();
 
-        await expect(page.getByRole('combobox', { name: 'Shopper phone' })).toHaveText('Phone prefix');
+        await expect(page.getByRole('combobox', { name: 'Phone prefix' })).toHaveText('Phone prefix');
         await expect(page.getByTestId('form-field-telephoneNumber').getByRole('textbox')).toHaveValue('');
 
         await page.getByRole('button', { name: 'Continue' }).click();

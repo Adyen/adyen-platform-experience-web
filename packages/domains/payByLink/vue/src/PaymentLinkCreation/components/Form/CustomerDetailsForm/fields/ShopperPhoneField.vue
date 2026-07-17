@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
-import { BentoDropdown, BentoInputField } from '@adyen/bento-vue3';
+import { BentoInputField } from '@adyen/bento-vue3';
+import type { BentoInputDropdownProps } from '@adyen/bento-vue3';
 import FieldWrapper from '../../../fields/FieldWrapper.vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useWizard } from '../../../../composables/wizardContext';
@@ -64,6 +65,15 @@ const phoneItems = computed(() => {
     return phones.value.map(({ id, prefix }) => ({ label: `${id} (${prefix})`, value: id })).sort((a, b) => a.label.localeCompare(b.label));
 });
 
+const phoneDropdownProps = computed<BentoInputDropdownProps>(() => ({
+    items: phoneItems.value,
+    modelValue: selectedCountryId.value,
+    dynamicFiltering: true,
+    readonly: isFetching.value || config.value.readOnly,
+    placeholder: i18n.get('payByLink.creation.fields.shopperPhone.phonePrefix.placeholder'),
+    'aria-label': i18n.get('payByLink.creation.fields.shopperPhone.phonePrefix.placeholder'),
+}));
+
 // Only the prefix is persisted in the field value, so when several countries share the same
 // prefix (e.g. +1 for the US and Canada) we remember the explicitly selected country id instead
 // of re-deriving it from the prefix, which would always resolve to the same (first-matching) country.
@@ -107,29 +117,20 @@ function onNumberInput(value: string | number) {
 
 <template>
     <FieldWrapper v-if="config.visible && !shouldHide" name="telephoneNumber" :error="error">
-        <div class="adyen-pe-payment-link-creation-form__phone-container">
-            <BentoDropdown
-                class="adyen-pe-payment-link-creation-form__phone-prefix"
-                :items="phoneItems"
-                :label="i18n.get('payByLink.creation.fields.shopperPhone.label')"
-                :placeholder="i18n.get('payByLink.creation.fields.shopperPhone.phonePrefix.placeholder')"
-                :model-value="selectedCountryId"
-                dynamic-filtering
-                :optional="!config.required"
-                :readonly="isFetching || config.readOnly"
-                :error="!!error"
-                @update:model-value="onPrefixUpdate"
-            />
-            <BentoInputField
-                class="adyen-pe-payment-link-creation-form__phone-number"
-                label=" "
-                type="text"
-                :model-value="phoneNumber"
-                :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.telephoneNumber.max"
-                :readonly="config.readOnly"
-                :error="!!error"
-                @input="onNumberInput"
-            />
-        </div>
+        <BentoInputField
+            class="adyen-pe-payment-link-creation-form__phone-number"
+            variant="dropdown"
+            :label="i18n.get('payByLink.creation.fields.shopperPhone.label')"
+            :optional="!config.required"
+            type="text"
+            :model-value="phoneNumber"
+            :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.telephoneNumber.max"
+            :readonly="config.readOnly"
+            :error="!!error"
+            :dropdown="phoneDropdownProps"
+            dropdown-position="start"
+            @input="onNumberInput"
+            @dropdown-input="onPrefixUpdate"
+        />
     </FieldWrapper>
 </template>
