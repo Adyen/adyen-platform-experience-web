@@ -34,7 +34,7 @@ const dropdownProps = computed<BentoInputDropdownProps>(() => ({
     items: currencyItems.value,
     modelValue: currencyValue.value,
     readonly: currencyConfig.value.readOnly,
-    'aria-label': i18n.get('payByLink.creation.fields.amount.currency.ariaLabel', { values: { label: props.label } }),
+    'aria-label': i18n.get('payByLink.creation.fields.amount.currency.ariaLabel'),
     placeholder: i18n.get('common.inputs.select.placeholder'),
     class: 'adyen-pe-payment-link-creation-form__amount-currency',
 }));

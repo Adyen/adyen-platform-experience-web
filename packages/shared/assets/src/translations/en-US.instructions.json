@@ -275,6 +275,7 @@
     "payByLink.common.status.completed": "Status label text indicating that the payment has been completed successfully.",
     "payByLink.common.status.expired": "Status label text indicating that the payment link has expired and can no longer be used.",
     "payByLink.common.status.paymentPending": "Status label text indicating that the payment is pending and has not yet been completed.",
+    "payByLink.creation.fields.amount.currency.ariaLabel": "Accessible label for the currency dropdown associated with the amount field.",
     "payByLink.creation.fields.amount.label": "Label for the money amount input field in the payment link creation form.",
     "payByLink.creation.fields.amountValue.error.currency": "Validation error message displayed when the user has not selected a currency for the payment link.",
     "payByLink.creation.fields.amountValue.error.negativeNumber": "Validation error message displayed when the user enters a negative amount value.",
