@@ -15,7 +15,7 @@ test.describe('Payment link creation - Link creation success', () => {
         await expect(page.getByTestId('form-field-linkValidity.quantity').getByRole('spinbutton')).toHaveValue('3');
         await expect(page.getByTestId('form-field-linkValidity.quantity').getByRole('combobox')).toHaveText('weeks');
         await expect(page.getByRole('combobox', { name: 'Amount currency' })).toHaveText('EUR');
-        await expect(page.getByTestId('form-field-amount.value').getByRole('spinbutton')).toHaveValue('12345');
+        await expect(page.getByTestId('form-field-amount.value').getByRole('spinbutton')).toHaveValue('123.45');
         await expect(page.getByTestId('form-field-reference').getByRole('textbox')).toHaveValue('SHP000001');
         await expect(page.getByRole('combobox', { name: 'Link type' })).toHaveText('Open');
         await expect(page.getByTestId('form-field-description').getByRole('textbox')).toHaveValue('This is a test description');

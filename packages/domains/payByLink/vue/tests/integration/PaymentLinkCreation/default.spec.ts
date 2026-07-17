@@ -92,7 +92,17 @@ test.describe('Payment link creation - Link creation success', () => {
         await expect(page.getByRole('alert')).toBeVisible();
 
         // Submit the form
+        const createPaymentLinkRequest = page.waitForRequest(
+            request => request.method() === 'POST' && request.url().includes('/paybylink/paymentLinks')
+        );
         await page.getByRole('button', { name: 'Create payment link' }).click();
+        const request = await createPaymentLinkRequest;
+        expect(request.postDataJSON()).toMatchObject({
+            amount: {
+                currency: 'CNY',
+                value: 300000,
+            },
+        });
 
         // Verify success
         await expect(page.getByText('Payment link created')).toBeVisible();
@@ -130,8 +140,7 @@ test.describe('Payment link creation - Link creation validation', () => {
 
         await page.getByRole('combobox', { name: 'Amount currency' }).click();
         await page.getByRole('option', { name: 'CNY' }).click();
-        // Selecting a currency clears the "select a currency" error, the amount itself is still empty.
-        await expect(amountErrorMessage).toBeHidden();
+        await expect(amountErrorMessage).toHaveText('This field is required');
 
         const referenceField = page.getByTestId('form-field-reference').getByRole('textbox');
         await expect(page.getByTestId('field-error-reference')).toHaveText('This field is required');
@@ -142,7 +151,10 @@ test.describe('Payment link creation - Link creation validation', () => {
         const descriptionField = page.getByTestId('form-field-description').getByRole('textbox');
         await expect(page.getByTestId('field-error-description')).toHaveText('This field is required');
 
-        await amountField.fill('3000');
+        await amountField.fill('100000000000001');
+        await expect(amountField).toHaveValue('10000000000000');
+        await amountField.press('1');
+        await expect(amountField).toHaveValue('10000000000000');
         await referenceField.fill('MERCH00001');
         await linkTypeField.click();
         await page.getByRole('option', { name: 'Open' }).click();

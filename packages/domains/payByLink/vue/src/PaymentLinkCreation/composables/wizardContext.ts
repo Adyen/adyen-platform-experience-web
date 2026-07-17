@@ -23,7 +23,7 @@ export interface PaymentLinkWizardContext {
     getValue: (name: PaymentLinkFieldName) => unknown;
     setValue: (name: PaymentLinkFieldName, value: unknown, displayValue?: string) => void;
     getError: (name: PaymentLinkFieldName) => string | undefined;
-    clearError: (name: PaymentLinkFieldName) => void;
+    validateField: (name: PaymentLinkFieldName) => boolean;
 }
 
 export const PAYMENT_LINK_WIZARD_KEY: InjectionKey<PaymentLinkWizardContext> = Symbol('paymentLinkWizard');

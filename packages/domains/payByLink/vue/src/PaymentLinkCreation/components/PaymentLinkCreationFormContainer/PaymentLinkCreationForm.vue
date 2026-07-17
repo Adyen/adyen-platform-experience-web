@@ -37,7 +37,7 @@ provide(PAYMENT_LINK_WIZARD_KEY, {
     getValue: wizard.getValue,
     setValue: wizard.setValue,
     getError: wizard.getError,
-    clearError: wizard.clearError,
+    validateField: wizard.validateField,
 });
 
 // Drive configuration/settings fetching from the selected store value.

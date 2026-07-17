@@ -54,13 +54,6 @@ export function usePaymentLinkWizard({ i18n, steps, defaults }: UsePaymentLinkWi
         }
     };
     const getError = (name: PaymentLinkFieldName) => errors.value[name];
-    const clearError = (name: PaymentLinkFieldName) => {
-        if (errors.value[name]) {
-            const next = { ...errors.value };
-            delete next[name];
-            errors.value = next;
-        }
-    };
 
     // Seed flat values from default values once (and whenever the defaults reference changes).
     watch(
@@ -111,6 +104,23 @@ export function usePaymentLinkWizard({ i18n, steps, defaults }: UsePaymentLinkWi
         return result.success;
     };
 
+    const validateField = (name: PaymentLinkFieldName): boolean => {
+        const step = steps.value.find(({ fields }) => fields.some(field => field.fieldName === name));
+        if (!step) return true;
+
+        const result = buildStepSchema(step, i18n).safeParse(values.value);
+        const issue = result.success ? undefined : result.error.issues.find(({ path }) => path.join('.') === name);
+        const next = { ...errors.value };
+
+        if (issue) {
+            next[name] = issue.message;
+        } else {
+            delete next[name];
+        }
+        errors.value = next;
+        return !issue;
+    };
+
     const next = () => {
         if (!isLastStep.value) currentIndex.value += 1;
     };
@@ -142,7 +152,7 @@ export function usePaymentLinkWizard({ i18n, steps, defaults }: UsePaymentLinkWi
         getValue,
         setValue,
         getError,
-        clearError,
+        validateField,
         validateStep,
         next,
         prev,
