@@ -1,0 +1,7 @@
+@use '@integration-components/style' as style;
+
+.adyen-pe-payment-link-creation-form {
+    &__tc-alert {
+        margin-top: style.token(spacer-040);
+    }
+}

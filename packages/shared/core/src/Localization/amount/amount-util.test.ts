@@ -1,5 +1,5 @@
 import { CurrencyCode } from '../types';
-import { isValidCurrencyCode, getCurrencyCode, getLocalisedAmount, getLocalisedPercentage, getDivider } from './amount-util';
+import { isValidCurrencyCode, getCurrencyCode, getLocalisedAmount, getLocalisedPercentage, getDivider, normalizeAmountInput } from './amount-util';
 import { beforeAll, afterEach, afterAll, describe, expect, test, vi, MockInstance } from 'vitest';
 
 describe('isValidCurrencyCode', () => {
@@ -19,6 +19,29 @@ describe('getDivider', () => {
         expect(getDivider('JPY')).toBe(1);
         expect(getDivider('BHD')).toBe(1000);
         expect(getDivider('MRO' as CurrencyCode)).toBe(10);
+    });
+});
+
+describe('normalizeAmountInput', () => {
+    test('should trim decimals to the currency exponent and return minor units', () => {
+        expect(normalizeAmountInput('123.456', 'en-US', 'EUR')).toEqual({
+            displayValue: '123.45',
+            amount: 12345,
+        });
+    });
+
+    test('should clamp values above the maximum', () => {
+        expect(normalizeAmountInput('100.01', 'en-US', 'EUR', 100)).toEqual({
+            displayValue: '100.00',
+            amount: 10000,
+        });
+    });
+
+    test('should support localized decimal separators', () => {
+        expect(normalizeAmountInput('100,01', 'de-DE', 'EUR', 100)).toEqual({
+            displayValue: '100,00',
+            amount: 10000,
+        });
     });
 });
 
