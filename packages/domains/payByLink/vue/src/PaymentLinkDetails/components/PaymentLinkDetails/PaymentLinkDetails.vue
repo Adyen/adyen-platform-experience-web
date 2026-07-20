@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { BentoLoadingIndicator, BentoTypography } from '@adyen/bento-vue3';
+import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';
-import PaymentLinkExpiration from '../PaymentLinkExpiration/PaymentLinkExpiration.vue';
 import PaymentLinkDetailsContent from './PaymentLinkDetailsContent.vue';
 import PaymentLinkDetailsError from './PaymentLinkDetailsError.vue';
+import PaymentLinkExpiration from '../PaymentLinkExpiration/PaymentLinkExpiration.vue';
 import PaymentLinkExpirationSuccess from '../PaymentLinkExpiration/PaymentLinkExpirationSuccess.vue';
+import PaymentLinkSkeleton from '../PaymentLinkSkeleton/PaymentLinkSkeleton.vue';
 import './PaymentLinkDetails.scss';
 
 const CLASSNAMES = {
@@ -60,9 +61,7 @@ function handleNavigationToDetailsAfterExpiration() {
         </div>
 
         <div :class="CLASSNAMES.content">
-            <div v-if="isFetching" class="adyen-pe-payment-link-details__loading">
-                <BentoLoadingIndicator />
-            </div>
+            <PaymentLinkSkeleton v-if="isFetching" />
 
             <PaymentLinkDetailsError
                 v-else-if="!paymentLink || error"
