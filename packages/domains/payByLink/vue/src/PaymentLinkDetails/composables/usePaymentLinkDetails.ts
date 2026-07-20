@@ -69,9 +69,9 @@ export function usePaymentLinkDetails(props: () => UsePaymentLinkDetailsProps) {
     }
 
     async function runFetch() {
-        const fn = getPaymentLinkById.value;
+        const getPaymentLinkDetails = getPaymentLinkById.value;
         const { id } = props();
-        if (!isFunction(fn) || !canFetch.value || !id) return;
+        if (!isFunction(getPaymentLinkDetails) || !canFetch.value || !id) return;
 
         if (abortController) abortController.abort();
         abortController = new AbortController();
@@ -81,8 +81,8 @@ export function usePaymentLinkDetails(props: () => UsePaymentLinkDetailsProps) {
         error.value = undefined;
 
         try {
-            await loadCountries();
-            const json = await fn({ signal }, { path: { paymentLinkId: id } });
+            const [, json] = await Promise.all([loadCountries(), getPaymentLinkDetails({ signal }, { path: { paymentLinkId: id } })]);
+
             if (!signal.aborted) {
                 data.value = withResolvedCountries(json as IPaymentLinkDetails);
             }
