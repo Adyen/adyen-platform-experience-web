@@ -1,0 +1,27 @@
+@use '@integration-components/style' as style;
+
+.adyen-pe-payment-link-creation-form-summary {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+
+    &__section {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+    }
+
+    &__section-title {
+        color: style.token(color-label-primary);
+    }
+
+    &__tags-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: style.token(spacer-020);
+    }
+
+    &__alert {
+        margin-top: style.token(spacer-040);
+    }
+}

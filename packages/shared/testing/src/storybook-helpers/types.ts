@@ -7,6 +7,7 @@ type GlobalStoriesProps = {
     component: any;
     coreOptions?: Partial<CoreOptions>;
     skipDecorators?: boolean;
+    compact?: boolean;
 };
 
 type ComponentPropsOf<T> = T extends new (...args: any) => any ? ConstructorParameters<T>[0] : T;
