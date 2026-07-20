@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
 
 const STORY_ID = 'mocked-pay-by-link-payment-link-settings--settings-save-error';
 
@@ -7,7 +7,7 @@ test.describe('Error - Terms and Conditions Save Error', () => {
     test('Should display error when saving terms and conditions fails', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
-        const component = page.getByTestId('component-root');
+        const component = getComponentRoot(page);
 
         await expect(component.getByText('Settings', { exact: true })).toBeVisible();
 
@@ -17,7 +17,6 @@ test.describe('Error - Terms and Conditions Save Error', () => {
 
         const termsAndConditionsInput = page.getByRole('textbox', { name: 'Your terms and conditions URL' });
         await termsAndConditionsInput.fill('https://example.com/terms');
-        await termsAndConditionsInput.fill('https://example.com/term');
         await page.getByRole('button', { name: 'all requirements.' }).click();
         await expect(page.getByText('Terms and conditions requirements for Pay by Link')).toBeVisible();
         await page.getByRole('button', { name: 'Confirm requirements' }).click();

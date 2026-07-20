@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
 
 const STORY_ID = 'mocked-pay-by-link-payment-link-settings--theme-error';
 
@@ -7,7 +7,7 @@ test.describe('Error - Theme Error', () => {
     test('Should display error when theme endpoint fails', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
-        const component = page.getByTestId('component-root');
+        const component = getComponentRoot(page);
 
         await expect(component.getByText('Settings', { exact: true })).toBeVisible();
 
