@@ -7,7 +7,7 @@ import { useCoreContext, useConfigContext } from '@integration-components/core/v
 import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
 import PaymentLinksFilters from './PaymentLinksFilters.vue';
 import PaymentLinksTable from './PaymentLinksTable.vue';
-// import { PaymentLinkCreationInternal } from '../../PaymentLinkCreation';
+import { PaymentLinkCreationInternal } from '../../PaymentLinkCreation';
 import { usePaymentLinksList } from '../composables/usePaymentLinksList';
 import { BASE_CLASS, DEFAULT_PAYMENT_LINK_STATUS_GROUP, PAYMENT_LINK_STATUS_GROUPS_TABS } from '../constants';
 import type { PaymentLinksFiltersValue } from './PaymentLinksFilters.vue';
@@ -135,10 +135,10 @@ function onCloseModal() {
     }
 }
 
-// function onPaymentLinkCreated(paymentLink: any) {
-//     props.paymentLinkCreation?.onPaymentLinkCreated?.(paymentLink);
-//     hasToRefresh.value = true;
-// }
+function onPaymentLinkCreated(paymentLink: any) {
+    props.paymentLinkCreation?.onPaymentLinkCreated?.(paymentLink);
+    hasToRefresh.value = true;
+}
 
 const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettings || config.endpoints?.createPBLPaymentLink));
 </script>
@@ -150,7 +150,19 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
                 {{ i18n.get('payByLink.overview.title') }}
             </BentoTypography>
             <div v-else />
-            <div class="adyen-pe-payment-links-overview__actions-container">
+            <div v-if="hasActionButtons" class="adyen-pe-payment-links-overview__actions-container">
+                <BentoButton v-if="!isMobile && config.endpoints?.createPBLPaymentLink" variant="primary" @click="openPaymentLinkModal">
+                    {{ i18n.get('payByLink.overview.list.actions.createPaymentLink') }}
+                </BentoButton>
+                <BentoButton
+                    v-if="!isMobile && config.endpoints?.savePayByLinkSettings"
+                    variant="secondary"
+                    class="adyen-pe-payment-links-overview__settings-button"
+                    :aria-label="i18n.get('payByLink.overview.actions.settings.a11y.label')"
+                    @click="openSettingsModal"
+                >
+                    <SettingsIcon />
+                </BentoButton>
                 <BentoButton
                     v-if="isMobile && config.endpoints?.createPBLPaymentLink"
                     variant="primary"
@@ -194,19 +206,6 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
                 :status-group="statusGroup"
                 :on-change="onFiltersChange"
             />
-            <div v-if="hasActionButtons && !isMobile" class="adyen-pe-payment-links-overview__action-buttons-container">
-                <BentoButton v-if="config.endpoints?.createPBLPaymentLink" variant="primary" @click="openPaymentLinkModal">
-                    {{ i18n.get('payByLink.overview.list.actions.createPaymentLink') }}
-                </BentoButton>
-                <BentoButton
-                    v-if="config.endpoints?.savePayByLinkSettings"
-                    variant="secondary"
-                    :aria-label="i18n.get('payByLink.overview.actions.settings.a11y.label')"
-                    @click="openSettingsModal"
-                >
-                    <SettingsIcon />
-                </BentoButton>
-            </div>
         </div>
 
         <BentoAlert
@@ -264,18 +263,14 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
             @close-modal="onCloseModal"
         >
             <template #content>
-                <!-- TODO: replace with the migrated PaymentLinkCreation Vue component once available. -->
-                <BentoTypography v-if="modalType === 'Creation'" variant="title">
-                    {{ i18n.get('payByLink.creation.form.title') }}
-                </BentoTypography>
-                <!-- <PaymentLinkCreationInternal
+                <PaymentLinkCreationInternal
                     v-if="modalType === 'Creation'"
                     :fields-config="props.paymentLinkCreation?.fieldsConfig"
                     :store-ids="props.storeIds"
                     :on-payment-link-created="onPaymentLinkCreated"
                     :on-creation-dismiss="() => (isModalVisible = false)"
                     :on-contact-support="props.onContactSupport"
-                /> -->
+                />
                 <!-- TODO: replace with the migrated PaymentLinkSettings Vue component once available. -->
                 <BentoTypography v-else-if="modalType === 'Settings'" variant="title">
                     {{ i18n.get('payByLink.overview.actions.settings.a11y.label') }}

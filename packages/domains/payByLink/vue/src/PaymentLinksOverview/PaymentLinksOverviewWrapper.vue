@@ -8,7 +8,7 @@ const props = defineProps<PaymentLinksOverviewExternalProps>();
 </script>
 
 <template>
-    <UIElementProvider :core="props.core" component-name="PaymentLinksOverview">
+    <UIElementProvider :core="props.core" component-name="paymentLinksOverview">
         <PaymentLinksOverviewContainer
             :allow-limit-selection="props.allowLimitSelection"
             :balance-account-id="props.balanceAccountId"
