@@ -4,7 +4,7 @@ import { expectAnalyticsEvents, goToStory } from '@integration-components/testin
 import { sharedActionAnalyticsEventProps, sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 import type { Page } from '@playwright/test';
 
-const STORY_ID = 'mocked-capital-capital-overview--grant-multiple-actions-embedded';
+const STORY_ID = 'mocked-capital-capital-overview--multiple-actions';
 
 const submitBusinessFinancingInformation = async (page: Page) => {
     await page.getByRole('button', { name: 'Submit information', exact: true }).click();
@@ -65,7 +65,7 @@ const clickedButtonEvents = {
     ],
 } satisfies Record<string, [event: PageAnalyticsEvent['event'], properties: Partial<PageAnalyticsEvent['properties']>]>;
 
-test.describe('Grant: Multiple actions - Embedded', () => {
+test.describe('Multiple actions', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);

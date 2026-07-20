@@ -9,7 +9,7 @@ import {
     sliderChangedAnalyticsEventProperties,
 } from './constants/analytics';
 
-const STORY_ID = 'mocked-capital-capital-offer--default';
+const STORY_ID = 'mocked-capital-capital-offer--eligible';
 
 const expectPageLoadAnalyticsEvents = (analyticsEvents: PageAnalyticsEvent[]) =>
     expectAnalyticsEvents(analyticsEvents, [
@@ -25,7 +25,7 @@ const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[
     ]);
 };
 
-test.describe('Default', () => {
+test.describe('Eligible', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });

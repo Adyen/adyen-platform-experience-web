@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
-const STORY_ID = 'mocked-capital-capital-overview--error-actions-hosted';
+const STORY_ID = 'mocked-capital-capital-overview--error-hosted-action';
 
-test.describe('Error - Actions Hosted', () => {
+test.describe('Error - Hosted action', () => {
     test('should render an error message when signing button in clicked', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await page.getByText('Sign terms & conditions').click();

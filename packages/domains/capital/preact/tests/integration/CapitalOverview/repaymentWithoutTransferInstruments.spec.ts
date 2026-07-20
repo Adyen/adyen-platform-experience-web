@@ -2,9 +2,9 @@ import { test, expect } from '@integration-components/testing/fixtures/eventDisp
 import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
 import { sharedGrantsOverviewAnalyticsEventProperties, sharedSendRepaymentButtonAnalyticsEventProperties } from './constants/analytics';
 
-const STORY_ID = 'mocked-capital-capital-overview--repayment-no-transfer-instruments';
+const STORY_ID = 'mocked-capital-capital-overview--repayment-without-transfer-instruments';
 
-test.describe('Repayment - No transfer instruments', () => {
+test.describe('Repayment without transfer instruments', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });
