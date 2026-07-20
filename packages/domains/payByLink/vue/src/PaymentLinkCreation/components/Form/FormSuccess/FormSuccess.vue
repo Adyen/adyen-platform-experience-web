@@ -22,7 +22,7 @@ onBeforeUnmount(() => {
 });
 
 async function onCopy() {
-    if (!props.paymentLinkUrl) return;
+    if (!props.paymentLinkUrl || !navigator.clipboard) return;
     try {
         await navigator.clipboard.writeText(props.paymentLinkUrl);
         copied.value = true;
