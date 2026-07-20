@@ -110,6 +110,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             field: 'storeIds',
             label: i18n.get('payByLink.overview.filters.types.stores.label'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
+            defaultValue: [],
             options: {
                 checkboxItems: (props.stores ?? [])
                     .filter(store => store.id)
@@ -172,16 +173,28 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
     return config;
 });
 
+function getFilterValue(field: string) {
+    switch (field) {
+        case 'storeIds':
+            return selectedStoreIds.value;
+        case 'dateRange':
+            return selectedDateRange.value;
+        case 'linkTypes':
+            return selectedLinkTypes.value;
+        case 'statuses':
+            return selectedStatuses.value;
+        case 'merchantReference':
+            return selectedMerchantReference.value;
+        case 'paymentLinkId':
+            return selectedPaymentLinkId.value;
+    }
+}
+
 const filterValues = computed<BentoFilterValues>(() => {
-    const values: BentoFilterValues = [{ field: 'dateRange', value: selectedDateRange.value }];
-
-    if (showStoreFilter.value) values.push({ field: 'storeIds', value: selectedStoreIds.value });
-    if (showLinkTypesFilter.value) values.push({ field: 'linkTypes', value: selectedLinkTypes.value });
-    if (showStatusFilter.value) values.push({ field: 'statuses', value: selectedStatuses.value });
-    values.push({ field: 'merchantReference', value: selectedMerchantReference.value });
-    values.push({ field: 'paymentLinkId', value: selectedPaymentLinkId.value });
-
-    return values;
+    return filterConfig.value.map(({ field }) => ({
+        field,
+        value: getFilterValue(field),
+    }));
 });
 
 function onFilterInput(updatedValues: BentoFilterValues) {

@@ -53,6 +53,15 @@ test.describe('Payment Links Overview', () => {
             await expect(page.getByRole('button', { name: 'Payment Link ID' })).toBeVisible();
         });
 
+        test('should render Stores before the other filters when stores load', async ({ page }) => {
+            const filterButtons = page.getByRole('button', {
+                name: /^(?:Stores|Date range|Type|Status|Merchant reference|Payment Link ID)/,
+            });
+
+            await expect(filterButtons.first()).toHaveText('Stores');
+            await expect(filterButtons.nth(1)).toHaveText('Date range:Last 30 days');
+        });
+
         test('should display Create Payment Link and Settings buttons', async ({ page }) => {
             await expect(page.getByRole('button', { name: 'Create payment link' })).toBeVisible();
             await expect(page.getByRole('button', { name: /settings/i })).toBeVisible();
