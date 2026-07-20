@@ -738,6 +738,7 @@
     "payByLink.common.status.paymentPending": "Payment pending",
     "payByLink.creation.errors.invalidFields.reason.amountTooHigh": "Too high",
     "payByLink.creation.errors.unavailable": "We couldn’t load the page.",
+    "payByLink.creation.fields.amount.currency.ariaLabel": "Amount currency",
     "payByLink.creation.fields.amount.label": "Amount",
     "payByLink.creation.fields.amountValue.error.currency": "Please select a currency",
     "payByLink.creation.fields.amountValue.error.negativeNumber": "No negative numbers allowed",
