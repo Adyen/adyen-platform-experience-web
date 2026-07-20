@@ -27,7 +27,9 @@ const getErrorImage = (forSmallViewport = false) => {
 };
 
 const errorContent = computed(() => getPaymentLinkErrorMessageContent(props.error, 'payByLink.details.errors.unavailable', !!props.onContactSupport));
-const hasActionButtons = computed(() => props.onContactSupport || props.onDismiss || errorContent.value.refreshComponent);
+const is500Error = computed(() => !!props.error && props.error.errorCode === '500');
+const canContactSupport = computed(() => is500Error.value && !!props.onContactSupport);
+const hasActionButtons = computed(() => canContactSupport.value || props.onDismiss || errorContent.value.refreshComponent);
 </script>
 
 <template>
@@ -55,7 +57,7 @@ const hasActionButtons = computed(() => props.onContactSupport || props.onDismis
             <BentoButton v-if="props.onDismiss" variant="secondary" @click="props.onDismiss">
                 {{ i18n.get('payByLink.common.actions.goBack') }}
             </BentoButton>
-            <BentoButton v-if="props.onContactSupport" @click="props.onContactSupport">
+            <BentoButton v-if="canContactSupport" @click="props.onContactSupport">
                 {{ i18n.get('common.actions.contactSupport.labels.reachOut') }}
             </BentoButton>
             <BentoButton v-else-if="errorContent.refreshComponent" @click="props.onRefetch">

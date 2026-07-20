@@ -20,6 +20,7 @@ const props = defineProps<{
     onContactSupport?: () => void;
     onDismiss?: () => void;
     onUpdate?: () => void;
+    isDismissButtonHidden?: boolean;
 }>();
 
 const { i18n } = useCoreContext();
@@ -46,7 +47,7 @@ function handleExpirationSuccess() {
 
 function handleNavigationToDetailsAfterExpiration() {
     activeScreen.value = 'details';
-    void refetch();
+    refetch();
 }
 </script>
 
@@ -89,6 +90,7 @@ function handleNavigationToDetailsAfterExpiration() {
                 :payment-link="paymentLink"
                 :on-dismiss="props.onDismiss"
                 :on-expire="handleExpireNow"
+                :is-dismiss-button-hidden="props.isDismissButtonHidden"
             />
         </div>
     </div>

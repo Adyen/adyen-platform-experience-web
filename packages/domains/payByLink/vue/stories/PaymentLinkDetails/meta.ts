@@ -14,6 +14,7 @@ export const PaymentLinkDetailsMeta: Meta<ElementProps<PaymentLinkDetailsExterna
     },
     args: {
         component: PaymentLinkDetails,
+        compact: true,
     },
     parameters: {
         controls: {
