@@ -47,7 +47,7 @@
     "capital.offer.selection.actions.reviewOffer": "Review request",
     "capital.offer.selection.actions.reviewOffer.states.loading": "Loading",
     "capital.offer.selection.earlyRenewal.amountToReceive": "Amount you'll receive",
-    "capital.offer.selection.earlyRenewal.currentGrantAmount": "Existing loan balance",
+    "capital.offer.selection.earlyRenewal.currentGrantAmount": "Current loan balance",
     "capital.offer.selection.earlyRenewal.newGrantAmount": "New loan",
     "capital.offer.selection.slider.a11y.label": "Select the amount for the loan",
     "capital.offer.selection.slider.markers.max": "max",

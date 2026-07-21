@@ -23,7 +23,7 @@ test.describe('Early renewal', () => {
         await expect(page.getByText('€25,000')).toBeVisible();
         await expect(page.getByText('New loan')).toBeVisible();
         await expect(page.getByText('-', { exact: true })).toBeVisible();
-        await expect(page.getByText('Existing loan balance')).toBeVisible();
+        await expect(page.getByText('Current loan balance')).toBeVisible();
         await expect(page.getByText('€8,130')).toBeVisible();
         await expect(page.getByText('=')).toBeVisible();
         await expect(page.getByText("Amount you'll receive")).toBeVisible();
