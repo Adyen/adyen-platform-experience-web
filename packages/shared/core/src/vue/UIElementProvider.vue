@@ -26,6 +26,7 @@ provide(COMPONENT_REF_KEY, componentRef);
         :loading-context="props.core.loadingContext"
         :get-cdn-config="props.core.getCdnConfig"
         :get-cdn-dataset="props.core.getCdnDataset"
+        :get-image-asset="props.core.getImageAsset"
         :external-error-handler="props.core.options.onError"
     >
         <ConfigProvider :session="props.core.session" :type="props.componentName">
