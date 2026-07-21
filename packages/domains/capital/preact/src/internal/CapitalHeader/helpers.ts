@@ -1,47 +1,18 @@
 import { TranslationKey } from '@integration-components/core';
-import { ILegalEntity } from '@integration-components/types';
-import { supportedCountries, SupportedLocation, supportedRegions } from './constants';
 
-const getCapitalRegion = (legalEntity?: ILegalEntity) => {
-    const capitalRegion = legalEntity?.regions?.find(region => region.type === 'capital');
-    return capitalRegion?.value ?? '';
-};
-
-const getSubtitleByRegion = (region?: string) => {
+export const getCapitalHeaderSubtitleByRegion = (region?: string): TranslationKey | null => {
     switch (region) {
-        case SupportedLocation.EU:
+        case 'EU':
             return 'capital.common.loanProviderInfo.EU' satisfies TranslationKey;
-        default:
-            return null;
-    }
-};
-
-const getSubtitleByCountry = (countryCode?: string) => {
-    switch (countryCode) {
-        case SupportedLocation.AU:
+        case 'AU':
             return 'capital.common.loanProviderInfo.AU' satisfies TranslationKey;
-        case SupportedLocation.GB:
+        case 'GB':
             return 'capital.common.loanProviderInfo.GB' satisfies TranslationKey;
-        case SupportedLocation.US:
+        case 'US':
             return 'capital.common.loanProviderInfo.US' satisfies TranslationKey;
-        case SupportedLocation.CA:
+        case 'CA':
             return 'capital.common.loanProviderInfo.CA' satisfies TranslationKey;
         default:
             return null;
     }
-};
-
-export const getCapitalHeaderSubtitleByLegalEntity = (legalEntity?: ILegalEntity): TranslationKey | null => {
-    const region = getCapitalRegion(legalEntity);
-    const countryCode = legalEntity?.countryCode;
-
-    // Check the country first because it is more specific and first handle the one with a narrow scope
-    return getSubtitleByCountry(countryCode) ?? getSubtitleByRegion(region);
-};
-
-export const isCapitalRegionSupported = (legalEntity?: ILegalEntity) => {
-    const region = getCapitalRegion(legalEntity);
-    const countryCode = legalEntity?.countryCode ?? '';
-
-    return supportedCountries.includes(countryCode) || supportedRegions.includes(region);
 };

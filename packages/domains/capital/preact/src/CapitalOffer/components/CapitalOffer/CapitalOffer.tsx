@@ -1,6 +1,5 @@
 import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { isCapitalRegionSupported } from '../../../internal/CapitalHeader/helpers';
 import { ExternalUIComponentProps, IGrantOfferResponseDTO } from '@integration-components/types';
 import { useConfigContext } from '@integration-components/core/preact';
 import { useFetch } from '@integration-components/hooks-preact';
@@ -22,7 +21,7 @@ const sharedAnalyticsEventProperties = {
     subCategory: 'Capital offer',
 } as const;
 
-const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = ({
+export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = ({
     externalCapitalState,
     hideTitle,
     onContactSupport,
@@ -65,11 +64,21 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
 
     useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital offer' });
 
+    if (state && !state?.isRegionSupported) {
+        return (
+            <div className={CAPITAL_OFFER_CLASS_NAMES.errorContainer}>
+                <CapitalHeader hideTitle={hideTitle} region={state.region} titleKey={'capital.common.title'} />
+                <CapitalErrorMessageDisplay unsupportedRegion />
+            </div>
+        );
+    }
+
     return (
         <div className={CAPITAL_OFFER_CLASS_NAMES.base}>
             <CapitalHeader
                 hasDivider
                 hideTitle={hideTitle}
+                region={state?.region}
                 titleKey={capitalOfferState === 'OfferSummary' ? 'capital.offer.summary.title' : 'capital.offer.selection.title'}
             />
             {capitalOfferState === 'OfferSelection' && (
@@ -96,20 +105,4 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             )}
         </div>
     );
-};
-
-export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = props => {
-    const legalEntity = useConfigContext()?.extraConfig?.legalEntity;
-    const isRegionSupported = useMemo(() => isCapitalRegionSupported(legalEntity), [legalEntity]);
-
-    if (!isRegionSupported) {
-        return (
-            <div className={CAPITAL_OFFER_CLASS_NAMES.errorContainer}>
-                <CapitalHeader hideTitle={props.hideTitle} titleKey={'capital.common.title'} />
-                <CapitalErrorMessageDisplay unsupportedRegion />
-            </div>
-        );
-    }
-
-    return <DynamicCapitalOffer {...props} />;
 };

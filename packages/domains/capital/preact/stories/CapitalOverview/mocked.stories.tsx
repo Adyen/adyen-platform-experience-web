@@ -1,26 +1,26 @@
-import { getMySessionToken, ElementProps, ElementStory, SetupControls } from '@integration-components/testing/storybook-helpers';
 import { Meta } from '@storybook/preact';
+import { ElementProps, ElementStory, getMySessionToken } from '@integration-components/testing/storybook-helpers';
 import { CapitalOverview } from '../../src';
 import { AdyenPlatformExperience } from '@integration-components/sdk-internal';
-import { ILegalEntity } from '@integration-components/types';
-import { CapitalOverviewWithSetupMeta } from './meta';
+import { CapitalOverviewMeta } from './meta';
 import { capitalOverviewHandlers } from '../../../mocks/mock-server';
 import { useEffect } from 'preact/compat';
 
-const meta: Meta<ElementProps<typeof CapitalOverview> & SetupControls> = {
-    ...CapitalOverviewWithSetupMeta,
+const meta: Meta<ElementProps<typeof CapitalOverview>> = {
+    ...CapitalOverviewMeta,
     title: 'Mocked/Capital/Capital Overview',
 };
 
-export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean; legalEntity: ILegalEntity }> = {
+export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean }> = {
     name: 'Unsupported region',
     args: {
         mockedApi: true,
         skipDecorators: true,
         mountIfInUnsupportedRegion: true,
-        legalEntity: {
-            countryCode: 'TR',
-            regions: [{ type: 'capital', value: 'Middle East' }],
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOverviewHandlers.unsupportedRegion,
         },
     },
     decorators: [

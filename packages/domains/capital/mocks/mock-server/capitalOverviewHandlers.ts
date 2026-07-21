@@ -21,6 +21,7 @@ import {
     ACTIVE_GRANT_US,
     ACTIVE_GRANT_GB,
     ACTIVE_GRANT_NL,
+    CAPITAL_STATE_UNSUPPORTED_REGION,
 } from '../mock-data/capital';
 import { http, HttpResponse } from 'msw';
 import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
@@ -30,6 +31,11 @@ import { getAsyncCapitalStateResponse, getAsyncGrantsResponse, getErrorResponse 
 
 export const capitalOverviewHandlers = {
     ...commonHandlers,
+    unsupportedRegion: [
+        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
+            return HttpResponse.json(CAPITAL_STATE_UNSUPPORTED_REGION);
+        }),
+    ],
     ineligible: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_INELIGIBLE);

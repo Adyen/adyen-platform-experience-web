@@ -3,12 +3,17 @@ import Typography from '@integration-components/ui-components-preact/Typography/
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { CapitalHeader } from '../../internal/CapitalHeader';
 
-const Unqualified = ({ hideTitle }: { hideTitle?: boolean }) => {
+type UnqualifiedProps = {
+    hideTitle?: boolean;
+    region?: string;
+};
+
+const Unqualified = ({ hideTitle, region }: UnqualifiedProps) => {
     const { i18n, getImageAsset } = useCoreContext();
 
     return (
         <>
-            <CapitalHeader hideTitle={hideTitle} titleKey={'capital.overview.common.titles.qualificationIntro'} />
+            <CapitalHeader hideTitle={hideTitle} region={region} titleKey={'capital.overview.common.titles.qualificationIntro'} />
             <div className={'adyen-pe-capital-overview__unqualified-state'}>
                 <div className="adyen-pe-capital-overview__unqualified-state-img">
                     <img srcSet={getImageAsset?.({ name: 'generic-use-first-touch' })} alt="" />

@@ -1,10 +1,12 @@
 import {
     CAPITAL_STATE_INELIGIBLE,
     CAPITAL_STATE_FIRST_OFFER,
-    CAPITAL_STATE_FIRST_OFFER_CAD,
     CAPITAL_STATE_CLOSED_GRANTS,
     CAPITAL_STATE_RENEWABLE_GRANT,
     CAPITAL_STATE_ACTIVE_GRANT,
+    CAPITAL_STATE_UNSUPPORTED_REGION,
+    CAPITAL_STATE_US,
+    CAPITAL_STATE_CA,
 } from '../mock-data/capital';
 import { http, HttpResponse } from 'msw';
 import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
@@ -14,6 +16,11 @@ import { getCreateOfferResponse, getDynamicOfferResponse, getErrorResponse, getG
 
 export const capitalOfferHandlers = {
     ...commonHandlers,
+    unsupportedRegion: [
+        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
+            return HttpResponse.json(CAPITAL_STATE_UNSUPPORTED_REGION);
+        }),
+    ],
     ineligible: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_INELIGIBLE);
@@ -24,6 +31,16 @@ export const capitalOfferHandlers = {
             return HttpResponse.json(CAPITAL_STATE_CLOSED_GRANTS);
         }),
     ],
+    eligibleCA: [
+        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
+            return HttpResponse.json(CAPITAL_STATE_CA);
+        }),
+    ],
+    eligibleUS: [
+        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
+            return HttpResponse.json(CAPITAL_STATE_US);
+        }),
+    ],
     eligibleWithOngoingGrants: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
@@ -32,11 +49,6 @@ export const capitalOfferHandlers = {
     earlyRenewal: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_RENEWABLE_GRANT);
-        }),
-    ],
-    apr: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_FIRST_OFFER_CAD);
         }),
     ],
     errorOffer: [
