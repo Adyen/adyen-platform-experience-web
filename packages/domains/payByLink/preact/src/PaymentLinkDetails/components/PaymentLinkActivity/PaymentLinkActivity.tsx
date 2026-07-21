@@ -3,8 +3,8 @@ import { useCoreContext } from '@integration-components/core/preact';
 import { TimelineItem } from '@integration-components/ui-components-preact/Timeline/components/TimelineItem';
 import Timeline from '@integration-components/ui-components-preact/Timeline/Timeline';
 import { TimelineDateFormat } from '@integration-components/ui-components-preact/Timeline/types';
+import { getActivityDescriptionKey, getActivityStatus, getActivityTitleKey } from '../../../../../domain/src';
 import { IPaymentLinkActivity } from '@integration-components/types';
-import { getTitleKey, getDescriptionKey, getStatus } from './utils';
 
 type PaymentLinkActivityProps = {
     activities: IPaymentLinkActivity[];
@@ -15,25 +15,25 @@ export const PaymentLinkActivity = ({ activities }: PaymentLinkActivityProps) =>
 
     const timelineItems = useMemo(
         () =>
-            activities.map(activity => ({
-                titleKey: getTitleKey(activity),
-                descriptionKey: getDescriptionKey(activity),
-                date: activity.date,
-                status: getStatus(activity),
-            })),
+            activities.map(
+                activity =>
+                    ({
+                        titleKey: getActivityTitleKey(activity),
+                        descriptionKey: getActivityDescriptionKey(activity),
+                        date: new Date(activity.date),
+                        status: getActivityStatus(activity),
+                    }) as const
+            ),
         [activities]
     );
 
     return (
         <Timeline>
-            {timelineItems.map(({ titleKey, date, status, descriptionKey }: any) => (
+            {timelineItems.map(({ titleKey, date, status, descriptionKey }: any, index) => (
                 <TimelineItem
-                    key={date}
+                    key={`${date.getTime()}_${index}`}
                     title={i18n.get(titleKey)}
-                    timestamp={{
-                        date: new Date(date),
-                        format: TimelineDateFormat.FULL_DATE_EXACT_TIME,
-                    }}
+                    timestamp={{ date, format: TimelineDateFormat.FULL_DATE_EXACT_TIME }}
                     status={status}
                     description={i18n.get(descriptionKey)}
                 />

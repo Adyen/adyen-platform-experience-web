@@ -3,6 +3,7 @@ import type { SessionObject, SessionRequest } from '../ConfigContext.types';
 import type { DevEnvironment, onErrorHandler, AnalyticsConfig } from '../types';
 import type { I18n } from './Context/types';
 import type { SupportedLocales } from '../Localization/types';
+import { AssetOptions } from '@integration-components/core';
 
 export type { DevEnvironment, onErrorHandler, AnalyticsConfig, SessionObject, SessionRequest };
 
@@ -24,5 +25,6 @@ export interface CoreInstance {
     session: AuthSession;
     getCdnConfig: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
     getCdnDataset: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
+    getImageAsset: (props: AssetOptions) => string;
     update: (options: Partial<CoreOptions>) => Promise<CoreInstance>;
 }

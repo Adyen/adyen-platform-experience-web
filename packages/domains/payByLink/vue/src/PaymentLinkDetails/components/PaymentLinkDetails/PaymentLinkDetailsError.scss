@@ -1,0 +1,19 @@
+@use '@integration-components/style';
+
+.adyen-pe-payment-link-details-error {
+    padding-bottom: style.token(spacer-120);
+    padding-top: style.token(spacer-120);
+
+    &,
+    &__actions {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+        text-align: center;
+    }
+
+    &__actions {
+        flex-direction: row;
+    }
+}

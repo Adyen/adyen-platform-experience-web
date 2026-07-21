@@ -26,9 +26,10 @@ provide(COMPONENT_REF_KEY, componentRef);
         :loading-context="props.core.loadingContext"
         :get-cdn-config="props.core.getCdnConfig"
         :get-cdn-dataset="props.core.getCdnDataset"
+        :get-image-asset="props.core.getImageAsset"
         :external-error-handler="props.core.options.onError"
     >
-        <ConfigProvider :session="props.core.session">
+        <ConfigProvider :session="props.core.session" :type="props.componentName">
             <EventDispatcherProvider :component-name="props.componentName" :analytics-enabled="props.core.analyticsEnabled ?? true">
                 <section ref="componentRef" :class="['adyen-pe-component', props.customClassNames]" data-testid="component-root">
                     <div class="adyen-pe-component__container">
