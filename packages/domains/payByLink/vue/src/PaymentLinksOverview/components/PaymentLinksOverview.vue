@@ -8,6 +8,7 @@ import { useResponsiveContainer, containerQueries } from '@integration-component
 import PaymentLinksFilters from './PaymentLinksFilters.vue';
 import PaymentLinksTable from './PaymentLinksTable.vue';
 import { PaymentLinkCreationInternal } from '../../PaymentLinkCreation';
+import { PaymentLinkDetailsInternal } from '../../PaymentLinkDetails';
 import { usePaymentLinksList } from '../composables/usePaymentLinksList';
 import { BASE_CLASS, DEFAULT_PAYMENT_LINK_STATUS_GROUP, PAYMENT_LINK_STATUS_GROUPS_TABS } from '../constants';
 import type { PaymentLinksFiltersValue } from './PaymentLinksFilters.vue';
@@ -58,6 +59,7 @@ const filtersValue = ref<PaymentLinksFiltersValue>({
     createdSince: '',
     createdUntil: '',
 });
+const lastRefreshTimestamp = ref(performance.now());
 
 function onFiltersChange(value: PaymentLinksFiltersValue) {
     filtersValue.value = value;
@@ -80,6 +82,7 @@ const paymentLinksListResult = usePaymentLinksList(() => ({
     allowLimitSelection: props.allowLimitSelection,
     preferredLimit: props.preferredLimit,
     onFiltersChanged: props.onFiltersChanged,
+    lastRefreshTimestamp: lastRefreshTimestamp.value,
 }));
 
 const showFiltersAlert = computed(() => !!props.storeError || !!props.filterOptionsError);
@@ -89,9 +92,9 @@ function closeFiltersAlert() {
     filtersAlertDismissed.value = true;
 }
 
-// ── Row-click details modal (stub — PaymentLinkDetails is not yet migrated to Vue) ──
 const isDetailsModalOpen = ref(false);
 const selectedPaymentLink = ref<IPaymentLinkItem | null>(null);
+const hasDetailsToRefresh = ref(false);
 
 function showDetailsModal() {
     isDetailsModalOpen.value = true;
@@ -110,6 +113,14 @@ function onRowClick(paymentLink: IPaymentLinkItem) {
 function closeDetailsModal() {
     isDetailsModalOpen.value = false;
     selectedPaymentLink.value = null;
+    if (hasDetailsToRefresh.value) {
+        refreshPaymentLinkList();
+        hasDetailsToRefresh.value = false;
+    }
+}
+
+function onPaymentLinkUpdate() {
+    hasDetailsToRefresh.value = true;
 }
 
 // ── Creation / settings modals ──
@@ -130,9 +141,23 @@ function openSettingsModal() {
 function onCloseModal() {
     isModalVisible.value = false;
     if (hasToRefresh.value) {
-        paymentLinksListResult.refresh();
+        refreshPaymentLinkList();
         hasToRefresh.value = false;
     }
+}
+
+function refreshPaymentLinkList() {
+    const now = new Date();
+    const createdUntilDate = filtersValue.value.createdUntil ? new Date(filtersValue.value.createdUntil) : null;
+
+    if (createdUntilDate?.toDateString() === now.toDateString()) {
+        filtersValue.value = {
+            ...filtersValue.value,
+            createdUntil: now.toISOString(),
+        };
+    }
+
+    lastRefreshTimestamp.value = performance.now();
 }
 
 function onPaymentLinkCreated(paymentLink: any) {
@@ -239,19 +264,23 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
             :current-page="paymentLinksListResult.page.value + 1"
         />
 
-        <!-- Row-click details modal. TODO: replace with the migrated PaymentLinkDetails Vue component once available. -->
         <BentoModal
             :is-open="isDetailsModalOpen"
-            size="medium"
+            size="large"
             :is-dismissible="true"
             :aria-label="i18n.get('payByLink.details.title')"
             @close-modal="closeDetailsModal"
         >
-            {{ i18n.get('payByLink.details.title') }}
             <template #content>
-                <BentoTypography v-if="selectedPaymentLink" variant="body">
-                    {{ selectedPaymentLink.paymentLinkId }}
-                </BentoTypography>
+                <PaymentLinkDetailsInternal
+                    v-if="selectedPaymentLink"
+                    :id="selectedPaymentLink.paymentLinkId"
+                    hide-title
+                    :on-contact-support="props.onContactSupport"
+                    :on-dismiss="closeDetailsModal"
+                    :on-update="onPaymentLinkUpdate"
+                    is-dismiss-button-hidden
+                />
             </template>
         </BentoModal>
 

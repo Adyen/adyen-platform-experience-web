@@ -95,6 +95,44 @@ test.describe('Payment Links Overview', () => {
             await expect(rows).toHaveCount(10);
         });
 
+        test('should display payment link details when a row is clicked', async ({ page }) => {
+            await goToStory(page, { id: DEFAULT_STORY_ID });
+
+            const grid = page.getByRole('grid');
+            const firstRow = grid.getByRole('rowgroup').nth(1).getByRole('row').first();
+
+            await firstRow.click();
+
+            const detailsModal = page.getByRole('dialog', { name: 'Payment link details' });
+            await expect(detailsModal.getByText('Payment link ID')).toBeVisible();
+            await expect(detailsModal.getByText(PAYMENT_LINK_ID)).toBeVisible();
+            await expect(detailsModal.getByRole('tab', { name: 'Link information' })).toBeVisible();
+            await expect(detailsModal.getByRole('button', { name: 'Expire now' })).toBeVisible();
+        });
+
+        test('should refresh the current-day date range after expiring a payment link', async ({ page }) => {
+            const grid = page.getByRole('grid');
+            const firstRow = grid.getByRole('rowgroup').nth(1).getByRole('row').first();
+            await firstRow.click();
+
+            const detailsModal = page.getByRole('dialog', { name: 'Payment link details' });
+            await detailsModal.getByRole('button', { name: 'Expire now' }).click();
+            await detailsModal.getByRole('button', { name: 'Expire link' }).click();
+            await expect(detailsModal.getByText('Link has been deactivated')).toBeVisible();
+
+            const refreshRequest = page.waitForRequest(request => {
+                const url = new URL(request.url());
+                return request.method() === 'GET' && url.pathname.endsWith('/paybylink/paymentLinks') && url.searchParams.has('createdUntil');
+            });
+            const refreshStartedAt = Date.now();
+
+            await detailsModal.getByRole('button', { name: 'Go back to payment links' }).click();
+
+            const createdUntil = new URL((await refreshRequest).url()).searchParams.get('createdUntil');
+            expect(createdUntil).not.toBeNull();
+            expect(Math.abs(new Date(createdUntil!).getTime() - refreshStartedAt)).toBeLessThan(10_000);
+        });
+
         test('should filter by Link Type', async ({ page }) => {
             await page.getByRole('button', { name: 'Type' }).click();
 

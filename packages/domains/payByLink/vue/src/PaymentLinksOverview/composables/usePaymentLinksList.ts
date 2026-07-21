@@ -20,6 +20,7 @@ interface UsePaymentLinksListProps {
     allowLimitSelection?: boolean;
     preferredLimit?: number;
     onFiltersChanged?: PaymentLinksOverviewExternalProps['onFiltersChanged'];
+    lastRefreshTimestamp: number;
 }
 
 const listFrom = (value?: StoreIds): string[] | undefined => {
@@ -145,8 +146,18 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
 
     const fetchKey = computed(() => {
         if (!canFetch.value) return null;
-        const { statusGroup, statuses, linkTypes, filterStoreIds, propStoreIds, merchantReference, paymentLinkId, createdSince, createdUntil } =
-            props();
+        const {
+            statusGroup,
+            statuses,
+            linkTypes,
+            filterStoreIds,
+            propStoreIds,
+            merchantReference,
+            paymentLinkId,
+            createdSince,
+            createdUntil,
+            lastRefreshTimestamp,
+        } = props();
         return JSON.stringify({
             statusGroup,
             statuses: [...(statuses || [])].sort(),
@@ -157,6 +168,7 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
             createdSince,
             createdUntil,
             limit: limit.value,
+            lastRefreshTimestamp,
         });
     });
 

@@ -18,7 +18,9 @@ const props = withDefaults(
         paymentLinkCreation?: PaymentLinksOverviewExternalProps['paymentLinkCreation'];
         paymentLinkSettings?: PaymentLinksOverviewExternalProps['paymentLinkSettings'];
     }>(),
-    {}
+    {
+        showDetails: true,
+    }
 );
 
 const { allStores, filteredStores, isFetching: isStoresLoading, error: storeError } = useStores(() => props.storeIds);

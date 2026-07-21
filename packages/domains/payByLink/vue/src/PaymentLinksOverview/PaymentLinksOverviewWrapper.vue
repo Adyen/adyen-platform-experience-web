@@ -4,7 +4,9 @@ import { UIElementProvider } from '@integration-components/core/vue';
 import PaymentLinksOverviewContainer from './components/PaymentLinksOverviewContainer.vue';
 import '@adyen/bento-vue3/styles/bento-light';
 
-const props = defineProps<PaymentLinksOverviewExternalProps>();
+const props = withDefaults(defineProps<PaymentLinksOverviewExternalProps>(), {
+    showDetails: true,
+});
 </script>
 
 <template>
