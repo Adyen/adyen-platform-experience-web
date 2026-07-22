@@ -1,9 +1,9 @@
 import { CapitalComponentState } from '../../CapitalOverview/types';
 import sessionReady from '@integration-components/core/session/utils/sessionReady';
 import { EMPTY_OBJECT } from '@integration-components/utils';
-import { AuthSession } from '@integration-components/core';
+import { AuthSession, CdnFetcher } from '@integration-components/core';
 import { ICapitalState, IDynamicOffersConfig, IGrant } from '@integration-components/types';
-import supportedRegions from '../../../../domain/src/config/supportedRegions.json';
+import { SupportedRegions, getSupportedRegions } from './getSupportedRegions';
 
 export type EnhancedCapitalState = {
     dynamicOffer: ICapitalState['dynamicOffer'];
@@ -20,7 +20,7 @@ const isGrantRenewable = (grant: IGrant, dynamicOffer: IDynamicOffersConfig, ren
     return !renewsGrantIds.has(grant.id) && !!minimumRenewalAmount && maxOfferAmount && minimumRenewalAmount <= maxOfferAmount;
 };
 
-export const getEnhancedCapitalState = (state: ICapitalState | undefined): EnhancedCapitalState => {
+export const getEnhancedCapitalState = (state: ICapitalState | undefined, supportedRegions: SupportedRegions): EnhancedCapitalState => {
     const activeOrPendingGrants = state?.activeOrPendingGrants;
     const dynamicOffer = state?.dynamicOffer;
     const region = state?.legalEntity?.region;
@@ -46,11 +46,14 @@ export const getEnhancedCapitalState = (state: ICapitalState | undefined): Enhan
     };
 };
 
-export const getCapitalState = async (session: AuthSession): Promise<CapitalComponentState> => {
+export const getCapitalState = async (session: AuthSession, getCdnConfig?: CdnFetcher): Promise<CapitalComponentState> => {
     await sessionReady(session);
     const { getCapitalState } = session.context.endpoints;
-    const capitalStateResponse = await getCapitalState?.(EMPTY_OBJECT, { query: EMPTY_OBJECT }).catch(() => undefined);
-    const { dynamicOffer, hasGrants, isRegionSupported, renewableGrants } = getEnhancedCapitalState(capitalStateResponse);
+    const [capitalStateResponse, supportedRegions] = await Promise.all([
+        getCapitalState?.(EMPTY_OBJECT, { query: EMPTY_OBJECT }).catch(() => undefined),
+        getSupportedRegions(getCdnConfig),
+    ]);
+    const { dynamicOffer, hasGrants, isRegionSupported, renewableGrants } = getEnhancedCapitalState(capitalStateResponse, supportedRegions);
 
     if (capitalStateResponse && !isRegionSupported) {
         return {

@@ -16,6 +16,7 @@ import { GrantList } from '../GrantList/GrantList';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import { getCapitalErrorMessage } from '../../../utils/capital/getCapitalErrorMessage';
 import { getEnhancedCapitalState } from '../../../utils/capital/getCapitalState';
+import { useSupportedRegions } from '../../../utils/capital/useSupportedRegions';
 import { OnFundsRequestCallback } from '../../../types';
 
 type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified' | 'GrantList' | 'UnsupportedRegion';
@@ -29,6 +30,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     skipPreQualifiedIntro,
 }) => {
     const { getCapitalState: capitalStateEndpointCall, getGrants: grantsEndpointCall } = useConfigContext().endpoints;
+    const supportedRegions = useSupportedRegions();
 
     const capitalStateQuery = useFetch({
         fetchOptions: { enabled: !!capitalStateEndpointCall },
@@ -48,9 +50,10 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                         activeOrPendingGrants: requestedGrant
                             ? [requestedGrant, ...capitalStateQuery.data.activeOrPendingGrants]
                             : capitalStateQuery.data.activeOrPendingGrants,
-                    } as ICapitalState)
+                    } as ICapitalState),
+                supportedRegions
             ),
-        [capitalStateQuery.data, requestedGrant]
+        [capitalStateQuery.data, requestedGrant, supportedRegions]
     );
 
     const hasGrantsOnServer = useMemo(
@@ -95,10 +98,10 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
             return 'Loading';
         } else if (capitalStateQuery.data && !capitalState.isRegionSupported) {
             return 'UnsupportedRegion';
-        } else if (capitalState?.hasGrants || grantList?.length) {
+        } else if (capitalState.hasGrants || grantList?.length) {
             return 'GrantList';
         }
-        return capitalState?.dynamicOffer ? 'PreQualified' : 'Unqualified';
+        return capitalState.dynamicOffer ? 'PreQualified' : 'Unqualified';
     }, [capitalState, capitalStateEndpointCall, capitalStateQuery, grantList, grantsEndpointCall, grantsQuery]);
 
     return (

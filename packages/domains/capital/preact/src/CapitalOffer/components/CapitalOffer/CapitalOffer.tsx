@@ -13,6 +13,7 @@ import { CapitalOfferSelection } from '../CapitalOfferSelection/CapitalOfferSele
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
 import './CapitalOffer.scss';
 import { getEnhancedCapitalState } from '../../../utils/capital/getCapitalState';
+import { useSupportedRegions } from '../../../utils/capital/useSupportedRegions';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
 
@@ -34,6 +35,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
 
     const { getCapitalState } = useConfigContext().endpoints;
+    const supportedRegions = useSupportedRegions();
 
     const { data: internalCapitalState, error: capitalStateError } = useFetch({
         fetchOptions: { enabled: !externalCapitalState && !!getCapitalState },
@@ -43,8 +45,8 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     });
 
     const state = useMemo(
-        () => externalCapitalState || (internalCapitalState && getEnhancedCapitalState(internalCapitalState)),
-        [externalCapitalState, internalCapitalState]
+        () => externalCapitalState || (internalCapitalState && getEnhancedCapitalState(internalCapitalState, supportedRegions)),
+        [externalCapitalState, internalCapitalState, supportedRegions]
     );
 
     const onOfferSelectHandler = useCallback(
@@ -64,7 +66,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
 
     useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital offer' });
 
-    if (state && !state?.isRegionSupported) {
+    if (state && !state.isRegionSupported) {
         return (
             <div className={CAPITAL_OFFER_CLASS_NAMES.errorContainer}>
                 <CapitalHeader hideTitle={hideTitle} region={state.region} titleKey={'capital.common.title'} />
