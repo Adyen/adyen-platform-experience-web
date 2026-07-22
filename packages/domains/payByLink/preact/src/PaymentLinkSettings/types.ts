@@ -1,8 +1,5 @@
-import { UIElementProps } from '@integration-components/types';
-import type { StoreIds } from '@integration-components/payByLink/domain';
+import type { PaymentLinkSettingsProps } from '@integration-components/payByLink/domain';
 
-export interface PaymentLinkSettingsProps extends UIElementProps {
-    storeIds?: StoreIds;
-}
+export type { PaymentLinkSettingsProps } from '@integration-components/payByLink/domain';
 
 export type PaymentLinkSettingsComponentProps = PaymentLinkSettingsProps;

@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import type { TranslationKey } from '@integration-components/core';
 import { usePaymentLinkSettingsContext } from '../composables/context';
-import { isThemeData } from '../utils/typeGuards';
+import { isThemeData } from '@integration-components/payByLink/domain';
 import LoadingSkeleton from './LoadingSkeleton.vue';
 import SettingsError from './SettingsError.vue';
 import ThemeForm from './ThemeForm.vue';

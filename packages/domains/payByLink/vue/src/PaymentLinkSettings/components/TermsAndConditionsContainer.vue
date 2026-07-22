@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import type { TranslationKey } from '@integration-components/core';
 import type { IPaymentLinkTermsAndConditions } from '@integration-components/types';
 import { usePaymentLinkSettingsContext } from '../composables/context';
-import { isTermsAndConditionsData } from '../utils/typeGuards';
+import { isTermsAndConditionsData } from '@integration-components/payByLink/domain';
 import LoadingSkeleton from './LoadingSkeleton.vue';
 import SettingsError from './SettingsError.vue';
 import TermsAndConditions from './TermsAndConditions.vue';

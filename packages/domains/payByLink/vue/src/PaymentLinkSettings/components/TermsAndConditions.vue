@@ -4,8 +4,7 @@ import { BentoAlert, BentoCheckbox, BentoInputField, BentoTypography } from '@ad
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IPaymentLinkTermsAndConditions } from '@integration-components/types';
 import { usePaymentLinkSettingsContext } from '../composables/context';
-import { isTermsAndConditionsData } from '../utils/typeGuards';
-import { isValidURL } from '../utils/validateTermsAndConditionsURL';
+import { isTermsAndConditionsData, isValidURL } from '@integration-components/payByLink/domain';
 import Requirements from './Requirements.vue';
 
 const props = defineProps<{

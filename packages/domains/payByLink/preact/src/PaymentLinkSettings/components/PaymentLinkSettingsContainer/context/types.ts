@@ -1,6 +1,5 @@
 import type { Dispatch } from 'preact/compat';
 import { StateUpdater } from 'preact/hooks';
-import { StoreSelectorItemParams } from '@integration-components/ui-components-preact/StoreSelector/types';
 import { SecondaryNavItem } from '@integration-components/ui-components-preact/SecondaryNav';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
 import type {
@@ -9,6 +8,7 @@ import type {
     PaymentLinkSettingsItem,
     PaymentLinkSettingsMenuItem,
     PaymentLinkSettingsPayload,
+    StoreItem,
     ThemeFormData,
 } from '@integration-components/payByLink/domain';
 
@@ -18,6 +18,7 @@ export type {
     PaymentLinkSettingsItem,
     PaymentLinkSettingsMenuItem,
     PaymentLinkSettingsPayload,
+    StoreItem,
     ThemeFormData,
 };
 
@@ -37,8 +38,8 @@ export interface IPaymentLinkSettingsContext {
     setIsValid: (validity: boolean) => void;
     getIsValid: () => boolean;
     setSaveActionCalled: Dispatch<StateUpdater<boolean | undefined>>;
-    filteredStores: StoreSelectorItemParams[] | undefined;
-    allStores: StoreSelectorItemParams[] | undefined;
+    filteredStores: StoreItem[] | undefined;
+    allStores: StoreItem[] | undefined;
     setSelectedStore: Dispatch<StateUpdater<string | undefined>>;
     setSavedData: (data: PaymentLinkSettingsData) => void;
     savedData: PaymentLinkSettingsData;
