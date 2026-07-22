@@ -1,8 +1,7 @@
 import { LogoTypes } from '../../types';
 import { useCoreContext } from '@integration-components/core/preact';
 import { useUniqueId } from '@integration-components/hooks-preact';
-import { useCallback, useMemo } from 'preact/hooks';
-import { TranslationKey } from '@integration-components/core';
+import { useCallback } from 'preact/hooks';
 import type { BaseFileInputProps } from '@integration-components/ui-components-preact/FormFields/FileInput/types';
 type MapErrorCallback = NonNullable<BaseFileInputProps['mapError']>;
 import { validationErrors } from '@integration-components/ui-components-preact/FormFields/FileInput/constants';
@@ -10,19 +9,15 @@ import defaultMapError from '@integration-components/ui-components-preact/FormFi
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import FileInput from '@integration-components/ui-components-preact/FormFields/FileInput/FileInput';
-import { LogoLabel, logoOptions, THEME_FORM_ALLOWED_FILE_TYPES, THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from '../ThemeForm/constants';
+import {
+    LOGO_DIMENSION_ERROR,
+    LOGO_DIMENSIONS,
+    LogoLabel,
+    THEME_FORM_ALLOWED_FILE_TYPES,
+    THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE,
+} from '../ThemeForm/constants';
 import LogoRequirements from '../LogoRequirements/LogoRequirements';
 import { ValidationError } from '@integration-components/ui-components-preact/FormFields/FileInput/types';
-
-const getImageDimensionLimitation = (logoType: LogoTypes) => {
-    switch (logoType) {
-        case logoOptions.LOGO:
-            return { width: 200, height: 200 };
-        case logoOptions.FULL_WIDTH_LOGO:
-        default:
-            return { width: 300, height: 30 };
-    }
-};
 
 const LogoInput = ({
     disabled,
@@ -43,18 +38,8 @@ const LogoInput = ({
         [logoType, onFileInputChange]
     );
 
-    const dimensions: {
-        width: number;
-        height: number;
-    } = useMemo(() => getImageDimensionLimitation(logoType), [logoType]);
-
-    const dimensionError: TranslationKey = useMemo(
-        () =>
-            logoType === 'logo'
-                ? 'payByLink.settings.themes.inputs.file.errors.logo.invalidDimensions'
-                : 'payByLink.settings.themes.inputs.file.errors.fullWidthLogo.invalidDimensions',
-        [logoType]
-    );
+    const dimensions = LOGO_DIMENSIONS[logoType];
+    const dimensionError = LOGO_DIMENSION_ERROR[logoType];
 
     const mapError: MapErrorCallback = useCallback(
         (error: ValidationError) => {

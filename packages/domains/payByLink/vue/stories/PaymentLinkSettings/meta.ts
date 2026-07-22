@@ -12,6 +12,7 @@ export const PaymentLinkSettingsMeta: Meta<ElementProps<PaymentLinkSettingsExter
     },
     args: {
         component: PaymentLinkSettings,
+        compact: true,
     },
     parameters: {
         controls: {

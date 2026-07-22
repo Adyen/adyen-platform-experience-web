@@ -453,6 +453,7 @@
     "payByLink.settings.common.action.save": "Label for a button that saves the current changes.",
     "payByLink.settings.common.alerts.saveError": "Label to indicate the save action was not successful.",
     "payByLink.settings.common.alerts.saveSuccess": "Label to indicate the save action has been succeeded.",
+    "payByLink.settings.errors.couldNotLoadSettings": "Error message displayed when Pay by Link settings cannot be loaded.",
     "payByLink.settings.navigation.termsAndConditions": "Navigation label for the terms and conditions section in Pay by Link settings.",
     "payByLink.settings.navigation.theme": "Navigation label for the theme customization section in Pay by Link settings.",
     "payByLink.settings.terms.requirements.actions.confirmRequirements": "Label for a button that confirms the user has reviewed and accepted all the terms and conditions requirements.",

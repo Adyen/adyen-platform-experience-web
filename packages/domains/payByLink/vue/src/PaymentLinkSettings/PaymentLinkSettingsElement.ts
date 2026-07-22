@@ -1,4 +1,5 @@
 import { UIElement } from '@integration-components/core/vue';
+import type { ExternalComponentType } from '@integration-components/types';
 import PaymentLinkSettingsContainer from './components/PaymentLinkSettingsContainer.vue';
 import type { PaymentLinkSettingsExternalProps } from './types';
 
@@ -11,6 +12,8 @@ import type { PaymentLinkSettingsExternalProps } from './types';
  *   paymentLinkSettings.mount('#payment-link-settings-container');
  */
 export class PaymentLinkSettingsElement extends UIElement<PaymentLinkSettingsExternalProps> {
+    public static readonly type: ExternalComponentType = 'paymentLinkSettings';
+
     constructor(props: PaymentLinkSettingsExternalProps) {
         super(PaymentLinkSettingsContainer, props, 'paymentLinkSettings');
     }

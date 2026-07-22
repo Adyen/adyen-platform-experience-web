@@ -5,6 +5,7 @@ type GlobalStoriesProps = {
     mockedApi?: boolean;
     balanceAccountId?: string;
     component: any;
+    compact?: boolean;
     coreOptions?: Partial<CoreOptions>;
     skipDecorators?: boolean;
     compact?: boolean;
