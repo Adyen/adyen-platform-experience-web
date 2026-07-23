@@ -2,7 +2,7 @@ import { computed, inject, provide, ref, watch, type ComputedRef, type Injection
 import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import type { StoreIds } from '@integration-components/payByLink/domain';
-import { MenuItem } from '../constants';
+import { DEFAULT_MENU_ITEM, MenuItem } from '../constants';
 import type { MenuItemType, PaymentLinkSettingsData, PaymentLinkSettingsItem, PaymentLinkSettingsPayload, StoreItem } from '../types';
 import { useSettingsPermission } from './useSettingsPermission';
 import { useStores } from './useStores';
@@ -60,7 +60,7 @@ export function providePaymentLinkSettings(options: ProvidePaymentLinkSettingsOp
 
     const menuItemPreSelect = computed<PaymentLinkSettingsItem | undefined>(() => {
         if (isSmContainer.value && menuItems.length > 1) return undefined;
-        return menuItems.length > 0 && menuItems[0] ? menuItems[0].value : undefined;
+        return menuItems.length > 0 && menuItems[0] ? menuItems[0].value : DEFAULT_MENU_ITEM;
     });
 
     const activeMenuItem = ref<PaymentLinkSettingsItem | null>(null);
@@ -172,16 +172,6 @@ export function providePaymentLinkSettings(options: ProvidePaymentLinkSettingsOp
     watch([themeError, termsAndConditionsError], () => {
         if (themeError.value || termsAndConditionsError.value) loading.value = false;
     });
-
-    watch(
-        [filteredStores, selectedStore],
-        () => {
-            if (!selectedStore.value && filteredStores.value && filteredStores.value.length > 0) {
-                setSelectedStore(filteredStores.value[0]?.id);
-            }
-        },
-        { immediate: true }
-    );
 
     const hasPermission = computed(() => {
         if (!activeMenuItem.value) return false;

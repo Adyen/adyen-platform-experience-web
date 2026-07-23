@@ -1,20 +1,26 @@
 import type { Dispatch } from 'preact/compat';
 import { StateUpdater } from 'preact/hooks';
-import { StoreSelectorItemParams } from '@integration-components/ui-components-preact/StoreSelector/types';
-import { IPaymentLinkTermsAndConditions } from '@integration-components/types';
 import { SecondaryNavItem } from '@integration-components/ui-components-preact/SecondaryNav';
-import { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
+import type {
+    MenuItemType,
+    PaymentLinkSettingsData,
+    PaymentLinkSettingsItem,
+    PaymentLinkSettingsMenuItem,
+    PaymentLinkSettingsPayload,
+    StoreItem,
+    ThemeFormData,
+} from '@integration-components/payByLink/domain';
 
-export type PaymentLinkSettingsPayload = FormData | IPaymentLinkTermsAndConditions | undefined;
-export type ThemeFormData = {
-    logo?: string | undefined;
-    fullWidthLogo?: string | undefined;
-    brandName?: string | undefined;
+export type {
+    MenuItemType,
+    PaymentLinkSettingsData,
+    PaymentLinkSettingsItem,
+    PaymentLinkSettingsMenuItem,
+    PaymentLinkSettingsPayload,
+    StoreItem,
+    ThemeFormData,
 };
-export type PaymentLinkSettingsData = IPaymentLinkTermsAndConditions | ThemeFormData | undefined;
-export type PaymentLinkSettingsItem = 'theme' | 'termsAndConditions';
-export type PaymentLinkSettingsMenuItem = { value: PaymentLinkSettingsItem; label: TranslationKey };
-export type MenuItemType = { value: PaymentLinkSettingsItem; label: string };
 
 export interface IPaymentLinkSettingsContext {
     isLoadingContent: boolean;
@@ -32,8 +38,8 @@ export interface IPaymentLinkSettingsContext {
     setIsValid: (validity: boolean) => void;
     getIsValid: () => boolean;
     setSaveActionCalled: Dispatch<StateUpdater<boolean | undefined>>;
-    filteredStores: StoreSelectorItemParams[] | undefined;
-    allStores: StoreSelectorItemParams[] | undefined;
+    filteredStores: StoreItem[] | undefined;
+    allStores: StoreItem[] | undefined;
     setSelectedStore: Dispatch<StateUpdater<string | undefined>>;
     setSavedData: (data: PaymentLinkSettingsData) => void;
     savedData: PaymentLinkSettingsData;

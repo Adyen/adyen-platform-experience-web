@@ -1,6 +1,6 @@
 import { hasOwnProperty } from '@integration-components/utils';
 import type { IPaymentLinkTermsAndConditions } from '@integration-components/types';
-import type { PaymentLinkSettingsData, PaymentLinkSettingsPayload, ThemeFormData } from '../types';
+import type { PaymentLinkSettingsData, PaymentLinkSettingsPayload, ThemeFormData } from './types';
 
 export const isTermsAndConditionsData = (data: PaymentLinkSettingsData): data is IPaymentLinkTermsAndConditions => {
     const dataObj = typeof data === 'object' ? data : {};
@@ -14,4 +14,14 @@ export const isThemeData = (data: PaymentLinkSettingsData): data is ThemeFormDat
 
 export const isThemePayload = (data: PaymentLinkSettingsPayload): data is FormData => {
     return data instanceof FormData;
+};
+
+export const isValidURL = (termsAndConditionsURL: string) => {
+    if (termsAndConditionsURL === '') return true;
+    try {
+        new URL(termsAndConditionsURL);
+        return true;
+    } catch {
+        return false;
+    }
 };

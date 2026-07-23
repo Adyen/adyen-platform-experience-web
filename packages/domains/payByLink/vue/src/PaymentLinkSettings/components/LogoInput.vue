@@ -32,6 +32,18 @@ async function onChange(files?: FileList) {
         return;
     }
 
+    if (!(THEME_FORM_ALLOWED_FILE_TYPES as readonly string[]).includes(file.type)) {
+        errorMessage.value = i18n.get('common.inputs.file.errors.disallowedType');
+        modelValue.value = undefined;
+        return;
+    }
+
+    if (file.size > THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE) {
+        errorMessage.value = i18n.get('common.inputs.file.errors.tooLarge');
+        modelValue.value = undefined;
+        return;
+    }
+
     try {
         const dimensions = await getImageDimensions(file);
         const expected = LOGO_DIMENSIONS[props.logoType];
@@ -42,18 +54,6 @@ async function onChange(files?: FileList) {
         }
     } catch {
         errorMessage.value = i18n.get('common.inputs.file.errors.default');
-        modelValue.value = undefined;
-        return;
-    }
-
-    if (!(THEME_FORM_ALLOWED_FILE_TYPES as readonly string[]).includes(file.type)) {
-        errorMessage.value = i18n.get('common.inputs.file.errors.disallowedType');
-        modelValue.value = undefined;
-        return;
-    }
-
-    if (file.size > THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE) {
-        errorMessage.value = i18n.get('common.inputs.file.errors.tooLarge');
         modelValue.value = undefined;
         return;
     }

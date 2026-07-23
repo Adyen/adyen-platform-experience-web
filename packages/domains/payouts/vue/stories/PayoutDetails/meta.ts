@@ -12,6 +12,7 @@ export const PayoutDetailsMeta: Meta<ElementProps<PayoutDetailsExternalProps>> =
     },
     args: {
         component: PayoutDetails,
+        compact: true,
     },
     parameters: {
         controls: {

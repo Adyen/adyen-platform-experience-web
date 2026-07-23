@@ -3,7 +3,7 @@ import { useConfigContext } from '@integration-components/core/vue';
 import { isFunction, isUndefined } from '@integration-components/utils';
 import type { EndpointHttpCallables } from '@integration-components/core';
 import { MenuItem } from '../constants';
-import { isThemePayload } from '../utils/typeGuards';
+import { isThemePayload } from '@integration-components/payByLink/domain';
 import { getThemePayload } from '../utils/getThemePayload';
 import type { PaymentLinkSettingsData, PaymentLinkSettingsItem, PaymentLinkSettingsPayload } from '../types';
 

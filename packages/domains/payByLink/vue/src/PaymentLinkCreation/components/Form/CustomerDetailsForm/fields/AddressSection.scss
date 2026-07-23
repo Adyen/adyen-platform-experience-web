@@ -1,0 +1,44 @@
+@use '@integration-components/style' as style;
+@use '@integration-components/style/breakpoints' as *;
+
+.adyen-pe-payment-link-creation-form {
+    &__address-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+    }
+
+    &__address-row {
+        display: flex;
+        flex-direction: row;
+        gap: style.token(spacer-040);
+
+        @include adyen-pe-screen-sm-and-down {
+            flex-direction: column;
+        }
+
+        > * {
+            flex: 1 0 0;
+        }
+    }
+
+    &__address-field {
+        &--large {
+            flex: 2 0 0;
+        }
+
+        &--small {
+            flex: 1 0 0;
+        }
+    }
+
+    &__address-title-container {
+        display: flex;
+        align-items: baseline;
+        gap: style.token(spacer-020);
+    }
+
+    &__field-label-optional {
+        color: style.token(color-label-secondary);
+    }
+}
