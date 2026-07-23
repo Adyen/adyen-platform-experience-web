@@ -1,5 +1,5 @@
 import type { CoreInstance } from '@integration-components/core/vue';
-import type { PaymentLinkSettingsProps } from '@integration-components/payByLink/domain';
+import type { PaymentLinkSettingsProps } from '../../../domain/src';
 
 export type {
     LogoType,
@@ -12,7 +12,7 @@ export type {
     SettingsErrorContent,
     StoreItem,
     ThemeFormData,
-} from '@integration-components/payByLink/domain';
+} from '../../../domain/src';
 
 export interface PaymentLinkSettingsExternalProps extends PaymentLinkSettingsProps {
     core: CoreInstance;
