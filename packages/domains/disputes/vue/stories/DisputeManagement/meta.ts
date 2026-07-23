@@ -14,6 +14,7 @@ export const DisputeManagementMeta: Meta<ElementProps<DisputeManagementExternalP
     },
     args: {
         component: DisputeManagement,
+        compact: true,
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
     },
     parameters: {
