@@ -31,7 +31,7 @@
         "vue": "catalog:"
     },
     "devDependencies": {
-        "@playwright/test": "^1.56.0",
+        "@playwright/test": "catalog:",
         "@storybook/preact": "10.2.12",
         "@storybook/vue3": "10.2.12",
         "dotenv": "^17.2.3",

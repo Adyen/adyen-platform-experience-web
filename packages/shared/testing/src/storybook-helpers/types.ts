@@ -4,10 +4,10 @@ import { CoreOptions } from '@integration-components/sdk-internal';
 type GlobalStoriesProps = {
     mockedApi?: boolean;
     balanceAccountId?: string;
+    compact?: boolean;
     component: any;
     coreOptions?: Partial<CoreOptions>;
     skipDecorators?: boolean;
-    compact?: boolean;
 };
 
 type ComponentPropsOf<T> = T extends new (...args: any) => any ? ConstructorParameters<T>[0] : T;
