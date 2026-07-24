@@ -6,7 +6,6 @@ type GlobalStoriesProps = {
     balanceAccountId?: string;
     compact?: boolean;
     component: any;
-    compact?: boolean;
     coreOptions?: Partial<CoreOptions>;
     skipDecorators?: boolean;
 };
