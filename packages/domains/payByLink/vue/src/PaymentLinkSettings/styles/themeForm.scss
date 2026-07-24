@@ -1,0 +1,49 @@
+@use '@integration-components/style';
+
+.adyen-pe-payment-link-theme-form {
+    align-items: flex-start;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+
+    &-container {
+        align-items: flex-start;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+        width: 100%;
+    }
+
+    &__file-input {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+        margin-bottom: style.token(spacer-040);
+        width: 100%;
+    }
+
+    &__file-info {
+        color: style.token(color-label-secondary);
+
+        &-container {
+            margin-top: style.token(spacer-060);
+        }
+    }
+
+    &__preview-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+        width: fit-content;
+    }
+
+    &__preview-image {
+        width: fit-content;
+    }
+
+    &__preview-remove {
+        width: fit-content;
+    }
+}

@@ -14,7 +14,7 @@ import { IPaymentLinkTermsAndConditions } from '@integration-components/types';
 import usePaymentLinkSettingsContext from '../PaymentLinkSettingsContainer/context/context';
 import { isTermsAndConditionsData } from '../PaymentLinkThemeContainer/types';
 import { Translation } from '@integration-components/ui-components-preact/Translation';
-import { isValidURL } from '../PaymentLinkSettingsContainer/utils/validateTermsAndConditionsURL';
+import { isValidURL } from '@integration-components/payByLink/domain';
 import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
 import Button from '@integration-components/ui-components-preact/Button';
 import { Requirements } from './Requirements/Requirements';
