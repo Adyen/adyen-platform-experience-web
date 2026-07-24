@@ -1,9 +1,10 @@
 import {
-    CAPITAL_STATE_UNQUALIFIED,
+    CAPITAL_STATE_INELIGIBLE,
     CAPITAL_STATE_FIRST_OFFER,
     CAPITAL_STATE_FIRST_OFFER_CAD,
     CAPITAL_STATE_CLOSED_GRANTS,
     CAPITAL_STATE_RENEWABLE_GRANT,
+    CAPITAL_STATE_ACTIVE_GRANT,
 } from '../mock-data/capital';
 import { http, HttpResponse } from 'msw';
 import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
@@ -13,9 +14,19 @@ import { getCreateOfferResponse, getDynamicOfferResponse, getErrorResponse, getG
 
 export const capitalOfferHandlers = {
     ...commonHandlers,
-    default: [
+    ineligible: [
+        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
+            return HttpResponse.json(CAPITAL_STATE_INELIGIBLE);
+        }),
+    ],
+    eligible: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_CLOSED_GRANTS);
+        }),
+    ],
+    eligibleWithOngoingGrants: [
+        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
+            return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
         }),
     ],
     earlyRenewal: [
@@ -23,17 +34,12 @@ export const capitalOfferHandlers = {
             return HttpResponse.json(CAPITAL_STATE_RENEWABLE_GRANT);
         }),
     ],
-    aprField: [
+    apr: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_FIRST_OFFER_CAD);
         }),
     ],
-    unqualified: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_UNQUALIFIED);
-        }),
-    ],
-    errorDynamicOfferExceededRetries: [
+    errorOffer: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_FIRST_OFFER);
         }),
@@ -41,7 +47,7 @@ export const capitalOfferHandlers = {
             return getDynamicOfferResponse(request, 10);
         }),
     ],
-    errorDynamicOfferTemporary: [
+    errorTemporaryOffer: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_FIRST_OFFER);
         }),
@@ -49,7 +55,7 @@ export const capitalOfferHandlers = {
             return getDynamicOfferResponse(request, 1);
         }),
     ],
-    errorReviewOfferGeneric: [
+    errorReview: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_FIRST_OFFER);
         }),
@@ -57,7 +63,7 @@ export const capitalOfferHandlers = {
             return getErrorResponse(getGenericError(), 500);
         }),
     ],
-    errorRequestFundsGeneric: [
+    errorSubmit: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_FIRST_OFFER);
         }),
@@ -65,7 +71,7 @@ export const capitalOfferHandlers = {
             return getErrorResponse(getGenericError(), 500);
         }),
     ],
-    errorRequestFundsGenericWithCode: [
+    errorWithCodeSubmit: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_FIRST_OFFER);
         }),
@@ -74,7 +80,7 @@ export const capitalOfferHandlers = {
             return getErrorResponse(error, 500);
         }),
     ],
-    errorRequestFundsNoPrimaryBalanceAccount: [
+    errorBalanceAccount: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_FIRST_OFFER);
         }),

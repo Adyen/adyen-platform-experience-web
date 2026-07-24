@@ -4,7 +4,7 @@ import { sharedGrantsOverviewAnalyticsEventProperties, sharedSendRepaymentButton
 
 const STORY_ID = 'mocked-capital-capital-overview--repayment-us';
 
-test.describe('Repayment - US', () => {
+test.describe('Repayment US', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });
