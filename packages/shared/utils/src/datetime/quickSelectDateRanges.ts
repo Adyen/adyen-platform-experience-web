@@ -6,11 +6,22 @@
  * helpers can be reused from any package.
  */
 
-type QuickSelectDateRange = {
+export type QuickSelectDateRange = {
     startDate: Date;
     endDate: Date;
     range: string;
 };
+
+export function createQuickSelectRanges<Key extends string>(
+    ranges: Record<Key, QuickSelectDateRange>,
+    getLabel: (key: `common.filters.types.date.rangeSelect.options.${Key}`) => string
+) {
+    return (Object.keys(ranges) as Key[]).map(value => ({
+        label: getLabel(`common.filters.types.date.rangeSelect.options.${value}`),
+        value,
+        data: ranges[value],
+    }));
+}
 
 export function startOfDay(date: Date): Date {
     const d = new Date(date);
