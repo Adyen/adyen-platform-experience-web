@@ -38,7 +38,7 @@
     "capital.offer.common.repaymentInfo": "Description that indicates a minimum grant repayment amount, the frequency of the repayment and the term end date",
     "capital.offer.selection.actions.reviewOffer": "Label for a button that enables the user to review a previously requested offer",
     "capital.offer.selection.earlyRenewal.amountToReceive": "Label for the net amount the user will receive after applying the existing loan deduction to the new loan",
-    "capital.offer.selection.earlyRenewal.currentGrantAmount": "Label for the outstanding balance of the user's existing loan, shown during early renewal offer selection",
+    "capital.offer.selection.earlyRenewal.currentGrantAmount": "Label for the outstanding balance of the user's current loan, shown during early renewal offer selection",
     "capital.offer.selection.earlyRenewal.newGrantAmount": "Label for the total amount of the new loan being requested during early renewal",
     "capital.offer.selection.slider.a11y.label": "Accessible label for the slider that allows the user to select the loan amount",
     "capital.offer.selection.termOptions.dailyRatePercentage": "Label displaying the daily repayment rate percentage for a repayment plan option",

@@ -15,8 +15,8 @@ import { TermSelector } from '../TermSelector';
 import { Fragment } from 'preact';
 import { getRelativeToDefault, getValuePercentage } from './utils';
 import { CapitalOfferInformation } from '../CapitalOfferInformation/CapitalOfferInformation';
-import { CapitalHighlightedFields } from '../CapitalHighlightedFields/CapitalHighlightedFields';
 import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
+import { RenewalHighlightedFields } from '../RenewalHighlightedFields';
 
 const DEFAULT_TERM = 180;
 
@@ -298,41 +298,14 @@ export const CapitalOfferSelection = ({
         [capitalState, capitalStateError]
     );
 
-    const highlightedFields = useMemo(() => {
-        const currency = matchedOffer?.grantAmount.currency;
-        const newGrantAmount = matchedOffer?.grantAmount.value;
-        const existingGrantAmount = capitalState?.renewableGrants[0]?.remainingGrantAmount.value;
-
-        if (!currency || !newGrantAmount || !existingGrantAmount) return [];
-
-        const amountToReceive = newGrantAmount - existingGrantAmount;
-        const amountConfig = { minimumFractionDigits: 0 };
-
-        return [
-            {
-                label: i18n.get('capital.offer.selection.earlyRenewal.newGrantAmount'),
-                value: i18n.amount(newGrantAmount, currency, amountConfig),
-            },
-            {
-                value: '-',
-            },
-            {
-                label: i18n.get('capital.offer.selection.earlyRenewal.currentGrantAmount'),
-                value: i18n.amount(existingGrantAmount, currency, amountConfig),
-            },
-            {
-                value: '=',
-            },
-            {
-                label: i18n.get('capital.offer.selection.earlyRenewal.amountToReceive'),
-                value: i18n.amount(amountToReceive, currency, amountConfig),
-            },
-        ];
-    }, [capitalState, i18n, matchedOffer?.grantAmount.currency, matchedOffer?.grantAmount.value]);
-
     const renderHighlightedFields = () => {
-        if (!capitalState?.renewableGrants?.length) return null;
-        return isLoadingIndicatorVisible ? <HighlightedFieldsLoadingSkeleton /> : <CapitalHighlightedFields fields={highlightedFields} />;
+        const renewableGrant = capitalState?.renewableGrants[0];
+        if (!renewableGrant) return null;
+        return isLoadingIndicatorVisible ? (
+            <HighlightedFieldsLoadingSkeleton />
+        ) : (
+            <RenewalHighlightedFields remainingGrantAmount={renewableGrant.remainingGrantAmount} newGrantAmount={matchedOffer!.grantAmount} />
+        );
     };
 
     return (
