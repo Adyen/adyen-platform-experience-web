@@ -11,7 +11,7 @@ import {
     containerQueries,
     DataOverviewError,
 } from '@integration-components/composables-vue';
-import { DATE_FORMAT_REPORTS } from '@integration-components/utils';
+import { DATE_FORMAT_REPORTS, downloadBlob } from '@integration-components/utils';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
@@ -110,14 +110,7 @@ async function handleDownload(item: IReport) {
             }
         );
         if (result?.blob) {
-            const url = URL.createObjectURL(result.blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = result.filename || 'report.csv';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            downloadBlob(result, 'report.csv');
         }
     } catch (e) {
         onDownloadErrorAlert(e as AdyenPlatformExperienceError);
