@@ -1,0 +1,15 @@
+@use '@integration-components/style' as style;
+
+.adyen-pe-transaction-data {
+    &__loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    &__title {
+        margin-bottom: style.token(spacer-060);
+    }
+}

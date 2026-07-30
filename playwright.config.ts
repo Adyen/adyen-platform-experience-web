@@ -5,12 +5,25 @@ import { getEnvironment } from './envs/getEnvs';
 const { app } = getEnvironment('development');
 
 const baseUrl = `http://${app.host}:${app.port}`;
+const ciWorkers = Math.max(1, Number.parseInt(process.env.PLAYWRIGHT_WORKERS ?? '', 10) || 2);
+const framework = process.env.STORYBOOK_FRAMEWORK ?? 'preact';
+
+let frameworkTestFiles!: string | RegExp | (string | RegExp)[];
+
+switch (framework) {
+    case 'preact':
+    case 'vue':
+        frameworkTestFiles = [`packages/domains/*/${framework}/tests/integration/**/*.spec.ts`];
+        break;
+    default:
+        throw new Error(`Unsupported STORYBOOK_FRAMEWORK "${framework}". Must be "preact" or "vue".`);
+}
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-    testDir: './tests',
+    testDir: '.',
     timeout: 30 * 1000,
     globalTimeout: 10 * 60 * 1000, // 10 minutes
     expect: {
@@ -24,8 +37,8 @@ const config: PlaywrightTestConfig = {
     /* Retry on CI only. Playwright will tell us if a test is flaky */
     retries: process.env.CI ? 2 : 0,
 
-    /* Opt out of parallel tests on CI. */
-    workers: process.env.CI ? 1 : undefined,
+    /* Allow CI worker tuning via PLAYWRIGHT_WORKERS. */
+    workers: process.env.CI ? ciWorkers : undefined,
 
     reporter: 'html',
 
@@ -44,20 +57,8 @@ const config: PlaywrightTestConfig = {
     projects: [
         {
             name: 'local-chrome',
-            testDir: 'tests/integration',
+            testMatch: frameworkTestFiles,
             use: {
-                // Use the pre-installed browser already on the machine
-                channel: 'chrome',
-                launchOptions: {
-                    args: process.env.CI ? ['--headless=new'] : process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
-                },
-            },
-        },
-        {
-            name: 'local-chrome-e2e',
-            testDir: 'tests/e2e',
-            use: {
-                // Use the pre-installed browser already on the machine
                 channel: 'chrome',
                 launchOptions: {
                     args: process.env.CI ? ['--headless=new'] : process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
@@ -66,7 +67,7 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: 'contract',
-            testDir: 'tests/contract',
+            testMatch: ['packages/domains/*/domain/tests/contract/**/*.spec.ts'],
             use: {
                 ignoreHTTPSErrors: true,
             },
@@ -74,7 +75,7 @@ const config: PlaywrightTestConfig = {
     ],
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: 'pnpm run storybook:static',
+        command: process.env.PLAYWRIGHT_WEB_SERVER_COMMAND ?? `pnpm run storybook:static:${framework}`,
         reuseExistingServer: !process.env.CI,
         url: process.env.CI ? undefined : baseUrl,
         port: process.env.CI ? app.port : undefined,

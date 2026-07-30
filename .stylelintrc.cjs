@@ -1,7 +1,6 @@
 const bemPattern = '^.[adyen|fp]*(?:-[a-zA-Z0-9]+)*(?:__[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:--[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:\\[.+\\])?$';
 
 module.exports = {
-    syntax: 'scss',
     extends: ['stylelint-config-recommended', 'stylelint-config-sass-guidelines'],
     plugins: ['stylelint-scss'],
     ignoreFiles: [
@@ -9,8 +8,8 @@ module.exports = {
         'src/style/bento/**/*.scss',
     ],
     rules: {
-        indentation: [4, { indentClosingBrace: false }],
-        'max-empty-lines': 3,
+        '@stylistic/indentation': 4,
+        '@stylistic/max-empty-lines': 3,
         'max-nesting-depth': 3,
         'no-descending-specificity': null,
         'property-no-vendor-prefix': null,
@@ -27,6 +26,26 @@ module.exports = {
         'scss/at-mixin-pattern': bemPattern,
         'scss/dollar-variable-pattern': bemPattern,
 
-        'scss/at-import-partial-extension-blacklist': null,
+        'scss/at-import-partial-extension-disallowed-list': null,
+
+        // TODO: Enable new rules in stylelint v17 / sass-guidelines v13
+        'selector-no-qualifying-type': null,
+        'media-query-no-invalid': null,
+        'declaration-property-value-no-unknown': null,
+        'declaration-property-value-keyword-no-deprecated': null,
+        'property-no-deprecated': null,
+        'scss/no-global-function-names': null,
+        'nesting-selector-no-missing-scoping-root': null,
     },
+    overrides: [
+        {
+            // Relax BEM naming for storybook classes, mixins, and variables
+            files: ['packages/tools/storybook/**/*.scss'],
+            rules: {
+                'selector-class-pattern': null,
+                'scss/at-mixin-pattern': null,
+                'scss/dollar-variable-pattern': null,
+            },
+        },
+    ],
 };

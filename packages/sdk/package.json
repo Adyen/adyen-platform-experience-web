@@ -1,0 +1,23 @@
+{
+    "name": "@integration-components/sdk",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "sideEffects": [
+        "**/*.css",
+        "**/*.scss"
+    ],
+    "scripts": {
+        "build": "vite build && tsc --project tsconfig-build.json && tsc-alias -p tsconfig-build.json --dir ../../dist/types"
+    },
+    "dependencies": {
+        "@integration-components/sdk-internal": "workspace:*",
+        "@integration-components/style": "workspace:*"
+    },
+    "devDependencies": {
+        "@preact/preset-vite": "^2.10.2",
+        "tsc-alias": "^1.8.17",
+        "vite": "catalog:",
+        "vite-plugin-svgr": "^4.5.0"
+    }
+}

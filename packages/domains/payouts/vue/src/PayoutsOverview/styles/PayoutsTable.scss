@@ -1,0 +1,13 @@
+@use '@integration-components/style' as style;
+
+.adyen-pe-payouts-table {
+    container-type: inline-size;
+    position: relative;
+
+    &__net-payout {
+        &--strong {
+            font-size: style.token(text-title-font-size);
+            font-weight: style.token(text-body-strongest-font-weight);
+        }
+    }
+}

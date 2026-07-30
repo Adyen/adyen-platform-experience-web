@@ -1,6 +1,6 @@
 import { BALANCE_ACCOUNTS, BALANCES } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
-import { delay } from './utils/utils';
+import { delay } from '@integration-components/testing/msw';
 import { http, HttpResponse } from 'msw';
 
 const mockEndpoints = endpoints();

@@ -1,0 +1,45 @@
+{
+    "name": "@integration-components/transactions",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "sideEffects": [
+        "**/*.css",
+        "**/*.scss"
+    ],
+    "exports": {
+        "./publish": "./publish/src/index.ts",
+        "./preact": "./preact/src/index.ts",
+        "./vue": "./vue/src/index.ts",
+        "./domain": "./domain/src/index.ts"
+    },
+    "dependencies": {
+        "@adyen/bento-vue3": "catalog:",
+        "@adyen/ui-assets-icons-16": "catalog:",
+        "@adyen/ui-assets-icons-40": "catalog:",
+        "@integration-components/composables-vue": "workspace:*",
+        "@integration-components/core": "workspace:*",
+        "@integration-components/hooks-preact": "workspace:*",
+        "@integration-components/sdk-internal": "workspace:*",
+        "@integration-components/style": "workspace:*",
+        "@integration-components/testing": "workspace:*",
+        "@integration-components/types": "workspace:*",
+        "@integration-components/ui-components-preact": "workspace:*",
+        "@integration-components/utils": "workspace:*",
+        "classnames": "catalog:"
+    },
+    "peerDependencies": {
+        "preact": "catalog:",
+        "vue": "catalog:"
+    },
+    "devDependencies": {
+        "@playwright/test": "catalog:",
+        "@storybook/preact": "catalog:",
+        "@storybook/vue3": "catalog:",
+        "@testing-library/preact": "catalog:",
+        "dotenv": "catalog:",
+        "msw": "catalog:",
+        "vitest": "catalog:",
+        "vue": "catalog:"
+    }
+}

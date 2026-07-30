@@ -1,5 +1,73 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.13.1
+
+### Patch Changes
+
+- 83c5ab1: In the Capital Overview component, we resolved an issue where grants that closed after renewal were incorrectly hidden from the closed grants list.
+
+## 1.13.0
+
+### Minor Changes
+
+- 31bcf74: In the Capital Overview component, we added an early renewal feature that allows eligible users to request a subsequent grant before their active grant is fully repaid. This action is available provided you meet the [eligibility criteria](https://docs.adyen.com/capital/additional-financing#eligibility).
+
+## 1.13.0-rc.0
+
+### Minor Changes
+
+- 31bcf74: In the Capital Overview component, we added an early renewal feature that allows eligible users to request a subsequent grant before their active grant is fully repaid. This action is available provided you meet the [eligibility criteria](https://docs.adyen.com/capital/additional-financing#eligibility).
+
+## 1.12.2
+
+### Patch Changes
+
+- 8c2627e: Fix build output: prevent dev-only translation assets from leaking into dist, rewrite private workspace aliases in declarations via tsc-alias, and normalize bundled dependency paths to remove pnpm store structure.
+- 70216b6: Remove balanceAccountId from payout details props
+
+## 1.12.2-beta.1
+
+### Patch Changes
+
+- 70216b6: Remove balanceAccountId from payout details props
+
+## 1.12.2-beta.0
+
+### Patch Changes
+
+- 8c2627e: Fix build output: prevent dev-only translation assets from leaking into dist, rewrite private workspace aliases in declarations via tsc-alias, and normalize bundled dependency paths to remove pnpm store structure.
+
+## 1.12.1
+
+### Patch Changes
+
+- f931db5: Fixes :catalog unresolved dependencies introduced by pnpm workspaces migration
+
+## 1.12.0
+
+### Minor Changes
+
+- 55730a0: When initializing the library, the availableTranslations field is now deprecated: setting this field will trigger a deprecation warning.
+- 55730a0: In the Capital Offer component, users can now select from multiple repayment term options when applying for business financing. Each option shows its associated daily repayment rate to make it easier for users to compare options and choose the term that best fits their needs.
+
+## 1.11.0
+
+### Minor Changes
+
+- 0e4ee1b: In the Capital Overview component, we embedded the flows for providing additional information and signing terms and conditions - avoiding redirects to hosted onboarding when not necessary.
+- 552f304: Added support for custom data in the Disputes Overview component, and managed visibility for existing columns
+
+## 1.10.2
+
+### Patch Changes
+
+- Added support for `readOnly` and `hidden` fields in the Pay By Link creation form. These options can be configured via the `fieldsConfig` prop to pre-fill and lock certain fields, or to hide them from the UI.
+- Across all components, we resolved an issue where clicking the "Refresh" button failed to restore expired sessions after long periods of inactivity.
+- In the Transaction Details component, we resolved an issue that prevented refund details from showing when there was no associated payment transaction.
+- Across all components, we improved backward compatibility for legacy custom translations by supporting multi-step key mapping.
+- In the Dispute Management component, we fixed an issue to ensure that custom CSS class names are correctly applied to custom action buttons.
+- In the Transaction Details component, we fixed an issue where navigating from refund details to the associated payment details occasionally caused the UI to flicker indefinitely.
+
 ## 1.10.1
 
 ### Patch Changes

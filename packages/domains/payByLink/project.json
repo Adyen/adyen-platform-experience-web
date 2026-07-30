@@ -1,0 +1,11 @@
+{
+    "name": "@integration-components/payByLink",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "packages/domains/payByLink",
+    "tags": ["scope:payByLink", "type:domain"],
+    "targets": {
+        "types:check": {},
+        "types:watch": {}
+    }
+}

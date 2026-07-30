@@ -1,0 +1,7 @@
+.nx/
+node_modules/
+dist/
+coverage/
+playwright-report/
+vite.config.ts.timestamp-*
+vitest.config.ts.timestamp-*

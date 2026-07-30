@@ -1,0 +1,13 @@
+@use '@integration-components/style';
+@use '@integration-components/style/mixins';
+
+.adyen-pe-payouts-overview {
+    @include mixins.adyen-pe-data-overview;
+
+    &-display {
+        &__spinner-container {
+            display: block;
+            padding-bottom: style.token(spacer-110);
+        }
+    }
+}

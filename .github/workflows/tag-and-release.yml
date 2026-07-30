@@ -14,22 +14,46 @@ jobs:
       contents: write
       actions: write
     runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ steps.determine_version.outputs.version }}
+      npm_tag: ${{ steps.determine_version.outputs.npm_tag }}
+      is_prerelease: ${{ steps.determine_version.outputs.is_prerelease }}
     if: (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
-      || (github.event.pull_request.merged == true && startsWith(github.head_ref, 'bump/'))
+      || (github.event.pull_request.merged == true && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v4
 
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
+        with:
+          NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Create a build and export an artifact
         run: |
           pnpm run build:publish
 
       - name: Determine the release version
+        id: determine_version
         run: |
-          echo "NEW_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+          VERSION=$(jq -r .version package.json)
+          echo "NEW_VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          # Detect pre-release: versions like 1.13.0-beta.0 contain a hyphen
+          if [[ "$VERSION" == *"-"* ]]; then
+            # Extract tag name from pre-release identifier (e.g. beta from 1.13.0-beta.0)
+            PRE_TAG=$(echo "$VERSION" | sed 's/.*-\([a-zA-Z]*\).*/\1/')
+            echo "npm_tag=$PRE_TAG" >> "$GITHUB_OUTPUT"
+            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
+            echo "NPM_TAG=$PRE_TAG" >> $GITHUB_ENV
+            echo "IS_PRERELEASE=true" >> $GITHUB_ENV
+          else
+            echo "npm_tag=latest" >> "$GITHUB_OUTPUT"
+            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
+            echo "NPM_TAG=latest" >> $GITHUB_ENV
+            echo "IS_PRERELEASE=false" >> $GITHUB_ENV
+          fi
 
       - name: Upload build as artifact for other jobs
         uses: actions/upload-artifact@v4
@@ -49,31 +73,43 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get the release upload URL
-        id: get_release
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const tag = `v${process.env.NEW_VERSION}`;
-            const { data: release } = await github.rest.repos.getReleaseByTag({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag: tag
-            });
-            // Write the output to the file defined by GITHUB_OUTPUT (new method)
-            const outputFile = process.env.GITHUB_OUTPUT;
-            fs.appendFileSync(outputFile, `upload_url=${release.upload_url}\n`);
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+      - name: Rename scoped tag to semver tag
+        # changeset tag creates scoped tags (e.g. @adyen/adyen-platform-experience-web@1.0.0)
+        # but the rest of this workflow and external tooling expect v-prefixed semver tags (e.g. v1.0.0).
+        # This step renames the tag and updates the GitHub release to match.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
-          asset_name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
-          asset_content_type: application/gzip
+        run: |
+          # Derives the scoped tag from the published packages output, e.g. @adyen/adyen-platform-experience-web@1.0.0
+          SCOPED_TAG=$(echo '${{ steps.changesets.outputs.publishedPackages }}' | jq -r '.[] | select(.name == "@adyen/adyen-platform-experience-web") | "\(.name)@\(.version)"')
+
+          # Strips everything up to and including the last @ (the package name), then prepends v, e.g. v1.0.0
+          SEMVER_TAG="v${SCOPED_TAG##*@}"
+
+          # Create the semver tag pointing at the same commit as the scoped one
+          git tag "$SEMVER_TAG" "$SCOPED_TAG"
+          git push origin "$SEMVER_TAG"
+
+          # Update the GitHub release to point to the new tag and publish it.
+          # This must run before deleting the scoped tag so the release is still
+          # findable by its tag_name via the GitHub API.
+          PRERELEASE_FLAG=""
+          if [[ "${{ env.IS_PRERELEASE }}" == "true" ]]; then
+            PRERELEASE_FLAG="--prerelease"
+          fi
+          gh release edit "$SCOPED_TAG" --tag "$SEMVER_TAG" --title "$SEMVER_TAG" --draft=false $PRERELEASE_FLAG
+
+          # Remove the scoped tag now that the release points to the semver tag
+          git tag -d "$SCOPED_TAG"
+          git push origin --delete "$SCOPED_TAG"
+
+      - name: Upload Release Asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "v${{ env.NEW_VERSION }}" \
+            ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz \
+            --repo "${{ github.repository }}"
 
       - name: Build umd file
         env:
@@ -86,11 +122,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARGET_REPO: ${{ github.repository }}
           ASSET_PATH: './platform-components_cdn_${{ env.NEW_VERSION }}.tar.gz'
-          ASSET_NAME: 'platform-components_cdn_${{ env.NEW_VERSION }}.tar.gz'
         run: |
           echo "Targeting repository: $TARGET_REPO"
           echo "Using tag: ${{ env.NEW_VERSION }}"
-          
+
           # Upload the new asset to the target repo using the new tag
           gh release upload "v${{ env.NEW_VERSION }}" "$ASSET_PATH" \
             --repo "$TARGET_REPO"
@@ -99,13 +134,55 @@ jobs:
     permissions:
       contents: write
       actions: write
+      id-token: write
     needs: create-github-release
     uses: adyen/adyen-platform-experience-web/.github/workflows/npm-publish.yml@main
     secrets: inherit
     with:
       source_run_id: ${{ github.run_id }}
+      npm_tag: ${{ needs.create-github-release.outputs.npm_tag }}
+
+  sync-develop:
+    needs: [create-github-release, trigger-npm-publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Create PR to sync main into develop
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.create-github-release.outputs.release_version }}
+        run: |
+          SYNC_BRANCH="chore/sync-main-into-develop-v$VERSION"
+
+          # Check if a sync PR already exists
+          EXISTING=$(gh pr list --base develop --head "$SYNC_BRANCH" --state open --json number --jq '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            echo "Sync PR #$EXISTING already exists, skipping."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git checkout -b "$SYNC_BRANCH" origin/main
+          git push origin "$SYNC_BRANCH"
+
+          gh pr create \
+            --base develop \
+            --head "$SYNC_BRANCH" \
+            --title "chore(release): sync main into develop after v$VERSION" \
+            --body "Syncs version bump and consumed changesets from v$VERSION into develop."
 
   upload-assets:
+    if: needs.create-github-release.outputs.is_prerelease != 'true'
     permissions:
       contents: write
       actions: write
@@ -114,3 +191,12 @@ jobs:
     secrets: inherit
     with:
       environment_choice: 'live'
+
+#  generate-sri-hashes:
+#    permissions:
+#      contents: read
+#    needs: [create-github-release, trigger-npm-publish, upload-assets]
+#    uses: adyen/adyen-platform-experience-web/.github/workflows/generate-integrity-hash.yml@main
+#    secrets: inherit
+#    with:
+#      version: v${{ needs.create-github-release.outputs.release_version }}

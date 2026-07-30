@@ -1,12 +1,6 @@
 name: NPM publish package
 
 on:
-  workflow_dispatch:
-    inputs:
-      dry-run-publish:
-        description: 'Dry-run the write steps (do not actually commit or publish to NPM)'
-        type: boolean
-        default: false
   workflow_call:
     inputs:
       called-from-other-workflow:
@@ -18,14 +12,20 @@ on:
         description: 'Run ID that produced the build artifact'
         required: true
         type: string
+      npm_tag:
+        description: 'npm dist-tag to publish under (latest, beta, alpha, rc, next)'
+        required: false
+        type: string
+        default: 'latest'
 
 jobs:
   npm-publish:
     runs-on: ubuntu-latest
-    environment: publish-package  # contains NPM_PLATFORM_EXPERIENCE_TOKEN
+
     permissions:
       contents: read
       actions: write
+      id-token: write
 
     steps:
       - name: Checkout the repo
@@ -34,14 +34,13 @@ jobs:
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
         with:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Determine the release version
         run: |
-          echo "PACKAGE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
-
-      - name: Create a temporary directory for artifacts
-        run: mkdir -p ${{ runner.temp }}/artifacts/
+          PACKAGE_VERSION=$(jq -r .version package.json)
+          echo "PACKAGE_VERSION=${PACKAGE_VERSION}" >> $GITHUB_ENV
+          echo "PACKAGE_TARBALL=${RUNNER_TEMP}/artifact/adyen-adyen-platform-experience-web-${PACKAGE_VERSION}.tgz" >> $GITHUB_ENV
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -52,27 +51,17 @@ jobs:
           merge-multiple: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract archive in $RUNNER_TEMP
-        working-directory: ${{ runner.temp }}/artifact
-        run: |
-          tar -xzf adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}.tgz \
-              --strip-components=1 package
-
-      - name: Copy dist/ to workspace
-        run: |
-          cp -R ${{ runner.temp }}/artifact/dist ./dist
-
       - name: Publish to the NPM registry (dry run)
         if: github.event.inputs.dry-run-publish == 'true'
         run: |
-          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_PLATFORM_EXPERIENCE_TOKEN }}
-          npm publish --dry-run
+          npm publish "${{ env.PACKAGE_TARBALL }}" --dry-run
 
       - name: Publish to the NPM registry
         if: github.event.inputs.dry-run-publish != 'true'
+        env:
+          NPM_TAG: ${{ inputs.npm_tag }}
         run: |
-          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_PLATFORM_EXPERIENCE_TOKEN }}
-          npm publish
+          npm publish "${{ env.PACKAGE_TARBALL }}" --tag="$NPM_TAG"
 
       - name: Archive npm failure logs
         uses: ./.github/actions/publish-npm-logs

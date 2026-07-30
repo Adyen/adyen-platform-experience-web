@@ -1,0 +1,70 @@
+import { test, expect } from '@playwright/test';
+import { goToStory } from '@integration-components/testing/playwright/utils';
+import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
+import { openPayoutDetailsModal } from './shared/utils';
+
+const STORY_ID = 'mocked-payouts-payouts-overview--data-customization';
+
+test.describe('Data customization', () => {
+    test.beforeEach(async ({ page }) => {
+        await goToStory(page, { id: STORY_ID });
+    });
+
+    test('should render custom data grid columns', async ({ page }) => {
+        // [TODO]: Address issue with hidden columns still being rendered
+        test.fixme(true, 'Hidden columns are still rendered');
+
+        const dataGrid = page.getByRole('grid');
+
+        // (1) Standard columns (visible & hidden)
+        await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Funds captured (EUR)', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Adjustments (EUR)', exact: true })).toBeHidden(); // hidden column
+        await expect(dataGrid.getByRole('columnheader', { name: 'Net payout (EUR)', exact: true })).toBeVisible();
+
+        // (2) Custom columns
+        await expect(dataGrid.getByRole('columnheader', { name: 'Summary', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Country', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Action', exact: true })).toBeVisible();
+    });
+
+    test('should render correct data for each custom column', async ({ page }) => {
+        const dataGrid = page.getByRole('grid');
+        const dataGridBody = dataGrid.getByRole('rowgroup').nth(1);
+        const firstRow = dataGridBody.getByRole('row').nth(0);
+
+        const actionCell = firstRow
+            .getByRole('gridcell')
+            .filter({ has: page.getByRole('button', { name: 'Send email', exact: true, disabled: false }) });
+        const summaryCell = firstRow.getByRole('gridcell').filter({ has: page.getByRole('link', { name: 'Summary', exact: true, disabled: false }) });
+        const countryCell = firstRow.getByRole('gridcell').filter({ has: page.getByAltText('', { exact: true }) });
+
+        const actionButton = actionCell.getByRole('button', { name: 'Send email', exact: true, disabled: false });
+        const summaryLink = summaryCell.getByRole('link', { name: 'Summary', exact: true, disabled: false });
+        const countryIcon = countryCell.getByAltText('', { exact: true });
+
+        await expect(summaryCell).toHaveText('Summary');
+        await expect(summaryLink).toBeVisible();
+        await expect(countryIcon).toBeAttached();
+        await expect(actionButton).toBeVisible();
+
+        const [newPage] = await Promise.all([page.context().waitForEvent('page'), summaryLink.click()]);
+
+        await newPage.waitForLoadState();
+        expect(newPage.url()).toContain(CUSTOM_URL_EXAMPLE);
+
+        const actionPromise = page.waitForEvent('console', {
+            predicate: message => message.text() === 'Action',
+        });
+
+        await actionButton.click();
+        await actionPromise;
+    });
+
+    test('should render transaction details modal for clicked row', async ({ page }) => {
+        await openPayoutDetailsModal(page, 0);
+        const detailsModal = page.getByRole('dialog');
+        await detailsModal.getByRole('button', { name: 'Close', exact: true, disabled: false }).click();
+        await expect(detailsModal).toBeHidden();
+    });
+});

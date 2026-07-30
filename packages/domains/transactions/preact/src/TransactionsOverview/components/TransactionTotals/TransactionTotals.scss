@@ -1,0 +1,19 @@
+@use '@integration-components/style';
+
+//stylelint-disable no-invalid-position-at-import-rule
+@use '@integration-components/style/breakpoints' as *;
+
+.adyen-pe-transaction-totals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: style.token(spacer-060);
+    justify-content: space-between;
+
+    @include adyen-pe-screen-sm-and-up {
+        display: block;
+    }
+
+    &__item {
+        width: 100%;
+    }
+}

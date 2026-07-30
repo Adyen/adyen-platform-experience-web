@@ -1,0 +1,38 @@
+{
+    "name": "@integration-components/payByLink",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "sideEffects": [
+        "**/*.css",
+        "**/*.scss"
+    ],
+    "exports": {
+        "./publish": "./publish/src/index.ts",
+        "./preact": "./preact/src/index.ts",
+        "./domain": "./domain/src/index.ts"
+    },
+    "dependencies": {
+        "@integration-components/assets": "workspace:*",
+        "@integration-components/core": "workspace:*",
+        "@integration-components/hooks-preact": "workspace:*",
+        "@integration-components/sdk-internal": "workspace:*",
+        "@integration-components/style": "workspace:*",
+        "@integration-components/testing": "workspace:*",
+        "@integration-components/types": "workspace:*",
+        "@integration-components/ui-components-preact": "workspace:*",
+        "@integration-components/utils": "workspace:*",
+        "classnames": "catalog:"
+    },
+    "peerDependencies": {
+        "preact": "catalog:"
+    },
+    "devDependencies": {
+        "@playwright/test": "catalog:",
+        "@storybook/preact": "catalog:",
+        "dotenv": "catalog:",
+        "msw": "catalog:",
+        "storybook": "catalog:",
+        "vitest": "catalog:"
+    }
+}

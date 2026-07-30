@@ -1,0 +1,42 @@
+import AuthSession from '../AuthSession';
+import { boolOrTrue, createDeferred, isWatchlistUnsubscribeToken } from '@integration-components/utils';
+
+const sessionReady = async (session: AuthSession) => {
+    const ready = createDeferred<void>();
+    const readyPromise = ready.promise;
+    const refreshInProgress = session.context.refreshing;
+    let didTriggerRefresh: boolean | undefined = undefined;
+    let canRefreshSession: boolean | undefined = undefined;
+
+    let sessionUnsubscribe = session.subscribe(maybeUnsubscribeToken => {
+        if (isWatchlistUnsubscribeToken(maybeUnsubscribeToken)) {
+            ready.resolve();
+            return;
+        }
+
+        didTriggerRefresh ??= session.context.refreshing;
+
+        if (session.context.refreshing) return;
+
+        if (boolOrTrue(session.context.isExpired)) {
+            if ((canRefreshSession ??= !(refreshInProgress || didTriggerRefresh))) {
+                canRefreshSession = false;
+                session.refresh();
+                return;
+            }
+        }
+
+        // Session has been refreshed (likely to have an active session)
+        ready.resolve();
+    });
+
+    readyPromise.finally(() => {
+        // Unsubscribe from session immediately readyPromise settles
+        sessionUnsubscribe();
+        sessionUnsubscribe = null!;
+    });
+
+    return readyPromise;
+};
+
+export default sessionReady;

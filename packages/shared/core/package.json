@@ -1,0 +1,51 @@
+{
+    "name": "@integration-components/core",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "sideEffects": [
+        "**/*.css",
+        "**/*.scss"
+    ],
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "exports": {
+        ".": "./src/index.ts",
+        "./package.json": "./package.json",
+        "./EventDispatcher": "./src/EventDispatcher/index.ts",
+        "./Errors/constants": "./src/Errors/constants.ts",
+        "./Localization": "./src/Localization/index.ts",
+        "./Localization/Localization": "./src/Localization/Localization.ts",
+        "./Localization/amount/amount-util": "./src/Localization/amount/amount-util.ts",
+        "./Localization/constants/localization": "./src/Localization/constants/localization.ts",
+        "./translations": "./src/translations/index.ts",
+        "./translations/local": "./src/translations/local.ts",
+        "./vue": "./src/vue/index.ts",
+        "./preact": "./src/preact/index.ts",
+        "./*": "./src/*.ts"
+    },
+    "dependencies": {
+        "@integration-components/assets": "workspace:*",
+        "@integration-components/types": "workspace:*",
+        "@integration-components/utils": "workspace:*",
+        "chroma-js": "catalog:",
+        "classnames": "catalog:"
+    },
+    "devDependencies": {
+        "@types/chroma-js": "catalog:",
+        "vitest": "catalog:"
+    },
+    "peerDependencies": {
+        "preact": "catalog:",
+        "vue": "catalog:",
+        "vue-i18n": "^11"
+    },
+    "peerDependenciesMeta": {
+        "vue": {
+            "optional": true
+        },
+        "vue-i18n": {
+            "optional": true
+        }
+    }
+}

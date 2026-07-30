@@ -4,24 +4,21 @@ import { resolve } from 'node:path';
 import { preact } from '@preact/preset-vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { realApiProxies } from './endpoints/realApiProxies';
+import { getBuildEnvDefines } from './config/defines/build-env';
 import { getEnvironment } from './envs/getEnvs';
 import packageJson from './package.json';
-import version from './config/version';
 import svgr from 'vite-plugin-svgr';
 
 export default defineConfig(({ mode }) => {
-    const currentVersion = version();
     const externalDependencies = Object.keys(packageJson.dependencies);
     const isAnalyseMode = mode === 'analyse';
-    const isDevMode = mode === 'development';
     const isUmdBuild = mode === 'umd';
-    const isTestEnv = process.env.TEST_ENV === '1';
 
     const { api, app } = getEnvironment(mode);
 
-    const assetsDir = resolve(__dirname, 'src/assets');
+    const assetsDir = resolve(__dirname, 'packages/shared/assets/src');
     const enUsFile = resolve(assetsDir, 'translations/en-US.json');
-    const translationsDir = resolve(__dirname, 'src/translations');
+    const translationsDir = resolve(__dirname, 'packages/shared/core/src/translations');
     const translationsIndexFile = resolve(translationsDir, 'index.ts');
     const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
@@ -48,7 +45,11 @@ export default defineConfig(({ mode }) => {
             minify: true,
             lib: {
                 name: 'AdyenPlatformExperienceWeb',
-                entry: resolve(__dirname, './src/index.ts'),
+                // The UMD bundle must include every domain component (and its styles), so it uses the
+                // same barrel as the npm build (packages/sdk/src/index.ts). The root src/index.ts entry only
+                // pulls in core + global styles and cannot re-export the domains itself, because shared/lib
+                // re-exports root src/, which would create a circular re-export.
+                entry: resolve(__dirname, isUmdBuild ? './packages/sdk/src/index.ts' : './src/index.ts'),
                 fileName: (format, entryName) => {
                     return entryName.includes('node_modules')
                         ? `${format}/${entryName.replace('node_modules', 'external')}.js`
@@ -87,27 +88,11 @@ export default defineConfig(({ mode }) => {
                 scss: {
                     api: 'modern-compiler',
                     silenceDeprecations: ['legacy-js-api'],
+                    loadPaths: [resolve(__dirname, 'src'), resolve(__dirname, 'node_modules')],
                 },
             },
         },
-        define: {
-            'process.env.VITE_APP_PORT': JSON.stringify(app.port || null),
-            'process.env.VITE_APP_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL?.replace('main--', '') || app.url || null),
-            'process.env.VITE_APP_LOADING_CONTEXT': JSON.stringify(isDevMode ? app.loadingContext || null : null),
-            'process.env.VITE_LOCAL_ASSETS': JSON.stringify(process.env.USE_CDN == 'true' ? null : isDevMode || isTestEnv),
-            'process.env.VITE_BUILD_ID': JSON.stringify(currentVersion.ADYEN_BUILD_ID),
-            'process.env.VITE_COMMIT_BRANCH': JSON.stringify(currentVersion.COMMIT_BRANCH),
-            'process.env.VITE_COMMIT_HASH': JSON.stringify(currentVersion.COMMIT_HASH),
-            'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
-            'process.env.VITE_VERSION': JSON.stringify(currentVersion.ADYEN_FP_VERSION),
-            'process.env.SESSION_ACCOUNT_HOLDER': JSON.stringify(api.session.accountHolder || null),
-            'process.env.SESSION_AUTO_REFRESH': JSON.stringify(isDevMode ? api.session.autoRefresh === 'true' || null : undefined),
-            'process.env.SESSION_MAX_AGE_MS': JSON.stringify(isDevMode ? api.session.maxAgeMs || null : undefined),
-            'process.env.SESSION_PERMISSIONS': JSON.stringify(api.session.permissions || null),
-            'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
-            'process.env.USE_CDN': JSON.stringify(app.useCdn ?? null),
-            'process.env.VITE_TEST_CDN_ASSETS': JSON.stringify(isDevMode || app.useTestCdn ? true : null),
-        },
+        define: getBuildEnvDefines(mode),
         json: {
             stringify: true,
         },
@@ -122,7 +107,14 @@ export default defineConfig(({ mode }) => {
             proxy: realApiProxies(api, mode),
         },
         test: {
-            root: resolve(__dirname, './src'),
+            root: resolve(__dirname, '.'),
+            include: [
+                'src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'config/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/domains/*/domain/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/domains/*/preact/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+            ],
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],
             coverage: {
                 provider: 'v8',
@@ -131,7 +123,8 @@ export default defineConfig(({ mode }) => {
                     'components/internal/**/*.{ts,tsx}',
                     'components/utils/*.{ts,tsx}',
                     'hooks/**/*.{ts,tsx}',
-                    'primitives/**/*.{ts,tsx}',
+                    'packages/shared/core/src/session/SessionContext/**/*.{ts,tsx}',
+                    'packages/shared/utils/src/primitives/**/*.{ts,tsx}',
                     'utils/**/*.{ts,tsx}',
                     'core/**/*.{ts,tsx}',
                 ],

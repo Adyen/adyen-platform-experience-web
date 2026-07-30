@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 EXCLUDED_RESOURCES=("PaymentInstrumentsResource")
 
@@ -6,11 +7,8 @@ EXCLUDED_RESOURCES=("PaymentInstrumentsResource")
 SCRIPT_DIR=$(dirname "$0")
 PROJECT_ROOT_DIR=$(realpath "$SCRIPT_DIR/../..")
 
-# Read version from package.json
-PACKAGE_VERSION=$(jq -r '.apiVersion' "$PROJECT_ROOT_DIR/package.json")
-
 # Schemas directory
-SCHEMAS_DIR=$(realpath "$PROJECT_ROOT_DIR/src/types/api/resources")
+SCHEMAS_DIR=$(realpath "$PROJECT_ROOT_DIR/packages/shared/types/src/api/resources")
 
 
 # Check if ./variables file exists, otherwise exit
@@ -33,6 +31,8 @@ REPO_URL="$REPO_URL"
 CA_CERTS="$CA_CERTS"
 
 BRANCH_NAME="main"
+
+export NODE_EXTRA_CA_CERTS="$CA_CERTS"
 
 excluded_folders=()
 
@@ -60,40 +60,47 @@ if [ "$http_status" -ne 200 ]; then
     exit 1
 fi
 
-# Extract folders and names
-file_folders=($(echo "$response_body" | jq -r '.[] | select(.type == "tree") | .path'))
-file_names=($(echo "$response_body" | jq -r '.[] | select(.type == "tree") | .name'))
+# Extract folder paths
+file_folders=()
+while IFS= read -r line; do
+    file_folders+=("$line")
+done < <(echo "$response_body" | jq -r '.[] | select(.type == "tree") | .path')
 
 # Loop over the array of folders
-for ((i=0; i<${#file_folders[@]}; i++)); do
+for folder in "${file_folders[@]}"; do
 
-    folder=${file_folders[i]}
-
-    if [[ ${excluded_folders[@]} =~ $folder ]]; then
+    if printf '%s\n' "${excluded_folders[@]}" | grep -Fqx "$folder"; then
       echo "$folder is excluded"
     else
 
       FOLDER_URL="https://$REPO_URL/api/v4/projects/$PROJECT_ID/repository/tree?path=${folder}&ref=$BRANCH_NAME"
 
-      response=$(curl -s --header "PRIVATE-TOKEN: $API_TOKEN" "$FOLDER_URL")
-      files=($(echo "$response" | jq -r '.[] | select(.type == "blob") | .path'))
+      folder_response=$(curl -s -w "%{http_code}" --header "PRIVATE-TOKEN: $API_TOKEN" "$FOLDER_URL")
+      folder_http_status="${folder_response:(-3)}"
+      folder_response_body="${folder_response:0:${#folder_response}-3}"
 
-      # Find correct version
-      version_file_path=()
+      if [ "$folder_http_status" -ne 200 ]; then
+          echo "Failed to fetch folder listing for $folder: $folder_response_body"
+          exit 1
+      fi
+
+      files=()
+      while IFS= read -r line; do
+          files+=("$line")
+      done < <(echo "$folder_response_body" | jq -r '.[] | select(.type == "blob") | .path')
+
+      # Generate schemas for all versioned files, skip "latest"
       for file in "${files[@]}"; do
-          if [[ $file == *"$PACKAGE_VERSION"* ]]; then
-              version_file_path+=("$file")
+          if [[ $file == *"latest"* ]] || [[ $file != *.yaml && $file != *.json ]]; then
+              continue
           fi
+
+          base_name=$(basename "$file" | sed -E 's/\.(yaml|json)$//; s/-v([0-9]+)/V\1/g')
+          ENCODED_FILE_PATH=$(urlencode "$file")
+          FILE_URL="https://$REPO_URL/api/v4/projects/$PROJECT_ID/repository/files/$ENCODED_FILE_PATH/raw?ref=$BRANCH_NAME"
+
+          curl -sSf --header "PRIVATE-TOKEN: $API_TOKEN" "$FILE_URL" | npx openapi-typescript -o "${SCHEMAS_DIR}/${base_name}.ts"
       done
-
-      ENCODED_FOLDER_PATH=$(urlencode "$version_file_path")
-
-      FILE_URL="https://$REPO_URL/api/v4/projects/$PROJECT_ID/repository/files/$ENCODED_FOLDER_PATH/raw?ref=$BRANCH_NAME"
-
-      export NODE_EXTRA_CA_CERTS="$CA_CERTS"
-
-      #Generate schemas
-(set -o pipefail; curl -sSf --header "PRIVATE-TOKEN: $API_TOKEN" "$FILE_URL" | npx openapi-typescript -o "${SCHEMAS_DIR}/${file_names[i]}.ts")
 
     fi
 
