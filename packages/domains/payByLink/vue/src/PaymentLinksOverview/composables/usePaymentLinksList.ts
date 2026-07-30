@@ -40,7 +40,6 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
     const hasNext = ref(false);
     const hasPrevious = ref(false);
     const page = ref(0);
-    const currentRequestCursor = ref<string | undefined>(undefined);
 
     let abortController: AbortController | null = null;
 
@@ -58,7 +57,6 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
 
         fetching.value = true;
         error.value = undefined;
-        currentRequestCursor.value = requestCursor;
 
         try {
             const { statusGroup, statuses, linkTypes, filterStoreIds, propStoreIds, merchantReference, paymentLinkId, createdSince, createdUntil } =
@@ -140,10 +138,6 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
         prevCursor.value = undefined;
     };
 
-    const refresh = () => {
-        fetchPaymentLinks(currentRequestCursor.value);
-    };
-
     const fetchKey = computed(() => {
         if (!canFetch.value) return null;
         const {
@@ -200,7 +194,6 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
         goToNextPage,
         goToPreviousPage,
         updateLimit,
-        refresh,
     } as const;
 }
 

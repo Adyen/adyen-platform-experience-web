@@ -74,10 +74,9 @@ test.describe('Payment Links Overview', () => {
         });
 
         test('should open Settings modal when clicking the settings button', async ({ page }) => {
-            await openSettingsModal(page);
+            const dialog = await openSettingsModal(page);
 
-            // [TODO]: PaymentLinkSettings is not yet migrated to Vue; the modal currently renders a placeholder
-            await expect(page.getByText('Open link settings', { exact: true })).toBeVisible();
+            await expect(dialog.getByRole('heading', { name: 'Settings', exact: true })).toBeVisible();
         });
 
         test('should display payment link grid with expected columns', async ({ page }) => {

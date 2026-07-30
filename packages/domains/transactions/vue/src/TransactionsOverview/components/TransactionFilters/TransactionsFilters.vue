@@ -10,12 +10,13 @@ import {
     toUTCISOStringKeepingLocalDateTime,
     endOfDay,
     startOfDay,
+    now,
 } from '@integration-components/utils';
-import { quickSelectDateRanges, toUTCISOStringKeepingLocalDateTime, endOfDay, startOfDay, now } from '@integration-components/utils';
 import {
     TRANSACTION_ANALYTICS_CATEGORY,
     TRANSACTION_ANALYTICS_SUBCATEGORY_LIST,
     TRANSACTION_ANALYTICS_SUBCATEGORY_INSIGHTS,
+    getEarliestTransactionDate,
 } from '@integration-components/transactions/domain';
 import type { FilterType, MixpanelProperty } from '@integration-components/core/EventDispatcher/eventDispatcher/user-events';
 import { TRANSACTION_CATEGORIES } from '../../constants';
@@ -51,6 +52,7 @@ const selectedCurrencies = ref<string[]>([...(filters.value.currencies as string
 const selectedPspReference = ref<string | undefined>(filters.value.paymentPspReference);
 
 const defaultDateRange = quickSelectDateRanges.last30Days;
+const earliestDate = startOfDay(getEarliestTransactionDate(now));
 
 const dateRangeDefaultValue = {
     startDate: new Date(defaultDateRange.startDate),
@@ -130,9 +132,11 @@ const sharedFilterItems = computed<BentoFilterBarModel>(() => {
         type: BentoFilterItemType.DATE_RANGE,
         defaultValue: dateRangeDefaultValue,
         options: {
+            min: earliestDate,
+            max: now,
             numberOfMonths: 1,
             quickSelectRanges,
-            isDateDisabled: (date: Date) => date.getTime() > now.getTime(),
+            isDateDisabled: (date: Date) => date.getTime() < earliestDate.getTime() || date.getTime() > now.getTime(),
         },
     });
 
@@ -238,12 +242,14 @@ function onFilterInput(updatedValues: BentoFilterValues) {
 
 // Propagate filter changes upward — watch individual local refs to avoid circular deps
 function buildFilterParams(): TransactionsFilters {
+    const createdSince = new Date(Math.max(startOfDay(selectedDateRange.value.startDate).getTime(), earliestDate.getTime()));
+
     return {
         balanceAccountId: selectedBalanceAccountId.value,
         categories: selectedCategories.value as any,
         statuses: selectedStatuses.value as any,
         currencies: selectedCurrencies.value as any,
-        createdSince: toUTCISOStringKeepingLocalDateTime(startOfDay(selectedDateRange.value.startDate)),
+        createdSince: toUTCISOStringKeepingLocalDateTime(createdSince),
         createdUntil: toUTCISOStringKeepingLocalDateTime(endOfDay(selectedDateRange.value.endDate)),
         paymentPspReference: selectedPspReference.value,
     };

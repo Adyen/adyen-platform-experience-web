@@ -48,6 +48,7 @@ export interface PaymentLinksOverviewProps {
         fieldsConfig?: PaymentLinkCreationFieldsConfig;
     };
     paymentLinkSettings?: {
+        hideTitle?: boolean;
         storeIds?: StoreIds;
     };
 }

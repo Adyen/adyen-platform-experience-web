@@ -27,6 +27,9 @@ export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternal
                 },
             },
         },
+        paymentLinkSettings: {
+            hideTitle: true,
+        },
     },
 };
 

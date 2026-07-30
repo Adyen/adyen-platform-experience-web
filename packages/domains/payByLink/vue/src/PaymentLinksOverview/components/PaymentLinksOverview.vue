@@ -9,6 +9,7 @@ import PaymentLinksFilters from './PaymentLinksFilters.vue';
 import PaymentLinksTable from './PaymentLinksTable.vue';
 import { PaymentLinkCreationInternal } from '../../PaymentLinkCreation';
 import { PaymentLinkDetailsInternal } from '../../PaymentLinkDetails';
+import { PaymentLinkSettingsInternal } from '../../PaymentLinkSettings';
 import { usePaymentLinksList } from '../composables/usePaymentLinksList';
 import { BASE_CLASS, DEFAULT_PAYMENT_LINK_STATUS_GROUP, PAYMENT_LINK_STATUS_GROUPS_TABS } from '../constants';
 import type { PaymentLinksFiltersValue } from './PaymentLinksFilters.vue';
@@ -297,13 +298,16 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
                     :fields-config="props.paymentLinkCreation?.fieldsConfig"
                     :store-ids="props.storeIds"
                     :on-payment-link-created="onPaymentLinkCreated"
-                    :on-creation-dismiss="() => (isModalVisible = false)"
+                    :on-creation-dismiss="props.paymentLinkCreation?.onCreationDismiss"
                     :on-contact-support="props.onContactSupport"
                 />
-                <!-- TODO: replace with the migrated PaymentLinkSettings Vue component once available. -->
-                <BentoTypography v-else-if="modalType === 'Settings'" variant="title">
-                    {{ i18n.get('payByLink.overview.actions.settings.a11y.label') }}
-                </BentoTypography>
+                <PaymentLinkSettingsInternal
+                    v-else-if="modalType === 'Settings'"
+                    v-bind="props.paymentLinkSettings"
+                    :store-ids="props.storeIds"
+                    :on-contact-support="props.onContactSupport"
+                    embedded-in-overview
+                />
             </template>
         </BentoModal>
     </div>
