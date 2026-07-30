@@ -19,7 +19,7 @@ export interface CoreProviderProps {
     commonProps?: CommonPropsTypes;
     i18n?: I18n;
     loadingContext?: string;
-    updateCore?: () => void;
+    refreshComponent?: () => void;
     externalErrorHandler?: OnErrorHandler | null;
     componentRef?: Ref<HTMLDivElement | null>;
     getImageAsset?: (props: AssetOptions) => string;

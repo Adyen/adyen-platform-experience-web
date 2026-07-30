@@ -12,8 +12,10 @@ const props = defineProps<{
     onDisputeAccept?: DisputeManagementProps['onDisputeAccept'];
 }>();
 
+const config = useConfigContext();
+const acceptDispute = computed(() => config.endpoints?.acceptDispute);
+
 const { i18n } = useCoreContext();
-const { acceptDispute } = useConfigContext().endpoints || {};
 const { dispute, clearStates, goBack } = useDisputeFlow();
 const cachedDispute = ref(dispute.value);
 
@@ -54,7 +56,9 @@ const acceptButtonTitle = computed(() =>
         : i18n.get('disputes.management.accept.chargeback.actions.accept')
 );
 const interactionsDisabled = computed(() => isLoading.value || disputeAccepted.value);
-const canAcceptDispute = computed(() => termsAgreed.value && !interactionsDisabled.value && isFunction(acceptDispute) && !!disputePspReference.value);
+const canAcceptDispute = computed(
+    () => termsAgreed.value && !interactionsDisabled.value && isFunction(acceptDispute.value) && !!disputePspReference.value
+);
 const actionButtons = computed(() => [
     {
         title: acceptButtonTitle.value,
@@ -73,13 +77,14 @@ const actionButtons = computed(() => [
 const acceptError = ref(false);
 
 async function acceptDisputeCallback() {
+    const acceptDisputeFn = acceptDispute.value;
     const pspReference = disputePspReference.value;
-    if (!canAcceptDispute.value || !isFunction(acceptDispute) || !pspReference) return;
+    if (!canAcceptDispute.value || !isFunction(acceptDisputeFn) || !pspReference) return;
 
     isLoading.value = true;
     acceptError.value = false;
     try {
-        await acceptDispute({}, { path: { disputePspReference: pspReference } });
+        await acceptDisputeFn({}, { path: { disputePspReference: pspReference } });
         clearStates();
         disputeAccepted.value = true;
     } catch {

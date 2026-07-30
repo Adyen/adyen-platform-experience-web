@@ -13,7 +13,8 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const { getApplicableDefenseDocuments } = useConfigContext().endpoints || {};
+const config = useConfigContext();
+const getApplicableDefenseDocuments = computed(() => config.endpoints?.getApplicableDefenseDocuments);
 const {
     dispute,
     applicableDocuments,
@@ -62,12 +63,13 @@ async function submitDefenseReason() {
         return;
     }
     const pspReference = props.pspReference;
-    if (!isFunction(getApplicableDefenseDocuments) || !selectedDefenseReason.value || !pspReference) return;
+    const getApplicableDefenseDocumentsFn = getApplicableDefenseDocuments.value;
+    if (!isFunction(getApplicableDefenseDocumentsFn) || !selectedDefenseReason.value || !pspReference) return;
 
     isReasonSubmitting.value = true;
     reasonError.value = false;
     try {
-        const response = await getApplicableDefenseDocuments(EMPTY_OBJECT, {
+        const response = await getApplicableDefenseDocumentsFn(EMPTY_OBJECT, {
             query: { defenseReason: selectedDefenseReason.value },
             path: { disputePspReference: pspReference },
         });

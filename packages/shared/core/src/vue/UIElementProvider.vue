@@ -10,12 +10,12 @@ import './UIElement.scss';
 
 interface Props {
     core: CoreInstance;
-    componentName?: ExternalComponentType;
+    componentName: ExternalComponentType;
     customClassNames?: string;
+    refreshComponent: () => void;
 }
 
 const props = defineProps<Props>();
-
 const componentRef = ref<HTMLDivElement | null>(null);
 provide(COMPONENT_REF_KEY, componentRef);
 </script>
@@ -28,6 +28,7 @@ provide(COMPONENT_REF_KEY, componentRef);
         :get-cdn-dataset="props.core.getCdnDataset"
         :get-image-asset="props.core.getImageAsset"
         :external-error-handler="props.core.options.onError"
+        :refresh-component="props.refreshComponent"
     >
         <ConfigProvider :session="props.core.session" :type="props.componentName">
             <EventDispatcherProvider :component-name="props.componentName" :analytics-enabled="props.core.analyticsEnabled ?? true">

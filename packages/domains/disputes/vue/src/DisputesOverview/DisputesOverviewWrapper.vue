@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { UIElementProvider } from '@integration-components/core/vue';
+import { createRefreshContext, UIElementProvider } from '@integration-components/core/vue';
 import DisputesOverviewContainer from './components/DisputesOverviewContainer.vue';
 import type { DisputesOverviewExternalProps } from './types';
 import '@adyen/bento-vue3/styles/bento-light';
 
 const props = defineProps<DisputesOverviewExternalProps>();
+const { refresh, refreshCount } = createRefreshContext();
 </script>
 
 <template>
-    <UIElementProvider :core="props.core" component-name="disputes">
+    <UIElementProvider :core="props.core" component-name="disputes" :refresh-component="refresh">
         <DisputesOverviewContainer
+            :key="refreshCount"
             :balance-account-id="props.balanceAccountId"
             :allow-limit-selection="props.allowLimitSelection"
             :preferred-limit="props.preferredLimit"

@@ -11,6 +11,7 @@ import './UIElement.scss';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null = null;
+    protected _refreshCount = 0;
 
     public componentToRender: (() => JSX.Element) | null = null;
     public compRef: RefObject<HTMLDivElement>;
@@ -79,17 +80,21 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         return this;
     }
 
+    protected _refresh() {
+        this._refreshCount++;
+        this.update(this.props);
+    }
+
     render() {
         const core = this.props.core;
         const externalErrorHandler = this.props.onError || core.onError || null;
-        const updateCore = core.update.bind(core);
+        const componentRefGetter = () => this.compRef.current;
+        const refreshComponent = () => this._refresh();
 
         core.session.errorHandler = externalErrorHandler;
 
-        const componentRefGetter = () => this.compRef.current;
-
         return (
-            <ConfigProvider type={this.type} session={core.session} key={performance.now()}>
+            <ConfigProvider type={this.type} session={core.session}>
                 <CoreProvider
                     componentRef={componentRefGetter}
                     environment={core.options.environment || FALLBACK_ENV}
@@ -100,11 +105,16 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     getCdnDataset={core.getCdnDataset}
                     loadingContext={core.loadingContext}
                     externalErrorHandler={externalErrorHandler}
-                    updateCore={updateCore}
+                    refreshComponent={refreshComponent}
                 >
                     <EventDispatcherProvider componentName={this.displayName} analyticsEnabled={core?.analyticsEnabled ?? true}>
                         {this.componentToRender && (
-                            <section ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)} data-testid="component-root">
+                            <section
+                                key={this._refreshCount}
+                                ref={this.compRef}
+                                className={cx('adyen-pe-component', this.customClassNames)}
+                                data-testid="component-root"
+                            >
                                 <div className="adyen-pe-component__container">{this.componentToRender()}</div>
                             </section>
                         )}

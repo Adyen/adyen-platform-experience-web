@@ -1,8 +1,14 @@
-import { createApp, h, reactive, type App, type Component } from 'vue';
+import { createApp, h, reactive, ref, type App, type Component } from 'vue';
 import { createI18n as createVueI18n } from 'vue-i18n';
 import type { ExternalComponentType } from '@integration-components/types';
 import { uuid } from '@integration-components/utils';
 import UIElementProvider from './UIElementProvider.vue';
+
+export const createRefreshContext = () => {
+    const refreshCount = ref(0);
+    const refresh = () => void refreshCount.value++;
+    return { refresh, refreshCount };
+};
 
 /**
  * Base class that mirrors the Preact BaseElement/UIElement mount/update/unmount lifecycle
@@ -20,19 +26,21 @@ import UIElementProvider from './UIElementProvider.vue';
 export class UIElement<Props extends Record<string, any>> {
     public static type: ExternalComponentType;
 
-    public readonly _id = `${(this.constructor as typeof UIElement)?.type}-${uuid()}`;
     public customClassNames: string | undefined;
-    protected _component: Component;
-    protected _props: Props;
+    public readonly _id = `${(this.constructor as typeof UIElement)?.type}-${uuid()}`;
+
     protected _app: App | null = null;
+    protected _component: Component;
+    protected _componentName: ExternalComponentType;
+    protected _core: Props['core'];
+    protected _props: Omit<Props, 'core'>;
     protected _target: Element | null = null;
-    protected _componentName: ExternalComponentType | undefined;
 
     /**
      * Returns the core instance associated with this element, if any.
      */
     public get core(): any {
-        return (this._props as any)?.core;
+        return this._core;
     }
 
     get type(): ExternalComponentType {
@@ -43,10 +51,14 @@ export class UIElement<Props extends Record<string, any>> {
         return this.type;
     }
 
-    constructor(component: Component, props: Props, componentName?: ExternalComponentType) {
+    constructor(component: Component, props: Props, componentName: ExternalComponentType) {
+        const { core, ...componentProps } = props;
+
+        this._core = core;
         this._component = component;
-        this._props = reactive({ ...(props as Record<string, unknown>) }) as Props;
         this._componentName = componentName;
+        this._props = reactive(componentProps) as typeof componentProps;
+
         this.core?.registerComponent(this);
     }
 
@@ -58,17 +70,26 @@ export class UIElement<Props extends Record<string, any>> {
 
         this._target = el;
 
-        const component = this._component;
         const props = this._props;
+        const core = this._core;
+        const component = this._component;
         const componentName = this._componentName;
         const customClassNames = this.customClassNames;
 
+        const { refresh, refreshCount } = createRefreshContext();
+
         this._app = createApp({
             setup: () => () => {
-                // Strip `core` — it is consumed by UIElementProvider and should
-                // not leak into the inner component's $attrs / DOM attributes.
-                const { core, ...componentProps } = props;
-                return h(UIElementProvider, { core, componentName, customClassNames }, { default: () => h(component, componentProps) });
+                return h(
+                    UIElementProvider,
+                    {
+                        core,
+                        componentName,
+                        customClassNames,
+                        refreshComponent: refresh,
+                    },
+                    { default: () => h(component, { ...props, key: refreshCount.value }) }
+                );
             },
         });
 
@@ -76,7 +97,7 @@ export class UIElement<Props extends Record<string, any>> {
         // vue-i18n instance to be installed on the Vue app. Install a minimal
         // instance here so mounted components (and nested Bento primitives)
         // resolve without throwing "Need to install with `app.use` function".
-        const locale = this._props?.core?.options?.locale || 'en-US';
+        const locale = this._core?.options?.locale || 'en-US';
         this._app.use(
             createVueI18n({
                 legacy: false,
@@ -92,7 +113,8 @@ export class UIElement<Props extends Record<string, any>> {
     }
 
     public update(props: Partial<Props>): this {
-        Object.assign(this._props as Record<string, unknown>, props);
+        const { core: _, ...componentProps } = props;
+        Object.assign(this._props as Record<string, unknown>, componentProps);
         return this;
     }
 

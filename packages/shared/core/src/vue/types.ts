@@ -1,9 +1,9 @@
 import type { AuthSession } from '../session/AuthSession';
+import type { AssetOptions } from '../Assets/Assets';
 import type { SessionObject, SessionRequest } from '../ConfigContext.types';
 import type { DevEnvironment, onErrorHandler, AnalyticsConfig } from '../types';
 import type { I18n } from './Context/types';
 import type { SupportedLocales } from '../Localization/types';
-import { AssetOptions } from '@integration-components/core';
 
 export type { DevEnvironment, onErrorHandler, AnalyticsConfig, SessionObject, SessionRequest };
 

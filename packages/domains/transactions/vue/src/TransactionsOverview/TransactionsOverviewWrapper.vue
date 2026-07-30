@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { UIElementProvider } from '@integration-components/core/vue';
+import { createRefreshContext, UIElementProvider } from '@integration-components/core/vue';
 import TransactionsOverviewContainer from './components/TransactionsOverviewContainer/TransactionsOverviewContainer.vue';
 import '@adyen/bento-vue3/styles/bento-light';
 import type { TransactionsOverviewExternalProps } from './types';
 
 const props = defineProps<TransactionsOverviewExternalProps>();
+const { refresh, refreshCount } = createRefreshContext();
 </script>
 
 <template>
-    <UIElementProvider :core="props.core" component-name="transactions">
+    <UIElementProvider :core="props.core" component-name="transactions" :refresh-component="refresh">
         <TransactionsOverviewContainer
+            :key="refreshCount"
             :balance-account-id="props.balanceAccountId"
             :allow-limit-selection="props.allowLimitSelection"
             :preferred-limit="props.preferredLimit"
