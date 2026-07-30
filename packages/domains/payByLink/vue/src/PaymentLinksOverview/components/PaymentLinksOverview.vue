@@ -7,9 +7,9 @@ import { useCoreContext, useConfigContext } from '@integration-components/core/v
 import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
 import PaymentLinksFilters from './PaymentLinksFilters.vue';
 import PaymentLinksTable from './PaymentLinksTable.vue';
-import { PaymentLinkCreationInternal } from '../../PaymentLinkCreation';
-import { PaymentLinkDetailsInternal } from '../../PaymentLinkDetails';
-import { PaymentLinkSettingsInternal } from '../../PaymentLinkSettings';
+import PaymentLinkCreation from '../../PaymentLinkCreation/components/PaymentLinkCreationContainer/PaymentLinkCreationContainer.vue';
+import PaymentLinkDetails from '../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails.vue';
+import PaymentLinkSettings from '../../PaymentLinkSettings/components/PaymentLinkSettingsContainer.vue';
 import { usePaymentLinksList } from '../composables/usePaymentLinksList';
 import { BASE_CLASS, DEFAULT_PAYMENT_LINK_STATUS_GROUP, PAYMENT_LINK_STATUS_GROUPS_TABS } from '../constants';
 import type { PaymentLinksFiltersValue } from './PaymentLinksFilters.vue';
@@ -291,7 +291,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
             @close-modal="closeDetailsModal"
         >
             <template #content>
-                <PaymentLinkDetailsInternal
+                <PaymentLinkDetails
                     v-if="selectedPaymentLink"
                     :id="selectedPaymentLink.paymentLinkId"
                     hide-title
@@ -311,7 +311,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
             @close-modal="onCloseModal"
         >
             <template #content>
-                <PaymentLinkCreationInternal
+                <PaymentLinkCreation
                     v-if="modalType === 'Creation'"
                     :fields-config="props.paymentLinkCreation?.fieldsConfig"
                     :store-ids="props.storeIds"
@@ -319,7 +319,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
                     :on-creation-dismiss="props.paymentLinkCreation?.onCreationDismiss"
                     :on-contact-support="props.onContactSupport"
                 />
-                <PaymentLinkSettingsInternal
+                <PaymentLinkSettings
                     v-else-if="modalType === 'Settings'"
                     v-bind="props.paymentLinkSettings"
                     :store-ids="props.storeIds"

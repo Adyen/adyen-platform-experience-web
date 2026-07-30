@@ -4,6 +4,7 @@ import PaymentLinkCreationForm from '../PaymentLinkCreationFormContainer/Payment
 import FormSuccess from '../Form/FormSuccess/FormSuccess.vue';
 import { PAYMENT_LINK_CREATION_CLASS_NAMES } from '../../../../../domain/src';
 import type { PaymentLinkCreationFormValues, CreatedPaymentLink, PaymentLinkCreationProps } from '../../../../../domain/src';
+import '@adyen/bento-vue3/styles/bento-light';
 import './PaymentLinkCreationContainer.scss';
 
 const props = defineProps<PaymentLinkCreationProps>();

@@ -6,6 +6,7 @@ import { useBalanceAccounts } from '@integration-components/composables-vue';
 import { CONTAINER_CLASS } from '../constants';
 import { BentoButton } from '@adyen/bento-vue3';
 import type { PayoutsOverviewExternalProps } from '../types';
+import '@adyen/bento-vue3/styles/bento-light';
 
 const props = withDefaults(
     defineProps<{

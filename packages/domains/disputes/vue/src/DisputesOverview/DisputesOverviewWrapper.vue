@@ -2,7 +2,6 @@
 import { createRefreshContext, UIElementProvider } from '@integration-components/core/vue';
 import DisputesOverviewContainer from './components/DisputesOverviewContainer.vue';
 import type { DisputesOverviewExternalProps } from './types';
-import '@adyen/bento-vue3/styles/bento-light';
 
 const props = defineProps<DisputesOverviewExternalProps>();
 const { refresh, refreshCount } = createRefreshContext();

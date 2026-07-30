@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { createRefreshContext, UIElementProvider } from '@integration-components/core/vue';
 import TransactionDetailsContainer from './components/TransactionDetailsContainer.vue';
-import '@adyen/bento-vue3/styles/bento-light';
 import type { TransactionDetailsExternalProps } from './types';
 
 const props = defineProps<TransactionDetailsExternalProps>();

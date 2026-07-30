@@ -2,7 +2,6 @@
 import type { PaymentLinksOverviewExternalProps } from './types';
 import { createRefreshContext, UIElementProvider } from '@integration-components/core/vue';
 import PaymentLinksOverviewContainer from './components/PaymentLinksOverviewContainer.vue';
-import '@adyen/bento-vue3/styles/bento-light';
 
 const props = withDefaults(defineProps<PaymentLinksOverviewExternalProps>(), {
     showDetails: true,

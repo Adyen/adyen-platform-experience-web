@@ -2,7 +2,6 @@
 import type { ReportsOverviewExternalProps } from './types';
 import { createRefreshContext, UIElementProvider } from '@integration-components/core/vue';
 import ReportsOverviewContainer from './components/ReportsOverviewContainer.vue';
-import '@adyen/bento-vue3/styles/bento-light';
 
 const props = defineProps<ReportsOverviewExternalProps>();
 const { refresh, refreshCount } = createRefreshContext();

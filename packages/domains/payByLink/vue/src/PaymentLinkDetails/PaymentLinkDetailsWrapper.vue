@@ -2,7 +2,6 @@
 import type { PaymentLinkDetailsExternalProps } from './types';
 import { createRefreshContext, UIElementProvider } from '@integration-components/core/vue';
 import PaymentLinkDetails from './components/PaymentLinkDetails/PaymentLinkDetails.vue';
-import '@adyen/bento-vue3/styles/bento-light';
 
 const props = defineProps<PaymentLinkDetailsExternalProps>();
 const { refresh, refreshCount } = createRefreshContext();

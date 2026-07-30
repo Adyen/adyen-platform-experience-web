@@ -6,6 +6,7 @@ import { BentoButton } from '@adyen/bento-vue3';
 import TransactionsOverview from '../TransactionsOverview/TransactionsOverview.vue';
 import { CONTAINER_CLASS } from '../../constants';
 import type { TransactionsOverviewExternalProps } from '../../types';
+import '@adyen/bento-vue3/styles/bento-light';
 
 const props = withDefaults(
     defineProps<{

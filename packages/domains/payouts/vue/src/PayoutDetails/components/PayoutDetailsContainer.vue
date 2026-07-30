@@ -10,6 +10,7 @@ import { PAYOUT_TABLE_FIELDS } from '../../PayoutsOverview/constants';
 import type { PayoutDetailsCustomization } from '../types';
 import type { CustomDataRetrieved } from '@integration-components/types';
 import './PayoutDetailsContainer.scss';
+import '@adyen/bento-vue3/styles/bento-light';
 
 const props = defineProps<{
     id: string;

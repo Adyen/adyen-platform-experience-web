@@ -7,7 +7,7 @@ import type { PaymentLinkCreationExternalProps } from './types';
  * Imperative wrapper for PaymentLinkCreation, mirroring the Preact BaseElement.mount() pattern.
  */
 export class PaymentLinkCreationElement extends UIElement<PaymentLinkCreationExternalProps> {
-    public static type: ExternalComponentType = 'paymentLinkCreation';
+    public static readonly type: ExternalComponentType = 'paymentLinkCreation';
 
     constructor(props: PaymentLinkCreationExternalProps) {
         super(PaymentLinkCreationContainer, props, 'paymentLinkCreation');

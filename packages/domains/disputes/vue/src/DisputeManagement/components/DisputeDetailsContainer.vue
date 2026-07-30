@@ -4,6 +4,7 @@ import type { IDisputeDetail } from '@integration-components/types/api/models/di
 import { DisputeFlowState, provideDisputeFlow } from '../composables/useDisputeFlow';
 import DisputeDetails from './DisputeDetails.vue';
 import type { DisputeManagementProps } from '../types';
+import '@adyen/bento-vue3/styles/bento-light';
 import '../styles/DisputeManagement.scss';
 
 const props = defineProps<DisputeManagementProps>();

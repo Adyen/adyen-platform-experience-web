@@ -3,6 +3,7 @@ import PaymentLinksOverview from './PaymentLinksOverview.vue';
 import { useStores } from '../composables/useStores';
 import { usePaymentLinkFilterOptions } from '../composables/usePaymentLinkFilterOptions';
 import type { PaymentLinksOverviewExternalProps } from '../types';
+import '@adyen/bento-vue3/styles/bento-light';
 
 const props = withDefaults(
     defineProps<{

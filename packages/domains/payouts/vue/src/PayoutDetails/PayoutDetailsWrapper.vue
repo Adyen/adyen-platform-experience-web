@@ -2,7 +2,6 @@
 import type { PayoutDetailsExternalProps } from './types';
 import { createRefreshContext, UIElementProvider } from '@integration-components/core/vue';
 import PayoutDetailsContainer from './components/PayoutDetailsContainer.vue';
-import '@adyen/bento-vue3/styles/bento-light';
 
 const props = defineProps<PayoutDetailsExternalProps>();
 const { refresh, refreshCount } = createRefreshContext();
