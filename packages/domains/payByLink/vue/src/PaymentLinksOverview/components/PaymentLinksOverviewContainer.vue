@@ -24,7 +24,7 @@ const props = withDefaults(
 );
 
 const { allStores, filteredStores, isFetching: isStoresLoading, error: storeError } = useStores(() => props.storeIds);
-const { filters: filterOptions, error: filterOptionsError } = usePaymentLinkFilterOptions();
+const { filters: filterOptions, isFetching: isFilterOptionsLoading, error: filterOptionsError } = usePaymentLinkFilterOptions();
 </script>
 
 <template>
@@ -41,7 +41,7 @@ const { filters: filterOptions, error: filterOptionsError } = usePaymentLinkFilt
         :payment-link-settings="props.paymentLinkSettings"
         :stores="filteredStores"
         :all-stores="allStores"
-        :is-stores-loading="isStoresLoading"
+        :is-filters-loading="isStoresLoading || isFilterOptionsLoading"
         :store-error="storeError"
         :filter-options="filterOptions"
         :filter-options-error="filterOptionsError"

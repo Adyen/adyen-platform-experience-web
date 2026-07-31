@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { BentoTypography, BentoTabs, BentoTab, BentoButton, BentoAlert, BentoModal } from '@adyen/bento-vue3';
 import PlusIcon from '@adyen/ui-assets-icons-16/vue/plus';
 import SettingsIcon from '@adyen/ui-assets-icons-16/vue/settings';
@@ -15,7 +15,9 @@ import { BASE_CLASS, DEFAULT_PAYMENT_LINK_STATUS_GROUP, PAYMENT_LINK_STATUS_GROU
 import type { PaymentLinksFiltersValue } from './PaymentLinksFilters.vue';
 import type { IPaymentLinkFilters, IPaymentLinkItem, IPaymentLinkStatusGroup } from '@integration-components/types';
 import type { StoreData, PaymentLinksOverviewModalType } from '../../../../domain/src';
+import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../../../../domain/src';
 import type { PaymentLinksOverviewExternalProps } from '../types';
+import { createPaymentLinksError } from '../utils/error';
 import '../styles/PaymentLinksOverview.scss';
 
 const props = defineProps<{
@@ -31,7 +33,7 @@ const props = defineProps<{
     paymentLinkSettings?: PaymentLinksOverviewExternalProps['paymentLinkSettings'];
     stores: StoreData[] | undefined;
     allStores: StoreData[] | undefined;
-    isStoresLoading: boolean;
+    isFiltersLoading: boolean;
     storeError?: Error;
     filterOptions: IPaymentLinkFilters | undefined;
     filterOptionsError?: Error;
@@ -89,9 +91,25 @@ const paymentLinksListResult = usePaymentLinksList(() => ({
 const showFiltersAlert = computed(() => !!props.storeError || !!props.filterOptionsError);
 const filtersAlertDismissed = ref(false);
 
+watch([() => props.storeError, () => props.filterOptionsError], () => {
+    filtersAlertDismissed.value = false;
+});
+
 function closeFiltersAlert() {
     filtersAlertDismissed.value = true;
 }
+
+const noStoresError = computed(() => {
+    if (props.isFiltersLoading || props.allStores?.length !== 0 || props.storeError) return undefined;
+    return createPaymentLinksError('No stores configured', { errorCode: ACCOUNT_MISCONFIGURATION });
+});
+
+const storesFilteredError = computed(() => {
+    if (props.isFiltersLoading || (props.allStores && props.allStores.length > 0 && props.stores?.length !== 0)) return undefined;
+    return createPaymentLinksError('The provided store IDs do not match any configured stores', { errorCode: WRONG_STORE_IDS });
+});
+
+const paymentLinksError = computed(() => noStoresError.value ?? paymentLinksListResult.error.value ?? storesFilteredError.value);
 
 const isDetailsModalOpen = ref(false);
 const selectedPaymentLink = ref<IPaymentLinkItem | null>(null);
@@ -248,8 +266,8 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
         </BentoAlert>
 
         <PaymentLinksTable
-            :error="paymentLinksListResult.error.value as any"
-            :loading="paymentLinksListResult.fetching.value || props.isStoresLoading"
+            :error="paymentLinksError"
+            :loading="paymentLinksListResult.fetching.value || props.isFiltersLoading"
             :on-contact-support="props.onContactSupport"
             :on-row-click="onRowClick"
             :show-pagination="true"

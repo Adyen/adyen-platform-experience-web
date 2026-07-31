@@ -2,6 +2,7 @@ import { ref, computed, watch } from 'vue';
 import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import { useConfigContext } from '@integration-components/core/vue';
 import type { IPaymentLinkFilters } from '@integration-components/types';
+import { toError } from '../utils/error';
 
 /**
  * Vue composable counterpart of the Preact `usePaymentLinkFilters` hook's filter-options portion:
@@ -25,7 +26,7 @@ export function usePaymentLinkFilterOptions() {
         try {
             filters.value = await fn(EMPTY_OBJECT);
         } catch (e) {
-            error.value = e as Error;
+            error.value = toError(e);
         } finally {
             isFetching.value = false;
         }

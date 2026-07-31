@@ -2,6 +2,7 @@ import { ref, computed, watch } from 'vue';
 import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import { useConfigContext } from '@integration-components/core/vue';
 import type { StoreData, StoreIds } from '../../../../domain/src';
+import { toError } from '../utils/error';
 
 /**
  * Vue composable counterpart of the Preact `useStores` hook. Fetches the merchant's Pay by Link
@@ -24,16 +25,14 @@ export function useStores(storeIds?: () => StoreIds | undefined) {
 
         try {
             const response = await fn(EMPTY_OBJECT, EMPTY_OBJECT);
-            allStores.value = response?.data
-                ?.filter(store => !!store.storeId)
-                .map(store => ({
-                    id: store.storeId || '',
-                    name: store.storeCode || '',
-                    storeCode: store.storeCode || '',
-                    description: store.description || '',
-                }));
+            allStores.value = response?.data?.map(store => ({
+                id: store.storeId || '',
+                name: store.storeCode || '',
+                storeCode: store.storeCode || '',
+                description: store.description || '',
+            }));
         } catch (e) {
-            error.value = e as Error;
+            error.value = toError(e);
         } finally {
             isFetching.value = false;
         }

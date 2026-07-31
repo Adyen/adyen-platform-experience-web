@@ -10,6 +10,9 @@ const meta: Meta<ElementProps<PaymentLinksOverviewExternalProps>> = {
 
 export const Default: ElementStory<PaymentLinksOverviewExternalProps, SessionControls> = {
     name: 'Default',
+    argTypes: {
+        session: { control: 'object' },
+    },
     args: {
         session: EMPTY_SESSION_OBJECT,
     },

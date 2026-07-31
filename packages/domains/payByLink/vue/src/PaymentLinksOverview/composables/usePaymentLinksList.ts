@@ -1,10 +1,11 @@
 import { ref, computed, watch, onUnmounted } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
-import { isFunction } from '@integration-components/utils';
+import { isFunction, listFrom } from '@integration-components/utils';
 import type { IPaymentLinkItem, IPaymentLinkStatusGroup } from '@integration-components/types';
 import type { StoreIds } from '../../../../domain/src';
 import type { PaymentLinksOverviewExternalProps } from '../types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
+import { getPaymentLinksErrorMetadata, toError } from '../utils/error';
 
 interface UsePaymentLinksListProps {
     fetchEnabled: boolean;
@@ -22,11 +23,6 @@ interface UsePaymentLinksListProps {
     onFiltersChanged?: PaymentLinksOverviewExternalProps['onFiltersChanged'];
     lastRefreshTimestamp: number;
 }
-
-const listFrom = (value?: StoreIds): string[] | undefined => {
-    if (!value) return undefined;
-    return typeof value === 'string' ? [value] : value;
-};
 
 export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
     const config = useConfigContext();
@@ -91,7 +87,7 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
                         statuses: statuses.length ? statuses.join(',') : undefined,
                         createdSince,
                         createdUntil,
-                        storeIds: effectiveStoreIds?.length ? effectiveStoreIds.join(',') : undefined,
+                        storeIds: filterStoreIds.length ? filterStoreIds.join(',') : undefined,
                         merchantReference,
                         paymentLinkId,
                     });
@@ -99,12 +95,10 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
             }
         } catch (e) {
             if (!signal.aborted) {
-                error.value = e as Error;
+                error.value = toError(e);
 
-                // Backend returns a validation error (rather than an empty list) when the paymentLinkId
-                // filter doesn't match any link. Treat it as an empty result, mirroring the Preact behavior.
-                const apiError = e as { errorCode?: string; invalidFields?: { name: string }[] };
-                if (apiError.errorCode === '29_001' && apiError.invalidFields?.some(field => field.name === 'paymentLinkId')) {
+                const { errorCode, invalidFields } = getPaymentLinksErrorMetadata(error.value);
+                if (errorCode === '29_001' && invalidFields?.some(field => field.name === 'paymentLinkId')) {
                     records.value = [];
                     hasNext.value = false;
                     hasPrevious.value = false;

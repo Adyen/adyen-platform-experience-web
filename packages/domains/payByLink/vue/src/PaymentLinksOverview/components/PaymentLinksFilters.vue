@@ -111,6 +111,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             label: i18n.get('payByLink.overview.filters.types.stores.label'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
             defaultValue: [],
+            disabled: !!props.storeError,
             options: {
                 checkboxItems: (props.stores ?? [])
                     .filter(store => store.id)
@@ -138,6 +139,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             field: 'linkTypes',
             label: i18n.get('payByLink.overview.filters.types.linkTypes.label'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
+            disabled: !!props.filterError,
             options: {
                 checkboxItems: (props.availableLinkTypes ?? []).map(type => ({ label: getLinkTypeLabel(type), value: type })),
             },
@@ -149,6 +151,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             field: 'statuses',
             label: i18n.get('payByLink.overview.filters.types.status.label'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
+            disabled: !!props.filterError,
             options: {
                 checkboxItems: (availableStatusesForGroup.value ?? []).map((status: IPaymentLinkStatus) => ({
                     label: getStatusLabel(status),

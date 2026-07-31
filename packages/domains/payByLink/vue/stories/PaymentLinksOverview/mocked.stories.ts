@@ -13,6 +13,31 @@ export const Default: ElementStory<PaymentLinksOverviewExternalProps> = {
     name: 'Default',
     args: {
         mockedApi: true,
+        storeIds: ['STORE_NY_001', 'STORE_LON_001', 'STORE_AMS_001'],
+    },
+};
+
+export const SingleStore: ElementStory<PaymentLinksOverviewExternalProps> = {
+    name: 'Single store',
+    args: {
+        mockedApi: true,
+        storeIds: 'STORE_NY_001',
+    },
+};
+
+export const RestrictedStores: ElementStory<PaymentLinksOverviewExternalProps> = {
+    name: 'Restricted stores',
+    args: {
+        mockedApi: true,
+        storeIds: ['STORE_NY_001', 'STORE_LON_001'],
+    },
+};
+
+export const WrongStoreIds: ElementStory<PaymentLinksOverviewExternalProps> = {
+    name: 'Error - Wrong Store IDs',
+    args: {
+        mockedApi: true,
+        storeIds: ['UNKNOWN_STORE'],
     },
 };
 

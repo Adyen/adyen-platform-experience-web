@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoDataGrid, BentoTag, BentoTypography, BentoButton, BentoTooltipDirective as vBentoTooltip } from '@adyen/bento-vue3';
+import { BentoDataGrid, BentoTag, BentoTypography, BentoTooltipDirective as vBentoTooltip } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem, BentoTagVariant } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useResponsiveContainer, containerQueries, useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
@@ -13,12 +13,12 @@ import {
 import { TABLE_CLASS } from '../constants';
 import { usePaymentLinkLabels } from '../composables/usePaymentLinkLabels';
 import type { IPaymentLinkItem, IPaymentLinkStatus } from '@integration-components/types';
-import type { AdyenPlatformExperienceError } from '@integration-components/core';
+import PaymentLinksError from './PaymentLinksError.vue';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 const props = defineProps<{
-    error?: AdyenPlatformExperienceError;
+    error?: Error;
     loading: boolean;
     onContactSupport?: () => void;
     onRowClick?: (paymentLink: IPaymentLinkItem) => void;
@@ -40,13 +40,6 @@ const { dateFormat } = useTimezoneAwareDateFormatting();
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
 
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
-
-// Backend returns a validation error (rather than an empty list) when the paymentLinkId filter
-// doesn't match any link. Treat it as an empty result, mirroring the Preact behavior.
-const isInvalidPaymentLinkIdError = computed(
-    () => props.error?.errorCode === '29_001' && props.error.invalidFields?.some(field => field.name === 'paymentLinkId')
-);
-const displayError = computed(() => (isInvalidPaymentLinkIdError.value ? undefined : props.error));
 
 function getTagVariantForStatus(status: IPaymentLinkStatus): BentoTagVariant {
     switch (status) {
@@ -126,7 +119,7 @@ const paginationProps = computed(() => {
 
 const emptyStateProps = computed(() => ({
     title: i18n.get('payByLink.overview.errors.listEmpty'),
-    description: i18n.get('common.errors.updateFilters'),
+    description: i18n.get('payByLink.overview.errors.listEmpty.message'),
 }));
 
 function handleNavigate(page: number) {
@@ -158,12 +151,12 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
 
 <template>
     <div :class="TABLE_CLASS">
-        <div v-if="displayError" class="adyen-pe-data-overview-error">
-            <p>{{ i18n.get('payByLink.overview.errors.couldNotLoadLinks') }}</p>
-            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
-            </BentoButton>
-        </div>
+        <PaymentLinksError
+            v-if="props.error"
+            :error="props.error"
+            error-message="payByLink.overview.errors.couldNotLoadLinks"
+            :on-contact-support="props.onContactSupport"
+        />
 
         <BentoDataGrid
             v-else
