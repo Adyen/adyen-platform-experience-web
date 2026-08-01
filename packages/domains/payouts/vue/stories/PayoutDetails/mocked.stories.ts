@@ -32,6 +32,14 @@ export const ErrorDetails: ElementStory<PayoutDetailsExternalProps> = {
     },
 };
 
+export const ErrorNotFound: ElementStory<PayoutDetailsExternalProps> = {
+    name: 'Error - Not found',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...PAYOUT_DETAILS_HANDLERS.errorNotFound },
+    },
+};
+
 export const SumOfSameDayPayouts: ElementStory<PayoutDetailsExternalProps> = {
     name: 'Sum of same-day payouts',
     args: sharedArgs,

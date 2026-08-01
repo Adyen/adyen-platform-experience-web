@@ -1,4 +1,5 @@
 @use '@integration-components/style';
+@use '@integration-components/style/mixins';
 
 .adyen-pe-payment-link-settings {
     &__content {
@@ -9,6 +10,10 @@
 
     &__content-header {
         margin-bottom: style.token(spacer-080);
+    }
+
+    &__error {
+        @include mixins.adyen-pe-error-message-display-container;
     }
 
     &__content-item {

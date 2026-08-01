@@ -7,6 +7,7 @@ test.describe('Disputes Overview - Error list', () => {
     test('should render the list error message', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
+        await expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible();
         await expect(page.getByText('We could not load your disputes.')).toBeVisible();
     });
 
@@ -14,6 +15,6 @@ test.describe('Disputes Overview - Error list', () => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
 
         await expect(page.getByText('We could not load your disputes.')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Contact support' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
     });
 });

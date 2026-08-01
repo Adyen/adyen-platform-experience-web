@@ -57,23 +57,6 @@
         max-width: 500px;
         width: 100%;
     }
-
-    &__error-illustration,
-    &__error-actions {
-        align-items: center;
-        display: flex;
-        justify-content: center;
-    }
-
-    &__error-actions {
-        gap: style.token(spacer-040);
-    }
-
-    &__error-code {
-        align-items: center;
-        display: inline-flex;
-        gap: style.token(spacer-020);
-    }
 }
 
 .adyen-pe-payment-link-table {
