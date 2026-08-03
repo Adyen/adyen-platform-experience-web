@@ -42,7 +42,6 @@ export const TRANSACTION_DATE_RANGES = Object.freeze({
 } as const);
 
 export const TRANSACTION_DATE_RANGE_DEFAULT_TIMESTAMPS = TRANSACTION_DATE_RANGES[TRANSACTION_DATE_RANGE_DEFAULT];
-export const TRANSACTION_DATE_RANGE_MAX_YEARS = 2;
 
 export const TRANSACTION_STATUSES: readonly ITransactionStatus[] = ['Booked', 'Pending', 'Reversed'] as const;
 
