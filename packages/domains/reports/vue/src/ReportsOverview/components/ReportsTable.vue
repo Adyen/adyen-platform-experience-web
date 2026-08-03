@@ -19,8 +19,8 @@ import type { BentoDatagridDataItem, BentoDataGridRowActionsProp } from '@adyen/
 import type { CustomColumn, IReport, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
-import { getReportType, REPORTS_TABLE_CLASS_NAMES, REPORTS_DOWNLOAD_DISABLED_TIMEOUT, REPORTS_TABLE_FIELDS } from '../../../../domain/src';
-import '../styles/ReportsTable.scss';
+import { getReportType, REPORTS_DOWNLOAD_DISABLED_TIMEOUT, REPORTS_TABLE_FIELDS } from '../../../../domain/src';
+import styles from './ReportsTable.module.scss';
 
 export type ReportsTableFields = (typeof REPORTS_TABLE_FIELDS)[number];
 
@@ -247,9 +247,9 @@ watch(
 </script>
 
 <template>
-    <div :class="REPORTS_TABLE_CLASS_NAMES.base">
+    <div :class="styles.root">
         <!-- Download error alert -->
-        <div v-if="alert" class="adyen-pe-reports-table-alert" role="alert">
+        <div v-if="alert" :class="styles.alert" role="alert">
             <div>
                 <strong>{{ alert.title }}</strong>
                 <p>{{ alert.description }}</p>
@@ -289,12 +289,10 @@ watch(
                 {{ item.reportType }}
             </template>
             <template #item-dateAndReportType="{ item }">
-                <div :class="REPORTS_TABLE_CLASS_NAMES.dateReportType">
+                <div :class="styles.dateReportType">
                     <BentoTypography v-if="item.reportType" variant="body" stronger>{{ item.reportType }}</BentoTypography>
                     <time v-if="item.createdAt" :datetime="item.createdAt">
-                        <BentoTypography variant="body" :class="REPORTS_TABLE_CLASS_NAMES.dateReportTypeDate">{{
-                            formatDate(item.createdAt)
-                        }}</BentoTypography>
+                        <BentoTypography variant="body" :class="styles.date">{{ formatDate(item.createdAt) }}</BentoTypography>
                     </time>
                 </div>
             </template>
