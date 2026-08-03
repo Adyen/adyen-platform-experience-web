@@ -2,16 +2,10 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
-import './PaymentRefund.scss';
 import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
 import CrossCircleFillIcon from '@adyen/ui-assets-icons-40/vue/cross-circle-filled';
-import {
-    TX_REFUND_RESPONSE,
-    TX_REFUND_RESPONSE_ICON,
-    TX_REFUND_RESPONSE_SUCCESS_ICON,
-    TX_REFUND_RESPONSE_ERROR_ICON,
-} from '../../../../../domain/src';
 import type { RefundResult } from '../../../../../domain/src';
+import styles from './PaymentRefund.module.scss';
 
 const props = defineProps<{
     result: RefundResult;
@@ -27,11 +21,11 @@ const titleKey = computed(() => (isError.value ? 'common.errors.somethingWentWro
 const descriptionKey = computed(() =>
     isError.value ? 'transactions.details.refund.alerts.refundFailure' : 'transactions.details.refund.alerts.refundSuccess'
 );
-const iconClass = computed(() => [TX_REFUND_RESPONSE_ICON, isError.value ? TX_REFUND_RESPONSE_ERROR_ICON : TX_REFUND_RESPONSE_SUCCESS_ICON]);
+const iconClass = computed(() => [styles.refundResponseIcon, isError.value ? styles.refundResponseIconError : styles.refundResponseIconSuccess]);
 </script>
 
 <template>
-    <div :class="TX_REFUND_RESPONSE">
+    <div :class="styles.refundResponse">
         <CrossCircleFillIcon v-if="isError" :class="iconClass" />
         <CheckmarkCircleFillIcon v-else :class="iconClass" />
         <BentoTypography variant="title" large>{{ i18n.get(titleKey) }}</BentoTypography>

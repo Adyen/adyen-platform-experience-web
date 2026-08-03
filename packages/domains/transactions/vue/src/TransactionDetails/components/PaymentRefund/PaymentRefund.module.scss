@@ -1,0 +1,35 @@
+@use '@integration-components/style';
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.actionBar {
+    align-self: flex-end;
+    flex-direction: row;
+}
+
+.refundResponse {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+    padding: style.token(spacer-100) 0;
+    text-align: center;
+}
+
+.refundResponseIconSuccess {
+    color: style.token(color-background-success-strong);
+}
+
+.refundResponseIconError {
+    color: style.token(color-background-critical-strong);
+}

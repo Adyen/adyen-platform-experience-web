@@ -1,8 +1,8 @@
 @use '@integration-components/style';
 @use '@integration-components/style/breakpoints' as breakpoints;
 
-.adyen-pe-transaction-insights-totals {
-    &__breakdowns {
+.root {
+    .breakdowns {
         display: grid;
         gap: style.token(spacer-100) calc(#{style.token(spacer-110)} * 2);
         grid-template-columns: 1fr;
@@ -13,7 +13,7 @@
         }
     }
 
-    &__divider {
+    .divider {
         display: none;
 
         @include breakpoints.adyen-pe-screen-md-and-up {
@@ -26,22 +26,22 @@
         }
     }
 
-    &__breakdown {
+    .breakdown {
         min-width: 0;
         overflow: hidden;
     }
 
-    & &__breakdowns &__breakdown-list {
+    .breakdowns .breakdownList {
         @include breakpoints.adyen-pe-screen-md-and-up {
             margin-inline: unset;
         }
     }
 
-    .adyen-pe-transaction-amount-display {
-        &__amount {
+    .amountDisplay {
+        &Amount {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: style.token(spacer-040);
             margin-bottom: style.token(spacer-070);
         }
     }

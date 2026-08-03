@@ -3,7 +3,6 @@ import { ref, computed, watch } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BentoInputField, BentoTypography } from '@adyen/bento-vue3';
 import {
-    TX_DATA_CONTAINER,
     TX_DATA_INPUT_CONTAINER,
     TX_DATA_INPUT_CONTAINER_SHORT,
     TX_DATA_INPUT_CONTAINER_TEXT,
@@ -12,6 +11,7 @@ import {
 } from '../../../../../domain/src';
 import { getDecimalAmount, getDivider } from '@integration-components/core/Localization/amount/amount-util';
 import { useUniqueId } from '@integration-components/composables-vue';
+import styles from './PaymentRefund.module.scss';
 
 const props = defineProps<{
     currency: string;
@@ -83,7 +83,7 @@ function onInput(rawValue: string) {
 </script>
 
 <template>
-    <div :class="TX_DATA_CONTAINER">
+    <div :class="styles.container">
         <div :class="TX_DATA_INPUT_HEAD">
             <BentoTypography variant="body" stronger>{{ i18n.get('transactions.details.refund.inputs.amount.label') }}</BentoTypography>
         </div>

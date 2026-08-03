@@ -2,11 +2,12 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BentoStructuredList, BentoStructuredListItem, BentoTypography } from '@adyen/bento-vue3';
-import { getTransactionAmountAdjustmentType, getTransactionAmountAdjustmentTypeInformation, TX_DATA_LIST } from '../../../../../domain/src';
+import { getTransactionAmountAdjustmentType, getTransactionAmountAdjustmentTypeInformation } from '../../../../../domain/src';
 import { isNullish } from '@integration-components/utils';
 import type { TransactionDetails } from '../../../../../domain/src';
 import type { IAmount } from '@integration-components/types';
 import type { TranslationKey } from '@integration-components/core';
+import styles from './PaymentDetails.module.scss';
 
 const props = defineProps<{
     transaction: TransactionDetails;
@@ -61,7 +62,7 @@ const summaryItems = computed<SummaryItem[]>(() => {
 </script>
 
 <template>
-    <BentoStructuredList :class="TX_DATA_LIST">
+    <BentoStructuredList :class="styles.list">
         <BentoStructuredListItem v-for="item in summaryItems" :key="item.key" :label="i18n.get(item.key)" :search-tooltip="item.tooltip ?? undefined">
             <BentoTypography variant="body" :strongest="item.stronger">{{ item.value }}</BentoTypography>
         </BentoStructuredListItem>

@@ -8,8 +8,8 @@ import { useTransactionsOverviewContext } from '../../composables/useTransaction
 import { EXPORT_COLUMNS, DEFAULT_EXPORT_COLUMNS } from '../../constants';
 import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '@integration-components/transactions/domain';
 import type { TranslationKey } from '@integration-components/core';
-import './TransactionsExport.scss';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
+import styles from './TransactionsExport.module.scss';
 
 const props = defineProps<{ disabled?: boolean }>();
 
@@ -176,7 +176,7 @@ const popoverActions = computed(() => [
 </script>
 
 <template>
-    <div v-if="canDownloadTransactions" class="adyen-pe-transactions-export">
+    <div v-if="canDownloadTransactions">
         <BentoButton
             :id="exportButtonId"
             ref="targetElement"
@@ -207,15 +207,15 @@ const popoverActions = computed(() => [
             :actions="popoverActions"
             @dismiss="dismissPopover"
         >
-            <div class="adyen-pe-transactions-export__popover-sections">
-                <div class="adyen-pe-transactions-export__popover-section--filters">
+            <div :class="styles.popoverSections">
+                <div :class="styles.filters">
                     <BentoTypography variant="body" strongest>{{ `${i18n.get('transactions.overview.export.filters.title')}:` }}</BentoTypography>
                     <BentoTag v-for="filter in activeFilters" :key="filter" variant="grey" :label="i18n.get(filter)" />
                 </div>
 
                 <BentoDivider />
 
-                <div class="adyen-pe-transactions-export__popover-section--columns">
+                <div :class="styles.columns">
                     <BentoTypography variant="body" strongest>{{ i18n.get('transactions.overview.export.columns.title') }}</BentoTypography>
                     <BentoToggle label-position="after" :value="masterSwitchChecked" @input="onMasterSwitchChange">
                         {{ i18n.get('transactions.overview.export.columns.types.all', { values: { count: EXPORT_COLUMNS.length } }) }}
