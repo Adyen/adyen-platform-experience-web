@@ -1,0 +1,73 @@
+name: Configure V1 Changesets
+
+on:
+    workflow_dispatch:
+
+concurrency:
+    group: configure-v1-changesets
+    cancel-in-progress: false
+
+jobs:
+    configure:
+        if: github.repository == 'adyen/adyen-platform-experience-web' && github.ref == 'refs/heads/main'
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            pull-requests: write
+        steps:
+            - name: Checkout V1 maintenance branch
+              uses: actions/checkout@v4.2.2
+              with:
+                  ref: version/v1.x
+                  fetch-depth: 0
+
+            - name: Check V1 Changesets configuration
+              id: configuration
+              run: |
+                  BASE_BRANCH=$(jq -r '.baseBranch // empty' .changeset/config.json)
+                  if [[ "$BASE_BRANCH" == "version/v1.x" ]]; then
+                    echo "V1 Changesets already uses version/v1.x."
+                    echo "needs-update=false" >> "$GITHUB_OUTPUT"
+                  elif [[ "$BASE_BRANCH" == "main" ]]; then
+                    echo "needs-update=true" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "::error::Unexpected Changesets base branch \"$BASE_BRANCH\"."
+                    exit 1
+                  fi
+
+            - name: Create V1 Changesets configuration pull request
+              if: steps.configuration.outputs.needs-update == 'true'
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  BRANCH="chore/v1-changesets-base"
+                  TITLE="chore(release): configure Changesets for V1"
+                  EXISTING_PR=$(gh pr list --base version/v1.x --head "$BRANCH" --state open --json number --jq '.[0].number')
+                  if [[ -n "$EXISTING_PR" ]]; then
+                    echo "V1 Changesets configuration PR #$EXISTING_PR already exists."
+                    exit 0
+                  fi
+
+                  if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+                    git fetch origin "$BRANCH"
+                    if [[ "$(git show FETCH_HEAD:.changeset/config.json | jq -r '.baseBranch // empty')" != "version/v1.x" ]]; then
+                      echo "::error::Existing branch $BRANCH does not configure Changesets for version/v1.x."
+                      exit 1
+                    fi
+                  else
+                    jq '.baseBranch = "version/v1.x"' .changeset/config.json > "$RUNNER_TEMP/changesets-config.json"
+                    mv "$RUNNER_TEMP/changesets-config.json" .changeset/config.json
+
+                    git config user.name "github-actions[bot]"
+                    git config user.email "github-actions[bot]@users.noreply.github.com"
+                    git switch -c "$BRANCH"
+                    git add .changeset/config.json
+                    git commit -m "$TITLE"
+                    git push origin "$BRANCH"
+                  fi
+
+                  gh pr create \
+                    --base version/v1.x \
+                    --head "$BRANCH" \
+                    --title "$TITLE" \
+                    --body "Sets the branch-local Changesets base branch to \`version/v1.x\`. Mainline remains configured for \`main\`."

@@ -4,10 +4,11 @@ on:
   pull_request_review:
     types: [submitted]
   pull_request:
-    types: [synchronize]
+    types: [opened, synchronize, reopened]
     branches:
       - main
       - develop
+      - version/v1.x
       - group/*
       - pre-release/*
 
@@ -19,12 +20,41 @@ env:
 
 jobs:
   is-pr-approved:
+    if: |
+      github.event_name == 'pull_request' ||
+      github.event.pull_request.base.ref == 'main' ||
+      github.event.pull_request.base.ref == 'develop' ||
+      github.event.pull_request.base.ref == 'version/v1.x' ||
+      startsWith(github.event.pull_request.base.ref, 'group/') ||
+      startsWith(github.event.pull_request.base.ref, 'pre-release/')
     permissions:
       actions: read
       contents: read
       pull-requests: read
     runs-on: ubuntu-latest
     steps:
+      - id: framework-matrix
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [[ "$BASE_REF" == "version/v1.x" ]]; then
+            echo 'frameworks=["preact"]' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          PACKAGE_JSON=$(
+            gh api "repos/${{ github.repository }}/contents/package.json?ref=${HEAD_SHA}" \
+              --jq '.content' \
+              | base64 --decode
+          )
+          if jq -e '.scripts["storybook:build:preact"]' <<< "$PACKAGE_JSON" >/dev/null; then
+            echo 'frameworks=["preact","vue"]' >> "$GITHUB_OUTPUT"
+          else
+            echo 'frameworks=["vue"]' >> "$GITHUB_OUTPUT"
+          fi
+
       - id: approval-status
         run: |
           # Automated release sync PRs only merge already-released main changes back
@@ -114,6 +144,7 @@ jobs:
     outputs:
       should_run_jobs: ${{ steps.approval-status.outputs.should_run_jobs }}
       should_run_tests: ${{ steps.approval-status.outputs.should_run_tests }}
+      frameworks: ${{ steps.framework-matrix.outputs.frameworks }}
 
   build-storybook-static:
     needs: is-pr-approved
@@ -124,7 +155,7 @@ jobs:
     timeout-minutes: 15
     strategy:
       matrix:
-        framework: [preact, vue]
+        framework: ${{ fromJSON(needs.is-pr-approved.outputs.frameworks) }}
     env:
       TEST_ENV: 1
       USE_CDN: false
@@ -136,7 +167,7 @@ jobs:
 
       - name: Checkout the repo
         if: env.SHOULD_RUN_TESTS == 'true'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
 
       - name: Run the preliminary setup steps
         if: env.SHOULD_RUN_TESTS == 'true'
@@ -167,7 +198,7 @@ jobs:
     timeout-minutes: 15
     strategy:
       matrix:
-        framework: [preact, vue]
+        framework: ${{ fromJSON(needs.is-pr-approved.outputs.frameworks) }}
         shard:
           - index: 1
             total: 2
@@ -184,7 +215,7 @@ jobs:
 
       - name: Checkout the repo
         if: env.SHOULD_RUN_TESTS == 'true'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
 
       - name: Run the preliminary setup steps
         if: env.SHOULD_RUN_TESTS == 'true'

@@ -1,0 +1,15 @@
+{
+    "branch": "version/v1.x",
+    "npmTag": "latest",
+    "prereleaseNpmTags": {
+        "alpha": "v1-alpha",
+        "beta": "v1-beta",
+        "rc": "v1-rc",
+        "next": "v1-next"
+    },
+    "cdn": {
+        "test": "v1-cdn-test",
+        "live": "v1-cdn-live",
+        "assetName": "platform-components-v1_cdn.tar.gz"
+    }
+}
