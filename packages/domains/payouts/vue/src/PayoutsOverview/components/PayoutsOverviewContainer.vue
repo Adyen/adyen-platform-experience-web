@@ -3,7 +3,6 @@ import { computed } from 'vue';
 import PayoutsOverview from './PayoutsOverview.vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useBalanceAccounts } from '@integration-components/composables-vue';
-import { CONTAINER_CLASS } from '../constants';
 import { BentoButton } from '@adyen/bento-vue3';
 import type { PayoutsOverviewExternalProps } from '../types';
 import '@adyen/bento-vue3/styles/bento-light';
@@ -30,7 +29,7 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
 </script>
 
 <template>
-    <div :class="CONTAINER_CLASS">
+    <div>
         <!-- Error state -->
         <div v-if="hasError" class="adyen-pe-data-overview-error">
             <p>{{ i18n.get('payouts.overview.errors.unavailable') }}</p>

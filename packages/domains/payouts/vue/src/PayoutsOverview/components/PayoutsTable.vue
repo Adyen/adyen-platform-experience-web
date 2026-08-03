@@ -15,10 +15,10 @@ import useTimezoneAwareDateFormatting from '@integration-components/composables-
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IPayout, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import { TABLE_CLASS, PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
+import { PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
 import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '@integration-components/utils';
-import '../styles/PayoutsTable.scss';
 import { TranslationKey } from '@integration-components/core';
+import styles from './PayoutsTable.module.scss';
 
 const props = defineProps<{
     balanceAccountId: string | undefined;
@@ -183,7 +183,7 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
 </script>
 
 <template>
-    <div :class="TABLE_CLASS">
+    <div :class="styles.root">
         <!-- Error state -->
         <DataOverviewError
             v-if="props.error"
