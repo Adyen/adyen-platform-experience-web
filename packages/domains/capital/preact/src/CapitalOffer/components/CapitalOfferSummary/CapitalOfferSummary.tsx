@@ -27,6 +27,7 @@ import { CapitalHighlightedFields } from '../CapitalHighlightedFields/CapitalHig
 import { TabProps } from '@integration-components/ui-components-preact/Tabs/types';
 import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
 import { OnFundsRequestCallback } from '../../../types';
+import { RenewalHighlightedFields } from '../RenewalHighlightedFields';
 
 const errorMessageWithAlert = ['30_013'];
 const grantSummaryAmountConfig = { minimumFractionDigits: 0 };
@@ -51,7 +52,9 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
     const formatTermLabel = useFormatTermLabel();
 
     const { requestFunds } = useConfigContext().endpoints;
-    const renewsGrantId = useMemo(() => capitalState?.renewableGrants[0]?.id, [capitalState?.renewableGrants]);
+
+    const renewableGrant = useMemo(() => capitalState?.renewableGrants[0], [capitalState?.renewableGrants]);
+    const renewsGrantId = useMemo(() => renewableGrant?.id, [renewableGrant]);
 
     const requestFundsMutation = useMutation({
         queryFn: requestFunds,
@@ -310,9 +313,14 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
         <CapitalErrorMessageDisplay error={requestFundsMutation.error} onBack={onBackWithTracking} onContactSupport={onContactSupport} />
     ) : (
         <div className="adyen-pe-capital-offer-summary">
-            <CapitalHighlightedFields fields={highlightedFields} align={'center'} />
+            <div className="adyen-pe-capital-offer-summary__highlighted-fields">
+                {renewableGrant && (
+                    <RenewalHighlightedFields remainingGrantAmount={renewableGrant?.remainingGrantAmount} newGrantAmount={grantOffer.grantAmount} />
+                )}
+                <CapitalHighlightedFields fields={highlightedFields} />
+            </div>
             <div className="adyen-pe-capital-offer-summary__terms">
-                {capitalState?.renewableGrants?.length ? (
+                {renewableGrant ? (
                     <Tabs tabs={tabs} />
                 ) : (
                     <>
@@ -343,7 +351,7 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
                 </Alert>
             )}
             <CapitalOfferLegalNotice />
-            {!!capitalState?.renewableGrants?.length && (
+            {renewableGrant && (
                 <Alert
                     type={AlertTypeOption.HIGHLIGHT}
                     title={i18n.get('capital.offer.summary.earlyRenewalNotice.title')}

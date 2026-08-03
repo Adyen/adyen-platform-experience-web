@@ -23,7 +23,7 @@ test.describe('Early renewal', () => {
         await expect(page.getByText('€25,000')).toBeVisible();
         await expect(page.getByText('New loan')).toBeVisible();
         await expect(page.getByText('-', { exact: true })).toBeVisible();
-        await expect(page.getByText('Existing loan balance')).toBeVisible();
+        await expect(page.getByText('Current loan balance')).toBeVisible();
         await expect(page.getByText('€8,130')).toBeVisible();
         await expect(page.getByText('=')).toBeVisible();
         await expect(page.getByText("Amount you'll receive")).toBeVisible();
@@ -33,8 +33,15 @@ test.describe('Early renewal', () => {
     test('should render early renewal info in offer summary screen', async ({ page }) => {
         await goToOfferSummary(page);
         await expect(page.getByText('Business financing summary')).toBeVisible();
-        await expect(page.getByText('New loan', { exact: true })).toBeVisible();
-        await expect(page.getByText('Current loan', { exact: true })).toBeVisible();
+        await expect(page.getByText('New loan', { exact: true })).toHaveCount(2);
+        await expect(page.getByText('-', { exact: true })).toBeVisible();
+        await expect(page.getByText('Current loan balance')).toBeVisible();
+        await expect(page.getByText('€8,130')).toBeVisible();
+        await expect(page.getByText('=')).toBeVisible();
+        await expect(page.getByText("Amount you'll receive")).toBeVisible();
+        await expect(page.getByText('€10,470')).toBeVisible();
+        await expect(page.getByRole('tab', { name: 'New loan' })).toBeVisible();
+        await expect(page.getByRole('tab', { name: 'Current loan' })).toBeVisible();
         await expect(page.getByText('Financing', { exact: true })).toHaveCount(3);
         await expect(page.getByText('€18,600.00')).toBeVisible();
         await expect(page.getByText('Fees', { exact: true })).toHaveCount(3);

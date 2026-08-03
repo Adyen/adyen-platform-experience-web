@@ -64,8 +64,8 @@ export const isPaymentLinkAddressRedacted = (address: IPaymentLinkShopperAddress
     return Object.values(address).some(value => value === BACKEND_REDACTED_DATA_MARKER);
 };
 
-export const getPaymentLinkStatusTagVariant = (status: IPaymentLinkStatus): PaymentLinkStatusTagVariant => {
-    return PAYMENT_LINK_STATUS_TAG_VARIANT[status] ?? 'neutral';
+export const getPaymentLinkStatusTagVariant = (status: IPaymentLinkStatus | undefined): PaymentLinkStatusTagVariant => {
+    return (status && PAYMENT_LINK_STATUS_TAG_VARIANT[status]) ?? 'neutral';
 };
 
 export const getPaymentLinkStatusLabel = (i18n: I18nLike, status: IPaymentLinkStatus | undefined): string | undefined => {

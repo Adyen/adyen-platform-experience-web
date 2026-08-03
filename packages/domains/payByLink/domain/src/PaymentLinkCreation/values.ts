@@ -3,6 +3,8 @@ import type { PaymentLinkCreationFormValues, PaymentLinkFieldName } from './type
 
 export type PaymentLinkFlatValues = Record<string, unknown>;
 
+const RESTRICTED_FIELDS = ['constructor', 'prototype', '__proto__'];
+
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
     typeof value === 'object' && value !== null && !Array.isArray(value) && !(value instanceof Date);
 
@@ -25,6 +27,9 @@ export const flattenValues = (source: unknown, prefix = ''): PaymentLinkFlatValu
 const setNestedValue = (target: Record<string, unknown>, path: string, value: unknown) => {
     const segments = path.split('.');
     let cursor = target;
+
+    if (segments.some(segment => RESTRICTED_FIELDS.includes(segment))) return;
+
     segments.forEach((segment, index) => {
         if (index === segments.length - 1) {
             cursor[segment] = value;

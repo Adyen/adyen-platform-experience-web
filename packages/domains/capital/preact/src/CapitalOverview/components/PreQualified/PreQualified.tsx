@@ -1,4 +1,4 @@
-import PreQualifiedIntro from '../PreQualifiedIntro';
+import PreQualifiedIntro from '../PreQualifiedIntro/PreQualifiedIntro';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
 import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
