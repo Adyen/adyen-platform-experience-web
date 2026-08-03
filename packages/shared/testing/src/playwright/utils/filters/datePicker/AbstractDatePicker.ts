@@ -130,33 +130,34 @@ export default abstract class AbstractDatePicker {
         await expect(this._button).toHaveText(range);
     }
 
-    protected async _selectToday(): Promise<DateStruct> {
+    protected async _selectToday(now: number): Promise<DateStruct> {
+        const today = new Date(now);
+        const date = today.getDate();
+        const startOfMonth = new Date(new Date(today).setDate(1)).setHours(0, 0, 0, 0);
+
+        const todayCell = this._dialog.getByRole('gridcell', { name: `${date}`, exact: true, disabled: false });
         const nextMonthButton = this._dialog.getByRole('button', { name: 'Next month', exact: true, disabled: false });
         const prevMonthButton = this._dialog.getByRole('button', { name: 'Previous month', exact: true, disabled: false });
-        const lastSelectedDay = this._dialog.getByRole('gridcell', { selected: true }).last();
+        const monthAndYearLocator = this._dialog.getByText(CALENDAR_MONTH_REGEX);
 
         while (true) {
-            if (await nextMonthButton.isVisible()) {
+            const monthAndYear = (await monthAndYearLocator.textContent()) ?? '';
+            const month = monthAndYear.slice(0, -5);
+            const year = Number(monthAndYear.slice(-4));
+            const startOfVisibleMonth = new Date(`${month} 1, ${year}`).getTime();
+
+            if (startOfVisibleMonth < startOfMonth) {
                 await nextMonthButton.click();
-
-                if (await lastSelectedDay.isHidden()) {
-                    await prevMonthButton.click();
-                    break;
-                }
-            } else break;
+            } else if (startOfVisibleMonth > startOfMonth) {
+                await prevMonthButton.click();
+            } else {
+                // Today cell should definitely be today
+                // Click twice to lock selection to today
+                await todayCell.click();
+                await todayCell.click();
+                return { date, month, year } as const;
+            }
         }
-
-        // Last selected day is definitely today
-        const date = Number((await lastSelectedDay.textContent()) ?? '');
-        const monthAndYear = (await this._dialog.getByText(CALENDAR_MONTH_REGEX).textContent()) ?? '';
-        const month = monthAndYear.slice(0, -5);
-        const year = Number(monthAndYear.slice(-4));
-
-        // Click twice to lock selection to today
-        await lastSelectedDay.click();
-        await lastSelectedDay.click();
-
-        return { date, month, year } as const;
     }
 
     protected async _apply() {
@@ -336,12 +337,13 @@ export default abstract class AbstractDatePicker {
     async selectToday(options?: { apply?: boolean; now?: number }): Promise<Timestamps> {
         await this.expand();
 
-        const timezone = (await this._timezoneInfo?.textContent())?.match(/(GMT\S+)\s/)?.[1] ?? undefined;
-        const today = await this._selectToday();
-        await this._expectPresetCustom();
-
         const now = options?.now ?? Date.now();
         const shouldApplySelection = options?.apply !== false;
+
+        const timezone = (await this._timezoneInfo?.textContent())?.match(/(GMT\S+)\s/)?.[1] ?? undefined;
+        const today = await this._selectToday(now);
+        await this._expectPresetCustom();
+
         const todayRangeOptions = { today, timezone, now } as const;
 
         if (shouldApplySelection) {

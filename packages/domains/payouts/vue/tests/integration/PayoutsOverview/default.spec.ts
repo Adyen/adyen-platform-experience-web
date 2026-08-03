@@ -70,7 +70,7 @@ test.describe('Default', () => {
 
 test.describe('Filters', () => {
     // Use specific date to evade Bento's preset resolution/auto-selection for current day selection
-    const now = new Date('2026-07-17T00:00:00.000Z').getTime();
+    const now = new Date('2024-07-17T00:00:00.000Z').getTime();
     const variant = 'Bento';
 
     test.beforeEach(async ({ page }) => {
