@@ -1,13 +1,14 @@
 import { useCallback } from 'preact/hooks';
-import { CAPITAL_OVERVIEW_CLASS_NAMES, sharedCapitalOverviewAnalyticsEventProperties } from '../constants';
+import { CAPITAL_OVERVIEW_CLASS_NAMES, sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { useLandedPageEvent } from '@integration-components/hooks-preact/useEventDispatcher/useLandedPageEvent';
 import { IAmount } from '@integration-components/types';
 import InfoBox from '@integration-components/ui-components-preact/InfoBox';
 import Button from '@integration-components/ui-components-preact/Button/Button';
-import { CapitalHeader } from '../../internal/CapitalHeader';
+import { CapitalHeader } from '../../../internal/CapitalHeader';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import './PreQualifiedIntro.scss';
 
 const sharedAnalyticsEventProperties = {
     ...sharedCapitalOverviewAnalyticsEventProperties,
@@ -40,7 +41,7 @@ const PreQualifiedIntro = ({
         <>
             <CapitalHeader hideTitle={hideTitle} titleKey={'capital.overview.common.titles.qualificationIntro'} />
             <div className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrant}>
-                <InfoBox>
+                <InfoBox className="adyen-pe-pre-qualified-intro__banner">
                     <Typography variant={TypographyVariant.BODY}>
                         {i18n.get('capital.overview.prequalified.alreadyQualifyInfo.part1')}
                         <strong>
@@ -53,10 +54,10 @@ const PreQualifiedIntro = ({
                             })}
                         </strong>
                     </Typography>
+                    <Button className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton} onClick={onOfferOptionsRequestWithTracking}>
+                        {i18n.get('capital.overview.prequalified.actions.seeOptions')}
+                    </Button>
                 </InfoBox>
-                <Button className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton} onClick={onOfferOptionsRequestWithTracking}>
-                    {i18n.get('capital.overview.prequalified.actions.seeOptions')}
-                </Button>
             </div>
         </>
     );

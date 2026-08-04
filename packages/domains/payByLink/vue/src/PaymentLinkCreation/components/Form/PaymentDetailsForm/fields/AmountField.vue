@@ -23,7 +23,7 @@ const error = computed(() => wizard.getError('amount.value'));
 const storedAmountValue = computed(() => (wizard.values.value['amount.value'] as string | number | undefined) ?? '');
 const currencyValue = computed(() => (wizard.values.value['amount.currency'] as string | undefined) ?? '');
 const displayValue = ref('');
-const amountInput = ref<{ inputFieldElement: HTMLInputElement } | null>(null);
+const amountInput = ref<{ $el: HTMLElement } | null>(null);
 let amountUpdatedFromInput = false;
 
 const currencyItems = computed(() => (props.currencyOptions ?? []).map(code => ({ label: code, value: code })));
@@ -64,7 +64,8 @@ watch(
 
 function onAmountInput(value: string | number) {
     const normalizedAmount = normalizeAmountInput(value, i18n.locale, currencyValue.value, MAX_AMOUNT);
-    if (amountInput.value) amountInput.value.inputFieldElement.value = normalizedAmount.displayValue;
+    const input = amountInput.value?.$el.querySelector('input');
+    if (input instanceof HTMLInputElement) input.value = normalizedAmount.displayValue;
     displayValue.value = normalizedAmount.displayValue;
     amountUpdatedFromInput = true;
     wizard.setValue('amount.value', normalizedAmount.amount);

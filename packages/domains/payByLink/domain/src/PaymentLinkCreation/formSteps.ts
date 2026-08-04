@@ -58,7 +58,7 @@ const resolveFieldVisibility = (
         return buildFieldVisibilityResult(parentVisibility, isFieldInConfigResponse);
     }
 
-    if (!childField || typeof parentVisibility !== 'object') {
+    if (!childField || typeof parentVisibility !== 'object' || !parentVisibility) {
         return buildFieldVisibilityResult(undefined, isFieldInConfigResponse);
     }
 

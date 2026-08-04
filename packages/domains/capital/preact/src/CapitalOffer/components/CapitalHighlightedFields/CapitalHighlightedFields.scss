@@ -23,24 +23,11 @@
         @include adyen-pe-screen-sm-and-down {
             align-items: flex-start;
         }
-
-        &--center {
-            align-items: center;
-            flex: 1;
-
-            @include adyen-pe-screen-sm-and-down {
-                align-items: flex-start;
-            }
-        }
     }
 
     &__label {
         color: style.token(color-label-secondary);
         text-align: center;
         width: max-content;
-
-        &--center {
-            text-align: center;
-        }
     }
 }

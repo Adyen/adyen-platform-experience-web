@@ -1,0 +1,9 @@
+@use '@integration-components/style';
+
+.adyen-pe-pre-qualified-intro {
+    &__banner {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+    }
+}
