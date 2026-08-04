@@ -25,7 +25,12 @@ import {
 } from '@integration-components/utils';
 import { DAY_MS } from '@integration-components/ui-components-preact/Calendar/calendar/constants';
 import { Tooltip } from '@integration-components/ui-components-preact/Tooltip/Tooltip';
-import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER, isActionNeededUrgently } from '@integration-components/payByLink/domain';
+import {
+    BACKEND_REDACTED_DATA_MARKER,
+    FRONTEND_REDACTED_DATA_MARKER,
+    isActionNeededUrgently,
+    PAYMENT_LINKS_TABLE_FIELDS,
+} from '@integration-components/payByLink/domain';
 import classNames from 'classnames';
 import { PaymentLinksErrors } from './PaymentLinksErrors';
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../utils/getPaymentLinksErrorMessage';
@@ -44,19 +49,6 @@ const getTagVariantForStatus = (status: IPaymentLinkStatus) => {
             return TagVariant.DEFAULT;
     }
 };
-
-export const PAYMENT_LINKS_TABLE_FIELDS = [
-    'paymentLinkId',
-    'merchantReference',
-    'storeCode',
-    'currency',
-    'amount',
-    'status',
-    'expirationDate',
-    'creationDate',
-    'linkType',
-    'shopperEmail',
-] as const;
 
 const FIELDS_KEYS = {
     paymentLinkId: 'payByLink.overview.list.fields.id',

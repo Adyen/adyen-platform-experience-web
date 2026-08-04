@@ -8,7 +8,7 @@ export const PaymentLinksOverviewMeta: Meta<ElementProps<typeof PaymentLinksOver
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         hideTitle: { type: 'boolean' },
-        storeIds: { type: 'string' },
+        storeIds: { control: 'object' },
         preferredLimit: { type: 'number', min: 1, max: 100 },
         allowLimitSelection: { type: 'boolean' },
     },

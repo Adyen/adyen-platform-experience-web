@@ -1,11 +1,15 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
-
-const STORY_ID = 'mocked-pay-by-link-payment-links-overview--with-props-to-sub-components';
+import { openCreatePaymentLinkModal } from '../../../../fixtures/integration/utils';
+import {
+    PREFILLED_MERCHANT_REFERENCE,
+    PREFILLED_STORE,
+    WITH_PROPS_TO_SUB_COMPONENTS_STORY_ID,
+} from '../../../../fixtures/constants/PaymentLinksOverview';
 
 test.describe('PayByLinkOverview - With props to sub-components', () => {
     test('should drill the props down to the settings sub component', async ({ page }) => {
-        await goToStory(page, { id: STORY_ID });
+        await goToStory(page, { id: WITH_PROPS_TO_SUB_COMPONENTS_STORY_ID });
 
         await page.getByRole('button', { name: 'Open link settings' }).click();
 
@@ -13,16 +17,16 @@ test.describe('PayByLinkOverview - With props to sub-components', () => {
     });
 
     test('should drill the props down to the link creation sub component', async ({ page }) => {
-        await goToStory(page, { id: STORY_ID });
+        await goToStory(page, { id: WITH_PROPS_TO_SUB_COMPONENTS_STORY_ID });
 
-        await page.getByRole('button', { name: 'Create payment link' }).click();
+        await openCreatePaymentLinkModal(page);
 
         await page.getByRole('button', { name: 'Select option' }).click();
-        await page.getByRole('option', { name: 'NY001' }).click();
+        await page.getByRole('option', { name: PREFILLED_STORE }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
 
         const merchantReferenceValue = await page.getByTestId('form-field-reference').getByRole('textbox').inputValue();
 
-        expect(merchantReferenceValue).toBe('Prefilled Merchant Reference');
+        expect(merchantReferenceValue).toBe(PREFILLED_MERCHANT_REFERENCE);
     });
 });

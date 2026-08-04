@@ -1,7 +1,7 @@
 import { useCoreContext } from '@integration-components/core/preact';
 import { useMemo, useCallback } from 'preact/hooks';
 import { FormSelect } from '@integration-components/ui-components-preact/FormWrappers/FormSelect';
-import { PaymentLinkCreationFormValues } from '../../../../types';
+import { PaymentLinkCreationFormValues } from '../../../../../types';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 import { IPaymentLinkCountry } from '@integration-components/types';
 import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';

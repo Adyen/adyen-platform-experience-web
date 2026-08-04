@@ -6,7 +6,6 @@ import {
     TRANSACTION_DATE_RANGE_LAST_7_DAYS,
     TRANSACTION_DATE_RANGE_LAST_MONTH,
     TRANSACTION_DATE_RANGE_LAST_WEEK,
-    TRANSACTION_DATE_RANGE_MAX_YEARS,
     TRANSACTION_DATE_RANGE_THIS_MONTH,
     TRANSACTION_DATE_RANGE_THIS_WEEK,
     TRANSACTION_DATE_RANGE_YEAR_TO_DATE,
@@ -21,6 +20,7 @@ import createRangeTimestampsFactory, { RangeTimestamps } from '@integration-comp
 import DateFilterCore from '@integration-components/ui-components-preact/FilterBar/filters/DateFilter/DateFilterCore';
 import useFilterAnalyticsEvent from '@integration-components/hooks-preact/useEventDispatcher/useFilterAnalyticsEvent';
 import { useCoreContext } from '@integration-components/core/preact';
+import { getEarliestTransactionDate } from '@integration-components/transactions/domain';
 
 export interface TransactionDateFilterProps {
     createdDate: RangeTimestamps;
@@ -69,9 +69,7 @@ const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, s
         const timeShiftMs = 1; // time shift for differentiating equivalent time ranges
         const currentTime = Date.now() + timeShiftMs;
         const untilDate = new Date(currentTime);
-        const sinceDate = new Date(untilDate);
-
-        sinceDate.setFullYear(sinceDate.getFullYear() - TRANSACTION_DATE_RANGE_MAX_YEARS);
+        const sinceDate = getEarliestTransactionDate(untilDate);
 
         const { from, to } = getDateRangeTimestamps(createdDate, currentTime, timezone);
         const fromDate = new Date(from);

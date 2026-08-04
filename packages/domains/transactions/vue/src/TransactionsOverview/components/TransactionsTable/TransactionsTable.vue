@@ -2,7 +2,15 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useTimezoneAwareDateFormatting, useResponsiveContainer, containerQueries, CustomDataCell } from '@integration-components/composables-vue';
-import { BentoDataGrid, BentoTypography, BentoTag, BentoPaymentMethod, BentoButton, BentoColumnOverflow } from '@adyen/bento-vue3';
+import {
+    BentoDataGrid,
+    BentoTypography,
+    BentoTag,
+    BentoPaymentMethod,
+    BentoButton,
+    BentoColumnOverflow,
+    BentoTooltipDirective as vBentoTooltip,
+} from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { getTransactionCategoryDescription, getTransactionCategory, TRANSACTION_FIELDS } from '../../../../../domain/src';
 import { getCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
@@ -232,7 +240,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
             </template>
 
             <template #item-transactionType="{ item }">
-                <BentoTypography variant="body" v-bento-tooltip="getTransactionCategoryDescription(i18n, item.transactionType) ?? ''">
+                <BentoTypography v-bento-tooltip="getTransactionCategoryDescription(i18n, item.transactionType) ?? ''" variant="body">
                     {{ getTransactionCategory(i18n, item.transactionType) }}
                 </BentoTypography>
             </template>

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'preact/hooks';
 import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import { useWatch } from '@integration-components/hooks-preact/form';
-import { PaymentLinkCreationFormValues } from '../../types';
+import { PaymentLinkCreationFormValues } from '../../../types';
 import { FieldValues } from '@integration-components/hooks-preact/form/types';
 
 const DELIVERY_ADDRESS_FIELDS = [

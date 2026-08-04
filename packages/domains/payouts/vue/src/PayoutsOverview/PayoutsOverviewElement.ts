@@ -14,7 +14,7 @@ import type { PayoutsOverviewExternalProps } from './types';
  */
 export class PayoutsOverviewElement extends UIElement<PayoutsOverviewExternalProps> {
     constructor(props: PayoutsOverviewExternalProps) {
-        super(PayoutsOverviewContainer, props, 'PayoutsOverview');
+        super(PayoutsOverviewContainer, props, 'payouts');
     }
 }
 
