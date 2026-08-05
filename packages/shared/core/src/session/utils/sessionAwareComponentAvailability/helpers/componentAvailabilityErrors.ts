@@ -1,7 +1,7 @@
 import { ExternalComponentType } from '@integration-components/types';
 import type { TranslationKey } from '../../../../translations';
 
-const componentAvailabilityErrors = (type: ExternalComponentType): TranslationKey => {
+const componentAvailabilityErrors = (type: ExternalComponentType | undefined): TranslationKey => {
     switch (type) {
         case 'transactions':
             return 'transactions.overview.errors.unavailable';

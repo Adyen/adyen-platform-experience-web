@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import type { PaymentLinkCreationExternalProps } from './types';
-import { UIElementProvider } from '@integration-components/core/vue';
+import { createRefreshContext, UIElementProvider } from '@integration-components/core/vue';
 import PaymentLinkCreationContainer from './components/PaymentLinkCreationContainer/PaymentLinkCreationContainer.vue';
 import '@adyen/bento-vue3/styles/bento-light';
 
 const props = defineProps<PaymentLinkCreationExternalProps>();
+const { refresh, refreshCount } = createRefreshContext();
 </script>
 
 <template>
-    <UIElementProvider :core="props.core" component-name="paymentLinkCreation">
+    <UIElementProvider :core="props.core" component-name="paymentLinkCreation" :refresh-component="refresh">
         <PaymentLinkCreationContainer
+            :key="refreshCount"
             :fields-config="props.fieldsConfig"
             :store-ids="props.storeIds"
             :hide-title="props.hideTitle"

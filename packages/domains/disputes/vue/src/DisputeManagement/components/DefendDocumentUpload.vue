@@ -18,7 +18,8 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const { defendDispute } = useConfigContext().endpoints || {};
+const config = useConfigContext();
+const defendDispute = computed(() => config.endpoints?.defendDispute);
 const {
     addFileToDefendPayload,
     applicableDocuments,
@@ -121,13 +122,14 @@ function onFileChange(documentType: string | undefined, file: File | undefined) 
 }
 
 async function submitDefenseDocuments() {
+    const defendDisputeFn = defendDispute.value;
     const pspReference = props.pspReference;
-    if (!canSubmitDocuments.value || !isFunction(defendDispute) || !defendDisputePayload.value || !pspReference) return;
+    if (!canSubmitDocuments.value || !isFunction(defendDisputeFn) || !defendDisputePayload.value || !pspReference) return;
 
     isSubmittingDefense.value = true;
     try {
         type DefendDisputeRequest = Parameters<EndpointHttpCallables<'defendDispute'>>[0];
-        await defendDispute(
+        await defendDisputeFn(
             { contentType: 'multipart/form-data', body: defendDisputePayload.value as unknown as DefendDisputeRequest['body'] },
             { path: { disputePspReference: pspReference } }
         );

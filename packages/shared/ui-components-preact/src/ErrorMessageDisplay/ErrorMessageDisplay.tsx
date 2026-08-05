@@ -70,7 +70,7 @@ export const ErrorMessageDisplay = ({
     condensed,
     testId = 'error-message-display',
 }: ErrorMessageDisplayProps) => {
-    const { i18n, updateCore, getImageAsset } = useCoreContext();
+    const { i18n, refreshComponent: refreshCurrentComponent, getImageAsset } = useCoreContext();
 
     const renderMessage = useCallback(
         (errorMessage: TranslationKey | TranslationKey[]) =>
@@ -129,7 +129,7 @@ export const ErrorMessageDisplay = ({
                     {renderSecondaryButton && renderSecondaryButton()}
                     {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('common.actions.contactSupport.labels.reachOut')}</Button>}
                     {!onContactSupport && refreshComponent && (
-                        <Button onClick={onRefreshComponent ?? updateCore}>{i18n.get('common.actions.refresh.labels.default')}</Button>
+                        <Button onClick={onRefreshComponent ?? refreshCurrentComponent}>{i18n.get('common.actions.refresh.labels.default')}</Button>
                     )}
                 </div>
             )}

@@ -5,7 +5,7 @@ export interface CoreContextValue {
     i18n: NonNullable<CoreProviderProps['i18n']>;
     commonProps: NonNullable<CoreProviderProps['commonProps']>;
     loadingContext: string;
-    updateCore: CoreProviderProps['updateCore'];
+    refreshComponent: CoreProviderProps['refreshComponent'];
     externalErrorHandler: CoreProviderProps['externalErrorHandler'];
     componentRef: CoreProviderProps['componentRef'];
     getImageAsset: CoreProviderProps['getImageAsset'];
@@ -24,7 +24,7 @@ export function createCoreContextValue(props: CoreProviderProps): CoreContextVal
         i18n: props.i18n ?? new Localization().i18n,
         commonProps: props.commonProps || {},
         loadingContext: props.loadingContext ?? '',
-        updateCore: props.updateCore,
+        refreshComponent: props.refreshComponent,
         externalErrorHandler: props.externalErrorHandler,
         componentRef: props.componentRef,
         getImageAsset: props.getImageAsset,
