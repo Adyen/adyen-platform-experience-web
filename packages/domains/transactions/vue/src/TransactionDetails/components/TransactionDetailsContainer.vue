@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
-import { useLandedPageEvent } from '@integration-components/composables-vue';
-import { BentoTypography, BentoLoadingIndicator, BentoButton } from '@adyen/bento-vue3';
+import { useLandedPageEvent, ErrorMessageDisplay } from '@integration-components/composables-vue';
+import { BentoLoadingIndicator } from '@adyen/bento-vue3';
 import TransactionData from './TransactionData/TransactionData.vue';
 import { useTransaction } from '../composables/useTransaction';
 import { normalizeCustomFields } from '@integration-components/utils';
@@ -18,8 +17,6 @@ const props = defineProps<{
     hideTitle?: boolean;
     withinModal?: boolean;
 }>();
-
-const { i18n } = useCoreContext();
 
 const { error, fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(() => props.id);
 
@@ -88,10 +85,16 @@ useLandedPageEvent({
         </div>
 
         <div v-else-if="error" class="adyen-pe-overview-details--error-container">
-            <BentoTypography variant="body">{{ i18n.get('transactions.details.errors.unavailable') }}</BentoTypography>
-            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
-            </BentoButton>
+            <ErrorMessageDisplay
+                :error="error"
+                :error-message="'transactions.details.errors.unavailable'"
+                :not-found-message="'transactions.details.errors.notFound'"
+                :on-contact-support="props.onContactSupport"
+                with-image
+                :outlined="false"
+                :absolute-position="false"
+                :with-background="false"
+            />
         </div>
     </div>
 </template>

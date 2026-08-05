@@ -15,6 +15,11 @@ export { default as useCustomDataCells } from './useCustomDataCells';
 
 export { CustomDataCell } from './CustomDataCell';
 
+export * from './getErrorMessage';
+export { default as getErrorMessage } from './getErrorMessage';
+export { DataOverviewError } from './DataOverviewError';
+export { ErrorMessageDisplay } from './ErrorMessageDisplay';
+
 export { default as useTimezoneAwareDateFormatting } from './useTimezoneAwareDateFormatting';
 
 export * from './useDownload';

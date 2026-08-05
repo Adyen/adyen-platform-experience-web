@@ -1,16 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import {
-    BentoAlert,
-    BentoButton,
-    BentoButtonActions,
-    BentoCard,
-    BentoLoadingIndicator,
-    BentoPaymentMethod,
-    BentoTag,
-    BentoTypography,
-} from '@adyen/bento-vue3';
+import { BentoButton, BentoButtonActions, BentoCard, BentoLoadingIndicator, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
+import { ErrorMessageDisplay } from '@integration-components/composables-vue';
 import {
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
     getDisputeType,
@@ -19,7 +11,7 @@ import {
 } from '@integration-components/disputes/domain';
 import { isFunction, parsePaymentMethodType } from '@integration-components/utils';
 import type { CustomButtonObject, CustomDataRetrieved } from '@integration-components/types';
-import { useDisputeDetails, type DisputeError } from '../composables/useDisputeDetails';
+import { useDisputeDetails } from '../composables/useDisputeDetails';
 import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import DisputeDataAlert from './DisputeDataAlert.vue';
 import DisputeDataProperties from './DisputeDataProperties.vue';
@@ -176,40 +168,6 @@ function retryFetch() {
     void refetch();
 }
 
-const errorState = computed(() => {
-    const currentError: DisputeError | undefined = error.value;
-    if (!currentError) return undefined;
-
-    if (currentError.errorCode === '30_112') {
-        return {
-            title: i18n.get('common.errors.notFound'),
-            messages: [i18n.get('disputes.management.common.errors.notFound')],
-            showRefresh: false,
-            showContactSupport: isFunction(props.onContactSupport),
-        };
-    }
-
-    if (currentError.errorCode === '00_500') {
-        const requestId = currentError.requestId;
-        const secondaryMessage = props.onContactSupport
-            ? i18n.get('common.errors.errorCode', { values: { requestId } })
-            : i18n.get('common.errors.errorCodeSupport', { values: { requestId } });
-        return {
-            title: i18n.get('common.errors.somethingWentWrong'),
-            messages: [i18n.get('disputes.management.common.errors.unavailable'), secondaryMessage],
-            showRefresh: false,
-            showContactSupport: isFunction(props.onContactSupport),
-        };
-    }
-
-    return {
-        title: i18n.get('common.errors.somethingWentWrong'),
-        messages: [i18n.get('disputes.management.common.errors.unavailable'), i18n.get('common.errors.retry')],
-        showRefresh: true,
-        showContactSupport: false,
-    };
-});
-
 const paymentMethodType = computed(() => dispute.value?.payment.paymentMethod?.type ?? null);
 const paymentMethodDetail = computed(() =>
     dispute.value?.payment.paymentMethod ? parsePaymentMethodType(dispute.value.payment.paymentMethod, 'detail') : null
@@ -222,26 +180,20 @@ const paymentMethodDetail = computed(() =>
             <BentoLoadingIndicator />
         </div>
 
-        <div v-else-if="errorState" class="adyen-pe-dispute-data__error-container">
-            <BentoAlert type="critical">
-                {{ errorState.title }}
-                <template #description>
-                    <BentoTypography v-for="message in errorState.messages" :key="message" variant="body">
-                        {{ message }}
-                    </BentoTypography>
-                </template>
-                <template #actions>
-                    <BentoButton v-if="errorState.showRefresh" variant="secondary" @click="retryFetch">
-                        {{ i18n.get('common.actions.refresh.labels.default') }}
-                    </BentoButton>
-                    <BentoButton v-if="errorState.showContactSupport" variant="secondary" @click="props.onContactSupport">
-                        {{ i18n.get('common.actions.contactSupport.labels.reachOut') }}
-                    </BentoButton>
-                    <BentoButton v-if="props.onDismiss" variant="secondary" @click="props.onDismiss">
-                        {{ i18n.get('disputes.management.common.actions.goBack') }}
-                    </BentoButton>
-                </template>
-            </BentoAlert>
+        <div v-else-if="error" class="adyen-pe-dispute-data__error-container">
+            <ErrorMessageDisplay
+                :error="error"
+                :error-message="'disputes.management.common.errors.unavailable'"
+                :not-found-message="'disputes.management.common.errors.notFound'"
+                :on-contact-support="props.onContactSupport"
+                :on-dismiss="props.onDismiss"
+                :dismiss-label="'disputes.management.common.actions.goBack'"
+                :on-refresh="retryFetch"
+                with-image
+                :outlined="false"
+                :absolute-position="false"
+                :with-background="false"
+            />
         </div>
 
         <template v-else-if="dispute">

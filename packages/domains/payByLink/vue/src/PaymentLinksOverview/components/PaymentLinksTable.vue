@@ -3,7 +3,9 @@ import { computed } from 'vue';
 import { BentoDataGrid, BentoTag, BentoTypography, BentoTooltipDirective as vBentoTooltip } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem, BentoTagVariant } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import { useResponsiveContainer, containerQueries, useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
+import { containerQueries, DataOverviewError, useResponsiveContainer, useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
+import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
+import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import { isActionNeededUrgently, BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '../../../../domain/src';
 import {
     DATE_FORMAT_PAYMENT_LINKS_OVERVIEW,
@@ -13,7 +15,7 @@ import {
 import { TABLE_CLASS } from '../constants';
 import { usePaymentLinkLabels } from '../composables/usePaymentLinkLabels';
 import type { IPaymentLinkItem, IPaymentLinkStatus } from '@integration-components/types';
-import PaymentLinksError from './PaymentLinksError.vue';
+import { getPaymentLinksErrorMessage } from '../utils/getPaymentLinksErrorMessage';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -40,6 +42,7 @@ const { dateFormat } = useTimezoneAwareDateFormatting();
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
 
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
+const errorInfo = computed(() => getPaymentLinksErrorMessage(props.error, 'payByLink.overview.errors.couldNotLoadLinks', props.onContactSupport));
 
 function getTagVariantForStatus(status: IPaymentLinkStatus): BentoTagVariant {
     switch (status) {
@@ -151,11 +154,14 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
 
 <template>
     <div :class="TABLE_CLASS">
-        <PaymentLinksError
+        <DataOverviewError
             v-if="props.error"
             :error="props.error"
-            error-message="payByLink.overview.errors.couldNotLoadLinks"
-            :on-contact-support="props.onContactSupport"
+            :error-info="errorInfo"
+            :image="errorInfo?.imageName ?? 'wrong-environment'"
+            :variant="isMobile ? 'condensed' : 'embedded'"
+            :refresh-icon="RefreshIcon"
+            :copy-icon="CopyIcon"
         />
 
         <BentoDataGrid

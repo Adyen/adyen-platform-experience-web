@@ -605,6 +605,23 @@ export const TRANSACTION_DETAILS_HANDLERS = (() => {
                 ...sharedMockEndpointsHandlers,
             ],
         },
+        errorNotFound: {
+            handlers: [
+                http.get(mockEndpoints.transaction, () => {
+                    return HttpResponse.json(
+                        {
+                            type: 'https://docs.adyen.com/errors/not-found',
+                            errorCode: '30_112',
+                            title: 'Not Found',
+                            detail: 'Transaction not found for the specified Account Holder',
+                            requestId: '769ac4ce59f0f159ad672d38d3291e91',
+                            status: 404,
+                        },
+                        { status: 404 }
+                    );
+                }),
+            ],
+        },
         completeDetails: {
             handlers: [
                 http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {

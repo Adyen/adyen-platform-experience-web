@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
-import { useBalanceAccounts } from '@integration-components/composables-vue';
+import { useBalanceAccounts, ErrorMessageDisplay } from '@integration-components/composables-vue';
 import { isFunction } from '@integration-components/utils';
-import { BentoButton, BentoLoadingIndicator } from '@adyen/bento-vue3';
+import { BentoLoadingIndicator } from '@adyen/bento-vue3';
 import PayoutData from './PayoutData.vue';
 import { usePayoutDetails } from '../composables/usePayoutDetails';
 import { PAYOUT_TABLE_FIELDS } from '../../PayoutsOverview/constants';
@@ -20,8 +19,6 @@ const props = defineProps<{
     onContactSupport?: () => void;
     dataCustomization?: { details?: PayoutDetailsCustomization };
 }>();
-
-const { i18n } = useCoreContext();
 
 const { data, error, isFetching } = usePayoutDetails(() => ({
     fetchEnabled: !!props.id && !!props.date,
@@ -78,11 +75,16 @@ const showLoadingPlaceholder = computed(() => isFetching.value && !data.value &&
 
 <template>
     <div class="adyen-pe-payout-details">
-        <div v-if="showError" class="adyen-pe-data-overview-error">
-            <p>{{ i18n.get('payouts.details.errors.unavailable') }}</p>
-            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
-            </BentoButton>
+        <div v-if="showError" class="adyen-pe-payout-details__error">
+            <ErrorMessageDisplay
+                :error="error"
+                :error-message="'payouts.details.errors.unavailable'"
+                :on-contact-support="props.onContactSupport"
+                with-image
+                :outlined="false"
+                :absolute-position="false"
+                :with-background="false"
+            />
         </div>
 
         <div v-else-if="showLoadingPlaceholder" class="adyen-pe-payout-details__loading" aria-busy="true">

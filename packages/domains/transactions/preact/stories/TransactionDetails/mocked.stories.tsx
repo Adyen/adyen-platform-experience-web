@@ -120,6 +120,14 @@ export const RefundedPartiallyWithStatuses: ElementStory<typeof TransactionDetai
     },
 };
 
+export const ErrorNotFound: ElementStory<typeof TransactionDetails> = {
+    name: 'Error - Not found',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...TRANSACTION_DETAILS_HANDLERS.errorNotFound },
+    },
+};
+
 export const DataCustomization: ElementStory<typeof TransactionDetails> = {
     name: 'Data Customization',
     args: {
