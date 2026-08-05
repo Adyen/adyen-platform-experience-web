@@ -8,6 +8,7 @@ import PaymentLinkDetailsError from './PaymentLinkDetailsError.vue';
 import PaymentLinkExpiration from '../PaymentLinkExpiration/PaymentLinkExpiration.vue';
 import PaymentLinkExpirationSuccess from '../PaymentLinkExpiration/PaymentLinkExpirationSuccess.vue';
 import PaymentLinkSkeleton from '../PaymentLinkSkeleton/PaymentLinkSkeleton.vue';
+import '@adyen/bento-vue3/styles/bento-light';
 import './PaymentLinkDetails.scss';
 
 const CLASSNAMES = {

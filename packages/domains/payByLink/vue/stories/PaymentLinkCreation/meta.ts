@@ -1,11 +1,10 @@
 import type { Meta } from '@storybook/vue3';
 import type { PaymentLinkCreationExternalProps } from '../../src';
-import PaymentLinkCreation from '../../src/PaymentLinkCreation/PaymentLinkCreationWrapper.vue';
+import PaymentLinkCreationElement from '../../src/PaymentLinkCreation/PaymentLinkCreationElement';
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
 export const PaymentLinkCreationMeta: Meta<ElementProps<PaymentLinkCreationExternalProps>> = {
     title: 'Components/Pay by Link/Payment Link Creation',
-    component: PaymentLinkCreation,
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         onPaymentLinkCreated: enabledDisabledCallbackRadioControls('onPaymentLinkCreated'),
@@ -14,7 +13,7 @@ export const PaymentLinkCreationMeta: Meta<ElementProps<PaymentLinkCreationExter
         hideTitle: { control: 'boolean' },
     },
     args: {
-        component: PaymentLinkCreation,
+        component: PaymentLinkCreationElement,
         compact: true,
     },
     parameters: {

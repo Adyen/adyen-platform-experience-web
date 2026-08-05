@@ -1,5 +1,6 @@
 import { UIElement } from '@integration-components/core/vue';
 import ReportsOverviewContainer from './components/ReportsOverviewContainer.vue';
+import type { ExternalComponentType } from '@integration-components/types';
 import type { ReportsOverviewExternalProps } from './types';
 
 /**
@@ -13,6 +14,8 @@ import type { ReportsOverviewExternalProps } from './types';
  *   reportsOverview.unmount();
  */
 export class ReportsOverviewElement extends UIElement<ReportsOverviewExternalProps> {
+    public static readonly type: ExternalComponentType = 'reports' as const;
+
     constructor(props: ReportsOverviewExternalProps) {
         super(ReportsOverviewContainer, props, 'reports');
     }

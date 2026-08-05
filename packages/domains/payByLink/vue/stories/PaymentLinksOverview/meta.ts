@@ -1,11 +1,10 @@
 import type { Meta } from '@storybook/vue3';
 import type { PaymentLinksOverviewExternalProps } from '../../src';
-import PaymentLinksOverview from '../../src/PaymentLinksOverview/PaymentLinksOverviewWrapper.vue';
+import PaymentLinksOverviewElement from '../../src/PaymentLinksOverview/PaymentLinksOverviewElement';
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
 export const PaymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExternalProps>> = {
     title: 'Components/Pay by Link/Payment Links Overview',
-    component: PaymentLinksOverview,
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
@@ -16,7 +15,7 @@ export const PaymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExt
         allowLimitSelection: { control: 'boolean' },
     },
     args: {
-        component: PaymentLinksOverview,
+        component: PaymentLinksOverviewElement,
         allowLimitSelection: true,
     },
     parameters: {

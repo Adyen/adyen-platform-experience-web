@@ -1,5 +1,6 @@
 import { UIElement } from '@integration-components/core/vue';
 import PayoutDetailsContainer from './components/PayoutDetailsContainer.vue';
+import type { ExternalComponentType } from '@integration-components/types';
 import type { PayoutDetailsExternalProps } from './types';
 
 /**
@@ -15,6 +16,8 @@ import type { PayoutDetailsExternalProps } from './types';
  *   payoutDetails.mount('#payout-details-container');
  */
 export class PayoutDetailsElement extends UIElement<PayoutDetailsExternalProps> {
+    public static readonly type: ExternalComponentType = 'payoutDetails' as const;
+
     constructor(props: PayoutDetailsExternalProps) {
         super(PayoutDetailsContainer, props, 'payoutDetails');
     }
