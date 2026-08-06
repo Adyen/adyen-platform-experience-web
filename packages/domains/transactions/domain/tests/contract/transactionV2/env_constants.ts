@@ -143,134 +143,116 @@ const TEST: TransactionsVariables = {
 };
 
 const LIVE: TransactionsVariables = {
-    transactionId: 'EVJN42BZ3224223N5LV36736LL394XEUR',
-    refundTransactionId: 'EVJN42DFG224223N5LV388H83Z53M6EUR',
+    transactionId: 'EVJN429X222422465P9NXR29FV549NUSD',
+    refundTransactionId: 'EVJN429WW22422455P8KJH8C8V6864USD',
     transaction_details_response: {
-        id: 'EVJN42BZ3224223N5LV36736LL394XEUR',
+        id: 'EVJN429X222422465P9NXR29FV549NUSD',
         amountBeforeDeductions: {
-            value: 2,
+            value: 20,
             currency: 'EUR',
         },
         netAmount: {
-            value: 2,
-            currency: 'EUR',
+            value: 17,
+            currency: 'USD',
         },
-        createdAt: '2025-01-02T10:29:33.000+00:00',
+        createdAt: '2026-04-28T14:29:58.000+00:00',
         category: 'Payment',
         status: 'Booked',
         paymentMethod: {
-            type: 'balanceplatform',
-            description: 'BalancePlatform transactions',
+            type: 'visa',
+            lastFourDigits: '4476',
+            description: 'Visa',
         },
-        paymentPspReference: 'HQWBBRVF7PWL3FF3',
-        balanceAccountId: 'BA322VJ223226S5KGB6H492CL',
-        merchantReference: 'harryk-payment-2025-01-02T10:27:34.050Z',
+        paymentPspReference: 'LT4QD65NB6TCTDG3',
+        balanceAccountId: 'BA322VD223222B5DWD3RT4JZQ',
+        merchantReference: 'Bank Holiday T+2',
         originalAmount: {
-            value: 2,
+            value: 20,
             currency: 'EUR',
         },
         additions: [],
-        deductions: [],
+        deductions: [
+            {
+                currency: 'USD',
+                value: -6,
+                type: 'fee',
+            },
+        ],
         events: [
             {
                 type: 'Capture',
-                status: 'Refunded',
+                status: 'SettledBulk',
                 amount: {
-                    value: -1,
+                    value: 20,
                     currency: 'EUR',
                 },
-                createdAt: '2025-01-02T10:43:32.000+00:00',
-            },
-            {
-                type: 'Capture',
-                status: 'Refunded',
-                amount: {
-                    value: -1,
-                    currency: 'EUR',
-                },
-                createdAt: '2025-01-02T10:42:42.000+00:00',
-            },
-            {
-                type: 'Capture',
-                status: 'Settled',
-                amount: {
-                    value: 2,
-                    currency: 'EUR',
-                },
-                createdAt: '2025-01-02T10:27:38.000+00:00',
+                createdAt: '2026-04-28T14:29:58.000+00:00',
             },
         ],
         refundDetails: {
-            refundMode: 'non_refundable',
-            refundStatuses: [
-                {
-                    amount: {
-                        value: -1,
-                        currency: 'EUR',
-                    },
-                    status: 'completed',
-                },
-                {
-                    amount: {
-                        value: -1,
-                        currency: 'EUR',
-                    },
-                    status: 'completed',
-                },
-            ],
+            refundMode: 'partially_refundable_any_amount',
+            refundStatuses: [],
+            refundableAmount: {
+                value: 20,
+                currency: 'EUR',
+            },
             refundLocked: false,
         },
     },
     refund_details_response: {
-        id: 'EVJN42DFG224223N5LV388H83Z53M6EUR',
+        id: 'EVJN429WW22422455P8KJH8C8V6864USD',
         amountBeforeDeductions: {
-            value: -1,
-            currency: 'EUR',
+            value: -200,
+            currency: 'USD',
         },
         netAmount: {
-            value: -1,
-            currency: 'EUR',
+            value: -193,
+            currency: 'USD',
         },
-        createdAt: '2025-01-02T10:56:21.000+00:00',
+        createdAt: '2026-04-20T14:47:46.000+00:00',
         category: 'Refund',
         status: 'Booked',
         paymentMethod: {
-            type: 'balanceplatform',
-            description: 'BalancePlatform transactions',
+            type: 'paypal',
+            description: 'PayPal',
         },
-        paymentPspReference: 'TF72TCH83JD65BZ3',
-        balanceAccountId: 'BA322VJ223226S5KGB6H492CL',
-        merchantReference: 'harryk-payment-2025-01-02T10:51:53.672Z',
+        paymentPspReference: 'HN35ZZDXP8DP3ZZ3',
+        balanceAccountId: 'BA322VD223222B5DWD3RT4JZQ',
+        merchantReference: 'test-payment-usd-01',
         originalAmount: {
-            value: -1,
-            currency: 'EUR',
+            value: -200,
+            currency: 'USD',
         },
         additions: [],
-        deductions: [],
+        deductions: [
+            {
+                currency: 'USD',
+                value: 7,
+                type: 'fee',
+            },
+        ],
         events: [
             {
                 type: 'Capture',
-                status: 'Refunded',
+                status: 'RefundedAcquirer',
                 amount: {
-                    value: -1,
-                    currency: 'EUR',
+                    value: -200,
+                    currency: 'USD',
                 },
-                createdAt: '2025-01-02T10:55:22.000+00:00',
+                createdAt: '2026-04-20T14:47:38.000+00:00',
             },
             {
                 type: 'Capture',
-                status: 'Settled',
+                status: 'SettledAcquirer',
                 amount: {
-                    value: 1,
-                    currency: 'EUR',
+                    value: 200,
+                    currency: 'USD',
                 },
-                createdAt: '2025-01-02T10:52:09.000+00:00',
+                createdAt: '2026-04-08T19:56:04.000+00:00',
             },
         ],
         refundMetadata: {
-            refundPspReference: 'KBKBBJF59LW2QZX3',
-            refundReason: 'requested_by_customer',
-            originalPaymentId: 'EVJN42D85224223N5LV382F9DX6C2LEUR',
+            refundPspReference: 'HZJPJPRQTHKCKSX3',
             refundType: 'full',
         },
     },

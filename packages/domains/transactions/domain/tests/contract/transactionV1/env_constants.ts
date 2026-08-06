@@ -1,6 +1,5 @@
 import { operations } from '@integration-components/types/api/resources/TransactionsResourceV1';
 import { ExtractResponseType } from '@integration-components/types/api/endpoints';
-import process from 'node:process';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
@@ -78,71 +77,55 @@ const TEST: TransactionsVariables = {
 };
 
 const LIVE: TransactionsVariables = {
-    transactionId: 'EVJN42BZ3224223N5LV36736LL394XEUR',
-    refundTransactionId: 'EVJN42DFG224223N5LV388H83Z53M6EUR',
+    transactionId: 'EVJN429X222422465P9NXR29FV549NUSD',
+    refundTransactionId: 'EVJN429WW22422455P8KJH8C8V6864USD',
     transaction_details_response: {
-        id: 'EVJN42BZ3224223N5LV36736LL394XEUR',
-        balanceAccountId: process.env.BALANCE_ACCOUNT || '',
+        id: 'EVJN429X222422465P9NXR29FV549NUSD',
+        balanceAccountId: 'BA322VD223222B5DWD3RT4JZQ',
         amount: {
-            value: 2,
-            currency: 'EUR',
+            value: 23,
+            currency: 'USD',
         },
         originalAmount: {
-            value: 2,
+            value: 20,
             currency: 'EUR',
         },
-        deductedAmount: {
-            value: 0,
-            currency: 'EUR',
-        },
-        paymentMethod: {
-            type: 'balanceplatform',
-            description: 'BalancePlatform transactions',
-        },
-        createdAt: '2025-01-02T10:29:33.000+00:00',
+        createdAt: '2026-04-28T14:29:58.000+00:00',
         category: 'Payment',
         status: 'Booked',
+        paymentMethod: {
+            type: 'visa',
+            lastFourDigits: '4476',
+            description: 'Visa',
+        },
         refundDetails: {
-            refundMode: 'non_refundable',
-            refundStatuses: [
-                {
-                    amount: {
-                        value: -1,
-                        currency: 'EUR',
-                    },
-                    status: 'completed',
-                },
-                {
-                    amount: {
-                        value: -1,
-                        currency: 'EUR',
-                    },
-                    status: 'completed',
-                },
-            ],
+            refundMode: 'partially_refundable_any_amount',
+            refundStatuses: [],
+            refundableAmount: {
+                value: 20,
+                currency: 'EUR',
+            },
             refundLocked: false,
         },
-        paymentPspReference: 'HQWBBRVF7PWL3FF3',
+        paymentPspReference: 'LT4QD65NB6TCTDG3',
     },
     refund_details_response: {
-        id: 'EVJN42DFG224223N5LV388H83Z53M6EUR',
-        balanceAccountId: process.env.BALANCE_ACCOUNT || '',
+        id: 'EVJN429WW22422455P8KJH8C8V6864USD',
+        balanceAccountId: 'BA322VD223222B5DWD3RT4JZQ',
         amount: {
-            value: -1,
-            currency: 'EUR',
+            value: -200,
+            currency: 'USD',
         },
-        paymentMethod: {
-            type: 'balanceplatform',
-            description: 'BalancePlatform transactions',
-        },
-        createdAt: '2025-01-02T10:56:21.000+00:00',
+        createdAt: '2026-04-20T14:47:46.000+00:00',
         category: 'Refund',
         status: 'Booked',
-        paymentPspReference: 'TF72TCH83JD65BZ3',
+        paymentMethod: {
+            type: 'paypal',
+            description: 'PayPal',
+        },
+        paymentPspReference: 'HN35ZZDXP8DP3ZZ3',
         refundMetadata: {
-            refundPspReference: 'KBKBBJF59LW2QZX3',
-            refundReason: 'requested_by_customer',
-            originalPaymentId: 'EVJN42D85224223N5LV382F9DX6C2LEUR',
+            refundPspReference: 'HZJPJPRQTHKCKSX3',
             refundType: 'full',
         },
     },
