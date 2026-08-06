@@ -5,6 +5,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { useSettingsPermission } from '../composables/useSettingsPermission';
 import { MenuItem } from '../constants';
+import { containerQueries, useResponsiveContainer } from '@integration-components/composables-vue';
 
 const props = defineProps<{
     navigateBack?: () => void;
@@ -14,6 +15,7 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const { activeMenuItem, onSave, isSaving, isLoadingContent, isLoadingStores, isSaveSuccess } = usePaymentLinkSettingsContext();
 const { themeEnabled, termsAndConditionsEnabled } = useSettingsPermission();
+const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
 const isLoading = computed(() => isLoadingContent.value || isLoadingStores.value);
 
@@ -46,6 +48,6 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 
 <template>
     <div class="adyen-pe-payment-link-settings__cta-container">
-        <BentoButtonActions :actions="actionButtons" />
+        <BentoButtonActions :layout="isSmContainer ? 'vertical-stack' : 'buttons-end'" :actions="actionButtons" />
     </div>
 </template>
