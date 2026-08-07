@@ -78,43 +78,37 @@ const TEST: TransactionsVariables = {
 };
 
 const LIVE: TransactionsVariables = {
-    transactionId: 'EVJN42BZ3224223N5LV36736LL394XEUR',
-    refundTransactionId: 'EVJN42DFG224223N5LV388H83Z53M6EUR',
+    transactionId: 'EVJN42CBL224224G5PRTJ299S65SCMEUR',
+    refundTransactionId: 'EVJN429QC224224G5PRTRVW6SR5WVHEUR',
     transaction_details_response: {
-        id: 'EVJN42BZ3224223N5LV36736LL394XEUR',
+        id: 'EVJN42CBL224224G5PRTJ299S65SCMEUR',
         balanceAccountId: process.env.BALANCE_ACCOUNT || '',
         amount: {
             value: 2,
             currency: 'EUR',
         },
         originalAmount: {
-            value: 2,
+            value: 3,
             currency: 'EUR',
         },
         deductedAmount: {
-            value: 0,
+            value: 1,
             currency: 'EUR',
         },
-        paymentMethod: {
-            type: 'balanceplatform',
-            description: 'BalancePlatform transactions',
-        },
-        createdAt: '2025-01-02T10:29:33.000+00:00',
+        createdAt: '2026-08-07T08:32:35.000+00:00',
         category: 'Payment',
         status: 'Booked',
+        paymentMethod: {
+            type: 'mc',
+            lastFourDigits: '6031',
+            description: 'Mastercard',
+        },
         refundDetails: {
             refundMode: 'non_refundable',
             refundStatuses: [
                 {
                     amount: {
-                        value: -1,
-                        currency: 'EUR',
-                    },
-                    status: 'completed',
-                },
-                {
-                    amount: {
-                        value: -1,
+                        value: -3,
                         currency: 'EUR',
                     },
                     status: 'completed',
@@ -122,27 +116,28 @@ const LIVE: TransactionsVariables = {
             ],
             refundLocked: false,
         },
-        paymentPspReference: 'HQWBBRVF7PWL3FF3',
+        paymentPspReference: 'FN9D87KLN2SVCFX3',
     },
     refund_details_response: {
-        id: 'EVJN42DFG224223N5LV388H83Z53M6EUR',
+        id: 'EVJN429QC224224G5PRTRVW6SR5WVHEUR',
         balanceAccountId: process.env.BALANCE_ACCOUNT || '',
         amount: {
-            value: -1,
+            value: -2,
             currency: 'EUR',
         },
-        paymentMethod: {
-            type: 'balanceplatform',
-            description: 'BalancePlatform transactions',
-        },
-        createdAt: '2025-01-02T10:56:21.000+00:00',
+        createdAt: '2026-08-07T10:15:34.000+00:00',
         category: 'Refund',
         status: 'Booked',
-        paymentPspReference: 'TF72TCH83JD65BZ3',
+        paymentMethod: {
+            type: 'mc',
+            lastFourDigits: '6031',
+            description: 'Mastercard',
+        },
+        paymentPspReference: 'FN9D87KLN2SVCFX3',
         refundMetadata: {
-            refundPspReference: 'KBKBBJF59LW2QZX3',
+            refundPspReference: 'S3SJZJ22HWNFN7H3',
             refundReason: 'requested_by_customer',
-            originalPaymentId: 'EVJN42D85224223N5LV382F9DX6C2LEUR',
+            originalPaymentId: 'EVJN42CBL224224G5PRTJ299S65SCMEUR',
             refundType: 'full',
         },
     },
