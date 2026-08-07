@@ -48,7 +48,7 @@ overrides:
   "semver@6.3.x": "6.3.0"
   "serialize-javascript@6.0.2": "7.0.3"
   "shell-quote": "1.9.0"
-  "tmp": "0.2.6"
+  "tmp": "0.2.7"
   "typescript": "catalog:"
   "uuid": "11.1.1"
   "webpack": "catalog:"
