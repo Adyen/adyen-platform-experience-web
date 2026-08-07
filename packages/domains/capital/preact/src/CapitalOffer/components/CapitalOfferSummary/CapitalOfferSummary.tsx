@@ -350,7 +350,7 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
                     ) : null}
                 </Alert>
             )}
-            <CapitalOfferLegalNotice />
+            <CapitalOfferLegalNotice region={capitalState?.region} />
             {renewableGrant && (
                 <Alert
                     type={AlertTypeOption.HIGHLIGHT}

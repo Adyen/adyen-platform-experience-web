@@ -113,7 +113,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ capital
 
     return (
         <div className="adyen-pe-grant-list">
-            <CapitalHeader hideTitle={hideTitle} titleKey={'capital.common.title'} />
+            <CapitalHeader hideTitle={hideTitle} region={capitalState?.region} titleKey={'capital.common.title'} />
 
             {capitalState?.dynamicOffer && maxAmount ? (
                 <InfoBox className="adyen-pe-grant-list__new-grant-banner">
