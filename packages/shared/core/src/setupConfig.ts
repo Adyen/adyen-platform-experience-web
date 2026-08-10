@@ -43,10 +43,10 @@ export function createConfigController(
             let refreshing = session.context.refreshing;
             let unsubscribe = noop;
 
-            const updatePermission = (options?: { waitForSession?: boolean }) => {
+            const updatePermission = (options?: { waitForSession?: boolean; resetPermission?: boolean }) => {
                 const checkId = ++permissionCheckId;
 
-                if (hasPermission !== undefined) {
+                if (hasPermission !== undefined && options?.resetPermission !== false) {
                     hasPermission = undefined;
                     onChange();
                 }
@@ -72,7 +72,7 @@ export function createConfigController(
                 refreshing = nextRefreshing;
 
                 onChange();
-                if (refreshCompleted) updatePermission({ waitForSession: false });
+                if (refreshCompleted) updatePermission({ waitForSession: false, resetPermission: false });
             };
 
             const resubscribe = () => {
