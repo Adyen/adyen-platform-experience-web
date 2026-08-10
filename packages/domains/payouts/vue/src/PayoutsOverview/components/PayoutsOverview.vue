@@ -2,12 +2,13 @@
 import { ref, computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BentoTypography, BentoModal } from '@adyen/bento-vue3';
-import { quickSelectDateRanges } from '@integration-components/utils';
+import { getTimezoneAwareDateRangeQueryParams } from '@integration-components/composables-vue';
+import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
 import PayoutsFilters from './PayoutsFilters.vue';
 import PayoutsTable from './PayoutsTable.vue';
 import PayoutDetailsContainer from '../../PayoutDetails/components/PayoutDetailsContainer.vue';
 import { usePayoutsList } from '../composables/usePayoutsList';
-import { BASE_CLASS } from '../constants';
+import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from '../constants';
 import type { IBalanceAccountBase, PayoutsOverviewExternalProps } from '../types';
 import type { IPayout } from '@integration-components/types';
 import '../styles/index.scss';
@@ -28,14 +29,19 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 
+const initialDateRangeQueryParams = getTimezoneAwareDateRangeQueryParams({
+    dateRange: quickSelectDateRanges.last30Days,
+    earliestDate: startOfDay(new Date(EARLIEST_PAYOUT_SINCE_DATE)),
+    timezone: 'UTC',
+});
+
 const filterParams = ref<{
     balanceAccountId: string | undefined;
     createdSince: string;
     createdUntil: string;
 }>({
     balanceAccountId: undefined,
-    createdSince: new Date(quickSelectDateRanges.last30Days.startDate).toISOString(),
-    createdUntil: new Date(quickSelectDateRanges.last30Days.endDate).toISOString(),
+    ...initialDateRangeQueryParams,
 });
 
 function onFiltersChange(params: { balanceAccountId: string | undefined; createdSince: string; createdUntil: string }) {

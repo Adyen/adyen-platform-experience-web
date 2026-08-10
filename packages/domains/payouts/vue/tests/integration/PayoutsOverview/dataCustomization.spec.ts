@@ -11,16 +11,13 @@ test.describe('Data customization', () => {
     });
 
     test('should render custom data grid columns', async ({ page }) => {
-        // [TODO]: Address issue with hidden columns still being rendered
-        test.fixme(true, 'Hidden columns are still rendered');
-
         const dataGrid = page.getByRole('grid');
 
         // (1) Standard columns (visible & hidden)
         await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
-        await expect(dataGrid.getByRole('columnheader', { name: 'Funds captured (EUR)', exact: true })).toBeVisible();
-        await expect(dataGrid.getByRole('columnheader', { name: 'Adjustments (EUR)', exact: true })).toBeHidden(); // hidden column
-        await expect(dataGrid.getByRole('columnheader', { name: 'Net payout (EUR)', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Funds captured', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Adjustments', exact: true })).toBeHidden(); // hidden column
+        await expect(dataGrid.getByRole('columnheader', { name: 'Net payout', exact: true })).toBeVisible();
 
         // (2) Custom columns
         await expect(dataGrid.getByRole('columnheader', { name: 'Summary', exact: true })).toBeVisible();
@@ -59,6 +56,15 @@ test.describe('Data customization', () => {
 
         await actionButton.click();
         await actionPromise;
+    });
+
+    test('should not render custom columns in a small container', async ({ page }) => {
+        await page.setViewportSize({ width: 479, height: 800 });
+
+        const dataGrid = page.getByRole('grid');
+        await expect(dataGrid.getByRole('columnheader', { name: 'Summary', exact: true })).toHaveCount(0);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Country', exact: true })).toHaveCount(0);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Action', exact: true })).toHaveCount(0);
     });
 
     test('should render transaction details modal for clicked row', async ({ page }) => {

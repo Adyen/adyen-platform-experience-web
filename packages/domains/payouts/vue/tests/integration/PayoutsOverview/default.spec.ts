@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { clickOutsideDialog, goToStory } from '@integration-components/testing/playwright/utils';
+import { clickOutsideDialog, expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
 import { testBalanceAccountFilter, testDateRangeFilter } from '../../../../fixtures/integration/filters';
 import { openPayoutDetailsModal } from './shared/utils';
 
@@ -31,9 +31,9 @@ test.describe('Default', () => {
 
             // (3) Table
             await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
-            await expect(dataGrid.getByRole('columnheader', { name: 'Funds captured (EUR)', exact: true })).toBeVisible();
-            await expect(dataGrid.getByRole('columnheader', { name: 'Adjustments (EUR)', exact: true })).toBeVisible();
-            await expect(dataGrid.getByRole('columnheader', { name: 'Net payout (EUR)', exact: true })).toBeVisible();
+            await expect(dataGrid.getByRole('columnheader', { name: 'Funds captured', exact: true })).toBeVisible();
+            await expect(dataGrid.getByRole('columnheader', { name: 'Adjustments', exact: true })).toBeVisible();
+            await expect(dataGrid.getByRole('columnheader', { name: 'Net payout', exact: true })).toBeVisible();
 
             await expect(dataGrid.getByRole('columnheader')).toHaveCount(4);
             await expect(dataGrid.getByRole('rowgroup')).toHaveCount(2);
@@ -80,4 +80,9 @@ test.describe('Filters', () => {
 
     testBalanceAccountFilter({ variant });
     testDateRangeFilter({ variant, now });
+});
+
+test('should reset pagination when selecting another balance account', async ({ page }) => {
+    await goToStory(page, { id: STORY_ID, args: { allowLimitSelection: 'false', preferredLimit: '5' } });
+    await expectBalanceAccountPaginationReset({ endpointPath: '/payouts', page, variant: 'Bento' });
 });
