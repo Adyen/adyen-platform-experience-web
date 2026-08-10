@@ -122,6 +122,8 @@ const paginationProps = computed(() => {
 });
 
 const emptyStateProps = computed(() => ({
+    image: 'no-results-found' as const,
+    variant: 'embedded' as const,
     title: i18n.get('payByLink.overview.errors.listEmpty'),
     description: i18n.get('payByLink.overview.errors.listEmpty.message'),
 }));
