@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { expectPaginationReset, goToStory, updateStoryArgs } from '@integration-components/testing/playwright/utils';
 import { applyTextFilter, goToTab, openCreatePaymentLinkModal, openSettingsModal } from '../../../../fixtures/integration/utils';
 import { DEFAULT_STORY_ID, INVALID_PAYMENT_LINK_ID, MERCHANT_REFERENCE, PAYMENT_LINK_ID } from '../../../../fixtures/constants/PaymentLinksOverview';
 
@@ -156,6 +156,22 @@ test.describe('Payment Links Overview', () => {
             const rows = page.getByRole('table').getByRole('row');
             const rowCount = await rows.count();
             expect(rowCount).toBe(1);
+        });
+
+        test('should reset pagination without sending private store state', async ({ page }) => {
+            const storeId = 'STORE_NY_001';
+            await expectPaginationReset({
+                endpointPath: '/paymentLinks',
+                isFilterRequest: (request, expectedStoreId) => {
+                    const url = new URL(request.url());
+                    return url.searchParams.get('storeIds') === expectedStoreId && !url.searchParams.has('_storeIds');
+                },
+                page,
+                triggerFilterChange: async () => {
+                    await updateStoryArgs(page, DEFAULT_STORY_ID, { storeIds: storeId });
+                    return storeId;
+                },
+            });
         });
     });
 });

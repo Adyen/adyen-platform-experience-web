@@ -15,7 +15,8 @@ const { i18n } = useCoreContext();
 const isRedacted = computed(() => typeof props.item.value === 'string' && props.item.value.includes(BACKEND_REDACTED_DATA_MARKER));
 
 function onCopy() {
-    if (props.item.value) navigator.clipboard?.writeText(props.item.value);
+    if (!props.item.value || !navigator.clipboard) return;
+    navigator.clipboard.writeText(props.item.value);
 }
 </script>
 
