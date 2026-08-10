@@ -19,6 +19,7 @@ interface GrantListProps {
 export const GrantList: FunctionalComponent<GrantListProps> = ({
     capitalState,
     grantList,
+    hideTitle,
     onFundsRequest,
     onGrantListUpdateRequest,
     onOfferDismiss,
@@ -51,9 +52,14 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
     return (
         <>
             {isCapitalOfferVisible ? (
-                <CapitalOffer externalCapitalState={capitalState} onFundsRequest={handleFundsRequest} onOfferDismiss={goBackToList} />
+                <CapitalOffer
+                    externalCapitalState={capitalState}
+                    hideTitle={hideTitle}
+                    onFundsRequest={handleFundsRequest}
+                    onOfferDismiss={goBackToList}
+                />
             ) : (
-                <GrantsDisplay grantList={grantList} capitalState={capitalState} onNewOfferRequest={goToNextStep} />
+                <GrantsDisplay grantList={grantList} hideTitle={hideTitle} capitalState={capitalState} onNewOfferRequest={goToNextStep} />
             )}
         </>
     );

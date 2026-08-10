@@ -51,6 +51,7 @@ export const PreQualified = ({
                 />
             ) : (
                 <CapitalOffer
+                    hideTitle={hideTitle}
                     onFundsRequest={onFundsRequest}
                     onOfferDismiss={isOfferDismissButtonVisible ? handleOfferDismiss : undefined}
                     externalCapitalState={capitalState}
