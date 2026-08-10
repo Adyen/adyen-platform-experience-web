@@ -10,7 +10,6 @@ import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../../constants';
 import { FunctionalComponent } from 'preact';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 import './CapitalOverview.scss';
-import Unqualified from '../Unqualified';
 import { PreQualified } from '../PreQualified/PreQualified';
 import { GrantList } from '../GrantList/GrantList';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
@@ -19,7 +18,7 @@ import { getEnhancedCapitalState } from '../../../utils/capital/getCapitalState'
 import { useSupportedRegions } from '../../../utils/capital/useSupportedRegions';
 import { OnFundsRequestCallback } from '../../../types';
 
-type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified' | 'GrantList' | 'UnsupportedRegion';
+type CapitalOverviewState = 'Loading' | 'Error' | 'PreQualified' | 'GrantList' | 'UnsupportedRegion';
 
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
     hideTitle,
@@ -98,10 +97,8 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
             return 'Loading';
         } else if (capitalStateQuery.data && !capitalState.isRegionSupported) {
             return 'UnsupportedRegion';
-        } else if (capitalState.hasGrants || grantList?.length) {
-            return 'GrantList';
         }
-        return capitalState.dynamicOffer ? 'PreQualified' : 'Unqualified';
+        return capitalState.hasGrants ? 'GrantList' : 'PreQualified';
     }, [capitalState, capitalStateEndpointCall, capitalStateQuery, grantList, grantsEndpointCall, grantsQuery]);
 
     return (
@@ -128,6 +125,24 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                                 />
                             </div>
                         );
+                    case 'UnsupportedRegion':
+                        return (
+                            <div className={CAPITAL_OVERVIEW_CLASS_NAMES.errorContainer}>
+                                <CapitalHeader hideTitle={hideTitle} region={capitalState.region} titleKey={'capital.common.title'} />
+                                <CapitalErrorMessageDisplay unsupportedRegion />
+                            </div>
+                        );
+                    case 'PreQualified':
+                        return (
+                            <PreQualified
+                                onOfferDismiss={onOfferDismiss}
+                                onOfferOptionsRequest={onOfferOptionsRequest}
+                                skipPreQualifiedIntro={skipPreQualifiedIntro}
+                                hideTitle={hideTitle}
+                                capitalState={capitalState!}
+                                onFundsRequest={handlePreQualifiedFundsRequest}
+                            />
+                        );
                     case 'GrantList':
                         return (
                             grantList && (
@@ -141,28 +156,6 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                                 />
                             )
                         );
-                    case 'PreQualified':
-                        return (
-                            <PreQualified
-                                onOfferDismiss={onOfferDismiss}
-                                onOfferOptionsRequest={onOfferOptionsRequest}
-                                skipPreQualifiedIntro={skipPreQualifiedIntro}
-                                hideTitle={hideTitle}
-                                capitalState={capitalState!}
-                                onFundsRequest={handlePreQualifiedFundsRequest}
-                            />
-                        );
-                    case 'Unqualified':
-                        return <Unqualified hideTitle={hideTitle} region={capitalState.region} />;
-                    case 'UnsupportedRegion':
-                        return (
-                            <div className={CAPITAL_OVERVIEW_CLASS_NAMES.errorContainer}>
-                                <CapitalHeader hideTitle={hideTitle} region={capitalState.region} titleKey={'capital.common.title'} />
-                                <CapitalErrorMessageDisplay unsupportedRegion />
-                            </div>
-                        );
-                    default:
-                        return null;
                 }
             })()}
         </div>

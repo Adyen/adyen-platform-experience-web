@@ -293,11 +293,6 @@ export const CapitalOfferSelection = ({
 
     const hasSingleTerm = useMemo(() => allTerms.length === 1, [allTerms.length]);
 
-    const isUnqualified = useMemo(
-        () => !capitalStateError && capitalState !== undefined && !capitalState.dynamicOffer,
-        [capitalState, capitalStateError]
-    );
-
     const renderHighlightedFields = () => {
         const renewableGrant = capitalState?.renewableGrants[0];
         if (!renewableGrant) return null;
@@ -310,12 +305,11 @@ export const CapitalOfferSelection = ({
 
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || isUnqualified || capitalStateError || termsError ? (
+            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || capitalStateError || termsError ? (
                 <CapitalErrorMessageDisplay
                     error={reviewOfferMutation.error || getDynamicGrantOfferMutation.error || capitalStateError}
                     onBack={onOfferDismiss}
                     onContactSupport={onContactSupport}
-                    emptyGrantOffer={isUnqualified}
                 />
             ) : (
                 <>

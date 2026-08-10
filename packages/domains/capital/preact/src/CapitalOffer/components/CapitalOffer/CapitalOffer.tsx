@@ -66,11 +66,11 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
 
     useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital offer' });
 
-    if (state && !state.isRegionSupported) {
+    if (state && (!state.isRegionSupported || !state.dynamicOffer)) {
         return (
             <div className={CAPITAL_OFFER_CLASS_NAMES.errorContainer}>
                 <CapitalHeader hideTitle={hideTitle} region={state.region} titleKey={'capital.common.title'} />
-                <CapitalErrorMessageDisplay unsupportedRegion />
+                <CapitalErrorMessageDisplay unsupportedRegion={!state.isRegionSupported} emptyGrantOffer={!state.dynamicOffer} />
             </div>
         );
     }
