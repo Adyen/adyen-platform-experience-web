@@ -62,6 +62,7 @@ const PAYMENT_LINK_TYPES_FILTER_PARAM = 'linkTypes';
 const PAYMENT_LINK_STATUSES_FILTER_PARAM = 'statuses';
 const PAYMENT_LINK_STORES_FILTER_PARAM = 'storeIds';
 const LAST_REFRESH_TIMESTAMP_PARAM = '_t';
+const EXTERNAL_STORE_IDS_FILTER_PARAM = '_storeIds';
 const PAYMENT_LINK_STATUSES_FILTER_VALUES = Object.keys(PAYMENT_LINK_STATUSES) as IPaymentLinkStatus[];
 
 const PaymentLinksOverviewTabsDropdown = ({
@@ -102,6 +103,7 @@ const PaymentLinksOverviewTabsDropdown = ({
 
 interface PaymentLinksPageRequestParams extends Record<FilterParam | 'cursor', string> {
     [LAST_REFRESH_TIMESTAMP_PARAM]: DOMHighResTimeStamp;
+    [EXTERNAL_STORE_IDS_FILTER_PARAM]: string;
 }
 
 export const PaymentLinksOverview = ({
@@ -147,7 +149,14 @@ export const PaymentLinksOverview = ({
     const [showFiltersAlert, setShowFiltersAlert] = useState(false);
 
     const getPaymentLinksData = useCallback(
-        async ({ [LAST_REFRESH_TIMESTAMP_PARAM]: _, ...pageRequestParams }: PaymentLinksPageRequestParams, signal?: AbortSignal) => {
+        async (
+            {
+                [EXTERNAL_STORE_IDS_FILTER_PARAM]: _externalStoreIds,
+                [LAST_REFRESH_TIMESTAMP_PARAM]: _lastRefreshTimestamp,
+                ...pageRequestParams
+            }: PaymentLinksPageRequestParams,
+            signal?: AbortSignal
+        ) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
             const filterStoreIds = listFrom<string>(pageRequestParams[FilterParam.STORE_IDS]);
             const propStoreIds = storeIds ? listFrom<string>(storeIds) : undefined;
@@ -183,6 +192,7 @@ export const PaymentLinksOverview = ({
         statusGroup: DEFAULT_PAYMENT_LINK_STATUS_GROUP,
         [PAYMENT_LINK_STORES_FILTER_PARAM]: undefined,
         [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now(),
+        [EXTERNAL_STORE_IDS_FILTER_PARAM]: String(listFrom(storeIds) ?? ''),
     });
 
     //TODO - Infer the return type of getPaymentLinksData instead of having to specify it
@@ -230,6 +240,10 @@ export const PaymentLinksOverview = ({
             [FilterParam.CURRENCIES]: undefined,
         });
     }, [updateFilters]);
+
+    useEffect(() => {
+        updateFilters({ [EXTERNAL_STORE_IDS_FILTER_PARAM]: String(listFrom(storeIds) ?? '') } as any);
+    }, [storeIds, updateFilters]);
 
     useEffect(() => {
         refreshNowTimestamp();

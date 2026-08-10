@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onUnmounted } from 'vue';
 import { BentoTypography, BentoTabs, BentoTab, BentoButton, BentoAlert, BentoModal } from '@adyen/bento-vue3';
 import PlusIcon from '@adyen/ui-assets-icons-16/vue/plus';
 import SettingsIcon from '@adyen/ui-assets-icons-16/vue/settings';
@@ -18,6 +18,7 @@ import type { StoreData, PaymentLinksOverviewModalType } from '../../../../domai
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../../../../domain/src';
 import type { PaymentLinksOverviewExternalProps } from '../types';
 import { createPaymentLinksError } from '../utils/error';
+import { listFrom } from '@integration-components/utils';
 import '../styles/PaymentLinksOverview.scss';
 
 const props = defineProps<{
@@ -41,16 +42,32 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const config = useConfigContext();
-
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
-const statusGroup = ref<IPaymentLinkStatusGroup>(DEFAULT_PAYMENT_LINK_STATUS_GROUP);
+let statusGroupDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 
+const statusGroupFetchPending = ref(false);
+const statusGroup = ref<IPaymentLinkStatusGroup>(DEFAULT_PAYMENT_LINK_STATUS_GROUP);
+const fetchStatusGroup = ref<IPaymentLinkStatusGroup>(statusGroup.value);
 const activeStatusGroupTabIndex = computed(() => PAYMENT_LINK_STATUS_GROUPS_TABS.findIndex(tab => tab.id === statusGroup.value));
 
 function onStatusGroupChange(newIndex: number) {
     const tab = PAYMENT_LINK_STATUS_GROUPS_TABS[newIndex];
-    if (tab) statusGroup.value = tab.id as IPaymentLinkStatusGroup;
+    if (!tab) return;
+
+    if (statusGroupDebounceTimer) {
+        clearTimeout(statusGroupDebounceTimer);
+    }
+
+    const nextStatusGroup = tab.id as IPaymentLinkStatusGroup;
+    statusGroup.value = nextStatusGroup;
+    statusGroupFetchPending.value = true;
+
+    statusGroupDebounceTimer = setTimeout(() => {
+        fetchStatusGroup.value = nextStatusGroup;
+        requestAnimationFrame(() => (statusGroupFetchPending.value = false));
+        statusGroupDebounceTimer = undefined;
+    }, 500);
 }
 
 const filtersValue = ref<PaymentLinksFiltersValue>({
@@ -72,8 +89,8 @@ const hasMultipleStores = computed(() => !!props.stores && props.stores.length >
 const fetchEnabled = computed(() => !!props.allStores?.length);
 
 const paymentLinksListResult = usePaymentLinksList(() => ({
-    fetchEnabled: fetchEnabled.value,
-    statusGroup: statusGroup.value,
+    fetchEnabled: fetchEnabled.value && !statusGroupFetchPending.value,
+    statusGroup: fetchStatusGroup.value,
     statuses: filtersValue.value.statuses,
     linkTypes: filtersValue.value.linkTypes,
     filterStoreIds: filtersValue.value.storeIds,
@@ -86,6 +103,7 @@ const paymentLinksListResult = usePaymentLinksList(() => ({
     preferredLimit: props.preferredLimit,
     onFiltersChanged: props.onFiltersChanged,
     lastRefreshTimestamp: lastRefreshTimestamp.value,
+    _storeIds: String(listFrom(props.storeIds) ?? ''),
 }));
 
 const showFiltersAlert = computed(() => !!props.storeError || !!props.filterOptionsError);
@@ -110,6 +128,12 @@ const storesFilteredError = computed(() => {
 });
 
 const paymentLinksError = computed(() => noStoresError.value ?? paymentLinksListResult.error.value ?? storesFilteredError.value);
+
+onUnmounted(() => {
+    if (statusGroupDebounceTimer) {
+        clearTimeout(statusGroupDebounceTimer);
+    }
+});
 
 const isDetailsModalOpen = ref(false);
 const selectedPaymentLink = ref<IPaymentLinkItem | null>(null);
@@ -267,7 +291,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
 
         <PaymentLinksTable
             :error="paymentLinksError"
-            :loading="paymentLinksListResult.fetching.value || props.isFiltersLoading"
+            :loading="statusGroupFetchPending || paymentLinksListResult.fetching.value || props.isFiltersLoading"
             :on-contact-support="props.onContactSupport"
             :on-row-click="onRowClick"
             :show-pagination="true"
