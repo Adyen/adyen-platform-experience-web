@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, type Component, type PropType, type VNode } from 'vue';
+import { computed, defineComponent, h, ref, type Component, type PropType, type VNode } from 'vue';
 import { BentoEmptyState } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
@@ -21,6 +21,7 @@ export const DataOverviewError = defineComponent({
 
     setup(props) {
         const { i18n, refreshComponent: refreshCurrentComponent } = useCoreContext();
+        const isErrorCodeCopied = ref(false);
 
         const errorInfo = computed(
             () =>
@@ -39,6 +40,14 @@ export const DataOverviewError = defineComponent({
                 if (index > 0) nodes.push(h('br'));
                 nodes.push(h('span', { key }, i18n.get(key, options)));
             });
+
+            nodes.push(
+                h(
+                    'span',
+                    { class: 'adyen-pe-visually-hidden', 'aria-atomic': 'true', 'aria-live': 'polite' },
+                    isErrorCodeCopied.value ? i18n.get('common.actions.copy.labels.done') : ''
+                )
+            );
 
             return nodes;
         });
@@ -73,8 +82,11 @@ export const DataOverviewError = defineComponent({
 
             if (requestId && typeof navigator !== 'undefined' && navigator.clipboard) {
                 return {
-                    title: i18n.get('common.actions.copy.labels.errorCode'),
-                    event: () => void navigator.clipboard.writeText(requestId),
+                    title: i18n.get(isErrorCodeCopied.value ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.errorCode'),
+                    event: async () => {
+                        await navigator.clipboard.writeText(requestId);
+                        isErrorCodeCopied.value = true;
+                    },
                     icon: props.copyIcon,
                     variant: 'secondary' as const,
                 };
