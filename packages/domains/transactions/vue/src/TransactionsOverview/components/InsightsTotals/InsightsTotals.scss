@@ -4,8 +4,9 @@
 .adyen-pe-transaction-insights-totals {
     &__breakdowns {
         display: grid;
-        gap: style.token(spacer-100) calc(#{style.token(spacer-110)} * 2);
+        gap: style.token(spacer-100) style.token(spacer-120);
         grid-template-columns: 1fr;
+        margin-top: style.token(spacer-070);
 
         @include breakpoints.adyen-pe-screen-md-and-up {
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -32,17 +33,30 @@
     }
 
     & &__breakdowns &__breakdown-list {
+        .b-data-grid-columns {
+            display: none;
+        }
+
         @include breakpoints.adyen-pe-screen-md-and-up {
             margin-inline: unset;
         }
     }
 
     .adyen-pe-transaction-amount-display {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
+        margin-bottom: style.token(spacer-070);
+
+        @include breakpoints.adyen-pe-screen-md-and-up {
+            padding-inline: style.token(spacer-070);
+        }
+
         &__amount {
+            align-items: baseline;
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: style.token(spacer-070);
+            flex-wrap: nowrap;
+            gap: style.token(spacer-020);
         }
     }
 }

@@ -9,12 +9,26 @@ import {
     setExactPspReference,
 } from './shared/utils';
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
-import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
+import { expectAnalyticsEvents, expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
 import { testBalanceAccountFilter, testDateRangeFilter } from '../../../../fixtures/integration/filters';
 import { sharedTransactionsListAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionsOverview';
 import { goToView } from '../../../../fixtures/integration/utils';
+import { BALANCE_ACCOUNTS } from '@integration-components/testing/fixtures/balanceAccounts';
 
 const STORY_ID = 'mocked-transactions-transactions-overview--default';
+
+test('should never request transactions without a selected balance account', async ({ page }) => {
+    const requestedBalanceAccountIds = new Set<string | null>();
+
+    page.on('request', request => {
+        const url = new URL(request.url());
+        if (url.pathname.endsWith('/transactions')) requestedBalanceAccountIds.add(url.searchParams.get('balanceAccountId'));
+    });
+
+    await goToStory(page, { id: STORY_ID });
+    await expect.poll(() => requestedBalanceAccountIds.has(BALANCE_ACCOUNTS[0].id)).toBe(true);
+    expect(requestedBalanceAccountIds).toEqual(new Set([BALANCE_ACCOUNTS[0].id]));
+});
 
 test.describe('Default', () => {
     const NOW = Date.now();
@@ -492,4 +506,42 @@ test.describe('Filters', () => {
 
     testBalanceAccountFilter({ variant });
     testDateRangeFilter({ variant, now });
+
+    test('should request transactions with all applied filter values', async ({ page }) => {
+        const transactionRequests: URL[] = [];
+        const pspReference = 'PSP0000000000056';
+        const filterDialog = page.getByRole('dialog');
+
+        page.on('request', request => {
+            const url = new URL(request.url());
+            if (url.pathname.endsWith('/transactions')) transactionRequests.push(url);
+        });
+
+        await page.getByRole('button', { name: 'Type', exact: true }).click();
+        await filterDialog.getByRole('option', { name: 'Payment', exact: true }).click();
+        await filterDialog.getByRole('button', { name: 'Apply', exact: true }).click();
+        await expect.poll(() => transactionRequests.some(url => url.searchParams.getAll('categories').includes('Payment'))).toBe(true);
+
+        await page.getByRole('button', { name: 'Currency', exact: true }).click();
+        await filterDialog.getByRole('option', { name: 'USD', exact: true }).click();
+        await filterDialog.getByRole('button', { name: 'Apply', exact: true }).click();
+        await expect.poll(() => transactionRequests.some(url => url.searchParams.getAll('currencies').includes('USD'))).toBe(true);
+
+        await page.getByRole('button', { name: 'PSP reference', exact: true }).click();
+        await filterDialog.getByLabel('PSP reference', { exact: true }).fill(pspReference);
+        await filterDialog.getByRole('button', { name: 'Apply', exact: true }).click();
+
+        await expect.poll(() => transactionRequests.some(url => url.searchParams.get('paymentPspReference') === pspReference)).toBe(true);
+
+        const requestUrl = transactionRequests.findLast(url => url.searchParams.get('paymentPspReference') === pspReference)!;
+        expect(requestUrl.searchParams.get('balanceAccountId')).toBe(BALANCE_ACCOUNTS[0].id);
+        expect(requestUrl.searchParams.getAll('categories')).toEqual(['Payment']);
+        expect(requestUrl.searchParams.getAll('currencies')).toEqual(['USD']);
+        expect(requestUrl.searchParams.getAll('statuses')).toEqual(['Booked']);
+        expect(requestUrl.searchParams.get('cursor')).toBeNull();
+    });
+
+    test('should reset pagination when selecting another balance account', async ({ page }) => {
+        await expectBalanceAccountPaginationReset({ endpointPath: '/transactions', page, variant });
+    });
 });

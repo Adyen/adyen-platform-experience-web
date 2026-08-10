@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { BentoButton, BentoTypography, BentoDataGrid, BentoDivider } from '@adyen/bento-vue3';
+import { ErrorMessageDisplay } from '@integration-components/composables-vue';
+import { BentoTypography, BentoDataGrid, BentoDivider } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { getTransactionCategory } from '@integration-components/transactions/domain';
 import type { CurrencyLookupRecord } from '../../composables/useCurrenciesLookup';
@@ -64,32 +65,38 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
 
         <template v-else-if="props.transactionsTotalsResult.error.value">
             <div class="adyen-pe-transaction-insights-totals__error-container">
-                <BentoTypography variant="body">{{ i18n.get('common.errors.somethingWentWrong') }}</BentoTypography>
-                <BentoButton
-                    variant="tertiary"
-                    :disabled="!props.transactionsTotalsResult.canRefresh.value"
-                    @click="props.transactionsTotalsResult.refresh"
-                >
-                    {{ i18n.get('common.actions.refresh.labels.default') }}
-                </BentoButton>
+                <ErrorMessageDisplay
+                    :error-info="{ title: 'common.errors.somethingWentWrong', messages: ['common.errors.retry'], refreshComponent: true }"
+                    :on-refresh="props.transactionsTotalsResult.refresh"
+                    with-image
+                    :outlined="false"
+                    :absolute-position="false"
+                    :with-background="false"
+                />
             </div>
         </template>
 
         <template v-else-if="data">
             <div class="adyen-pe-transaction-amount-display adyen-pe-transaction-amount-display--large">
-                <BentoTypography variant="caption">{{ i18n.get('transactions.overview.totals.tags.periodResult') }}</BentoTypography>
+                <BentoTypography variant="body">{{ i18n.get('transactions.overview.totals.tags.periodResult') }}</BentoTypography>
                 <div class="adyen-pe-transaction-amount-display__amount">
-                    <BentoTypography variant="title" large>{{ i18n.amount(data.total, data.currency) }}</BentoTypography>
-                    <BentoTypography variant="title" stronger>{{ data.currency }}</BentoTypography>
+                    <BentoTypography variant="title" medium>{{ i18n.amount(data.total, data.currency, { hideCurrency: true }) }}</BentoTypography>
+                    <BentoTypography variant="title" medium>{{ data.currency }}</BentoTypography>
                 </div>
             </div>
 
             <div class="adyen-pe-transaction-insights-totals__breakdowns">
                 <div class="adyen-pe-transaction-insights-totals__breakdown">
                     <div class="adyen-pe-transaction-amount-display">
-                        <BentoTypography variant="caption">{{ i18n.get('transactions.overview.totals.tags.incoming') }}</BentoTypography>
-                        <BentoTypography variant="title" stronger>{{ i18n.amount(data.incomings, data.currency) }}</BentoTypography>
-                        <BentoTypography variant="caption" stronger>{{ data.currency }}</BentoTypography>
+                        <BentoTypography variant="body">{{ i18n.get('transactions.overview.totals.tags.incoming') }}</BentoTypography>
+                        <div class="adyen-pe-transaction-amount-display__amount">
+                            <BentoTypography variant="body" strongest>
+                                {{ i18n.amount(data.incomings, data.currency, { hideCurrency: true }) }}
+                            </BentoTypography>
+                            <BentoTypography variant="body" strongest>
+                                {{ data.currency }}
+                            </BentoTypography>
+                        </div>
                     </div>
                     <BentoDataGrid
                         v-if="incomingsBreakdown.length"
@@ -100,7 +107,6 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
                         :has-resizable-columns="false"
                         :allow-column-drag-and-drop="false"
                         :allow-row-clicks="false"
-                        hide-header
                         condensed
                     />
                 </div>
@@ -109,9 +115,15 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
 
                 <div class="adyen-pe-transaction-insights-totals__breakdown">
                     <div class="adyen-pe-transaction-amount-display">
-                        <BentoTypography variant="caption">{{ i18n.get('transactions.overview.totals.tags.outgoing') }}</BentoTypography>
-                        <BentoTypography variant="title" stronger>{{ i18n.amount(data.expenses, data.currency) }}</BentoTypography>
-                        <BentoTypography variant="caption" stronger>{{ data.currency }}</BentoTypography>
+                        <BentoTypography variant="body">{{ i18n.get('transactions.overview.totals.tags.outgoing') }}</BentoTypography>
+                        <div class="adyen-pe-transaction-amount-display__amount">
+                            <BentoTypography variant="body" strongest>
+                                {{ i18n.amount(data.expenses, data.currency, { hideCurrency: true }) }}
+                            </BentoTypography>
+                            <BentoTypography variant="body" strongest>
+                                {{ data.currency }}
+                            </BentoTypography>
+                        </div>
                     </div>
                     <BentoDataGrid
                         v-if="expensesBreakdown.length"

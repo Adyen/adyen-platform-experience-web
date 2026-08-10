@@ -11,9 +11,6 @@ test.describe('Error - Balances', () => {
     });
 
     test('should render balances error alert', async ({ page }) => {
-        // [TODO]: Address missing refresh button in alert
-        test.fixme(true, 'Missing refresh button in alert');
-
         const alert = page.getByRole('alert');
         await expect(alert).toBeVisible();
         await expect(alert).toHaveCount(1);
@@ -22,9 +19,6 @@ test.describe('Error - Balances', () => {
     });
 
     test('should refresh balances', async ({ page }) => {
-        // [TODO]: Address missing refresh button in alert
-        test.fixme(true, 'Missing refresh button in alert');
-
         const refreshButton = page.getByRole('alert').getByRole('button', { name: 'Refresh', exact: true, disabled: false });
         const balancesRequest = page.waitForRequest(request => request.url().endsWith('/balances'));
         await refreshButton.click();

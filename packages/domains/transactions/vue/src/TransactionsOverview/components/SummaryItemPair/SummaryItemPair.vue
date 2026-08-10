@@ -42,12 +42,13 @@ const getValueStyle = (index: number) => {
         <div class="adyen-pe-transactions-overview__summary-item__pair">
             <div class="adyen-pe-transactions-overview__summary-item--left">
                 <div class="adyen-pe-transactions-overview__summary-item__label-wrap">
-                    <BentoTypography variant="caption">{{ label1 }}</BentoTypography>
+                    <BentoTypography variant="body">{{ label1 }}</BentoTypography>
                     <BentoInfoIcon v-if="tooltip1" :tooltipText="tooltip1" />
+                    <span v-else aria-hidden="true" class="adyen-pe-transactions-overview__summary-item__tooltip-placeholder" />
                 </div>
                 <div :style="getValueStyle(0)">
                     <span ref="text1Ref" style="display: inline-block">
-                        <BentoTypography variant="title">{{ value1 }}</BentoTypography>
+                        <BentoTypography variant="title" medium>{{ value1 }}</BentoTypography>
                     </span>
                 </div>
             </div>
@@ -55,12 +56,13 @@ const getValueStyle = (index: number) => {
         <div class="adyen-pe-transactions-overview__summary-item__pair">
             <div class="adyen-pe-transactions-overview__summary-item--right">
                 <div class="adyen-pe-transactions-overview__summary-item__label-wrap">
-                    <BentoTypography variant="caption">{{ label2 }}</BentoTypography>
+                    <BentoTypography variant="body">{{ label2 }}</BentoTypography>
                     <BentoInfoIcon v-if="tooltip2" :tooltipText="tooltip2" />
+                    <span v-else aria-hidden="true" class="adyen-pe-transactions-overview__summary-item__tooltip-placeholder" />
                 </div>
                 <div :style="getValueStyle(1)">
                     <span ref="text2Ref" style="display: inline-block">
-                        <BentoTypography variant="title">{{ value2 }}</BentoTypography>
+                        <BentoTypography variant="title" medium>{{ value2 }}</BentoTypography>
                     </span>
                 </div>
             </div>

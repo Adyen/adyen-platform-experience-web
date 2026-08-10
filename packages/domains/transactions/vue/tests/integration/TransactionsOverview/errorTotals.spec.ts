@@ -34,9 +34,6 @@ test.describe('Error - Totals', () => {
         });
 
         test('should render totals error display', async ({ page }) => {
-            // [TODO]: Address incomplete error messages.
-            test.fixme(true, 'Incomplete error messages');
-
             await expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible();
             await expect(page.getByText('Try refreshing the page or come back later.')).toBeVisible();
             await expect(page.getByRole('button', { name: 'Refresh', exact: true, disabled: false })).toBeVisible();

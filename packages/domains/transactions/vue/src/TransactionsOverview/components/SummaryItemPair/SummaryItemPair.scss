@@ -21,6 +21,10 @@
         gap: style.token(spacer-060);
     }
 
+    &__tooltip-placeholder {
+        width: style.token(spacer-070);
+    }
+
     &__pair {
         display: flex;
         gap: style.token(spacer-030);

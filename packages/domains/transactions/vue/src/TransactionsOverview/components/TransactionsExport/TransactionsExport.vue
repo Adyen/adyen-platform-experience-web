@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { useCoreContext, useConfigContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import { BentoButton, BentoAlert, BentoTypography, BentoTag, BentoToggle, BentoPopover, useClickOutside, BentoDivider } from '@adyen/bento-vue3';
+import {
+    BentoAlert,
+    BentoButton,
+    BentoDivider,
+    BentoPopover,
+    BentoTag,
+    BentoToggle,
+    BentoTypography,
+    useBentoToastController,
+    useClickOutside,
+} from '@adyen/bento-vue3';
 import { useDownload, useUniqueId } from '@integration-components/composables-vue';
 import { isFunction, downloadBlob, EMPTY_ARRAY } from '@integration-components/utils';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
@@ -18,8 +28,10 @@ const config = useConfigContext();
 const userEvents = useEventDispatcherContext();
 const { filters } = useTransactionsOverviewContext();
 
+const { addToast } = useBentoToastController();
+let activeExportErrorToast: ReturnType<typeof addToast> | undefined;
+
 const popoverOpen = ref(false);
-const exportError = ref<Error | undefined>(undefined);
 const exportStarted = ref(false);
 const exportColumns = ref<readonly (typeof EXPORT_COLUMNS)[number][]>(DEFAULT_EXPORT_COLUMNS);
 
@@ -62,12 +74,14 @@ const { isFetching, error } = useDownload(
 );
 
 watch(error, err => {
-    exportError.value = err;
+    if (err) {
+        activeExportErrorToast = addToast({ text: i18n.get('transactions.overview.export.actions.error') });
+    }
 });
 
 watch(popoverOpen, isOpen => {
     if (isOpen) {
-        exportError.value = undefined;
+        activeExportErrorToast?.dismiss();
     } else {
         exportColumns.value = DEFAULT_EXPORT_COLUMNS;
     }
@@ -104,17 +118,15 @@ watch(isFetching, (fetching, wasFetching) => {
     }
 });
 
-let dismissedByClickOutside = false;
-
-useClickOutside(popoverRef, () => {
-    if (popoverOpen.value) {
-        dismissedByClickOutside = true;
-        dismissPopover();
-        requestAnimationFrame(() => {
-            dismissedByClickOutside = false;
-        });
-    }
-});
+useClickOutside(
+    popoverRef,
+    () => {
+        if (popoverOpen.value) {
+            dismissPopover();
+        }
+    },
+    { ignore: [targetElement] }
+);
 
 const masterSwitchChecked = computed(() => exportColumns.value.length === EXPORT_COLUMNS.length);
 
@@ -127,9 +139,6 @@ const columnSwitches = computed(() =>
 );
 
 function togglePopover() {
-    if (dismissedByClickOutside) {
-        return;
-    }
     if (popoverOpen.value) {
         userEvents.addEvent?.('Cancelled export', sharedAnalyticsProps);
     } else {
@@ -193,11 +202,8 @@ const popoverActions = computed(() => [
             {{ isFetching ? i18n.get('transactions.overview.export.button.inProgress') : i18n.get('transactions.overview.export.button.label') }}
         </BentoButton>
 
-        <BentoAlert v-if="exportError" type="critical" @close="exportError = undefined">
-            <template #description>{{ i18n.get('transactions.overview.export.actions.error') }}</template>
-        </BentoAlert>
-
         <BentoPopover
+            v-if="popoverOpen"
             ref="popoverRef"
             :open="popoverOpen"
             :target-element="targetElement ?? undefined"

@@ -11,7 +11,12 @@
     &__popover-section {
         &--filters {
             display: flex;
+            flex-wrap: wrap;
             gap: style.token(spacer-030);
+
+            .b-tag {
+                white-space: nowrap;
+            }
         }
 
         &--columns {
