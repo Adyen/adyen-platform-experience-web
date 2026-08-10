@@ -3,7 +3,8 @@ import { ref, computed, watch } from 'vue';
 import { BentoFilterBar, BentoFilterItemType } from '@adyen/bento-vue3';
 import type { BentoFilterBarModel, BentoFilterValues, BentoDateRangePickerValue } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import { endOfDay, now, quickSelectDateRanges, startOfDay, toUTCISOStringKeepingLocalDateTime } from '@integration-components/utils';
+import { useDateRangeFilterState, useSortedMultiSelection } from '@integration-components/composables-vue';
+import { createQuickSelectRanges, DAY_IN_MS, quickSelectDateRanges, startOfDay } from '@integration-components/utils';
 import { EARLIEST_PAYMENT_LINK_DATE_DAYS } from '../constants';
 import type { IPaymentLinkFilterStatusGroup, IPaymentLinkStatus, IPaymentLinkStatusGroup, IPaymentLinkType } from '@integration-components/types';
 import type { StoreData } from '../../../../domain/src';
@@ -31,70 +32,36 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
+const earliestDate = startOfDay(new Date(Date.now() - EARLIEST_PAYMENT_LINK_DATE_DAYS * DAY_IN_MS));
 
-function cloneDateRange(value: BentoDateRangePickerValue): BentoDateRangePickerValue {
-    return {
-        startDate: new Date(value.startDate),
-        endDate: new Date(value.endDate),
-        ...(value.granularity ? { granularity: value.granularity } : {}),
-        ...(value.range ? { range: value.range } : {}),
-    };
-}
+const quickSelectRanges = createQuickSelectRanges(
+    {
+        last7Days: quickSelectDateRanges.last7Days,
+        last30Days: quickSelectDateRanges.last30Days,
+        thisWeek: quickSelectDateRanges.thisWeek,
+        lastWeek: quickSelectDateRanges.lastWeek,
+        thisMonth: quickSelectDateRanges.thisMonth,
+        lastMonth: quickSelectDateRanges.lastMonth,
+    },
+    key => i18n.get(key)
+);
 
-const earliestDate = startOfDay(new Date(Date.now() - EARLIEST_PAYMENT_LINK_DATE_DAYS * 24 * 60 * 60 * 1000));
+const { defaultDateRange, selectedDateRange, normalizeDateRange, getDateRangeFilterOptions, getDateRangeQueryParams } = useDateRangeFilterState({
+    defaultValue: quickSelectDateRanges.last30Days,
+    earliestDate,
+});
 
-function normalizeDateRange(value: BentoDateRangePickerValue): BentoDateRangePickerValue {
-    if (!value?.startDate || !value?.endDate) {
-        return cloneDateRange(defaultDateRange);
-    }
-
-    const startDate = startOfDay(value.startDate);
-    const endDate = endOfDay(value.endDate);
-
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-        return cloneDateRange(defaultDateRange);
-    }
-
-    const normalizedRange = {
-        startDate,
-        endDate,
-        ...(value.granularity ? { granularity: value.granularity } : {}),
-        ...(value.range ? { range: value.range } : {}),
-    } satisfies BentoDateRangePickerValue;
-
-    const matchingQuickSelectRange = Object.values(quickSelectDateRanges).find(range => {
-        return range.startDate.getTime() === normalizedRange.startDate.getTime() && range.endDate.getTime() === normalizedRange.endDate.getTime();
-    });
-
-    return cloneDateRange(matchingQuickSelectRange ?? normalizedRange);
-}
-
-const quickSelectRanges = [
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.last7Days'), value: 'last7Days', data: quickSelectDateRanges.last7Days },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.last30Days'), value: 'last30Days', data: quickSelectDateRanges.last30Days },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.thisWeek'), value: 'thisWeek', data: quickSelectDateRanges.thisWeek },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.lastWeek'), value: 'lastWeek', data: quickSelectDateRanges.lastWeek },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.thisMonth'), value: 'thisMonth', data: quickSelectDateRanges.thisMonth },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.lastMonth'), value: 'lastMonth', data: quickSelectDateRanges.lastMonth },
-];
-
-const defaultDateRange = cloneDateRange(quickSelectDateRanges.last30Days);
-
-// ── Reactive filter state ──
-const selectedStoreIds = ref<string[]>([]);
-const selectedStatuses = ref<string[]>([]);
-const selectedLinkTypes = ref<string[]>([]);
+const { selectedValues: selectedStoreIds, setSelectedValues: setSelectedStoreIds } = useSortedMultiSelection<string>();
+const { selectedValues: selectedStatuses, setSelectedValues: setSelectedStatuses } = useSortedMultiSelection<string>();
+const { selectedValues: selectedLinkTypes, setSelectedValues: setSelectedLinkTypes } = useSortedMultiSelection<string>();
 const selectedMerchantReference = ref<string | undefined>(undefined);
 const selectedPaymentLinkId = ref<string | undefined>(undefined);
-const selectedDateRange = ref<BentoDateRangePickerValue>(cloneDateRange(defaultDateRange));
 
 // Reset the status filter selection whenever the active status group tab changes,
 // mirroring the Preact behavior of dropping the stale status selection on tab switch.
 watch(
     () => props.statusGroup,
-    () => {
-        selectedStatuses.value = [];
-    }
+    () => setSelectedStatuses()
 );
 
 const showStoreFilter = computed(() => (props.stores && props.stores.length > 1) || !!props.storeError);
@@ -126,11 +93,8 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
         type: BentoFilterItemType.DATE_RANGE,
         defaultValue: defaultDateRange,
         options: {
-            min: earliestDate,
-            max: now,
-            isDateDisabled: (date: Date) => date.getTime() < earliestDate.getTime() || date.getTime() > now.getTime(),
             numberOfMonths: 1,
-            quickSelectRanges,
+            ...getDateRangeFilterOptions({ quickSelectRanges, disableUnavailableDates: true }),
         },
     });
 
@@ -203,11 +167,11 @@ const filterValues = computed<BentoFilterValues>(() => {
 function onFilterInput(updatedValues: BentoFilterValues) {
     for (const fv of updatedValues) {
         if (fv.field === 'storeIds') {
-            selectedStoreIds.value = (fv.value as string[]) ?? [];
+            setSelectedStoreIds((fv.value as string[]) ?? []);
         } else if (fv.field === 'linkTypes') {
-            selectedLinkTypes.value = (fv.value as string[]) ?? [];
+            setSelectedLinkTypes((fv.value as string[]) ?? []);
         } else if (fv.field === 'statuses') {
-            selectedStatuses.value = (fv.value as string[]) ?? [];
+            setSelectedStatuses((fv.value as string[]) ?? []);
         } else if (fv.field === 'merchantReference') {
             selectedMerchantReference.value = (fv.value as string) || undefined;
         } else if (fv.field === 'paymentLinkId') {
@@ -218,20 +182,18 @@ function onFilterInput(updatedValues: BentoFilterValues) {
     }
 }
 
-const currentFilterValue = computed<PaymentLinksFiltersValue>(() => {
-    const fromMs = Math.max(selectedDateRange.value.startDate.getTime(), earliestDate.getTime());
+const currentFilterParams = computed<PaymentLinksFiltersValue>(() => {
     return {
         statuses: selectedStatuses.value,
         linkTypes: selectedLinkTypes.value,
         storeIds: selectedStoreIds.value,
         merchantReference: selectedMerchantReference.value,
         paymentLinkId: selectedPaymentLinkId.value,
-        createdSince: toUTCISOStringKeepingLocalDateTime(new Date(fromMs)),
-        createdUntil: toUTCISOStringKeepingLocalDateTime(selectedDateRange.value.endDate),
+        ...getDateRangeQueryParams(),
     };
 });
 
-watch(currentFilterValue, value => props.onChange?.(value), { deep: true, immediate: true });
+watch(currentFilterParams, params => props.onChange?.(params), { deep: true, immediate: true });
 </script>
 
 <template>
