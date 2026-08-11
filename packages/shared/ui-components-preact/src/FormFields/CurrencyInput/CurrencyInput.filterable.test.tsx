@@ -24,8 +24,8 @@ test('should filter currencies case-insensitively and select a filtered result w
         />
     );
 
-    await user.click(screen.getByTitle(CURRENCY_NOK));
-    const currencySearch = screen.getByRole('combobox', { name: 'Select option' });
+    await user.click(screen.getByText(CURRENCY_NOK));
+    const currencySearch = screen.getByRole('combobox');
     await user.type(currencySearch, CURRENCY_USD.toLowerCase());
 
     expect(screen.getByRole('option', { name: CURRENCY_USD })).toBeVisible();
