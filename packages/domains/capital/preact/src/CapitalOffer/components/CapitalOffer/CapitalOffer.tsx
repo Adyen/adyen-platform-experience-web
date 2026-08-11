@@ -69,7 +69,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     if (state && (!state.isRegionSupported || !state.dynamicOffer)) {
         return (
             <div className={CAPITAL_OFFER_CLASS_NAMES.errorContainer}>
-                <CapitalHeader hideTitle={hideTitle} region={state.region} titleKey={'capital.common.title'} />
+                <CapitalHeader hideTitle={hideTitle} region={state.region} titleKey={'capital.offer.selection.title'} />
                 <CapitalErrorMessageDisplay unsupportedRegion={!state.isRegionSupported} emptyGrantOffer={!state.dynamicOffer} />
             </div>
         );
