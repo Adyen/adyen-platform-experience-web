@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
-const STORY_ID = 'mocked-capital-capital-offer--ineligible';
+const STORY_ID = 'mocked-capital-capital-offer--eligible-with-ongoing-grants';
 
-test.describe('Ineligible', () => {
+test.describe('Eligible with ongoing grants', () => {
     test('should render a message', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await expect(page.getByText('Business financing request')).toBeVisible();

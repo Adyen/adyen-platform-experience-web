@@ -35,6 +35,8 @@
     "capital.common.values.primaryAccount": "Label indicating that a balance account is a primary one",
     "capital.offer.common.errors.accountInactive": "Label indicating that an account holder is inactive",
     "capital.offer.common.fundingRequestInfo": "Label for the amount of funding that the user is requesting",
+    "capital.offer.common.noOfferDescription": "Description indicating to check back for a business financing offer in the future, when no offer is available at the moment",
+    "capital.offer.common.noOfferTitle": "Label indicating that no business financing offer is currently available",
     "capital.offer.common.repaymentInfo": "Description that indicates a minimum grant repayment amount, the frequency of the repayment and the term end date",
     "capital.offer.selection.actions.reviewOffer": "Label for a button that enables the user to review a previously requested offer",
     "capital.offer.selection.earlyRenewal.amountToReceive": "Label for the net amount the user will receive after applying the existing loan deduction to the new loan",
