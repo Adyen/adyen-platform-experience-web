@@ -1,4 +1,4 @@
-import { getCapitalErrorMessage } from '../../../utils/capital/getCapitalErrorMessage';
+import { getEnhancedCapitalErrorMessage } from '../../utils/capital/getEnhancedCapitalErrorMessage';
 import { AdyenPlatformExperienceError, AdyenErrorResponse, ErrorTypes } from '@integration-components/core';
 import { useCoreContext } from '@integration-components/core/preact';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
@@ -6,19 +6,21 @@ import { useCallback, useMemo } from 'preact/hooks';
 import Button from '@integration-components/ui-components-preact/Button/Button';
 import { ButtonVariant } from '@integration-components/types';
 
+type CapitalErrorMessageDisplayProps = {
+    emptyGrantOffer?: boolean;
+    error?: Error | AdyenErrorResponse;
+    onBack?: () => void;
+    onContactSupport?: () => void;
+    unsupportedRegion?: boolean;
+};
+
 export const CapitalErrorMessageDisplay = ({
     emptyGrantOffer,
     error,
     onContactSupport,
     onBack,
     unsupportedRegion,
-}: {
-    emptyGrantOffer?: boolean;
-    error?: Error | AdyenErrorResponse;
-    onBack?: () => void;
-    onContactSupport?: () => void;
-    unsupportedRegion?: boolean;
-}) => {
+}: CapitalErrorMessageDisplayProps) => {
     const { i18n, getImageAsset } = useCoreContext();
 
     const renderSecondaryButton = useCallback(
@@ -51,7 +53,7 @@ export const CapitalErrorMessageDisplay = ({
                 imageDesktop={getImageAsset?.({ name: 'no-results-found' })}
                 imageMobile={getImageAsset?.({ name: 'no-results-found', subFolder: 'images/small' })}
                 outlined={false}
-                {...getCapitalErrorMessage(capitalError as AdyenPlatformExperienceError, onContactSupport)}
+                {...getEnhancedCapitalErrorMessage(capitalError as AdyenPlatformExperienceError, onContactSupport)}
             />
         );
     }
@@ -63,7 +65,7 @@ export const CapitalErrorMessageDisplay = ({
             onContactSupport={onContactSupport}
             renderSecondaryButton={renderSecondaryButton}
             outlined={false}
-            {...getCapitalErrorMessage(capitalError as AdyenPlatformExperienceError, onContactSupport)}
+            {...getEnhancedCapitalErrorMessage(capitalError as AdyenPlatformExperienceError, onContactSupport)}
         />
     );
 };
