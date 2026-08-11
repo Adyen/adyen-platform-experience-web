@@ -4,12 +4,11 @@ import { useCallback, useState } from 'preact/hooks';
 import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
 import { GrantsDisplay } from './GrantsDisplay';
 import { IGrant } from '@integration-components/types';
-import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
-import { OnFundsRequestCallback } from '../../../types';
+import { EnhancedCapitalState, OnFundsRequestCallback } from '@integration-components/capital/domain';
 
 interface GrantListProps {
     capitalState?: EnhancedCapitalState;
-    grantList: IGrant[];
+    grants: IGrant[];
     hideTitle?: boolean;
     onFundsRequest?: OnFundsRequestCallback;
     onGrantListUpdateRequest: (data: IGrant) => void;
@@ -18,7 +17,7 @@ interface GrantListProps {
 
 export const GrantList: FunctionalComponent<GrantListProps> = ({
     capitalState,
-    grantList,
+    grants,
     hideTitle,
     onFundsRequest,
     onGrantListUpdateRequest,
@@ -59,7 +58,7 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
                     onOfferDismiss={goBackToList}
                 />
             ) : (
-                <GrantsDisplay grantList={grantList} hideTitle={hideTitle} capitalState={capitalState} onNewOfferRequest={goToNextStep} />
+                <GrantsDisplay grants={grants} hideTitle={hideTitle} capitalState={capitalState} onNewOfferRequest={goToNextStep} />
             )}
         </>
     );

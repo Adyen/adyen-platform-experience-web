@@ -1,9 +1,10 @@
-import { IGrant, IMissingAction } from '@integration-components/types';
+import { IMissingAction } from '@integration-components/types';
 import { useConfigContext } from '@integration-components/core/preact';
 import { useFetch } from '@integration-components/hooks-preact';
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { usePollingConfig } from './usePollingConfig';
+import { getMissingActions, getNextPollingInterval, shouldPollMissingActions } from '@integration-components/capital/domain';
 
 type UseMissingActionsPollingParams = {
     grantId: string;
@@ -14,15 +15,13 @@ type UseMissingActionsPollingParams = {
 export const useMissingActionsPolling = ({ grantId, initialMissingActions }: UseMissingActionsPollingParams) => {
     const { getGrants } = useConfigContext().endpoints;
     const {
-        pollingConfig: {
-            missingActions: { initialIntervalMs, maxDurationMs, backoffMultiplier },
-        },
+        pollingConfig: { missingActions: missingActionsPollingConfig },
     } = usePollingConfig();
-    const shouldPoll = initialMissingActions.length <= 1;
+    const shouldPoll = shouldPollMissingActions(initialMissingActions);
     const pollCountRef = useRef(0);
     const pollStartTimeRef = useRef(0);
     const [isPollingComplete, setIsPollingComplete] = useState(!shouldPoll);
-    const [missingActions, setMissingActions] = useState<IMissingAction[]>(initialMissingActions);
+    const [missingActions, setMissingActions] = useState(initialMissingActions);
 
     const { data, isFetching, refetch } = useFetch({
         fetchOptions: {
@@ -48,39 +47,23 @@ export const useMissingActionsPolling = ({ grantId, initialMissingActions }: Use
             pollStartTimeRef.current = Date.now();
         }
 
-        const grant = data?.data?.find((grant: IGrant) => grant.id === grantId);
-        const currentMissingActions = grant?.missingActions ?? initialMissingActions;
+        const currentMissingActions = getMissingActions(data, grantId, initialMissingActions);
         setMissingActions(currentMissingActions);
 
-        const nextInterval = initialIntervalMs * Math.pow(backoffMultiplier, Math.max(0, pollCountRef.current));
         const elapsedTime = Date.now() - pollStartTimeRef.current;
-        const nextElapsedTime = elapsedTime + nextInterval;
+        const nextPollingInterval = getNextPollingInterval(currentMissingActions, pollCountRef.current, elapsedTime, missingActionsPollingConfig);
 
-        const willExceedDuration = nextElapsedTime >= maxDurationMs;
-        const hasMultipleActions = currentMissingActions.length > 1;
-
-        if (hasMultipleActions || willExceedDuration) {
+        if (!nextPollingInterval) {
             setIsPollingComplete(true);
             return;
         }
 
         const timeoutId = setTimeout(() => {
             refetch();
-        }, nextInterval);
+        }, nextPollingInterval);
 
         return () => clearTimeout(timeoutId);
-    }, [
-        data,
-        isFetching,
-        refetch,
-        grantId,
-        isPollingComplete,
-        shouldPoll,
-        initialMissingActions,
-        initialIntervalMs,
-        backoffMultiplier,
-        maxDurationMs,
-    ]);
+    }, [data, isFetching, refetch, grantId, isPollingComplete, shouldPoll, initialMissingActions, missingActionsPollingConfig]);
 
     const forcePollingComplete = useCallback(() => setIsPollingComplete(true), []);
 

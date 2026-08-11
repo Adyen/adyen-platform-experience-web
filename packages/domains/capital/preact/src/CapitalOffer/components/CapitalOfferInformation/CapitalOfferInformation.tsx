@@ -3,7 +3,7 @@ import { useCoreContext } from '@integration-components/core/preact';
 import { useMemo } from 'preact/hooks';
 import StructuredList from '@integration-components/ui-components-preact/StructuredList';
 import { useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
-import { getMaximumRepaymentDate, getPercentage } from '../utils/utils';
+import { calculatePercentageFromBasisPoints, calculateTimestampAfterDays } from '@integration-components/capital/domain';
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '@integration-components/utils';
 import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
@@ -16,7 +16,7 @@ export const CapitalOfferInformation = ({ data, hasSingleTerm }: { data: IGrantO
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const maximumRepaymentPeriodDate = useMemo(() => {
         const days = data.maximumRepaymentPeriodDays;
-        const date = days && getMaximumRepaymentDate(days);
+        const date = days && calculateTimestampAfterDays(days);
         return date && dateFormat(date, DATE_FORMAT_CAPITAL_OVERVIEW);
     }, [data.maximumRepaymentPeriodDays, dateFormat]);
 
@@ -33,7 +33,7 @@ export const CapitalOfferInformation = ({ data, hasSingleTerm }: { data: IGrantO
                 {
                     key: 'capital.common.fields.dailyRepaymentRate',
                     value: i18n.get('capital.common.values.percentage', {
-                        values: { percentage: getPercentage(data.repaymentRate) },
+                        values: { percentage: calculatePercentageFromBasisPoints(data.repaymentRate) },
                     }),
                 },
                 ...(hasSingleTerm

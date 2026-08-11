@@ -1,6 +1,9 @@
-import { AdyenPlatformExperienceError } from '@integration-components/core';
+import { AdyenPlatformExperienceError, type TranslationKey } from '@integration-components/core';
 import { ErrorMessage, getCommonErrorMessage } from '@integration-components/ui-components-preact/utils/getCommonErrorCode';
-import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
+
+export type CapitalErrorMessage = Omit<ErrorMessage, 'translationValues'> & {
+    translationValues?: { [key in TranslationKey]?: string };
+};
 
 export const COMMON_CAPITAL_ERROR_MESSAGE = {
     contactSupportForHelp: 'common.errors.contactSupport',
@@ -9,71 +12,58 @@ export const COMMON_CAPITAL_ERROR_MESSAGE = {
     somethingWentWrong: 'common.errors.somethingWentWrong',
 } as const;
 
-const UNKNOWN_ERROR = {
+const UNKNOWN_ERROR: CapitalErrorMessage = {
     title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
     message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.tryRefreshingThePage],
     refreshComponent: true,
 };
 
-export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): ErrorMessage => {
+export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): CapitalErrorMessage => {
     if (!error) return UNKNOWN_ERROR;
 
-    const commonError = getCommonErrorMessage(error, onContactSupport);
-    if (commonError) return commonError;
+    const commonErrorMessage = getCommonErrorMessage(error, onContactSupport);
+    if (commonErrorMessage) {
+        const { translationValues: _translationValues, ...errorMessage } = commonErrorMessage;
+        return errorMessage;
+    }
 
     const errorCodeMessage = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
+    const translationValues = error.requestId ? { [errorCodeMessage]: error.requestId } : undefined;
 
     switch (error.errorCode) {
-        case undefined:
-            return { ...UNKNOWN_ERROR, ...(onContactSupport ? { onContactSupport } : {}) };
-        case '30_016': {
+        case '30_016':
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
                 message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, errorCodeMessage],
-                translationValues: {
-                    [errorCodeMessage]: error.requestId ? (
-                        <CopyText isUnderlineVisible copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={error.requestId} />
-                    ) : null,
-                },
+                translationValues,
                 onContactSupport,
             };
-        }
-        case '30_011': {
+        case '30_011':
             return {
                 title: 'capital.offer.common.errors.accountInactive',
                 message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, errorCodeMessage],
-                translationValues: {
-                    [errorCodeMessage]: error.requestId ? (
-                        <CopyText isUnderlineVisible copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={error.requestId} />
-                    ) : null,
-                },
+                translationValues,
                 onContactSupport,
             };
-        }
-        case '30_600': {
+        case '30_600':
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
                 message: ['capital.offer.common.errors.cannotContinue', errorCodeMessage],
-                translationValues: {
-                    [errorCodeMessage]: error.requestId ? (
-                        <CopyText isUnderlineVisible copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={error.requestId} />
-                    ) : null,
-                },
+                translationValues,
                 onContactSupport,
             };
-        }
-        case 'NO_OFFER': {
+        case 'NO_OFFER':
             return {
                 title: 'capital.offer.common.noOfferTitle',
                 message: 'capital.offer.common.noOfferDescription',
             };
-        }
-        case 'UNSUPPORTED_REGION': {
+        case 'UNSUPPORTED_REGION':
             return {
                 title: 'capital.common.errors.unsupportedRegion.title',
                 message: 'capital.common.errors.unsupportedRegion',
             };
-        }
+        case undefined:
+            return { ...UNKNOWN_ERROR, ...(onContactSupport ? { onContactSupport } : {}) };
         default:
             return { ...UNKNOWN_ERROR, refreshComponent: true };
     }

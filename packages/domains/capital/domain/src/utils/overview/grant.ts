@@ -1,21 +1,38 @@
-import { IGrant, IGrantStatus } from '@integration-components/types';
+import type { IGrant } from '@integration-components/types';
 import { TranslationKey } from '@integration-components/core';
-import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
-import { GrantConfig } from './types';
 
-const getHasDetails = (status: IGrantStatus) => status === 'Active';
+export type GrantStatusVariant = 'Default' | 'Warning' | 'Error' | 'Light';
 
-const getIsBackgroundFilled = (status: IGrantStatus) => status === 'Repaid';
+export type GrantConfig = {
+    amount: IGrant['grantAmount'];
+    amountLabelKey: TranslationKey;
+    hasAlerts: boolean;
+    hasDetails: boolean;
+    hasUnscheduledRepaymentDetails: boolean;
+    isAmountColorSecondary: boolean;
+    isBackgroundFilled: boolean;
+    isGrantIdVisible: boolean;
+    isLabelColorSecondary: boolean;
+    isProgressBarVisible: boolean;
+    repaymentPeriodEndDate: Date;
+    statusKey?: TranslationKey;
+    statusTagVariant: GrantStatusVariant;
+    statusTooltipKey?: TranslationKey;
+};
 
-const getAmountLabelKey = (status: IGrantStatus): TranslationKey =>
-    status === 'Active' ? 'capital.overview.grants.item.amounts.remaining' : 'capital.overview.grants.item.amounts.requestedFunds';
+export type EnhancedGrant = Omit<IGrant, 'maximumRepaymentPeriodDays'> & {
+    maximumRepaymentPeriodMonths: number | undefined;
+};
 
-const getAmount = (grant: IGrant) => (grant.status === 'Active' ? grant.remainingTotalAmount : grant.grantAmount);
+const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
+    const today = new Date();
+    const endDate = new Date();
+    endDate.setDate(today.getDate() + repaymentPeriodLeft);
+    return endDate;
+};
 
 const getStatusKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): TranslationKey | undefined => {
     switch (status) {
-        case 'Active':
-            return undefined;
         case 'Failed':
             return 'capital.overview.grants.common.statuses.failed';
         case 'Pending':
@@ -28,33 +45,28 @@ const getStatusKey = ({ status, missingActions }: IGrant, areActionsLocallyCompl
             return 'capital.overview.grants.common.statuses.revoked';
         case 'WrittenOff':
             return 'capital.overview.grants.common.statuses.writtenOff';
+        default:
+            return undefined;
     }
 };
 
-const getStatusTagVariant = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): TagVariant => {
+const getStatusTagVariant = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): GrantStatusVariant => {
     switch (status) {
         case 'Failed':
-            return TagVariant.ERROR;
+            return 'Error';
         case 'Pending':
-            return !areActionsLocallyCompleted && missingActions?.length ? TagVariant.WARNING : TagVariant.DEFAULT;
+            return !areActionsLocallyCompleted && missingActions?.length ? 'Warning' : 'Default';
         case 'Repaid':
-            return TagVariant.LIGHT;
+            return 'Light';
         case 'Revoked':
         case 'WrittenOff':
-            return TagVariant.WARNING;
+            return 'Warning';
         default:
-            return TagVariant.DEFAULT;
+            return 'Default';
     }
 };
 
-const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
-    const today = new Date();
-    const endDate = new Date();
-    endDate.setDate(today.getDate() + repaymentPeriodLeft);
-    return endDate;
-};
-
-export const getStatusTooltipKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): TranslationKey | undefined => {
+const getStatusTooltipKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): TranslationKey | undefined => {
     switch (status) {
         case 'Pending':
             return !areActionsLocallyCompleted && missingActions?.length
@@ -76,18 +88,13 @@ export const getGrantConfig = (grant: IGrant, areActionsLocallyCompleted?: boole
     const isGrantPending = grant.status === 'Pending';
 
     return {
-        amount: getAmount(grant),
-        amountLabelKey: getAmountLabelKey(grant.status),
+        amount: isGrantActive ? grant.remainingTotalAmount : grant.grantAmount,
+        amountLabelKey: isGrantActive ? 'capital.overview.grants.item.amounts.remaining' : 'capital.overview.grants.item.amounts.requestedFunds',
         hasAlerts: isGrantPending,
-        hasDetails: getHasDetails(grant.status),
+        hasDetails: isGrantActive,
         hasUnscheduledRepaymentDetails: isGrantActive && !!grant.unscheduledRepaymentAccounts?.length,
-        // The grant revocation account details is currently not ready to be rendered.
-        // A future iteration of this component might include revocation account details.
-        // Only then should the following line be uncommented.
-        //
-        // hasRevocationDetails: isGrantActive && grant.revocationAccount !== undefined,
         isAmountColorSecondary: !isGrantActive,
-        isBackgroundFilled: getIsBackgroundFilled(grant.status),
+        isBackgroundFilled: grant.status === 'Repaid',
         isGrantIdVisible: !isGrantActive,
         isLabelColorSecondary: isGrantActive,
         isProgressBarVisible: isGrantActive,
@@ -95,5 +102,13 @@ export const getGrantConfig = (grant: IGrant, areActionsLocallyCompleted?: boole
         statusKey: getStatusKey(grant, areActionsLocallyCompleted),
         statusTagVariant: getStatusTagVariant(grant, areActionsLocallyCompleted),
         statusTooltipKey: getStatusTooltipKey(grant, areActionsLocallyCompleted),
+    };
+};
+
+export const getEnhancedGrant = (grant: IGrant): EnhancedGrant => {
+    const { maximumRepaymentPeriodDays, ...rest } = grant;
+    return {
+        ...rest,
+        maximumRepaymentPeriodMonths: grant.maximumRepaymentPeriodDays === undefined ? undefined : Math.ceil(grant.maximumRepaymentPeriodDays / 30),
     };
 };
