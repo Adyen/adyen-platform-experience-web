@@ -158,6 +158,7 @@ export const CurrencyInput = ({
         return {
             onDropdownInput: onCurrencyChange,
             dropdown: {
+                filterable: true,
                 items: sortedCurrencyItems,
                 value: selectedCurrencyCode,
                 readonly: currenciesQuery.isFetching || readonly?.currency,
