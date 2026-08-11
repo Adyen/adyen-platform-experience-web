@@ -64,7 +64,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
         return selectedOffer ? 'OfferSummary' : 'OfferSelection';
     }, [selectedOffer]);
 
-    useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital offer' });
+    useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital offer', isEarlyRenewal: !!state?.renewableGrants.length }, !!state);
 
     if (state && (!state.isRegionSupported || !state.dynamicOffer)) {
         return (
