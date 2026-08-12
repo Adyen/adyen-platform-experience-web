@@ -152,7 +152,9 @@ test.describe('Default', () => {
         test('should render transaction details modal for clicked row', async ({ page, analyticsEvents }) => {
             await openTransactionDetailsModal(page, analyticsEvents, 0 /* first row transaction */);
 
-            const detailsModal = page.getByRole('dialog');
+            const detailsModal = page.getByRole('dialog', { name: 'Transaction details', exact: true });
+
+            await expect(detailsModal.getByText('Transaction details', { exact: true })).toHaveCount(0);
             await detailsModal.getByRole('tab', { name: 'Details', exact: true }).click();
             await expect(page.getByText('B78I76Y77072H127', { exact: true }).first()).toBeVisible();
         });

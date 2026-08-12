@@ -10,7 +10,7 @@ import {
     TX_DATA_INPUT_CONTAINER_WITH_ERROR,
     TX_DATA_INPUT_HEAD,
 } from '../../../../../domain/src';
-import { getDecimalAmount, getDivider } from '@integration-components/core/Localization/amount/amount-util';
+import { getDecimalAmount, getDivider, normalizeAmountInput } from '@integration-components/core/Localization/amount/amount-util';
 import { useUniqueId } from '@integration-components/composables-vue';
 
 const props = defineProps<{
@@ -62,13 +62,11 @@ watch(
 );
 
 function onInput(rawValue: string) {
-    const value = rawValue.trim();
-    const exp = currencyExponent.value;
-    const parsed = parseFloat(value);
-    const amount = isNaN(parsed) ? 0 : Math.trunc(+`${parsed}e${exp}`);
-
+    const { displayValue: value, amount } = normalizeAmountInput(rawValue, i18n.locale, props.currency);
+    const isInvalid = Number.isNaN(Number.parseFloat(rawValue));
     let error: typeof validationError.value;
-    if (isNaN(parsed) || value === '') {
+
+    if (isInvalid || value === '') {
         error = 'required';
     } else if (amount < 0) {
         error = 'negative';
