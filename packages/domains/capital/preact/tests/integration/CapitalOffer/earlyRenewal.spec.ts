@@ -1,6 +1,11 @@
 import type { Page } from '@playwright/test';
-import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
-import { goToStory, setTime } from '@integration-components/testing/playwright/utils';
+import { test, expect, type PageAnalyticsEvent } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
+import {
+    landedOnPageAnalyticsEventProperties,
+    selectedRepaymentTermAnalyticsEventProperties,
+    sliderChangedAnalyticsEventProperties,
+} from './constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-offer--early-renewal';
 
@@ -8,10 +13,26 @@ const goToOfferSummary = async (page: Page) => {
     await page.getByRole('button', { name: 'Review request' }).click();
 };
 
+const expectPageLoadAnalyticsEvents = (analyticsEvents: PageAnalyticsEvent[]) =>
+    expectAnalyticsEvents(analyticsEvents, [
+        ['Landed on page', { ...landedOnPageAnalyticsEventProperties, isEarlyRenewal: true }],
+        ['Changed capital offer slider', { ...sliderChangedAnalyticsEventProperties, min: 1220000, value: 1860000, isEarlyRenewal: true }],
+        [
+            'Selected repayment term',
+            {
+                ...selectedRepaymentTermAnalyticsEventProperties,
+                availableRates: [1100, 1500],
+                availableTerms: [180, 360],
+                isEarlyRenewal: true,
+            },
+        ],
+    ]);
+
 test.describe('Early renewal', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });
+        await expectPageLoadAnalyticsEvents(analyticsEvents);
     });
 
     test('should render early renewal info in offer selection screen', async ({ page }) => {

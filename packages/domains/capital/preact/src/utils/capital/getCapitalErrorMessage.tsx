@@ -62,10 +62,10 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
                 onContactSupport,
             };
         }
-        case 'EMPTY_CONFIG': {
+        case 'NO_OFFER': {
             return {
-                title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
-                message: ['capital.offer.common.errors.cannotContinue', COMMON_CAPITAL_ERROR_MESSAGE.contactSupportForHelp],
+                title: 'capital.offer.common.noOfferTitle',
+                message: 'capital.offer.common.noOfferDescription',
             };
         }
         case 'UNSUPPORTED_REGION': {

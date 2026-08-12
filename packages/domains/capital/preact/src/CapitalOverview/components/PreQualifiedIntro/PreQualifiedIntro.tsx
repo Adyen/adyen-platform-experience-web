@@ -19,10 +19,12 @@ const PreQualifiedIntro = ({
     hideTitle,
     maxAmount,
     onOfferOptionsRequest,
+    region,
 }: {
     maxAmount: IAmount;
     hideTitle?: boolean;
     onOfferOptionsRequest: () => void;
+    region?: string;
 }) => {
     const { i18n } = useCoreContext();
     const userEvents = useEventDispatcherContext();
@@ -39,7 +41,7 @@ const PreQualifiedIntro = ({
 
     return (
         <>
-            <CapitalHeader hideTitle={hideTitle} titleKey={'capital.overview.common.titles.qualificationIntro'} />
+            <CapitalHeader hideTitle={hideTitle} region={region} titleKey={'capital.overview.common.titles.qualificationIntro'} />
             <div className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrant}>
                 <InfoBox className="adyen-pe-pre-qualified-intro__banner">
                     <Typography variant={TypographyVariant.BODY}>

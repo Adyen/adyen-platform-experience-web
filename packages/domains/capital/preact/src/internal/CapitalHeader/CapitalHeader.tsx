@@ -1,19 +1,20 @@
 import { FunctionalComponent } from 'preact';
 import { useMemo } from 'preact/hooks';
-import { useConfigContext } from '@integration-components/core/preact';
 import { Header, HeaderProps } from '@integration-components/ui-components-preact/Header';
 import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import './CapitalHeader.scss';
-import { getCapitalHeaderSubtitleByLegalEntity } from './helpers';
+import { useCoreContext } from '@integration-components/core/preact';
 
-export type CapitalHeaderProps = Omit<HeaderProps, 'subtitleKey'>;
+export type CapitalHeaderProps = Omit<HeaderProps, 'subtitleKey'> & {
+    region?: string;
+};
 
-export const CapitalHeader: FunctionalComponent<CapitalHeaderProps> = props => {
-    const legalEntity = useConfigContext().extraConfig?.legalEntity;
+export const CapitalHeader: FunctionalComponent<CapitalHeaderProps> = ({ region, ...props }) => {
+    const { i18n } = useCoreContext();
     const subtitle = useMemo(() => {
-        const subtitleKey = getCapitalHeaderSubtitleByLegalEntity(legalEntity);
-        return subtitleKey ? { subtitleKey } : {};
-    }, [legalEntity]);
+        const subtitleKey = `capital.common.loanProviderInfo.${region}`;
+        return i18n.has(subtitleKey) ? { subtitleKey } : {};
+    }, [i18n, region]);
 
     return (
         <Header {...props} {...subtitle} subtitleConfig={{ variant: TypographyVariant.CAPTION, classNames: 'adyen-pe-capital-header__subtitle' }} />

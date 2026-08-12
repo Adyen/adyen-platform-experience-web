@@ -10,7 +10,6 @@ test.describe('Error - Account holder', () => {
 
     test('should render an error message', async ({ page }) => {
         await expect(page.getByText('Business financing request')).toBeVisible();
-        await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('Your account is inactive')).toBeVisible();
         await expect(
             page.getByText("We couldn't load financial offers. Contact support for help and share error code 769ac4ce59f0f159ad672d38d3291e92")

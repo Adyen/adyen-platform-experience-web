@@ -47,9 +47,11 @@ export const PreQualified = ({
                     hideTitle={hideTitle}
                     maxAmount={capitalState.dynamicOffer.maxAmount}
                     onOfferOptionsRequest={handleOfferOptionsRequest}
+                    region={capitalState.region}
                 />
             ) : (
                 <CapitalOffer
+                    hideTitle={hideTitle}
                     onFundsRequest={onFundsRequest}
                     onOfferDismiss={isOfferDismissButtonVisible ? handleOfferDismiss : undefined}
                     externalCapitalState={capitalState}

@@ -14,7 +14,11 @@ export const sharedCapitalOfferSummaryAnalyticsEventProperties = {
     subCategory: 'Business financing summary',
 } as const;
 
-export const landedOnPageAnalyticsEventProperties = { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' } as const;
+export const landedOnPageAnalyticsEventProperties = {
+    ...sharedCapitalOfferAnalyticsEventProperties,
+    label: 'Capital offer',
+    isEarlyRenewal: false,
+} as const;
 
 export const sliderChangedAnalyticsEventProperties = {
     ...sharedCapitalOfferSelectionAnalyticsEventProperties,
@@ -25,6 +29,7 @@ export const sliderChangedAnalyticsEventProperties = {
     min: 100000,
     max: 2500000,
     relativeToDefault: 'Equal',
+    isEarlyRenewal: false,
 };
 
 export const selectedRepaymentTermAnalyticsEventProperties = {
@@ -35,4 +40,5 @@ export const selectedRepaymentTermAnalyticsEventProperties = {
     relativeToDefault: 'Equal',
     selectedRate: 1100,
     selectedTerm: 180,
+    isEarlyRenewal: false,
 };
