@@ -30,7 +30,10 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
                     const core = await AdyenPlatformExperience({
                         onSessionCreate: getMySessionToken as any,
                     });
-                    const capitalOverview = new CapitalOverview({ core });
+                    const capitalOverview = new CapitalOverview({
+                        core,
+                        hideTitle: context.args.hideTitle,
+                    });
                     const { state } = await capitalOverview.getState();
 
                     if (state !== 'isInUnsupportedRegion' || context.args.mountIfInUnsupportedRegion) {
@@ -38,7 +41,7 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
                     }
                 };
                 void getAdyenPlatformExperienceComponent();
-            }, [context.args.mountIfInUnsupportedRegion]);
+            }, [context.args.hideTitle, context.args.mountIfInUnsupportedRegion]);
 
             return <div className="component-wrapper" id="capital-overview"></div>;
         },
@@ -64,7 +67,10 @@ export const Ineligible: ElementStory<typeof CapitalOverview, { mountIfIneligibl
                     const core = await AdyenPlatformExperience({
                         onSessionCreate: getMySessionToken as any,
                     });
-                    const capitalOverview = new CapitalOverview({ core });
+                    const capitalOverview = new CapitalOverview({
+                        core,
+                        hideTitle: context.args.hideTitle,
+                    });
                     const { state } = await capitalOverview.getState();
 
                     if (state !== 'isUnqualified' || context.args.mountIfIneligible) {
@@ -72,7 +78,7 @@ export const Ineligible: ElementStory<typeof CapitalOverview, { mountIfIneligibl
                     }
                 };
                 void getAdyenPlatformExperienceComponent();
-            }, [context.args.mountIfIneligible]);
+            }, [context.args.hideTitle, context.args.mountIfIneligible]);
 
             return <div className="component-wrapper" id="capital-overview"></div>;
         },

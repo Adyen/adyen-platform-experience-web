@@ -19,7 +19,7 @@ export const CapitalErrorMessageDisplay = ({
     onContactSupport?: () => void;
     unsupportedRegion?: boolean;
 }) => {
-    const { i18n } = useCoreContext();
+    const { i18n, getImageAsset } = useCoreContext();
 
     const renderSecondaryButton = useCallback(
         () => (
@@ -36,13 +36,26 @@ export const CapitalErrorMessageDisplay = ({
 
     const capitalError = useMemo(() => {
         if (unsupportedRegion) {
-            return new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'UnsupportedRegion', 'Unsupported Region Configuration', 'UNSUPPORTED_REGION');
+            return new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'UnsupportedRegion', 'Unsupported Region', 'UNSUPPORTED_REGION');
         }
         if (emptyGrantOffer) {
-            return new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'EmptyConfig', 'Empty Configuration', 'EMPTY_CONFIG');
+            return new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'NoOffer', 'No Offer', 'NO_OFFER');
         }
         return error;
     }, [emptyGrantOffer, unsupportedRegion, error]);
+
+    if (emptyGrantOffer) {
+        return (
+            <ErrorMessageDisplay
+                absolutePosition={false}
+                imageDesktop={getImageAsset?.({ name: 'no-results-found' })}
+                imageMobile={getImageAsset?.({ name: 'no-results-found', subFolder: 'images/small' })}
+                outlined={false}
+                {...getCapitalErrorMessage(capitalError as AdyenPlatformExperienceError, onContactSupport)}
+            />
+        );
+    }
+
     return (
         <ErrorMessageDisplay
             absolutePosition={false}

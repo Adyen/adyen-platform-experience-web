@@ -64,13 +64,13 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
         return selectedOffer ? 'OfferSummary' : 'OfferSelection';
     }, [selectedOffer]);
 
-    useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital offer' });
+    useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital offer', isEarlyRenewal: !!state?.renewableGrants.length }, !!state);
 
-    if (state && !state.isRegionSupported) {
+    if (state && (!state.isRegionSupported || !state.dynamicOffer)) {
         return (
             <div className={CAPITAL_OFFER_CLASS_NAMES.errorContainer}>
-                <CapitalHeader hideTitle={hideTitle} region={state.region} titleKey={'capital.common.title'} />
-                <CapitalErrorMessageDisplay unsupportedRegion />
+                <CapitalHeader hideTitle={hideTitle} region={state.region} titleKey={'capital.offer.selection.title'} />
+                <CapitalErrorMessageDisplay unsupportedRegion={!state.isRegionSupported} emptyGrantOffer={!state.dynamicOffer} />
             </div>
         );
     }
