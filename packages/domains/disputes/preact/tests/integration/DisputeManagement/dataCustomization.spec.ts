@@ -5,6 +5,17 @@ import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-he
 const STORY_ID = 'mocked-disputes-dispute-management--data-customization';
 
 test.describe('Data Customization', () => {
+    test('should hide the configured standard fields', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID });
+
+        await expect(page.getByText('Sydney', { exact: true })).toBeVisible();
+
+        await expect(page.getByText('Dispute reference', { exact: true })).toBeHidden();
+        await expect(page.getByText('Opened on', { exact: true })).toBeHidden();
+        await expect(page.getByText('Respond by', { exact: true })).toBeHidden();
+        await expect(page.getByText('Account', { exact: true })).toBeHidden();
+    });
+
     test('should render dispute details with custom data fields and action buttons', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
@@ -12,23 +23,21 @@ test.describe('Data Customization', () => {
         const summaryLink = page.getByRole('link', { name: 'Go to Summary', exact: true, disabled: false });
         const actionButton = page.getByRole('button', { name: 'Send email', exact: true, disabled: false });
 
-        await Promise.all([
-            // Custom data fields
-            expect(page.getByText('Store', { exact: true })).toBeVisible(),
-            expect(page.getByText('Sydney', { exact: true })).toBeVisible(),
+        // Custom data fields
+        await expect(page.getByText('Store', { exact: true })).toBeVisible();
+        await expect(page.getByText('Sydney', { exact: true })).toBeVisible();
 
-            expect(page.getByText('Product', { exact: true })).toBeVisible(),
-            expect(page.getByText('Coffee', { exact: true })).toBeVisible(),
+        await expect(page.getByText('Product', { exact: true })).toBeVisible();
+        await expect(page.getByText('Coffee', { exact: true })).toBeVisible();
 
-            expect(page.getByText('Summary', { exact: true })).toBeVisible(),
-            expect(summaryLink).toBeVisible(),
+        await expect(page.getByText('Summary', { exact: true })).toBeVisible();
+        await expect(summaryLink).toBeVisible();
 
-            expect(page.getByText('Country', { exact: true })).toBeVisible(),
-            expect(countryIcon).toBeAttached(),
+        await expect(page.getByText('Country', { exact: true })).toBeVisible();
+        await expect(countryIcon).toBeAttached();
 
-            // Custom action buttons
-            expect(actionButton).toBeVisible(),
-        ]);
+        // Custom action buttons
+        await expect(actionButton).toBeVisible();
 
         const [newPage] = await Promise.all([page.context().waitForEvent('page'), summaryLink.click()]);
 
