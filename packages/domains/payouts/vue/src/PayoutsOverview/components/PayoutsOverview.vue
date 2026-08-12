@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
+import { ModalContextProvider, useCoreContext } from '@integration-components/core/vue';
 import { BentoTypography, BentoModal } from '@adyen/bento-vue3';
 import { getTimezoneAwareDateRangeQueryParams } from '@integration-components/composables-vue';
 import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
@@ -136,23 +136,26 @@ function closeModal() {
             :current-page="payoutsListResult.page.value + 1"
         />
 
-        <BentoModal
-            :is-open="isModalOpen"
-            size="medium"
-            :is-dismissible="true"
-            @close-modal="closeModal"
-            :aria-label="i18n.get('payouts.details.title')"
-        >
-            {{ i18n.get('payouts.details.title') }}
-            <template #content>
-                <PayoutDetailsContainer
-                    v-if="selectedPayout && activeBalanceAccount"
-                    :id="activeBalanceAccount.id"
-                    :balance-account-description="activeBalanceAccount.description"
-                    :date="selectedPayout.createdAt ?? ''"
-                    :on-contact-support="props.onContactSupport"
-                />
-            </template>
-        </BentoModal>
+        <ModalContextProvider>
+            <BentoModal
+                :is-open="isModalOpen"
+                size="medium"
+                :is-dismissible="true"
+                :aria-label="i18n.get('payouts.details.title')"
+                @close-modal="closeModal"
+            >
+                <!-- Keep this default slot empty so Bento preserves its header layout without rendering a duplicate title. -->
+                <template #default />
+                <template #content>
+                    <PayoutDetailsContainer
+                        v-if="selectedPayout && activeBalanceAccount"
+                        :id="activeBalanceAccount.id"
+                        :balance-account-description="activeBalanceAccount.description"
+                        :date="selectedPayout.createdAt ?? ''"
+                        :on-contact-support="props.onContactSupport"
+                    />
+                </template>
+            </BentoModal>
+        </ModalContextProvider>
     </div>
 </template>

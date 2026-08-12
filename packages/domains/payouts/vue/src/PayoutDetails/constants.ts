@@ -17,6 +17,7 @@ export const PD_SECTION_GROSS_AMOUNT_CLASS = `${PD_SECTION_AMOUNT_CLASS}-gross`;
 export const PD_SECTION_NET_AMOUNT_CLASS = `${PD_SECTION_AMOUNT_CLASS}-net`;
 export const PD_UNPAID_AMOUNT = `${PD_BASE_CLASS}--unpaid-amount`;
 export const PD_DATA_GRID_CLASS = `${PD_BASE_CLASS}__data-grid`;
+export const PD_DATA_GRID_NO_HEADER_CLASS = `${PD_DATA_GRID_CLASS}--no-header`;
 export const PD_CARD_HEADER_CLASS = `${PD_BASE_CLASS}__card-header`;
 export const PD_SUMMARY_CARD_HEADER_CLASS = `${PD_CARD_HEADER_CLASS}--summary`;
 export const PD_PAGE_TITLE_CLASS = `${PD_BASE_CLASS}__page-title`;

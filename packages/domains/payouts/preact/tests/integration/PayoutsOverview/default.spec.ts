@@ -56,7 +56,8 @@ test.describe('Default', () => {
         });
 
         test('should render payout details modal and close the modal when dismissed', async ({ page }) => {
-            const detailsModal = page.getByRole('dialog');
+            const detailsModal = page.getByRole('dialog', { name: 'Payout details', exact: true });
+            await expect(detailsModal.getByText('Payout details', { exact: true })).toHaveCount(0);
             await detailsModal.getByRole('button', { name: 'Close modal', exact: true, disabled: false }).click();
             await expect(detailsModal).toBeHidden();
         });

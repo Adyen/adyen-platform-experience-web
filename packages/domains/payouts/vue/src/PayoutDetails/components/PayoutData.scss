@@ -1,13 +1,22 @@
 @use '@integration-components/style' as style;
+@use '@integration-components/style/accessibility' as accessibility;
 
 .adyen-pe-payout-data {
     --adyen-pe-data-details-padding: #{style.token(spacer-070)};
 
     & &__data-grid[class] {
         margin-inline: 0;
+        overflow: hidden;
+    }
+
+    &__data-grid--no-header {
+        .b-data-grid__columns-row {
+            @include accessibility.adyen-pe-visually-hidden;
+        }
     }
 
     &__title-container {
+        align-items: center;
         display: flex;
         gap: style.token(spacer-050);
     }
