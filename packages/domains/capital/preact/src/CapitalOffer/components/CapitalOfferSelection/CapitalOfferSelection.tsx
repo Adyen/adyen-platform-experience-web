@@ -120,6 +120,8 @@ export const CapitalOfferSelection = ({
 
     const currency = useMemo(() => dynamicOffersConfig?.minAmount.currency, [dynamicOffersConfig?.minAmount.currency]);
 
+    const isEarlyRenewal = !!capitalState?.renewableGrants.length;
+
     const { createGrantOffer, getDynamicGrantOffer } = useConfigContext().endpoints;
     const getDynamicGrantOfferMutation = useMutation({
         queryFn: getDynamicGrantOffer,
@@ -156,9 +158,10 @@ export const CapitalOfferSelection = ({
                 relativeToDefault,
                 availableRates,
                 selectedRate,
+                isEarlyRenewal,
             });
         },
-        [allTerms, availableTerms, termOfferMap, onSelectedTermChange, userEvents]
+        [availableTerms, termOfferMap, onSelectedTermChange, userEvents, allTerms, isEarlyRenewal]
     );
 
     const handleUserTermSelect = useCallback((term: number) => handleTermChange(term), [handleTermChange]);
@@ -207,9 +210,9 @@ export const CapitalOfferSelection = ({
                 );
             }
         } finally {
-            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Review offer' });
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Review offer', isEarlyRenewal });
         }
-    }, [matchedOffer, reviewOfferMutation, selectedTerm, userEvents]);
+    }, [matchedOffer, reviewOfferMutation, selectedTerm, userEvents, isEarlyRenewal]);
 
     const getOffer = useCallback(
         (amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }),
@@ -243,9 +246,10 @@ export const CapitalOfferSelection = ({
                 min: dynamicOffersConfig?.minAmount.value,
                 max: dynamicOffersConfig?.maxAmount.value,
                 relativeToDefault,
+                isEarlyRenewal,
             });
         },
-        [dynamicOffersConfig, defaultAmount, userEvents, currency]
+        [dynamicOffersConfig, defaultAmount, userEvents, currency, isEarlyRenewal]
     );
 
     const handleSliderRelease = useCallback(
