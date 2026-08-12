@@ -64,24 +64,27 @@ test.describe('Default', () => {
         const fullSizeUpload = page.locator('input[type="file"]').first();
         await fullSizeUpload.setInputFiles(fullWidthIcon);
 
-        const fullSizeValidationError = page.getByText(
-            'Image dimensions must be 200x200 pixels. Please upload an image with the correct resolution.'
-        );
-        await expect(fullSizeValidationError).toBeVisible();
+        const fullSizeValidationDimensionError = page.getByText('Image dimensions exceed limits');
+        await expect(fullSizeValidationDimensionError).toBeVisible();
+        const fullSizeValidationMaxImageError = page.getByText('Max image dimensions: 200 × 200px');
+        await expect(fullSizeValidationMaxImageError).toBeVisible();
+        await expect(fullSizeValidationMaxImageError).toHaveClass(/b-file-uploader-restrictions--error/);
+        page.getByText('Image dimensions exceed limits');
+        await page.getByRole('button', { name: /Cancel - theme-logo-full-width\.jpg/ }).click();
 
         const fullWidthUpload = page.locator('input[type="file"]').nth(1);
         await fullWidthUpload.setInputFiles(fullSizeIcon);
-
-        const fullWidthValidationError = page.getByText(
-            'Image dimensions must be 300x30 pixels. Please upload an image with the correct resolution.'
-        );
+        const fullWidthValidationError = page.getByText('Image dimensions exceed limits');
         await expect(fullWidthValidationError).toBeVisible();
+        const fullWidthMaxImageError = page.getByText('Max image dimensions: 300 × 30px');
+        await expect(fullWidthMaxImageError).toBeVisible();
+        await expect(fullWidthMaxImageError).toHaveClass(/b-file-uploader-restrictions--error/);
 
         // Check that the messages disappear when submitting right files
         await fullSizeUpload.setInputFiles(fullSizeIcon);
         await fullWidthUpload.setInputFiles(fullWidthIcon);
 
-        await expect(fullSizeValidationError).not.toBeVisible();
+        await expect(fullSizeValidationDimensionError).not.toBeVisible();
         await expect(fullWidthValidationError).not.toBeVisible();
     });
 
