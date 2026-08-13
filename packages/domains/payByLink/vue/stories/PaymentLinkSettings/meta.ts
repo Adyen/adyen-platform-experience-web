@@ -8,6 +8,7 @@ export const PaymentLinkSettingsMeta: Meta<ElementProps<PaymentLinkSettingsExter
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         hideTitle: { control: 'boolean' },
+        storeIds: { control: 'object' },
     },
     args: {
         component: PaymentLinkSettingsElement,

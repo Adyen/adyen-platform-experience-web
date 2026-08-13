@@ -11,6 +11,7 @@ export const PaymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExt
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         hideTitle: { control: 'boolean' },
         showDetails: { control: 'boolean' },
+        storeIds: { control: 'object' },
         preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
         allowLimitSelection: { control: 'boolean' },
     },
