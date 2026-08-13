@@ -162,7 +162,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                         if (isXsAndDownContainer) {
                             return (
                                 <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
-                                    <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
+                                    <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} baseClassName={BASE_CLASS} />
 
                                     <time dateTime={item.createdAt} className={DATE_METHOD_CLASS}>
                                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
@@ -180,7 +180,9 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             </time>
                         );
                     },
-                    paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />,
+                    paymentMethod: ({ item }) => (
+                        <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} baseClassName={BASE_CLASS} />
+                    ),
                 }}
             >
                 {showPagination && (

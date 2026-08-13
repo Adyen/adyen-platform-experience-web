@@ -1,0 +1,22 @@
+@use '@integration-components/style';
+
+.adyen-pe-payment-method-cell {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-030);
+    line-height: 1;
+    white-space: nowrap;
+
+    &__logo-container {
+        flex: 0 0 auto;
+        height: style.token(spacer-090);
+        width: style.token(spacer-100);
+    }
+
+    &__logo {
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+}
