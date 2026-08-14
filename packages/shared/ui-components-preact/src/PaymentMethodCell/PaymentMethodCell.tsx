@@ -7,22 +7,33 @@ import { TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
 import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
 import { parsePaymentMethodType } from '@integration-components/utils';
-import { PAYMENT_METHOD_CLASS, PAYMENT_METHOD_LOGO_CLASS, PAYMENT_METHOD_LOGO_CONTAINER_CLASS } from './constants';
+import { getPaymentMethodClasses, PAYMENT_METHOD_CLASS, PAYMENT_METHOD_LOGO_CLASS, PAYMENT_METHOD_LOGO_CONTAINER_CLASS } from './constants';
+import cx from 'classnames';
+import './PaymentMethodCell.scss';
 
-const PaymentMethodCell = ({ paymentMethod, bankAccount }: { paymentMethod?: IPaymentMethod; bankAccount?: IBankAccount }) => {
+const PaymentMethodCell = ({
+    paymentMethod,
+    bankAccount,
+    baseClassName,
+}: {
+    paymentMethod?: IPaymentMethod;
+    bankAccount?: IBankAccount;
+    baseClassName?: string;
+}) => {
     const { i18n } = useCoreContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
+    const customClasses = baseClassName ? getPaymentMethodClasses(baseClassName) : undefined;
 
     return (
-        <div className={PAYMENT_METHOD_CLASS}>
+        <div className={cx(PAYMENT_METHOD_CLASS, customClasses?.paymentMethod)}>
             {paymentMethod || bankAccount ? (
                 <>
-                    <div className={PAYMENT_METHOD_LOGO_CONTAINER_CLASS}>
+                    <div className={cx(PAYMENT_METHOD_LOGO_CONTAINER_CLASS, customClasses?.logoContainer)}>
                         <Image
                             name={paymentMethod ? paymentMethod.type : 'bankTransfer'}
                             alt={paymentMethod ? paymentMethod.type : 'bankTransfer'}
                             folder={'logos/'}
-                            className={PAYMENT_METHOD_LOGO_CLASS}
+                            className={cx(PAYMENT_METHOD_LOGO_CLASS, customClasses?.logo)}
                         />
                     </div>
                     <Typography variant={TypographyVariant.BODY} stronger={isSmContainer}>
