@@ -4,8 +4,13 @@
 
 ### Minor Changes
 
-- 2944085: In the Capital Offer and Capital Overview components, we updated the experience for users without an available financing offer. Users now see a consistent message which clearly communicates the state.
-  In the Capital Overview component, the hideTitle configuration is now applied when users continue from the pre-qualified flow to view offer options.
+- In the Capital Offer component, we added to the offer summary step a detailed breakdown of the new loan amount, current loan balance, and amount the user receives when they request an early renewal.
+- In the Capital Offer and Capital Overview components, we updated the messaging for users without an available financing offer to clearly reflect their eligibility state.
+
+### Patch Changes
+
+- In the Capital Overview component, the title is now correctly hidden based on the hideTitle parameter.
+- In the Disputes Overview component, we resolved an issue to ensure that the payment method is rendered on a single line.
 
 ## 1.13.1
 
