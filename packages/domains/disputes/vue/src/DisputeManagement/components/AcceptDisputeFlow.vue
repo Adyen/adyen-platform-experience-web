@@ -7,6 +7,8 @@ import { DISPUTE_TYPE } from '@integration-components/disputes/domain';
 import { isFunction } from '@integration-components/utils';
 import { useDisputeFlow } from '../composables/useDisputeFlow';
 import type { DisputeManagementProps } from '../types';
+import flowStyles from './DisputeFlow.module.scss';
+import styles from './AcceptDisputeFlow.module.scss';
 
 const props = defineProps<{
     onDisputeAccept?: DisputeManagementProps['onDisputeAccept'];
@@ -103,9 +105,9 @@ watch(disputeAccepted, accepted => {
 </script>
 
 <template>
-    <div class="adyen-pe-accept-dispute__container">
-        <div v-if="disputeAccepted" class="adyen-pe-accept-dispute__success">
-            <SuccessIcon class="adyen-pe-accept-dispute__success-icon" data-testid="accept-dispute-success-icon" aria-hidden="true" />
+    <div :class="flowStyles.container">
+        <div v-if="disputeAccepted" :class="flowStyles.success">
+            <SuccessIcon :class="flowStyles.successIcon" data-testid="accept-dispute-success-icon" aria-hidden="true" />
             <BentoTypography variant="title">
                 {{ acceptedLabel }}
             </BentoTypography>
@@ -114,13 +116,13 @@ watch(disputeAccepted, accepted => {
             </BentoButton>
         </div>
         <template v-else>
-            <BentoTypography class="adyen-pe-accept-dispute__title" el="h2" variant="title">
+            <BentoTypography el="h2" variant="title">
                 {{ acceptTitle }}
             </BentoTypography>
             <BentoTypography variant="body">
                 {{ acceptDisclaimer }}
             </BentoTypography>
-            <div class="adyen-pe-accept-dispute__input">
+            <div :class="styles.input">
                 <BentoCheckbox v-model="termsAgreed" :disabled="interactionsDisabled" required>
                     {{ i18n.get('disputes.management.accept.common.agree') }}
                 </BentoCheckbox>
@@ -130,7 +132,7 @@ watch(disputeAccepted, accepted => {
                     {{ i18n.get('disputes.management.common.errors.unavailable') }}
                 </template>
             </BentoAlert>
-            <div class="adyen-pe-accept-dispute__actions">
+            <div :class="flowStyles.actions">
                 <BentoButtonActions :actions="actionButtons as BentoButtonActionsList" />
             </div>
         </template>

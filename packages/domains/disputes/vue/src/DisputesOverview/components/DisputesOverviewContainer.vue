@@ -4,7 +4,6 @@ import { BentoButton } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useBalanceAccounts } from '@integration-components/composables-vue';
 import DisputesOverview from './DisputesOverview.vue';
-import { CONTAINER_CLASS } from '../constants';
 import type { DisputesOverviewProps } from '../types';
 import '@adyen/bento-vue3/styles/bento-light';
 
@@ -17,7 +16,7 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
 </script>
 
 <template>
-    <div :class="CONTAINER_CLASS">
+    <div>
         <div v-if="hasError" class="adyen-pe-data-overview-error">
             <p>{{ i18n.get('disputes.overview.common.errors.unavailable') }}</p>
             <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">

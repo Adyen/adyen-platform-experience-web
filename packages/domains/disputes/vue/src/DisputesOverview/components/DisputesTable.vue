@@ -15,7 +15,7 @@ import {
 import WarningFilledIcon from '@adyen/ui-assets-icons-16/vue/warning-filled';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
-import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
+import type { BentoColumn, BentoCurrencyISOCode, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import {
     useCustomColumnsData,
@@ -32,8 +32,8 @@ import type { StringWithAutocompleteOptions } from '@integration-components/util
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 import DisputeStatusTag from './DisputeStatusTag.vue';
 import DisputePaymentMethod from './DisputePaymentMethod.vue';
-import { DISPUTES_TABLE_FIELDS, EMPTY_TABLE_MESSAGE_KEYS, FIELD_KEYS, TABLE_CLASS, type DisputesTableFields } from '../constants';
-import '../styles/DisputesTable.scss';
+import { DISPUTES_TABLE_FIELDS, EMPTY_TABLE_MESSAGE_KEYS, FIELD_KEYS, type DisputesTableFields } from '../constants';
+import styles from './DisputesTable.module.scss';
 
 const props = defineProps<{
     statusGroup: IDisputeStatusGroup;
@@ -231,7 +231,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
 </script>
 
 <template>
-    <div :class="TABLE_CLASS">
+    <div :class="styles.root">
         <DataOverviewError
             v-if="props.error"
             :error="props.error"
@@ -243,7 +243,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
         />
 
         <template v-else-if="isMobile">
-            <div v-if="isLoading" class="adyen-pe-disputes-table__loading" aria-busy="true">
+            <div v-if="isLoading" :class="styles.loading" aria-busy="true">
                 <BentoLoadingIndicator />
             </div>
 
@@ -260,16 +260,19 @@ function handleListItemClick(dispute: IDisputeListItem) {
                     <BentoListItem
                         v-for="dispute in customRecords"
                         :key="dispute.disputePspReference"
-                        with-chevron
                         show-bottom-divider
                         @click="handleListItemClick(dispute)"
                     >
                         <template #content>
-                            <div class="adyen-pe-disputes-table__mobile-row">
-                                <div class="adyen-pe-disputes-table__mobile-details">
+                            <div :class="styles.mobileRow">
+                                <div :class="styles.mobileDetails">
                                     <div
-                                        class="adyen-pe-disputes-table__mobile-date"
-                                        :class="{ 'adyen-pe-disputes-table__mobile-date--urgent': isMobileDateUrgent(dispute) }"
+                                        :class="[
+                                            styles.mobileDate,
+                                            {
+                                                [styles.mobileDateUrgent]: isMobileDateUrgent(dispute),
+                                            },
+                                        ]"
                                     >
                                         <time :datetime="getMobileDate(dispute)">
                                             {{ dateFormat(getMobileDate(dispute), DATE_FORMAT_DISPUTES) }}
@@ -278,8 +281,12 @@ function handleListItemClick(dispute: IDisputeListItem) {
                                     </div>
                                     <DisputePaymentMethod :payment-method="dispute.paymentMethod" />
                                 </div>
-                                <BentoTypography class="adyen-pe-disputes-table__mobile-amount" variant="body" stronger>
-                                    <BentoCurrency :currency="dispute.amount.currency" :value="dispute.amount.value" :disable-typography="true" />
+                                <BentoTypography :class="styles.mobileAmount" variant="body" stronger>
+                                    <BentoCurrency
+                                        :currency="dispute.amount.currency as BentoCurrencyISOCode"
+                                        :value="dispute.amount.value"
+                                        :disable-typography="true"
+                                    />
                                 </BentoTypography>
                             </div>
                         </template>
@@ -313,24 +320,26 @@ function handleListItemClick(dispute: IDisputeListItem) {
             @items-page="handleItemsPage"
         >
             <template #item-status="{ item }">
-                <div class="adyen-pe-disputes-table__cell-content">
+                <div :class="styles.cellContent">
                     <DisputeStatusTag :dispute="getDispute(item)" />
                 </div>
             </template>
 
             <template #item-respondBy="{ item }">
-                <div class="adyen-pe-disputes-table__cell-content">
+                <div :class="styles.cellContent">
                     <span
                         v-if="getDispute(item).dueDate"
-                        class="adyen-pe-disputes-table__status-content"
-                        :class="{
-                            'adyen-pe-disputes-table__status-content--urgent': isDisputeActionNeededUrgently(getDispute(item)),
-                        }"
+                        :class="[
+                            styles.statusContent,
+                            {
+                                [styles.statusContentUrgent]: isDisputeActionNeededUrgently(getDispute(item)),
+                            },
+                        ]"
                     >
                         <span
                             v-if="isDisputeActionNeededUrgently(getDispute(item))"
                             v-bento-tooltip="getTimeToDeadline(getDispute(item).dueDate!)"
-                            class="adyen-pe-disputes-table__date-content--urgent"
+                            :class="styles.dateContentUrgent"
                         >
                             <time :datetime="getDispute(item).dueDate">{{ dateFormat(getDispute(item).dueDate!, DATE_FORMAT_DISPUTES) }}</time>
                             <WarningFilledIcon />
@@ -341,8 +350,8 @@ function handleListItemClick(dispute: IDisputeListItem) {
             </template>
 
             <template #item-createdAt="{ item }">
-                <div class="adyen-pe-disputes-table__cell-content">
-                    <time :datetime="getDispute(item).createdAt" class="adyen-pe-disputes-table__status-content">
+                <div :class="styles.cellContent">
+                    <time :datetime="getDispute(item).createdAt" :class="styles.statusContent">
                         <BentoTypography variant="body">{{ dateFormat(getDispute(item).createdAt, DATE_FORMAT_DISPUTES) }}</BentoTypography>
                     </time>
                 </div>
