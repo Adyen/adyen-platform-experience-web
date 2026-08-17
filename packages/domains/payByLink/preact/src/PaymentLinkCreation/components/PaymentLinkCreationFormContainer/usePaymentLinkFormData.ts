@@ -3,13 +3,12 @@ import { useFetch } from '@integration-components/hooks-preact';
 import { useConfigContext, useCoreContext } from '@integration-components/core/preact';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { IPaymentLinkStore, IPaymentLinkConfiguration } from '@integration-components/types';
-import { getFormSteps } from '../../utils';
+import { getFormSteps } from '../../../../../domain/src';
 import { TranslationKey } from '@integration-components/core';
 import { useWizardForm } from '@integration-components/hooks-preact/form/wizard/useWizardForm';
-import { PaymentLinkCreationFormValues } from '../types';
 import type { DeepPartial } from '@integration-components/types';
-import { PaymentLinkFieldsVisibilityConfig } from '../../types';
-import { StoreIds } from '../../../PaymentLinksOverview/types';
+import { PaymentLinkCreationFormValues, PaymentLinkFieldsVisibilityConfig } from '../../types';
+import type { StoreIds } from '@integration-components/payByLink/domain';
 
 type UsePaymentLinkFormDataProps = {
     storeIds?: StoreIds;

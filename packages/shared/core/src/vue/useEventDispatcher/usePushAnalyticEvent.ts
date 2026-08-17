@@ -4,10 +4,10 @@ import type { EmbeddedEventItem } from '../../EventDispatcher/eventDispatcher/us
 import type { ExternalComponentType } from '@integration-components/types';
 
 export function usePushAnalyticEvent() {
-    const { endpoints } = useConfigContext();
+    const config = useConfigContext();
 
     return (options: EmbeddedEventItem) => {
-        const { sendTrackEvent } = endpoints;
+        const { sendTrackEvent } = config.endpoints;
         if (!sendTrackEvent) return;
 
         const componentName = options.properties.componentName as ExternalComponentType;

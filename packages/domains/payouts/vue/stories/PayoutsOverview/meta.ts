@@ -1,11 +1,10 @@
 import type { Meta } from '@storybook/vue3';
 import type { PayoutsOverviewExternalProps } from '../../src';
-import PayoutsOverview from '../../src/PayoutsOverview/PayoutsOverviewWrapper.vue';
+import PayoutsOverviewElement from '../../src/PayoutsOverview/PayoutsOverviewElement';
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
 export const PayoutsOverviewMeta: Meta<ElementProps<PayoutsOverviewExternalProps>> = {
     title: 'Components/Payouts/Payouts Overview',
-    component: PayoutsOverview,
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
@@ -16,7 +15,7 @@ export const PayoutsOverviewMeta: Meta<ElementProps<PayoutsOverviewExternalProps
         allowLimitSelection: { control: 'boolean' },
     },
     args: {
-        component: PayoutsOverview,
+        component: PayoutsOverviewElement,
         allowLimitSelection: true,
         showDetails: true,
     },

@@ -27,6 +27,7 @@ import { CapitalHighlightedFields } from '../CapitalHighlightedFields/CapitalHig
 import { TabProps } from '@integration-components/ui-components-preact/Tabs/types';
 import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
 import { OnFundsRequestCallback } from '../../../types';
+import { RenewalHighlightedFields } from '../RenewalHighlightedFields';
 
 const errorMessageWithAlert = ['30_013'];
 const grantSummaryAmountConfig = { minimumFractionDigits: 0 };
@@ -51,7 +52,10 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
     const formatTermLabel = useFormatTermLabel();
 
     const { requestFunds } = useConfigContext().endpoints;
-    const renewsGrantId = useMemo(() => capitalState?.renewableGrants[0]?.id, [capitalState?.renewableGrants]);
+
+    const isEarlyRenewal = !!capitalState?.renewableGrants.length;
+    const renewableGrant = useMemo(() => capitalState?.renewableGrants[0], [capitalState?.renewableGrants]);
+    const renewsGrantId = useMemo(() => renewableGrant?.id, [renewableGrant]);
 
     const requestFundsMutation = useMutation({
         queryFn: requestFunds,
@@ -81,17 +85,17 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
                 requestFundsCallback(grantOffer.id);
             }
         } finally {
-            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Request funds' });
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Request funds', isEarlyRenewal });
         }
-    }, [grantOffer.id, requestFundsCallback, userEvents]);
+    }, [grantOffer.id, requestFundsCallback, userEvents, isEarlyRenewal]);
 
     const onBackWithTracking = useCallback<typeof onBack>(() => {
         try {
             return onBack();
         } finally {
-            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Back to slider view' });
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Back to slider view', isEarlyRenewal });
         }
-    }, [onBack, userEvents]);
+    }, [onBack, userEvents, isEarlyRenewal]);
 
     const requestErrorAlert = useMemo<{ title: string; message: string; errorCode?: string } | null>(() => {
         const err = requestFundsMutation.error ? (requestFundsMutation.error as AdyenErrorResponse) : null;
@@ -310,9 +314,14 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
         <CapitalErrorMessageDisplay error={requestFundsMutation.error} onBack={onBackWithTracking} onContactSupport={onContactSupport} />
     ) : (
         <div className="adyen-pe-capital-offer-summary">
-            <CapitalHighlightedFields fields={highlightedFields} align={'center'} />
+            <div className="adyen-pe-capital-offer-summary__highlighted-fields">
+                {renewableGrant && (
+                    <RenewalHighlightedFields remainingGrantAmount={renewableGrant?.remainingGrantAmount} newGrantAmount={grantOffer.grantAmount} />
+                )}
+                <CapitalHighlightedFields fields={highlightedFields} />
+            </div>
             <div className="adyen-pe-capital-offer-summary__terms">
-                {capitalState?.renewableGrants?.length ? (
+                {renewableGrant ? (
                     <Tabs tabs={tabs} />
                 ) : (
                     <>
@@ -342,8 +351,8 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
                     ) : null}
                 </Alert>
             )}
-            <CapitalOfferLegalNotice />
-            {!!capitalState?.renewableGrants?.length && (
+            <CapitalOfferLegalNotice region={capitalState?.region} />
+            {renewableGrant && (
                 <Alert
                     type={AlertTypeOption.HIGHLIGHT}
                     title={i18n.get('capital.offer.summary.earlyRenewalNotice.title')}

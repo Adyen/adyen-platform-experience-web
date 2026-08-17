@@ -1,35 +1,28 @@
 import { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
-import { ErrorMessage, UNDEFINED_ERROR } from '@integration-components/ui-components-preact/utils/getCommonErrorCode';
+import { ErrorMessage } from '@integration-components/ui-components-preact/utils/getCommonErrorCode';
 import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
+import { getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
 
 export const getPaymentLinkErrorMessage = (
     error: AdyenPlatformExperienceError,
     errorMessage: TranslationKey,
     onContactSupport?: () => void
 ): ErrorMessage => {
-    if (!error) return UNDEFINED_ERROR;
+    const content = getPaymentLinkErrorMessageContent(error, errorMessage, !!onContactSupport);
+    const is500Error = !!error && error.errorCode === '500';
+    const secondaryErrorMessage = content.message[1];
 
-    switch (error.errorCode) {
-        case undefined:
-            return {
-                title: 'common.errors.somethingWentWrong',
-                message: [errorMessage, 'common.errors.retry'],
-                refreshComponent: true,
-            };
-        case '500': {
-            const secondaryErrorMessage = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
-            return {
-                title: 'common.errors.somethingWentWrong',
-                message: [errorMessage, secondaryErrorMessage],
-                translationValues: {
-                    [secondaryErrorMessage]: error.requestId ? (
-                        <CopyText isUnderlineVisible copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={error.requestId} />
-                    ) : null,
-                },
-                onContactSupport,
-            };
-        }
-        default:
-            return UNDEFINED_ERROR;
-    }
+    return {
+        title: content.title,
+        message: content.message,
+        refreshComponent: content.refreshComponent,
+        ...(is500Error && {
+            onContactSupport,
+            translationValues: {
+                [secondaryErrorMessage!]: content.requestId ? (
+                    <CopyText isUnderlineVisible copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={content.requestId} />
+                ) : null,
+            },
+        }),
+    };
 };

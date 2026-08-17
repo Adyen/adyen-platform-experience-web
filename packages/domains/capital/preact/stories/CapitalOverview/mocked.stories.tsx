@@ -1,26 +1,26 @@
-import { getMySessionToken, ElementProps, ElementStory, SetupControls } from '@integration-components/testing/storybook-helpers';
 import { Meta } from '@storybook/preact';
+import { ElementProps, ElementStory, getMySessionToken } from '@integration-components/testing/storybook-helpers';
 import { CapitalOverview } from '../../src';
 import { AdyenPlatformExperience } from '@integration-components/sdk-internal';
-import { ILegalEntity } from '@integration-components/types';
-import { CapitalOverviewWithSetupMeta } from './meta';
-import { capitalOverviewHandlers } from '../../../mocks/mock-server/capitalOverviewHandlers';
+import { CapitalOverviewMeta } from './meta';
+import { capitalOverviewHandlers } from '../../../mocks/mock-server';
 import { useEffect } from 'preact/compat';
 
-const meta: Meta<ElementProps<typeof CapitalOverview> & SetupControls> = {
-    ...CapitalOverviewWithSetupMeta,
+const meta: Meta<ElementProps<typeof CapitalOverview>> = {
+    ...CapitalOverviewMeta,
     title: 'Mocked/Capital/Capital Overview',
 };
 
-export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean; legalEntity: ILegalEntity }> = {
+export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean }> = {
     name: 'Unsupported region',
     args: {
         mockedApi: true,
         skipDecorators: true,
         mountIfInUnsupportedRegion: true,
-        legalEntity: {
-            countryCode: 'TR',
-            regions: [{ type: 'capital', value: 'Middle East' }],
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOverviewHandlers.unsupportedRegion,
         },
     },
     decorators: [
@@ -28,10 +28,12 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
             useEffect(() => {
                 const getAdyenPlatformExperienceComponent = async () => {
                     const core = await AdyenPlatformExperience({
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         onSessionCreate: getMySessionToken as any,
                     });
-                    const capitalOverview = new CapitalOverview({ core });
+                    const capitalOverview = new CapitalOverview({
+                        core,
+                        hideTitle: context.args.hideTitle,
+                    });
                     const { state } = await capitalOverview.getState();
 
                     if (state !== 'isInUnsupportedRegion' || context.args.mountIfInUnsupportedRegion) {
@@ -39,23 +41,23 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
                     }
                 };
                 void getAdyenPlatformExperienceComponent();
-            }, [context.args.mountIfInUnsupportedRegion]);
+            }, [context.args.hideTitle, context.args.mountIfInUnsupportedRegion]);
 
             return <div className="component-wrapper" id="capital-overview"></div>;
         },
     ],
 };
 
-export const Unqualified: ElementStory<typeof CapitalOverview, { mountIfUnqualified: boolean }> = {
-    name: 'Unqualified',
+export const Ineligible: ElementStory<typeof CapitalOverview, { mountIfIneligible: boolean }> = {
+    name: 'Ineligible',
     args: {
         mockedApi: true,
         skipDecorators: true,
-        mountIfUnqualified: true,
+        mountIfIneligible: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOverviewHandlers.unqualified,
+            handlers: capitalOverviewHandlers.ineligible,
         },
     },
     decorators: [
@@ -63,173 +65,35 @@ export const Unqualified: ElementStory<typeof CapitalOverview, { mountIfUnqualif
             useEffect(() => {
                 const getAdyenPlatformExperienceComponent = async () => {
                     const core = await AdyenPlatformExperience({
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         onSessionCreate: getMySessionToken as any,
                     });
-                    const capitalOverview = new CapitalOverview({ core });
+                    const capitalOverview = new CapitalOverview({
+                        core,
+                        hideTitle: context.args.hideTitle,
+                    });
                     const { state } = await capitalOverview.getState();
 
-                    if (state !== 'isUnqualified' || context.args.mountIfUnqualified) {
+                    if (state !== 'isUnqualified' || context.args.mountIfIneligible) {
                         capitalOverview.mount('#capital-overview');
                     }
                 };
                 void getAdyenPlatformExperienceComponent();
-            }, [context.args.mountIfUnqualified]);
+            }, [context.args.hideTitle, context.args.mountIfIneligible]);
 
             return <div className="component-wrapper" id="capital-overview"></div>;
         },
     ],
 };
 
-export const Prequalified: ElementStory<typeof CapitalOverview> = {
-    name: 'Prequalified',
+export const FirstTimeEligible: ElementStory<typeof CapitalOverview> = {
+    name: 'First-time eligible',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOverviewHandlers.prequalified,
+            handlers: capitalOverviewHandlers.firstTimeEligible,
         },
-    },
-};
-
-export const GrantPending: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Pending',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.grantPending,
-    },
-};
-
-export const GrantMultipleActionsEmbedded: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Multiple actions - Embedded',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.grantMultipleActionsEmbedded,
-    },
-};
-
-export const GrantMultipleActionsHosted: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Multiple actions - Hosted',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.grantMultipleActionsHosted,
-    },
-};
-
-export const GrantSingleActionEmbedded: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Single action - Embedded',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.grantSingleActionEmbedded,
-    },
-};
-
-export const GrantSingleActionHosted: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Single action - Hosted',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.grantSingleActionHosted,
-    },
-};
-
-export const GrantActive: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Active',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.grantActive,
-    },
-};
-
-export const RepaymentNL: ElementStory<typeof CapitalOverview> = {
-    name: 'Repayment - NL',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.repaymentNL,
-    },
-};
-
-export const RepaymentGB: ElementStory<typeof CapitalOverview> = {
-    name: 'Repayment - GB',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.repaymentGB,
-    },
-};
-
-export const RepaymentUS: ElementStory<typeof CapitalOverview> = {
-    name: 'Repayment - US',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.repaymentUS,
-    },
-};
-
-export const RepaymentNoTransferInstruments: ElementStory<typeof CapitalOverview> = {
-    name: 'Repayment - No transfer instruments',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.repaymentNoTransferInstruments,
-    },
-};
-
-export const GrantFailed: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Failed',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.grantFailed,
-    },
-};
-
-export const GrantRepaid: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Repaid',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.grantRepaid,
-    },
-};
-
-export const GrantRevoked: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Revoked',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.grantRevoked,
-    },
-};
-
-export const GrantWrittenOff: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Written off',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: capitalOverviewHandlers.grantWrittenOff,
     },
 };
 
@@ -243,13 +107,13 @@ export const EarlyRenewal: ElementStory<typeof CapitalOverview> = {
     },
 };
 
-export const NewOffer: ElementStory<typeof CapitalOverview> = {
-    name: 'New offer',
+export const Eligible: ElementStory<typeof CapitalOverview> = {
+    name: 'Eligible',
     args: {
         mockedApi: true,
     },
     parameters: {
-        msw: capitalOverviewHandlers.newOffer,
+        msw: capitalOverviewHandlers.eligible,
     },
 };
 
@@ -263,50 +127,140 @@ export const Grants: ElementStory<typeof CapitalOverview> = {
     },
 };
 
-export const ErrorStateNoOfferCapability: ElementStory<typeof CapitalOverview> = {
-    name: 'Error - State - No offer capability',
+export const Pending: ElementStory<typeof CapitalOverview> = {
+    name: 'Pending',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: capitalOverviewHandlers.pending,
+    },
+};
+
+export const MultipleActions: ElementStory<typeof CapitalOverview> = {
+    name: 'Multiple actions',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: capitalOverviewHandlers.multipleActions,
+    },
+};
+
+export const SingleAction: ElementStory<typeof CapitalOverview> = {
+    name: 'Single action',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: capitalOverviewHandlers.singleAction,
+    },
+};
+
+export const MultipleHostedActions: ElementStory<typeof CapitalOverview> = {
+    name: 'Multiple hosted actions',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: capitalOverviewHandlers.multipleHostedActions,
+    },
+};
+
+export const SingleHostedAction: ElementStory<typeof CapitalOverview> = {
+    name: 'Single hosted action',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: capitalOverviewHandlers.singleHostedAction,
+    },
+};
+
+export const RepaymentNL: ElementStory<typeof CapitalOverview> = {
+    name: 'Repayment NL',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: capitalOverviewHandlers.repaymentNL,
+    },
+};
+
+export const RepaymentGB: ElementStory<typeof CapitalOverview> = {
+    name: 'Repayment GB',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: capitalOverviewHandlers.repaymentGB,
+    },
+};
+
+export const RepaymentUS: ElementStory<typeof CapitalOverview> = {
+    name: 'Repayment US',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: capitalOverviewHandlers.repaymentUS,
+    },
+};
+
+export const RepaymentWithoutTransferInstruments: ElementStory<typeof CapitalOverview> = {
+    name: 'Repayment without transfer instruments',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: capitalOverviewHandlers.repaymentWithoutTransferInstruments,
+    },
+};
+
+export const ErrorOfferConfig: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - Offer config',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOverviewHandlers.errorStateNoOfferCapability,
+            handlers: capitalOverviewHandlers.errorOfferConfig,
         },
     },
 };
 
-export const ErrorStateInactiveAccountHolder: ElementStory<typeof CapitalOverview> = {
-    name: 'Error - State - Inactive account holder',
+export const ErrorAccountHolder: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - Account holder',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOverviewHandlers.errorStateInactiveAccountHolder,
+            handlers: capitalOverviewHandlers.errorAccountHolder,
         },
     },
 };
 
-export const ErrorActionsEmbedded: ElementStory<typeof CapitalOverview> = {
-    name: 'Error - Actions Embedded',
+export const ErrorOnboardingConfig: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - Onboarding config',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOverviewHandlers.errorActionsEmbedded,
+            handlers: capitalOverviewHandlers.errorOnboardingConfig,
         },
     },
 };
 
-export const ErrorActionsHosted: ElementStory<typeof CapitalOverview> = {
-    name: 'Error - Actions Hosted',
+export const ErrorHostedAction: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - Hosted action',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOverviewHandlers.errorActionsHosted,
+            handlers: capitalOverviewHandlers.errorHostedAction,
         },
     },
 };

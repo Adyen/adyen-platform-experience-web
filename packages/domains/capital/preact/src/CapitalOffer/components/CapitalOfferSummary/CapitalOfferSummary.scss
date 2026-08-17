@@ -6,6 +6,12 @@
     flex-direction: column;
     gap: style.token(spacer-070);
 
+    &__highlighted-fields {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+    }
+
     &__terms {
         display: flex;
         flex-direction: column;

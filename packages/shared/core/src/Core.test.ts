@@ -69,4 +69,32 @@ describe('Core', () => {
 
         expect(warningCalls).toHaveLength(1);
     });
+
+    it('should update every registered component', async () => {
+        vi.spyOn(console, 'warn').mockImplementation(() => {});
+        vi.stubGlobal('window', {});
+
+        const core = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+        });
+
+        const components = ['first', 'second'].map(_id => ({
+            _id,
+            core,
+            unmount: vi.fn(),
+            update: vi.fn(),
+        }));
+
+        components.forEach(component => {
+            core.registerComponent(component);
+        });
+
+        await core.update({ locale: 'de-DE' });
+
+        components.forEach(component => {
+            expect(component.update).toHaveBeenCalledOnce();
+            expect(component.update).toHaveBeenCalledWith(expect.objectContaining({ locale: 'de-DE' }));
+        });
+    });
 });

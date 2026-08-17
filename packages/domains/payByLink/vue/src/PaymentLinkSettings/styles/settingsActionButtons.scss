@@ -1,0 +1,11 @@
+@use '@integration-components/style';
+
+.adyen-pe-payment-link-settings {
+    &__cta-container {
+        align-items: stretch;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        padding: style.token(spacer-060) 0;
+    }
+}

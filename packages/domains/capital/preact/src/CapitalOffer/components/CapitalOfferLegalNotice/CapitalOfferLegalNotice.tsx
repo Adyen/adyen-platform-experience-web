@@ -1,7 +1,5 @@
-import { useConfigContext } from '@integration-components/core/preact';
 import AnchorButton from '@integration-components/ui-components-preact/AnchorButton/AnchorButton';
 import { ButtonVariant } from '@integration-components/types';
-import { SupportedLocation } from '../../../internal/CapitalHeader/constants';
 import Card from '@integration-components/ui-components-preact/Card/Card';
 import { Translation } from '@integration-components/ui-components-preact/Translation';
 import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
@@ -9,10 +7,12 @@ import Typography from '@integration-components/ui-components-preact/Typography/
 import { SUMMARY_TEXT_EMAIL } from '../CapitalOfferSummary/constants';
 import './CapitalOfferLegalNotice.scss';
 
-export const CapitalOfferLegalNotice = () => {
-    const countryCode = useConfigContext()?.extraConfig?.legalEntity?.countryCode;
+type CapitalOfferLegalNoticeProps = {
+    region?: string;
+};
 
-    return countryCode === SupportedLocation.US ? (
+export const CapitalOfferLegalNotice = ({ region }: CapitalOfferLegalNoticeProps) => {
+    return region === 'US' ? (
         <Card filled noOutline>
             <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-legal-notice--title'}>
                 <Translation translationKey={'capital.offer.summary.legalNotice.US.title'} fills={{ break: <br /> }} />

@@ -41,6 +41,7 @@ export interface components {
             activeOrPendingGrants: components['schemas']['GrantResponseDTO'][];
             dynamicOffer?: components['schemas']['DynamicOffersResponseV2DTO'];
             hasClosedGrants: boolean;
+            legalEntity?: components['schemas']['LegalEntityDTO'];
         };
         DynamicOffersResponseV2DTO: {
             estimatedRepaymentTermsInDays: number[];
@@ -104,6 +105,9 @@ export interface components {
         };
         /** @enum {string} */
         GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
+        LegalEntityDTO: {
+            region?: string;
+        };
         MissingActionDTO: {
             type: components['schemas']['MissingActionType'];
         };

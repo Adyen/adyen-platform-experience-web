@@ -26,30 +26,6 @@ export const DYNAMIC_CAPITAL_OFFER = {
     step: 10000,
 } satisfies IDynamicOffersConfig;
 
-export const GRANT_NL_ACCOUNT = {
-    beneficiaryName: 'Adyen N.V.',
-    iban: 'NL69RABO1319778291',
-    region: 'NL',
-    order: ['iban', 'beneficiaryName', 'region'],
-} satisfies NonNullable<INLCapitalFundsCollection>;
-
-export const GRANT_GB_ACCOUNT = {
-    accountNumber: '123456789012',
-    beneficiaryName: 'Adyen N.V. London Branch',
-    iban: 'GB01ADYB01234567890123',
-    region: 'GB',
-    sortCode: '012345678',
-    order: ['iban', 'accountNumber', 'sortCode', 'beneficiaryName', 'region'],
-} satisfies NonNullable<IGBCapitalFundsCollection>;
-
-export const GRANT_US_ACCOUNT = {
-    accountNumber: '123456789012',
-    beneficiaryName: 'Adyen N.V. San Francisco Branch',
-    region: 'US',
-    routingNumber: '012345678',
-    order: ['accountNumber', 'routingNumber', 'beneficiaryName', 'region'],
-} satisfies NonNullable<IUSCapitalFundsCollection>;
-
 export const DEFAULT_GRANT: IGrant = {
     id: '66e12a9a64a6',
     grantAmount: {
@@ -126,6 +102,51 @@ export const ACTIVE_GRANT: IGrant = {
         value: 822000,
         currency: 'EUR',
     },
+};
+
+export const GRANT_NL_ACCOUNT = {
+    beneficiaryName: 'Adyen N.V.',
+    iban: 'NL69RABO1319778291',
+    region: 'NL',
+    order: ['iban', 'beneficiaryName', 'region'],
+} satisfies NonNullable<INLCapitalFundsCollection>;
+
+export const GRANT_GB_ACCOUNT = {
+    accountNumber: '123456789012',
+    beneficiaryName: 'Adyen N.V. London Branch',
+    iban: 'GB01ADYB01234567890123',
+    region: 'GB',
+    sortCode: '012345678',
+    order: ['iban', 'accountNumber', 'sortCode', 'beneficiaryName', 'region'],
+} satisfies NonNullable<IGBCapitalFundsCollection>;
+
+export const GRANT_US_ACCOUNT = {
+    accountNumber: '123456789012',
+    beneficiaryName: 'Adyen N.V. San Francisco Branch',
+    region: 'US',
+    routingNumber: '012345678',
+    order: ['accountNumber', 'routingNumber', 'beneficiaryName', 'region'],
+} satisfies NonNullable<IUSCapitalFundsCollection>;
+
+export const ACTIVE_GRANT_NL: IGrant = {
+    ...ACTIVE_GRANT,
+    unscheduledRepaymentAccounts: [GRANT_NL_ACCOUNT],
+};
+
+export const ACTIVE_GRANT_GB: IGrant = {
+    ...ACTIVE_GRANT,
+    unscheduledRepaymentAccounts: [GRANT_GB_ACCOUNT],
+};
+
+export const ACTIVE_GRANT_US: IGrant = {
+    ...ACTIVE_GRANT,
+    unscheduledRepaymentAccounts: [GRANT_US_ACCOUNT],
+};
+
+export const ACTIVE_GRANT_WITHOUT_TRANSFER_INSTRUMENTS: IGrant = {
+    ...ACTIVE_GRANT,
+    unscheduledRepaymentAccounts: [GRANT_NL_ACCOUNT],
+    transferInstruments: [],
 };
 
 export const RENEWABLE_GRANT: IGrant = {
@@ -240,19 +261,20 @@ export const ONBOARDING_CONFIGURATION: IOnboardingConfiguration = {
     legalEntityId: 'test-legal-entity-id',
 };
 
-export const CAPITAL_STATE_UNQUALIFIED: ICapitalState = {
-    activeOrPendingGrants: [],
-    hasClosedGrants: false,
-};
-
-export const CAPITAL_STATE_FIRST_OFFER: ICapitalState = {
+const CAPITAL_STATE_DEFAULT: ICapitalState = {
     activeOrPendingGrants: [],
     dynamicOffer: DYNAMIC_CAPITAL_OFFER,
     hasClosedGrants: false,
+    legalEntity: { region: 'EU' },
 };
 
-export const CAPITAL_STATE_FIRST_OFFER_CAD: ICapitalState = {
-    activeOrPendingGrants: [],
+export const CAPITAL_STATE_UNSUPPORTED_REGION: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT,
+    legalEntity: { region: 'TR' },
+};
+
+export const CAPITAL_STATE_CA: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT,
     dynamicOffer: {
         ...DYNAMIC_CAPITAL_OFFER,
         minAmount: {
@@ -264,47 +286,53 @@ export const CAPITAL_STATE_FIRST_OFFER_CAD: ICapitalState = {
             currency: 'CAD',
         },
     },
-    hasClosedGrants: false,
+    legalEntity: { region: 'CA' },
 };
 
+export const CAPITAL_STATE_US: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT,
+    legalEntity: { region: 'US' },
+};
+
+export const CAPITAL_STATE_INELIGIBLE: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT,
+    dynamicOffer: undefined,
+};
+
+export const CAPITAL_STATE_FIRST_OFFER: ICapitalState = CAPITAL_STATE_DEFAULT;
+
 export const CAPITAL_STATE_ACTIVE_GRANT: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT,
     activeOrPendingGrants: [ACTIVE_GRANT],
-    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
-    hasClosedGrants: false,
 };
 
 export const CAPITAL_STATE_RENEWABLE_GRANT: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT,
     activeOrPendingGrants: [RENEWABLE_GRANT],
-    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
-    hasClosedGrants: false,
 };
 
 export const CAPITAL_STATE_PENDING_GRANT: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT,
     activeOrPendingGrants: [PENDING_GRANT],
-    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
-    hasClosedGrants: false,
 };
 
 export const CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT,
     activeOrPendingGrants: [PENDING_GRANT_WITH_SINGLE_ACTION],
-    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
-    hasClosedGrants: false,
 };
 
 export const CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT,
     activeOrPendingGrants: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS],
-    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
-    hasClosedGrants: false,
 };
 
 export const CAPITAL_STATE_GRANTS: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT,
     activeOrPendingGrants: [ACTIVE_RENEWING_GRANT],
-    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
     hasClosedGrants: true,
 };
 
 export const CAPITAL_STATE_CLOSED_GRANTS: ICapitalState = {
-    activeOrPendingGrants: [],
-    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
+    ...CAPITAL_STATE_DEFAULT,
     hasClosedGrants: true,
 };

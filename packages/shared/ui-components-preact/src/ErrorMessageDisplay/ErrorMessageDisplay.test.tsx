@@ -32,14 +32,14 @@ describe('ErrorMessageDisplay', () => {
         }),
     };
 
-    const mockUpdateCore = vi.fn();
+    const mockRefreshComponent = vi.fn();
     const mockGetImageAsset = vi.fn(() => 'default-image.svg');
 
     beforeEach(() => {
         vi.clearAllMocks();
         vi.mocked(useCoreContext).mockReturnValue({
             i18n: mockI18n,
-            updateCore: mockUpdateCore,
+            refreshComponent: mockRefreshComponent,
             getImageAsset: mockGetImageAsset,
         } as any);
     });
@@ -158,7 +158,7 @@ describe('ErrorMessageDisplay', () => {
             expect(onContactSupport).toHaveBeenCalledOnce();
         });
 
-        test('should render refresh button and call updateCore when clicked', async () => {
+        test('should render refresh button and refresh its component when clicked', async () => {
             const user = userEvent.setup();
 
             render(<ErrorMessageDisplay title={'testTitle' as TranslationKey} refreshComponent={true} />);
@@ -166,7 +166,7 @@ describe('ErrorMessageDisplay', () => {
             const refreshButton = screen.getByRole('button', { name: TEST_LABELS.REFRESH });
             await user.click(refreshButton);
 
-            expect(mockUpdateCore).toHaveBeenCalledOnce();
+            expect(mockRefreshComponent).toHaveBeenCalledOnce();
         });
 
         test('should not render refresh button when onContactSupport is provided', () => {

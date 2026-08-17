@@ -1,0 +1,62 @@
+@use '@integration-components/style';
+@use '@integration-components/style/mixins';
+
+.adyen-pe-payment-link-settings {
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+    }
+
+    &__content-header {
+        margin-bottom: style.token(spacer-080);
+    }
+
+    &__error {
+        @include mixins.adyen-pe-error-message-display-container;
+    }
+
+    &__content-item {
+        display: flex;
+        flex: 2 1 0;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+        justify-content: space-between;
+        width: 100%;
+
+        &--mobile {
+            display: flex;
+            flex-direction: column;
+            gap: style.token(spacer-060);
+            justify-content: space-between;
+            width: 100%;
+        }
+    }
+
+    &__input-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+        margin-bottom: style.token(spacer-080);
+        width: 100%;
+    }
+
+    &__content-container {
+        display: flex;
+        flex-direction: row;
+        gap: style.token(spacer-090);
+        margin-top: style.token(spacer-070);
+
+        &--mobile {
+            flex-direction: column;
+            margin-top: 0;
+        }
+    }
+
+    &__sidebar-container {
+        display: flex;
+        flex: 1 1 0;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+    }
+}

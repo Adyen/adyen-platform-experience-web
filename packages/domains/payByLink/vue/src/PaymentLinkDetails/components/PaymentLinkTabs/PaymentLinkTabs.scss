@@ -1,0 +1,24 @@
+@use '@integration-components/style';
+
+.adyen-pe-payment-link-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-090);
+    padding-bottom: style.token(spacer-070);
+
+    &__list-heading {
+        padding-bottom: style.token(spacer-020);
+    }
+
+    &__copyable-value {
+        /* Overriding Bento link colors within this scope to match design */
+        --b-color-link-primary: #{style.token(color-label-primary)};
+        --b-color-link-primary-active: #{style.token(color-label-primary-active)};
+        --b-color-link-primary-disabled: #{style.token(color-label-primary-disabled)};
+        --b-color-link-primary-hover: #{style.token(color-label-primary-hover)};
+
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-020);
+    }
+}

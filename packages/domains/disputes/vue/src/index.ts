@@ -1,21 +1,18 @@
-export {
-    DisputeManagement,
-    DisputeManagementElement,
-    DisputeManagementInternal,
-    type DisputeManagementExternalProps,
-    type DisputeManagementProps,
-    type DisputeDetailsFields,
-    type DisputeDetailsCustomization,
-    type DisputeCallbackData,
+export { DisputeManagementElement } from './DisputeManagement';
+export { DisputesOverviewElement } from './DisputesOverview';
+
+export type {
+    DisputeManagementExternalProps,
+    DisputeManagementProps,
+    DisputeDetailsFields,
+    DisputeDetailsCustomization,
+    DisputeCallbackData,
 } from './DisputeManagement';
 
-export {
-    DisputesOverview,
-    DisputesOverviewElement,
-    DisputesOverviewInternal,
-    type DisputesOverviewExternalProps,
-    type DisputesOverviewProps,
-    type DisputesListCustomization,
-    type DisputesTableFields,
-    type DisputeStatusGroup,
+export type {
+    DisputesOverviewExternalProps,
+    DisputesOverviewProps,
+    DisputesListCustomization,
+    DisputesTableFields,
+    DisputeStatusGroup,
 } from './DisputesOverview';

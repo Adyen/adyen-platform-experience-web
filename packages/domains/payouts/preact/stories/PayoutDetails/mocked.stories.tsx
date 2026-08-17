@@ -29,6 +29,14 @@ export const ErrorDetails: ElementStory<typeof PayoutDetails> = {
     },
 };
 
+export const ErrorNotFound: ElementStory<typeof PayoutDetails> = {
+    name: 'Error - Not found',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...PAYOUT_DETAILS_HANDLERS.errorNotFound },
+    },
+};
+
 export const SumOfSameDayPayouts: ElementStory<typeof PayoutDetails> = {
     name: 'Sum of same-day payouts',
     args: sharedArgs,

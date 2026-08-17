@@ -4,11 +4,11 @@ import { AlertTypeOption } from '@integration-components/ui-components-preact/Al
 import StoreField from './Fields/StoreField';
 
 import { StateUpdater, useMemo } from 'preact/hooks';
-import { PaymentLinkCreationFormValues } from '../../types';
+import { PaymentLinkCreationFormValues } from '../../../types';
 import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import { IPaymentLinkSettings, IPaymentLinkStore } from '@integration-components/types';
 import { Dispatch } from 'preact/compat';
-import { StoreIds } from '../../../../PaymentLinksOverview/types';
+import type { StoreIds } from '@integration-components/payByLink/domain';
 import './StoreForm.scss';
 
 interface StoreFormProps {

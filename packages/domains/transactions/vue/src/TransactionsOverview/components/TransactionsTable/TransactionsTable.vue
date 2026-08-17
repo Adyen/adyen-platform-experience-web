@@ -1,8 +1,23 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { useTimezoneAwareDateFormatting, useResponsiveContainer, containerQueries, CustomDataCell } from '@integration-components/composables-vue';
-import { BentoDataGrid, BentoTypography, BentoTag, BentoPaymentMethod, BentoButton, BentoColumnOverflow } from '@adyen/bento-vue3';
+import {
+    useTimezoneAwareDateFormatting,
+    useResponsiveContainer,
+    containerQueries,
+    CustomDataCell,
+    DataOverviewError,
+} from '@integration-components/composables-vue';
+import {
+    BentoDataGrid,
+    BentoTypography,
+    BentoTag,
+    BentoPaymentMethod,
+    BentoColumnOverflow,
+    BentoTooltipDirective as vBentoTooltip,
+} from '@adyen/bento-vue3';
+import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
+import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { getTransactionCategoryDescription, getTransactionCategory, TRANSACTION_FIELDS } from '../../../../../domain/src';
 import { getCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
@@ -142,6 +157,8 @@ const paginationProps = computed(() => ({
 }));
 
 const emptyStateProps = computed(() => ({
+    image: 'no-results-found' as const,
+    variant: 'embedded' as const,
     title: i18n.get('transactions.overview.errors.listEmpty'),
     description: i18n.get('common.errors.updateFilters'),
 }));
@@ -175,12 +192,14 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
 
 <template>
     <div :class="TABLE_CLASS">
-        <div v-if="props.error" class="adyen-pe-data-overview-error">
-            <p>{{ i18n.get('transactions.overview.errors.listUnavailable') }}</p>
-            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
-            </BentoButton>
-        </div>
+        <DataOverviewError
+            v-if="props.error"
+            :error="props.error"
+            :error-message="'transactions.overview.errors.listUnavailable'"
+            :on-contact-support="props.onContactSupport"
+            :refresh-icon="RefreshIcon"
+            :copy-icon="CopyIcon"
+        />
 
         <BentoDataGrid
             v-else
@@ -232,7 +251,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
             </template>
 
             <template #item-transactionType="{ item }">
-                <BentoTypography variant="body" v-bento-tooltip="getTransactionCategoryDescription(i18n, item.transactionType) ?? ''">
+                <BentoTypography v-bento-tooltip="getTransactionCategoryDescription(i18n, item.transactionType) ?? ''" variant="body">
                     {{ getTransactionCategory(i18n, item.transactionType) }}
                 </BentoTypography>
             </template>

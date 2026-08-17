@@ -15,8 +15,8 @@ import { TermSelector } from '../TermSelector';
 import { Fragment } from 'preact';
 import { getRelativeToDefault, getValuePercentage } from './utils';
 import { CapitalOfferInformation } from '../CapitalOfferInformation/CapitalOfferInformation';
-import { CapitalHighlightedFields } from '../CapitalHighlightedFields/CapitalHighlightedFields';
 import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
+import { RenewalHighlightedFields } from '../RenewalHighlightedFields';
 
 const DEFAULT_TERM = 180;
 
@@ -120,6 +120,8 @@ export const CapitalOfferSelection = ({
 
     const currency = useMemo(() => dynamicOffersConfig?.minAmount.currency, [dynamicOffersConfig?.minAmount.currency]);
 
+    const isEarlyRenewal = !!capitalState?.renewableGrants.length;
+
     const { createGrantOffer, getDynamicGrantOffer } = useConfigContext().endpoints;
     const getDynamicGrantOfferMutation = useMutation({
         queryFn: getDynamicGrantOffer,
@@ -156,9 +158,10 @@ export const CapitalOfferSelection = ({
                 relativeToDefault,
                 availableRates,
                 selectedRate,
+                isEarlyRenewal,
             });
         },
-        [allTerms, availableTerms, termOfferMap, onSelectedTermChange, userEvents]
+        [availableTerms, termOfferMap, onSelectedTermChange, userEvents, allTerms, isEarlyRenewal]
     );
 
     const handleUserTermSelect = useCallback((term: number) => handleTermChange(term), [handleTermChange]);
@@ -207,9 +210,9 @@ export const CapitalOfferSelection = ({
                 );
             }
         } finally {
-            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Review offer' });
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Review offer', isEarlyRenewal });
         }
-    }, [matchedOffer, reviewOfferMutation, selectedTerm, userEvents]);
+    }, [matchedOffer, reviewOfferMutation, selectedTerm, userEvents, isEarlyRenewal]);
 
     const getOffer = useCallback(
         (amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }),
@@ -243,9 +246,10 @@ export const CapitalOfferSelection = ({
                 min: dynamicOffersConfig?.minAmount.value,
                 max: dynamicOffersConfig?.maxAmount.value,
                 relativeToDefault,
+                isEarlyRenewal,
             });
         },
-        [dynamicOffersConfig, defaultAmount, userEvents, currency]
+        [dynamicOffersConfig, defaultAmount, userEvents, currency, isEarlyRenewal]
     );
 
     const handleSliderRelease = useCallback(
@@ -293,56 +297,23 @@ export const CapitalOfferSelection = ({
 
     const hasSingleTerm = useMemo(() => allTerms.length === 1, [allTerms.length]);
 
-    const isUnqualified = useMemo(
-        () => !capitalStateError && capitalState !== undefined && !capitalState.dynamicOffer,
-        [capitalState, capitalStateError]
-    );
-
-    const highlightedFields = useMemo(() => {
-        const currency = matchedOffer?.grantAmount.currency;
-        const newGrantAmount = matchedOffer?.grantAmount.value;
-        const existingGrantAmount = capitalState?.renewableGrants[0]?.remainingGrantAmount.value;
-
-        if (!currency || !newGrantAmount || !existingGrantAmount) return [];
-
-        const amountToReceive = newGrantAmount - existingGrantAmount;
-        const amountConfig = { minimumFractionDigits: 0 };
-
-        return [
-            {
-                label: i18n.get('capital.offer.selection.earlyRenewal.newGrantAmount'),
-                value: i18n.amount(newGrantAmount, currency, amountConfig),
-            },
-            {
-                value: '-',
-            },
-            {
-                label: i18n.get('capital.offer.selection.earlyRenewal.currentGrantAmount'),
-                value: i18n.amount(existingGrantAmount, currency, amountConfig),
-            },
-            {
-                value: '=',
-            },
-            {
-                label: i18n.get('capital.offer.selection.earlyRenewal.amountToReceive'),
-                value: i18n.amount(amountToReceive, currency, amountConfig),
-            },
-        ];
-    }, [capitalState, i18n, matchedOffer?.grantAmount.currency, matchedOffer?.grantAmount.value]);
-
     const renderHighlightedFields = () => {
-        if (!capitalState?.renewableGrants?.length) return null;
-        return isLoadingIndicatorVisible ? <HighlightedFieldsLoadingSkeleton /> : <CapitalHighlightedFields fields={highlightedFields} />;
+        const renewableGrant = capitalState?.renewableGrants[0];
+        if (!renewableGrant) return null;
+        return isLoadingIndicatorVisible ? (
+            <HighlightedFieldsLoadingSkeleton />
+        ) : (
+            <RenewalHighlightedFields remainingGrantAmount={renewableGrant.remainingGrantAmount} newGrantAmount={matchedOffer!.grantAmount} />
+        );
     };
 
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || isUnqualified || capitalStateError || termsError ? (
+            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || capitalStateError || termsError ? (
                 <CapitalErrorMessageDisplay
                     error={reviewOfferMutation.error || getDynamicGrantOfferMutation.error || capitalStateError}
                     onBack={onOfferDismiss}
                     onContactSupport={onContactSupport}
-                    emptyGrantOffer={isUnqualified}
                 />
             ) : (
                 <>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import {
-    BentoButton,
     BentoCurrency,
     BentoDataGrid,
     BentoEmptyState,
@@ -14,9 +13,17 @@ import {
     BentoTypography,
 } from '@adyen/bento-vue3';
 import WarningFilledIcon from '@adyen/ui-assets-icons-16/vue/warning-filled';
+import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
+import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import { useCustomColumnsData, CustomDataCell, useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
+import {
+    useCustomColumnsData,
+    CustomDataCell,
+    useResponsiveContainer,
+    containerQueries,
+    DataOverviewError,
+} from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { getDisputeReason, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE, DAY_IN_MS as DAY_MS, mergeRecords } from '@integration-components/utils';
@@ -166,6 +173,8 @@ const paginationProps = computed(() => {
 });
 
 const emptyStateProps = computed(() => ({
+    image: 'no-results-found' as const,
+    variant: 'embedded' as const,
     title: i18n.get(EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].title),
     description: i18n.get(EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].message),
 }));
@@ -222,12 +231,15 @@ function handleListItemClick(dispute: IDisputeListItem) {
 
 <template>
     <div :class="TABLE_CLASS">
-        <div v-if="props.error" class="adyen-pe-data-overview-error">
-            <p>{{ i18n.get('disputes.overview.common.errors.listUnavailable') }}</p>
-            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
-            </BentoButton>
-        </div>
+        <DataOverviewError
+            v-if="props.error"
+            :error="props.error"
+            :error-message="'disputes.overview.common.errors.listUnavailable'"
+            :on-contact-support="props.onContactSupport"
+            :variant="isMobile ? 'condensed' : 'embedded'"
+            :refresh-icon="RefreshIcon"
+            :copy-icon="CopyIcon"
+        />
 
         <template v-else-if="isMobile">
             <div v-if="isLoading" class="adyen-pe-disputes-table__loading" aria-busy="true">
@@ -237,6 +249,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
             <BentoEmptyState
                 v-else-if="!customRecords.length"
                 variant="condensed"
+                :image="emptyStateProps.image"
                 :title="emptyStateProps.title"
                 :description="emptyStateProps.description"
             />

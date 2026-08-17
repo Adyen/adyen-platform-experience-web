@@ -25,7 +25,7 @@ type GrantActionsHostedProps = {
 };
 
 export const GrantActionsHosted: FunctionalComponent<GrantActionsHostedProps> = ({ className, expirationDate, missingActions }) => {
-    const { i18n, updateCore } = useCoreContext();
+    const { i18n, refreshComponent } = useCoreContext();
     const userEvents = useEventDispatcherContext();
     const { anaCreditActionDetails, signToSActionDetails } = useConfigContext().endpoints;
 
@@ -128,7 +128,7 @@ export const GrantActionsHosted: FunctionalComponent<GrantActionsHostedProps> = 
                 type={AlertTypeOption.CRITICAL}
                 title={i18n.get('capital.overview.grants.item.alerts.somethingWentWrong')}
                 description={
-                    <Button className={CLASSNAMES.button} onClick={updateCore}>
+                    <Button className={CLASSNAMES.button} onClick={refreshComponent}>
                         {i18n.get('common.actions.refresh.labels.default')}
                     </Button>
                 }

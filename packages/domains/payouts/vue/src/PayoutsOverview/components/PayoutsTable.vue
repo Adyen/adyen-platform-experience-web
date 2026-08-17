@@ -1,8 +1,16 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoDataGrid, BentoButton, BentoTypography } from '@adyen/bento-vue3';
+import { BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
+import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
+import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import { useCustomColumnsData, CustomDataCell, useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
+import {
+    useCustomColumnsData,
+    CustomDataCell,
+    useResponsiveContainer,
+    containerQueries,
+    DataOverviewError,
+} from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IPayout, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
@@ -145,6 +153,8 @@ const paginationProps = computed(() => {
 });
 
 const emptyStateProps = computed(() => ({
+    image: 'no-results-found' as const,
+    variant: 'embedded' as const,
     title: i18n.get('payouts.overview.errors.listEmpty'),
     description: i18n.get('common.errors.updateFilters'),
 }));
@@ -175,12 +185,14 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
 <template>
     <div :class="TABLE_CLASS">
         <!-- Error state -->
-        <div v-if="props.error" class="adyen-pe-data-overview-error">
-            <p>{{ i18n.get('payouts.overview.errors.listUnavailable') }}</p>
-            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
-            </BentoButton>
-        </div>
+        <DataOverviewError
+            v-if="props.error"
+            :error="props.error"
+            :error-message="'payouts.overview.errors.listUnavailable'"
+            :on-contact-support="props.onContactSupport"
+            :refresh-icon="RefreshIcon"
+            :copy-icon="CopyIcon"
+        />
 
         <BentoDataGrid
             v-else

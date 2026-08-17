@@ -1,8 +1,8 @@
 import { useCoreContext } from '@integration-components/core/preact';
 import { useCallback, useMemo } from 'preact/hooks';
 import { FormTextInput } from '@integration-components/ui-components-preact/FormWrappers/FormTextInput';
-import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../constants';
-import { PaymentLinkCreationFormValues } from '../../../types';
+import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../../domain/src';
+import { PaymentLinkCreationFormValues } from '../../../../types';
 
 export const ShopperEmailField = () => {
     const { i18n } = useCoreContext();

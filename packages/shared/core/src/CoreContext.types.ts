@@ -13,7 +13,7 @@ export interface CoreProviderProps {
     commonProps?: CommonPropsTypes;
     i18n: Localization['i18n'];
     loadingContext?: string;
-    updateCore?: () => void;
+    refreshComponent?: () => void;
     externalErrorHandler?: onErrorHandler | null;
     componentRef: ComponentRef<HTMLDivElement>;
     getImageAsset?: (props: AssetOptions) => string;

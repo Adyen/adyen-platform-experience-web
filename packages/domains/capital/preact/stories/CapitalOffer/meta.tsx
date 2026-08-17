@@ -1,11 +1,5 @@
 import { Meta } from '@storybook/preact';
-import { legaEntityDecorator } from '../utils/setupRequestConfig';
-import {
-    ElementProps,
-    EMPTY_SETUP_LEGAL_ENTITY_OBJECT,
-    enabledDisabledCallbackRadioControls,
-    SetupControls,
-} from '@integration-components/testing/storybook-helpers';
+import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 import { CapitalOffer } from '@integration-components/capital/preact';
 import { action } from 'storybook/actions';
 
@@ -26,20 +20,4 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
             sort: 'alpha',
         },
     },
-};
-
-export const capitalOfferWithSetupMeta: Meta<ElementProps<typeof CapitalOffer> & SetupControls> = {
-    ...capitalOfferMeta,
-    argTypes: {
-        ...capitalOfferMeta.argTypes,
-        legalEntity: {
-            control: { type: 'object' },
-            table: { category: 'Setup Config' },
-        },
-    },
-    args: {
-        ...capitalOfferMeta.args,
-        legalEntity: EMPTY_SETUP_LEGAL_ENTITY_OBJECT,
-    },
-    decorators: [legaEntityDecorator],
 };

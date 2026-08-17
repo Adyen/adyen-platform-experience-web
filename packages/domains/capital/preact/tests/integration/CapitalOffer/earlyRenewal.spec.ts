@@ -1,6 +1,11 @@
 import type { Page } from '@playwright/test';
-import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
-import { goToStory, setTime } from '@integration-components/testing/playwright/utils';
+import { test, expect, type PageAnalyticsEvent } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
+import {
+    landedOnPageAnalyticsEventProperties,
+    selectedRepaymentTermAnalyticsEventProperties,
+    sliderChangedAnalyticsEventProperties,
+} from './constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-offer--early-renewal';
 
@@ -8,10 +13,26 @@ const goToOfferSummary = async (page: Page) => {
     await page.getByRole('button', { name: 'Review request' }).click();
 };
 
+const expectPageLoadAnalyticsEvents = (analyticsEvents: PageAnalyticsEvent[]) =>
+    expectAnalyticsEvents(analyticsEvents, [
+        ['Landed on page', { ...landedOnPageAnalyticsEventProperties, isEarlyRenewal: true }],
+        ['Changed capital offer slider', { ...sliderChangedAnalyticsEventProperties, min: 1220000, value: 1860000, isEarlyRenewal: true }],
+        [
+            'Selected repayment term',
+            {
+                ...selectedRepaymentTermAnalyticsEventProperties,
+                availableRates: [1100, 1500],
+                availableTerms: [180, 360],
+                isEarlyRenewal: true,
+            },
+        ],
+    ]);
+
 test.describe('Early renewal', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });
+        await expectPageLoadAnalyticsEvents(analyticsEvents);
     });
 
     test('should render early renewal info in offer selection screen', async ({ page }) => {
@@ -23,7 +44,7 @@ test.describe('Early renewal', () => {
         await expect(page.getByText('€25,000')).toBeVisible();
         await expect(page.getByText('New loan')).toBeVisible();
         await expect(page.getByText('-', { exact: true })).toBeVisible();
-        await expect(page.getByText('Existing loan balance')).toBeVisible();
+        await expect(page.getByText('Current loan balance')).toBeVisible();
         await expect(page.getByText('€8,130')).toBeVisible();
         await expect(page.getByText('=')).toBeVisible();
         await expect(page.getByText("Amount you'll receive")).toBeVisible();
@@ -33,8 +54,15 @@ test.describe('Early renewal', () => {
     test('should render early renewal info in offer summary screen', async ({ page }) => {
         await goToOfferSummary(page);
         await expect(page.getByText('Business financing summary')).toBeVisible();
-        await expect(page.getByText('New loan', { exact: true })).toBeVisible();
-        await expect(page.getByText('Current loan', { exact: true })).toBeVisible();
+        await expect(page.getByText('New loan', { exact: true })).toHaveCount(2);
+        await expect(page.getByText('-', { exact: true })).toBeVisible();
+        await expect(page.getByText('Current loan balance')).toBeVisible();
+        await expect(page.getByText('€8,130')).toBeVisible();
+        await expect(page.getByText('=')).toBeVisible();
+        await expect(page.getByText("Amount you'll receive")).toBeVisible();
+        await expect(page.getByText('€10,470')).toBeVisible();
+        await expect(page.getByRole('tab', { name: 'New loan' })).toBeVisible();
+        await expect(page.getByRole('tab', { name: 'Current loan' })).toBeVisible();
         await expect(page.getByText('Financing', { exact: true })).toHaveCount(3);
         await expect(page.getByText('€18,600.00')).toBeVisible();
         await expect(page.getByText('Fees', { exact: true })).toHaveCount(3);

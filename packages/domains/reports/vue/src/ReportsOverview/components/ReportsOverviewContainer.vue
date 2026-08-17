@@ -4,6 +4,7 @@ import ReportsOverview from './ReportsOverview.vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useBalanceAccounts } from '@integration-components/composables-vue';
 import { REPORTS_OVERVIEW_CONTAINER_CLASS_NAMES } from '../../../../domain/src';
+import '@adyen/bento-vue3/styles/bento-light';
 
 const props = withDefaults(
     defineProps<{
