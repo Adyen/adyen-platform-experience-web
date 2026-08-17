@@ -74,7 +74,7 @@ const showLoadingPlaceholder = computed(() => isFetching.value && !data.value &&
 </script>
 
 <template>
-    <div class="adyen-pe-payout-details">
+    <div>
         <div v-if="showError" :class="styles.errorContainer">
             <ErrorMessageDisplay
                 :error="error"

@@ -20,8 +20,8 @@
     @content;
 }
 
-@mixin adyen-pe-error-message-display-container {
-    .adyen-pe-error-message-display {
+@mixin adyen-pe-error-message-display-container($selector: '.adyen-pe-error-message-display') {
+    #{$selector} {
         margin: 0 auto;
         max-width: 450px;
     }

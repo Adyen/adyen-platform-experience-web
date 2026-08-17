@@ -8,5 +8,5 @@
 }
 
 .errorContainer {
-    @include mixins.adyen-pe-error-message-display-container;
+    @include mixins.adyen-pe-error-message-display-container(':global(.adyen-pe-error-message-display)');
 }
