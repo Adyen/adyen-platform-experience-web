@@ -1,7 +1,7 @@
 @use '@integration-components/style' as style;
 
 .root {
-    --details-padding: #{style.token(spacer-070)};
+    --adyen-pe-data-details-padding: #{style.token(spacer-070)};
 }
 
 .root .dataGrid[class] {
@@ -46,7 +46,7 @@
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-030);
-    margin: 0 calc(var(--details-padding) * -1);
+    margin: 0 calc(var(--adyen-pe-data-details-padding) * -1);
     padding: style.token(spacer-070);
 }
 
