@@ -88,7 +88,7 @@
   },
   "devDependencies": {
     "@adyen/bento-design-tokens": "^1.7.1",
-    "@changesets/cli": "2.29.8",
+    "@changesets/cli": "3.0.0-next.6",
     "@changesets/get-github-info": "^0.6.0",
     "@eslint/js": "^9.39.2",
     "@integration-components/assets": "workspace:*",
