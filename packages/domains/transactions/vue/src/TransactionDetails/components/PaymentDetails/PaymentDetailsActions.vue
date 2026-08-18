@@ -5,7 +5,7 @@ import { BentoButtonActions } from '@adyen/bento-vue3';
 import { sharedTransactionDetailsEventProperties, ActiveView } from '../../../../../domain/src';
 import type { TransactionDetails } from '../../../../../domain/src';
 import type { useTransaction } from '../../composables/useTransaction';
-import styles from './PaymentDetails.module.scss';
+import layoutStyles from '../TransactionDataLayout.module.scss';
 
 type TransactionNavigatorState = ReturnType<typeof useTransaction>['transactionNavigator']['value'];
 
@@ -75,7 +75,7 @@ const actions = computed(() => [primaryAction.value, secondaryAction.value, ...c
 </script>
 
 <template>
-    <div v-if="actions.length > 0" :class="[styles.container, styles.actionBar]">
+    <div v-if="actions.length > 0" :class="[layoutStyles.container, layoutStyles.actionBar]">
         <BentoButtonActions :actions="actions" />
     </div>
 </template>

@@ -10,7 +10,7 @@ import { REFUND_REASONS, RefundMode } from '../../../../../domain/src';
 import { clamp } from '@integration-components/utils';
 import type { TransactionDetails, RefundReason, RefundResult } from '../../../../../domain/src';
 import type { IRefundMode } from '@integration-components/types';
-import styles from './PaymentRefund.module.scss';
+import layoutStyles from '../TransactionDataLayout.module.scss';
 
 const props = defineProps<{
     currency: string;
@@ -60,7 +60,7 @@ function onAmountChange(value: number) {
 </script>
 
 <template>
-    <div :class="styles.root">
+    <div :class="layoutStyles.root">
         <PaymentRefundNotice />
         <PaymentRefundReason :disabled="refundInProgress" :reason="refundReason" @change="(r: RefundReason) => (refundReason = r)" />
         <PaymentRefundAmount

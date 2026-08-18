@@ -21,13 +21,12 @@ const titleKey = computed(() => (isError.value ? 'common.errors.somethingWentWro
 const descriptionKey = computed(() =>
     isError.value ? 'transactions.details.refund.alerts.refundFailure' : 'transactions.details.refund.alerts.refundSuccess'
 );
-const iconClass = computed(() => [styles.refundResponseIcon, isError.value ? styles.refundResponseIconError : styles.refundResponseIconSuccess]);
 </script>
 
 <template>
     <div :class="styles.refundResponse">
-        <CrossCircleFillIcon v-if="isError" :class="iconClass" />
-        <CheckmarkCircleFillIcon v-else :class="iconClass" />
+        <CrossCircleFillIcon v-if="isError" :class="styles.refundResponseIconError" />
+        <CheckmarkCircleFillIcon v-else :class="styles.refundResponseIconSuccess" />
         <BentoTypography variant="title" large>{{ i18n.get(titleKey) }}</BentoTypography>
         <BentoTypography variant="body">{{ i18n.get(descriptionKey) }}</BentoTypography>
         <BentoButton

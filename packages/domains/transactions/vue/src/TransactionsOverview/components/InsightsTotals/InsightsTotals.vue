@@ -50,7 +50,7 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
 </script>
 
 <template>
-    <div :class="styles.root">
+    <div>
         <template v-if="isLoading">
             <div class="adyen-pe-transaction-insights-totals__skeleton adyen-pe-transaction-insights-totals__skeleton--loading">
                 <span class="adyen-pe-transaction-insights-totals__skeleton--amount adyen-pe-transaction-insights-totals__skeleton--amount-large" />
@@ -76,7 +76,7 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
         </template>
 
         <template v-else-if="data">
-            <div :class="[styles.amountDisplay, 'adyen-pe-transaction-amount-display--large']">
+            <div :class="styles.amountDisplay">
                 <BentoTypography variant="caption">{{ i18n.get('transactions.overview.totals.tags.periodResult') }}</BentoTypography>
                 <div :class="styles.amountDisplayAmount">
                     <BentoTypography variant="title" large>{{ i18n.amount(data.total, data.currency) }}</BentoTypography>

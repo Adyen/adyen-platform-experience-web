@@ -12,6 +12,7 @@ import { TX_DETAILS_TABS, ActiveView, DetailsTab, RefundedState, REFUND_STATUSES
 import type { TransactionDetails, TransactionDetailsCustomization } from '../../../../../domain/src';
 import { useTransaction } from '../../composables/useTransaction.js';
 import styles from './PaymentDetails.module.scss';
+import layoutStyles from '../TransactionDataLayout.module.scss';
 
 type TransactionNavigatorState = ReturnType<typeof useTransaction>['transactionNavigator']['value'];
 
@@ -73,10 +74,10 @@ const onTabChange = (newIndex: number) => {
 </script>
 
 <template>
-    <div :class="styles.root">
+    <div :class="layoutStyles.root">
         <PaymentDetailsStatusBox :refunded-state="props.refundedState" :transaction="props.transaction" />
 
-        <div :class="styles.container">
+        <div :class="layoutStyles.container">
             <BentoTabs
                 :class="styles.tabs"
                 v-if="navigationTabs.length > 1"

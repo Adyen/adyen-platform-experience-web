@@ -5,7 +5,7 @@ import { BentoButtonActions } from '@adyen/bento-vue3';
 import { sharedTransactionDetailsEventProperties } from '../../../../../domain/src';
 import { isFunction } from '@integration-components/utils';
 import type { RefundReason, RefundResult } from '../../../../../domain/src';
-import styles from './PaymentRefund.module.scss';
+import layoutStyles from '../TransactionDataLayout.module.scss';
 
 const props = defineProps<{
     beginRefund: () => void;
@@ -91,7 +91,7 @@ const secondaryAction = computed(() => ({
 </script>
 
 <template>
-    <div :class="[styles.container, styles.actionBar]">
+    <div :class="[layoutStyles.container, layoutStyles.actionBar]">
         <BentoButtonActions :actions="[primaryAction, secondaryAction]" />
     </div>
 </template>

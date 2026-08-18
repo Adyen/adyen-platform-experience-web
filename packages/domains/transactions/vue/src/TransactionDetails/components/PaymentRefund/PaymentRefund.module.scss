@@ -1,22 +1,5 @@
 @use '@integration-components/style';
 
-.root {
-    display: flex;
-    flex-direction: column;
-    gap: style.token(spacer-080);
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-.actionBar {
-    align-self: flex-end;
-    flex-direction: row;
-}
-
 .refundResponse {
     align-items: center;
     display: flex;
@@ -32,4 +15,10 @@
 
 .refundResponseIconError {
     color: style.token(color-background-critical-strong);
+}
+
+.inputHead {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: style.token(spacer-030);
 }

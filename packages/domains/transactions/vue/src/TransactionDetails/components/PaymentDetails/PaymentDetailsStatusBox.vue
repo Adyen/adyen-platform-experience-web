@@ -6,14 +6,13 @@ import {
     getTransactionCategory,
     getAmountStyleForTransaction,
     getRefundTypeForTransaction,
-    TX_DATA_AMOUNT,
-    TX_DATA_PAY_METHOD_DETAIL,
     RefundedState,
     RefundType,
 } from '../../../../../domain/src';
 import type { TransactionDetails } from '../../../../../domain/src';
 import { parsePaymentMethodType, DATE_FORMAT_TRANSACTION_DETAILS } from '@integration-components/utils';
 import styles from './PaymentDetailsStatusBox.module.scss';
+import layoutStyles from '../TransactionDataLayout.module.scss';
 
 const props = defineProps<{
     refundedState: RefundedState;
@@ -27,7 +26,16 @@ const refundType = computed(() => getRefundTypeForTransaction(props.transaction)
 const formattedDate = computed(() => i18n.date(props.transaction.createdAt, DATE_FORMAT_TRANSACTION_DETAILS));
 const formattedAmount = computed(() => i18n.amount(props.transaction.netAmount.value, props.transaction.netAmount.currency));
 
-const amountClass = computed(() => [`${TX_DATA_AMOUNT}--${amountStyle.value}`]);
+const amountClass = computed(() => {
+    switch (amountStyle.value) {
+        case 'error':
+            return styles.amountError;
+        case 'pending':
+            return styles.amountPending;
+        default:
+            return undefined;
+    }
+});
 const paymentMethodType = computed(() => props.transaction.paymentMethod?.type ?? 'bankTransfer');
 const paymentMethodDetail = computed(() => {
     if (props.transaction.paymentMethod) return parsePaymentMethodType(props.transaction.paymentMethod, 'detail');
@@ -38,7 +46,7 @@ const paymentMethodDetail = computed(() => {
 <template>
     <BentoCard>
         <template #content>
-            <div :class="[styles.container, styles.statusBox]">
+            <div :class="[layoutStyles.container, styles.statusBox]">
                 <div :class="styles.tags">
                     <BentoTag
                         v-if="props.transaction.category"
@@ -71,7 +79,7 @@ const paymentMethodDetail = computed(() => {
                     />
                 </div>
 
-                <div :class="[TX_DATA_AMOUNT, ...amountClass]">
+                <div :class="[amountClass]">
                     <BentoTypography variant="title" large>{{ formattedAmount }}</BentoTypography>
                 </div>
 
@@ -79,7 +87,7 @@ const paymentMethodDetail = computed(() => {
                     <div :class="styles.paymentMethodLogoContainer">
                         <BentoPaymentMethod :type="paymentMethodType" />
                     </div>
-                    <BentoTypography v-if="paymentMethodDetail" variant="title" :class="TX_DATA_PAY_METHOD_DETAIL">
+                    <BentoTypography v-if="paymentMethodDetail" variant="title">
                         {{ paymentMethodDetail }}
                     </BentoTypography>
                 </div>

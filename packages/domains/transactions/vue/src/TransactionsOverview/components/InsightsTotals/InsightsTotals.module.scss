@@ -1,48 +1,44 @@
 @use '@integration-components/style';
 @use '@integration-components/style/breakpoints' as breakpoints;
 
-.root {
-    .breakdowns {
-        display: grid;
-        gap: style.token(spacer-100) calc(#{style.token(spacer-110)} * 2);
-        grid-template-columns: 1fr;
+.breakdowns {
+    display: grid;
+    gap: style.token(spacer-100) calc(#{style.token(spacer-110)} * 2);
+    grid-template-columns: 1fr;
 
-        @include breakpoints.adyen-pe-screen-md-and-up {
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-            position: relative;
-        }
+    @include breakpoints.adyen-pe-screen-md-and-up {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        position: relative;
     }
+}
 
-    .divider {
-        display: none;
+.divider {
+    display: none;
 
-        @include breakpoints.adyen-pe-screen-md-and-up {
-            display: block;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
+    @include breakpoints.adyen-pe-screen-md-and-up {
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
     }
+}
 
-    .breakdown {
-        min-width: 0;
-        overflow: hidden;
-    }
+.breakdown {
+    min-width: 0;
+    overflow: hidden;
+}
 
-    .breakdowns .breakdownList {
-        @include breakpoints.adyen-pe-screen-md-and-up {
-            margin-inline: unset;
-        }
+.breakdowns .breakdownList {
+    @include breakpoints.adyen-pe-screen-md-and-up {
+        margin-inline: unset;
     }
+}
 
-    .amountDisplay {
-        &Amount {
-            display: flex;
-            align-items: center;
-            gap: style.token(spacer-040);
-            margin-bottom: style.token(spacer-070);
-        }
-    }
+.amountDisplayAmount {
+    display: flex;
+    align-items: center;
+    gap: style.token(spacer-040);
+    margin-bottom: style.token(spacer-070);
 }
