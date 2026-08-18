@@ -1,17 +1,5 @@
 # @adyen/adyen-platform-experience-web
 
-## 1.14.0-rc.0
-
-### Minor Changes
-
-- In the Capital Offer component, we added to the offer summary step a detailed breakdown of the new loan amount, current loan balance, and amount the user receives when they request an early renewal.
-- In the Capital Offer and Capital Overview components, we updated the messaging for users without an available financing offer to clearly reflect their eligibility state.
-
-### Patch Changes
-
-- In the Capital Overview component, the title is now correctly hidden based on the hideTitle parameter.
-- In the Disputes Overview component, we resolved an issue to ensure that the payment method is rendered on a single line.
-
 ## 1.13.1
 
 ### Patch Changes
