@@ -1,5 +1,7 @@
 {
   "mode": "pre",
   "tag": "rc",
-  "changesets": []
+  "changesets": [
+    "stupid-lies-tickle"
+  ]
 }
