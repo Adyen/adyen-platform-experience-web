@@ -169,6 +169,7 @@ const paginationProps = computed(() => {
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
+        hideFirstLastPageButtons: true,
     };
 });
 
@@ -286,6 +287,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
                 </BentoList>
 
                 <BentoPagination
+                    hide-first-last-page-buttons
                     v-if="showMobilePagination"
                     :page="props.currentPage"
                     :size="props.limit"

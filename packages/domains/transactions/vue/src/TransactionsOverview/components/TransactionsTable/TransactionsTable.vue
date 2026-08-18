@@ -154,6 +154,7 @@ const paginationProps = computed(() => ({
     hasNext: props.hasNext ?? false,
     hasPrevious: props.hasPrevious ?? false,
     hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
+    hideFirstLastPageButtons: true,
 }));
 
 const emptyStateProps = computed(() => ({
