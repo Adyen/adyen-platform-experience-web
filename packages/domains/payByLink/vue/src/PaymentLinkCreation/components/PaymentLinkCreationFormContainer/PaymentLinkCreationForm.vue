@@ -8,7 +8,7 @@ import { usePaymentLinkFormData } from './usePaymentLinkFormData';
 import { usePaymentLinkWizard } from './usePaymentLinkWizard';
 import { useInvalidFields } from './useInvalidFields';
 import { PAYMENT_LINK_WIZARD_KEY } from '../../composables/wizardContext';
-import { PaymentLinkSettingsInternal } from '../../../PaymentLinkSettings';
+import PaymentLinkSettingsContainer from '../../../PaymentLinkSettings/components/PaymentLinkSettingsContainer.vue';
 import FormStepRenderer from './FormStepRenderer.vue';
 import ArrowRightIcon from '@adyen/ui-assets-icons-16/vue/arrow-right';
 import './PaymentLinkCreationForm.scss';
@@ -111,6 +111,7 @@ function handleStepSelect(index: number) {
 }
 
 function handleSetupTermsAndConditions() {
+    if (!data.selectedStore.value) return;
     selectedStoreNavigationCache.value = data.selectedStore.value;
     data.setSelectedStore('');
     showTermsAndConditions.value = true;
@@ -144,7 +145,7 @@ async function handleSubmit() {
 </script>
 
 <template>
-    <PaymentLinkSettingsInternal
+    <PaymentLinkSettingsContainer
         v-if="showTermsAndConditions"
         hide-title
         :store-ids="selectedStoreNavigationCache"
