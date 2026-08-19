@@ -18,11 +18,12 @@ export const REPORTS_TABLE_CLASS_NAMES = {
     base: 'adyen-pe-reports-table',
     alert: 'adyen-pe-reports-table-alert',
     download: 'adyen-pe-reports-table--download',
+    downloadErrorIcon: 'adyen-pe-reports-table__download-error-icon',
     dateReportType: 'adyen-pe-reports-table-date-report-type',
     dateReportTypeDate: 'adyen-pe-reports-table-date-report-type--date',
 };
 
-export const EARLIEST_PAYOUT_SINCE_DATE = new Date('2024-04-16T00:00:00.000Z').toString();
+export const EARLIEST_REPORT_SINCE_DATE = '2024-04-16T00:00:00.000Z';
 
 export const REPORTS_DOWNLOAD_DISABLED_TIMEOUT = 1000;
 
