@@ -38,7 +38,7 @@ const preview: Preview = {
         return {
             components: { Container },
             setup() {
-                const { component, session, mockedApi, compact, ...componentProps } = args;
+                const { component, session, mockedApi, compact } = args;
                 return {
                     containerKey: computed(() => `${storyGlobals.locale}-${storyGlobals.fontFamily}-${JSON.stringify(session)}`),
                     component: toRaw(component),
@@ -47,7 +47,10 @@ const preview: Preview = {
                     session,
                     mockedApi,
                     compact,
-                    componentProps,
+                    componentProps: computed(() => {
+                        const { component, session, mockedApi, compact, ...props } = args;
+                        return props;
+                    }),
                 };
             },
             template: `<Container :key="containerKey" :component="component" :component-props="componentProps" :locale="locale" :font-family="fontFamily" :session="session" :mocked-api="mockedApi" :compact="compact" />`,
