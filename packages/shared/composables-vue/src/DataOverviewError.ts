@@ -3,6 +3,7 @@ import { BentoEmptyState } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
 import { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from './getErrorMessage';
+import { useLiveAnnouncement } from './useLiveAnnouncement';
 
 export const DataOverviewError = defineComponent({
     name: 'DataOverviewError',
@@ -21,6 +22,7 @@ export const DataOverviewError = defineComponent({
 
     setup(props) {
         const { i18n, refreshComponent: refreshCurrentComponent } = useCoreContext();
+        const { announce, announcement } = useLiveAnnouncement();
         const isErrorCodeCopied = ref(false);
 
         const errorInfo = computed(
@@ -41,13 +43,7 @@ export const DataOverviewError = defineComponent({
                 nodes.push(h('span', { key }, i18n.get(key, options)));
             });
 
-            nodes.push(
-                h(
-                    'span',
-                    { class: 'adyen-pe-visually-hidden', 'aria-atomic': 'true', 'aria-live': 'polite' },
-                    isErrorCodeCopied.value ? i18n.get('common.actions.copy.labels.done') : ''
-                )
-            );
+            nodes.push(h('span', { class: 'adyen-pe-visually-hidden', 'aria-atomic': 'true', 'aria-live': 'polite' }, announcement.value));
 
             return nodes;
         });
@@ -86,6 +82,7 @@ export const DataOverviewError = defineComponent({
                     event: async () => {
                         await navigator.clipboard.writeText(requestId);
                         isErrorCodeCopied.value = true;
+                        announce(() => i18n.get('common.actions.copy.labels.done'));
                     },
                     icon: props.copyIcon,
                     variant: 'secondary' as const,

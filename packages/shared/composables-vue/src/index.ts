@@ -48,3 +48,6 @@ export { default as useSortedMultiSelection } from './useSortedMultiSelection';
 
 export * from './useCursorPaginatedRecords';
 export { default as useCursorPaginatedRecords } from './useCursorPaginatedRecords';
+
+export * from './useLiveAnnouncement';
+export { default as useLiveAnnouncement } from './useLiveAnnouncement';
