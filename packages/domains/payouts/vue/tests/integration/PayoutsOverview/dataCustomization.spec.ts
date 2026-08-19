@@ -67,9 +67,14 @@ test.describe('Data customization', () => {
         await expect(dataGrid.getByRole('columnheader', { name: 'Action', exact: true })).toHaveCount(0);
     });
 
-    test('should render transaction details modal for clicked row', async ({ page }) => {
+    test('should render customized payout details for clicked row', async ({ page }) => {
         await openPayoutDetailsModal(page, 0);
         const detailsModal = page.getByRole('dialog');
+
+        await expect(detailsModal.getByRole('link', { name: 'Summary', exact: true })).toBeVisible();
+        await expect(detailsModal.getByAltText('', { exact: true })).toBeVisible();
+        await expect(detailsModal.getByRole('button', { name: 'Send email', exact: true })).toBeVisible();
+
         await detailsModal.getByRole('button', { name: 'Close', exact: true, disabled: false }).click();
         await expect(detailsModal).toBeHidden();
     });

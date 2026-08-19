@@ -152,6 +152,7 @@ function closeModal() {
                         :id="activeBalanceAccount.id"
                         :balance-account-description="activeBalanceAccount.description"
                         :date="selectedPayout.createdAt ?? ''"
+                        :data-customization="props.dataCustomization"
                         :on-contact-support="props.onContactSupport"
                     />
                 </template>
