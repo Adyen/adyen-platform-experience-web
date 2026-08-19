@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onUnmounted, watch } from 'vue';
-import { BentoButton, BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
+import { computed, onUnmounted, ref } from 'vue';
+import { BentoDataGrid, BentoToast, BentoTypography, useBentoToastController } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import {
@@ -11,7 +11,7 @@ import {
     containerQueries,
     DataOverviewError,
 } from '@integration-components/composables-vue';
-import { DATE_FORMAT_REPORTS } from '@integration-components/utils';
+import { DATE_FORMAT_REPORTS, downloadBlob } from '@integration-components/utils';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
@@ -20,9 +20,25 @@ import type { CustomColumn, IReport, OnDataRetrievedCallback, CustomDataRetrieve
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
 import { getReportType, REPORTS_TABLE_CLASS_NAMES, REPORTS_DOWNLOAD_DISABLED_TIMEOUT, REPORTS_TABLE_FIELDS } from '../../../../domain/src';
+import DownloadErrorIcon from './DownloadErrorIcon.vue';
+import SmallLoadingIndicator from './SmallLoadingIndicator.vue';
 import '../styles/ReportsTable.scss';
 
 export type ReportsTableFields = (typeof REPORTS_TABLE_FIELDS)[number];
+
+// ── Immutable set utils ──
+const withItem = <T,>(set: Set<T>, item: T) => {
+    return set.has(item) ? set : new Set(set).add(item);
+};
+
+const withoutItem = <T,>(set: Set<T>, item: T) => {
+    if (set.has(item)) {
+        const nextSet = new Set(set);
+        nextSet.delete(item);
+        return nextSet;
+    }
+    return set;
+};
 
 const props = defineProps<{
     balanceAccountId: string | undefined;
@@ -51,7 +67,19 @@ const config = useConfigContext();
 
 // ── Download freeze logic ──
 const frozen = ref(false);
+const downloadingReportKeys = ref<Set<string>>(new Set());
+const failedReportKeys = ref<Set<string>>(new Set());
+const retryingReportKeys = ref<Set<string>>(new Set());
+
 let freezeTimeoutId: ReturnType<typeof setTimeout> | undefined;
+
+function getReportKey(report: IReport) {
+    return `${report.createdAt}-${report.type}`;
+}
+
+function isDownloadingReport(reportKey: string) {
+    return downloadingReportKeys.value.has(reportKey) || retryingReportKeys.value.has(reportKey);
+}
 
 function freeze() {
     if (frozen.value) return;
@@ -68,26 +96,19 @@ onUnmounted(() => {
     }
 });
 
-// ── Download error alert ──
-const alert = ref<{ title: string; description: string } | null>(null);
+const { addToast } = useBentoToastController();
+let activeDownloadErrorToast: ReturnType<typeof addToast> | undefined;
 
-function removeAlert() {
-    alert.value = null;
-}
+function onDownloadErrorAlert(reportKey: string, error?: AdyenPlatformExperienceError) {
+    failedReportKeys.value = withItem(failedReportKeys.value, reportKey);
 
-function onDownloadErrorAlert(error?: AdyenPlatformExperienceError) {
-    const errorCode = error?.errorCode;
-    if (errorCode === '999_429_001') {
-        alert.value = {
-            title: i18n.get('reports.overview.errors.download'),
-            description: i18n.get('reports.overview.errors.tooManyDownloads'),
-        };
-    } else {
-        alert.value = {
-            title: i18n.get('reports.overview.errors.download'),
-            description: i18n.get('reports.overview.errors.retryDownload'),
-        };
-    }
+    // prettier-ignore
+    const text = error?.errorCode === '999_429_001'
+        ? i18n.get('reports.overview.errors.tooManyDownloads')
+        : i18n.get('reports.overview.errors.retryDownload');
+
+    activeDownloadErrorToast?.dismiss();
+    activeDownloadErrorToast = addToast({ text });
 }
 
 // ── Download handler ──
@@ -95,8 +116,16 @@ async function handleDownload(item: IReport) {
     const downloadReport = config.endpoints.downloadReport;
     if (typeof downloadReport !== 'function') return;
 
+    const reportKey = getReportKey(item);
+    if (frozen.value || isDownloadingReport(reportKey)) return;
+
     freeze();
-    alert.value = null;
+    downloadingReportKeys.value = withItem(downloadingReportKeys.value, reportKey);
+
+    if (failedReportKeys.value.has(reportKey)) {
+        failedReportKeys.value = withoutItem(failedReportKeys.value, reportKey);
+        retryingReportKeys.value = withItem(retryingReportKeys.value, reportKey);
+    }
 
     try {
         const result = await downloadReport(
@@ -110,17 +139,13 @@ async function handleDownload(item: IReport) {
             }
         );
         if (result?.blob) {
-            const url = URL.createObjectURL(result.blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = result.filename || 'report.csv';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            downloadBlob(result, 'report.csv');
         }
     } catch (e) {
-        onDownloadErrorAlert(e as AdyenPlatformExperienceError);
+        onDownloadErrorAlert(reportKey, e as AdyenPlatformExperienceError);
+    } finally {
+        downloadingReportKeys.value = withoutItem(downloadingReportKeys.value, reportKey);
+        retryingReportKeys.value = withoutItem(retryingReportKeys.value, reportKey);
     }
 }
 
@@ -189,15 +214,26 @@ const gridData = computed<BentoDatagridDataItem[]>(() => {
 });
 
 // ── Row actions ──
-const getRowActions: BentoDataGridRowActionsProp = (item: BentoDatagridDataItem) => [
-    {
-        title: i18n.get('reports.overview.list.controls.downloadReport.label'),
-        event: () => handleDownload(item._raw as IReport),
-        tooltipText: i18n.get('reports.overview.list.controls.downloadReport.label'),
-        disabled: frozen.value,
-        iconLeft: DownloadIcon,
-    },
-];
+const getRowActions: BentoDataGridRowActionsProp = (item: BentoDatagridDataItem) => {
+    const report = item._raw as IReport;
+    const reportKey = getReportKey(report);
+    const isDownloading = isDownloadingReport(reportKey);
+    const ButtonIcon = failedReportKeys.value.has(reportKey) ? DownloadErrorIcon : DownloadIcon;
+
+    const label = isDownloading
+        ? `${i18n.get('common.actions.download.labels.inProgress')}..`
+        : i18n.get('reports.overview.list.controls.downloadReport.label');
+
+    return [
+        {
+            title: label,
+            event: () => handleDownload(report),
+            tooltipText: label,
+            disabled: frozen.value || isDownloading,
+            iconLeft: isDownloading ? SmallLoadingIndicator : ButtonIcon,
+        },
+    ];
+};
 
 const paginationProps = computed(() => {
     if (!props.showPagination) return undefined;
@@ -235,28 +271,11 @@ const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
 function formatDate(dateStr: string): string {
     return dateFormat(dateStr, DATE_FORMAT_REPORTS);
 }
-
-// Clear alert whenever a new fetch begins. This must be a watcher; a top-level
-// `if (props.loading) ...` would only run once during component setup.
-watch(
-    () => props.loading,
-    loading => {
-        if (loading) alert.value = null;
-    },
-    { immediate: true }
-);
 </script>
 
 <template>
     <div :class="REPORTS_TABLE_CLASS_NAMES.base">
-        <!-- Download error alert -->
-        <div v-if="alert" class="adyen-pe-reports-table-alert" role="alert">
-            <div>
-                <strong>{{ alert.title }}</strong>
-                <p>{{ alert.description }}</p>
-            </div>
-            <BentoButton variant="tertiary" size="small" @click="removeAlert">&times;</BentoButton>
-        </div>
+        <BentoToast />
 
         <DataOverviewError
             v-if="props.error"
