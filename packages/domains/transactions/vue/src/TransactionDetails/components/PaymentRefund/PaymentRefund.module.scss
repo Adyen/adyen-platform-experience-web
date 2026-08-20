@@ -1,0 +1,24 @@
+@use '@integration-components/style';
+
+.refundResponse {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+    padding: style.token(spacer-100) 0;
+    text-align: center;
+}
+
+.refundResponseIconSuccess {
+    color: style.token(color-background-success-strong);
+}
+
+.refundResponseIconError {
+    color: style.token(color-background-critical-strong);
+}
+
+.inputHead {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: style.token(spacer-030);
+}
