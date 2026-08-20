@@ -60,6 +60,10 @@ describe('adjustSelectedTerm', () => {
     test('returns the first nearest term when there are multiple equally-near terms', () => {
         expect(adjustSelectedTerm([90, 270], 180)).toBe(90);
     });
+
+    test('returns undefined when no terms are available', () => {
+        expect(adjustSelectedTerm([], 180)).toBeUndefined();
+    });
 });
 
 describe('getOfferForTerm', () => {

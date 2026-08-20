@@ -46,7 +46,7 @@ export const CapitalOfferTerms = ({ capitalState, grantOffer, hasBalanceAccountE
             const maximumRepaymentPeriodDate = date && dateFormat(date, DATE_FORMAT_CAPITAL_OVERVIEW);
 
             return [
-                ...(capitalState?.renewableGrants?.length
+                ...(capitalState?.renewableGrants.length
                     ? [
                           {
                               key: 'capital.common.fields.financing',
@@ -97,7 +97,7 @@ export const CapitalOfferTerms = ({ capitalState, grantOffer, hasBalanceAccountE
                 { key: 'capital.common.fields.account', value: i18n.get('capital.common.values.primaryAccount') },
             ] as StructuredListItem[];
         },
-        [dateFormat, capitalState?.renewableGrants?.length, i18n, formatTermLabel]
+        [dateFormat, capitalState?.renewableGrants.length, i18n, formatTermLabel]
     );
 
     const renderLabel = useCallback(

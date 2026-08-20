@@ -7,7 +7,7 @@ export type EnhancedCapitalState = {
     isRegionSupported: boolean;
     region?: string;
     renewableGrants: ICapitalState['activeOrPendingGrants'];
-    renewsGrantIds: string[];
+    renewsGrantIds: ReadonlySet<string>;
 };
 
 export type SimplifiedGrant = Pick<
@@ -23,10 +23,10 @@ export type SimplifiedGrant = Pick<
     | 'totalAmount'
 >;
 
-const isGrantRenewable = (grant: IGrant, dynamicOffer: IDynamicOffersConfig, renewsGrantIds: string[]): boolean => {
+const isGrantRenewable = (grant: IGrant, dynamicOffer: IDynamicOffersConfig, renewsGrantIds: ReadonlySet<string>): boolean => {
     const minimumRenewalAmount = grant.renewal?.eligible ? grant.renewal?.minimumRenewalAmount?.value : undefined;
     const maxOfferAmount = dynamicOffer.maxAmount.value;
-    return !renewsGrantIds.includes(grant.id) && !!minimumRenewalAmount && !!maxOfferAmount && minimumRenewalAmount <= maxOfferAmount;
+    return !renewsGrantIds.has(grant.id) && !!minimumRenewalAmount && !!maxOfferAmount && minimumRenewalAmount <= maxOfferAmount;
 };
 
 export const getEnhancedCapitalState = (
@@ -35,13 +35,13 @@ export const getEnhancedCapitalState = (
     requestedGrant?: IGrant
 ): EnhancedCapitalState | undefined => {
     if (!state) return undefined;
-    const activeOrPendingGrants = state && (requestedGrant ? [requestedGrant, ...state.activeOrPendingGrants] : state.activeOrPendingGrants);
+    const activeOrPendingGrants = requestedGrant ? [requestedGrant, ...state.activeOrPendingGrants] : state.activeOrPendingGrants;
     const dynamicOffer = state.dynamicOffer;
     const region = state.legalEntity?.region;
 
     const isRegionSupported = !!region && supportedRegions.includes(region);
-    const hasGrants = !!(activeOrPendingGrants?.length || state?.hasClosedGrants);
-    const renewsGrantIds = [...new Set(activeOrPendingGrants?.map(grant => grant.renewsGrantId).filter((id): id is string => !!id))];
+    const hasGrants = !!(activeOrPendingGrants?.length || state.hasClosedGrants);
+    const renewsGrantIds = new Set(activeOrPendingGrants?.map(grant => grant.renewsGrantId).filter((id): id is string => !!id));
 
     const renewableGrants =
         dynamicOffer && activeOrPendingGrants?.length
@@ -68,7 +68,7 @@ export const shouldGetGrants = (serverState: ICapitalState | undefined, isRegion
 export const getIsEarlyRenewal = (state: EnhancedCapitalState): boolean => !!state.renewableGrants.length;
 
 export const getSimplifiedRenewableGrant = (state: EnhancedCapitalState): SimplifiedGrant | undefined => {
-    const renewableGrant = state?.renewableGrants[0];
+    const renewableGrant = state.renewableGrants[0];
     if (!renewableGrant) return undefined;
 
     return {

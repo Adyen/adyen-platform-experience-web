@@ -104,9 +104,9 @@ describe('getEnhancedCapitalState', () => {
 
     test('identifies grants that are already being renewed', () => {
         expect(getEnhancedCapitalState(CAPITAL_STATE_GRANTS, localSupportedRegions)).toMatchObject({
-            renewsGrantIds: [CAPITAL_STATE_GRANTS.activeOrPendingGrants[0]!.renewsGrantId],
+            renewsGrantIds: new Set([CAPITAL_STATE_GRANTS.activeOrPendingGrants[0]!.renewsGrantId]),
         });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_ACTIVE_GRANT, localSupportedRegions)).toMatchObject({ renewsGrantIds: [] });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_ACTIVE_GRANT, localSupportedRegions)).toMatchObject({ renewsGrantIds: new Set() });
     });
 });
 

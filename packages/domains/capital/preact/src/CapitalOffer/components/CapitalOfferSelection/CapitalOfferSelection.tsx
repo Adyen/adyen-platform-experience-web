@@ -103,11 +103,11 @@ export const CapitalOfferSelection = ({
     const { createGrantOffer, getDynamicGrantOffer } = useConfigContext().endpoints;
     const userEvents = useEventDispatcherContext();
 
-    const isEarlyRenewal = useMemo(() => capitalState && getIsEarlyRenewal(capitalState), [capitalState]);
+    const isEarlyRenewal = useMemo(() => !!capitalState && getIsEarlyRenewal(capitalState), [capitalState]);
     const dynamicOffersConfig = useMemo(() => capitalState && getDynamicOfferConfig(capitalState), [capitalState]);
     const currency = useMemo(() => dynamicOffersConfig && getCurrency(dynamicOffersConfig), [dynamicOffersConfig]);
     const defaultAmountValue = useMemo(() => dynamicOffersConfig && getDefaultAmountValue(dynamicOffersConfig), [dynamicOffersConfig]);
-    const allTerms = useMemo(() => dynamicOffersConfig && getEstimatedTerms(dynamicOffersConfig), [dynamicOffersConfig]);
+    const allTerms = useMemo(() => (dynamicOffersConfig ? getEstimatedTerms(dynamicOffersConfig) : []), [dynamicOffersConfig]);
 
     const hasInitializedRef = useRef(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -181,7 +181,7 @@ export const CapitalOfferSelection = ({
     );
 
     useEffect(() => {
-        if (allTerms && allTerms.length > 0 && selectedTerm === undefined) {
+        if (allTerms.length > 0 && selectedTerm === undefined) {
             const term = getDefaultTerm(availableTerms);
             if (term !== undefined) {
                 updateTerm(term);
@@ -263,14 +263,14 @@ export const CapitalOfferSelection = ({
         [getDynamicGrantOfferMutation.isLoading, isLoading, reviewOfferMutation.isLoading]
     );
 
-    const termsError = !!dynamicOffersConfig && !allTerms?.length;
+    const termsError = !!dynamicOffersConfig && !allTerms.length;
 
     const isLoadingIndicatorVisible = useMemo(
         () => !matchedOffer || getDynamicGrantOfferMutation.isLoading || isLoading,
         [getDynamicGrantOfferMutation.isLoading, isLoading, matchedOffer]
     );
 
-    const hasSingleTerm = useMemo(() => allTerms?.length === 1, [allTerms]);
+    const hasSingleTerm = useMemo(() => allTerms.length === 1, [allTerms]);
 
     const renderHighlightedFields = () => {
         const renewableGrant = capitalState?.renewableGrants[0];
@@ -303,7 +303,7 @@ export const CapitalOfferSelection = ({
                             {renderHighlightedFields()}
                         </>
                     )}
-                    {allTerms && allTerms.length > 1 && (
+                    {allTerms.length > 1 && (
                         <TermSelector
                             allTerms={allTerms}
                             availableTerms={availableTerms}

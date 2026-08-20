@@ -184,13 +184,12 @@ describe('getGrantConfig', () => {
 });
 
 describe('getEnhancedGrant', () => {
-    test('converts a maximum repayment period from days to months', () => {
+    test('replaces maximum repayment period days with months', () => {
         expect(getEnhancedGrant({ ...DEFAULT_GRANT, maximumRepaymentPeriodDays: 0 })).toMatchObject({ maximumRepaymentPeriodMonths: 0 });
         expect(getEnhancedGrant(DEFAULT_GRANT)).toMatchObject({ maximumRepaymentPeriodMonths: 9 });
     });
 
-    test('returns undefined when the maximum repayment period is undefined', () => {
-        expect(getEnhancedGrant({ ...DEFAULT_GRANT, maximumRepaymentPeriodDays: 0 }).maximumRepaymentPeriodMonths).toBeNull();
-        expect(getEnhancedGrant({ ...DEFAULT_GRANT, maximumRepaymentPeriodDays: undefined }).maximumRepaymentPeriodMonths).toBeNull();
+    test('makes maximum repayment period months undefined when period days are undefined', () => {
+        expect(getEnhancedGrant({ ...DEFAULT_GRANT, maximumRepaymentPeriodDays: undefined }).maximumRepaymentPeriodMonths).toBeUndefined();
     });
 });

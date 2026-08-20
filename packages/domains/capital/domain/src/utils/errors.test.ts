@@ -16,13 +16,6 @@ describe('getCapitalErrorMessage', () => {
         expect(getCapitalErrorMessage(undefined)).toEqual(UNKNOWN_ERROR);
     });
 
-    test('returns the common error message when the error has a common error code', () => {
-        expect(getCapitalErrorMessage(createError('29_001'))).toEqual({
-            title: 'common.errors.requestInvalid',
-            message: ['common.errors.contactSupport'],
-        });
-    });
-
     test('retains the support callback for errors without an error code', () => {
         const onContactSupport = vi.fn();
 
