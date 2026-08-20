@@ -1,9 +1,3 @@
-// ── CSS class names ──
-
-export const BASE_CLASS = 'adyen-pe-payouts-overview';
-export const CONTAINER_CLASS = `${BASE_CLASS}-container`;
-export const TABLE_CLASS = 'adyen-pe-payouts-table';
-
 // ── Domain constants ──
 
 export const EARLIEST_PAYOUT_SINCE_DATE = new Date('2024-04-16T00:00:00.000Z').toString();

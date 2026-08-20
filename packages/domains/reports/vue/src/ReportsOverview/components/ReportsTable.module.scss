@@ -1,0 +1,23 @@
+@use '@integration-components/style' as style;
+
+.root {
+    position: relative;
+}
+
+.alert {
+    border: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 100;
+}
+
+.dateReportType {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-020);
+}
+
+.date {
+    opacity: 0.7;
+}
