@@ -15,6 +15,7 @@ export const getDefaultTerm = (availableTerms: readonly number[]): number | unde
 };
 
 export const adjustSelectedTerm = (availableTerms: readonly number[], selectedTerm: number): number | undefined => {
+    if (!availableTerms.length) return undefined;
     return availableTerms.reduce((nearest, term) => (Math.abs(term - selectedTerm) < Math.abs(nearest - selectedTerm) ? term : nearest));
 };
 

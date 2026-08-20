@@ -13,7 +13,7 @@ export const getAdjustedGrants = (
 ): IGrant[] | undefined => {
     const extractedGrants = grants?.data;
     const adjustedGrants = requestedGrant ? [requestedGrant, ...(extractedGrants ?? [])] : extractedGrants;
-    return adjustedGrants?.filter(grant => !(grant.status === 'Active' && state?.renewsGrantIds.includes(grant.id)));
+    return adjustedGrants?.filter(grant => !(grant.status === 'Active' && state?.renewsGrantIds.has(grant.id)));
 };
 
 export const getGroupedGrants = (grants: readonly IGrant[]): GroupedGrants => {

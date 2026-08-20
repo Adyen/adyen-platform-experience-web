@@ -1,12 +1,15 @@
 import { JSX } from 'preact';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
-import { ErrorMessage } from '@integration-components/ui-components-preact/utils/getCommonErrorCode';
+import { ErrorMessage, getCommonErrorMessage } from '@integration-components/ui-components-preact/utils/getCommonErrorCode';
 import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
 import { COMMON_CAPITAL_ERROR_MESSAGE, getCapitalErrorMessage } from '@integration-components/capital/domain';
 
 export { COMMON_CAPITAL_ERROR_MESSAGE };
 
 export const getEnhancedCapitalErrorMessage = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): ErrorMessage => {
+    const commonErrorMessage = getCommonErrorMessage(error, onContactSupport);
+    if (commonErrorMessage) return commonErrorMessage;
+
     const capitalErrorMessage = getCapitalErrorMessage(error, onContactSupport);
 
     const getTranslationValue = (requestId: string): JSX.Element | null => (
