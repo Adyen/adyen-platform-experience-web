@@ -76,7 +76,7 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
         </template>
 
         <template v-else-if="data">
-            <div :class="styles.amountDisplay">
+            <div>
                 <BentoTypography variant="caption">{{ i18n.get('transactions.overview.totals.tags.periodResult') }}</BentoTypography>
                 <div :class="styles.amountDisplayAmount">
                     <BentoTypography variant="title" large>{{ i18n.amount(data.total, data.currency) }}</BentoTypography>
@@ -86,7 +86,7 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
 
             <div :class="styles.breakdowns">
                 <div :class="styles.breakdown">
-                    <div :class="styles.amountDisplay">
+                    <div>
                         <BentoTypography variant="caption">{{ i18n.get('transactions.overview.totals.tags.incoming') }}</BentoTypography>
                         <BentoTypography variant="title" stronger>{{ i18n.amount(data.incomings, data.currency) }}</BentoTypography>
                         <BentoTypography variant="caption" stronger>{{ data.currency }}</BentoTypography>
@@ -108,7 +108,7 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
                 <BentoDivider :class="styles.divider" variant="vertical" />
 
                 <div :class="styles.breakdown">
-                    <div :class="styles.amountDisplay">
+                    <div>
                         <BentoTypography variant="caption">{{ i18n.get('transactions.overview.totals.tags.outgoing') }}</BentoTypography>
                         <BentoTypography variant="title" stronger>{{ i18n.amount(data.expenses, data.currency) }}</BentoTypography>
                         <BentoTypography variant="caption" stronger>{{ data.currency }}</BentoTypography>
