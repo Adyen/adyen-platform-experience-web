@@ -4,11 +4,10 @@ import { useCoreContext } from '@integration-components/core/vue';
 import ReportsFilters from './ReportsFilters.vue';
 import ReportsTable from './ReportsTable.vue';
 import { useReportsList } from '../composables/useReportsList';
-import { REPORTS_OVERVIEW_CLASS_NAMES } from '../../../../domain/src';
 import type { IBalanceAccountBase } from '../types';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { quickSelectDateRanges } from '@integration-components/utils';
-import '../styles/index.scss';
+import styles from './ReportsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccountId?: string;
@@ -62,12 +61,10 @@ const listError = computed(() => reportsListResult.error.value as Error | undefi
 </script>
 
 <template>
-    <div :class="REPORTS_OVERVIEW_CLASS_NAMES.base">
-        <div v-if="!props.hideTitle" class="adyen-pe-reports-overview-header">
+    <div :class="styles.root">
+        <div v-if="!props.hideTitle" :class="styles.header">
             <BentoTypography variant="title">{{ i18n.get('reports.overview.title') }}</BentoTypography>
-            <BentoTypography variant="body" class="adyen-pe-reports-overview-header__description">{{
-                i18n.get('reports.overview.generateInfo')
-            }}</BentoTypography>
+            <BentoTypography variant="body" :class="styles.description">{{ i18n.get('reports.overview.generateInfo') }}</BentoTypography>
         </div>
 
         <ReportsFilters :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />
