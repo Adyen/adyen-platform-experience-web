@@ -37,7 +37,7 @@ overrides:
   "follow-redirects": "1.16.0"
   "form-data": "4.0.6"
   "immutable": "4.3.9"
-  "js-yaml": "4.3.0"
+  "js-yaml": "4.3.1"
   "lodash": "4.18.1"
   "minimatch@<9.0.7": "10.2.4"
   "picomatch": "4.0.4"
