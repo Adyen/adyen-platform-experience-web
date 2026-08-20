@@ -19,6 +19,7 @@ import DisputeIssuerComments from './DisputeIssuerComments.vue';
 import DisputeStatusTag from './DisputeStatusTag.vue';
 import type { DisputeDataAlertMode, DisputeManagementProps } from '../types';
 import styles from './DisputeData.module.scss';
+import flowStyles from './DisputeFlow.module.scss';
 
 const props = defineProps<{
     disputeId: string;
@@ -234,7 +235,7 @@ const paymentMethodDetail = computed(() =>
                 :extra-fields="extraFields"
             />
 
-            <div v-if="actionButtons.length || extraButtons.length" :class="styles.actionBar">
+            <div v-if="actionButtons.length || extraButtons.length" :class="flowStyles.actionBar">
                 <BentoButtonActions v-if="actionButtons.length" :actions="actionButtons" />
                 <BentoButton
                     v-for="button in extraButtons"

@@ -5,7 +5,7 @@ import { DisputeFlowState, provideDisputeFlow } from '../composables/useDisputeF
 import DisputeDetails from './DisputeDetails.vue';
 import type { DisputeManagementProps } from '../types';
 import '@adyen/bento-vue3/styles/bento-light';
-import styles from './DisputeData.module.scss';
+import styles from './DisputeFlow.module.scss';
 
 const props = defineProps<DisputeManagementProps>();
 const dispute = ref<IDisputeDetail | undefined>();
@@ -22,7 +22,7 @@ watch(
 </script>
 
 <template>
-    <div :class="styles.container">
+    <div :class="styles.root">
         <DisputeDetails
             :id="props.id"
             :hide-title="props.hideTitle"

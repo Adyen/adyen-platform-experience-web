@@ -1,14 +1,6 @@
 @use '@integration-components/style';
 @use '@integration-components/style/mixins';
 
-.container {
-    display: flex;
-    flex-direction: column;
-    gap: style.token(spacer-070);
-    padding-top: style.token(spacer-020);
-    width: 100%;
-}
-
 .root {
     display: flex;
     flex-direction: column;
@@ -46,13 +38,6 @@
 .paymentMethodLogoContainer {
     height: style.token(spacer-090);
     width: style.token(spacer-100);
-}
-
-.actionBar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: style.token(spacer-040);
-    justify-content: flex-end;
 }
 
 .errorContainer {
