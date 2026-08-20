@@ -2,15 +2,10 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BentoDropdown, BentoTypography } from '@adyen/bento-vue3';
-import {
-    getTransactionRefundReason,
-    REFUND_REASONS,
-    TX_DATA_CONTAINER,
-    TX_DATA_INPUT_CONTAINER,
-    TX_DATA_INPUT_CONTAINER_SHORT,
-    TX_DATA_INPUT_HEAD,
-} from '../../../../../domain/src';
+import { getTransactionRefundReason, REFUND_REASONS } from '../../../../../domain/src';
 import type { RefundReason } from '../../../../../domain/src';
+import styles from './PaymentRefund.module.scss';
+import layoutStyles from '../TransactionDataLayout.module.scss';
 
 const props = defineProps<{
     disabled: boolean;
@@ -32,11 +27,11 @@ const refundReasons = computed(() =>
 </script>
 
 <template>
-    <div :class="TX_DATA_CONTAINER">
-        <div :class="TX_DATA_INPUT_HEAD">
+    <div :class="layoutStyles.container">
+        <div :class="styles.inputHead">
             <BentoTypography variant="body" stronger>{{ i18n.get('transactions.details.refund.inputs.reason.label') }}</BentoTypography>
         </div>
-        <div :class="[TX_DATA_INPUT_CONTAINER, TX_DATA_INPUT_CONTAINER_SHORT]">
+        <div>
             <BentoDropdown
                 :placeholder="i18n.get('transactions.details.refund.inputs.reason.label')"
                 :items="refundReasons"
