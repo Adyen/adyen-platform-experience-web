@@ -1,0 +1,5 @@
+@use '@integration-components/style' as style;
+
+.adyen-pe-psp-reference-filter {
+    padding: style.token(spacer-060) style.token(spacer-070);
+}

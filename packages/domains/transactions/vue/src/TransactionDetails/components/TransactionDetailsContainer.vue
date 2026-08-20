@@ -15,31 +15,38 @@ const props = defineProps<{
     dataCustomization?: { details?: TransactionDetailsCustomization };
     onContactSupport?: () => void;
     hideTitle?: boolean;
-    withinModal?: boolean;
+    fromRecordSelection?: boolean;
 }>();
 
 const { error, fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(() => props.id);
 
 const extraFields = ref<Record<string, any> | undefined>(undefined);
 const initialTransaction = ref<TransactionDetails | undefined>(undefined);
+let extraFieldsRequestId = 0;
 
 watch(
     () => props.id,
     () => {
+        extraFieldsRequestId++;
         initialTransaction.value = undefined;
         extraFields.value = undefined;
     }
 );
 
 watch(
-    transaction,
-    async tx => {
-        if (tx && tx.id === props.id) {
-            if (!initialTransaction.value) initialTransaction.value = tx;
+    () => [transaction.value, props.dataCustomization] as const,
+    async ([currentTransaction]) => {
+        const requestId = ++extraFieldsRequestId;
 
-            const customizedDetails = await props.dataCustomization?.details?.onDataRetrieve?.(tx);
+        if (currentTransaction && currentTransaction.id === props.id) {
+            if (!initialTransaction.value) initialTransaction.value = currentTransaction;
+
+            const detailsCustomization = props.dataCustomization?.details;
+            const customizedDetails = await detailsCustomization?.onDataRetrieve?.(currentTransaction);
+            if (requestId !== extraFieldsRequestId) return;
+
             extraFields.value = normalizeCustomFields(
-                props.dataCustomization?.details?.fields,
+                detailsCustomization?.fields,
                 TX_DETAILS_FIELDS_REMAPS,
                 customizedDetails as TransactionDetails
             )?.reduce(
@@ -53,7 +60,7 @@ watch(
                 },
                 {} as Record<string, any>
             );
-        } else if (!tx) {
+        } else if (!currentTransaction) {
             initialTransaction.value = undefined;
             extraFields.value = undefined;
         }
@@ -61,10 +68,13 @@ watch(
     { immediate: true }
 );
 
-useLandedPageEvent({
-    ...sharedTransactionDetailsEventProperties,
-    ...(props.withinModal && { fromPage: 'Transactions overview' }),
-});
+useLandedPageEvent(
+    {
+        ...sharedTransactionDetailsEventProperties,
+        ...(props.fromRecordSelection && { fromPage: 'Transactions overview' }),
+    },
+    () => !!initialTransaction.value
+);
 </script>
 
 <template>

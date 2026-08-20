@@ -1,9 +1,18 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import { BentoStructuredList, BentoStructuredListItem, BentoTypography, BentoLink, BentoButton } from '@adyen/bento-vue3';
+import { useLiveAnnouncement } from '@integration-components/composables-vue';
+import {
+    BentoStructuredList,
+    BentoStructuredListItem,
+    BentoTypography,
+    BentoLink,
+    BentoButton,
+    BentoTooltipDirective as vBentoTooltip,
+} from '@adyen/bento-vue3';
 import {
     getTransactionRefundReason,
+    TX_DATA_COPYABLE_VALUE,
     TX_DATA_LIST,
     TX_DETAILS_FIELDS_REMAPS,
     sharedTransactionDetailsEventProperties,
@@ -20,7 +29,9 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { announce, announcement } = useLiveAnnouncement();
 const userEvents = useEventDispatcherContext();
+const copiedItemId = ref<string>();
 
 const paymentDataKeys = {
     account: 'transactions.details.fields.account',
@@ -112,8 +123,10 @@ const customItems = computed(() =>
         }))
 );
 
-function onCopyText(text: string, trackingName?: string) {
+function onCopyText(text: string, itemId?: string, trackingName?: string) {
     navigator.clipboard?.writeText(text);
+    copiedItemId.value = itemId;
+
     if (trackingName) {
         userEvents.addEvent?.('Clicked button', {
             ...sharedTransactionDetailsEventProperties,
@@ -122,6 +135,17 @@ function onCopyText(text: string, trackingName?: string) {
             subSectionName: trackingName,
         });
     }
+
+    announce(() => i18n.get('common.actions.copy.labels.done'));
+}
+
+function getCopyTooltip(itemId?: string) {
+    const key = copiedItemId.value === itemId ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default';
+    return i18n.get(key);
+}
+
+function resetCopiedItem() {
+    copiedItemId.value = undefined;
 }
 </script>
 
@@ -129,12 +153,15 @@ function onCopyText(text: string, trackingName?: string) {
     <BentoStructuredList :class="TX_DATA_LIST">
         <BentoStructuredListItem v-for="item in standardItems" :key="item.id ?? item.key" :label="i18n.get(item.key)">
             <template v-if="item.copyable" #default>
-                <div style="display: flex; align-items: center; gap: 4px">
+                <div :class="TX_DATA_COPYABLE_VALUE">
                     <BentoTypography variant="body">{{ item.value }}</BentoTypography>
                     <BentoButton
                         variant="tertiary"
+                        v-bento-tooltip="getCopyTooltip(item.id)"
                         :aria-label="item.copyAriaLabelKey ? i18n.get(item.copyAriaLabelKey) : undefined"
-                        @click="() => onCopyText(item.value, item.trackingName)"
+                        @click="() => onCopyText(item.value, item.id, item.trackingName)"
+                        @blur="resetCopiedItem"
+                        @mouseleave="resetCopiedItem"
                     >
                         <CopyIcon />
                     </BentoButton>
@@ -163,4 +190,5 @@ function onCopyText(text: string, trackingName?: string) {
             <BentoTypography v-else variant="body" :class="item.config?.className">{{ item.value }}</BentoTypography>
         </BentoStructuredListItem>
     </BentoStructuredList>
+    <span class="adyen-pe-visually-hidden" aria-atomic="true" aria-live="polite">{{ announcement }}</span>
 </template>

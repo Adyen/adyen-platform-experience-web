@@ -1,6 +1,7 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { CustomColumn } from '@integration-components/types';
+import { hasCustomField } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 
 /**
@@ -136,8 +137,8 @@ export function useTableColumns<T extends string, TExtra extends object = object
     resolveCustomColumnLabel,
 }: UseTableColumnsOptions<T, TExtra>) {
     const { i18n } = useCoreContext();
-
     const standardFields = new Set<string>(fields);
+
     const normalizedCustomColumns = computed(() => {
         const columnsByKey = new Map<string, NormalizedCustomColumn>();
 
@@ -155,7 +156,8 @@ export function useTableColumns<T extends string, TExtra extends object = object
         normalizedCustomColumns.value.filter(column => column.visibility !== 'hidden' && !standardFields.has(column.key)).map(column => column.key)
     );
 
-    const hasCustomColumn = computed(() => customFieldKeys.value.length > 0);
+    const hasCustomColumn = computed(() => hasCustomField(customColumns(), fields, { ignoreHiddenFields: true }));
+
     const columns = computed<TableColumn<TExtra>[]>(() => {
         const customMap = new Map(normalizedCustomColumns.value.map(column => [column.key, column] as const));
         const configuredColumns: Partial<Record<T, TableColumnOptions<TExtra>>> = columnConfig?.() ?? {};

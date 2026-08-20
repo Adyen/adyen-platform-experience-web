@@ -1,4 +1,4 @@
-import { ref, computed, watch, onUnmounted } from 'vue';
+import { ref, computed, watch, onScopeDispose } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { isFunction } from '@integration-components/utils';
 import type { ITransactionTotal } from '@integration-components/types';
@@ -16,6 +16,8 @@ export function useTransactionsTotals(props: () => UseTransactionsTotalsProps) {
     const totals = ref<readonly Readonly<ITransactionTotal>[]>([]);
     const error = ref<Error | undefined>(undefined);
     const isFetching = ref(false);
+    const hasFetchedData = ref(false);
+    const lastFetchedKey = ref<string | null>(null);
 
     let abortController: AbortController | null = null;
 
@@ -25,6 +27,7 @@ export function useTransactionsTotals(props: () => UseTransactionsTotalsProps) {
     async function fetchTotals() {
         const fn = getTransactionTotals.value;
         if (!isFunction(fn) || !canFetch.value) return;
+        const requestKey = fetchKey.value;
 
         if (abortController) abortController.abort();
         abortController = new AbortController();
@@ -49,10 +52,13 @@ export function useTransactionsTotals(props: () => UseTransactionsTotalsProps) {
             const json = await fn({ signal }, { query } as any);
             if (!signal.aborted) {
                 totals.value = Array.isArray(json?.data) ? (json.data as ITransactionTotal[]) : [];
+                hasFetchedData.value = true;
+                lastFetchedKey.value = requestKey;
             }
         } catch (e) {
             if (!signal.aborted) {
                 error.value = e as Error;
+                hasFetchedData.value = false;
             }
         } finally {
             if (!signal.aborted) {
@@ -86,13 +92,13 @@ export function useTransactionsTotals(props: () => UseTransactionsTotalsProps) {
     watch(
         fetchKey,
         newKey => {
-            if (!newKey) return;
+            if (!newKey || newKey === lastFetchedKey.value) return;
             void fetchTotals();
         },
         { immediate: true }
     );
 
-    onUnmounted(() => abortController?.abort());
+    onScopeDispose(() => abortController?.abort());
 
     return {
         totals,
@@ -100,7 +106,7 @@ export function useTransactionsTotals(props: () => UseTransactionsTotalsProps) {
         isFetching,
         canRefresh: computed(() => !isFetching.value && canFetch.value),
         isAvailable: computed(() => isFunction(getTransactionTotals.value)),
-        isWaiting: computed(() => isFetching.value),
+        isWaiting: computed(() => isFetching.value || (isFunction(getTransactionTotals.value) && !canFetch.value && !hasFetchedData.value)),
         refresh,
     } as const;
 }

@@ -18,12 +18,18 @@
     &__status-box {
         display: flex;
         flex-direction: column;
-        gap: style.token(spacer-030);
+        gap: style.token(spacer-050);
     }
 
     &__action-bar {
         align-self: flex-end;
         flex-direction: row;
+    }
+
+    &__copyable-value {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-070);
     }
 
     &__list {
@@ -37,7 +43,7 @@
 
     &__payment-method {
         display: flex;
-        gap: style.token(spacer-080);
+        gap: style.token(spacer-050);
     }
 
     &__refund-statuses-container {
