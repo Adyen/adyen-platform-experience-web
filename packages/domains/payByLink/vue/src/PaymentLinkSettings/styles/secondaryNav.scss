@@ -3,32 +3,28 @@
 .adyen-pe-payment-link-settings__secondary-nav {
     width: 100%;
 
-    &-list {
-        display: flex;
-        flex-direction: column;
+    .b-list {
         gap: style.token(spacer-020);
-        list-style: none;
-        margin: 0;
-        padding: 0;
     }
 
-    &-item {
-        background-color: transparent;
-        border: 0;
-        border-radius: style.token(border-radius-m);
-        cursor: pointer;
-        display: block;
-        font: inherit;
+    .b-list-item__inner {
+        gap: style.token(spacer-040);
         padding: style.token(spacer-040) style.token(spacer-050);
-        text-align: left;
-        width: 100%;
+        border-radius: style.token(border-radius-m);
+    }
 
-        &:hover {
-            background-color: style.token(color-background-primary-hover);
-        }
+    &-item--active .b-list-item__inner {
+        background-color: style.token(color-background-primary-active);
+    }
 
-        &--active {
-            background-color: style.token(color-background-primary-active);
-        }
+    &-item--desktop .b-list-item__chevron {
+        display: none;
+    }
+
+    &-item--mobile .b-list-item__inner {
+        align-items: flex-start;
+        gap: style.token(spacer-070);
+        justify-content: space-between;
+        padding: style.token(spacer-070) style.token(spacer-060);
     }
 }
