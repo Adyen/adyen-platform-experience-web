@@ -46,6 +46,6 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 
 <template>
     <div class="adyen-pe-payment-link-settings__cta-container">
-        <BentoButtonActions :actions="actionButtons" />
+        <BentoButtonActions layout="buttons-end" :actions="actionButtons" />
     </div>
 </template>

@@ -2,16 +2,12 @@
 import { computed } from 'vue';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { BentoStructuredList, BentoStructuredListItem, BentoTypography, BentoLink, BentoButton } from '@adyen/bento-vue3';
-import {
-    getTransactionRefundReason,
-    TX_DATA_LIST,
-    TX_DETAILS_FIELDS_REMAPS,
-    sharedTransactionDetailsEventProperties,
-} from '../../../../../domain/src';
+import { getTransactionRefundReason, TX_DETAILS_FIELDS_REMAPS, sharedTransactionDetailsEventProperties } from '../../../../../domain/src';
 import { normalizeCustomFields } from '@integration-components/utils';
 import type { TransactionDetails, TransactionDetailsCustomization } from '../../../../../domain/src';
 import type { TranslationKey } from '@integration-components/core';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
+import styles from './PaymentDetails.module.scss';
 
 const props = defineProps<{
     dataCustomization?: { details?: TransactionDetailsCustomization };
@@ -126,7 +122,7 @@ function onCopyText(text: string, trackingName?: string) {
 </script>
 
 <template>
-    <BentoStructuredList :class="TX_DATA_LIST">
+    <BentoStructuredList :class="styles.list">
         <BentoStructuredListItem v-for="item in standardItems" :key="item.id ?? item.key" :label="i18n.get(item.key)">
             <template v-if="item.copyable" #default>
                 <div style="display: flex; align-items: center; gap: 4px">

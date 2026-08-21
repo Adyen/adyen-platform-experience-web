@@ -69,7 +69,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: pnpm run changeset -- tag
+          publish: pnpx @changesets/cli@2.29.8 tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
