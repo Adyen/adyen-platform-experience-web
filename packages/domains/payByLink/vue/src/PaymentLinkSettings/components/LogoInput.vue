@@ -69,8 +69,6 @@ function onChange(files?: FileList) {
     //     modelValue.value = undefined;
     //     return;
     // }
-
-    cachedModelValue.value = file;
 }
 </script>
 
