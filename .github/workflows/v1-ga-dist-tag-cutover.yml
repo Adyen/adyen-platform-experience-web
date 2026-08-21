@@ -1,0 +1,89 @@
+name: Verify V1 dist-tag cutover
+
+on:
+    workflow_dispatch:
+
+concurrency:
+    group: release-v1
+    cancel-in-progress: false
+
+jobs:
+    verify-v1:
+        if: github.repository == 'adyen/adyen-platform-experience-web' && github.ref == 'refs/heads/main'
+        runs-on: ubuntu-latest
+        environment: v1-release
+        permissions:
+            contents: write
+            pull-requests: write
+        steps:
+            - name: Checkout V1 maintenance branch
+              uses: actions/checkout@v4.2.2
+              with:
+                  ref: version/v1.x
+                  fetch-depth: 0
+
+            - name: Set up Node
+              uses: actions/setup-node@v4.4.0
+              with:
+                  node-version: 24.9.0
+
+            - name: Verify manually assigned v1
+              run: |
+                  node scripts/release-v1/release-v1.mjs validate-config --config config/release-v1.json
+                  CURRENT_VERSION=$(jq -r '.version' package.json)
+                  node scripts/release-v1/release-v1.mjs validate-version --version "$CURRENT_VERSION"
+                  if [[ ! "$CURRENT_VERSION" =~ ^1\.[0-9]+\.[0-9]+$ ]]; then
+                    echo "::error::V1 GA cutover requires a stable V1 version, received $CURRENT_VERSION."
+                    exit 1
+                  fi
+
+                  V1_VERSION=$(npm view @adyen/adyen-platform-experience-web@v1 version 2>/dev/null || true)
+                  if [[ "$V1_VERSION" == "$CURRENT_VERSION" ]]; then
+                    echo "v1 already points to $CURRENT_VERSION."
+                    exit 0
+                  fi
+
+                  LATEST_VERSION=$(npm view @adyen/adyen-platform-experience-web@latest version)
+                  if [[ "$CURRENT_VERSION" != "$LATEST_VERSION" ]]; then
+                    echo "::error::version/v1.x is $CURRENT_VERSION, npm latest is $LATEST_VERSION, and v1 is not correct."
+                    exit 1
+                  fi
+
+                  echo "::error::Assign the npm v1 dist-tag to $CURRENT_VERSION manually, then rerun this workflow."
+                  exit 1
+
+            - name: Create V1 pipeline tag-switch pull request
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  if [[ "$(jq -r '.npmTag' config/release-v1.json)" == "v1" ]]; then
+                    echo "V1 release configuration already uses v1."
+                    exit 0
+                  fi
+
+                  BRANCH="chore/v1-dist-tag"
+                  EXISTING_PR=$(gh pr list --base version/v1.x --head "$BRANCH" --state open --json number --jq '.[0].number')
+                  if [[ -n "$EXISTING_PR" ]]; then
+                    echo "V1 tag-switch PR #$EXISTING_PR already exists."
+                    exit 0
+                  fi
+
+                  if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+                    echo "Tag-switch branch $BRANCH already exists; creating its pull request."
+                  else
+                    jq '.npmTag = "v1"' config/release-v1.json > config/release-v1.json.tmp
+                    mv config/release-v1.json.tmp config/release-v1.json
+
+                    git config user.name "github-actions[bot]"
+                    git config user.email "github-actions[bot]@users.noreply.github.com"
+                    git switch -c "$BRANCH"
+                    git add config/release-v1.json
+                    git commit -m "chore(release): move V1 publishing to v1"
+                    git push origin "$BRANCH"
+                  fi
+
+                  gh pr create \
+                    --base version/v1.x \
+                    --head "$BRANCH" \
+                    --title "chore(release): move V1 publishing to v1" \
+                    --body "Switches future stable V1 maintenance releases from \`latest\` to \`v1\` after the GA dist-tag cutover."

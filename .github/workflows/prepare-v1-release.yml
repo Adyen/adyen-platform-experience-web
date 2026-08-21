@@ -1,0 +1,268 @@
+name: Prepare V1 release
+
+on:
+    workflow_dispatch:
+        inputs:
+            release_channel:
+                description: Release channel
+                required: true
+                type: choice
+                default: stable
+                options:
+                    - stable
+                    - alpha
+                    - beta
+                    - rc
+                    - next
+
+concurrency:
+    group: prepare-v1-release
+    cancel-in-progress: false
+
+jobs:
+    prepare-release:
+        if: github.repository == 'adyen/adyen-platform-experience-web' && github.ref == 'refs/heads/version/v1.x'
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            pull-requests: write
+        steps:
+            - name: Checkout V1 maintenance branch
+              uses: actions/checkout@v4.2.2
+              with:
+                  ref: version/v1.x
+                  fetch-depth: 0
+
+            - name: Validate V1 branch configuration
+              run: |
+                  BASE_BRANCH=$(jq -r '.baseBranch // empty' .changeset/config.json)
+                  if [[ "$BASE_BRANCH" != "version/v1.x" ]]; then
+                    echo "::error::.changeset/config.json must use version/v1.x as baseBranch on the V1 maintenance branch."
+                    exit 1
+                  fi
+
+                  node scripts/release-v1/release-v1.mjs validate-config --config config/release-v1.json
+                  node scripts/release-v1/release-v1.mjs validate-version --version "$(jq -r '.version' package.json)"
+
+            - name: Inspect prerelease state
+              id: release-state
+              env:
+                  RELEASE_CHANNEL: ${{ inputs.release_channel }}
+              run: |
+                  STATE_ACTION=version
+                  ACTIVE_MODE=
+
+                  if [[ -f .changeset/pre.json ]]; then
+                    PRE_MODE=$(jq -r '.mode // empty' .changeset/pre.json)
+                    ACTIVE_MODE=$(jq -r '.tag // empty' .changeset/pre.json)
+                    if [[ "$PRE_MODE" != "pre" && "$PRE_MODE" != "exit" ]]; then
+                      echo "::error::Unsupported Changesets prerelease mode \"$PRE_MODE\"."
+                      exit 1
+                    fi
+                    if [[ "$ACTIVE_MODE" != "alpha" && "$ACTIVE_MODE" != "beta" && "$ACTIVE_MODE" != "rc" && "$ACTIVE_MODE" != "next" ]]; then
+                      echo "::error::Unsupported active prerelease identifier \"$ACTIVE_MODE\"."
+                      exit 1
+                    fi
+                  fi
+
+                  if [[ "$RELEASE_CHANNEL" == "stable" ]]; then
+                    if [[ -n "$ACTIVE_MODE" && "$PRE_MODE" == "pre" ]]; then
+                      STATE_ACTION=exit
+                    fi
+                  elif [[ -z "$ACTIVE_MODE" ]]; then
+                    STATE_ACTION=enter
+                  elif [[ "$PRE_MODE" != "pre" ]]; then
+                    echo "::error::Prerelease mode \"$ACTIVE_MODE\" is already exiting; prepare stable after the exit state is merged."
+                    exit 1
+                  elif [[ "$ACTIVE_MODE" != "$RELEASE_CHANNEL" ]]; then
+                    echo "::error::Prerelease mode \"$ACTIVE_MODE\" is active; cannot prepare \"$RELEASE_CHANNEL\"."
+                    exit 1
+                  fi
+
+                  echo "state_action=$STATE_ACTION" >> "$GITHUB_OUTPUT"
+                  echo "active_mode=$ACTIVE_MODE" >> "$GITHUB_OUTPUT"
+
+            - name: Set up repository
+              uses: ./.github/actions/setup-env
+              with:
+                  NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
+
+            - name: Configure git
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+
+            - name: Create prerelease state pull request
+              if: steps.release-state.outputs.state_action == 'enter'
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  RELEASE_CHANNEL: ${{ inputs.release_channel }}
+              run: |
+                  STATE_BRANCH="chore/v1-prerelease-enter-${RELEASE_CHANNEL}"
+                  STATE_TITLE="chore(release): enter V1 prerelease mode (${RELEASE_CHANNEL})"
+                  EXISTING_PR=$(gh pr list --base version/v1.x --head "$STATE_BRANCH" --state open --json number --jq '.[0].number')
+                  if [[ -n "$EXISTING_PR" ]]; then
+                    echo "V1 prerelease state PR #$EXISTING_PR already exists."
+                    exit 0
+                  fi
+
+                  if git ls-remote --exit-code --heads origin "$STATE_BRANCH" >/dev/null 2>&1; then
+                    git fetch origin "$STATE_BRANCH:refs/remotes/origin/$STATE_BRANCH"
+                    if ! git merge-base --is-ancestor origin/version/v1.x "origin/$STATE_BRANCH"; then
+                      echo "::error::Existing state branch $STATE_BRANCH is stale and must be deleted before starting another cycle."
+                      exit 1
+                    fi
+                  else
+                    git switch -c "$STATE_BRANCH"
+                    pnpm changeset pre enter "$RELEASE_CHANNEL"
+                    jq '.initialVersions |= with_entries(select(.key == "@adyen/adyen-platform-experience-web"))' \
+                      .changeset/pre.json > "$RUNNER_TEMP/pre.json"
+                    mv "$RUNNER_TEMP/pre.json" .changeset/pre.json
+                    git add .changeset/pre.json
+                    git commit -m "$STATE_TITLE"
+                    git push origin "$STATE_BRANCH"
+                  fi
+
+                  gh pr create \
+                    --base version/v1.x \
+                    --head "$STATE_BRANCH" \
+                    --title "$STATE_TITLE" \
+                    --body "Enters the reviewed Changesets prerelease state for the V1 ${RELEASE_CHANNEL} channel. Merge this state-only PR, then rerun the Prepare V1 release workflow."
+
+            - name: Create prerelease exit pull request
+              if: steps.release-state.outputs.state_action == 'exit'
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  ACTIVE_MODE: ${{ steps.release-state.outputs.active_mode }}
+              run: |
+                  STATE_BRANCH="chore/v1-prerelease-exit-${ACTIVE_MODE}"
+                  STATE_TITLE="chore(release): exit V1 prerelease mode (${ACTIVE_MODE})"
+                  EXISTING_PR=$(gh pr list --base version/v1.x --head "$STATE_BRANCH" --state open --json number --jq '.[0].number')
+                  if [[ -n "$EXISTING_PR" ]]; then
+                    echo "V1 prerelease state PR #$EXISTING_PR already exists."
+                    exit 0
+                  fi
+
+                  if git ls-remote --exit-code --heads origin "$STATE_BRANCH" >/dev/null 2>&1; then
+                    git fetch origin "$STATE_BRANCH:refs/remotes/origin/$STATE_BRANCH"
+                    if ! git merge-base --is-ancestor origin/version/v1.x "origin/$STATE_BRANCH"; then
+                      echo "::error::Existing state branch $STATE_BRANCH is stale and must be deleted before starting another cycle."
+                      exit 1
+                    fi
+                  else
+                    git switch -c "$STATE_BRANCH"
+                    jq '.initialVersions |= with_entries(select(.key == "@adyen/adyen-platform-experience-web"))' \
+                      .changeset/pre.json > "$RUNNER_TEMP/pre.json"
+                    mv "$RUNNER_TEMP/pre.json" .changeset/pre.json
+                    pnpm changeset pre exit
+                    git add .changeset/pre.json
+                    git commit -m "$STATE_TITLE"
+                    git push origin "$STATE_BRANCH"
+                  fi
+
+                  gh pr create \
+                    --base version/v1.x \
+                    --head "$STATE_BRANCH" \
+                    --title "$STATE_TITLE" \
+                    --body "Exits the reviewed Changesets prerelease state so V1 can be promoted from ${ACTIVE_MODE} to stable. Merge this state-only PR, then rerun the Prepare V1 release workflow with the stable channel."
+
+            - name: Validate pending Changesets
+              if: steps.release-state.outputs.state_action == 'version'
+              env:
+                  RELEASE_CHANNEL: ${{ inputs.release_channel }}
+              run: |
+                  mapfile -t CHANGESETS < <(find .changeset -maxdepth 1 -type f -name '*.md' ! -name 'README.md' -print | sort)
+                  PROMOTING_TO_STABLE=false
+                  if [[ "$RELEASE_CHANNEL" == "stable" && -f .changeset/pre.json ]]; then
+                    PRE_MODE=$(jq -r '.mode // empty' .changeset/pre.json)
+                    if [[ "$PRE_MODE" == "exit" ]]; then
+                      PROMOTING_TO_STABLE=true
+                    fi
+                  fi
+
+                  if [[ "${#CHANGESETS[@]}" -eq 0 && "$PROMOTING_TO_STABLE" != "true" ]]; then
+                    echo "::error::At least one pending Changeset is required before preparing a V1 release."
+                    exit 1
+                  fi
+
+                  for CHANGESET in "${CHANGESETS[@]}"; do
+                    node scripts/release-v1/release-v1.mjs validate-changeset --file "$CHANGESET"
+                  done
+
+                  if [[ "${#CHANGESETS[@]}" -gt 0 ]]; then
+                    pnpm changeset status
+                  fi
+
+            - name: Apply Changesets versioning
+              if: steps.release-state.outputs.state_action == 'version'
+              run: |
+                  PREVIOUS_VERSION=$(jq -r '.version' package.json)
+                  pnpm changeset version
+                  NEW_VERSION=$(jq -r '.version' package.json)
+
+                  node scripts/release-v1/release-v1.mjs validate-transition \
+                    --previous "$PREVIOUS_VERSION" \
+                    --current "$NEW_VERSION"
+
+                  if git diff --quiet; then
+                    echo "::error::Changesets versioning did not produce any release changes."
+                    exit 1
+                  fi
+
+                  HAS_CHANGELOG=false
+                  mapfile -d '' -t GENERATED_FILES < <(git diff --name-only -z)
+                  for FILE in "${GENERATED_FILES[@]}"; do
+                    case "$FILE" in
+                      package.json)
+                        ;;
+                      CHANGELOG.md)
+                        HAS_CHANGELOG=true
+                        ;;
+                      .changeset/pre.json)
+                        ;;
+                      .changeset/*.md)
+                        if [[ -e "$FILE" ]]; then
+                          echo "::error::Changesets versioning unexpectedly modified rather than consumed $FILE."
+                          exit 1
+                        fi
+                        ;;
+                      *)
+                        echo "::error::Changesets versioning produced an unexpected file: $FILE"
+                        exit 1
+                        ;;
+                    esac
+                  done
+
+                  if [[ "$HAS_CHANGELOG" != "true" ]]; then
+                    echo "::error::Changesets versioning did not update CHANGELOG.md."
+                    exit 1
+                  fi
+
+                  echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
+
+            - name: Create version pull request
+              if: steps.release-state.outputs.state_action == 'version'
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  RELEASE_BRANCH="chore/v1-release-${NEW_VERSION}"
+
+                  if git ls-remote --exit-code --heads origin "$RELEASE_BRANCH" >/dev/null 2>&1; then
+                    echo "::error::Release branch $RELEASE_BRANCH already exists."
+                    exit 1
+                  fi
+
+                  git switch -c "$RELEASE_BRANCH"
+                  git add -A -- package.json CHANGELOG.md .changeset
+                  if git diff --cached --quiet; then
+                    echo "::error::No generated Changesets release changes are staged."
+                    exit 1
+                  fi
+                  git commit -m "chore(release): prepare v${NEW_VERSION}"
+                  git push origin "$RELEASE_BRANCH"
+
+                  gh pr create \
+                    --base version/v1.x \
+                    --head "$RELEASE_BRANCH" \
+                    --title "chore(release): prepare v${NEW_VERSION}" \
+                    --body "Applies the reviewed V1 Changesets for v${NEW_VERSION}. Review the generated package version, changelog, consumed Changesets, and prerelease state before merging."

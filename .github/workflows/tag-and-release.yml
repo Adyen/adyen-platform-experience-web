@@ -6,7 +6,7 @@ on:
 
   pull_request:
     types: [closed]
-    branches: ['main', 'releases/**', 'changeset-release/**']
+    branches: ['main', 'changeset-release/**']
 
 jobs:
   create-github-release:
@@ -18,11 +18,27 @@ jobs:
       release_version: ${{ steps.determine_version.outputs.version }}
       npm_tag: ${{ steps.determine_version.outputs.npm_tag }}
       is_prerelease: ${{ steps.determine_version.outputs.is_prerelease }}
+      release_line: ${{ steps.determine_version.outputs.release_line }}
+      source_sha: ${{ steps.determine_version.outputs.source_sha }}
     if: (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
       || (github.event.pull_request.merged == true && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+
+      - name: Validate V2 GA prerequisite
+        run: |
+          VERSION=$(jq -r .version package.json)
+          PACKAGE_MAJOR=${VERSION%%.*}
+          if [[ "$PACKAGE_MAJOR" -ge 2 && "$VERSION" != *"-"* ]]; then
+            V1_VERSION=$(npm view @adyen/adyen-platform-experience-web@v1 version)
+            if [[ ! "$V1_VERSION" =~ ^1\.[0-9]+\.[0-9]+$ ]]; then
+              echo "::error::v1 must point to a stable V1 version before V2 GA."
+              exit 1
+            fi
+          fi
 
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
@@ -39,6 +55,8 @@ jobs:
           VERSION=$(jq -r .version package.json)
           echo "NEW_VERSION=$VERSION" >> $GITHUB_ENV
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "release_line=v${VERSION%%.*}" >> "$GITHUB_OUTPUT"
+          echo "source_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
           # Detect pre-release: versions like 1.13.0-beta.0 contain a hyphen
           if [[ "$VERSION" == *"-"* ]]; then
@@ -56,7 +74,7 @@ jobs:
           fi
 
       - name: Upload build as artifact for other jobs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}
           path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
@@ -136,11 +154,13 @@ jobs:
       actions: write
       id-token: write
     needs: create-github-release
-    uses: adyen/adyen-platform-experience-web/.github/workflows/npm-publish.yml@main
+    uses: ./.github/workflows/npm-publish.yml
     secrets: inherit
     with:
       source_run_id: ${{ github.run_id }}
       npm_tag: ${{ needs.create-github-release.outputs.npm_tag }}
+      release_version: ${{ needs.create-github-release.outputs.release_version }}
+      source_sha: ${{ needs.create-github-release.outputs.source_sha }}
 
   sync-develop:
     needs: [create-github-release, trigger-npm-publish]
@@ -150,7 +170,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout main
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
         with:
           ref: main
           fetch-depth: 0
@@ -187,11 +207,12 @@ jobs:
       contents: write
       actions: write
     needs: create-github-release
-    uses: adyen/adyen-platform-experience-web/.github/workflows/upload-assets-to-release-tag.yml@main
+    uses: ./.github/workflows/upload-assets-to-release-tag.yml
     secrets: inherit
     with:
       environment_choice: 'live'
-
+      release_line: ${{ needs.create-github-release.outputs.release_line }}
+      source_ref: ${{ needs.create-github-release.outputs.source_sha }}
 #  generate-sri-hashes:
 #    permissions:
 #      contents: read

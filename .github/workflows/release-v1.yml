@@ -1,0 +1,370 @@
+name: Release V1
+
+on:
+    pull_request:
+        types: [closed]
+        branches:
+            - version/v1.x
+
+concurrency:
+    group: release-v1
+    cancel-in-progress: false
+
+jobs:
+    validate-and-build:
+        if: |
+            github.repository == 'adyen/adyen-platform-experience-web' &&
+            github.event.pull_request.merged == true &&
+            github.event.pull_request.user.login == 'github-actions[bot]' &&
+            github.event.pull_request.head.repo.full_name == github.repository &&
+            startsWith(github.event.pull_request.head.ref, 'chore/v1-release-') &&
+            startsWith(github.event.pull_request.title, 'chore(release): prepare v1.')
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pull-requests: read
+        outputs:
+            version: ${{ steps.release.outputs.version }}
+            npm-tag: ${{ steps.release.outputs.npm-tag }}
+            cdn-tag: ${{ steps.release.outputs.cdn-tag }}
+            deploy-environment: ${{ steps.release.outputs.deploy-environment }}
+            is-prerelease: ${{ steps.release.outputs.is-prerelease }}
+            prerelease-tag: ${{ steps.release.outputs.prerelease-tag }}
+            commit-sha: ${{ steps.release.outputs.commit-sha }}
+        steps:
+            - name: Checkout merged V1 release commit
+              uses: actions/checkout@v4.2.2
+              with:
+                  ref: ${{ github.event.pull_request.merge_commit_sha }}
+                  fetch-depth: 0
+
+            - name: Validate version pull request
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  PR_NUMBER: ${{ github.event.pull_request.number }}
+                  PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+                  PR_TITLE: ${{ github.event.pull_request.title }}
+              run: |
+                  mapfile -t CHANGED_FILES < <(gh pr view "$PR_NUMBER" --json files --jq '.files[].path')
+                  BASE_SHA=$(git rev-parse HEAD^)
+
+                  HAS_PACKAGE=false
+                  HAS_CHANGELOG=false
+                  for CHANGED_FILE in "${CHANGED_FILES[@]}"; do
+                    case "$CHANGED_FILE" in
+                      package.json)
+                        HAS_PACKAGE=true
+                        ;;
+                      CHANGELOG.md)
+                        HAS_CHANGELOG=true
+                        ;;
+                      .changeset/pre.json)
+                        ;;
+                      .changeset/*.md)
+                        if ! git diff --diff-filter=D --name-only "$BASE_SHA" HEAD -- "$CHANGED_FILE" | grep -Fxq "$CHANGED_FILE"; then
+                          echo "::error::Changeset file $CHANGED_FILE must be deleted by a V1 version PR."
+                          exit 1
+                        fi
+                        ;;
+                      *)
+                        echo "::error::A V1 version PR changed disallowed file $CHANGED_FILE."
+                        exit 1
+                        ;;
+                    esac
+                  done
+
+                  if [[ "$HAS_PACKAGE" != "true" || "$HAS_CHANGELOG" != "true" ]]; then
+                    echo "::error::A V1 version PR must change package.json and CHANGELOG.md."
+                    printf 'Changed file: %s\n' "${CHANGED_FILES[@]}"
+                    exit 1
+                  fi
+
+                  git show "${BASE_SHA}:package.json" | jq -S 'del(.version)' > "$RUNNER_TEMP/base-package.json"
+                  jq -S 'del(.version)' package.json > "$RUNNER_TEMP/release-package.json"
+                  if ! cmp "$RUNNER_TEMP/base-package.json" "$RUNNER_TEMP/release-package.json"; then
+                    echo "::error::A V1 version PR may change only the package.json version field."
+                    exit 1
+                  fi
+
+                  BASE_VERSION=$(git show "${BASE_SHA}:package.json" | jq -r '.version')
+                  CURRENT_VERSION=$(jq -r '.version' package.json)
+                  if [[ "$PR_HEAD_REF" != "chore/v1-release-${CURRENT_VERSION}" ||
+                        "$PR_TITLE" != "chore(release): prepare v${CURRENT_VERSION}" ]]; then
+                    echo "::error::V1 version PR branch or title does not match package version $CURRENT_VERSION."
+                    exit 1
+                  fi
+
+                  node scripts/release-v1/release-v1.mjs validate-transition \
+                    --previous "$BASE_VERSION" \
+                    --current "$CURRENT_VERSION"
+
+            - name: Set up repository
+              uses: ./.github/actions/setup-env
+              with:
+                  NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
+
+            - name: Validate V1 release state
+              id: release
+              run: |
+                  node scripts/release-v1/release-v1.mjs validate-config --config config/release-v1.json
+
+                  git fetch origin version/v1.x:refs/remotes/origin/version/v1.x --tags --force
+                  if [[ "$(git branch -r --contains HEAD | sed 's/^[[:space:]]*//' | grep -c '^origin/version/v1\.x$')" -ne 1 ]]; then
+                    echo "::error::Release commit is not on version/v1.x."
+                    exit 1
+                  fi
+
+                  CURRENT_VERSION=$(jq -r '.version' package.json)
+                  PREVIOUS_VERSION=$(git show "HEAD^:package.json" | jq -r '.version')
+                  PREVIOUS_TAG="v${PREVIOUS_VERSION}"
+                  if ! git rev-parse --verify "refs/tags/${PREVIOUS_TAG}^{commit}" >/dev/null 2>&1 ||
+                     ! git merge-base --is-ancestor "$PREVIOUS_TAG" HEAD; then
+                    echo "::error::Previous package version tag $PREVIOUS_TAG was not found on version/v1.x."
+                    exit 1
+                  fi
+
+                  node scripts/release-v1/release-v1.mjs validate-transition \
+                    --previous "$PREVIOUS_VERSION" \
+                    --current "$CURRENT_VERSION"
+
+                  if git ls-remote --exit-code --tags origin "refs/tags/v${CURRENT_VERSION}" >/dev/null 2>&1; then
+                    echo "::error::Tag v${CURRENT_VERSION} already exists."
+                    exit 1
+                  fi
+
+                  CHANNEL=$(
+                    node scripts/release-v1/release-v1.mjs resolve-channel \
+                      --config config/release-v1.json \
+                      --version "$CURRENT_VERSION"
+                  )
+                  NPM_TAG=$(jq -r '.npmTag' <<< "$CHANNEL")
+                  CDN_TAG=$(jq -r '.cdnTag' <<< "$CHANNEL")
+                  DEPLOY_ENVIRONMENT=$(jq -r '.deployEnvironment' <<< "$CHANNEL")
+                  IS_PRERELEASE=$(jq -r '.isPrerelease' <<< "$CHANNEL")
+                  PRERELEASE_TAG=$(jq -r '.prereleaseTag // ""' <<< "$CHANNEL")
+
+                  if [[ "$IS_PRERELEASE" == "false" && "$NPM_TAG" == "latest" ]]; then
+                    DIST_TAGS=$(npm view @adyen/adyen-platform-experience-web dist-tags --json)
+                    V1_VERSION=$(jq -r '.v1 // empty' <<< "$DIST_TAGS")
+                    if [[ "$V1_VERSION" =~ ^1\.[0-9]+\.[0-9]+$ ]]; then
+                      echo "::error::npm v1 already points to stable V1 $V1_VERSION. Merge the V1 config-switch PR before publishing another stable release."
+                      exit 1
+                    fi
+                  fi
+
+                  echo "version=$CURRENT_VERSION" >> "$GITHUB_OUTPUT"
+                  echo "npm-tag=$NPM_TAG" >> "$GITHUB_OUTPUT"
+                  echo "cdn-tag=$CDN_TAG" >> "$GITHUB_OUTPUT"
+                  echo "deploy-environment=$DEPLOY_ENVIRONMENT" >> "$GITHUB_OUTPUT"
+                  echo "is-prerelease=$IS_PRERELEASE" >> "$GITHUB_OUTPUT"
+                  echo "prerelease-tag=$PRERELEASE_TAG" >> "$GITHUB_OUTPUT"
+                  echo "commit-sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+            - name: Build npm package
+              run: pnpm run build:publish
+
+            - name: Verify npm package
+              run: |
+                  TARBALL="adyen-adyen-platform-experience-web-${{ steps.release.outputs.version }}.tgz"
+                  node scripts/release-v1/release-v1.mjs verify-tarball \
+                    --tarball "$TARBALL" \
+                    --version "${{ steps.release.outputs.version }}"
+
+            - name: Build versioned UMD archive
+              env:
+                  VERSION: ${{ steps.release.outputs.version }}
+              run: ./scripts/upload-assets/generate-umd-file.sh
+
+            - name: Build rollback-ready V1 CDN archive
+              env:
+                  DEPLOY_ENV: ${{ steps.release.outputs.deploy-environment }}
+                  SKIP_UMD_BUILD: true
+              run: |
+                  ./scripts/upload-assets/package-assets.sh
+                  cp platform-components-v1_cdn.tar.gz \
+                    "platform-components-v1_cdn_${{ steps.release.outputs.version }}.tar.gz"
+
+            - name: Create release notes and checksums
+              env:
+                  VERSION: ${{ steps.release.outputs.version }}
+              run: |
+                  awk -v version="$VERSION" '
+                    $0 == "## " version { capture = 1; next }
+                    capture && /^## / { exit }
+                    capture { print }
+                  ' CHANGELOG.md > release-notes.md
+
+                  shasum -a 256 \
+                    "adyen-adyen-platform-experience-web-${VERSION}.tgz" \
+                    "platform-components_cdn_${VERSION}.tar.gz" \
+                    "platform-components-v1_cdn_${VERSION}.tar.gz" \
+                    > SHA256SUMS
+
+            - name: Upload immutable release artifacts
+              uses: actions/upload-artifact@v4.6.2
+              with:
+                  name: adyen-adyen-platform-experience-web-${{ steps.release.outputs.version }}
+                  path: |
+                      adyen-adyen-platform-experience-web-${{ steps.release.outputs.version }}.tgz
+                      platform-components_cdn_${{ steps.release.outputs.version }}.tar.gz
+                      platform-components-v1_cdn_${{ steps.release.outputs.version }}.tar.gz
+                      release-notes.md
+                      SHA256SUMS
+                  retention-days: 7
+                  if-no-files-found: error
+
+    create-github-release:
+        needs: validate-and-build
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - name: Download immutable release artifacts
+              uses: actions/download-artifact@v4.3.0
+              with:
+                  name: adyen-adyen-platform-experience-web-${{ needs.validate-and-build.outputs.version }}
+                  path: release-artifacts
+
+            - name: Verify artifact checksums
+              working-directory: release-artifacts
+              run: shasum -a 256 -c SHA256SUMS
+
+            - name: Create V1 tag and GitHub release
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  VERSION: ${{ needs.validate-and-build.outputs.version }}
+                  COMMIT_SHA: ${{ needs.validate-and-build.outputs.commit-sha }}
+                  IS_PRERELEASE: ${{ needs.validate-and-build.outputs.is-prerelease }}
+              run: |
+                  PRERELEASE_ARGS=()
+                  if [[ "$IS_PRERELEASE" == "true" ]]; then
+                    PRERELEASE_ARGS+=(--prerelease)
+                  fi
+
+                  gh release create "v${VERSION}" \
+                    --repo "${{ github.repository }}" \
+                    --target "$COMMIT_SHA" \
+                    --title "v${VERSION}" \
+                    --notes-file release-artifacts/release-notes.md \
+                    "${PRERELEASE_ARGS[@]}" \
+                    release-artifacts/*
+
+    approve-publication:
+        needs: [validate-and-build, create-github-release]
+        runs-on: ubuntu-latest
+        environment: v1-release
+        permissions: {}
+        steps:
+            - name: Approve V1 publication
+              run: echo "V1 publication approved."
+
+    publish-npm:
+        needs: [validate-and-build, create-github-release, approve-publication]
+        permissions:
+            contents: read
+            actions: write
+            id-token: write
+        uses: ./.github/workflows/npm-publish.yml
+        secrets: inherit
+        with:
+            source_run_id: ${{ github.run_id }}
+            npm_tag: ${{ needs.validate-and-build.outputs.npm-tag }}
+            release_version: ${{ needs.validate-and-build.outputs.version }}
+            source_sha: ${{ needs.validate-and-build.outputs.commit-sha }}
+            release_line: v1
+            allow_existing: true
+
+    publish-cdn:
+        needs: [validate-and-build, create-github-release, publish-npm]
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - name: Checkout released commit
+              uses: actions/checkout@v4.2.2
+              with:
+                  ref: ${{ needs.validate-and-build.outputs.commit-sha }}
+
+            - name: Set up Node
+              uses: actions/setup-node@v4.4.0
+              with:
+                  node-version: 24.9.0
+
+            - name: Download immutable release artifacts
+              uses: actions/download-artifact@v4.3.0
+              with:
+                  name: adyen-adyen-platform-experience-web-${{ needs.validate-and-build.outputs.version }}
+                  path: release-artifacts
+
+            - name: Verify npm publication and update V1 CDN
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  VERSION: ${{ needs.validate-and-build.outputs.version }}
+                  NPM_TAG: ${{ needs.validate-and-build.outputs.npm-tag }}
+                  CDN_TAG: ${{ needs.validate-and-build.outputs.cdn-tag }}
+                  DEPLOY_ENVIRONMENT: ${{ needs.validate-and-build.outputs.deploy-environment }}
+                  IS_PRERELEASE: ${{ needs.validate-and-build.outputs.is-prerelease }}
+              run: |
+                  (cd release-artifacts && shasum -a 256 -c SHA256SUMS)
+                  node scripts/release-v1/release-v1.mjs validate-config --config config/release-v1.json
+                  CHANNEL=$(
+                    node scripts/release-v1/release-v1.mjs resolve-channel \
+                      --config config/release-v1.json \
+                      --version "$VERSION"
+                  )
+                  test "$(jq -r '.npmTag' <<< "$CHANNEL")" = "$NPM_TAG"
+                  test "$(jq -r '.cdnTag' <<< "$CHANNEL")" = "$CDN_TAG"
+                  test "$(jq -r '.deployEnvironment' <<< "$CHANNEL")" = "$DEPLOY_ENVIRONMENT"
+                  test "$(jq -r '.isPrerelease' <<< "$CHANNEL")" = "$IS_PRERELEASE"
+
+                  node scripts/release-v1/release-v1.mjs verify-tarball \
+                    --tarball "release-artifacts/adyen-adyen-platform-experience-web-${VERSION}.tgz" \
+                    --version "$VERSION"
+                  test "$(npm view "@adyen/adyen-platform-experience-web@${NPM_TAG}" version)" = "$VERSION"
+
+                  ASSET_NAME=$(jq -r '.cdn.assetName' config/release-v1.json)
+                  VERSIONED_ASSET="release-artifacts/platform-components-v1_cdn_${VERSION}.tar.gz"
+                  BACKUP_DIR="$RUNNER_TEMP/v1-cdn-backup"
+                  HAD_PREVIOUS_ASSET=false
+                  mkdir -p "$BACKUP_DIR"
+
+                  if gh release view "$CDN_TAG" --repo "${{ github.repository }}" --json assets \
+                    --jq '.assets[].name' | grep -Fxq "$ASSET_NAME"; then
+                    gh release download "$CDN_TAG" \
+                      --repo "${{ github.repository }}" \
+                      --pattern "$ASSET_NAME" \
+                      --dir "$BACKUP_DIR"
+                    HAD_PREVIOUS_ASSET=true
+                  fi
+
+                  restore() {
+                    local status=$?
+                    set +e
+
+                    if [[ "$HAD_PREVIOUS_ASSET" == "true" ]]; then
+                      gh release upload "$CDN_TAG" "$BACKUP_DIR/$ASSET_NAME" \
+                        --repo "${{ github.repository }}" \
+                        --clobber \
+                        || echo "::error::Failed to restore V1 CDN asset."
+                    else
+                      gh release delete-asset "$CDN_TAG" "$ASSET_NAME" \
+                        --repo "${{ github.repository }}" \
+                        --yes || true
+                    fi
+
+                    exit "$status"
+                  }
+                  trap restore ERR
+
+                  cp "$VERSIONED_ASSET" "release-artifacts/${ASSET_NAME}"
+                  gh release upload "$CDN_TAG" "release-artifacts/${ASSET_NAME}" \
+                    --repo "${{ github.repository }}" \
+                    --clobber
+                  rm -rf "$RUNNER_TEMP/v1-cdn-verify"
+                  mkdir -p "$RUNNER_TEMP/v1-cdn-verify"
+                  gh release download "$CDN_TAG" \
+                    --repo "${{ github.repository }}" \
+                    --pattern "$ASSET_NAME" \
+                    --dir "$RUNNER_TEMP/v1-cdn-verify"
+                  cmp "release-artifacts/${ASSET_NAME}" "$RUNNER_TEMP/v1-cdn-verify/${ASSET_NAME}"
+                  trap - ERR
