@@ -59,4 +59,8 @@
         flex-direction: column;
         gap: style.token(spacer-080);
     }
+
+    &__divider-container {
+        align-self: stretch;
+    }
 }
