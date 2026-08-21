@@ -11,15 +11,15 @@ catalog:
   '@adyen/ui-assets-icons-16': 7.9.3
   '@adyen/ui-assets-icons-40': 4.9.2
   "@playwright/test": ^1.61.0
-  "@storybook/preact": 10.2.12
-  "@storybook/vue3": 10.2.12
+  "@storybook/preact": 10.5.5
+  "@storybook/vue3": 10.5.5
   "@testing-library/preact": ^3.2.3
   "@vitest/coverage-v8": 4.0.10
   classnames: ^2.5.1
   dotenv: ^17.2.3
   msw: ^2.7.3
   preact: ^10.29.1
-  storybook: 10.2.12
+  storybook: 10.5.5
   typescript: 5.8.3
   vite: ^7.3.5
   vitest: 4.1.0
