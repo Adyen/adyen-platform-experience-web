@@ -8,6 +8,7 @@ import { DefendResponse, DisputeFlowState, useDisputeFlow } from '../composables
 import DefendDocumentUpload from './DefendDocumentUpload.vue';
 import DefendDisputeResponse from './DefendDisputeResponse.vue';
 import DefendReasonSelection from './DefendReasonSelection.vue';
+import styles from './DisputeFlow.module.scss';
 
 const props = defineProps<{
     onDisputeDefend?: DisputeManagementProps['onDisputeDefend'];
@@ -47,8 +48,8 @@ watch(defendResponse, response => {
 </script>
 
 <template>
-    <div class="adyen-pe-defend-dispute__container">
-        <BentoTypography v-if="!showResponseView" class="adyen-pe-defend-dispute__title" el="h2" variant="title">
+    <div :class="styles.container">
+        <BentoTypography v-if="!showResponseView" el="h2" variant="title">
             {{ defendDisputeTitle }}
         </BentoTypography>
 

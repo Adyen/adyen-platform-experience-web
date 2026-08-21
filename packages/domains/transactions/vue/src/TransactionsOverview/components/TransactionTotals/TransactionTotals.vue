@@ -6,6 +6,7 @@ import { formatAmountWithCurrencyCode } from '@integration-components/core/Local
 import { BentoCard, BentoLoadingIndicator, BentoDivider, useClickOutside } from '@adyen/bento-vue3';
 import type { ITransactionTotal } from '@integration-components/types';
 import TransactionTotalItem from './TransactionTotalItem.vue';
+import styles from '../TransactionsOverview/TransactionsOverview.module.scss';
 
 const props = defineProps<{
     totals: readonly Readonly<ITransactionTotal>[];
@@ -50,7 +51,7 @@ const { maxWidths, updateMaxWidths } = useMaxWidths();
         :expandable="formattedTotals.length > 1"
     >
         <template #header>
-            <div class="adyen-pe-transaction-totals__header adyen-pe-transactions-overview__summary-group">
+            <div :class="[styles.summaryHeader, styles.summaryGroup]">
                 <BentoLoadingIndicator v-if="loadingTotals" />
                 <TransactionTotalItem
                     v-else-if="formattedTotals[0]"
@@ -64,12 +65,12 @@ const { maxWidths, updateMaxWidths } = useMaxWidths();
             </div>
         </template>
         <template #content v-if="formattedTotals.length > 1">
-            <div class="adyen-pe-transactions-overview__summary-group">
+            <div :class="styles.summaryGroup">
                 <div v-if="loadingTotals" class="adyen-pe-transaction-totals__loading">
                     <BentoLoadingIndicator />
                 </div>
                 <BentoDivider />
-                <div class="adyen-pe-transaction-totals__expanded-list">
+                <div :class="styles.expandedList">
                     <TransactionTotalItem
                         v-for="total in formattedTotals.slice(1)"
                         :key="total.currency"
