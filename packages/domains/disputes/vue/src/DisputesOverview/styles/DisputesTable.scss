@@ -3,10 +3,6 @@
 .adyen-pe-disputes-table {
     position: relative;
 
-    .b-data-grid-cell {
-        padding-block: style.token(spacer-050);
-    }
-
     .b-data-grid-columns__column {
         min-height: calc(style.token(spacer-100) + style.token(spacer-020));
     }

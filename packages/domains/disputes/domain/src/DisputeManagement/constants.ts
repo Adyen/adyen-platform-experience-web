@@ -17,6 +17,15 @@ export const DISPUTE_DETAILS_RESERVED_FIELDS = [
 
 export const DISPUTE_DETAILS_RESERVED_FIELDS_SET = new Set(DISPUTE_DETAILS_RESERVED_FIELDS);
 
+export const DISPUTE_DETAILS_FIELDS_REMAPS = {
+    balanceAccount: 'account',
+    createdAt: 'openedOn',
+    dueDate: ['respondBy', 'expiredOn'],
+    id: 'disputeId',
+    latestDefense: ['defenseReason', 'defendedOn', 'disputeEvidence'],
+    reasonGroup: 'disputeReason',
+} as const;
+
 const UPLOAD_DOCUMENT_MAX_SIZE = {
     '2MB': 2097152,
     '10MB': 10485760,

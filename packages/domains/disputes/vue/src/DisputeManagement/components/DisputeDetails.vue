@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import AcceptDisputeFlow from './AcceptDisputeFlow.vue';
 import DefendDisputeFlow from './DefendDisputeFlow.vue';
@@ -12,14 +12,15 @@ const props = defineProps<DisputeManagementProps>();
 const { i18n } = useCoreContext();
 const { flowState, getDisputesConfig } = useDisputeFlow();
 
-onMounted(() => {
-    void getDisputesConfig();
-});
+const { withinModal } = useModalContext();
+const shouldHideTitle = computed(() => props.hideTitle || withinModal);
+
+onMounted(() => getDisputesConfig());
 </script>
 
 <template>
-    <div :class="{ 'adyen-pe-visually-hidden': flowState !== DisputeFlowState.Details }">
-        <BentoTypography v-if="!props.hideTitle" el="h1" variant="title" stronger>
+    <div v-if="!shouldHideTitle && flowState === DisputeFlowState.Details" class="adyen-pe-dispute__title">
+        <BentoTypography el="h1" variant="title" stronger>
             {{ i18n.get('disputes.management.common.title') }}
         </BentoTypography>
     </div>
