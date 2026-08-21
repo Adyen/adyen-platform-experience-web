@@ -318,6 +318,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
                     :on-payment-link-created="onPaymentLinkCreated"
                     :on-creation-dismiss="props.paymentLinkCreation?.onCreationDismiss"
                     :on-contact-support="props.onContactSupport"
+                    embedded-in-overview
                 />
                 <PaymentLinkSettings
                     v-else-if="modalType === 'Settings'"
