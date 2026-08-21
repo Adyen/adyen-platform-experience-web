@@ -69,7 +69,6 @@ test.describe('Default', () => {
         const fullSizeValidationMaxImageError = page.getByText('Max image dimensions: 200 × 200px');
         await expect(fullSizeValidationMaxImageError).toBeVisible();
         await expect(fullSizeValidationMaxImageError).toHaveClass(/b-file-uploader-restrictions--error/);
-        page.getByText('Image dimensions exceed limits');
         await page.getByRole('button', { name: /Cancel - theme-logo-full-width\.jpg/ }).click();
 
         const fullWidthUpload = page.locator('input[type="file"]').nth(1);

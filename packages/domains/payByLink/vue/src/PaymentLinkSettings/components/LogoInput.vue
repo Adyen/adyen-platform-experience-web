@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { BentoFileUploader } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import { LogoLabel, THEME_FORM_ALLOWED_FILE_TYPES } from '../constants';
+import { LOGO_DIMENSIONS, LogoLabel, THEME_FORM_ALLOWED_FILE_TYPES, THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from '../constants';
 import type { LogoType } from '../types';
 
 const props = defineProps<{
@@ -18,9 +18,9 @@ const emit = defineEmits<{
 
 const { i18n } = useCoreContext();
 const modelValue = ref<File | undefined>();
-const error = ref<boolean>();
+const error = ref(false);
 const cachedModelValue = ref<File | undefined>();
-const errorMessage = ref<string | undefined>();
+const maxDimensions = computed(() => LOGO_DIMENSIONS[props.logoType]);
 
 watch(error, () => {
     if (error.value) {
@@ -36,15 +36,11 @@ function onError(value: boolean) {
     }
 }
 
-async function onChange(files?: FileList) {
+function onChange(files?: FileList) {
     const file = files?.[0];
-    // errorMessage.value = undefined;
-    cachedModelValue.value = undefined;
-
+    cachedModelValue.value = file || undefined;
     if (!file) {
-        modelValue.value = undefined;
         emit('fileRemoved', props.logoType);
-        return;
     }
 
     //TODO: This is old custom error handling clean onces the error handling of bento has been confirmed
@@ -90,11 +86,10 @@ async function onChange(files?: FileList) {
             v-model="modelValue"
             condensed
             :disabled="props.disabled"
-            :error-message="errorMessage"
             :label="i18n.get(LogoLabel[props.logoType])"
             :max-count="1"
-            :max-dimensions="logoType === 'logo' ? { width: 200, height: 200 } : { width: 300, height: 30 }"
-            :max-size="51200"
+            :max-dimensions="maxDimensions"
+            :max-size="THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE"
             :accept="THEME_FORM_ALLOWED_FILE_TYPES.join(',')"
             optional
             @change="onChange"
