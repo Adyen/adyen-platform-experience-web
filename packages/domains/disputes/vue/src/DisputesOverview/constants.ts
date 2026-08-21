@@ -4,12 +4,6 @@ import type { IDisputeStatusGroup } from '@integration-components/types/api/mode
 
 export { EMPTY_TABLE_MESSAGE_KEYS, FIELD_KEYS, type DisputesTableFields } from '@integration-components/disputes/domain';
 
-export const BASE_CLASS = 'adyen-pe-disputes-overview';
-export const BASE_XS_CLASS = `${BASE_CLASS}--xs`;
-export const CONTAINER_CLASS = `${BASE_CLASS}-container`;
-export const TABS_CONTAINER_CLASS = `${BASE_CLASS}__tabs-container`;
-export const TABLE_CLASS = 'adyen-pe-disputes-table';
-
 export const EARLIEST_DISPUTES_SINCE_DATE = '2025-05-22T00:00:00.000Z';
 
 export const DEFAULT_PAGE_LIMIT = 10;

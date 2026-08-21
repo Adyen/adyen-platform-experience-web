@@ -7,10 +7,9 @@ import PayoutsFilters from './PayoutsFilters.vue';
 import PayoutsTable from './PayoutsTable.vue';
 import PayoutDetailsContainer from '../../PayoutDetails/components/PayoutDetailsContainer.vue';
 import { usePayoutsList } from '../composables/usePayoutsList';
-import { BASE_CLASS } from '../constants';
 import type { IBalanceAccountBase, PayoutsOverviewExternalProps } from '../types';
 import type { IPayout } from '@integration-components/types';
-import '../styles/index.scss';
+import styles from './PayoutsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccountId?: string;
@@ -97,15 +96,13 @@ function closeModal() {
 </script>
 
 <template>
-    <div :class="BASE_CLASS">
-        <div v-if="!props.hideTitle" class="adyen-pe-payouts-overview-header">
+    <div :class="styles.root">
+        <div v-if="!props.hideTitle" :class="styles.header">
             <BentoTypography variant="title">{{ i18n.get('payouts.overview.title') }}</BentoTypography>
-            <BentoTypography variant="body" class="adyen-pe-payouts-overview-header__description">{{
-                i18n.get('payouts.overview.generateInfo')
-            }}</BentoTypography>
+            <BentoTypography variant="body" :class="styles.description">{{ i18n.get('payouts.overview.generateInfo') }}</BentoTypography>
         </div>
 
-        <div role="toolbar" class="adyen-pe-payouts-overview__toolbar">
+        <div role="toolbar" :class="styles.toolbar">
             <PayoutsFilters :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />
         </div>
 

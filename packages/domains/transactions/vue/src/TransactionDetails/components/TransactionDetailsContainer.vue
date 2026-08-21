@@ -7,8 +7,8 @@ import { useTransaction } from '../composables/useTransaction';
 import { normalizeCustomFields } from '@integration-components/utils';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET, sharedTransactionDetailsEventProperties } from '../../../../domain/src';
 import type { TransactionDetailsCustomization, TransactionDetails } from '../../../../domain/src';
+import styles from './TransactionDetailsContainer.module.scss';
 import '@adyen/bento-vue3/styles/bento-light';
-import './TransactionDetailsContainer.scss';
 
 const props = defineProps<{
     id: string;
@@ -80,7 +80,7 @@ useLandedPageEvent({
             :transaction-navigator="transactionNavigator"
         />
 
-        <div v-else-if="fetchingTransaction" class="adyen-pe-overview-details__loading">
+        <div v-else-if="fetchingTransaction" :class="styles.loading">
             <BentoLoadingIndicator />
         </div>
 

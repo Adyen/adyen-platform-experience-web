@@ -1,12 +1,10 @@
 const bemPattern = '^.[adyen|fp]*(?:-[a-zA-Z0-9]+)*(?:__[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:--[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:\\[.+\\])?$';
+const cssModulePattern = '^(?:[a-z][a-zA-Z0-9]*|b-[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*(?:__[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:--[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?)$';
 
 module.exports = {
     extends: ['stylelint-config-recommended', 'stylelint-config-sass-guidelines'],
     plugins: ['stylelint-scss'],
-    ignoreFiles: [
-        'netlify/edge-functions/proxy-requests.ts',
-        'src/style/bento/**/*.scss',
-    ],
+    ignoreFiles: ['netlify/edge-functions/proxy-requests.ts', 'src/style/bento/**/*.scss'],
     rules: {
         '@stylistic/indentation': 4,
         '@stylistic/max-empty-lines': 3,
@@ -14,6 +12,7 @@ module.exports = {
         'no-descending-specificity': null,
         'property-no-vendor-prefix': null,
         'selector-no-vendor-prefix': null,
+        'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['global'] }],
 
         // Replaced CSS with SCSS rules
         'at-rule-no-unknown': null,
@@ -38,6 +37,12 @@ module.exports = {
         'nesting-selector-no-missing-scoping-root': null,
     },
     overrides: [
+        {
+            files: ['packages/**/*.module.scss'],
+            rules: {
+                'selector-class-pattern': cssModulePattern,
+            },
+        },
         {
             // Relax BEM naming for storybook classes, mixins, and variables
             files: ['packages/tools/storybook/**/*.scss'],

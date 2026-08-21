@@ -3,7 +3,6 @@ import { computed } from 'vue';
 import ReportsOverview from './ReportsOverview.vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useBalanceAccounts } from '@integration-components/composables-vue';
-import { REPORTS_OVERVIEW_CONTAINER_CLASS_NAMES } from '../../../../domain/src';
 import '@adyen/bento-vue3/styles/bento-light';
 
 const props = withDefaults(
@@ -26,7 +25,7 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
 </script>
 
 <template>
-    <div :class="REPORTS_OVERVIEW_CONTAINER_CLASS_NAMES.base">
+    <div>
         <!-- Error state -->
         <div v-if="hasError" class="adyen-pe-data-overview-error">
             <p>{{ i18n.get('reports.overview.errors.unavailable') }}</p>

@@ -12,6 +12,7 @@ import type { ITransaction } from '@integration-components/types';
 import type { TransactionsOverviewExternalProps, IBalanceAccountBase } from '../../types';
 import TransactionsFilters from '../TransactionFilters/TransactionsFilters.vue';
 import TransactionsExport from '../TransactionsExport/TransactionsExport.vue';
+import styles from './TransactionsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccountId?: string;
@@ -72,7 +73,7 @@ const canExport = computed(() => state.transactionsListResult.records.value.leng
 
 <template>
     <TransactionsOverviewShell :hide-title="props.hideTitle">
-        <div role="toolbar" class="adyen-pe-transactions-overview__toolbar">
+        <div role="toolbar" :class="styles.toolbar">
             <TransactionsFilters :balance-accounts="props.balanceAccounts" />
             <TransactionsExport v-if="showExport" :disabled="!canExport" />
         </div>

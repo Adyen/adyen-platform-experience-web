@@ -18,6 +18,7 @@ import {
 import { DATE_FORMAT_DISPUTE_DETAILS, isFunction } from '@integration-components/utils';
 import type { IDisputeDetail, IDisputeStatus } from '@integration-components/types/api/models/disputes';
 import { useDisputeFlow } from '../composables/useDisputeFlow';
+import styles from './DisputeData.module.scss';
 
 type CustomDataValue = {
     type?: string;
@@ -238,12 +239,12 @@ async function downloadEvidence(documentType: string) {
 </script>
 
 <template>
-    <BentoStructuredList class="adyen-pe-dispute-data__list">
+    <BentoStructuredList :class="styles.list">
         <BentoStructuredListItem v-for="item in items" :key="item.id" :copy="getCopyValue(item)" :label="i18n.get(item.label)">
             <time v-if="item.kind === 'date'" :datetime="item.value">
                 <BentoTypography variant="body">{{ formatDate(item.value) }}</BentoTypography>
             </time>
-            <div v-else-if="item.kind === 'evidence'" class="adyen-pe-dispute-data__list--evidence">
+            <div v-else-if="item.kind === 'evidence'" :class="styles.listEvidence">
                 <template v-for="documentType in item.value" :key="documentType">
                     <BentoTag :label="getDefenseDocumentContent(defenseDocumentConfig, i18n, documentType)?.title ?? documentType" />
                     <BentoButton
@@ -253,12 +254,7 @@ async function downloadEvidence(documentType: string) {
                     >
                         <DownloadIcon aria-hidden="true" />
                     </BentoButton>
-                    <BentoAlert
-                        v-if="downloadErrors.has(documentType)"
-                        class="adyen-pe-dispute-data__list-evidence-error-message"
-                        type="critical"
-                        variant="tip"
-                    >
+                    <BentoAlert v-if="downloadErrors.has(documentType)" :class="styles.listEvidenceErrorMessage" type="critical" variant="tip">
                         <template #description>
                             {{ i18n.get('disputes.management.details.errors.downloadFailure') }}
                         </template>

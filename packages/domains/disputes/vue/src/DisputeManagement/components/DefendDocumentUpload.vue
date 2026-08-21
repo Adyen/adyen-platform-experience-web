@@ -12,6 +12,8 @@ import { DefendResponse, DisputeFlowState, useDisputeFlow } from '../composables
 import DisputeFileInput from './DisputeFileInput.vue';
 import SelectDropdown from './SelectDropdown.vue';
 import type { SelectDropdownItem } from '../types';
+import flowStyles from './DisputeFlow.module.scss';
+import styles from './DefendDispute.module.scss';
 
 const props = defineProps<{
     pspReference?: string;
@@ -161,12 +163,12 @@ const uploadActionButtons = computed(() => [
 </script>
 
 <template>
-    <BentoTypography class="adyen-pe-defend-dispute-file-uploader__subtitle" variant="body">
+    <BentoTypography variant="body">
         {{ i18n.get('disputes.management.defend.common.documentUploadInfo') }}
     </BentoTypography>
     <BentoCard expandable closed background="secondary">
         <template #header>
-            <BentoTypography class="adyen-pe-defend-dispute-document-requirements" variant="body" strongest>
+            <BentoTypography :class="styles.documentRequirements" variant="body" strongest>
                 {{ i18n.get('disputes.management.defend.common.documentRequirements') }}
             </BentoTypography>
         </template>
@@ -191,10 +193,10 @@ const uploadActionButtons = computed(() => [
         </template>
     </BentoCard>
 
-    <div class="adyen-pe-defend-dispute-file-uploader__container">
-        <div v-if="requiredDocuments.length || oneOrMoreDocuments.length" class="adyen-pe-defend-dispute-document-upload-box">
-            <div class="adyen-pe-defend-dispute-document-upload-box__required-documents">
-                <div v-for="documentType in requiredDocuments" :key="documentType" class="adyen-pe-defend-dispute-document-upload">
+    <div :class="styles.fileUploaderContainer">
+        <div v-if="requiredDocuments.length || oneOrMoreDocuments.length" :class="styles.documentUploadBox">
+            <div :class="styles.requiredDocuments">
+                <div v-for="documentType in requiredDocuments" :key="documentType" :class="styles.documentUpload">
                     <BentoTypography variant="body" strongest>
                         {{ getDefenseDocumentContent(defenseDocumentConfig, i18n, documentType)?.title ?? documentType }}
                     </BentoTypography>
@@ -208,7 +210,7 @@ const uploadActionButtons = computed(() => [
                     <DisputeFileInput :disabled="isSubmittingDefense" required @change="file => onFileChange(documentType, file)" />
                 </div>
 
-                <div v-if="oneOrMoreDocuments.length" class="adyen-pe-defend-dispute-document-upload">
+                <div v-if="oneOrMoreDocuments.length" :class="styles.documentUpload">
                     <BentoTypography variant="body" strongest>
                         {{ i18n.get('disputes.management.defend.common.documentTypes.required') }}
                     </BentoTypography>
@@ -237,13 +239,9 @@ const uploadActionButtons = computed(() => [
             </div>
         </div>
 
-        <div
-            v-for="(documentType, index) in optionalSelectedDocuments"
-            :key="`optional-doc-${index}`"
-            class="adyen-pe-defend-dispute-document-upload-box"
-        >
-            <div class="adyen-pe-defend-dispute-document-upload">
-                <div class="adyen-pe-defend-dispute-document-upload__delete-button-container">
+        <div v-for="(documentType, index) in optionalSelectedDocuments" :key="`optional-doc-${index}`" :class="styles.documentUploadBox">
+            <div :class="styles.documentUpload">
+                <div :class="styles.deleteButtonContainer">
                     <BentoTypography variant="body" strongest>
                         {{ i18n.get('disputes.management.defend.common.documentTypes.optional') }}
                     </BentoTypography>
@@ -286,7 +284,7 @@ const uploadActionButtons = computed(() => [
         </BentoButton>
     </div>
 
-    <div class="adyen-pe-defend-dispute__actions">
+    <div :class="flowStyles.actions">
         <BentoButtonActions :actions="uploadActionButtons as BentoButtonActionsList" />
     </div>
 </template>

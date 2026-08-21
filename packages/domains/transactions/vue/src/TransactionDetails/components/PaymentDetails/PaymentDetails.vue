@@ -8,19 +8,11 @@ import PaymentDetailsSummary from './PaymentDetailsSummary.vue';
 import PaymentDetailsTimeline from './PaymentDetailsTimeline.vue';
 import PaymentRefundAlerts from './PaymentRefundAlerts.vue';
 import PaymentDetailsActions from './PaymentDetailsActions.vue';
-import {
-    TX_DETAILS_TABS,
-    TX_DATA_CLASS,
-    TX_DATA_CONTAINER,
-    TX_DATA_TABS,
-    ActiveView,
-    DetailsTab,
-    RefundedState,
-    REFUND_STATUSES,
-} from '../../../../../domain/src';
+import { TX_DETAILS_TABS, ActiveView, DetailsTab, RefundedState, REFUND_STATUSES } from '../../../../../domain/src';
 import type { TransactionDetails, TransactionDetailsCustomization } from '../../../../../domain/src';
 import { useTransaction } from '../../composables/useTransaction.js';
-import './PaymentDetails.scss';
+import styles from './PaymentDetails.module.scss';
+import layoutStyles from '../TransactionDataLayout.module.scss';
 
 type TransactionNavigatorState = ReturnType<typeof useTransaction>['transactionNavigator']['value'];
 
@@ -82,12 +74,12 @@ const onTabChange = (newIndex: number) => {
 </script>
 
 <template>
-    <div :class="TX_DATA_CLASS">
+    <div :class="layoutStyles.root">
         <PaymentDetailsStatusBox :refunded-state="props.refundedState" :transaction="props.transaction" />
 
-        <div :class="TX_DATA_CONTAINER">
+        <div :class="layoutStyles.container">
             <BentoTabs
-                :class="TX_DATA_TABS"
+                :class="styles.tabs"
                 v-if="navigationTabs.length > 1"
                 :aria-label="i18n.get('transactions.details.viewSelect.a11y.label')"
                 :activeTabIndex="activeTabIndex"
