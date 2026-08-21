@@ -1,0 +1,19 @@
+@use '@integration-components/style';
+
+.popoverSections {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-040);
+    margin-bottom: style.token(spacer-040);
+}
+
+.filters {
+    display: flex;
+    gap: style.token(spacer-030);
+}
+
+.columns {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-030);
+}
