@@ -10,7 +10,7 @@ import type { TransactionDetails, TransactionDetailsCustomization } from '../../
 import type { ILineItem } from '@integration-components/types';
 import type { useTransaction } from '../../composables/useTransaction';
 import { useRefundMetadata } from '../../composables/useRefundMetadata';
-import './TransactionData.scss';
+import styles from './TransactionData.module.scss';
 
 type TransactionNavigatorState = ReturnType<typeof useTransaction>['transactionNavigator']['value'];
 
@@ -42,11 +42,11 @@ watch(refundMeta.refundLocked, locked_ => {
 </script>
 
 <template>
-    <div v-if="!props.hideTitle" class="adyen-pe-transaction-data__title">
+    <div v-if="!props.hideTitle" :class="styles.title">
         <BentoTypography variant="title">{{ i18n.get('transactions.details.title') }}</BentoTypography>
     </div>
 
-    <div v-if="props.fetchingTransaction" class="adyen-pe-transaction-data__loading">
+    <div v-if="props.fetchingTransaction" :class="styles.loading">
         <BentoLoadingIndicator />
     </div>
 

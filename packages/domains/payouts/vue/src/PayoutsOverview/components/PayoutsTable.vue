@@ -1,16 +1,24 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoDataGrid, BentoButton, BentoTypography } from '@adyen/bento-vue3';
+import { BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
+import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
+import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import { useCustomColumnsData, CustomDataCell, useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
+import {
+    useCustomColumnsData,
+    CustomDataCell,
+    useResponsiveContainer,
+    containerQueries,
+    DataOverviewError,
+} from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IPayout, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import { TABLE_CLASS, PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
+import { PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
 import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '@integration-components/utils';
-import '../styles/PayoutsTable.scss';
 import { TranslationKey } from '@integration-components/core';
+import styles from './PayoutsTable.module.scss';
 
 const props = defineProps<{
     balanceAccountId: string | undefined;
@@ -141,10 +149,13 @@ const paginationProps = computed(() => {
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
+        hideFirstLastPageButtons: true,
     };
 });
 
 const emptyStateProps = computed(() => ({
+    image: 'no-results-found' as const,
+    variant: 'embedded' as const,
     title: i18n.get('payouts.overview.errors.listEmpty'),
     description: i18n.get('common.errors.updateFilters'),
 }));
@@ -173,14 +184,16 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
 </script>
 
 <template>
-    <div :class="TABLE_CLASS">
+    <div :class="styles.root">
         <!-- Error state -->
-        <div v-if="props.error" class="adyen-pe-data-overview-error">
-            <p>{{ i18n.get('payouts.overview.errors.listUnavailable') }}</p>
-            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
-            </BentoButton>
-        </div>
+        <DataOverviewError
+            v-if="props.error"
+            :error="props.error"
+            :error-message="'payouts.overview.errors.listUnavailable'"
+            :on-contact-support="props.onContactSupport"
+            :refresh-icon="RefreshIcon"
+            :copy-icon="CopyIcon"
+        />
 
         <BentoDataGrid
             v-else

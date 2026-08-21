@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import type { ReportsOverviewExternalProps } from './types';
-import { UIElementProvider } from '@integration-components/core/vue';
+import { createRefreshContext, UIElementProvider } from '@integration-components/core/vue';
 import ReportsOverviewContainer from './components/ReportsOverviewContainer.vue';
-import '@adyen/bento-vue3/styles/bento-light';
 
 const props = defineProps<ReportsOverviewExternalProps>();
+const { refresh, refreshCount } = createRefreshContext();
 </script>
 
 <template>
-    <UIElementProvider :core="props.core" component-name="reports">
+    <UIElementProvider :core="props.core" component-name="reports" :refresh-component="refresh">
         <ReportsOverviewContainer
+            :key="refreshCount"
             :balance-account-id="props.balanceAccountId"
             :allow-limit-selection="props.allowLimitSelection"
             :preferred-limit="props.preferredLimit"

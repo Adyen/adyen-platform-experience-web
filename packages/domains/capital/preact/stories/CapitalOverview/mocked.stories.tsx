@@ -1,26 +1,26 @@
-import { getMySessionToken, ElementProps, ElementStory, SetupControls } from '@integration-components/testing/storybook-helpers';
 import { Meta } from '@storybook/preact';
+import { ElementProps, ElementStory, getMySessionToken } from '@integration-components/testing/storybook-helpers';
 import { CapitalOverview } from '../../src';
 import { AdyenPlatformExperience } from '@integration-components/sdk-internal';
-import { ILegalEntity } from '@integration-components/types';
-import { CapitalOverviewWithSetupMeta } from './meta';
+import { CapitalOverviewMeta } from './meta';
 import { capitalOverviewHandlers } from '../../../mocks/mock-server';
 import { useEffect } from 'preact/compat';
 
-const meta: Meta<ElementProps<typeof CapitalOverview> & SetupControls> = {
-    ...CapitalOverviewWithSetupMeta,
+const meta: Meta<ElementProps<typeof CapitalOverview>> = {
+    ...CapitalOverviewMeta,
     title: 'Mocked/Capital/Capital Overview',
 };
 
-export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean; legalEntity: ILegalEntity }> = {
+export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean }> = {
     name: 'Unsupported region',
     args: {
         mockedApi: true,
         skipDecorators: true,
         mountIfInUnsupportedRegion: true,
-        legalEntity: {
-            countryCode: 'TR',
-            regions: [{ type: 'capital', value: 'Middle East' }],
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOverviewHandlers.unsupportedRegion,
         },
     },
     decorators: [
@@ -30,7 +30,10 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
                     const core = await AdyenPlatformExperience({
                         onSessionCreate: getMySessionToken as any,
                     });
-                    const capitalOverview = new CapitalOverview({ core });
+                    const capitalOverview = new CapitalOverview({
+                        core,
+                        hideTitle: context.args.hideTitle,
+                    });
                     const { state } = await capitalOverview.getState();
 
                     if (state !== 'isInUnsupportedRegion' || context.args.mountIfInUnsupportedRegion) {
@@ -38,7 +41,7 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
                     }
                 };
                 void getAdyenPlatformExperienceComponent();
-            }, [context.args.mountIfInUnsupportedRegion]);
+            }, [context.args.hideTitle, context.args.mountIfInUnsupportedRegion]);
 
             return <div className="component-wrapper" id="capital-overview"></div>;
         },
@@ -64,7 +67,10 @@ export const Ineligible: ElementStory<typeof CapitalOverview, { mountIfIneligibl
                     const core = await AdyenPlatformExperience({
                         onSessionCreate: getMySessionToken as any,
                     });
-                    const capitalOverview = new CapitalOverview({ core });
+                    const capitalOverview = new CapitalOverview({
+                        core,
+                        hideTitle: context.args.hideTitle,
+                    });
                     const { state } = await capitalOverview.getState();
 
                     if (state !== 'isUnqualified' || context.args.mountIfIneligible) {
@@ -72,7 +78,7 @@ export const Ineligible: ElementStory<typeof CapitalOverview, { mountIfIneligibl
                     }
                 };
                 void getAdyenPlatformExperienceComponent();
-            }, [context.args.mountIfIneligible]);
+            }, [context.args.hideTitle, context.args.mountIfIneligible]);
 
             return <div className="component-wrapper" id="capital-overview"></div>;
         },

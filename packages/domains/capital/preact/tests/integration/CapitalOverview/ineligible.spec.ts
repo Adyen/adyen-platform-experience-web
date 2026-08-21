@@ -8,7 +8,8 @@ test.describe('Ineligible', () => {
         await goToStory(page, { id: STORY_ID });
         await expect(page.getByText('Need some extra money?')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
-        await expect(page.getByText('You will soon qualify for a financial offer!')).toBeVisible();
+        await expect(page.getByText('No offer available currently')).toBeVisible();
+        await expect(page.getByText('We update our financial offers regularly, so be sure to check back again in the future.')).toBeVisible();
     });
 });
 

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import {
-    BentoButton,
     BentoCurrency,
     BentoDataGrid,
     BentoEmptyState,
@@ -14,9 +13,17 @@ import {
     BentoTypography,
 } from '@adyen/bento-vue3';
 import WarningFilledIcon from '@adyen/ui-assets-icons-16/vue/warning-filled';
-import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
+import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
+import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
+import type { BentoColumn, BentoCurrencyISOCode, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import { useCustomColumnsData, CustomDataCell, useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
+import {
+    useCustomColumnsData,
+    CustomDataCell,
+    useResponsiveContainer,
+    containerQueries,
+    DataOverviewError,
+} from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { getDisputeReason, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE, DAY_IN_MS as DAY_MS, mergeRecords } from '@integration-components/utils';
@@ -25,8 +32,8 @@ import type { StringWithAutocompleteOptions } from '@integration-components/util
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 import DisputeStatusTag from './DisputeStatusTag.vue';
 import DisputePaymentMethod from './DisputePaymentMethod.vue';
-import { DISPUTES_TABLE_FIELDS, EMPTY_TABLE_MESSAGE_KEYS, FIELD_KEYS, TABLE_CLASS, type DisputesTableFields } from '../constants';
-import '../styles/DisputesTable.scss';
+import { DISPUTES_TABLE_FIELDS, EMPTY_TABLE_MESSAGE_KEYS, FIELD_KEYS, type DisputesTableFields } from '../constants';
+import styles from './DisputesTable.module.scss';
 
 const props = defineProps<{
     statusGroup: IDisputeStatusGroup;
@@ -162,10 +169,13 @@ const paginationProps = computed(() => {
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
+        hideFirstLastPageButtons: true,
     };
 });
 
 const emptyStateProps = computed(() => ({
+    image: 'no-results-found' as const,
+    variant: 'embedded' as const,
     title: i18n.get(EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].title),
     description: i18n.get(EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].message),
 }));
@@ -221,22 +231,26 @@ function handleListItemClick(dispute: IDisputeListItem) {
 </script>
 
 <template>
-    <div :class="TABLE_CLASS">
-        <div v-if="props.error" class="adyen-pe-data-overview-error">
-            <p>{{ i18n.get('disputes.overview.common.errors.listUnavailable') }}</p>
-            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
-            </BentoButton>
-        </div>
+    <div :class="styles.root">
+        <DataOverviewError
+            v-if="props.error"
+            :error="props.error"
+            :error-message="'disputes.overview.common.errors.listUnavailable'"
+            :on-contact-support="props.onContactSupport"
+            :variant="isMobile ? 'condensed' : 'embedded'"
+            :refresh-icon="RefreshIcon"
+            :copy-icon="CopyIcon"
+        />
 
         <template v-else-if="isMobile">
-            <div v-if="isLoading" class="adyen-pe-disputes-table__loading" aria-busy="true">
+            <div v-if="isLoading" :class="styles.loading" aria-busy="true">
                 <BentoLoadingIndicator />
             </div>
 
             <BentoEmptyState
                 v-else-if="!customRecords.length"
                 variant="condensed"
+                :image="emptyStateProps.image"
                 :title="emptyStateProps.title"
                 :description="emptyStateProps.description"
             />
@@ -246,16 +260,19 @@ function handleListItemClick(dispute: IDisputeListItem) {
                     <BentoListItem
                         v-for="dispute in customRecords"
                         :key="dispute.disputePspReference"
-                        with-chevron
                         show-bottom-divider
                         @click="handleListItemClick(dispute)"
                     >
                         <template #content>
-                            <div class="adyen-pe-disputes-table__mobile-row">
-                                <div class="adyen-pe-disputes-table__mobile-details">
+                            <div :class="styles.mobileRow">
+                                <div :class="styles.mobileDetails">
                                     <div
-                                        class="adyen-pe-disputes-table__mobile-date"
-                                        :class="{ 'adyen-pe-disputes-table__mobile-date--urgent': isMobileDateUrgent(dispute) }"
+                                        :class="[
+                                            styles.mobileDate,
+                                            {
+                                                [styles.mobileDateUrgent]: isMobileDateUrgent(dispute),
+                                            },
+                                        ]"
                                     >
                                         <time :datetime="getMobileDate(dispute)">
                                             {{ dateFormat(getMobileDate(dispute), DATE_FORMAT_DISPUTES) }}
@@ -264,8 +281,12 @@ function handleListItemClick(dispute: IDisputeListItem) {
                                     </div>
                                     <DisputePaymentMethod :payment-method="dispute.paymentMethod" />
                                 </div>
-                                <BentoTypography class="adyen-pe-disputes-table__mobile-amount" variant="body" stronger>
-                                    <BentoCurrency :currency="dispute.amount.currency" :value="dispute.amount.value" :disable-typography="true" />
+                                <BentoTypography :class="styles.mobileAmount" variant="body" stronger>
+                                    <BentoCurrency
+                                        :currency="dispute.amount.currency as BentoCurrencyISOCode"
+                                        :value="dispute.amount.value"
+                                        :disable-typography="true"
+                                    />
                                 </BentoTypography>
                             </div>
                         </template>
@@ -273,6 +294,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
                 </BentoList>
 
                 <BentoPagination
+                    hide-first-last-page-buttons
                     v-if="showMobilePagination"
                     :page="props.currentPage"
                     :size="props.limit"
@@ -298,24 +320,26 @@ function handleListItemClick(dispute: IDisputeListItem) {
             @items-page="handleItemsPage"
         >
             <template #item-status="{ item }">
-                <div class="adyen-pe-disputes-table__cell-content">
+                <div :class="styles.cellContent">
                     <DisputeStatusTag :dispute="getDispute(item)" />
                 </div>
             </template>
 
             <template #item-respondBy="{ item }">
-                <div class="adyen-pe-disputes-table__cell-content">
+                <div :class="styles.cellContent">
                     <span
                         v-if="getDispute(item).dueDate"
-                        class="adyen-pe-disputes-table__status-content"
-                        :class="{
-                            'adyen-pe-disputes-table__status-content--urgent': isDisputeActionNeededUrgently(getDispute(item)),
-                        }"
+                        :class="[
+                            styles.statusContent,
+                            {
+                                [styles.statusContentUrgent]: isDisputeActionNeededUrgently(getDispute(item)),
+                            },
+                        ]"
                     >
                         <span
                             v-if="isDisputeActionNeededUrgently(getDispute(item))"
                             v-bento-tooltip="getTimeToDeadline(getDispute(item).dueDate!)"
-                            class="adyen-pe-disputes-table__date-content--urgent"
+                            :class="styles.dateContentUrgent"
                         >
                             <time :datetime="getDispute(item).dueDate">{{ dateFormat(getDispute(item).dueDate!, DATE_FORMAT_DISPUTES) }}</time>
                             <WarningFilledIcon />
@@ -326,8 +350,8 @@ function handleListItemClick(dispute: IDisputeListItem) {
             </template>
 
             <template #item-createdAt="{ item }">
-                <div class="adyen-pe-disputes-table__cell-content">
-                    <time :datetime="getDispute(item).createdAt" class="adyen-pe-disputes-table__status-content">
+                <div :class="styles.cellContent">
+                    <time :datetime="getDispute(item).createdAt" :class="styles.statusContent">
                         <BentoTypography variant="body">{{ dateFormat(getDispute(item).createdAt, DATE_FORMAT_DISPUTES) }}</BentoTypography>
                     </time>
                 </div>

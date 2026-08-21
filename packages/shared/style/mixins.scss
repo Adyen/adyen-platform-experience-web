@@ -20,6 +20,13 @@
     @content;
 }
 
+@mixin adyen-pe-error-message-display-container($selector: '.adyen-pe-error-message-display') {
+    #{$selector} {
+        margin: 0 auto;
+        max-width: 450px;
+    }
+}
+
 @mixin adyen-pe-error-message-display-mobile-fix {
     // Ensure to add style declaration for the closest positioned ancestor of the error-message-display
     // wrapper element, by setting its CSS position to "absolute" | "fixed" | "relative" | "sticky".

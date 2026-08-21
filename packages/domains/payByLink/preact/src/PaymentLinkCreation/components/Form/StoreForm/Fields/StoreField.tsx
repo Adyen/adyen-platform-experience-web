@@ -1,4 +1,4 @@
-import { PaymentLinkCreationFormValues } from '../../../types';
+import { PaymentLinkCreationFormValues } from '../../../../types';
 import { useCoreContext } from '@integration-components/core/preact';
 
 import { FormSelect } from '@integration-components/ui-components-preact/FormWrappers/FormSelect';

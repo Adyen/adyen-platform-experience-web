@@ -1,23 +1,23 @@
 import { Meta } from '@storybook/preact';
-import { ElementProps, ElementStory, getMySessionToken, SetupControls } from '@integration-components/testing/storybook-helpers';
-import { capitalOfferWithSetupMeta } from './meta';
-import { CapitalOffer, CapitalOverview } from '../../src';
-import { ILegalEntity } from '@integration-components/types';
+import { ElementProps, ElementStory, getMySessionToken } from '@integration-components/testing/storybook-helpers';
+import { capitalOfferMeta } from './meta';
+import { CapitalOffer } from '../../src';
 import { capitalOfferHandlers } from '../../../mocks/mock-server';
 import { useEffect } from 'preact/compat';
 import { AdyenPlatformExperience } from '../../../../../../src';
 
-const meta: Meta<ElementProps<typeof CapitalOffer> & SetupControls> = { ...capitalOfferWithSetupMeta, title: 'Mocked/Capital/Capital Offer' };
+const meta: Meta<ElementProps<typeof CapitalOffer>> = { ...capitalOfferMeta, title: 'Mocked/Capital/Capital Offer' };
 
-export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean; legalEntity: ILegalEntity }> = {
+export const UnsupportedRegion: ElementStory<typeof CapitalOffer, { mountIfInUnsupportedRegion: boolean }> = {
     name: 'Unsupported region',
     args: {
         mockedApi: true,
         skipDecorators: true,
         mountIfInUnsupportedRegion: true,
-        legalEntity: {
-            countryCode: 'TR',
-            regions: [{ type: 'capital', value: 'Middle East' }],
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.unsupportedRegion,
         },
     },
     decorators: [
@@ -27,7 +27,11 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
                     const core = await AdyenPlatformExperience({
                         onSessionCreate: getMySessionToken as any,
                     });
-                    const capitalOffer = new CapitalOffer({ core, onFundsRequest: () => undefined });
+                    const capitalOffer = new CapitalOffer({
+                        core,
+                        hideTitle: context.args.hideTitle,
+                        onFundsRequest: () => undefined,
+                    });
                     const { state } = await capitalOffer.getState();
 
                     if (state !== 'isInUnsupportedRegion' || context.args.mountIfInUnsupportedRegion) {
@@ -35,7 +39,7 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
                     }
                 };
                 void getAdyenPlatformExperienceComponent();
-            }, [context.args.mountIfInUnsupportedRegion]);
+            }, [context.args.hideTitle, context.args.mountIfInUnsupportedRegion]);
 
             return <div className="component-wrapper" id="capital-overview"></div>;
         },
@@ -63,8 +67,8 @@ export const Ineligible: ElementStory<typeof CapitalOffer, { mountIfIneligible: 
                     });
                     const capitalOffer = new CapitalOffer({
                         core,
+                        hideTitle: context.args.hideTitle,
                         onFundsRequest: () => undefined,
-                        onContactSupport: context.args.onContactSupport,
                     });
                     const { state } = await capitalOffer.getState();
 
@@ -73,7 +77,7 @@ export const Ineligible: ElementStory<typeof CapitalOffer, { mountIfIneligible: 
                     }
                 };
                 void getAdyenPlatformExperienceComponent();
-            }, [context.args.mountIfIneligible, context.args.onContactSupport]);
+            }, [context.args.hideTitle, context.args.mountIfIneligible]);
 
             return <div className="component-wrapper" id="capital-overview"></div>;
         },
@@ -88,6 +92,30 @@ export const Eligible: ElementStory<typeof CapitalOffer> = {
     parameters: {
         msw: {
             handlers: capitalOfferHandlers.eligible,
+        },
+    },
+};
+
+export const EligibleCA: ElementStory<typeof CapitalOffer> = {
+    name: 'Eligible CA',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.eligibleCA,
+        },
+    },
+};
+
+export const EligibleUS: ElementStory<typeof CapitalOffer> = {
+    name: 'Eligible US',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.eligibleUS,
         },
     },
 };
@@ -112,22 +140,6 @@ export const EarlyRenewal: ElementStory<typeof CapitalOffer> = {
     parameters: {
         msw: {
             handlers: capitalOfferHandlers.earlyRenewal,
-        },
-    },
-};
-
-export const APR: ElementStory<typeof CapitalOffer, { legalEntity: ILegalEntity }> = {
-    name: 'APR',
-    args: {
-        mockedApi: true,
-        legalEntity: {
-            countryCode: 'CA',
-            regions: [],
-        },
-    },
-    parameters: {
-        msw: {
-            handlers: capitalOfferHandlers.apr,
         },
     },
 };

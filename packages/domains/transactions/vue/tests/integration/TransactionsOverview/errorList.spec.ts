@@ -11,11 +11,9 @@ test.describe('Error - list', () => {
     });
 
     test('should render error message', async ({ page }) => {
-        // [TODO]: Address displaying only incomplete primary error message, without title
-        test.fixme(true, 'Only displaying incomplete primary error message, without title');
-
         await expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible();
-        await expect(page.getByText("We couldn't load your transactions. Contact support for help and share error code")).toBeVisible();
+        await expect(page.getByText("We couldn't load your transactions.", { exact: true })).toBeVisible();
+        await expect(page.getByText('Contact support for help and share error code', { exact: false })).toBeVisible();
     });
 
     test('should render disabled "Export" button', async ({ page }) => {
@@ -46,14 +44,12 @@ test.describe('Error - list', () => {
 
 test.describe('onContactSupport argument', () => {
     test('should render error message with button to contact support', async ({ page, analyticsEvents }) => {
-        // [TODO]: Address displaying only primary error message, without title and action button
-        test.fixme(true, 'Only displaying primary error message, without title and action button');
-
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedTransactionsListAnalyticsEventProperties]]);
 
         await expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible();
-        await expect(page.getByText("We couldn't load your transactions. The error code is")).toBeVisible();
+        await expect(page.getByText("We couldn't load your transactions.", { exact: true })).toBeVisible();
+        await expect(page.getByText('The error code is', { exact: false })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Reach out to support', exact: true, disabled: false })).toBeVisible();
     });
 });

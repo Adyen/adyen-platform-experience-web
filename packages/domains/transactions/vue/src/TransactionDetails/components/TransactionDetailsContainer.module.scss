@@ -1,0 +1,13 @@
+@use '@integration-components/style/mixins';
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.adyen-pe-overview-details--error-container {
+    @include mixins.adyen-pe-error-message-display-container;
+}

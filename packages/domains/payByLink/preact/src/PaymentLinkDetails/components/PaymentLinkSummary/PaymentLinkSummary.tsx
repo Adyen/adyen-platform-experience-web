@@ -6,9 +6,18 @@ import { TagVariant } from '@integration-components/ui-components-preact/Tag/typ
 import { TypographyVariant, TypographyElement } from '@integration-components/ui-components-preact/Typography/types';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { DATE_FORMAT_PAYMENT_LINK_DETAILS_SUMMARY } from '@integration-components/utils';
-import { IPaymentLinkStatus, IPaymentLinkDetails } from '@integration-components/types';
+import { IPaymentLinkDetails } from '@integration-components/types';
 import { useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
+import { getPaymentLinkStatusLabel, getPaymentLinkStatusTagVariant } from '../../../../../domain/src';
+import type { PaymentLinkStatusTagVariant } from '../../../../../domain/src';
 import './PaymentLinkSummary.scss';
+
+const TAG_VARIANT_MAP: Record<PaymentLinkStatusTagVariant, TagVariant> = {
+    info: TagVariant.BLUE,
+    success: TagVariant.SUCCESS,
+    neutral: TagVariant.DEFAULT,
+    warning: TagVariant.WARNING,
+};
 
 const CLASSNAMES = {
     root: 'adyen-pe-payment-link-summary',
@@ -24,20 +33,6 @@ export const PaymentLinkSummary = ({ paymentLink }: PaymentLinkSummaryProps) => 
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const status = paymentLink?.linkInformation.status;
-    const getStatusVariant = (status: IPaymentLinkStatus): TagVariant => {
-        switch (status) {
-            case 'active':
-                return TagVariant.BLUE;
-            case 'completed':
-                return TagVariant.SUCCESS;
-            case 'expired':
-                return TagVariant.DEFAULT;
-            case 'paymentPending':
-                return TagVariant.WARNING;
-            default:
-                return TagVariant.DEFAULT;
-        }
-    };
 
     const formattedAmount = useMemo(() => {
         if (!paymentLink?.linkInformation.amount) return null;
@@ -48,11 +43,7 @@ export const PaymentLinkSummary = ({ paymentLink }: PaymentLinkSummaryProps) => 
     return (
         <Card classNameModifiers={[CLASSNAMES.root]}>
             <div className={CLASSNAMES.content}>
-                <Tag variant={getStatusVariant(status)}>
-                    {i18n.has(`payByLink.common.status.${status}`)
-                        ? i18n.get(`payByLink.common.status.${status}`)
-                        : paymentLink?.linkInformation.status}
-                </Tag>
+                <Tag variant={TAG_VARIANT_MAP[getPaymentLinkStatusTagVariant(status)]}>{getPaymentLinkStatusLabel(i18n, status)}</Tag>
                 <Typography variant={TypographyVariant.TITLE} large>
                     {formattedAmount}
                 </Typography>

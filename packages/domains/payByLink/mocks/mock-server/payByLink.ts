@@ -158,6 +158,14 @@ export const PaymentLinkCreationMockedResponses = {
             }),
         ],
     },
+    countriesError: {
+        handlers: [
+            http.get(mockPayByLinkEndpoints.countries, async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.error();
+            }),
+        ],
+    },
 };
 
 export const PaymentLinkDetailsMockedResponses = {

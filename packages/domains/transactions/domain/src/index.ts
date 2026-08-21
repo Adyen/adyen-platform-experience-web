@@ -3,6 +3,7 @@ export * from './TransactionDetails/types';
 export * from './TransactionDetails/constants';
 export * from './TransactionDetails/utils';
 export * from './TransactionsOverview/analyticsConstants';
+export * from './TransactionsOverview/dateRange';
 export * from './TransactionsOverview/fields';
 export * from './TransactionsOverview/types';
 export * from './shared/inputNormalizer';

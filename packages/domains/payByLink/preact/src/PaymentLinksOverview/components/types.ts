@@ -1,11 +1,9 @@
-import { IPaymentLinkItem, IStore } from '@integration-components/types';
-import { PAYMENT_LINKS_TABLE_FIELDS } from './PaymentLinksTable';
-import { StringWithAutocompleteOptions } from '@integration-components/utils/types';
+import { IPaymentLinkItem } from '@integration-components/types';
 import { PaginationProps, WithPaginationLimitSelection } from '@integration-components/ui-components-preact/Pagination/types';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
+import type { PaymentLinkTableCols, PaymentLinkTableFields, PaymentLinksOverviewModalType, StoreData } from '../../../../domain/src';
 
-export type PaymentLinkTableCols = (typeof PAYMENT_LINKS_TABLE_FIELDS)[number];
-export type PaymentLinkTableFields = StringWithAutocompleteOptions<PaymentLinkTableCols>;
+export type { PaymentLinkTableCols, PaymentLinkTableFields, PaymentLinksOverviewModalType, StoreData };
 
 export interface PaymentLinkTableProps extends WithPaginationLimitSelection<PaginationProps> {
     loading: boolean;
@@ -19,7 +17,3 @@ export interface PaymentLinkTableProps extends WithPaginationLimitSelection<Pagi
     storeError?: AdyenPlatformExperienceError;
     allStores?: StoreData[];
 }
-
-export type StoreData = IStore & { name?: string; id?: string };
-
-export type PaymentLinksOverviewModalType = 'Creation' | 'Settings';

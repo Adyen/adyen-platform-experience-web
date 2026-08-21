@@ -1,0 +1,78 @@
+@use '@integration-components/style' as style;
+
+.root {
+    position: relative;
+
+    :global(.b-data-grid-cell) {
+        padding-block: style.token(spacer-050);
+    }
+
+    :global(.b-data-grid-columns__column) {
+        min-height: calc(style.token(spacer-100) + style.token(spacer-020));
+    }
+}
+
+.cellContent {
+    align-items: center;
+    display: flex;
+}
+
+.statusContent {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-030);
+}
+
+.statusContentUrgent {
+    color: style.token(color-label-critical);
+}
+
+.dateContentUrgent {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-030);
+}
+
+.paymentMethod {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-030);
+}
+
+.loading {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding-block: style.token(spacer-100);
+}
+
+.mobileRow {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.mobileDetails {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-020);
+    min-width: 0;
+}
+
+.mobileDate {
+    align-items: center;
+    color: style.token(color-label-secondary);
+    display: flex;
+    gap: style.token(spacer-030);
+}
+
+.mobileDateUrgent {
+    color: style.token(color-label-critical);
+}
+
+.mobileAmount {
+    flex-shrink: 0;
+    margin-inline-start: style.token(spacer-060);
+    text-align: right;
+}

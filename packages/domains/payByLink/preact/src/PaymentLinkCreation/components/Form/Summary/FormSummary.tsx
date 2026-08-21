@@ -9,7 +9,7 @@ import { Divider } from '@integration-components/ui-components-preact/Divider/Di
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { invisibleFields } from './constants';
 import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
-import { PaymentLinkCreationFormValues } from '../../types';
+import { PaymentLinkCreationFormValues } from '../../../types';
 import { StructuredListItem } from '@integration-components/ui-components-preact/StructuredList/types';
 import { useMemo } from 'preact/hooks';
 import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';

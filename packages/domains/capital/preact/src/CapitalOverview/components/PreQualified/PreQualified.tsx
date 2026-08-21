@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
 import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
 import { OnFundsRequestCallback } from '../../../types';
+import { CapitalHeader } from '../../../internal/CapitalHeader';
 
 type PreQualifiedProps = {
     capitalState: EnhancedCapitalState;
@@ -21,13 +22,15 @@ export const PreQualified = ({
     onFundsRequest,
     onOfferDismiss,
 }: PreQualifiedProps) => {
-    const [state, setState] = useState<'intro' | 'capitalOffer'>(skipPreQualifiedIntro ? 'capitalOffer' : 'intro');
+    const [state, setState] = useState<'noOffer' | 'intro' | 'offer'>(
+        !capitalState.dynamicOffer ? 'noOffer' : skipPreQualifiedIntro ? 'offer' : 'intro'
+    );
 
     const handleOfferOptionsRequest = useCallback(() => {
         if (onOfferOptionsRequest) {
             onOfferOptionsRequest();
         } else {
-            setState('capitalOffer');
+            setState('offer');
         }
     }, [onOfferOptionsRequest]);
 
@@ -42,14 +45,23 @@ export const PreQualified = ({
 
     return (
         <>
-            {state === 'intro' && capitalState.dynamicOffer?.maxAmount ? (
+            {state === 'noOffer' && (
+                <div>
+                    <CapitalHeader hideTitle={hideTitle} titleKey={'capital.overview.common.titles.qualificationIntro'} />
+                    <CapitalOffer hideTitle onFundsRequest={onFundsRequest} externalCapitalState={capitalState} />
+                </div>
+            )}
+            {state === 'intro' && capitalState.dynamicOffer?.maxAmount && (
                 <PreQualifiedIntro
                     hideTitle={hideTitle}
                     maxAmount={capitalState.dynamicOffer.maxAmount}
                     onOfferOptionsRequest={handleOfferOptionsRequest}
+                    region={capitalState.region}
                 />
-            ) : (
+            )}
+            {state === 'offer' && (
                 <CapitalOffer
+                    hideTitle={hideTitle}
                     onFundsRequest={onFundsRequest}
                     onOfferDismiss={isOfferDismissButtonVisible ? handleOfferDismiss : undefined}
                     externalCapitalState={capitalState}

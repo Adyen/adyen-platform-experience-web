@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import type { PayoutsOverviewExternalProps } from './types';
-import { UIElementProvider } from '@integration-components/core/vue';
+import { createRefreshContext, UIElementProvider } from '@integration-components/core/vue';
 import PayoutsOverviewContainer from './components/PayoutsOverviewContainer.vue';
-import '@adyen/bento-vue3/styles/bento-light';
 
 const props = defineProps<PayoutsOverviewExternalProps>();
+const { refresh, refreshCount } = createRefreshContext();
 </script>
 
 <template>
-    <UIElementProvider :core="props.core" component-name="payouts">
+    <UIElementProvider :core="props.core" component-name="payouts" :refresh-component="refresh">
         <PayoutsOverviewContainer
+            :key="refreshCount"
             :balance-account-id="props.balanceAccountId"
             :allow-limit-selection="props.allowLimitSelection"
             :preferred-limit="props.preferredLimit"

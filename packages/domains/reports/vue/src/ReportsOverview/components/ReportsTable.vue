@@ -9,15 +9,18 @@ import {
     CustomDataCell,
     useResponsiveContainer,
     containerQueries,
+    DataOverviewError,
 } from '@integration-components/composables-vue';
 import { DATE_FORMAT_REPORTS } from '@integration-components/utils';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
+import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
+import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import type { BentoDatagridDataItem, BentoDataGridRowActionsProp } from '@adyen/bento-vue3';
 import type { CustomColumn, IReport, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
-import { getReportType, REPORTS_TABLE_CLASS_NAMES, REPORTS_DOWNLOAD_DISABLED_TIMEOUT, REPORTS_TABLE_FIELDS } from '../../../../domain/src';
-import '../styles/ReportsTable.scss';
+import { getReportType, REPORTS_DOWNLOAD_DISABLED_TIMEOUT, REPORTS_TABLE_FIELDS } from '../../../../domain/src';
+import styles from './ReportsTable.module.scss';
 
 export type ReportsTableFields = (typeof REPORTS_TABLE_FIELDS)[number];
 
@@ -204,10 +207,13 @@ const paginationProps = computed(() => {
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
+        hideFirstLastPageButtons: true,
     };
 });
 
 const emptyStateProps = computed(() => ({
+    image: 'no-results-found' as const,
+    variant: 'embedded' as const,
     title: i18n.get('reports.overview.errors.listEmpty'),
     description: i18n.get('common.errors.updateFilters'),
 }));
@@ -242,9 +248,9 @@ watch(
 </script>
 
 <template>
-    <div :class="REPORTS_TABLE_CLASS_NAMES.base">
+    <div :class="styles.root">
         <!-- Download error alert -->
-        <div v-if="alert" class="adyen-pe-reports-table-alert" role="alert">
+        <div v-if="alert" :class="styles.alert" role="alert">
             <div>
                 <strong>{{ alert.title }}</strong>
                 <p>{{ alert.description }}</p>
@@ -252,13 +258,14 @@ watch(
             <BentoButton variant="tertiary" size="small" @click="removeAlert">&times;</BentoButton>
         </div>
 
-        <!-- Error state -->
-        <div v-if="props.error" class="adyen-pe-data-overview-error">
-            <p>{{ i18n.get('reports.overview.errors.listUnavailable') }}</p>
-            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
-            </BentoButton>
-        </div>
+        <DataOverviewError
+            v-if="props.error"
+            :error="props.error"
+            :error-message="'reports.overview.errors.listUnavailable'"
+            :on-contact-support="props.onContactSupport"
+            :refresh-icon="RefreshIcon"
+            :copy-icon="CopyIcon"
+        />
 
         <BentoDataGrid
             v-else
@@ -283,12 +290,10 @@ watch(
                 {{ item.reportType }}
             </template>
             <template #item-dateAndReportType="{ item }">
-                <div :class="REPORTS_TABLE_CLASS_NAMES.dateReportType">
+                <div :class="styles.dateReportType">
                     <BentoTypography v-if="item.reportType" variant="body" stronger>{{ item.reportType }}</BentoTypography>
                     <time v-if="item.createdAt" :datetime="item.createdAt">
-                        <BentoTypography variant="body" :class="REPORTS_TABLE_CLASS_NAMES.dateReportTypeDate">{{
-                            formatDate(item.createdAt)
-                        }}</BentoTypography>
+                        <BentoTypography variant="body" :class="styles.date">{{ formatDate(item.createdAt) }}</BentoTypography>
                     </time>
                 </div>
             </template>

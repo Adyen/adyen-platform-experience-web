@@ -7,13 +7,16 @@ import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import SelectDropdown from './SelectDropdown.vue';
 import type { SelectDropdownItem } from '../types';
+import flowStyles from './DisputeFlow.module.scss';
+import styles from './DefendDispute.module.scss';
 
 const props = defineProps<{
     pspReference?: string;
 }>();
 
 const { i18n } = useCoreContext();
-const { getApplicableDefenseDocuments } = useConfigContext().endpoints || {};
+const config = useConfigContext();
+const getApplicableDefenseDocuments = computed(() => config.endpoints?.getApplicableDefenseDocuments);
 const {
     dispute,
     applicableDocuments,
@@ -62,12 +65,13 @@ async function submitDefenseReason() {
         return;
     }
     const pspReference = props.pspReference;
-    if (!isFunction(getApplicableDefenseDocuments) || !selectedDefenseReason.value || !pspReference) return;
+    const getApplicableDefenseDocumentsFn = getApplicableDefenseDocuments.value;
+    if (!isFunction(getApplicableDefenseDocumentsFn) || !selectedDefenseReason.value || !pspReference) return;
 
     isReasonSubmitting.value = true;
     reasonError.value = false;
     try {
-        const response = await getApplicableDefenseDocuments(EMPTY_OBJECT, {
+        const response = await getApplicableDefenseDocumentsFn(EMPTY_OBJECT, {
             query: { defenseReason: selectedDefenseReason.value },
             path: { disputePspReference: pspReference },
         });
@@ -104,8 +108,8 @@ const reasonActionButtons = computed(() => [
 </script>
 
 <template>
-    <div class="adyen-pe-defend-dispute-reason__selector">
-        <BentoTypography class="adyen-pe-defend-dispute__reason-description" variant="body">
+    <div :class="styles.reasonSelector">
+        <BentoTypography variant="body">
             {{ defendDisputeLabel }}
         </BentoTypography>
         <SelectDropdown
@@ -118,21 +122,14 @@ const reasonActionButtons = computed(() => [
         <BentoTypography
             v-for="description in selectedReasonContent?.primaryDescriptionItems ?? []"
             :key="description"
-            class="adyen-pe-defend-dispute-reason__description"
+            :class="styles.description"
             variant="body"
         >
             {{ description }}
         </BentoTypography>
-        <ul
-            v-if="selectedReasonContent?.secondaryDescriptionItems?.length"
-            class="adyen-pe-defend-dispute-reason__secondary-description-items-container"
-        >
-            <li
-                v-for="description in selectedReasonContent.secondaryDescriptionItems"
-                :key="description"
-                class="adyen-pe-defend-dispute-reason__secondary-description-item"
-            >
-                <BentoTypography class="adyen-pe-defend-dispute-reason__description" variant="body">
+        <ul v-if="selectedReasonContent?.secondaryDescriptionItems?.length" :class="styles.secondaryDescriptionItemsContainer">
+            <li v-for="description in selectedReasonContent.secondaryDescriptionItems" :key="description" :class="styles.secondaryDescriptionItem">
+                <BentoTypography :class="styles.description" variant="body">
                     {{ description }}
                 </BentoTypography>
             </li>
@@ -148,7 +145,7 @@ const reasonActionButtons = computed(() => [
             {{ i18n.get('disputes.management.common.errors.unavailable') }}
         </template>
     </BentoAlert>
-    <div class="adyen-pe-defend-dispute__actions">
+    <div :class="flowStyles.actions">
         <BentoButtonActions :actions="reasonActionButtons as BentoButtonActionsList" />
     </div>
 </template>

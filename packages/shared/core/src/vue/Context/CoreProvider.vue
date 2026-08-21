@@ -14,7 +14,7 @@ const coreContextValue = computed<CoreContextValue>(() => ({
     i18n: props.i18n ?? new Localization().i18n,
     commonProps: props.commonProps || {},
     loadingContext: props.loadingContext ?? '',
-    updateCore: props.updateCore,
+    refreshComponent: props.refreshComponent,
     externalErrorHandler: props.externalErrorHandler,
     getImageAsset: props.getImageAsset,
     getDatasetAsset: props.getDatasetAsset,

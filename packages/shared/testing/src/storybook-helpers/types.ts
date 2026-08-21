@@ -17,5 +17,3 @@ export type ElementProps<T> = Omit<ComponentPropsOf<T> & GlobalStoriesProps, 'co
 export type ElementStory<T, ExtraProps = object> = StoryObj<ExtraProps & ElementProps<T> & GlobalStoriesProps>;
 
 export type SessionControls = { session: { roles: string[]; accountHolderId?: string } };
-
-export type SetupControls = { legalEntity: { regions: { type: string; value: string }[]; countryCode: string } };

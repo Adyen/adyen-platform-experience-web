@@ -92,6 +92,23 @@ export const PAYOUT_DETAILS_HANDLERS = (() => {
                 }),
             ],
         },
+        errorNotFound: {
+            handlers: [
+                http.get(mockEndpoints.payout, () => {
+                    return HttpResponse.json(
+                        {
+                            type: 'https://docs.adyen.com/errors/not-found',
+                            errorCode: '30_112',
+                            title: 'Not Found',
+                            detail: 'Payout not found for the specified Account Holder',
+                            requestId: '769ac4ce59f0f159ad672d38d3291e91',
+                            status: 404,
+                        },
+                        { status: 404 }
+                    );
+                }),
+            ],
+        },
         sumOfSameDayPayouts: {
             handlers: [
                 http.get(mockEndpoints.payout, () => {

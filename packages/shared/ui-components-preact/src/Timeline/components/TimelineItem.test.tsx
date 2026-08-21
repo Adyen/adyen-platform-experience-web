@@ -43,7 +43,6 @@ beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(useCoreContext).mockReturnValue({
         i18n: mockI18n,
-        updateCore: vi.fn(),
         getImageAsset: vi.fn(),
     } as any);
 });

@@ -53,6 +53,7 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
 
     const { requestFunds } = useConfigContext().endpoints;
 
+    const isEarlyRenewal = !!capitalState?.renewableGrants.length;
     const renewableGrant = useMemo(() => capitalState?.renewableGrants[0], [capitalState?.renewableGrants]);
     const renewsGrantId = useMemo(() => renewableGrant?.id, [renewableGrant]);
 
@@ -84,17 +85,17 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
                 requestFundsCallback(grantOffer.id);
             }
         } finally {
-            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Request funds' });
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Request funds', isEarlyRenewal });
         }
-    }, [grantOffer.id, requestFundsCallback, userEvents]);
+    }, [grantOffer.id, requestFundsCallback, userEvents, isEarlyRenewal]);
 
     const onBackWithTracking = useCallback<typeof onBack>(() => {
         try {
             return onBack();
         } finally {
-            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Back to slider view' });
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Back to slider view', isEarlyRenewal });
         }
-    }, [onBack, userEvents]);
+    }, [onBack, userEvents, isEarlyRenewal]);
 
     const requestErrorAlert = useMemo<{ title: string; message: string; errorCode?: string } | null>(() => {
         const err = requestFundsMutation.error ? (requestFundsMutation.error as AdyenErrorResponse) : null;
@@ -350,7 +351,7 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
                     ) : null}
                 </Alert>
             )}
-            <CapitalOfferLegalNotice />
+            <CapitalOfferLegalNotice region={capitalState?.region} />
             {renewableGrant && (
                 <Alert
                     type={AlertTypeOption.HIGHLIGHT}

@@ -4,22 +4,11 @@ import { goToStory } from '@integration-components/testing/playwright/utils';
 const STORY_ID = 'mocked-capital-capital-offer--ineligible';
 
 test.describe('Ineligible', () => {
-    test.beforeEach(async ({ page }) => {
+    test('should render a message', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
-    });
-
-    test('should render an error message', async ({ page }) => {
         await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
-        await expect(page.getByText('Something went wrong.')).toBeVisible();
-        await expect(page.getByText("We couldn't continue with the offer. Contact support for help.")).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeHidden();
-    });
-
-    test.describe('onContactSupport argument', () => {
-        test('should render "Reach out to support" button when argument is set', async ({ page }) => {
-            await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
-            await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
-        });
+        await expect(page.getByText('No offer available currently')).toBeVisible();
+        await expect(page.getByText('We update our financial offers regularly, so be sure to check back again in the future.')).toBeVisible();
     });
 });

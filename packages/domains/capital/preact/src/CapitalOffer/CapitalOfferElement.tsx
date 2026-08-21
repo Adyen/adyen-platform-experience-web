@@ -19,8 +19,8 @@ export class CapitalOfferElement extends UIElement<CapitalOfferElementProps> {
     };
 
     public async getState(): Promise<CapitalComponentState> {
-        const { session } = this.props.core;
-        return await getCapitalState(session);
+        const { session, getCdnConfig } = this.props.core;
+        return await getCapitalState(session, getCdnConfig);
     }
 }
 

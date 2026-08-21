@@ -9,7 +9,7 @@ export type {
     DisputeManagementProps,
 } from '../../../domain/src';
 
-export interface DisputeManagementExternalProps extends DisputeManagementProps {
+export interface DisputeManagementExternalProps extends Omit<DisputeManagementProps, 'ref'> {
     core: CoreInstance;
 }
 

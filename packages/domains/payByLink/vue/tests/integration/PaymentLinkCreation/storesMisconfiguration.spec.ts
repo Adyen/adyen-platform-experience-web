@@ -1,0 +1,17 @@
+import { test, expect } from '@playwright/test';
+import { goToStory } from '@integration-components/testing/playwright/utils';
+
+const STORY_ID = 'mocked-pay-by-link-payment-link-creation--stores-misconfiguration';
+
+test.describe('Payment link creation - Stores misconfiguration', () => {
+    test('should display account configuration problem alert when there are no stores', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID });
+
+        await expect(page.getByText('New payment link')).toBeVisible();
+
+        await expect(page.getByText('Looks like there is a problem with your account configuration.')).toBeVisible();
+        await expect(page.getByText('Contact support for help.')).toBeVisible();
+
+        await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled();
+    });
+});

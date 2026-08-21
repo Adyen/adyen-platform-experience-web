@@ -1,16 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import {
-    BentoAlert,
-    BentoButton,
-    BentoButtonActions,
-    BentoCard,
-    BentoLoadingIndicator,
-    BentoPaymentMethod,
-    BentoTag,
-    BentoTypography,
-} from '@adyen/bento-vue3';
+import { BentoButton, BentoButtonActions, BentoCard, BentoLoadingIndicator, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
+import { ErrorMessageDisplay } from '@integration-components/composables-vue';
 import {
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
     getDisputeType,
@@ -19,13 +11,15 @@ import {
 } from '@integration-components/disputes/domain';
 import { isFunction, parsePaymentMethodType } from '@integration-components/utils';
 import type { CustomButtonObject, CustomDataRetrieved } from '@integration-components/types';
-import { useDisputeDetails, type DisputeError } from '../composables/useDisputeDetails';
+import { useDisputeDetails } from '../composables/useDisputeDetails';
 import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import DisputeDataAlert from './DisputeDataAlert.vue';
 import DisputeDataProperties from './DisputeDataProperties.vue';
 import DisputeIssuerComments from './DisputeIssuerComments.vue';
 import DisputeStatusTag from './DisputeStatusTag.vue';
 import type { DisputeDataAlertMode, DisputeManagementProps } from '../types';
+import styles from './DisputeData.module.scss';
+import flowStyles from './DisputeFlow.module.scss';
 
 const props = defineProps<{
     disputeId: string;
@@ -176,40 +170,6 @@ function retryFetch() {
     void refetch();
 }
 
-const errorState = computed(() => {
-    const currentError: DisputeError | undefined = error.value;
-    if (!currentError) return undefined;
-
-    if (currentError.errorCode === '30_112') {
-        return {
-            title: i18n.get('common.errors.notFound'),
-            messages: [i18n.get('disputes.management.common.errors.notFound')],
-            showRefresh: false,
-            showContactSupport: isFunction(props.onContactSupport),
-        };
-    }
-
-    if (currentError.errorCode === '00_500') {
-        const requestId = currentError.requestId;
-        const secondaryMessage = props.onContactSupport
-            ? i18n.get('common.errors.errorCode', { values: { requestId } })
-            : i18n.get('common.errors.errorCodeSupport', { values: { requestId } });
-        return {
-            title: i18n.get('common.errors.somethingWentWrong'),
-            messages: [i18n.get('disputes.management.common.errors.unavailable'), secondaryMessage],
-            showRefresh: false,
-            showContactSupport: isFunction(props.onContactSupport),
-        };
-    }
-
-    return {
-        title: i18n.get('common.errors.somethingWentWrong'),
-        messages: [i18n.get('disputes.management.common.errors.unavailable'), i18n.get('common.errors.retry')],
-        showRefresh: true,
-        showContactSupport: false,
-    };
-});
-
 const paymentMethodType = computed(() => dispute.value?.payment.paymentMethod?.type ?? null);
 const paymentMethodDetail = computed(() =>
     dispute.value?.payment.paymentMethod ? parsePaymentMethodType(dispute.value.payment.paymentMethod, 'detail') : null
@@ -217,39 +177,33 @@ const paymentMethodDetail = computed(() =>
 </script>
 
 <template>
-    <div class="adyen-pe-dispute-data">
+    <div :class="styles.root">
         <div v-if="showLoadingPlaceholder" aria-busy="true">
             <BentoLoadingIndicator />
         </div>
 
-        <div v-else-if="errorState" class="adyen-pe-dispute-data__error-container">
-            <BentoAlert type="critical">
-                {{ errorState.title }}
-                <template #description>
-                    <BentoTypography v-for="message in errorState.messages" :key="message" variant="body">
-                        {{ message }}
-                    </BentoTypography>
-                </template>
-                <template #actions>
-                    <BentoButton v-if="errorState.showRefresh" variant="secondary" @click="retryFetch">
-                        {{ i18n.get('common.actions.refresh.labels.default') }}
-                    </BentoButton>
-                    <BentoButton v-if="errorState.showContactSupport" variant="secondary" @click="props.onContactSupport">
-                        {{ i18n.get('common.actions.contactSupport.labels.reachOut') }}
-                    </BentoButton>
-                    <BentoButton v-if="props.onDismiss" variant="secondary" @click="props.onDismiss">
-                        {{ i18n.get('disputes.management.common.actions.goBack') }}
-                    </BentoButton>
-                </template>
-            </BentoAlert>
+        <div v-else-if="error" :class="styles.errorContainer">
+            <ErrorMessageDisplay
+                :error="error"
+                :error-message="'disputes.management.common.errors.unavailable'"
+                :not-found-message="'disputes.management.common.errors.notFound'"
+                :on-contact-support="props.onContactSupport"
+                :on-dismiss="props.onDismiss"
+                :dismiss-label="'disputes.management.common.actions.goBack'"
+                :on-refresh="retryFetch"
+                with-image
+                :outlined="false"
+                :absolute-position="false"
+                :with-background="false"
+            />
         </div>
 
         <template v-else-if="dispute">
-            <div class="adyen-pe-dispute-data__status-box">
+            <div :class="styles.statusBox">
                 <BentoCard>
                     <template #content>
-                        <div class="adyen-pe-dispute-data__summary">
-                            <div class="adyen-pe-dispute-data__summary-tags">
+                        <div :class="styles.summary">
+                            <div :class="styles.summaryTags">
                                 <BentoTag v-if="disputeType" :label="disputeType" data-testid="dispute-type-tag" />
                                 <DisputeStatusTag v-if="!isFraudNotification" :dispute="dispute.dispute" />
                             </div>
@@ -257,11 +211,11 @@ const paymentMethodDetail = computed(() =>
                                 {{ i18n.amount(dispute.dispute.amount.value, dispute.dispute.amount.currency, { hideCurrency: true }) }}
                                 {{ dispute.dispute.amount.currency }}
                             </BentoTypography>
-                            <div v-if="paymentMethodType" class="adyen-pe-dispute-data__payment-method">
-                                <div class="adyen-pe-dispute-data__payment-method-logo-container">
+                            <div v-if="paymentMethodType" :class="styles.paymentMethod">
+                                <div :class="styles.paymentMethodLogoContainer">
                                     <BentoPaymentMethod :type="paymentMethodType" />
                                 </div>
-                                <BentoTypography v-if="paymentMethodDetail" variant="title" class="adyen-pe-dispute-data__payment-method-detail">
+                                <BentoTypography v-if="paymentMethodDetail" variant="title">
                                     {{ paymentMethodDetail }}
                                 </BentoTypography>
                             </div>
@@ -281,7 +235,7 @@ const paymentMethodDetail = computed(() =>
                 :extra-fields="extraFields"
             />
 
-            <div v-if="actionButtons.length || extraButtons.length" class="adyen-pe-dispute-data__action-bar">
+            <div v-if="actionButtons.length || extraButtons.length" :class="flowStyles.actionBar">
                 <BentoButtonActions v-if="actionButtons.length" :actions="actionButtons" />
                 <BentoButton
                     v-for="button in extraButtons"
