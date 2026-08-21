@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick, watch } from 'vue';
 import { BentoTypography, BentoInfoIcon } from '@adyen/bento-vue3';
-import './SummaryItemPair.scss';
+import styles from './SummaryItemPair.module.scss';
 
 const props = defineProps<{
     label1: string;
@@ -38,10 +38,10 @@ const getValueStyle = (index: number) => {
 </script>
 
 <template>
-    <div class="adyen-pe-transactions-overview__summary-item">
-        <div class="adyen-pe-transactions-overview__summary-item__pair">
+    <div :class="styles.root">
+        <div :class="styles.pair">
             <div class="adyen-pe-transactions-overview__summary-item--left">
-                <div class="adyen-pe-transactions-overview__summary-item__label-wrap">
+                <div :class="styles.labelWrap">
                     <BentoTypography variant="caption">{{ label1 }}</BentoTypography>
                     <BentoInfoIcon v-if="tooltip1" :tooltipText="tooltip1" />
                 </div>
@@ -52,9 +52,9 @@ const getValueStyle = (index: number) => {
                 </div>
             </div>
         </div>
-        <div class="adyen-pe-transactions-overview__summary-item__pair">
+        <div :class="styles.pair">
             <div class="adyen-pe-transactions-overview__summary-item--right">
-                <div class="adyen-pe-transactions-overview__summary-item__label-wrap">
+                <div :class="styles.labelWrap">
                     <BentoTypography variant="caption">{{ label2 }}</BentoTypography>
                     <BentoInfoIcon v-if="tooltip2" :tooltipText="tooltip2" />
                 </div>

@@ -11,6 +11,7 @@ import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST 
 import type { ITransaction } from '@integration-components/types';
 import type { IBalanceAccountBase, TransactionsOverviewExternalProps } from '../../types';
 import { BREAKPOINTS } from '@integration-components/utils';
+import styles from '../TransactionsOverview/TransactionsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccounts?: IBalanceAccountBase[];
@@ -87,8 +88,8 @@ onMounted(() => {
 </script>
 
 <template>
-    <div ref="summaryEl" class="adyen-pe-transactions-overview__summary">
-        <div ref="totalsSectionEl" class="adyen-pe-transactions-overview__summary-section adyen-pe-transactions-overview__summary-section--totals">
+    <div ref="summaryEl" :class="styles.summary">
+        <div ref="totalsSectionEl" :class="[styles.summarySection, styles.summarySectionTotals]">
             <BentoAlert v-if="totalsError" type="warning">
                 <template #default>{{ i18n.get('transactions.overview.totals.error') }}</template>
                 <template #actions>
@@ -99,10 +100,7 @@ onMounted(() => {
             </BentoAlert>
             <TransactionTotals v-else :totals="sortedTotals" :loading-totals="loadingTotals" />
         </div>
-        <div
-            ref="balancesSectionEl"
-            class="adyen-pe-transactions-overview__summary-section adyen-pe-transactions-overview__summary-section--balances"
-        >
+        <div ref="balancesSectionEl" :class="[styles.summarySection, styles.summarySectionBalances]">
             <BentoAlert v-if="balancesError" type="warning">
                 <template #default>{{ i18n.get('transactions.overview.balances.error') }}</template>
             </BentoAlert>
