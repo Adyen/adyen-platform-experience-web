@@ -10,6 +10,7 @@ import {
     CONTAINER_CLASS_NAME,
     CONTENT_CONTAINER_CLASS_NAME,
     CONTENT_CONTAINER_MOBILE_CLASS_NAME,
+    DIVIDER_CONTAINER_CLASS_NAME,
     SIDEBAR_CONTAINER_CLASS_NAME,
     SECONDARY_NAV_CLASS_NAME,
     WRONG_STORE_IDS,
@@ -100,7 +101,9 @@ const showActionButtons = computed(
                             @select="onSelectMenuItem"
                         />
                     </div>
-                    <BentoDivider v-if="!isSmContainer" variant="vertical" />
+                    <div v-if="!isSmContainer" :class="DIVIDER_CONTAINER_CLASS_NAME">
+                        <BentoDivider variant="vertical" />
+                    </div>
                     <PaymentLinkSettingsContent
                         v-if="contentVisible && activeMenuItem"
                         :active-menu-item="activeMenuItem"
