@@ -8,6 +8,6 @@
     height: 100%;
 }
 
-.adyen-pe-overview-details--error-container {
-    @include mixins.adyen-pe-error-message-display-container;
+.errorContainer {
+    @include mixins.adyen-pe-error-message-display-container(':global(.adyen-pe-error-message-display)');
 }

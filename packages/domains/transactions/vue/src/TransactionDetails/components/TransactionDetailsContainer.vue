@@ -84,7 +84,7 @@ useLandedPageEvent({
             <BentoLoadingIndicator />
         </div>
 
-        <div v-else-if="error" class="adyen-pe-overview-details--error-container">
+        <div v-else-if="error" :class="styles.errorContainer">
             <ErrorMessageDisplay
                 :error="error"
                 :error-message="'transactions.details.errors.unavailable'"

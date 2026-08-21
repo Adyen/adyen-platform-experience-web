@@ -119,7 +119,7 @@ export const resolveReleaseChannel = (config, version) => {
 
 export const verifyPackedPackage = ({ tarballPath, expectedVersion }) => {
     parseV1Version(expectedVersion);
-    const packageJson = JSON.parse(execFileSync('tar', ['-xOf', tarballPath, 'package/package.json'], { encoding: 'utf8' }));
+    const packageJson = JSON.parse(execFileSync('/usr/bin/tar', ['-xOf', tarballPath, 'package/package.json'], { encoding: 'utf8' }));
 
     if (packageJson.name !== PACKAGE_NAME) {
         throw new Error(`Expected package name "${PACKAGE_NAME}", received "${packageJson.name}"`);

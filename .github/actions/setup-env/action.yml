@@ -37,5 +37,5 @@ runs:
         HUSKY: "0"
         NPM_READ_ONLY_TOKEN: ${{ inputs.NPM_READ_ONLY_TOKEN }}
       run: |
-        printf '//registry.npmjs.org/:_authToken=%s\n' "${NPM_READ_ONLY_TOKEN}" > .npmrc
+        printf '//registry.npmjs.org/:_authToken=%s\n' "${NPM_READ_ONLY_TOKEN}" >> .npmrc
         pnpm install --frozen-lockfile --registry=https://registry.npmjs.org/

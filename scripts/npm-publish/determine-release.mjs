@@ -7,37 +7,52 @@ import { parseSupportedReleaseVersion, STABLE_V1_NPM_TAGS, V1_PRERELEASE_NPM_TAG
 
 const PACKAGE_TARBALL_PREFIX = 'adyen-adyen-platform-experience-web';
 
+const validateV1Release = ({ packageVersion, npmTag, parsedVersion }) => {
+    if (parsedVersion.major !== 1) {
+        throw new Error('V1 publishing requires a supported stable or prerelease V1 version.');
+    }
+
+    if (parsedVersion.isPrerelease) {
+        const expectedTag = V1_PRERELEASE_NPM_TAGS[parsedVersion.prereleaseTag];
+        if (npmTag !== expectedTag) {
+            throw new Error(`V1 prerelease ${packageVersion} must publish to ${expectedTag}.`);
+        }
+    } else if (!STABLE_V1_NPM_TAGS.includes(npmTag)) {
+        throw new Error('Stable V1 releases must publish to latest or v1.');
+    }
+};
+
+const validateMainlineRelease = ({ packageVersion, npmTag, parsedVersion }) => {
+    if (parsedVersion.isPrerelease && npmTag !== parsedVersion.prereleaseTag) {
+        throw new Error(`Prerelease ${packageVersion} must publish to its validated prerelease tag.`);
+    }
+
+    if (!parsedVersion.isPrerelease && npmTag !== 'latest') {
+        throw new Error('Stable mainline releases must publish to latest.');
+    }
+};
+
+const validateRelease = ({ packageVersion, npmTag, parsedVersion, releaseLine }) => {
+    if (releaseLine === 'v1') {
+        validateV1Release({ packageVersion, npmTag, parsedVersion });
+        return;
+    }
+
+    if (releaseLine === 'mainline') {
+        validateMainlineRelease({ packageVersion, npmTag, parsedVersion });
+        return;
+    }
+
+    throw new Error('Release line must be mainline or v1.');
+};
+
 export const determineNpmRelease = ({ packageVersion, releaseVersion, npmTag, releaseLine, runnerTemp }) => {
     if (packageVersion !== releaseVersion) {
         throw new Error(`Checked out version ${packageVersion} does not match release version ${releaseVersion}.`);
     }
 
     const parsedVersion = parseSupportedReleaseVersion(packageVersion);
-
-    if (releaseLine === 'v1') {
-        if (parsedVersion.major !== 1) {
-            throw new Error('V1 publishing requires a supported stable or prerelease V1 version.');
-        }
-
-        if (parsedVersion.isPrerelease) {
-            const expectedTag = V1_PRERELEASE_NPM_TAGS[parsedVersion.prereleaseTag];
-            if (npmTag !== expectedTag) {
-                throw new Error(`V1 prerelease ${packageVersion} must publish to ${expectedTag}.`);
-            }
-        } else if (!STABLE_V1_NPM_TAGS.includes(npmTag)) {
-            throw new Error('Stable V1 releases must publish to latest or v1.');
-        }
-    } else if (releaseLine === 'mainline') {
-        if (parsedVersion.isPrerelease && npmTag !== parsedVersion.prereleaseTag) {
-            throw new Error(`Prerelease ${packageVersion} must publish to its validated prerelease tag.`);
-        }
-
-        if (!parsedVersion.isPrerelease && npmTag !== 'latest') {
-            throw new Error('Stable mainline releases must publish to latest.');
-        }
-    } else {
-        throw new Error('Release line must be mainline or v1.');
-    }
+    validateRelease({ packageVersion, npmTag, parsedVersion, releaseLine });
 
     return {
         packageVersion,
