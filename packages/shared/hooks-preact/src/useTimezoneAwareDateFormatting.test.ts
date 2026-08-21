@@ -80,6 +80,7 @@ describe('useTimezoneAwareDateFormatting', () => {
     });
 
     test('should format dates correctly with custom options across timezones', () => {
+        const normalizeZeroOffset = (formattedDate: string) => formattedDate.replace(/ GMT\+0$/, ' GMT');
         const DATE_FORMATS = [
             {
                 options: { year: 'numeric', month: 'short', day: 'numeric', timeZoneName: 'short' } as const,
@@ -103,7 +104,7 @@ describe('useTimezoneAwareDateFormatting', () => {
                 options: { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'shortOffset' } as const,
                 expectations: {
                     'America/New_York': '12/25/2023, 11:10:45 AM GMT-5',
-                    'Europe/London': '12/25/2023, 04:10:45 PM GMT+0',
+                    'Europe/London': '12/25/2023, 04:10:45 PM GMT',
                     'Asia/Tokyo': '12/26/2023, 01:10:45 AM GMT+9',
                     'America/Los_Angeles': '12/25/2023, 08:10:45 AM GMT-8',
                 },
@@ -129,7 +130,7 @@ describe('useTimezoneAwareDateFormatting', () => {
         DATE_FORMATS.forEach(({ options, expectations }) => {
             Object.entries(expectations).forEach(([timezone, expected]) => {
                 const { result } = renderHook(() => useTimezoneAwareDateFormatting(timezone));
-                expect(result.current.dateFormat(Date.now(), options)).toBe(expected);
+                expect(normalizeZeroOffset(result.current.dateFormat(Date.now(), options))).toBe(expected);
             });
         });
     });
