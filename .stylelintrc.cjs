@@ -1,5 +1,5 @@
 const bemPattern = '^.[adyen|fp]*(?:-[a-zA-Z0-9]+)*(?:__[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:--[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:\\[.+\\])?$';
-const cssModulePattern = '^[a-z][a-zA-Z0-9]*$';
+const cssModulePattern = '^(?:[a-z][a-zA-Z0-9]*|b-[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*(?:__[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:--[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?)$';
 
 module.exports = {
     extends: ['stylelint-config-recommended', 'stylelint-config-sass-guidelines'],
@@ -12,6 +12,7 @@ module.exports = {
         'no-descending-specificity': null,
         'property-no-vendor-prefix': null,
         'selector-no-vendor-prefix': null,
+        'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['global'] }],
 
         // Replaced CSS with SCSS rules
         'at-rule-no-unknown': null,
