@@ -98,7 +98,7 @@ jobs:
                   GH_TOKEN: ${{ github.token }}
                   RELEASE_CHANNEL: ${{ inputs.release_channel }}
               run: |
-                  STATE_BRANCH="chore/v1-prerelease-enter-${RELEASE_CHANNEL}-${GITHUB_RUN_ID}"
+                  STATE_BRANCH="chore/v1-prerelease-enter-${RELEASE_CHANNEL}"
                   STATE_TITLE="chore(release): enter V1 prerelease mode (${RELEASE_CHANNEL})"
                   EXISTING_PR=$(gh pr list --base version/v1.x --head "$STATE_BRANCH" --state open --json number --jq '.[0].number')
                   if [[ -n "$EXISTING_PR" ]]; then
@@ -135,7 +135,7 @@ jobs:
                   GH_TOKEN: ${{ github.token }}
                   ACTIVE_MODE: ${{ steps.release-state.outputs.active_mode }}
               run: |
-                  STATE_BRANCH="chore/v1-prerelease-exit-${ACTIVE_MODE}-${GITHUB_RUN_ID}"
+                  STATE_BRANCH="chore/v1-prerelease-exit-${ACTIVE_MODE}"
                   STATE_TITLE="chore(release): exit V1 prerelease mode (${ACTIVE_MODE})"
                   EXISTING_PR=$(gh pr list --base version/v1.x --head "$STATE_BRANCH" --state open --json number --jq '.[0].number')
                   if [[ -n "$EXISTING_PR" ]]; then

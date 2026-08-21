@@ -14,6 +14,26 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
+        env:
+            RELEASE_AUTOMATION_FILES: |
+                .github/actions/setup-env/action.yml
+                .github/workflows/compressed-size.yml
+                .github/workflows/integration-tests.yml
+                .github/workflows/npm-publish.yml
+                .github/workflows/prepare-v1-release.yml
+                .github/workflows/pull-request.yml
+                .github/workflows/rehearse-v1-release.yml
+                .github/workflows/release-v1.yml
+                .github/workflows/rollback-v1-release.yml
+                .github/workflows/trufflehog.yml
+                config/release-v1.json
+                scripts/npm-publish/determine-release.mjs
+                scripts/npm-publish/determine-release.test.mjs
+                scripts/release/version.mjs
+                scripts/release-v1/release-v1.mjs
+                scripts/release-v1/release-v1.test.mjs
+                scripts/release-v1/workflow-contract.test.mjs
+                scripts/upload-assets/package-assets.sh
         steps:
             - name: Checkout V1 maintenance branch
               uses: actions/checkout@v4.2.2
@@ -25,43 +45,65 @@ jobs:
               id: configuration
               run: |
                   BASE_BRANCH=$(jq -r '.baseBranch // empty' .changeset/config.json)
-                  if [[ "$BASE_BRANCH" == "version/v1.x" ]]; then
-                    echo "V1 Changesets already uses version/v1.x."
-                    echo "needs-update=false" >> "$GITHUB_OUTPUT"
-                  elif [[ "$BASE_BRANCH" == "main" ]]; then
-                    echo "needs-update=true" >> "$GITHUB_OUTPUT"
-                  else
+                  if [[ "$BASE_BRANCH" != "main" && "$BASE_BRANCH" != "version/v1.x" ]]; then
                     echo "::error::Unexpected Changesets base branch \"$BASE_BRANCH\"."
                     exit 1
                   fi
 
-            - name: Create V1 Changesets configuration pull request
+                  EXPECTED_TEST_COMMAND="node --test scripts/release-v1/*.test.mjs scripts/npm-publish/*.test.mjs"
+                  AUTOMATION_CONFIGURED=true
+                  while IFS= read -r FILE; do
+                    if [[ -n "$FILE" && ! -f "$FILE" ]]; then
+                      AUTOMATION_CONFIGURED=false
+                      break
+                    fi
+                  done <<< "$RELEASE_AUTOMATION_FILES"
+                  if [[ "$BASE_BRANCH" == "version/v1.x" &&
+                        "$AUTOMATION_CONFIGURED" == "true" &&
+                        "$(jq -r '.scripts["test:release"] // empty' package.json)" == "$EXPECTED_TEST_COMMAND" ]]; then
+                    echo "V1 release automation is already configured."
+                    echo "needs-update=false" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "needs-update=true" >> "$GITHUB_OUTPUT"
+                  fi
+
+            - name: Create V1 release automation pull request
               if: steps.configuration.outputs.needs-update == 'true'
               env:
                   GH_TOKEN: ${{ github.token }}
               run: |
-                  BRANCH="chore/v1-changesets-base"
-                  TITLE="chore(release): configure Changesets for V1"
+                  BRANCH="chore/v1-release-automation"
+                  TITLE="chore(release): bootstrap V1 automation"
                   EXISTING_PR=$(gh pr list --base version/v1.x --head "$BRANCH" --state open --json number --jq '.[0].number')
                   if [[ -n "$EXISTING_PR" ]]; then
-                    echo "V1 Changesets configuration PR #$EXISTING_PR already exists."
+                    echo "V1 release automation PR #$EXISTING_PR already exists."
                     exit 0
                   fi
 
                   if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
-                    git fetch origin "$BRANCH"
-                    if [[ "$(git show FETCH_HEAD:.changeset/config.json | jq -r '.baseBranch // empty')" != "version/v1.x" ]]; then
-                      echo "::error::Existing branch $BRANCH does not configure Changesets for version/v1.x."
-                      exit 1
-                    fi
+                    echo "::error::Existing branch $BRANCH has no open pull request. Delete it before retrying."
+                    exit 1
                   else
+                    mapfile -t RELEASE_AUTOMATION_PATHS < <(printf '%s\n' "$RELEASE_AUTOMATION_FILES" | sed '/^$/d')
+
+                    if ! git cat-file -e "${GITHUB_SHA}^{commit}" 2>/dev/null; then
+                      git fetch --no-tags origin "$GITHUB_SHA"
+                    fi
+                    for FILE in "${RELEASE_AUTOMATION_PATHS[@]}"; do
+                      mkdir -p "$(dirname "$FILE")"
+                      git show "${GITHUB_SHA}:${FILE}" > "$FILE"
+                    done
+
                     jq '.baseBranch = "version/v1.x"' .changeset/config.json > "$RUNNER_TEMP/changesets-config.json"
                     mv "$RUNNER_TEMP/changesets-config.json" .changeset/config.json
+                    jq '.scripts["test:release"] = "node --test scripts/release-v1/*.test.mjs scripts/npm-publish/*.test.mjs"' \
+                      package.json > "$RUNNER_TEMP/package.json"
+                    mv "$RUNNER_TEMP/package.json" package.json
 
                     git config user.name "github-actions[bot]"
                     git config user.email "github-actions[bot]@users.noreply.github.com"
                     git switch -c "$BRANCH"
-                    git add .changeset/config.json
+                    git add "${RELEASE_AUTOMATION_PATHS[@]}" .changeset/config.json package.json
                     git commit -m "$TITLE"
                     git push origin "$BRANCH"
                   fi
@@ -70,4 +112,4 @@ jobs:
                     --base version/v1.x \
                     --head "$BRANCH" \
                     --title "$TITLE" \
-                    --body "Sets the branch-local Changesets base branch to \`version/v1.x\`. Mainline remains configured for \`main\`."
+                    --body "Installs the V1 maintenance release automation and sets the branch-local Changesets base branch to \`version/v1.x\`. Mainline remains configured for \`main\`."

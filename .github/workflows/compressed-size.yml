@@ -1,6 +1,7 @@
 name: Compressed Size
 
-on:  pull_request_review:
+on:
+  pull_request_review:
     types: [submitted]
   pull_request:
     branches:

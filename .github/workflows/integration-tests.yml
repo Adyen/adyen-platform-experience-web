@@ -102,14 +102,24 @@ jobs:
           # Check whether integration tests have already passed for this exact
           # commit. Additional approvals can skip tests only when the same code
           # has already been verified successfully.
-          SUCCESSFUL_RUNS_FOR_HEAD=$(
+          SUCCESSFUL_RUNS_FOR_HEAD=0
+          while read -r RUN_ID; do
+            if [[ -n "$RUN_ID" ]] &&
+               [[ "$(gh run view "$RUN_ID" --repo "$REPOSITORY" --json jobs \
+                 --jq '[.jobs[] | select((.name | startswith("e2e-local-mocked-api")) and .conclusion == "success")] | length' \
+                 || echo "0")" -gt 0 ]]; then
+              SUCCESSFUL_RUNS_FOR_HEAD=1
+              break
+            fi
+          done < <(
             gh run list \
+              --repo "$REPOSITORY" \
               --workflow "$WORKFLOW_NAME" \
               --commit "$HEAD_SHA" \
               --status completed \
-              --json conclusion \
-              --jq '[.[] | select(.conclusion == "success")] | length' \
-            || echo "0"
+              --json databaseId,conclusion \
+              --jq '.[] | select(.conclusion == "success") | .databaseId' \
+            || true
           )
 
           # A second approval for unchanged, already-tested code should not spend
@@ -141,6 +151,7 @@ jobs:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
           PR_TITLE: ${{ github.event.pull_request.title }}
+          REPOSITORY: ${{ github.repository }}
     outputs:
       should_run_jobs: ${{ steps.approval-status.outputs.should_run_jobs }}
       should_run_tests: ${{ steps.approval-status.outputs.should_run_tests }}

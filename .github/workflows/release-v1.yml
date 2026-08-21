@@ -15,6 +15,7 @@ jobs:
         if: |
             github.repository == 'adyen/adyen-platform-experience-web' &&
             github.event.pull_request.merged == true &&
+            github.event.pull_request.user.login == 'github-actions[bot]' &&
             github.event.pull_request.head.repo.full_name == github.repository &&
             startsWith(github.event.pull_request.head.ref, 'chore/v1-release-') &&
             startsWith(github.event.pull_request.title, 'chore(release): prepare v1.')

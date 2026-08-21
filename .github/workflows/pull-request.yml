@@ -54,6 +54,7 @@ jobs:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
           HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           REPOSITORY: ${{ github.repository }}
         run: |
@@ -74,6 +75,10 @@ jobs:
 
           mapfile -d '' -t CHANGED_FILES < <(git diff --name-only -z "${DIFF_BASE}...HEAD")
           mapfile -d '' -t ADDED_FILES < <(git diff --diff-filter=A --name-only -z "${DIFF_BASE}...HEAD")
+          declare -A ADDED_FILE_SET=()
+          for FILE in "${ADDED_FILES[@]}"; do
+            ADDED_FILE_SET["$FILE"]=1
+          done
           mapfile -d '' -t DELETED_FILES_LIST < <(git diff --diff-filter=D --name-only -z "${DIFF_BASE}...HEAD")
           declare -A DELETED_FILES=()
           for FILE in "${DELETED_FILES_LIST[@]}"; do
@@ -81,7 +86,7 @@ jobs:
           done
 
           IS_TRUSTED_AUTOMATION=false
-          if [[ "$HEAD_REPOSITORY" == "$REPOSITORY" ]]; then
+          if [[ "$HEAD_REPOSITORY" == "$REPOSITORY" && "$PR_AUTHOR" == "github-actions[bot]" ]]; then
             IS_TRUSTED_AUTOMATION=true
           fi
 
@@ -96,13 +101,13 @@ jobs:
           IS_STATE_PR=false
           STATE_ACTION=
           STATE_CHANNEL=
-          if [[ "$IS_TRUSTED_AUTOMATION" == "true" && "$HEAD_REF" =~ ^chore/v1-prerelease-enter-(alpha|beta|rc|next)-[0-9]+$ ]]; then
+          if [[ "$IS_TRUSTED_AUTOMATION" == "true" && "$HEAD_REF" =~ ^chore/v1-prerelease-enter-(alpha|beta|rc|next)$ ]]; then
             STATE_CHANNEL=${BASH_REMATCH[1]}
             if [[ "$PR_TITLE" == "chore(release): enter V1 prerelease mode (${STATE_CHANNEL})" ]]; then
               IS_STATE_PR=true
               STATE_ACTION=enter
             fi
-          elif [[ "$IS_TRUSTED_AUTOMATION" == "true" && "$HEAD_REF" =~ ^chore/v1-prerelease-exit-(alpha|beta|rc|next)-[0-9]+$ ]]; then
+          elif [[ "$IS_TRUSTED_AUTOMATION" == "true" && "$HEAD_REF" =~ ^chore/v1-prerelease-exit-(alpha|beta|rc|next)$ ]]; then
             STATE_CHANNEL=${BASH_REMATCH[1]}
             if [[ "$PR_TITLE" == "chore(release): exit V1 prerelease mode (${STATE_CHANNEL})" ]]; then
               IS_STATE_PR=true
@@ -244,6 +249,12 @@ jobs:
                 echo "::error::Only an automated V1 prerelease state or version PR may change .changeset/pre.json."
                 exit 1
               fi
+              if [[ "$FILE" =~ ^\.changeset/[^/]+\.md$ &&
+                    "$FILE" != ".changeset/README.md" &&
+                    -z "${ADDED_FILE_SET[$FILE]:-}" ]]; then
+                echo "::error::Ordinary V1 pull requests may only add, not modify or delete, Changeset files."
+                exit 1
+              fi
             done
 
             RELEASE_IMPACTING=false
@@ -283,11 +294,11 @@ jobs:
         run: pnpm run test -- --run
 
       - name: Run lint checks
-        if: steps.skip-check.outcome != 'success'
+        if: steps.skip-check.outcome != 'success' && github.event.pull_request.base.ref == 'version/v1.x'
         run: pnpm run lint
 
       - name: Run type checks
-        if: steps.skip-check.outcome != 'success'
+        if: steps.skip-check.outcome != 'success' && github.event.pull_request.base.ref == 'version/v1.x'
         run: pnpm run types:check
 
       - name: Build library
