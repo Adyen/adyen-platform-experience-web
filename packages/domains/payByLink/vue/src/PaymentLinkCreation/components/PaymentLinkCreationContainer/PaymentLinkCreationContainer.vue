@@ -48,6 +48,6 @@ function handleShowDetails() {
             @payment-link-created="handleCreated"
         />
         <FormSuccess v-if="state === 'Success'" :payment-link-url="paymentLinkUrl" :on-show-details="handleShowDetails" />
-        <PaymentLinkDetails v-if="state === 'Details'" :id="paymentLinkId" />
+        <PaymentLinkDetails v-if="state === 'Details'" :id="paymentLinkId" :on-contact-support="props.onContactSupport" />
     </div>
 </template>
