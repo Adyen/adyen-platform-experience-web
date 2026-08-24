@@ -35,7 +35,7 @@ const List = ({ grants, showDetails }: { grants: IGrant[]; showDetails: GrantAdj
 };
 
 interface GrantsDisplayProps {
-    capitalState?: EnhancedCapitalState;
+    capitalState: EnhancedCapitalState;
     grants: IGrant[];
     hideTitle?: boolean;
     onNewOfferRequest: () => void;
@@ -51,7 +51,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ capital
     const grantGroups = useMemo(() => getGroupedGrants(grants), [grants]);
     const hasGrantGroups = useMemo(() => getHasGrantGroups(grantGroups), [grantGroups]);
 
-    const maxAmount = useMemo(() => capitalState?.dynamicOffer?.maxAmount, [capitalState?.dynamicOffer?.maxAmount]);
+    const maxAmount = useMemo(() => capitalState.dynamicOffer?.maxAmount, [capitalState.dynamicOffer?.maxAmount]);
 
     const onNewOfferRequestWithTracking = useCallback<typeof onNewOfferRequest>(() => {
         try {
@@ -82,9 +82,9 @@ export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ capital
 
     return (
         <div className="adyen-pe-grant-list">
-            <CapitalHeader hideTitle={hideTitle} region={capitalState?.region} titleKey={'capital.common.title'} />
+            <CapitalHeader hideTitle={hideTitle} region={capitalState.region} titleKey={'capital.common.title'} />
 
-            {capitalState?.dynamicOffer && maxAmount ? (
+            {capitalState.dynamicOffer && maxAmount ? (
                 <InfoBox className="adyen-pe-grant-list__new-grant-banner">
                     <Typography variant={TypographyVariant.BODY}>
                         {i18n.get('capital.overview.grants.newGrant.title.part1')}
@@ -99,7 +99,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ capital
                         </strong>
                     </Typography>
 
-                    {!!capitalState?.renewableGrants.length && (
+                    {!!capitalState.renewableGrants.length && (
                         <Typography variant={TypographyVariant.CAPTION} className="adyen-pe-grant-list__early-renewal-notice">
                             {i18n.get('capital.overview.grants.newGrant.earlyRenewalNotice')}
                         </Typography>

@@ -1,4 +1,4 @@
-import { AdyenPlatformExperienceError, type TranslationKey } from '@integration-components/core';
+import { AdyenErrorResponse, AdyenPlatformExperienceError, type TranslationKey } from '@integration-components/core';
 
 export type CapitalErrorMessage = {
     title: TranslationKey;
@@ -7,6 +7,13 @@ export type CapitalErrorMessage = {
     onContactSupport?: () => void;
     translationValues?: { [key in TranslationKey]?: string };
 };
+
+export type BalanceAccountErrorMessage = {
+    title: TranslationKey;
+    message: TranslationKey;
+};
+
+const BALANCE_ACCOUNT_ERROR_CODE = '30_013';
 
 export const COMMON_CAPITAL_ERROR_MESSAGE = {
     contactSupportForHelp: 'common.errors.contactSupport',
@@ -19,6 +26,15 @@ const UNKNOWN_ERROR: CapitalErrorMessage = {
     title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
     message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.tryRefreshingThePage],
     refreshComponent: true,
+};
+
+export const getBalanceAccountErrorMessage = (error: AdyenErrorResponse | undefined): BalanceAccountErrorMessage | undefined => {
+    if (!error || error.errorCode !== BALANCE_ACCOUNT_ERROR_CODE) return undefined;
+
+    return {
+        title: 'capital.offer.common.errors.noPrimaryAccount',
+        message: 'capital.offer.common.errors.cannotContinueSupport',
+    };
 };
 
 export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): CapitalErrorMessage => {

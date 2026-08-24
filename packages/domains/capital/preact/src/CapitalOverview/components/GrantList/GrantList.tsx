@@ -7,7 +7,7 @@ import { IGrant } from '@integration-components/types';
 import { EnhancedCapitalState, OnFundsRequestCallback } from '@integration-components/capital/domain';
 
 interface GrantListProps {
-    capitalState?: EnhancedCapitalState;
+    capitalState: EnhancedCapitalState;
     grants: IGrant[];
     hideTitle?: boolean;
     onFundsRequest?: OnFundsRequestCallback;

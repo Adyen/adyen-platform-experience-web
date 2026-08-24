@@ -5,6 +5,7 @@ import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import {
     EnhancedCapitalState,
+    getBalanceAccountErrorMessage,
     getIsEarlyRenewal,
     OnFundsRequestCallback,
     sharedCapitalOfferAnalyticsEventProperties,
@@ -19,8 +20,6 @@ import './CapitalOfferSummary.scss';
 import { CapitalHighlightedFields } from '../CapitalHighlightedFields/CapitalHighlightedFields';
 import { RenewalHighlightedFields } from '../RenewalHighlightedFields';
 import { CapitalOfferTerms } from '../CapitalOfferTerms/CapitalOfferTerms';
-
-const BALANCE_ACCOUNT_ERROR_CODE = '30_013';
 
 const grantSummaryAmountConfig = { minimumFractionDigits: 0 };
 
@@ -70,14 +69,10 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
         },
     });
 
-    const balanceAccountError = useMemo(() => {
-        const error = requestFundsMutation.error && (requestFundsMutation.error as AdyenErrorResponse);
-        if (!error || error.errorCode !== BALANCE_ACCOUNT_ERROR_CODE) return undefined;
-        return {
-            title: i18n.get('capital.offer.common.errors.noPrimaryAccount'),
-            message: i18n.get('capital.offer.common.errors.cannotContinueSupport'),
-        };
-    }, [i18n, requestFundsMutation.error]);
+    const balanceAccountError = useMemo(
+        () => getBalanceAccountErrorMessage(requestFundsMutation.error as AdyenErrorResponse),
+        [requestFundsMutation.error]
+    );
 
     const handleRequestFundsButtonClick = useCallback(() => {
         if (grantOffer.id) {
@@ -112,8 +107,8 @@ export const CapitalOfferSummary = ({ grantOffer, capitalState, onBack, onFundsR
                 <Alert
                     className={'adyen-pe-capital-offer-summary__error-alert'}
                     type={AlertTypeOption.WARNING}
-                    title={balanceAccountError.title}
-                    description={balanceAccountError.message}
+                    title={i18n.get(balanceAccountError.title)}
+                    description={i18n.get(balanceAccountError.message)}
                 >
                     {onContactSupport ? (
                         <Button className={'adyen-pe-capital-offer-summary__error-alert-button'} onClick={onContactSupport}>

@@ -67,14 +67,16 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     );
 
     const state = useMemo<CapitalOverviewState>(() => {
-        if (error) {
-            return 'Error';
-        } else if ((!capitalStateEndpointCall && !grantsEndpointCall) || capitalStateQuery.isFetching || grantsQuery.isFetching) {
+        if ((!capitalStateEndpointCall && !grantsEndpointCall) || capitalStateQuery.isFetching || grantsQuery.isFetching) {
             return 'Loading';
-        } else if (capitalState && !capitalState.isRegionSupported) {
+        } else if (error || !capitalState) {
+            return 'Error';
+        } else if (!capitalState.isRegionSupported) {
             return 'UnsupportedRegion';
+        } else if (!capitalState.hasGrants) {
+            return 'PreQualified';
         }
-        return capitalState?.hasGrants ? 'GrantList' : 'PreQualified';
+        return 'GrantList';
     }, [capitalState, capitalStateEndpointCall, capitalStateQuery.isFetching, error, grantsEndpointCall, grantsQuery.isFetching]);
 
     return (
@@ -123,7 +125,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                         return (
                             grants && (
                                 <GrantList
-                                    capitalState={capitalState}
+                                    capitalState={capitalState!}
                                     grants={grants}
                                     hideTitle={hideTitle}
                                     onFundsRequest={onFundsRequest}
