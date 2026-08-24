@@ -7,6 +7,7 @@ import AcceptDisputeFlow from './AcceptDisputeFlow.vue';
 import DefendDisputeFlow from './DefendDisputeFlow.vue';
 import DisputeData from './DisputeData.vue';
 import type { DisputeManagementProps } from '../types';
+import styles from './DisputeData.module.scss';
 
 const props = defineProps<DisputeManagementProps>();
 const { i18n } = useCoreContext();
@@ -19,7 +20,7 @@ onMounted(() => getDisputesConfig());
 </script>
 
 <template>
-    <div v-if="!shouldHideTitle && flowState === DisputeFlowState.Details" class="adyen-pe-dispute__title">
+    <div v-if="!shouldHideTitle && flowState === DisputeFlowState.Details" :class="styles.title">
         <BentoTypography el="h1" variant="title" stronger>
             {{ i18n.get('disputes.management.common.title') }}
         </BentoTypography>

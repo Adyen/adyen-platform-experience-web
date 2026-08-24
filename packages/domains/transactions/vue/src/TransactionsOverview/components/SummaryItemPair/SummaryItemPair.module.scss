@@ -1,0 +1,40 @@
+@use '@integration-components/style';
+@use '@integration-components/style/breakpoints' as *;
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+
+    @include adyen-pe-screen-sm-and-up {
+        flex-direction: row;
+        align-items: center;
+        gap: style.token(spacer-120);
+    }
+}
+
+.labelWrap {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-060);
+}
+
+.tooltipPlaceholder {
+    width: style.token(spacer-070);
+}
+
+.pair {
+    display: flex;
+    gap: style.token(spacer-030);
+}
+
+.itemValueContainer {
+    white-space: nowrap;
+}
+
+.itemValue {
+    display: inline-block;
+}

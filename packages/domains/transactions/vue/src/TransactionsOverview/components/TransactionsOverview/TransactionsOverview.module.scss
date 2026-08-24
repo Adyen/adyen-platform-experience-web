@@ -1,0 +1,69 @@
+@use '@integration-components/style' as style;
+@use '@integration-components/style/breakpoints' as breakpoints;
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: style.token(spacer-070);
+}
+
+.toolbar {
+    margin-bottom: style.token(spacer-080);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: style.token(spacer-060);
+}
+
+.summary {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+    margin-bottom: style.token(spacer-080);
+    overflow: visible;
+    position: relative;
+
+    @include breakpoints.adyen-pe-screen-md-and-up {
+        display: block;
+        height: var(--adyen-pe-summary-height, 0);
+    }
+}
+
+.summarySection {
+    @include breakpoints.adyen-pe-screen-md-and-up {
+        max-width: calc(50% - #{style.token(spacer-060)} / 2);
+        position: absolute;
+        z-index: 4;
+        min-width: 350px;
+    }
+}
+
+.summarySectionTotals {
+    @include breakpoints.adyen-pe-screen-md-and-up {
+        top: 0;
+        left: 0;
+    }
+}
+
+.summarySectionBalances {
+    @include breakpoints.adyen-pe-screen-md-and-up {
+        top: 0;
+        right: 0;
+    }
+}
+
+.summaryGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.expandedList {
+    margin-left: style.token(spacer-100);
+    margin-top: style.token(spacer-080);
+}
+
+.summaryHeader {
+    width: 100%;
+    justify-content: space-between;
+}

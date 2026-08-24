@@ -3,9 +3,9 @@ import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
 import { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from './getErrorMessage';
-import './ErrorMessageDisplay.scss';
+import styles from './ErrorMessageDisplay.module.scss';
 
-const BASE_CLASS = 'adyen-pe-error-message-display';
+// const BASE_CLASS = 'adyen-pe-error-message-display';
 const IMAGE_BREAKPOINT_MEDIUM_PX = 680;
 
 export const ErrorMessageDisplay = defineComponent({
@@ -40,18 +40,18 @@ export const ErrorMessageDisplay = defineComponent({
                 getErrorMessage(props.error, props.errorMessage ?? 'common.errors.unexpected', props.onContactSupport, props.notFoundMessage)
         );
 
-        const rootClass = computed(() => ({
-            [BASE_CLASS]: true,
-            [`${BASE_CLASS}--absolute-position`]: props.absolutePosition,
-            [`${BASE_CLASS}--centered`]: props.centered,
-            [`${BASE_CLASS}--outlined`]: props.outlined,
-            [`${BASE_CLASS}--with-background`]: props.withBackground && !props.outlined,
-            [`${BASE_CLASS}--with-header-offset`]: props.withHeaderOffset,
-            [`${BASE_CLASS}--condensed`]: props.condensed,
-        }));
+        const rootClass = computed(() => [
+            styles.root,
+            props.absolutePosition ? styles.absolutePositioned : '',
+            props.centered ? styles.centered : '',
+            props.outlined ? styles.outlined : '',
+            props.withBackground && !props.outlined ? styles.withBackground : '',
+            props.withHeaderOffset ? styles.withHeaderOffset : '',
+            props.condensed ? styles.condensed : '',
+        ]);
 
         const renderIllustration = () =>
-            h('div', { class: `${BASE_CLASS}__illustration` }, [
+            h('div', { class: styles.illustration }, [
                 h('picture', {}, [
                     h('source', {
                         type: 'image/svg+xml',
@@ -114,7 +114,7 @@ export const ErrorMessageDisplay = defineComponent({
                 props.withImage || props.imageDesktop || props.imageMobile ? renderIllustration() : null,
                 title ? h(BentoTypography, { el: 'div', variant: 'title' }, () => i18n.get(title)) : null,
                 messages.length ? h(BentoTypography, { variant: 'body' }, () => messages) : null,
-                buttons.length ? h('div', { class: `${BASE_CLASS}__button` }, buttons) : null,
+                buttons.length ? h('div', { class: styles.button }, buttons) : null,
             ]);
         };
     },

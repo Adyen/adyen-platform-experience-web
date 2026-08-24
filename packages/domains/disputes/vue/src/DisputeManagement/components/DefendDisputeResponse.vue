@@ -5,10 +5,10 @@ import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-cir
 import CrossCircleFillIcon from '@adyen/ui-assets-icons-40/vue/cross-circle-filled';
 import { useCoreContext } from '@integration-components/core/vue';
 import { DefendResponse, DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
+import flowStyles from './DisputeFlow.module.scss';
 
 const { i18n } = useCoreContext();
 const { defendResponse, clearFiles, clearStates, setFlowState } = useDisputeFlow();
-
 const isSuccess = computed(() => defendResponse.value === DefendResponse.Success);
 
 function goBackToDetails() {
@@ -23,21 +23,21 @@ function goBackToFileUploadView() {
 </script>
 
 <template>
-    <div class="adyen-pe-defend-dispute__response">
-        <div v-if="isSuccess" class="adyen-pe-defend-dispute__success">
-            <CheckmarkCircleFillIcon class="adyen-pe-defend-dispute__success-icon" />
+    <div :class="flowStyles.response">
+        <div v-if="isSuccess" :class="flowStyles.success">
+            <CheckmarkCircleFillIcon :class="flowStyles.successIcon" />
             <BentoTypography variant="title">
                 {{ i18n.get('disputes.management.defend.common.evidenceSubmitted') }}
             </BentoTypography>
-            <BentoTypography class="adyen-pe-defend-dispute__success-description" variant="body">
+            <BentoTypography :class="flowStyles.successDescription" variant="body">
                 {{ i18n.get('disputes.management.defend.chargeback.submitSuccessInfo') }}
             </BentoTypography>
             <BentoButton variant="secondary" @click="goBackToDetails">
                 {{ i18n.get('disputes.management.common.actions.showDetails') }}
             </BentoButton>
         </div>
-        <div v-else class="adyen-pe-defend-dispute__error">
-            <CrossCircleFillIcon class="adyen-pe-defend-dispute__error-icon" />
+        <div v-else :class="flowStyles.error">
+            <CrossCircleFillIcon :class="flowStyles.errorIcon" />
             <BentoTypography variant="title">
                 {{ i18n.get('disputes.management.defend.common.errors.somethingWentWrong') }}
             </BentoTypography>

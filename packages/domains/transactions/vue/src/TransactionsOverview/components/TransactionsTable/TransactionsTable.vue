@@ -25,10 +25,9 @@ import { getCurrencyCode } from '@integration-components/core/Localization/amoun
 import type { ITransaction, CustomColumn } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { TransactionsTableFields, IBalanceAccountBase } from '../../types';
-import { TABLE_CLASS, AMOUNT_CLASS, PAYMENT_METHOD_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from '../../constants';
 import { DATE_FORMAT_TRANSACTIONS } from '@integration-components/utils/datetime/formats';
-import './TransactionsTable.scss';
 import { parsePaymentMethodType } from '@integration-components/utils';
+import styles from './TransactionsTable.module.scss';
 
 const props = defineProps<{
     activeBalanceAccount?: IBalanceAccountBase;
@@ -174,7 +173,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
 </script>
 
 <template>
-    <div :class="TABLE_CLASS">
+    <div>
         <DataOverviewError
             v-if="props.error"
             :error="props.error"
@@ -199,8 +198,8 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
             @items-page="handleItemsPage"
         >
             <template #item-paymentMethodAndDate="{ item }">
-                <div :class="DATE_AND_PAYMENT_METHOD_CLASS">
-                    <div :class="PAYMENT_METHOD_CLASS">
+                <div :class="styles.dateAndPaymentMethod">
+                    <div :class="styles.paymentMethod">
                         <template v-if="item.paymentMethod || item.bankAccount">
                             <BentoPaymentMethod :type="item.paymentMethod ? item.paymentMethod?.type : 'bankTransfer'" />
                             <BentoTypography variant="body">
@@ -209,7 +208,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
                         </template>
                         <BentoTag v-else variant="grey" :label="i18n.get('common.tags.noData')" />
                     </div>
-                    <time v-if="item.createdAt" :datetime="item.createdAt" :class="DATE_METHOD_CLASS">
+                    <time v-if="item.createdAt" :datetime="item.createdAt" :class="styles.date">
                         <BentoTypography variant="body">{{ formatDate(item.createdAt) }}</BentoTypography>
                     </time>
                 </div>
@@ -222,7 +221,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
             </template>
 
             <template #item-paymentMethod="{ item }">
-                <div :class="PAYMENT_METHOD_CLASS">
+                <div :class="styles.paymentMethod">
                     <template v-if="item.paymentMethod || item.bankAccount">
                         <BentoPaymentMethod :type="item.paymentMethod ? item.paymentMethod?.type : 'bankTransfer'" />
                         <BentoTypography variant="body">
@@ -244,13 +243,13 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
             </template>
 
             <template #item-netAmount="{ item }">
-                <BentoTypography variant="body" :class="AMOUNT_CLASS">
+                <BentoTypography variant="body">
                     {{ formatAmount(item.netAmount) }}
                 </BentoTypography>
             </template>
 
             <template #item-grossAmount="{ item }">
-                <BentoTypography variant="body" :class="AMOUNT_CLASS">
+                <BentoTypography variant="body">
                     {{ formatAmount(item.grossAmount) }}
                 </BentoTypography>
             </template>

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { BentoAlert, BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
+import styles from './DisputeData.module.scss';
 
 const props = defineProps<{
     issuerComments: string[];
@@ -16,10 +17,10 @@ const toggleLabel = computed(() =>
 </script>
 
 <template>
-    <BentoAlert class="adyen-pe-dispute-data__issuer-comments-alert" role="alert" type="highlight">
+    <BentoAlert :class="styles.issuerCommentsAlert" role="alert" type="highlight">
         {{ i18n.get('disputes.management.details.issuerComment') }}
         <template #description>
-            <ul class="adyen-pe-dispute-data__issuer-comments-group">
+            <ul :class="styles.issuerCommentsGroup">
                 <li v-for="comment in visibleComments" :key="comment">
                     <BentoTypography variant="body">
                         {{ comment }}
