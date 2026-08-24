@@ -1,7 +1,5 @@
 import { BaseEventProperties } from '@integration-components/core/EventDispatcher/eventDispatcher/user-events';
 
-export const CAPITAL_REPAYMENT_FREQUENCY = 30;
-
 export const DEFAULT_TERM = 180;
 export const DYNAMIC_OFFER_DEBOUNCE_MS = 300;
 export const DYNAMIC_OFFER_RETRY_COUNT = 1;

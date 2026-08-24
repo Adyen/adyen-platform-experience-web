@@ -5,7 +5,7 @@ import {
     CAPITAL_STATE_RENEWABLE_GRANT,
     DYNAMIC_CAPITAL_OFFER,
 } from '../../../../mocks/mock-data/capital';
-import { getEnhancedCapitalState } from '../state';
+import { getEnhancedCapitalState } from '../../shared';
 import { getDynamicOfferConfig, getEstimatedTerms, getCurrency, getDefaultAmountValue } from './dynamicOfferConfig';
 
 describe('getDynamicOfferConfig', () => {

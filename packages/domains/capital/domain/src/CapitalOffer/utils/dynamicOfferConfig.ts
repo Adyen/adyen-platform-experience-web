@@ -1,5 +1,5 @@
 import type { IDynamicOffersConfig } from '@integration-components/types';
-import type { EnhancedCapitalState } from '../state';
+import type { EnhancedCapitalState } from '../../shared';
 
 export const getDynamicOfferConfig = (state: EnhancedCapitalState): IDynamicOffersConfig | undefined => {
     const config = state.dynamicOffer;

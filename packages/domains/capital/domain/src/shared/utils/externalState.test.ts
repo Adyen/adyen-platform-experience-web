@@ -2,14 +2,14 @@ import { describe, expect, test, vi } from 'vitest';
 import { AuthSession } from '@integration-components/core';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { ICapitalState } from '@integration-components/types';
-import localSupportedRegions from '../config/supportedRegions.json';
+import localSupportedRegions from '../../config/supportedRegions.json';
 import {
     CAPITAL_STATE_ACTIVE_GRANT,
     CAPITAL_STATE_FIRST_OFFER,
     CAPITAL_STATE_INELIGIBLE,
     CAPITAL_STATE_RENEWABLE_GRANT,
     CAPITAL_STATE_UNSUPPORTED_REGION,
-} from '../../../mocks/mock-data/capital';
+} from '../../../../mocks/mock-data/capital';
 import { getExternalCapitalState } from './externalState';
 
 const createSession = (response: ICapitalState | undefined, shouldReject = false) => {

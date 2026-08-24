@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import localSupportedRegions from '../config/supportedRegions.json';
+import localSupportedRegions from '../../config/supportedRegions.json';
 import {
     ACTIVE_GRANT,
     CAPITAL_STATE_ACTIVE_GRANT,
@@ -10,7 +10,7 @@ import {
     CAPITAL_STATE_RENEWABLE_GRANT,
     CAPITAL_STATE_UNSUPPORTED_REGION,
     CAPITAL_STATE_PENDING_GRANT,
-} from '../../../mocks/mock-data/capital';
+} from '../../../../mocks/mock-data/capital';
 import { getEnhancedCapitalState, getIsEarlyRenewal, shouldGetGrants, getSimplifiedRenewableGrant } from './state';
 
 describe('getEnhancedCapitalState', () => {

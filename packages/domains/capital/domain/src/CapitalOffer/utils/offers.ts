@@ -1,5 +1,5 @@
 import type { ICreateGrantOfferRequest, IGrantOfferResponseDTO } from '@integration-components/types';
-import { DEFAULT_TERM } from '../../constants';
+import { DEFAULT_TERM } from '../constants';
 
 export const getOffersByTerm = (offers: readonly IGrantOfferResponseDTO[]) => {
     return Object.fromEntries(offers.map(offer => [offer.expectedRepaymentPeriodDays, offer]));

@@ -1,5 +1,5 @@
 import type { CdnFetcher } from '@integration-components/core';
-import localSupportedRegions from '../config/supportedRegions.json';
+import localSupportedRegions from '../../config/supportedRegions.json';
 
 export type SupportedRegions = string[];
 

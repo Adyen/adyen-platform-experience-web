@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import localSupportedRegions from '../config/supportedRegions.json';
+import localSupportedRegions from '../../config/supportedRegions.json';
 import { getSupportedRegions } from './regions';
 
 describe('getSupportedRegions', () => {

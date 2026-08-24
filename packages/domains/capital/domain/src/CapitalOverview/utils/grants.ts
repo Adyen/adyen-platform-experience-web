@@ -1,5 +1,5 @@
 import type { IGrant, IGrantsResponseDTO } from '@integration-components/types';
-import type { EnhancedCapitalState } from '../state';
+import type { EnhancedCapitalState } from '../../shared';
 
 type GroupedGrants = {
     ongoing: IGrant[];
