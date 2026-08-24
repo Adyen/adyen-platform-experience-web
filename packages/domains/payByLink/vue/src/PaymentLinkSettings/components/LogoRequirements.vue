@@ -6,6 +6,7 @@ import { getHumanReadableFileSize } from '@integration-components/utils';
 import { getHumanReadableFileName } from '@integration-components/utils/file/naming';
 import { LOGO_DIMENSIONS, THEME_FORM_ALLOWED_FILE_TYPES, THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from '../constants';
 import type { LogoType } from '../types';
+import styles from './ThemeForm.module.scss';
 
 const props = defineProps<{ logoType: LogoType }>();
 
@@ -20,14 +21,14 @@ const imageSizeText = computed(() => {
 </script>
 
 <template>
-    <div class="adyen-pe-payment-link-theme-form__file-info-container">
-        <BentoTypography variant="body" class="adyen-pe-payment-link-theme-form__file-info">
+    <div :class="styles.fileInfoContainer">
+        <BentoTypography variant="body" :class="styles.fileInfo">
             {{ i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text') }}{{ allowedFileTypesText }}
         </BentoTypography>
-        <BentoTypography variant="body" class="adyen-pe-payment-link-theme-form__file-info">
+        <BentoTypography variant="body" :class="styles.fileInfo">
             {{ i18n.get('payByLink.settings.theme.limitations.file.input.maxSize.text') }}{{ maxSizeText }}
         </BentoTypography>
-        <BentoTypography variant="body" class="adyen-pe-payment-link-theme-form__file-info">
+        <BentoTypography variant="body" :class="styles.fileInfo">
             {{ i18n.get('payByLink.settings.theme.limitations.file.input.imageSize.text') }}{{ imageSizeText }}
         </BentoTypography>
     </div>

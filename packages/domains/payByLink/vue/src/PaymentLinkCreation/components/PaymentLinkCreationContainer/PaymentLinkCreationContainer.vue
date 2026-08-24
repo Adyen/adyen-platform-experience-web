@@ -2,10 +2,9 @@
 import { ref } from 'vue';
 import PaymentLinkCreationForm from '../PaymentLinkCreationFormContainer/PaymentLinkCreationForm.vue';
 import FormSuccess from '../Form/FormSuccess/FormSuccess.vue';
-import { PAYMENT_LINK_CREATION_CLASS_NAMES } from '../../../../../domain/src';
 import type { PaymentLinkCreationFormValues, CreatedPaymentLink, PaymentLinkCreationProps } from '../../../../../domain/src';
 import '@adyen/bento-vue3/styles/bento-light';
-import './PaymentLinkCreationContainer.scss';
+import styles from './PaymentLinkCreationContainer.module.scss';
 
 const props = defineProps<PaymentLinkCreationProps>();
 
@@ -28,7 +27,7 @@ function handleShowDetails() {
 </script>
 
 <template>
-    <div :class="PAYMENT_LINK_CREATION_CLASS_NAMES.base">
+    <div :class="styles.root">
         <PaymentLinkCreationForm
             v-if="state === 'Creation'"
             :fields-config="props.fieldsConfig"

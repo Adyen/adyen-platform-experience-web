@@ -1,0 +1,25 @@
+@use '@integration-components/style';
+
+.root {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+    justify-content: center;
+    min-height: 218px;
+    text-align: center;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+}
+
+.icon {
+    color: style.token(color-background-success-strong);
+    margin: style.token(spacer-040);
+}
+
+.icon svg {
+    display: block;
+}

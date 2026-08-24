@@ -6,6 +6,7 @@ import { getImageDimensions } from '../utils/getImageDimensions';
 import { LOGO_DIMENSIONS, LOGO_DIMENSION_ERROR, LogoLabel, THEME_FORM_ALLOWED_FILE_TYPES, THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from '../constants';
 import type { LogoType } from '../types';
 import LogoRequirements from './LogoRequirements.vue';
+import styles from './ThemeForm.module.scss';
 
 const props = defineProps<{
     disabled?: boolean;
@@ -64,13 +65,8 @@ async function onChange(files?: FileList) {
 </script>
 
 <template>
-    <div class="adyen-pe-payment-link-theme-form__file-input">
-        <img
-            v-if="props.previewUrl"
-            :src="props.previewUrl"
-            :alt="i18n.get(LogoLabel[props.logoType])"
-            class="adyen-pe-payment-link-theme-form__preview-image"
-        />
+    <div :class="styles.fileInput">
+        <img v-if="props.previewUrl" :src="props.previewUrl" :alt="i18n.get(LogoLabel[props.logoType])" :class="styles.previewImage" />
         <BentoFileUploader
             v-model="modelValue"
             :disabled="props.disabled"
