@@ -1,0 +1,52 @@
+name: Verify V1 maintenance release tag
+
+on:
+    workflow_dispatch:
+
+concurrency:
+    group: release-v1
+    cancel-in-progress: false
+
+jobs:
+    verify-v1:
+        if: github.repository == 'adyen/adyen-platform-experience-web' && github.ref == 'refs/heads/main'
+        runs-on: ubuntu-latest
+        environment: v1-release
+        permissions:
+            contents: read
+        steps:
+            - name: Checkout V1 maintenance branch
+              uses: actions/checkout@v4.2.2
+              with:
+                  ref: version/v1.x
+                  fetch-depth: 0
+
+            - name: Set up Node
+              uses: actions/setup-node@v4.4.0
+              with:
+                  node-version: 24.9.0
+
+            - name: Verify release-created v1-latest
+              run: |
+                  node scripts/release-v1/release-v1.mjs validate-config --config config/release-v1.json
+                  CURRENT_VERSION=$(jq -r '.version' package.json)
+                  node scripts/release-v1/release-v1.mjs validate-version --version "$CURRENT_VERSION"
+                  if [[ ! "$CURRENT_VERSION" =~ ^1\.[0-9]+\.[0-9]+$ ]]; then
+                    echo "::error::V1 maintenance tag verification requires a stable V1 version, received $CURRENT_VERSION."
+                    exit 1
+                  fi
+
+                  V1_LATEST_VERSION=$(npm view @adyen/adyen-platform-experience-web@v1-latest version 2>/dev/null || true)
+                  if [[ "$V1_LATEST_VERSION" == "$CURRENT_VERSION" ]]; then
+                    echo "v1-latest points to $CURRENT_VERSION."
+                    exit 0
+                  fi
+
+                  PUBLISHED_VERSION=$(npm view "@adyen/adyen-platform-experience-web@${CURRENT_VERSION}" version 2>/dev/null || true)
+                  if [[ "$PUBLISHED_VERSION" != "$CURRENT_VERSION" ]]; then
+                    echo "::error::version/v1.x is $CURRENT_VERSION, but that version is not published to npm."
+                    exit 1
+                  fi
+
+                  echo "::error::v1-latest does not point to $CURRENT_VERSION. Publish the planned stable V1 maintenance release through the V1 pipeline before V2 GA."
+                  exit 1

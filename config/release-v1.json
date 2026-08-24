@@ -1,6 +1,6 @@
 {
     "branch": "version/v1.x",
-    "npmTag": "latest",
+    "npmTag": "v1-latest",
     "prereleaseNpmTags": {
         "alpha": "v1-alpha",
         "beta": "v1-beta",

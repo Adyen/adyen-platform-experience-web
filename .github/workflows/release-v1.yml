@@ -1,10 +1,7 @@
 name: Release V1
 
 on:
-    pull_request:
-        types: [closed]
-        branches:
-            - version/v1.x
+    workflow_call:
 
 concurrency:
     group: release-v1
@@ -142,15 +139,6 @@ jobs:
                   DEPLOY_ENVIRONMENT=$(jq -r '.deployEnvironment' <<< "$CHANNEL")
                   IS_PRERELEASE=$(jq -r '.isPrerelease' <<< "$CHANNEL")
                   PRERELEASE_TAG=$(jq -r '.prereleaseTag // ""' <<< "$CHANNEL")
-
-                  if [[ "$IS_PRERELEASE" == "false" && "$NPM_TAG" == "latest" ]]; then
-                    DIST_TAGS=$(npm view @adyen/adyen-platform-experience-web dist-tags --json)
-                    V1_VERSION=$(jq -r '.v1 // empty' <<< "$DIST_TAGS")
-                    if [[ "$V1_VERSION" =~ ^1\.[0-9]+\.[0-9]+$ ]]; then
-                      echo "::error::npm v1 already points to stable V1 $V1_VERSION. Merge the V1 config-switch PR before publishing another stable release."
-                      exit 1
-                    fi
-                  fi
 
                   echo "version=$CURRENT_VERSION" >> "$GITHUB_OUTPUT"
                   echo "npm-tag=$NPM_TAG" >> "$GITHUB_OUTPUT"

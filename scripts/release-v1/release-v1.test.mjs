@@ -20,7 +20,7 @@ const scriptPath = join(dirname(fileURLToPath(import.meta.url)), 'release-v1.mjs
 
 const createReleaseConfig = () => ({
     branch: 'version/v1.x',
-    npmTag: 'latest',
+    npmTag: 'v1-latest',
     prereleaseNpmTags: {
         alpha: 'v1-alpha',
         beta: 'v1-beta',
@@ -97,7 +97,7 @@ test('validates V1 configuration and resolves release channels', () => {
 
     assert.equal(validateV1Config(config), config);
     assert.deepEqual(resolveReleaseChannel(config, '1.13.2'), {
-        npmTag: 'latest',
+        npmTag: 'v1-latest',
         cdnTag: 'v1-cdn-live',
         deployEnvironment: 'live',
         isPrerelease: false,
@@ -112,7 +112,9 @@ test('validates V1 configuration and resolves release channels', () => {
     });
 
     assert.throws(() => validateV1Config({ ...config, branch: 'main' }), new Error('V1 release branch must be "version/v1.x", received "main"'));
-    assert.throws(() => validateV1Config({ ...config, npmTag: 'next' }), new Error('Stable V1 npm tag must be "latest" or "v1", received "next"'));
+    for (const npmTag of ['latest', 'v1', 'next']) {
+        assert.throws(() => validateV1Config({ ...config, npmTag }), new Error(`Stable V1 npm tag must be "v1-latest", received "${npmTag}"`));
+    }
     assert.throws(
         () => validateV1Config({ ...config, prereleaseNpmTags: { ...config.prereleaseNpmTags, beta: 'beta' } }),
         new Error('V1 prerelease "beta" must use npm tag "v1-beta"')

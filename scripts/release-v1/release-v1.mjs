@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { parseSupportedReleaseVersion, STABLE_V1_NPM_TAGS, V1_PRERELEASE_NPM_TAGS } from '../release/version.mjs';
+import { parseSupportedReleaseVersion, STABLE_V1_NPM_TAG, V1_PRERELEASE_NPM_TAGS } from '../release/version.mjs';
 
 const PACKAGE_NAME = '@adyen/adyen-platform-experience-web';
 
@@ -74,8 +74,8 @@ export const validateV1Config = config => {
         throw new Error(`V1 release branch must be "version/v1.x", received "${config.branch}"`);
     }
 
-    if (!STABLE_V1_NPM_TAGS.includes(config.npmTag)) {
-        throw new Error(`Stable V1 npm tag must be "latest" or "v1", received "${config.npmTag}"`);
+    if (config.npmTag !== STABLE_V1_NPM_TAG) {
+        throw new Error(`Stable V1 npm tag must be "${STABLE_V1_NPM_TAG}", received "${config.npmTag}"`);
     }
 
     for (const [prereleaseTag, npmTag] of Object.entries(V1_PRERELEASE_NPM_TAGS)) {

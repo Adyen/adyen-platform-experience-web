@@ -3,7 +3,7 @@
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { parseSupportedReleaseVersion, STABLE_V1_NPM_TAGS, V1_PRERELEASE_NPM_TAGS } from '../release/version.mjs';
+import { parseSupportedReleaseVersion, STABLE_V1_NPM_TAG, V1_PRERELEASE_NPM_TAGS } from '../release/version.mjs';
 
 const PACKAGE_TARBALL_PREFIX = 'adyen-adyen-platform-experience-web';
 
@@ -17,12 +17,16 @@ const validateV1Release = ({ packageVersion, npmTag, parsedVersion }) => {
         if (npmTag !== expectedTag) {
             throw new Error(`V1 prerelease ${packageVersion} must publish to ${expectedTag}.`);
         }
-    } else if (!STABLE_V1_NPM_TAGS.includes(npmTag)) {
-        throw new Error('Stable V1 releases must publish to latest or v1.');
+    } else if (npmTag !== STABLE_V1_NPM_TAG) {
+        throw new Error(`Stable V1 releases must publish to ${STABLE_V1_NPM_TAG}.`);
     }
 };
 
 const validateMainlineRelease = ({ packageVersion, npmTag, parsedVersion }) => {
+    if (parsedVersion.major < 2) {
+        throw new Error('Mainline publishing requires major version 2 or higher.');
+    }
+
     if (parsedVersion.isPrerelease && npmTag !== parsedVersion.prereleaseTag) {
         throw new Error(`Prerelease ${packageVersion} must publish to its validated prerelease tag.`);
     }
@@ -57,7 +61,7 @@ export const determineNpmRelease = ({ packageVersion, releaseVersion, npmTag, re
     return {
         packageVersion,
         packageTarball: join(runnerTemp, 'artifact', `${PACKAGE_TARBALL_PREFIX}-${packageVersion}.tgz`),
-        requiresStableV1Tag: releaseLine === 'mainline' && parsedVersion.major >= 2 && !parsedVersion.isPrerelease,
+        requiresStableV1Tag: releaseLine === 'mainline' && parsedVersion.major === 2 && !parsedVersion.isPrerelease,
     };
 };
 
@@ -71,7 +75,7 @@ export const validateStableV1Tag = version => {
         // Preserve the release-policy error below.
     }
 
-    throw new Error('v1 must point to a stable V1 version before V2 can publish.');
+    throw new Error(`${STABLE_V1_NPM_TAG} must point to a stable V1 version before V2 can publish.`);
 };
 
 const getArguments = argumentsList => {

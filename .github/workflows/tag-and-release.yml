@@ -6,9 +6,26 @@ on:
 
   pull_request:
     types: [closed]
-    branches: ['main', 'changeset-release/**']
+    branches: ['main', 'version/v1.x']
 
 jobs:
+  release-v1:
+    if: |
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'version/v1.x' &&
+      github.event.pull_request.user.login == 'github-actions[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.event.pull_request.head.ref, 'chore/v1-release-') &&
+      startsWith(github.event.pull_request.title, 'chore(release): prepare v1.')
+    permissions:
+      actions: write
+      contents: write
+      id-token: write
+      pull-requests: read
+    uses: ./.github/workflows/release-v1.yml
+    secrets: inherit
+
   create-github-release:
     permissions:
       contents: write
@@ -21,23 +38,50 @@ jobs:
       release_line: ${{ steps.determine_version.outputs.release_line }}
       source_sha: ${{ steps.determine_version.outputs.source_sha }}
     if: (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
-      || (github.event.pull_request.merged == true && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
+      || (github.event.pull_request.merged == true
+      && github.event.pull_request.base.ref == 'main'
+      && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v4.2.2
         with:
           ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
 
-      - name: Validate V2 GA prerequisite
+      - name: Determine and validate mainline release
+        id: determine_version
         run: |
           VERSION=$(jq -r .version package.json)
+          echo "NEW_VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "release_line=v${VERSION%%.*}" >> "$GITHUB_OUTPUT"
+          echo "source_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+          if [[ "$VERSION" == *"-"* ]]; then
+            PRE_TAG=$(echo "$VERSION" | sed 's/.*-\([a-zA-Z]*\).*/\1/')
+            NPM_TAG=$PRE_TAG
+            IS_PRERELEASE=true
+          else
+            NPM_TAG=latest
+            IS_PRERELEASE=false
+          fi
+
+          echo "npm_tag=$NPM_TAG" >> "$GITHUB_OUTPUT"
+          echo "is_prerelease=$IS_PRERELEASE" >> "$GITHUB_OUTPUT"
+          echo "NPM_TAG=$NPM_TAG" >> "$GITHUB_ENV"
+          echo "IS_PRERELEASE=$IS_PRERELEASE" >> "$GITHUB_ENV"
+
+          node scripts/npm-publish/determine-release.mjs determine \
+            --package-json package.json \
+            --release-version "$VERSION" \
+            --npm-tag "$NPM_TAG" \
+            --release-line mainline \
+            --runner-temp "$RUNNER_TEMP"
+
           PACKAGE_MAJOR=${VERSION%%.*}
-          if [[ "$PACKAGE_MAJOR" -ge 2 && "$VERSION" != *"-"* ]]; then
-            V1_VERSION=$(npm view @adyen/adyen-platform-experience-web@v1 version)
-            if [[ ! "$V1_VERSION" =~ ^1\.[0-9]+\.[0-9]+$ ]]; then
-              echo "::error::v1 must point to a stable V1 version before V2 GA."
-              exit 1
-            fi
+          if [[ "$IS_PRERELEASE" == "false" && "$PACKAGE_MAJOR" == "2" ]]; then
+            V1_LATEST_VERSION=$(npm view @adyen/adyen-platform-experience-web@v1-latest version)
+            node scripts/npm-publish/determine-release.mjs validate-stable-v1 \
+              --version "$V1_LATEST_VERSION"
           fi
 
       - name: Run the preliminary setup steps
@@ -48,30 +92,6 @@ jobs:
       - name: Create a build and export an artifact
         run: |
           pnpm run build:publish
-
-      - name: Determine the release version
-        id: determine_version
-        run: |
-          VERSION=$(jq -r .version package.json)
-          echo "NEW_VERSION=$VERSION" >> $GITHUB_ENV
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "release_line=v${VERSION%%.*}" >> "$GITHUB_OUTPUT"
-          echo "source_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
-          # Detect pre-release: versions like 1.13.0-beta.0 contain a hyphen
-          if [[ "$VERSION" == *"-"* ]]; then
-            # Extract tag name from pre-release identifier (e.g. beta from 1.13.0-beta.0)
-            PRE_TAG=$(echo "$VERSION" | sed 's/.*-\([a-zA-Z]*\).*/\1/')
-            echo "npm_tag=$PRE_TAG" >> "$GITHUB_OUTPUT"
-            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
-            echo "NPM_TAG=$PRE_TAG" >> $GITHUB_ENV
-            echo "IS_PRERELEASE=true" >> $GITHUB_ENV
-          else
-            echo "npm_tag=latest" >> "$GITHUB_OUTPUT"
-            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
-            echo "NPM_TAG=latest" >> $GITHUB_ENV
-            echo "IS_PRERELEASE=false" >> $GITHUB_ENV
-          fi
 
       - name: Upload build as artifact for other jobs
         uses: actions/upload-artifact@v4.6.2
@@ -161,6 +181,7 @@ jobs:
       npm_tag: ${{ needs.create-github-release.outputs.npm_tag }}
       release_version: ${{ needs.create-github-release.outputs.release_version }}
       source_sha: ${{ needs.create-github-release.outputs.source_sha }}
+      release_line: mainline
 
   sync-develop:
     needs: [create-github-release, trigger-npm-publish]

@@ -68,9 +68,9 @@ jobs:
         if: env.REQUIRES_STABLE_V1_TAG == 'true'
         run: |
           set -euo pipefail
-          V1_VERSION=$(npm view @adyen/adyen-platform-experience-web@v1 version)
+          V1_LATEST_VERSION=$(npm view @adyen/adyen-platform-experience-web@v1-latest version)
           node scripts/npm-publish/determine-release.mjs validate-stable-v1 \
-            --version "$V1_VERSION"
+            --version "$V1_LATEST_VERSION"
 
       - name: Download build artifact
         uses: actions/download-artifact@v4.3.0

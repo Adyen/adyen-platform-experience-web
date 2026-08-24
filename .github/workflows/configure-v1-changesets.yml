@@ -16,6 +16,7 @@ jobs:
             pull-requests: write
         env:
             RELEASE_AUTOMATION_FILES: |
+                .github/actions/publish-npm-logs/action.yml
                 .github/actions/setup-env/action.yml
                 .github/workflows/compressed-size.yml
                 .github/workflows/integration-tests.yml
@@ -25,7 +26,9 @@ jobs:
                 .github/workflows/rehearse-v1-release.yml
                 .github/workflows/release-v1.yml
                 .github/workflows/rollback-v1-release.yml
+                .github/workflows/tag-and-release.yml
                 .github/workflows/trufflehog.yml
+                .github/workflows/upload-assets-to-release-tag.yml
                 config/release-v1.json
                 scripts/npm-publish/determine-release.mjs
                 scripts/npm-publish/determine-release.test.mjs
@@ -33,6 +36,7 @@ jobs:
                 scripts/release-v1/release-v1.mjs
                 scripts/release-v1/release-v1.test.mjs
                 scripts/release-v1/workflow-contract.test.mjs
+                scripts/upload-assets/generate-umd-file.sh
                 scripts/upload-assets/package-assets.sh
         steps:
             - name: Checkout V1 maintenance branch

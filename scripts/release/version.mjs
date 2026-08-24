@@ -1,6 +1,6 @@
 const SUPPORTED_RELEASE_VERSION = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(alpha|beta|rc|next)\.(0|[1-9]\d*))?$/;
 
-export const STABLE_V1_NPM_TAGS = Object.freeze(['latest', 'v1']);
+export const STABLE_V1_NPM_TAG = 'v1-latest';
 export const V1_PRERELEASE_NPM_TAGS = Object.freeze({
     alpha: 'v1-alpha',
     beta: 'v1-beta',

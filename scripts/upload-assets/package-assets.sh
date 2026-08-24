@@ -13,8 +13,8 @@ echo "Changing working directory to project root..."
 cd "$PROJECT_ROOT"
 
 RELEASE_LINE=${RELEASE_LINE:-v1}
-if [[ ! "$RELEASE_LINE" =~ ^v(1|2)$ ]]; then
-  echo "Error: RELEASE_LINE must be v1 or v2. Received '$RELEASE_LINE'." >&2
+if [[ ! "$RELEASE_LINE" =~ ^v(1|[2-9][0-9]*)$ ]]; then
+  echo "Error: RELEASE_LINE must be v1 or a mainline major (v2 or higher). Received '$RELEASE_LINE'." >&2
   exit 1
 fi
 

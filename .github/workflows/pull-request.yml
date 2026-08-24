@@ -90,6 +90,13 @@ jobs:
             IS_TRUSTED_AUTOMATION=true
           fi
 
+          IS_BOOTSTRAP_PR=false
+          if [[ "$IS_TRUSTED_AUTOMATION" == "true" &&
+                "$HEAD_REF" == "chore/v1-release-automation" &&
+                "$PR_TITLE" == "chore(release): bootstrap V1 automation" ]]; then
+            IS_BOOTSTRAP_PR=true
+          fi
+
           IS_VERSION_PR=false
           if [[ "$IS_TRUSTED_AUTOMATION" == "true" && "$HEAD_REF" =~ ^chore/v1-release-(1\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|beta|rc|next)\.(0|[1-9][0-9]*))?)$ ]]; then
             BRANCH_VERSION=${BASH_REMATCH[1]}
@@ -257,10 +264,21 @@ jobs:
               fi
             done
 
+            if [[ "$IS_BOOTSTRAP_PR" == "true" ]]; then
+              EXPECTED_TEST_COMMAND="node --test scripts/release-v1/*.test.mjs scripts/npm-publish/*.test.mjs"
+              git show "origin/${BASE_REF}:package.json" |
+                jq -S --arg command "$EXPECTED_TEST_COMMAND" '.scripts["test:release"] = $command' > "$RUNNER_TEMP/expected-bootstrap-package.json"
+              jq -S . package.json > "$RUNNER_TEMP/bootstrap-package.json"
+              if ! cmp "$RUNNER_TEMP/expected-bootstrap-package.json" "$RUNNER_TEMP/bootstrap-package.json"; then
+                echo "::error::A V1 bootstrap PR may change only the test:release package script."
+                exit 1
+              fi
+            fi
+
             RELEASE_IMPACTING=false
             for FILE in "${CHANGED_FILES[@]}"; do
               if [[ "$FILE" =~ ^(src/|packages/|declarations/|endpoints/|mocks/) ]] ||
-                 [[ "$FILE" == "package.json" ]] ||
+                 [[ "$FILE" == "package.json" && "$IS_BOOTSTRAP_PR" != "true" ]] ||
                  [[ "$FILE" == "pnpm-lock.yaml" ]] ||
                  [[ "$FILE" == "pnpm-workspace.yaml" ]] ||
                  [[ "$FILE" == "vite.config.ts" ]] ||

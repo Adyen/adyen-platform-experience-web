@@ -28,7 +28,7 @@ on:
         required: true
         type: string
       release_line:
-        description: 'Release line that owns the CDN channel (v1 or v2)'
+        description: 'Release line that owns the CDN channel (v1 or a mainline major such as v2)'
         required: true
         type: string
       source_ref:
@@ -67,12 +67,12 @@ jobs:
             echo "::error::Environment must be test or live."
             exit 1
           fi
-          if [[ ! "$RELEASE_LINE" =~ ^v(1|2)$ ]]; then
-            echo "::error::Release line must be v1 or v2."
+          if [[ ! "$RELEASE_LINE" =~ ^v(1|[2-9][0-9]*)$ ]]; then
+            echo "::error::Release line must be v1 or a mainline major (v2 or higher)."
             exit 1
           fi
-          if [[ ! "$SOURCE_REF" =~ ^([0-9a-f]{40}|v1\..+|v2\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*))$ ]]; then
-            echo "::error::Source ref must be a full commit SHA, a stable v1/v2 version tag, or a supported V1 prerelease tag."
+          if [[ ! "$SOURCE_REF" =~ ^([0-9a-f]{40}|v(1|[2-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|beta|rc|next)\.(0|[1-9][0-9]*))?)$ ]]; then
+            echo "::error::Source ref must be a full commit SHA or a supported V1/mainline version tag."
             exit 1
           fi
 
@@ -99,7 +99,7 @@ jobs:
             else
               git fetch origin main:refs/remotes/origin/main
               git merge-base --is-ancestor "$SOURCE_SHA" origin/main || {
-                echo "::error::Manual V2 CDN publishes must come from main."
+                echo "::error::Manual mainline CDN publishes must come from main."
                 exit 1
               }
             fi
@@ -118,9 +118,16 @@ jobs:
               echo "::error::V1 prereleases may publish only to v1-cdn-test."
               exit 1
             fi
-          elif [[ ! "$PACKAGE_VERSION" =~ ^2\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|beta|rc|next)\.(0|[1-9][0-9]*))?$ ]]; then
-            echo "::error::V2 source must contain a stable or supported prerelease V2 package version."
-            exit 1
+          else
+            MAINLINE_MAJOR=${RELEASE_LINE#v}
+            if [[ ! "$PACKAGE_VERSION" =~ ^${MAINLINE_MAJOR}\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|beta|rc|next)\.(0|[1-9][0-9]*))?$ ]]; then
+              echo "::error::Mainline source must contain a stable or supported prerelease ${RELEASE_LINE} package version."
+              exit 1
+            fi
+            if [[ "$PACKAGE_VERSION" == *"-"* && "$DEPLOY_ENV" != "test" ]]; then
+              echo "::error::Mainline prereleases may publish only to test CDN channels."
+              exit 1
+            fi
           fi
 
           TAG_NAME="${RELEASE_LINE}-cdn-${DEPLOY_ENV}"

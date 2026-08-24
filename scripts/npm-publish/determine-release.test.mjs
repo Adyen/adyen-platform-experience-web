@@ -15,7 +15,7 @@ const determine = overrides =>
     determineNpmRelease({
         packageVersion: '1.13.2',
         releaseVersion: '1.13.2',
-        npmTag: 'latest',
+        npmTag: 'v1-latest',
         releaseLine: 'v1',
         runnerTemp,
         ...overrides,
@@ -27,8 +27,6 @@ test('determines stable and prerelease V1 publication metadata', () => {
         packageTarball: '/tmp/npm-publish-runner/artifact/adyen-adyen-platform-experience-web-1.13.2.tgz',
         requiresStableV1Tag: false,
     });
-    assert.equal(determine({ npmTag: 'v1' }).packageVersion, '1.13.2');
-
     for (const prereleaseTag of ['alpha', 'beta', 'rc', 'next']) {
         const packageVersion = `1.13.2-${prereleaseTag}.0`;
         assert.equal(determine({ packageVersion, releaseVersion: packageVersion, npmTag: `v1-${prereleaseTag}` }).packageVersion, packageVersion);
@@ -36,8 +34,25 @@ test('determines stable and prerelease V1 publication metadata', () => {
 });
 
 test('determines mainline publication metadata and V2 GA prerequisite', () => {
-    assert.equal(determine({ releaseLine: 'mainline' }).requiresStableV1Tag, false);
-    assert.equal(determine({ packageVersion: '2.0.0', releaseVersion: '2.0.0', releaseLine: 'mainline' }).requiresStableV1Tag, true);
+    assert.throws(() => determine({ releaseLine: 'mainline' }), /Mainline publishing requires major version 2 or higher/);
+    assert.throws(
+        () =>
+            determine({
+                packageVersion: '1.13.2-beta.0',
+                releaseVersion: '1.13.2-beta.0',
+                releaseLine: 'mainline',
+                npmTag: 'beta',
+            }),
+        /Mainline publishing requires major version 2 or higher/
+    );
+    assert.equal(
+        determine({ packageVersion: '2.0.0', releaseVersion: '2.0.0', releaseLine: 'mainline', npmTag: 'latest' }).requiresStableV1Tag,
+        true
+    );
+    assert.equal(
+        determine({ packageVersion: '3.0.0', releaseVersion: '3.0.0', releaseLine: 'mainline', npmTag: 'latest' }).requiresStableV1Tag,
+        false
+    );
 
     for (const prereleaseTag of ['alpha', 'beta', 'rc', 'next']) {
         const packageVersion = `2.0.0-${prereleaseTag}.0`;
@@ -50,12 +65,17 @@ test('rejects mismatched versions, release lines, npm tags, and malformed versio
     assert.throws(() => determine({ releaseVersion: '1.13.3' }), /does not match release version/);
     assert.throws(() => determine({ releaseLine: 'other' }), /Release line must be mainline or v1/);
     assert.throws(() => determine({ packageVersion: '2.0.0', releaseVersion: '2.0.0' }), /V1 publishing requires/);
-    assert.throws(() => determine({ npmTag: 'other' }), /Stable V1 releases must publish to latest or v1/);
+    for (const npmTag of ['latest', 'v1', 'other']) {
+        assert.throws(() => determine({ npmTag }), /Stable V1 releases must publish to v1-latest/);
+    }
     assert.throws(
         () => determine({ packageVersion: '1.13.2-beta.0', releaseVersion: '1.13.2-beta.0', npmTag: 'v1-alpha' }),
         /must publish to v1-beta/
     );
-    assert.throws(() => determine({ releaseLine: 'mainline', npmTag: 'next' }), /Stable mainline releases must publish to latest/);
+    assert.throws(
+        () => determine({ packageVersion: '2.0.0', releaseVersion: '2.0.0', releaseLine: 'mainline', npmTag: 'next' }),
+        /Stable mainline releases must publish to latest/
+    );
     assert.throws(
         () => determine({ packageVersion: '2.0.0-beta.0', releaseVersion: '2.0.0-beta.0', releaseLine: 'mainline', npmTag: 'alpha' }),
         /must publish to its validated prerelease tag/
@@ -66,10 +86,10 @@ test('rejects mismatched versions, release lines, npm tags, and malformed versio
     }
 });
 
-test('validates that the v1 dist-tag points to a stable V1 version', () => {
+test('validates that the v1-latest dist-tag points to a stable V1 version', () => {
     assert.equal(validateStableV1Tag('1.13.2'), '1.13.2');
     for (const version of ['1.13.2-beta.0', '2.0.0', '01.0.0', 'invalid']) {
-        assert.throws(() => validateStableV1Tag(version), /v1 must point to a stable V1 version/);
+        assert.throws(() => validateStableV1Tag(version), /v1-latest must point to a stable V1 version/);
     }
 });
 
