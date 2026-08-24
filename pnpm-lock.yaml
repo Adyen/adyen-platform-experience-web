@@ -59,15 +59,15 @@ overrides:
   axios: 1.18.0
   brace-expansion: 5.0.7
   esbuild: 0.28.1
-  fast-uri: 4.1.0
+  fast-uri: 4.1.2
   follow-redirects: 1.16.0
   form-data: 4.0.6
   immutable: 4.3.9
-  js-yaml: 4.3.0
+  js-yaml: 4.3.1
   lodash: 4.18.1
   minimatch@<9.0.7: 10.2.4
   picomatch: 4.0.4
-  postcss: 8.5.18
+  postcss: 8.5.25
   preact: ^10.29.1
   rollup@4.53.3: 4.59.0
   semver@6.3.x: 6.3.0
@@ -190,7 +190,7 @@ importers:
         version: 4.0.10(vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0)))
       autoprefixer:
         specifier: ^10.4.20
-        version: 10.4.20(postcss@8.5.18)
+        version: 10.4.20(postcss@8.5.25)
       concurrently:
         specifier: ^7.0.0
         version: 7.6.0
@@ -258,8 +258,8 @@ importers:
         specifier: ^7.10.1
         version: 7.10.1(typescript@5.8.3)
       postcss:
-        specifier: 8.5.18
-        version: 8.5.18
+        specifier: 8.5.25
+        version: 8.5.25
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -286,7 +286,7 @@ importers:
         version: 18.0.0(stylelint@17.5.0(typescript@5.8.3))
       stylelint-config-sass-guidelines:
         specifier: ^13.0.0
-        version: 13.0.0(postcss@8.5.18)(stylelint@17.5.0(typescript@5.8.3))
+        version: 13.0.0(postcss@8.5.25)(stylelint@17.5.0(typescript@5.8.3))
       stylelint-scss:
         specifier: ^7.0.0
         version: 7.0.0(stylelint@17.5.0(typescript@5.8.3))
@@ -3308,7 +3308,7 @@ packages:
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
 
   available-typed-arrays@1.0.7:
     resolution: {}
@@ -4153,7 +4153,7 @@ packages:
   fast-string-width@3.0.2:
     resolution: {}
 
-  fast-uri@4.1.0:
+  fast-uri@4.1.2:
     resolution: {}
 
   fast-wrap-ansi@0.2.2:
@@ -4465,7 +4465,7 @@ packages:
     resolution: {}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
 
   ieee754@1.2.1:
     resolution: {}
@@ -4757,7 +4757,7 @@ packages:
   js-tokens@9.0.1:
     resolution: {}
 
-  js-yaml@4.3.0:
+  js-yaml@4.3.1:
     resolution: {}
     hasBin: true
 
@@ -5463,25 +5463,25 @@ packages:
     resolution: {}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
 
   postcss-modules-local-by-default@4.2.0:
     resolution: {}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
 
   postcss-modules-scope@3.2.1:
     resolution: {}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
 
   postcss-modules-values@4.0.0:
     resolution: {}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
 
   postcss-resolve-nested-selector@0.1.6:
     resolution: {}
@@ -5490,13 +5490,13 @@ packages:
     resolution: {}
     engines: {node: '>=18.0'}
     peerDependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
 
   postcss-scss@4.0.9:
     resolution: {}
     engines: {node: '>=12.0'}
     peerDependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
 
   postcss-selector-parser@6.1.2:
     resolution: {}
@@ -5509,7 +5509,7 @@ packages:
   postcss-value-parser@4.2.0:
     resolution: {}
 
-  postcss@8.5.18:
+  postcss@8.5.25:
     resolution: {}
     engines: {node: ^10 || ^12 || >=14}
 
@@ -6085,7 +6085,7 @@ packages:
     resolution: {}
     engines: {node: '>=20.19.0'}
     peerDependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
       stylelint: ^17.1.0
 
   stylelint-scss@7.0.0:
@@ -7993,7 +7993,7 @@ snapshots:
       globals: 14.0.0
       ignore: 5.3.2
       import-fresh: 3.3.1
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       minimatch: 10.2.4
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
@@ -8439,7 +8439,7 @@ snapshots:
   '@redocly/ajv@8.17.1':
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 4.1.0
+      fast-uri: 4.1.2
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
@@ -8452,7 +8452,7 @@ snapshots:
       colorette: 1.4.0
       https-proxy-agent: 7.0.6(supports-color@10.2.2)
       js-levenshtein: 1.1.6
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       minimatch: 10.2.4
       pluralize: 8.0.0
       yaml-ast-parser: 0.0.43
@@ -8631,7 +8631,7 @@ snapshots:
       '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-tokenizer': 4.0.0
       '@csstools/media-query-list-parser': 5.0.0(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
-      postcss: 8.5.18
+      postcss: 8.5.25
       postcss-selector-parser: 7.1.1
       postcss-value-parser: 4.2.0
       style-search: 0.1.0
@@ -9176,7 +9176,7 @@ snapshots:
       '@vue/shared': 3.5.31
       estree-walker: 2.0.2
       magic-string: 0.30.21
-      postcss: 8.5.18
+      postcss: 8.5.25
       source-map-js: 1.2.1
 
   '@vue/compiler-ssr@3.5.31':
@@ -9399,7 +9399,7 @@ snapshots:
   ajv@8.20.0:
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 4.1.0
+      fast-uri: 4.1.2
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
@@ -9529,14 +9529,14 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  autoprefixer@10.4.20(postcss@8.5.18):
+  autoprefixer@10.4.20(postcss@8.5.25):
     dependencies:
       browserslist: 4.24.4
       caniuse-lite: 1.0.30001707
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.1.1
-      postcss: 8.5.18
+      postcss: 8.5.25
       postcss-value-parser: 4.2.0
 
   available-typed-arrays@1.0.7:
@@ -9875,7 +9875,7 @@ snapshots:
   cosmiconfig@8.3.6(typescript@5.8.3):
     dependencies:
       import-fresh: 3.3.1
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       parse-json: 5.2.0
       path-type: 4.0.0
     optionalDependencies:
@@ -9885,7 +9885,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.8.3
@@ -9904,12 +9904,12 @@ snapshots:
 
   css-loader@6.11.0(webpack@5.106.2):
     dependencies:
-      icss-utils: 5.1.0(postcss@8.5.18)
-      postcss: 8.5.18
-      postcss-modules-extract-imports: 3.1.0(postcss@8.5.18)
-      postcss-modules-local-by-default: 4.2.0(postcss@8.5.18)
-      postcss-modules-scope: 3.2.1(postcss@8.5.18)
-      postcss-modules-values: 4.0.0(postcss@8.5.18)
+      icss-utils: 5.1.0(postcss@8.5.25)
+      postcss: 8.5.25
+      postcss-modules-extract-imports: 3.1.0(postcss@8.5.25)
+      postcss-modules-local-by-default: 4.2.0(postcss@8.5.25)
+      postcss-modules-scope: 3.2.1(postcss@8.5.25)
+      postcss-modules-values: 4.0.0(postcss@8.5.25)
       postcss-value-parser: 4.2.0
       semver: 7.7.3
     optionalDependencies:
@@ -10571,7 +10571,7 @@ snapshots:
     dependencies:
       fast-string-truncated-width: 3.0.3
 
-  fast-uri@4.1.0: {}
+  fast-uri@4.1.2: {}
 
   fast-wrap-ansi@0.2.2:
     dependencies:
@@ -10868,9 +10868,9 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
-  icss-utils@5.1.0(postcss@8.5.18):
+  icss-utils@5.1.0(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
 
   ieee754@1.2.1: {}
 
@@ -11155,7 +11155,7 @@ snapshots:
 
   js-tokens@9.0.1: {}
 
-  js-yaml@4.3.0:
+  js-yaml@4.3.1:
     dependencies:
       argparse: 2.0.1
 
@@ -12136,36 +12136,36 @@ snapshots:
 
   postcss-media-query-parser@0.2.3: {}
 
-  postcss-modules-extract-imports@3.1.0(postcss@8.5.18):
+  postcss-modules-extract-imports@3.1.0(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
 
-  postcss-modules-local-by-default@4.2.0(postcss@8.5.18):
+  postcss-modules-local-by-default@4.2.0(postcss@8.5.25):
     dependencies:
-      icss-utils: 5.1.0(postcss@8.5.18)
-      postcss: 8.5.18
+      icss-utils: 5.1.0(postcss@8.5.25)
+      postcss: 8.5.25
       postcss-selector-parser: 7.1.1
       postcss-value-parser: 4.2.0
 
-  postcss-modules-scope@3.2.1(postcss@8.5.18):
+  postcss-modules-scope@3.2.1(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
       postcss-selector-parser: 7.1.1
 
-  postcss-modules-values@4.0.0(postcss@8.5.18):
+  postcss-modules-values@4.0.0(postcss@8.5.25):
     dependencies:
-      icss-utils: 5.1.0(postcss@8.5.18)
-      postcss: 8.5.18
+      icss-utils: 5.1.0(postcss@8.5.25)
+      postcss: 8.5.25
 
   postcss-resolve-nested-selector@0.1.6: {}
 
-  postcss-safe-parser@7.0.1(postcss@8.5.18):
+  postcss-safe-parser@7.0.1(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
 
-  postcss-scss@4.0.9(postcss@8.5.18):
+  postcss-scss@4.0.9(postcss@8.5.25):
     dependencies:
-      postcss: 8.5.18
+      postcss: 8.5.25
 
   postcss-selector-parser@6.1.2:
     dependencies:
@@ -12179,7 +12179,7 @@ snapshots:
 
   postcss-value-parser@4.2.0: {}
 
-  postcss@8.5.18:
+  postcss@8.5.25:
     dependencies:
       nanoid: 3.3.16
       picocolors: 1.1.1
@@ -12838,11 +12838,11 @@ snapshots:
     dependencies:
       stylelint: 17.5.0(typescript@5.8.3)
 
-  stylelint-config-sass-guidelines@13.0.0(postcss@8.5.18)(stylelint@17.5.0(typescript@5.8.3)):
+  stylelint-config-sass-guidelines@13.0.0(postcss@8.5.25)(stylelint@17.5.0(typescript@5.8.3)):
     dependencies:
       '@stylistic/stylelint-plugin': 5.0.1(stylelint@17.5.0(typescript@5.8.3))
-      postcss: 8.5.18
-      postcss-scss: 4.0.9(postcss@8.5.18)
+      postcss: 8.5.25
+      postcss-scss: 4.0.9(postcss@8.5.25)
       stylelint: 17.5.0(typescript@5.8.3)
       stylelint-scss: 7.0.0(stylelint@17.5.0(typescript@5.8.3))
 
@@ -12888,8 +12888,8 @@ snapshots:
       micromatch: 4.0.8
       normalize-path: 3.0.0
       picocolors: 1.1.1
-      postcss: 8.5.18
-      postcss-safe-parser: 7.0.1(postcss@8.5.18)
+      postcss: 8.5.25
+      postcss-safe-parser: 7.0.1(postcss@8.5.25)
       postcss-selector-parser: 7.1.1
       postcss-value-parser: 4.2.0
       string-width: 8.2.0
@@ -13319,7 +13319,7 @@ snapshots:
       esbuild: 0.28.1
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
-      postcss: 8.5.18
+      postcss: 8.5.25
       rollup: 4.59.0
       tinyglobby: 0.2.16
     optionalDependencies:
