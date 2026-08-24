@@ -38,7 +38,12 @@ function handleSetupTermsAndConditions() {
 
 <template>
     <div :class="layoutStyles.fieldsContainer">
-        <SelectField name="store" :label="i18n.get('payByLink.creation.fields.store.label')" :items="props.selectItems" />
+        <SelectField
+            name="store"
+            :label="i18n.get('payByLink.creation.fields.store.label')"
+            :items="props.selectItems"
+            :placeholder="i18n.get('common.inputs.select.placeholder')"
+        />
         <BentoAlert v-if="showTcAlert" :class="styles.tcAlert" type="warning" role="alert">
             {{ i18n.get('payByLink.creation.storeForm.alerts.tcSetupRequiredTitle') }}
             <template #description>
