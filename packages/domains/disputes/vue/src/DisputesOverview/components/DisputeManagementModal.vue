@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { BentoModal } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { ModalContextProvider, useCoreContext } from '@integration-components/core/vue';
 import type { IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 import type { DisputeDetailsCustomization } from '@integration-components/disputes/domain';
 import DisputeDetailsContainer from '../../DisputeManagement/components/DisputeDetailsContainer.vue';
@@ -40,25 +40,27 @@ function onCloseModal() {
 </script>
 
 <template>
-    <BentoModal
-        :is-open="isOpen"
-        size="small"
-        :is-dismissible="true"
-        :aria-label="i18n.get('disputes.management.common.title')"
-        @close-modal="onCloseModal"
-    >
-        {{ i18n.get('disputes.management.common.title') }}
-        <template #content>
-            <DisputeDetailsContainer
-                v-if="props.disputeId"
-                :id="props.disputeId"
-                :data-customization="props.dataCustomization ? { details: props.dataCustomization } : undefined"
-                :on-contact-support="props.onContactSupport"
-                :on-dispute-accept="onDisputeManagementSuccessful"
-                :on-dispute-defend="onDisputeManagementSuccessful"
-                :on-dismiss="onCloseModal"
-                hide-title
-            />
-        </template>
-    </BentoModal>
+    <ModalContextProvider>
+        <BentoModal
+            size="small"
+            :is-open="isOpen"
+            :is-dismissible="true"
+            :aria-label="i18n.get('disputes.management.common.title')"
+            @close-modal="onCloseModal"
+        >
+            <!-- Keep this default slot empty — needed for no padding -->
+            <template #default />
+            <template #content>
+                <DisputeDetailsContainer
+                    v-if="props.disputeId"
+                    :id="props.disputeId"
+                    :data-customization="props.dataCustomization ? { details: props.dataCustomization } : undefined"
+                    :on-contact-support="props.onContactSupport"
+                    :on-dispute-accept="onDisputeManagementSuccessful"
+                    :on-dispute-defend="onDisputeManagementSuccessful"
+                    :on-dismiss="onCloseModal"
+                />
+            </template>
+        </BentoModal>
+    </ModalContextProvider>
 </template>

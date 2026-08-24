@@ -1,14 +1,8 @@
 @use '@integration-components/style';
 @use '@integration-components/style/mixins';
 
-.adyen-pe-dispute {
-    &__container {
-        display: flex;
-        flex-direction: column;
-        gap: style.token(spacer-070);
-        padding-top: style.token(spacer-020);
-        width: 100%;
-    }
+.adyen-pe-dispute__title {
+    margin-bottom: style.token(spacer-060);
 }
 
 .adyen-pe-dispute-data {
@@ -22,7 +16,7 @@
         width: 100%;
 
         > * {
-            min-width: 75%;
+            width: 100%;
         }
     }
 
@@ -66,6 +60,19 @@
 
     &__list {
         width: 100%;
+
+        img {
+            height: style.token(spacer-090);
+            max-width: style.token(spacer-100);
+            object-fit: contain;
+            object-position: center;
+        }
+    }
+
+    &__copyable-value {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-020);
     }
 
     &__list--evidence {

@@ -1,7 +1,9 @@
-import { ref, computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
+import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
 import { isFunction, listFrom } from '@integration-components/utils';
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
+import type { DisputesOverviewFilters } from '../../../../domain/src';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
 
 interface UseDisputesListProps {
@@ -15,136 +17,53 @@ interface UseDisputesListProps {
     allowLimitSelection?: boolean;
     preferredLimit?: number;
     refreshToken?: number;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
+    onFiltersChanged?: (filters: DisputesOverviewFilters) => any;
 }
 
 export function useDisputesList(props: () => UseDisputesListProps) {
     const config = useConfigContext();
-
-    const records = ref<IDisputeListItem[] | undefined>(undefined);
-    const error = ref<Error | undefined>(undefined);
-    const fetching = ref(false);
-    const limit = ref(props().preferredLimit ?? DEFAULT_PAGE_LIMIT);
-    const cursor = ref<string | undefined>(undefined);
-    const prevCursor = ref<string | undefined>(undefined);
-    const hasNext = ref(false);
-    const hasPrevious = ref(false);
-    const page = ref(0);
-    let abortController: AbortController | null = null;
-
     const getDisputeList = computed(() => config.endpoints.getDisputeList);
     const canFetch = computed(() => isFunction(getDisputeList.value) && props().fetchEnabled);
-    const limitOptions = computed(() => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined));
 
-    async function fetchDisputes(requestCursor?: string) {
-        const fn = getDisputeList.value;
-        if (!isFunction(fn) || !canFetch.value) return;
+    return useCursorPaginatedRecords<IDisputeListItem>({
+        getFetchKey: () => {
+            if (!canFetch.value) return null;
+            const { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil, refreshToken } = props();
+            return JSON.stringify({ balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil, refreshToken });
+        },
+        fetchPage: async ({ cursor, limit, signal }) => {
+            const fn = getDisputeList.value;
+            if (!isFunction(fn)) return { records: undefined };
 
-        if (abortController) abortController.abort();
-        abortController = new AbortController();
-        const { signal } = abortController;
-
-        fetching.value = true;
-        error.value = undefined;
-
-        try {
             const { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil } = props();
+
             const query: NonNullable<Parameters<NonNullable<typeof config.endpoints.getDisputeList>>[1]>['query'] = {
                 statusGroup,
-                limit: limit.value,
+                limit,
                 ...(balanceAccountId ? { balanceAccountId } : {}),
                 reasonCategories: listFrom(reasonCategories) as NonNullable<typeof query.reasonCategories>,
                 schemeCodes: listFrom(schemeCodes) as NonNullable<typeof query.schemeCodes>,
                 ...(createdSince ? { createdSince } : {}),
                 ...(createdUntil ? { createdUntil } : {}),
+                ...(cursor ? { cursor } : {}),
             };
-            if (requestCursor) query.cursor = requestCursor;
 
             const json = await fn({ signal, errorLevel: 'error' }, { query });
-            if (!signal.aborted) {
-                records.value = json?.data;
-                hasNext.value = !!json?._links?.next?.cursor;
-                hasPrevious.value = !!json?._links?.prev?.cursor;
-                cursor.value = json?._links?.next?.cursor;
-                prevCursor.value = json?._links?.prev?.cursor;
 
-                const { onFiltersChanged } = props();
-                if (isFunction(onFiltersChanged)) {
-                    onFiltersChanged({ balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil });
-                }
-            }
-        } catch (e) {
-            if (!signal.aborted) {
-                error.value = e as Error;
-            }
-        } finally {
-            if (!signal.aborted) {
-                fetching.value = false;
-            }
-        }
-    }
-
-    const goToNextPage = () => {
-        if (hasNext.value && cursor.value) {
-            page.value++;
-            fetchDisputes(cursor.value);
-        }
-    };
-
-    const goToPreviousPage = () => {
-        if (hasPrevious.value && prevCursor.value) {
-            page.value--;
-            fetchDisputes(prevCursor.value);
-        }
-    };
-
-    const updateLimit = (newLimit: number) => {
-        limit.value = newLimit;
-        page.value = 0;
-        cursor.value = undefined;
-        prevCursor.value = undefined;
-    };
-
-    const fetchKey = computed(() => {
-        if (!canFetch.value) return null;
-        const { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil, refreshToken } = props();
-        return JSON.stringify({
-            balanceAccountId,
-            statusGroup,
-            reasonCategories,
-            schemeCodes,
-            createdSince,
-            createdUntil,
-            limit: limit.value,
-            refreshToken,
-        });
-    });
-
-    watch(
-        fetchKey,
-        (newKey, oldKey) => {
-            if (!newKey) return;
-            if (oldKey !== null && oldKey !== undefined) {
-                page.value = 0;
-                cursor.value = undefined;
-                prevCursor.value = undefined;
-            }
-            fetchDisputes();
+            return {
+                records: json?.data,
+                nextCursor: json?._links?.next?.cursor,
+                previousCursor: json?._links?.prev?.cursor,
+            };
         },
-        { immediate: true }
-    );
-
-    return {
-        error,
-        fetching,
-        records,
-        page,
-        limit,
-        limitOptions,
-        hasNext,
-        hasPrevious,
-        goToNextPage,
-        goToPreviousPage,
-        updateLimit,
-    };
+        preferredLimit: props().preferredLimit ?? DEFAULT_PAGE_LIMIT,
+        limitOptions: () => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined),
+        onSuccess: () => {
+            const { onFiltersChanged, balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil } = props();
+            if (isFunction(onFiltersChanged)) {
+                const filters = { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil };
+                onFiltersChanged(filters);
+            }
+        },
+    });
 }
