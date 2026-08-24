@@ -1,16 +1,16 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import {
     ACTIVE_GRANT,
+    ACTIVE_GRANT_NL,
+    DEFAULT_GRANT,
     FAILED_GRANT,
     PENDING_GRANT,
     PENDING_GRANT_WITH_SINGLE_ACTION,
     REPAID_GRANT,
     REVOKED_GRANT,
     WRITTEN_OFF_GRANT,
-} from '../../../../../mocks/mock-data/capital';
-import { getGrantConfig } from './utils';
-import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
-import { GrantConfig } from './types';
+} from '../../../../mocks/mock-data/capital';
+import { getEnhancedGrant, getGrantConfig, GrantConfig } from './grant';
 
 describe('getGrantConfig', () => {
     beforeEach(() => {
@@ -33,7 +33,7 @@ describe('getGrantConfig', () => {
             isProgressBarVisible: false,
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
             statusKey: 'capital.overview.grants.common.statuses.pending',
-            statusTagVariant: TagVariant.DEFAULT,
+            statusTagVariant: 'Default',
             statusTooltipKey: 'capital.overview.grants.common.statuses.pending.description.awaitingFunds',
         });
     });
@@ -53,7 +53,7 @@ describe('getGrantConfig', () => {
             isProgressBarVisible: false,
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
             statusKey: 'capital.overview.grants.common.statuses.actionNeeded',
-            statusTagVariant: TagVariant.WARNING,
+            statusTagVariant: 'Warning',
             statusTooltipKey: undefined,
         });
     });
@@ -73,7 +73,7 @@ describe('getGrantConfig', () => {
             isProgressBarVisible: false,
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
             statusKey: 'capital.overview.grants.common.statuses.pending',
-            statusTagVariant: TagVariant.DEFAULT,
+            statusTagVariant: 'Default',
             statusTooltipKey: 'capital.overview.grants.common.statuses.pending.description.awaitingFunds',
         });
     });
@@ -93,9 +93,13 @@ describe('getGrantConfig', () => {
             isProgressBarVisible: true,
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
             statusKey: undefined,
-            statusTagVariant: TagVariant.DEFAULT,
+            statusTagVariant: 'Default',
             statusTooltipKey: undefined,
         });
+    });
+
+    test('enables unscheduled repayment details for active grants with a repayment account', () => {
+        expect(getGrantConfig(ACTIVE_GRANT_NL).hasUnscheduledRepaymentDetails).toBe(true);
     });
 
     test('returns config for failed grant', () => {
@@ -113,7 +117,7 @@ describe('getGrantConfig', () => {
             isProgressBarVisible: false,
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
             statusKey: 'capital.overview.grants.common.statuses.failed',
-            statusTagVariant: TagVariant.ERROR,
+            statusTagVariant: 'Error',
             statusTooltipKey: 'capital.overview.grants.common.statuses.failed.description',
         });
     });
@@ -133,7 +137,7 @@ describe('getGrantConfig', () => {
             isProgressBarVisible: false,
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
             statusKey: 'capital.overview.grants.common.statuses.fullyRepaid',
-            statusTagVariant: TagVariant.LIGHT,
+            statusTagVariant: 'Light',
             statusTooltipKey: undefined,
         });
     });
@@ -153,7 +157,7 @@ describe('getGrantConfig', () => {
             isProgressBarVisible: false,
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
             statusKey: 'capital.overview.grants.common.statuses.revoked',
-            statusTagVariant: TagVariant.WARNING,
+            statusTagVariant: 'Warning',
             statusTooltipKey: 'capital.overview.grants.common.statuses.revoked.description',
         });
     });
@@ -173,8 +177,19 @@ describe('getGrantConfig', () => {
             isProgressBarVisible: false,
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
             statusKey: 'capital.overview.grants.common.statuses.writtenOff',
-            statusTagVariant: TagVariant.WARNING,
+            statusTagVariant: 'Warning',
             statusTooltipKey: 'capital.overview.grants.common.statuses.writtenOff.description',
         });
+    });
+});
+
+describe('getEnhancedGrant', () => {
+    test('replaces maximum repayment period days with months', () => {
+        expect(getEnhancedGrant({ ...DEFAULT_GRANT, maximumRepaymentPeriodDays: 0 })).toMatchObject({ maximumRepaymentPeriodMonths: 0 });
+        expect(getEnhancedGrant(DEFAULT_GRANT)).toMatchObject({ maximumRepaymentPeriodMonths: 9 });
+    });
+
+    test('makes maximum repayment period months undefined when period days are undefined', () => {
+        expect(getEnhancedGrant({ ...DEFAULT_GRANT, maximumRepaymentPeriodDays: undefined }).maximumRepaymentPeriodMonths).toBeUndefined();
     });
 });
