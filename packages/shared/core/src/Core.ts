@@ -161,7 +161,7 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
 
         this.components.forEach(component => {
             if (component.core === this) {
-                component.update({ ...this.options });
+                component.update(this.options);
             }
         });
 

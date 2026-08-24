@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 import { BentoCard, BentoTab, BentoTabs, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
+import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
 import { DISPUTE_STATUS_GROUPS } from '@integration-components/disputes/domain';
 import type { IBalanceAccountBase } from '@integration-components/types';
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
@@ -22,6 +22,7 @@ const props = defineProps<
 >();
 
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
 const DISPUTE_STATUS_GROUP_VALUES = Object.keys(DISPUTE_STATUS_GROUPS) as IDisputeStatusGroup[];
@@ -117,7 +118,7 @@ function closeModal() {
 <template>
     <div :class="[styles.root, isMobile ? styles.rootXs : '']">
         <div :class="styles.header">
-            <BentoTypography v-if="!props.hideTitle" el="h2" variant="title" stronger>
+            <BentoTypography v-if="!props.hideTitle && !hideTitles" el="h2" variant="title" stronger>
                 {{ i18n.get('disputes.overview.common.title') }}
             </BentoTypography>
             <div v-if="isMobile" role="toolbar" :class="[styles.toolbar, styles.toolbarCompact]">

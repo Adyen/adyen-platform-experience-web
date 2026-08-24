@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import ReportsFilters from './ReportsFilters.vue';
 import ReportsTable from './ReportsTable.vue';
 import { useReportsList } from '../composables/useReportsList';
@@ -22,6 +23,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 
 const filterParams = ref<{
     balanceAccountId: string | undefined;
@@ -62,7 +64,7 @@ const listError = computed(() => reportsListResult.error.value as Error | undefi
 
 <template>
     <div :class="styles.root">
-        <div v-if="!props.hideTitle" :class="styles.header">
+        <div v-if="!props.hideTitle && !hideTitles" :class="styles.header">
             <BentoTypography variant="title">{{ i18n.get('reports.overview.title') }}</BentoTypography>
             <BentoTypography variant="body" :class="styles.description">{{ i18n.get('reports.overview.generateInfo') }}</BentoTypography>
         </div>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, provide, ref, watch } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import { BentoAlert, BentoButton, BentoStep, BentoStepper, BentoTypography } from '@adyen/bento-vue3';
 import { PAYMENT_LINK_CREATION_CLASS_NAMES } from '../../../../../domain/src';
 import type { PaymentLinkCreationProps } from '../../../../../domain/src';
@@ -16,6 +17,7 @@ const props = defineProps<Pick<PaymentLinkCreationProps, 'fieldsConfig' | 'store
 const emit = defineEmits<{ 'payment-link-created': [data: any] }>();
 
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 const CLASS_NAMES = PAYMENT_LINK_CREATION_CLASS_NAMES;
 
 const data = usePaymentLinkFormData(() => ({ storeIds: props.storeIds, fieldsConfig: props.fieldsConfig }));
@@ -123,7 +125,9 @@ async function handleSubmit() {
 <template>
     <div :class="CLASS_NAMES.formComponent">
         <div v-if="!data.isFirstLoadDone.value" :class="CLASS_NAMES.formHeader">
-            <BentoTypography variant="title" stronger>{{ i18n.get('payByLink.creation.form.title') }}</BentoTypography>
+            <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title" stronger>
+                {{ i18n.get('payByLink.creation.form.title') }}
+            </BentoTypography>
             <div :class="CLASS_NAMES.skeleton">
                 <div :class="`${CLASS_NAMES.skeletonItem} ${CLASS_NAMES.skeletonItem}--large`" />
                 <div :class="`${CLASS_NAMES.skeletonItem} ${CLASS_NAMES.skeletonItem}--small`" />
@@ -133,7 +137,7 @@ async function handleSubmit() {
 
         <template v-else>
             <div :class="CLASS_NAMES.formHeader">
-                <BentoTypography v-if="!props.hideTitle" variant="title" stronger>
+                <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title" stronger>
                     {{ i18n.get('payByLink.creation.form.title') }}
                 </BentoTypography>
                 <BentoStepper

@@ -2,6 +2,7 @@
 import { onMounted } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import AcceptDisputeFlow from './AcceptDisputeFlow.vue';
 import DefendDisputeFlow from './DefendDisputeFlow.vue';
@@ -10,6 +11,7 @@ import type { DisputeManagementProps } from '../types';
 
 const props = defineProps<DisputeManagementProps>();
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 const { flowState, getDisputesConfig } = useDisputeFlow();
 
 onMounted(() => {
@@ -19,7 +21,7 @@ onMounted(() => {
 
 <template>
     <div :class="{ 'adyen-pe-visually-hidden': flowState !== DisputeFlowState.Details }">
-        <BentoTypography v-if="!props.hideTitle" el="h1" variant="title" stronger>
+        <BentoTypography v-if="!props.hideTitle && !hideTitles" el="h1" variant="title" stronger>
             {{ i18n.get('disputes.management.common.title') }}
         </BentoTypography>
     </div>

@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import { ErrorMessageDisplay } from '@integration-components/composables-vue';
+import { ErrorMessageDisplay, useShouldHideTitles } from '@integration-components/composables-vue';
 import { getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';
 import PaymentLinkDetailsContent from './PaymentLinkDetailsContent.vue';
@@ -29,6 +29,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 const { paymentLink, error, isFetching, refetch } = usePaymentLinkDetails(() => ({ id: props.id }));
 
 const errorInfo = computed(() => {
@@ -70,7 +71,7 @@ function handleNavigationToDetailsAfterExpiration() {
 <template>
     <div :class="CLASSNAMES.root">
         <div :class="activeScreen !== 'details' ? accessibilityStyles.visuallyHidden : undefined">
-            <BentoTypography v-if="!props.hideTitle" el="h1" variant="title" large stronger>
+            <BentoTypography v-if="!props.hideTitle && !hideTitles" el="h1" variant="title" large stronger>
                 {{ i18n.get('payByLink.details.title') }}
             </BentoTypography>
         </div>

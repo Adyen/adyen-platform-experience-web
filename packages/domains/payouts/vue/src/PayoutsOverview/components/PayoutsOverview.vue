@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import { BentoTypography, BentoModal } from '@adyen/bento-vue3';
 import { quickSelectDateRanges } from '@integration-components/utils';
 import PayoutsFilters from './PayoutsFilters.vue';
@@ -26,6 +27,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 
 const filterParams = ref<{
     balanceAccountId: string | undefined;
@@ -97,7 +99,7 @@ function closeModal() {
 
 <template>
     <div :class="styles.root">
-        <div v-if="!props.hideTitle" :class="styles.header">
+        <div v-if="!props.hideTitle && !hideTitles" :class="styles.header">
             <BentoTypography variant="title">{{ i18n.get('payouts.overview.title') }}</BentoTypography>
             <BentoTypography variant="body" :class="styles.description">{{ i18n.get('payouts.overview.generateInfo') }}</BentoTypography>
         </div>

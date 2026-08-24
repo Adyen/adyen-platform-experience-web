@@ -15,6 +15,7 @@ import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { IPayoutDetails } from '@integration-components/types';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '@integration-components/utils';
 import { formatAmountWithCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '@integration-components/payouts/domain';
 import type { PayoutDetailsCustomization } from '../types';
@@ -30,6 +31,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
 
 const payoutInner = computed(() => props.payout?.payout);
@@ -188,7 +190,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
 </script>
 
 <template>
-    <div v-if="!props.hideTitle" :class="styles.pageTitle">
+    <div v-if="!props.hideTitle && !hideTitles" :class="styles.pageTitle">
         <BentoTypography variant="title">{{ i18n.get('payouts.details.title') }}</BentoTypography>
     </div>
 

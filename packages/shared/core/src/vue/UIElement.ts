@@ -33,6 +33,7 @@ export class UIElement<Props extends Record<string, any>> {
     protected _component: Component;
     protected _componentName: ExternalComponentType;
     protected _core: Props['core'];
+    protected _coreUpdateCount = ref(0);
     protected _props: Omit<Props, 'core'>;
     protected _target: Element | null = null;
 
@@ -74,21 +75,27 @@ export class UIElement<Props extends Record<string, any>> {
         const core = this._core;
         const component = this._component;
         const componentName = this._componentName;
+        const coreUpdateCount = this._coreUpdateCount;
         const customClassNames = this.customClassNames;
 
         const { refresh, refreshCount } = createRefreshContext();
 
         this._app = createApp({
             setup: () => () => {
+                void coreUpdateCount.value;
+                const { appearance, ...componentProps } = props;
+
                 return h(
                     UIElementProvider,
                     {
                         core,
                         componentName,
+                        componentAppearance: appearance,
                         customClassNames,
+                        globalAppearance: core.options.appearance,
                         refreshComponent: refresh,
                     },
-                    { default: () => h(component, { ...props, key: refreshCount.value }) }
+                    { default: () => h(component, { ...componentProps, key: refreshCount.value }) }
                 );
             },
         });
@@ -113,6 +120,11 @@ export class UIElement<Props extends Record<string, any>> {
     }
 
     public update(props: Partial<Props>): this {
+        if (props === this.core.options) {
+            this._coreUpdateCount.value++;
+            return this;
+        }
+
         const { core: _, ...componentProps } = props;
         Object.assign(this._props as Record<string, unknown>, componentProps);
         return this;
