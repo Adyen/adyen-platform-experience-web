@@ -1,4 +1,14 @@
-export type { CoreOptions, CoreInstance, DevEnvironment, onErrorHandler, AnalyticsConfig, SessionObject, SessionRequest } from './types';
+export type {
+    AnalyticsConfig,
+    Appearance,
+    CoreInstance,
+    CoreOptions,
+    DevEnvironment,
+    onErrorHandler,
+    SessionObject,
+    SessionRequest,
+    UIElementProps,
+} from './types';
 export type { SupportedLocales } from '../Localization/types';
 
 export * from './Context';

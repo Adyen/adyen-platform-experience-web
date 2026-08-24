@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { ModalContextProvider, useCoreContext } from '@integration-components/core/vue';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import { BentoTypography, BentoModal } from '@adyen/bento-vue3';
 import { getTimezoneAwareDateRangeQueryParams } from '@integration-components/composables-vue';
 import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
@@ -28,6 +29,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 
 const initialDateRangeQueryParams = getTimezoneAwareDateRangeQueryParams({
     dateRange: quickSelectDateRanges.last30Days,
@@ -104,7 +106,7 @@ function closeModal() {
 
 <template>
     <div :class="styles.root">
-        <div v-if="!props.hideTitle" :class="styles.header">
+        <div v-if="!props.hideTitle && !hideTitles" :class="styles.header">
             <BentoTypography variant="title">{{ i18n.get('payouts.overview.title') }}</BentoTypography>
             <BentoTypography variant="body" :class="styles.description">{{ i18n.get('payouts.overview.generateInfo') }}</BentoTypography>
         </div>

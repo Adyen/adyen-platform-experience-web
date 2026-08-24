@@ -1,4 +1,4 @@
-import type { CoreInstance } from '@integration-components/core/vue';
+import type { UIElementProps } from '@integration-components/core/vue';
 import type { PaymentLinkSettingsProps } from '../../../domain/src';
 
 export type {
@@ -14,6 +14,4 @@ export type {
     ThemeFormData,
 } from '../../../domain/src';
 
-export interface PaymentLinkSettingsExternalProps extends PaymentLinkSettingsProps {
-    core: CoreInstance;
-}
+export type PaymentLinkSettingsExternalProps = PaymentLinkSettingsProps & UIElementProps;
