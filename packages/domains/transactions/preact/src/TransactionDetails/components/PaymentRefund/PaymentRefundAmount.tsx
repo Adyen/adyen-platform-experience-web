@@ -12,7 +12,7 @@ import { memo } from 'preact/compat';
 import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
 import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
 import { ARIA_ERROR_SUFFIX } from '@integration-components/core/Errors/constants';
-import { getDecimalAmount, getDivider } from '@integration-components/core/Localization/amount/amount-util';
+import { getDecimalAmount, getDivider, normalizeAmountInput } from '@integration-components/core/Localization/amount/amount-util';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useCoreContext } from '@integration-components/core/preact';
@@ -56,36 +56,23 @@ const PaymentRefundAmount = memo(({ currency, disabled, onChange, value }: Payme
     const onInput = useCallback(
         (target: HTMLInputElement) => {
             let error: typeof validationError;
-            let value = target.value.trim();
-            const amount = Math.trunc(+`${parseFloat(value)}e${currencyExponent}`) || 0;
+            const { displayValue: value, amount, localeDecimalSeparator } = normalizeAmountInput(target.value, i18n.locale, currency);
+            const isInvalid = Number.isNaN(Number.parseFloat(value.replace(localeDecimalSeparator, '.')));
 
-            if (amount || value) {
-                if (amount < 0) error = 'negative';
-                if (amount > refundableAmount) error = 'excess';
-            } else error = 'required';
-
-            // Get the decimal separator based on the user's locale
-            const decimalSeparator = (1.1).toLocaleString(i18n.locale).match(/\d(.*?)\d/)?.[1] || '.';
-
-            // Split the input value at the decimal separator
-            const parts = value.split(decimalSeparator);
-
-            if (parts.length === 2) {
-                const integerPart = parts[0]!;
-                let decimalPart = parts[1]!;
-
-                if (decimalPart.length >= currencyExponent) {
-                    decimalPart = decimalPart.substring(0, currencyExponent);
-                    value = integerPart + decimalSeparator + decimalPart;
-                    target.value = value;
-                }
+            if (isInvalid || value === '') {
+                error = 'required';
+            } else if (amount < 0) {
+                error = 'negative';
+            } else if (amount > refundableAmount) {
+                error = 'excess';
             }
 
+            target.value = value;
             setRefundAmount(value);
             setValidationError(error);
             onChange?.(error ? 0 : amount);
         },
-        [currencyExponent, refundableAmount, onChange, i18n.locale]
+        [currency, refundableAmount, onChange, i18n.locale]
     );
 
     const cachedRefundableAmountRef = useRef<number>();

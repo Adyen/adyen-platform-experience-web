@@ -85,9 +85,8 @@ function getLastMonthStartDate() {
 export const now = endOfDay(new Date());
 
 export const dateWithoutTimezone = (date: Date) => {
-    const tzoffset = date.getTimezoneOffset() * 60000; //offset in milliseconds
-    const withoutTimezone = new Date(date.valueOf() - tzoffset).toISOString().slice(0, -1);
-    return withoutTimezone;
+    const tzOffset = date.getTimezoneOffset() * 60000; //offset in milliseconds
+    return new Date(date.valueOf() - tzOffset).toISOString().slice(0, -1);
 };
 
 export const toUTCISOStringKeepingLocalDateTime = (date: Date) => {
@@ -106,6 +105,11 @@ export const quickSelectDateRanges = {
         startDate: subDays(now, 29),
         endDate: now,
         range: 'last30Days',
+    },
+    last90Days: {
+        startDate: subDays(now, 89),
+        endDate: now,
+        range: 'last90Days',
     },
     last180Days: {
         startDate: subDays(now, 179),

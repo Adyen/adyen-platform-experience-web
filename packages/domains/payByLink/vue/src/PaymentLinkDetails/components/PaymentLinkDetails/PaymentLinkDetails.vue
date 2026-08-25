@@ -16,7 +16,6 @@ import './PaymentLinkDetails.scss';
 const CLASSNAMES = {
     root: 'adyen-pe-payment-link-details',
     content: 'adyen-pe-payment-link-details__content',
-    error: 'adyen-pe-payment-link-details__error',
 };
 
 const props = defineProps<{
@@ -78,7 +77,7 @@ function handleNavigationToDetailsAfterExpiration() {
         <div :class="CLASSNAMES.content">
             <PaymentLinkSkeleton v-if="isFetching" />
 
-            <div v-else-if="!paymentLink || error" :class="CLASSNAMES.error">
+            <div v-else-if="!paymentLink || error">
                 <ErrorMessageDisplay
                     :error-info="errorInfo"
                     :on-dismiss="props.onDismiss"

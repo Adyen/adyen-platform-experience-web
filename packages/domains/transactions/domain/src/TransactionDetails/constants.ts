@@ -10,6 +10,7 @@ export const TX_DATA_CLASS = 'adyen-pe-transaction-data';
 export const TX_DATA_AMOUNT = `${TX_DATA_CLASS}__amount`;
 export const TX_DATA_ACTION_BAR = `${TX_DATA_CLASS}__action-bar`;
 export const TX_DATA_CONTAINER = `${TX_DATA_CLASS}__container`;
+export const TX_DATA_COPYABLE_VALUE = `${TX_DATA_CLASS}__copyable-value`;
 export const TX_DATA_HEAD_CONTAINER = `${TX_DATA_CLASS}__head-container`;
 export const TX_DATA_TABS = `${TX_DATA_CLASS}__tabs`;
 export const TX_DATA_INPUT = `${TX_DATA_CLASS}__input`;

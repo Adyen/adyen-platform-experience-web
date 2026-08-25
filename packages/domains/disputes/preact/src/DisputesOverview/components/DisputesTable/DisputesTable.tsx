@@ -8,10 +8,10 @@ import Alert from '@integration-components/ui-components-preact/Alert/Alert';
 import Icon from '@integration-components/ui-components-preact/Icon';
 import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
 import DataGrid from '@integration-components/ui-components-preact/DataGrid';
-import { DAY_MS } from '@integration-components/ui-components-preact/Calendar/calendar/constants';
 import {
     DisputesTableFields,
     EMPTY_TABLE_MESSAGE_KEYS,
+    getDisputeDeadlineTimeRemaining,
     FIELD_KEYS,
     getDisputeReason,
     isDisputeActionNeededUrgently,
@@ -141,14 +141,16 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     const getTimeToDeadline = useCallback(
         (dueDate: string) => {
             if (!dueDate) return '';
-            const deadline = new Date(dueDate).getTime();
-            const diffInMs = deadline - Date.now();
-            const diffInDays = Math.ceil(diffInMs / DAY_MS);
-            const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
 
-            return diffInDays <= 1
+            const timeRemaining = getDisputeDeadlineTimeRemaining(dueDate);
+            if (!timeRemaining) return '';
+
+            const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
+            if (timeRemaining.expired) return formattedDate;
+
+            return timeRemaining.days <= 1
                 ? i18n.get('disputes.overview.common.actionNeeded.respondToday', { values: { date: formattedDate } })
-                : i18n.get('disputes.overview.common.actionNeeded.respondDays', { values: { days: diffInDays, date: formattedDate } });
+                : i18n.get('disputes.overview.common.actionNeeded.respondDays', { values: { days: timeRemaining.days, date: formattedDate } });
         },
         [dateFormat, i18n]
     );
