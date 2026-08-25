@@ -1,5 +1,6 @@
-import { ref, computed, watch, onUnmounted } from 'vue';
+import { computed, watch } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
+import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
 import { useCustomColumnsData } from '@integration-components/composables-vue';
 import { isFunction, normalizeCustomFields, hasCustomField, mergeRecords } from '@integration-components/utils';
 import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '@integration-components/transactions/domain';
@@ -18,120 +19,17 @@ interface UseTransactionsListProps {
 
 export function useTransactionsList(props: () => UseTransactionsListProps) {
     const config = useConfigContext();
-
-    const records = ref<ITransaction[] | undefined>(undefined);
-    const error = ref<Error | undefined>(undefined);
-    const fetching = ref(false);
-    const limit = ref(props().preferredLimit ?? DEFAULT_PAGE_LIMIT);
-    const cursor = ref<string | undefined>(undefined);
-    const prevCursor = ref<string | undefined>(undefined);
-    const hasNext = ref(false);
-    const hasPrevious = ref(false);
-    const page = ref(0);
-    const hasFetchedOnce = ref(false);
-
-    let abortController: AbortController | null = null;
-
     const getTransactions = computed(() => config.endpoints.getTransactions);
     const canFetch = computed(() => isFunction(getTransactions.value) && props().fetchEnabled);
-    const limitOptions = computed(() => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined));
-
     const normalizedFields = computed(() => normalizeCustomFields(props().dataCustomization?.list?.fields, TRANSACTION_FIELDS_REMAPS));
     const hasCustomColumn = computed(() => hasCustomField(normalizedFields.value, TRANSACTION_FIELDS));
 
     const mergeCustomData = ({ records, retrievedData }: { records: ITransaction[]; retrievedData: CustomDataRetrieved[] }) =>
         mergeRecords(records, retrievedData, (mod, rec) => mod.id === rec.id);
 
-    const { customRecords, loadingCustomRecords } = useCustomColumnsData<ITransaction>({
-        records: () => records.value ?? [],
-        hasCustomColumn: () => hasCustomColumn.value,
-        onDataRetrieve: () => props().dataCustomization?.list?.onDataRetrieve,
-        mergeCustomData,
-    });
-
-    async function fetchTransactions(requestCursor?: string) {
-        const fn = getTransactions.value;
-        if (!isFunction(fn) || !canFetch.value) return;
-
-        if (abortController) abortController.abort();
-        abortController = new AbortController();
-        const { signal } = abortController;
-
-        fetching.value = true;
-        error.value = undefined;
-
-        try {
-            const { filters } = props();
-            const query: Parameters<NonNullable<typeof config.endpoints.getTransactions>>[1]['query'] = {
-                limit: limit.value,
-                balanceAccountId: filters.balanceAccountId ?? '',
-                createdSince: filters.createdSince,
-                createdUntil: filters.createdUntil,
-                sortDirection: 'desc' as const,
-            };
-            if (filters.categories.length) (query as any).categories = filters.categories;
-            if (filters.currencies.length) (query as any).currencies = filters.currencies;
-            if (filters.statuses.length) (query as any).statuses = filters.statuses;
-            if (filters.paymentPspReference) query.paymentPspReference = filters.paymentPspReference;
-            if (requestCursor) query.cursor = requestCursor;
-
-            const json = (await fn({ signal }, { query })) as TransactionsListResponse;
-            if (!signal.aborted) {
-                hasFetchedOnce.value = true;
-                records.value = json?.data;
-                hasNext.value = !!json?._links?.next?.cursor;
-                hasPrevious.value = !!json?._links?.prev?.cursor;
-                cursor.value = json?._links?.next?.cursor;
-                prevCursor.value = json?._links?.prev?.cursor;
-
-                const { onFiltersChanged } = props();
-                if (isFunction(onFiltersChanged)) {
-                    onFiltersChanged({
-                        balanceAccountId: filters.balanceAccountId,
-                        createdSince: filters.createdSince,
-                        createdUntil: filters.createdUntil,
-                        categories: filters.categories.join(',') || undefined,
-                        currencies: filters.currencies.join(',') || undefined,
-                        statuses: filters.statuses.join(',') || undefined,
-                        paymentPspReference: filters.paymentPspReference,
-                    });
-                }
-            }
-        } catch (e) {
-            if (!signal.aborted) {
-                error.value = e as Error;
-            }
-        } finally {
-            if (!signal.aborted) {
-                fetching.value = false;
-            }
-        }
-    }
-
-    const goToNextPage = () => {
-        if (hasNext.value && cursor.value) {
-            page.value++;
-            fetchTransactions(cursor.value);
-        }
-    };
-
-    const goToPreviousPage = () => {
-        if (hasPrevious.value && prevCursor.value) {
-            page.value--;
-            fetchTransactions(prevCursor.value);
-        }
-    };
-
-    const updateLimit = (newLimit: number) => {
-        limit.value = newLimit;
-        page.value = 0;
-        cursor.value = undefined;
-        prevCursor.value = undefined;
-    };
-
-    const fetchKey = computed(() => {
-        if (!canFetch.value) return null;
+    const getFiltersKey = () => {
         const { filters } = props();
+
         return JSON.stringify({
             balanceAccountId: filters.balanceAccountId,
             createdSince: filters.createdSince,
@@ -140,40 +38,88 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
             currencies: [...filters.currencies].sort().join(','),
             statuses: [...filters.statuses].sort().join(','),
             paymentPspReference: filters.paymentPspReference,
-            limit: limit.value,
         });
-    });
+    };
+
+    const getFetchKey = () => (canFetch.value ? getFiltersKey() : null);
 
     watch(
-        fetchKey,
-        (newKey, oldKey) => {
+        getFiltersKey,
+        newKey => {
             if (!newKey) return;
-            if (oldKey !== null && oldKey !== undefined) {
-                page.value = 0;
-                cursor.value = undefined;
-                prevCursor.value = undefined;
+
+            const { onFiltersChanged, filters } = props();
+
+            if (isFunction(onFiltersChanged)) {
+                onFiltersChanged({
+                    balanceAccountId: filters.balanceAccountId,
+                    createdSince: filters.createdSince,
+                    createdUntil: filters.createdUntil,
+                    categories: filters.categories.join(',') || undefined,
+                    currencies: filters.currencies.join(',') || undefined,
+                    statuses: filters.statuses.join(',') || undefined,
+                    paymentPspReference: filters.paymentPspReference,
+                });
             }
-            fetchTransactions();
         },
         { immediate: true }
     );
 
-    onUnmounted(() => abortController?.abort());
+    const pagination = useCursorPaginatedRecords<ITransaction>({
+        getFetchKey,
+        fetchPage: async ({ cursor, limit, signal }) => {
+            const fn = getTransactions.value;
+            if (!isFunction(fn)) return { records: undefined };
+
+            const { filters } = props();
+
+            const query: Parameters<NonNullable<typeof config.endpoints.getTransactions>>[1]['query'] = {
+                limit,
+                balanceAccountId: filters.balanceAccountId ?? '',
+                createdSince: filters.createdSince,
+                createdUntil: filters.createdUntil,
+                sortDirection: 'desc' as const,
+                ...(cursor ? { cursor } : {}),
+            };
+
+            if (filters.categories.length) (query as any).categories = filters.categories;
+            if (filters.currencies.length) (query as any).currencies = filters.currencies;
+            if (filters.statuses.length) (query as any).statuses = filters.statuses;
+            if (filters.paymentPspReference) query.paymentPspReference = filters.paymentPspReference;
+
+            const json = (await fn({ signal }, { query })) as TransactionsListResponse;
+
+            return {
+                records: json?.data,
+                nextCursor: json?._links?.next?.cursor,
+                previousCursor: json?._links?.prev?.cursor,
+            };
+        },
+        preferredLimit: props().preferredLimit ?? DEFAULT_PAGE_LIMIT,
+        limitOptions: () => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined),
+    });
+
+    const { customRecords, loadingCustomRecords } = useCustomColumnsData<ITransaction>({
+        records: () => pagination.records.value ?? [],
+        hasCustomColumn: () => hasCustomColumn.value,
+        onDataRetrieve: () => props().dataCustomization?.list?.onDataRetrieve,
+        mergeCustomData,
+    });
 
     return {
-        error,
-        fetching: computed(() => fetching.value || loadingCustomRecords.value),
+        error: pagination.error,
+        fetching: computed(() => pagination.fetching.value || loadingCustomRecords.value),
         records: customRecords,
         fields: normalizedFields,
         hasCustomColumn,
-        page,
-        hasFetchedOnce,
-        limit,
-        limitOptions,
-        hasNext,
-        hasPrevious,
-        goToNextPage,
-        goToPreviousPage,
-        updateLimit,
+        page: pagination.page,
+        hasFetchedOnce: pagination.hasFetchedOnce,
+        limit: pagination.limit,
+        limitOptions: pagination.limitOptions,
+        hasNext: pagination.hasNext,
+        hasPrevious: pagination.hasPrevious,
+        goToNextPage: pagination.goToNextPage,
+        goToPreviousPage: pagination.goToPreviousPage,
+        updateLimit: pagination.updateLimit,
     } as const;
 }

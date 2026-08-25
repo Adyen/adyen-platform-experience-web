@@ -16,6 +16,10 @@ const props = defineProps<{
     canModifySettings: boolean;
 }>();
 
+const emit = defineEmits<{
+    setupTermsAndConditions: [];
+}>();
+
 const wizard = useWizard();
 const { i18n } = wizard;
 
@@ -27,9 +31,9 @@ const alertDescriptionKey = computed<TranslationKey>(() =>
         : 'payByLink.creation.storeForm.alerts.tcSetupRequiredWithoutPermissions'
 );
 
-// TODO: wire up navigation to the terms and conditions settings flow once it is ported to Vue.
-// eslint-disable-next-line no-empty-function
-const handleSetupTermsAndConditions = () => {};
+function handleSetupTermsAndConditions() {
+    emit('setupTermsAndConditions');
+}
 </script>
 
 <template>

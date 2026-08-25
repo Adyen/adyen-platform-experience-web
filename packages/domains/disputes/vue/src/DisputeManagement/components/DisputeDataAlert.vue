@@ -13,7 +13,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const { dateFormat } = useTimezoneAwareDateFormatting(props.dispute.payment.balanceAccount?.timeZone);
+const { dateFormat } = useTimezoneAwareDateFormatting(() => props.dispute.payment.balanceAccount?.timeZone);
 
 const alertText = computed(() => {
     const currentDispute = props.dispute.dispute;

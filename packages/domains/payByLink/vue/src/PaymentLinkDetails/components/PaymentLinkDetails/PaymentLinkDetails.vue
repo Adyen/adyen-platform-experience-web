@@ -72,7 +72,7 @@ function handleNavigationToDetailsAfterExpiration() {
         <div :class="styles.content">
             <PaymentLinkSkeleton v-if="isFetching" />
 
-            <div v-else-if="!paymentLink || error" :class="styles.error">
+            <div v-else-if="!paymentLink || error">
                 <ErrorMessageDisplay
                     :error-info="errorInfo"
                     :on-dismiss="props.onDismiss"

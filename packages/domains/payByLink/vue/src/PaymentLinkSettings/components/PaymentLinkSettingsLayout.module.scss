@@ -1,12 +1,7 @@
 @use '@integration-components/style';
-@use '@integration-components/style/mixins';
 
 .contentHeader {
     margin-bottom: style.token(spacer-080);
-}
-
-.error {
-    @include mixins.adyen-pe-error-message-display-container('&');
 }
 
 .contentItem {

@@ -11,8 +11,8 @@ import PaymentDetailsActions from './PaymentDetailsActions.vue';
 import { TX_DETAILS_TABS, ActiveView, DetailsTab, RefundedState, REFUND_STATUSES } from '../../../../../domain/src';
 import type { TransactionDetails, TransactionDetailsCustomization } from '../../../../../domain/src';
 import { useTransaction } from '../../composables/useTransaction.js';
-import styles from './PaymentDetails.module.scss';
 import layoutStyles from '../TransactionDataLayout.module.scss';
+import styles from './PaymentDetails.module.scss';
 
 type TransactionNavigatorState = ReturnType<typeof useTransaction>['transactionNavigator']['value'];
 

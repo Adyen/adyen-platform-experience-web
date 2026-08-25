@@ -1,6 +1,6 @@
 import cx from 'classnames';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { DATE_FORMAT_DISPUTE_DETAILS } from '@integration-components/utils';
+import { useMemo } from 'preact/hooks';
+import { DATE_FORMAT_DISPUTE_DETAILS, normalizeCustomFields } from '@integration-components/utils';
 import { useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
 import { TranslationKey } from '@integration-components/core';
 import { IDisputeDetail, IDisputeStatus } from '@integration-components/types/api/models/disputes';
@@ -14,9 +14,10 @@ import { StructuredListProps } from '@integration-components/ui-components-preac
 import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
-import type { CustomColumn } from '@integration-components/types';
+import type { CustomDataRetrieved } from '@integration-components/types';
 import { DisputeDetailsCustomization } from '../../types';
 import {
+    DISPUTE_DETAILS_FIELDS_REMAPS,
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
     getDefenseDocumentContent,
     getDefenseReasonContent,
@@ -32,7 +33,7 @@ import { useDisputeFlow } from '../../context/dispute/context';
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
     dataCustomization?: { details?: DisputeDetailsCustomization };
-    extraFields?: Record<any, any>;
+    extraFields?: CustomDataRetrieved;
     defenseReasonConfig: Record<string, TranslationConfigItem>;
 };
 
@@ -54,30 +55,10 @@ const disputeDataKeys = {
 
 const DISPUTE_STATUSES_WITH_ACCEPTED_DATE: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
 
-const DisputeDataProperties = ({ dispute, dataCustomization, defenseReasonConfig }: DisputeDataPropertiesProps) => {
+const DisputeDataProperties = ({ dispute, dataCustomization, defenseReasonConfig, extraFields }: DisputeDataPropertiesProps) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(dispute.payment.balanceAccount.timeZone);
     const { defenseDocumentConfig } = useDisputeFlow();
-
-    const [extraFields, setExtraFields] = useState<Record<string, any>>();
-
-    const getExtraFields = useCallback(async () => {
-        if (dispute) {
-            const detailsData = await dataCustomization?.details?.onDataRetrieve?.(dispute);
-
-            setExtraFields(
-                dataCustomization?.details?.fields.reduce((acc, field) => {
-                    return DISPUTE_DETAILS_RESERVED_FIELDS_SET.has(field.key as any) || field?.visibility === 'hidden'
-                        ? acc
-                        : { ...acc, ...(detailsData?.[field.key] ? { [field.key]: detailsData[field.key] } : {}) };
-                }, {} as CustomColumn<any>)
-            );
-        }
-    }, [dispute, dataCustomization]);
-
-    useEffect(() => {
-        void getExtraFields();
-    }, [getExtraFields]);
 
     return useMemo(() => {
         const { pspReference: disputeReference, reason: disputeReason, acceptedDate, createdAt, dueDate, status, type } = dispute.dispute;
@@ -87,6 +68,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization, defenseReasonConfig
         const isFraudNotification = type === 'NOTIFICATION_OF_FRAUD';
         const isExpiredDispute = status === 'EXPIRED' || (status === 'LOST' && !isFraudNotification && !defendedOn);
         const isActionableDispute = isDisputeActionNeeded(dispute.dispute) && dispute.dispute.defensibility !== 'NOT_ACTIONABLE';
+        const customizedFields = normalizeCustomFields(dataCustomization?.details?.fields, DISPUTE_DETAILS_FIELDS_REMAPS);
 
         const SKIP_ITEM: StructuredListProps['items'][number] = null!;
 
@@ -253,21 +235,21 @@ const DisputeDataProperties = ({ dispute, dataCustomization, defenseReasonConfig
                 : SKIP_ITEM,
         ]
             .filter(Boolean)
-            .filter(val => !dataCustomization?.details?.fields?.some(field => field.key === val.id && field.visibility === 'hidden'));
+            .filter(val => !customizedFields?.some(field => field.key === val.id && field.visibility === 'hidden'));
 
         // Add custom data
         const itemsWithExtraFields = [
             ...listItems,
-            ...(Object.entries(extraFields || {})
+            ...(Object.entries(extraFields || {}) as [string, CustomDataRetrieved[string]][])
                 .filter(
-                    ([key, value]) => !DISPUTE_DETAILS_RESERVED_FIELDS_SET.has(key as any) && value.type !== 'button' && value.visibility !== 'hidden'
+                    ([key, value]) => !DISPUTE_DETAILS_RESERVED_FIELDS_SET.has(key as any) && (!isCustomDataObject(value) || value.type !== 'button')
                 )
                 .map(([key, value]) => ({
                     key: key as TranslationKey,
                     value: isCustomDataObject(value) ? value.value : value,
                     type: isCustomDataObject(value) ? value.type : 'text',
                     config: isCustomDataObject(value) ? value.config : undefined,
-                })) || {}),
+                })),
         ];
 
         return (

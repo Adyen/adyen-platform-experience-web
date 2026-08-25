@@ -3,7 +3,6 @@ import { computed } from 'vue';
 import { ErrorMessageDisplay } from '@integration-components/composables-vue';
 import type { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
 import { getSettingsErrorMessage } from '../utils/getSettingsErrorMessage';
-import layoutStyles from './PaymentLinkSettingsLayout.module.scss';
 
 const props = defineProps<{
     error: AdyenPlatformExperienceError | undefined;
@@ -25,7 +24,7 @@ const errorInfo = computed(() =>
 </script>
 
 <template>
-    <div v-if="errorInfo" :class="layoutStyles.error">
+    <div v-if="errorInfo">
         <ErrorMessageDisplay :error-info="errorInfo" :absolute-position="false" />
     </div>
 </template>

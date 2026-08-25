@@ -11,10 +11,11 @@ test.describe('Download error', () => {
         await page.getByRole('button', { name: 'Download report', exact: true }).first().click();
     });
 
-    test('should show error alert on download failure', async ({ page }) => {
-        const alert = page.getByRole('alert');
-        await expect(alert).toBeVisible();
-        await expect(alert.getByText('Something went wrong with the download', { exact: true })).toBeVisible();
-        await expect(alert.getByText("We couldn't download all the files. Please try again later.", { exact: true })).toBeVisible();
+    test('should show error toast on download failure', async ({ page }) => {
+        const toast = page.getByTestId('toast');
+        await expect(toast).toBeVisible();
+
+        const errorMessage = "We couldn't download all the files. Please try again later.";
+        await expect(toast.locator('[aria-live="polite"]').getByText(errorMessage, { exact: true })).toBeVisible();
     });
 });

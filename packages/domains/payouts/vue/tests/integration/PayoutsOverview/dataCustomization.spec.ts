@@ -11,16 +11,13 @@ test.describe('Data customization', () => {
     });
 
     test('should render custom data grid columns', async ({ page }) => {
-        // [TODO]: Address issue with hidden columns still being rendered
-        test.fixme(true, 'Hidden columns are still rendered');
-
         const dataGrid = page.getByRole('grid');
 
         // (1) Standard columns (visible & hidden)
         await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
-        await expect(dataGrid.getByRole('columnheader', { name: 'Funds captured (EUR)', exact: true })).toBeVisible();
-        await expect(dataGrid.getByRole('columnheader', { name: 'Adjustments (EUR)', exact: true })).toBeHidden(); // hidden column
-        await expect(dataGrid.getByRole('columnheader', { name: 'Net payout (EUR)', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Funds captured', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Adjustments', exact: true })).toBeHidden(); // hidden column
+        await expect(dataGrid.getByRole('columnheader', { name: 'Net payout', exact: true })).toBeVisible();
 
         // (2) Custom columns
         await expect(dataGrid.getByRole('columnheader', { name: 'Summary', exact: true })).toBeVisible();
@@ -61,9 +58,23 @@ test.describe('Data customization', () => {
         await actionPromise;
     });
 
-    test('should render transaction details modal for clicked row', async ({ page }) => {
+    test('should not render custom columns in a small container', async ({ page }) => {
+        await page.setViewportSize({ width: 479, height: 800 });
+
+        const dataGrid = page.getByRole('grid');
+        await expect(dataGrid.getByRole('columnheader', { name: 'Summary', exact: true })).toHaveCount(0);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Country', exact: true })).toHaveCount(0);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Action', exact: true })).toHaveCount(0);
+    });
+
+    test('should render customized payout details for clicked row', async ({ page }) => {
         await openPayoutDetailsModal(page, 0);
         const detailsModal = page.getByRole('dialog');
+
+        await expect(detailsModal.getByRole('link', { name: 'Summary', exact: true })).toBeVisible();
+        await expect(detailsModal.getByAltText('', { exact: true })).toBeVisible();
+        await expect(detailsModal.getByRole('button', { name: 'Send email', exact: true })).toBeVisible();
+
         await detailsModal.getByRole('button', { name: 'Close', exact: true, disabled: false }).click();
         await expect(detailsModal).toBeHidden();
     });

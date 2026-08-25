@@ -1,7 +1,7 @@
 import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo } from 'preact/hooks';
 import { useCoreContext } from '@integration-components/core/preact';
-import { CAPITAL_REPAYMENT_FREQUENCY } from '@integration-components/capital/domain';
+import { CAPITAL_REPAYMENT_FREQUENCY, calculatePercentageFromBasisPoints, getEnhancedGrant } from '@integration-components/capital/domain';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { GRANT_DETAILS_CLASS_NAMES } from './constants';
@@ -9,7 +9,6 @@ import { GrantDetailsProps } from './types';
 import './GrantDetails.scss';
 import StructuredList from '@integration-components/ui-components-preact/StructuredList';
 import { StructuredListItem } from '@integration-components/ui-components-preact/StructuredList/types';
-import { getPercentage } from '../../../CapitalOffer/components/utils/utils';
 import { Translation } from '@integration-components/ui-components-preact/Translation';
 import { Tooltip } from '@integration-components/ui-components-preact/Tooltip/Tooltip';
 
@@ -17,42 +16,42 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
     const { i18n } = useCoreContext();
     const formatAmount = useCallback((amount: { value: number; currency: string }) => i18n.amount(amount.value, amount.currency), [i18n]);
     const structuredListItems = useMemo<StructuredListItem[]>(() => {
-        const maximumRepaymentPeriodMonths = grant.maximumRepaymentPeriodDays ? Math.ceil(grant.maximumRepaymentPeriodDays / 30) : null;
+        const enhancedGrant = getEnhancedGrant(grant);
         const items: StructuredListItem[] = [
             {
                 key: 'capital.common.fields.remainingAmount',
-                value: i18n.amount(grant.remainingGrantAmount.value, grant.remainingGrantAmount.currency),
+                value: i18n.amount(enhancedGrant.remainingGrantAmount.value, enhancedGrant.remainingGrantAmount.currency),
             },
-            { key: 'capital.common.fields.remainingFees', value: formatAmount(grant.remainingFeesAmount) },
-            { key: 'capital.common.fields.repaidAmount', value: formatAmount(grant.repaidGrantAmount) },
-            { key: 'capital.common.fields.repaidFees', value: formatAmount(grant.repaidFeesAmount) },
+            { key: 'capital.common.fields.remainingFees', value: formatAmount(enhancedGrant.remainingFeesAmount) },
+            { key: 'capital.common.fields.repaidAmount', value: formatAmount(enhancedGrant.repaidGrantAmount) },
+            { key: 'capital.common.fields.repaidFees', value: formatAmount(enhancedGrant.repaidFeesAmount) },
             {
                 key: 'capital.common.fields.dailyRepaymentRate',
                 value: `${i18n.get('capital.common.values.percentage', {
-                    values: { percentage: getPercentage(grant.repaymentRate) },
+                    values: { percentage: calculatePercentageFromBasisPoints(enhancedGrant.repaymentRate) },
                 })}`,
             },
             {
                 key: 'capital.common.fields.expectedRepaymentPeriod',
                 value: i18n.get('capital.common.values.daysWithDaysLeft', {
                     values: {
-                        days: grant.expectedRepaymentPeriodDays,
-                        daysLeft: grant.repaymentPeriodLeft,
+                        days: enhancedGrant.expectedRepaymentPeriodDays,
+                        daysLeft: enhancedGrant.repaymentPeriodLeft,
                     },
                 }),
             },
-            { key: 'capital.common.fields.totalFees', value: formatAmount(grant.feesAmount) },
-            { key: 'capital.common.fields.totalRepaymentAmount', value: formatAmount(grant.totalAmount) },
-            { key: 'capital.common.fields.repaymentThreshold', value: formatAmount(grant.thresholdAmount) },
-            { key: 'capital.common.fields.grantID', value: grant.id },
-            { key: 'capital.common.fields.accountDescription', value: grant.balanceAccountDescription },
-            { key: 'capital.common.fields.accountID', value: grant.balanceAccountCode },
+            { key: 'capital.common.fields.totalFees', value: formatAmount(enhancedGrant.feesAmount) },
+            { key: 'capital.common.fields.totalRepaymentAmount', value: formatAmount(enhancedGrant.totalAmount) },
+            { key: 'capital.common.fields.repaymentThreshold', value: formatAmount(enhancedGrant.thresholdAmount) },
+            { key: 'capital.common.fields.grantID', value: enhancedGrant.id },
+            { key: 'capital.common.fields.accountDescription', value: enhancedGrant.balanceAccountDescription },
+            { key: 'capital.common.fields.accountID', value: enhancedGrant.balanceAccountCode },
         ];
 
-        if (maximumRepaymentPeriodMonths) {
+        if (enhancedGrant.maximumRepaymentPeriodMonths) {
             items.splice(5, 0, {
                 key: 'capital.common.fields.maximumRepaymentPeriod',
-                value: i18n.get('capital.common.values.numberOfMonths', { values: { months: maximumRepaymentPeriodMonths } }),
+                value: i18n.get('capital.common.values.numberOfMonths', { values: { months: enhancedGrant.maximumRepaymentPeriodMonths } }),
             });
         }
 
