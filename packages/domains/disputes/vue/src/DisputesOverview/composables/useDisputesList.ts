@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
 import { isFunction, listFrom } from '@integration-components/utils';
@@ -24,6 +24,24 @@ export function useDisputesList(props: () => UseDisputesListProps) {
     const config = useConfigContext();
     const getDisputeList = computed(() => config.endpoints.getDisputeList);
     const canFetch = computed(() => isFunction(getDisputeList.value) && props().fetchEnabled);
+
+    const getFiltersKey = () => {
+        const { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil } = props();
+        return JSON.stringify({ balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil });
+    };
+
+    watch(
+        getFiltersKey,
+        () => {
+            const { onFiltersChanged, balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil } = props();
+
+            if (isFunction(onFiltersChanged)) {
+                const filters = { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil };
+                onFiltersChanged(filters);
+            }
+        },
+        { immediate: true }
+    );
 
     return useCursorPaginatedRecords<IDisputeListItem>({
         getFetchKey: () => {
@@ -58,12 +76,5 @@ export function useDisputesList(props: () => UseDisputesListProps) {
         },
         preferredLimit: props().preferredLimit ?? DEFAULT_PAGE_LIMIT,
         limitOptions: () => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined),
-        onSuccess: () => {
-            const { onFiltersChanged, balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil } = props();
-            if (isFunction(onFiltersChanged)) {
-                const filters = { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil };
-                onFiltersChanged(filters);
-            }
-        },
     });
 }
