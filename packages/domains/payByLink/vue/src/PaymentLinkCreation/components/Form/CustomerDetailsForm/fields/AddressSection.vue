@@ -30,7 +30,7 @@ const STREET_ROW_FIELDS = ['street', 'houseNumberOrName'] as const;
 const CITY_ROW_FIELDS = ['city', 'postalCode'] as const;
 
 const STREET_ROW_FIELD_CLASSES: Record<(typeof STREET_ROW_FIELDS)[number], string | undefined> = {
-    street: styles.fieldLargefdsafs,
+    street: styles.fieldLarge,
     houseNumberOrName: styles.fieldSmall,
 };
 
