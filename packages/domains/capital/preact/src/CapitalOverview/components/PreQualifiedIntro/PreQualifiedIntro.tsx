@@ -1,5 +1,5 @@
 import { useCallback } from 'preact/hooks';
-import { CAPITAL_OVERVIEW_CLASS_NAMES, sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
+import { CAPITAL_OVERVIEW_CLASS_NAMES, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { useLandedPageEvent } from '@integration-components/hooks-preact/useEventDispatcher/useLandedPageEvent';
 import { IAmount } from '@integration-components/types';

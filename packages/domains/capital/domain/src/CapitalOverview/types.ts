@@ -11,6 +11,13 @@ export interface CapitalOverviewProps extends UIElementProps {
 
 export type CapitalOverviewComponentProps = CapitalOverviewProps;
 
+export type CapitalComponentState = {
+    hasGrants: boolean;
+    hasOffer: boolean;
+    hasRenewableGrants: boolean;
+    state: 'isUnqualified' | 'isPreQualified' | 'hasRequestedGrants' | 'isInUnsupportedRegion';
+};
+
 type ActionConfig = {
     buttonLabelKey: TranslationKey;
     eventLabel: string;

@@ -7,7 +7,7 @@ import { FunctionalComponent } from 'preact';
 import { GRANT_ADJUSTMENT_DETAILS } from '../GrantAdjustmentDetails/constants';
 import { GrantAdjustmentDetail, GrantAdjustmentDetailCallback } from '../GrantAdjustmentDetails/types';
 import { GrantRepaymentDetails } from '../GrantRepaymentDetails/GrantRepaymentDetails';
-import { sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
+import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
 import SegmentedControl from '@integration-components/ui-components-preact/SegmentedControl/SegmentedControl';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalHeader } from '../../../internal/CapitalHeader';

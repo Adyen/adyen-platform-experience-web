@@ -19,7 +19,7 @@ import { AlertTypeOption } from '@integration-components/ui-components-preact/Al
 import { ButtonVariant, IGrant } from '@integration-components/types';
 import ExpandableCard from '@integration-components/ui-components-preact/ExpandableCard/ExpandableCard';
 import { GrantActions } from '../GrantActions/GrantActions';
-import { sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
+import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
 import { Translation } from '@integration-components/ui-components-preact/Translation';
 import { ListWithoutFirst } from '@integration-components/utils/types';
 import { GrantAdjustmentDetailCallback } from '../GrantAdjustmentDetails/types';
