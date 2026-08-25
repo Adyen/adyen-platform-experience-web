@@ -7,7 +7,11 @@ import type { PaymentLinkCreationFormValues, CreatedPaymentLink, PaymentLinkCrea
 import '@adyen/bento-vue3/styles/bento-light';
 import './PaymentLinkCreationContainer.scss';
 
-const props = defineProps<PaymentLinkCreationProps>();
+type PaymentLinkCreationContainerProps = PaymentLinkCreationProps & {
+    embeddedInOverview?: boolean;
+};
+
+const props = defineProps<PaymentLinkCreationContainerProps>();
 
 type CreationState = 'Creation' | 'Success';
 
@@ -36,6 +40,7 @@ function handleShowDetails() {
             :hide-title="props.hideTitle"
             :on-creation-dismiss="props.onCreationDismiss"
             :on-contact-support="props.onContactSupport"
+            :embedded-in-overview="props.embeddedInOverview"
             @payment-link-created="handleCreated"
         />
         <FormSuccess v-else :payment-link-url="paymentLinkUrl" :on-show-details="handleShowDetails" />
