@@ -4,8 +4,8 @@ import { useCoreContext } from '@integration-components/core/vue';
 import { BentoDropdown, BentoTypography } from '@adyen/bento-vue3';
 import { getTransactionRefundReason, REFUND_REASONS } from '../../../../../domain/src';
 import type { RefundReason } from '../../../../../domain/src';
-import styles from './PaymentRefund.module.scss';
 import layoutStyles from '../TransactionDataLayout.module.scss';
+import styles from './PaymentRefund.module.scss';
 
 const props = defineProps<{
     disabled: boolean;

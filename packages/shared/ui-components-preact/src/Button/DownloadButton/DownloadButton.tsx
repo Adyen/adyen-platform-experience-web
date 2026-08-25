@@ -61,7 +61,10 @@ function DownloadButton({
         }
     }, [error, setError]);
 
+    const downloadDisabled = disabled || isFetching;
+
     const onClick = () => {
+        if (downloadDisabled) return;
         setFetchData(true);
         onDownloadRequested?.();
     };
@@ -84,7 +87,7 @@ function DownloadButton({
                 })}
             >
                 {isSmContainer ? (
-                    <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick} {...ariaAttributeProps}>
+                    <Button iconButton variant={ButtonVariant.TERTIARY} disabled={downloadDisabled} onClick={onClick} {...ariaAttributeProps}>
                         {buttonIcon}
                     </Button>
                 ) : (
@@ -94,7 +97,7 @@ function DownloadButton({
                             { 'adyen-pe-download__button--loading': isFetching, 'adyen-pe-download__button--icon': iconButton },
                             className
                         )}
-                        disabled={disabled || isFetching}
+                        disabled={downloadDisabled}
                         variant={iconButton ? ButtonVariant.TERTIARY : ButtonVariant.SECONDARY}
                         onClick={onClick}
                         {...(!iconButton && { iconLeft: buttonIcon })}

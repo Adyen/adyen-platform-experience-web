@@ -10,6 +10,7 @@ import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } f
 import Modal from '@integration-components/ui-components-preact/Modal';
 import { useActionsAlertTitles } from '../../hooks';
 import Icon from '@integration-components/ui-components-preact/Icon';
+import { getMissingActionsMetadata } from '@integration-components/capital/domain';
 import './GrantActionsEmbedded.scss';
 
 const CLASSNAMES = {
@@ -53,7 +54,8 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
     const [actionsWithLoadedComponent, setActionsWithLoadedComponent] = useState<IMissingActionType[]>([]);
     const [activeAction, setActiveAction] = useState<IMissingActionType | undefined>(undefined);
     const [completedActions, setCompletedActions] = useState<IMissingActionType[]>([]);
-    const areActionsCompleted = useMemo(() => completedActions.length === missingActions.length, [completedActions.length, missingActions.length]);
+    const missingActionWorkflow = useMemo(() => getMissingActionsMetadata(missingActions, completedActions), [completedActions, missingActions]);
+    const areActionsCompleted = missingActionWorkflow.areActionsCompleted;
 
     useEffect(() => {
         if (areActionsCompleted) {
@@ -102,10 +104,9 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
 
     const getActionButtonVariant = useCallback(
         (actionType: IMissingActionType) => {
-            const primaryAction = missingActions.find(action => !completedActions.includes(action.type));
-            return primaryAction?.type === actionType ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY;
+            return missingActionWorkflow.primaryActionType === actionType ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY;
         },
-        [completedActions, missingActions]
+        [missingActionWorkflow.primaryActionType]
     );
 
     const renderActionButton = useCallback(

@@ -12,6 +12,9 @@ test.describe('Disputes Overview - Row click', () => {
         const grid = page.getByRole('grid');
         await grid.getByRole('rowgroup').nth(1).getByRole('row').first().click();
 
-        await expect(page.getByRole('dialog')).toBeVisible();
+        const disputeManagementModal = page.getByRole('dialog', { name: 'Dispute management', exact: true });
+
+        await expect(disputeManagementModal).toBeVisible();
+        await expect(disputeManagementModal.getByText('Dispute management', { exact: true })).toHaveCount(0);
     });
 });
