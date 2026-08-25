@@ -15,14 +15,24 @@ test.describe('Data customization', () => {
 
         // (1) Standard columns (visible & hidden)
         await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
-        await expect(dataGrid.getByRole('columnheader', { name: 'Funds captured (€)', exact: true })).toBeVisible();
-        await expect(dataGrid.getByRole('columnheader', { name: 'Adjustments (€)', exact: true })).toBeHidden(); // hidden column
-        await expect(dataGrid.getByRole('columnheader', { name: 'Net payout (€)', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Funds captured', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Adjustments', exact: true })).toBeHidden(); // hidden column
+        await expect(dataGrid.getByRole('columnheader', { name: 'Net payout', exact: true })).toBeVisible();
 
         // (2) Custom columns
         await expect(dataGrid.getByRole('columnheader', { name: 'Summary', exact: true })).toBeVisible();
         await expect(dataGrid.getByRole('columnheader', { name: 'Country', exact: true })).toBeVisible();
         await expect(dataGrid.getByRole('columnheader', { name: 'Action', exact: true })).toBeVisible();
+    });
+
+    test('should retain the mobile table layout without custom columns', async ({ page }) => {
+        await page.setViewportSize({ width: 479, height: 800 });
+
+        const dataGrid = page.getByRole('table');
+        await expect(dataGrid.getByRole('row').first().getByRole('cell')).toHaveCount(2);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Summary', exact: true })).toHaveCount(0);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Country', exact: true })).toHaveCount(0);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Action', exact: true })).toHaveCount(0);
     });
 
     test('should render correct data for each custom column', async ({ page }) => {

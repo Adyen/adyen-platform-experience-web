@@ -1,6 +1,6 @@
 @use '@integration-components/style' as style;
 
-.adyen-pe-data-grid__icon-cell {
+.root {
     align-items: center;
     display: flex;
     gap: style.token(spacer-030);

@@ -17,7 +17,7 @@ const { i18n } = useCoreContext();
 </script>
 
 <template>
-    <div role="listitem" class="adyen-pe-transaction-totals__item">
+    <div role="listitem">
         <SummaryItemPair
             :label1="i18n.get('transactions.overview.totals.tags.incoming')"
             :value1="formattedIncomings"

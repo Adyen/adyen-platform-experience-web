@@ -1,4 +1,5 @@
 @use '@integration-components/style' as style;
+@use '@integration-components/style/accessibility' as accessibility;
 
 .root {
     --adyen-pe-data-details-padding: #{style.token(spacer-070)};
@@ -6,9 +7,17 @@
 
 .root .dataGrid[class] {
     margin-inline: 0;
+    overflow: hidden;
+}
+
+.dataGridNoHeader {
+    :global(.b-data-grid__columns-row) {
+        @include accessibility.adyen-pe-visually-hidden;
+    }
 }
 
 .titleContainer {
+    align-items: center;
     display: flex;
     gap: style.token(spacer-050);
 }

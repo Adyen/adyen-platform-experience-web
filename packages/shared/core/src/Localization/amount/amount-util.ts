@@ -39,7 +39,7 @@ export const normalizeAmountInput = (
     locale: string,
     currencyCode: string,
     maxValue?: number
-): { displayValue: string; amount: number } => {
+): { displayValue: string; amount: number; localeDecimalSeparator: string } => {
     let displayValue = String(rawValue).trim();
     const decimalSeparator = (1.1).toLocaleString(locale).match(/\d(.*?)\d/)?.[1] || '.';
     const exponent = getCurrencyExponent(currencyCode);
@@ -64,7 +64,7 @@ export const normalizeAmountInput = (
     const normalizedDisplayValue = decimalSeparator === '.' ? displayValue : displayValue.replace(decimalSeparator, '.');
     const amount = Math.trunc(+`${Number.parseFloat(normalizedDisplayValue)}e${exponent}`) || 0;
 
-    return { displayValue, amount };
+    return { displayValue, amount, localeDecimalSeparator: decimalSeparator };
 };
 
 /**

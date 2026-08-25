@@ -1,6 +1,6 @@
 import { DISPUTE_ACTION_NEEDED_URGENTLY_THRESHOLD_DAYS } from './constants';
 import { IDisputeStatus } from '@integration-components/types/api/models/disputes';
-import { parseDate } from '@integration-components/utils';
+import { DAY_IN_MS, parseDate } from '@integration-components/utils';
 
 export interface WithDisputeStatus {
     dueDate?: string;
@@ -13,6 +13,26 @@ export const enum DisputeActionNeededLevel {
     URGENTLY = 3, // 3-bits (0 1 1)
     NOW = 7, // 3-bits (1 1 1)
 }
+
+export interface DisputeDeadlineTimeRemaining {
+    days: number;
+    expired: boolean;
+}
+
+export const getDisputeDeadlineTimeRemaining = (dueDate: string | undefined, now = Date.now()): DisputeDeadlineTimeRemaining | undefined => {
+    const deadline = parseDate(dueDate);
+
+    if (deadline !== undefined) {
+        const timeRemaining = deadline - now;
+
+        return {
+            // Math.ceil returns -0 for deadlines less than one day ago.
+            // Use Math.max(0, days) to keep the remaining-day count non-negative.
+            days: Math.max(0, Math.ceil(timeRemaining / DAY_IN_MS)),
+            expired: timeRemaining < 0,
+        };
+    }
+};
 
 export const getDisputeActionNeededLevel = <T extends WithDisputeStatus>(disputeData: T): DisputeActionNeededLevel => {
     switch (disputeData.status) {

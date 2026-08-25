@@ -6,7 +6,3 @@
     align-items: center;
     height: 100%;
 }
-
-.errorContainer {
-    @include mixins.adyen-pe-error-message-display-container(':global(.adyen-pe-error-message-display)');
-}

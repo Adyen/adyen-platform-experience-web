@@ -19,7 +19,7 @@ export const adjustSelectedTerm = (availableTerms: readonly number[], selectedTe
     return availableTerms.reduce((nearest, term) => (Math.abs(term - selectedTerm) < Math.abs(nearest - selectedTerm) ? term : nearest));
 };
 
-export const getOfferForTerm = (offersByTerm: Record<number, IGrantOfferResponseDTO>, term: number) => {
+export const getOfferForTerm = (offersByTerm: Record<number, IGrantOfferResponseDTO>, term: number | undefined) => {
     return term === undefined ? undefined : offersByTerm[term];
 };
 

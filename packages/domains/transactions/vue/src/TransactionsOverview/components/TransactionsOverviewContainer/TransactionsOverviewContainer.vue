@@ -29,7 +29,7 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
 
 <template>
     <div>
-        <div v-if="hasError" class="adyen-pe-data-overview-error">
+        <div v-if="hasError">
             <p>{{ i18n.get('transactions.overview.errors.unavailable') }}</p>
             <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
                 {{ i18n.get('common.actions.contactSupport.labels.default') }}
