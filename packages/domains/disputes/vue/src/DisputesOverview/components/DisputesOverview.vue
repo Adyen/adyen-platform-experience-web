@@ -10,9 +10,9 @@ import DisputesFilters from './DisputesFilters.vue';
 import DisputesTable from './DisputesTable.vue';
 import DisputeManagementModal from './DisputeManagementModal.vue';
 import { useDisputesList } from '../composables/useDisputesList';
-import { BASE_CLASS, BASE_XS_CLASS, DEFAULT_DISPUTE_STATUS_GROUP, TABS_CONTAINER_CLASS } from '../constants';
+import { DEFAULT_DISPUTE_STATUS_GROUP } from '../constants';
 import type { DisputesOverviewProps } from '../types';
-import '../styles/index.scss';
+import styles from './DisputesOverview.module.scss';
 
 const props = defineProps<
     DisputesOverviewProps & {
@@ -146,26 +146,26 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div :class="[BASE_CLASS, { [BASE_XS_CLASS]: isMobile }]">
-        <div :class="`${BASE_CLASS}__header`">
+    <div :class="[styles.root, isMobile ? styles.rootXs : '']">
+        <div :class="styles.header">
             <BentoTypography v-if="!props.hideTitle" el="h2" variant="title" stronger>
                 {{ i18n.get('disputes.overview.common.title') }}
             </BentoTypography>
-            <div v-if="isMobile" role="toolbar" :class="[`${BASE_CLASS}__toolbar`, `${BASE_CLASS}__toolbar--compact`]">
+            <div v-if="isMobile" role="toolbar" :class="[styles.toolbar, styles.toolbarCompact]">
                 <DisputesFilters :compact="true" :balance-accounts="props.balanceAccounts" :status-group="statusGroup" :on-change="onFiltersChange" />
             </div>
         </div>
 
-        <div :class="TABS_CONTAINER_CLASS">
+        <div :class="styles.tabsContainer">
             <BentoTabs :aria-label="statusGroupAriaLabel" :active-tab-index="activeStatusGroupIndex" @update:active-tab-index="onStatusGroupChange">
                 <BentoTab v-for="item in statusGroupItems" :key="item.value" :title="item.label" />
             </BentoTabs>
         </div>
 
-        <BentoCard :class="`${BASE_CLASS}__card`">
+        <BentoCard :class="styles.card">
             <template #content>
-                <div :class="`${BASE_CLASS}__content`">
-                    <div v-if="!isMobile" role="toolbar" :class="`${BASE_CLASS}__toolbar`">
+                <div :class="styles.content">
+                    <div v-if="!isMobile" role="toolbar" :class="styles.toolbar">
                         <DisputesFilters
                             :compact="false"
                             :balance-accounts="props.balanceAccounts"

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import WarningDiamondIcon from '@adyen/ui-assets-icons-16/vue/warning-diamond';
-import { REPORTS_TABLE_CLASS_NAMES } from '../../../../domain/src';
+import styles from './ReportsTable.module.scss';
 </script>
 
 <template>
-    <WarningDiamondIcon :class="REPORTS_TABLE_CLASS_NAMES.downloadErrorIcon" />
+    <WarningDiamondIcon :class="styles.downloadErrorIcon" />
 </template>

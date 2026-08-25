@@ -2,7 +2,7 @@
 import { computed, ref, toRef } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BentoBaseFilter, BentoInputField, useBentoBaseFilter } from '@adyen/bento-vue3';
-import './TransactionPspReferenceFilter.scss';
+import styles from './TransactionPspReferenceFilter.module.scss';
 
 const PSP_REFERENCE_LENGTH = 16;
 
@@ -90,7 +90,7 @@ function updateFilter(value = internalFilterValue.value) {
         @open="onOpen"
         @reset="resetFilter(updateFilter)"
     >
-        <div class="adyen-pe-psp-reference-filter">
+        <div :class="styles.root">
             <BentoInputField
                 :model-value="internalFilterValue"
                 :disabled="props.disabled"

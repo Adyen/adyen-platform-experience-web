@@ -21,3 +21,4 @@ export const CONTENT_CONTAINER_CLASS_NAME = `${BASE_CLASS_NAME}__content-contain
 export const CONTENT_CONTAINER_MOBILE_CLASS_NAME = `${BASE_CLASS_NAME}__content-container--mobile`;
 export const SIDEBAR_CONTAINER_CLASS_NAME = `${BASE_CLASS_NAME}__sidebar-container`;
 export const SECONDARY_NAV_CLASS_NAME = `${BASE_CLASS_NAME}__secondary-nav`;
+export const DIVIDER_CONTAINER_CLASS_NAME = `${BASE_CLASS_NAME}__divider-container`;

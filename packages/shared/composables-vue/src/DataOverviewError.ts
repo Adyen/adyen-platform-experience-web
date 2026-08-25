@@ -4,6 +4,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
 import { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from './getErrorMessage';
 import { useLiveAnnouncement } from './useLiveAnnouncement';
+import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 
 export const DataOverviewError = defineComponent({
     name: 'DataOverviewError',
@@ -43,7 +44,7 @@ export const DataOverviewError = defineComponent({
                 nodes.push(h('span', { key }, i18n.get(key, options)));
             });
 
-            nodes.push(h('span', { class: 'adyen-pe-visually-hidden', 'aria-atomic': 'true', 'aria-live': 'polite' }, announcement.value));
+            nodes.push(h('span', { class: accessibilityStyles.visuallyHidden, 'aria-atomic': 'true', 'aria-live': 'polite' }, announcement.value));
 
             return nodes;
         });

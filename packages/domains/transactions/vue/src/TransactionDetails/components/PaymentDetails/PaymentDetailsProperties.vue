@@ -10,17 +10,13 @@ import {
     BentoButton,
     BentoTooltipDirective as vBentoTooltip,
 } from '@adyen/bento-vue3';
-import {
-    getTransactionRefundReason,
-    TX_DATA_COPYABLE_VALUE,
-    TX_DATA_LIST,
-    TX_DETAILS_FIELDS_REMAPS,
-    sharedTransactionDetailsEventProperties,
-} from '../../../../../domain/src';
+import { getTransactionRefundReason, TX_DETAILS_FIELDS_REMAPS, sharedTransactionDetailsEventProperties } from '../../../../../domain/src';
 import { normalizeCustomFields } from '@integration-components/utils';
 import type { TransactionDetails, TransactionDetailsCustomization } from '../../../../../domain/src';
 import type { TranslationKey } from '@integration-components/core';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
+import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
+import styles from './PaymentDetails.module.scss';
 
 const props = defineProps<{
     dataCustomization?: { details?: TransactionDetailsCustomization };
@@ -124,7 +120,9 @@ const customItems = computed(() =>
 );
 
 function onCopyText(text: string, itemId?: string, trackingName?: string) {
-    navigator.clipboard?.writeText(text);
+    if (!navigator.clipboard) return;
+
+    navigator.clipboard.writeText(text);
     copiedItemId.value = itemId;
 
     if (trackingName) {
@@ -150,10 +148,10 @@ function resetCopiedItem() {
 </script>
 
 <template>
-    <BentoStructuredList :class="TX_DATA_LIST">
+    <BentoStructuredList :class="styles.list">
         <BentoStructuredListItem v-for="item in standardItems" :key="item.id ?? item.key" :label="i18n.get(item.key)">
             <template v-if="item.copyable" #default>
-                <div :class="TX_DATA_COPYABLE_VALUE">
+                <div :class="styles.copyableValue">
                     <BentoTypography variant="body">{{ item.value }}</BentoTypography>
                     <BentoButton
                         variant="tertiary"
@@ -190,5 +188,5 @@ function resetCopiedItem() {
             <BentoTypography v-else variant="body" :class="item.config?.className">{{ item.value }}</BentoTypography>
         </BentoStructuredListItem>
     </BentoStructuredList>
-    <span class="adyen-pe-visually-hidden" aria-atomic="true" aria-live="polite">{{ announcement }}</span>
+    <span :class="accessibilityStyles.visuallyHidden" aria-atomic="true" aria-live="polite">{{ announcement }}</span>
 </template>

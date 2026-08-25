@@ -7,6 +7,8 @@ import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import SelectDropdown from './SelectDropdown.vue';
 import type { SelectDropdownItem } from '../types';
+import flowStyles from './DisputeFlow.module.scss';
+import styles from './DefendDispute.module.scss';
 
 const props = defineProps<{
     pspReference?: string;
@@ -106,8 +108,8 @@ const reasonActionButtons = computed(() => [
 </script>
 
 <template>
-    <div class="adyen-pe-defend-dispute-reason__selector">
-        <BentoTypography class="adyen-pe-defend-dispute__reason-description" variant="body">
+    <div :class="styles.reasonSelector">
+        <BentoTypography variant="body">
             {{ defendDisputeLabel }}
         </BentoTypography>
         <SelectDropdown
@@ -120,21 +122,14 @@ const reasonActionButtons = computed(() => [
         <BentoTypography
             v-for="description in selectedReasonContent?.primaryDescriptionItems ?? []"
             :key="description"
-            class="adyen-pe-defend-dispute-reason__description"
+            :class="styles.description"
             variant="body"
         >
             {{ description }}
         </BentoTypography>
-        <ul
-            v-if="selectedReasonContent?.secondaryDescriptionItems?.length"
-            class="adyen-pe-defend-dispute-reason__secondary-description-items-container"
-        >
-            <li
-                v-for="description in selectedReasonContent.secondaryDescriptionItems"
-                :key="description"
-                class="adyen-pe-defend-dispute-reason__secondary-description-item"
-            >
-                <BentoTypography class="adyen-pe-defend-dispute-reason__description" variant="body">
+        <ul v-if="selectedReasonContent?.secondaryDescriptionItems?.length" :class="styles.secondaryDescriptionItemsContainer">
+            <li v-for="description in selectedReasonContent.secondaryDescriptionItems" :key="description" :class="styles.secondaryDescriptionItem">
+                <BentoTypography :class="styles.description" variant="body">
                     {{ description }}
                 </BentoTypography>
             </li>
@@ -150,7 +145,7 @@ const reasonActionButtons = computed(() => [
             {{ i18n.get('disputes.management.common.errors.unavailable') }}
         </template>
     </BentoAlert>
-    <div class="adyen-pe-defend-dispute__actions">
+    <div :class="flowStyles.actions">
         <BentoButtonActions :actions="reasonActionButtons as BentoButtonActionsList" />
     </div>
 </template>

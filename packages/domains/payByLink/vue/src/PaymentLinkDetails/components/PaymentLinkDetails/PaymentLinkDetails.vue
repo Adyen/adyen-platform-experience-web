@@ -10,12 +10,12 @@ import PaymentLinkExpiration from '../PaymentLinkExpiration/PaymentLinkExpiratio
 import PaymentLinkExpirationSuccess from '../PaymentLinkExpiration/PaymentLinkExpirationSuccess.vue';
 import PaymentLinkSkeleton from '../PaymentLinkSkeleton/PaymentLinkSkeleton.vue';
 import '@adyen/bento-vue3/styles/bento-light';
+import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import './PaymentLinkDetails.scss';
 
 const CLASSNAMES = {
     root: 'adyen-pe-payment-link-details',
     content: 'adyen-pe-payment-link-details__content',
-    error: 'adyen-pe-payment-link-details__error',
 };
 
 const props = defineProps<{
@@ -68,7 +68,7 @@ function handleNavigationToDetailsAfterExpiration() {
 
 <template>
     <div :class="CLASSNAMES.root">
-        <div :class="{ 'adyen-pe-visually-hidden': activeScreen !== 'details' }">
+        <div :class="activeScreen !== 'details' ? accessibilityStyles.visuallyHidden : undefined">
             <BentoTypography v-if="!props.hideTitle" el="h1" variant="title" large stronger>
                 {{ i18n.get('payByLink.details.title') }}
             </BentoTypography>
@@ -77,7 +77,7 @@ function handleNavigationToDetailsAfterExpiration() {
         <div :class="CLASSNAMES.content">
             <PaymentLinkSkeleton v-if="isFetching" />
 
-            <div v-else-if="!paymentLink || error" :class="CLASSNAMES.error">
+            <div v-else-if="!paymentLink || error">
                 <ErrorMessageDisplay
                     :error-info="errorInfo"
                     :on-dismiss="props.onDismiss"

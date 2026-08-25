@@ -4,6 +4,7 @@ import { BentoFileUploader } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { ALLOWED_FILE_TYPES, DOCUMENT_MAX_SIZE } from '@integration-components/disputes/domain';
 import { getHumanReadableFileSize } from '@integration-components/utils';
+import styles from './DisputeFileInput.module.scss';
 
 const props = defineProps<{
     disabled?: boolean;
@@ -62,7 +63,7 @@ function onUploadError(hasError: boolean) {
 <template>
     <BentoFileUploader
         v-model="modelValue"
-        class="adyen-pe-defend-dispute-file-input"
+        :class="styles.root"
         :accept="accept"
         :disabled="props.disabled"
         :error-message="errorMessage"
