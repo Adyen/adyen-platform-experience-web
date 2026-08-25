@@ -157,7 +157,9 @@ export const EarlyRenewal: ElementStory<typeof CapitalOverviewElement> = {
         mockedApi: true,
     },
     parameters: {
-        msw: capitalOverviewHandlers.earlyRenewal,
+        msw: {
+            handlers: capitalOverviewHandlers.earlyRenewal,
+        },
     },
 };
 
@@ -167,7 +169,9 @@ export const Eligible: ElementStory<typeof CapitalOverviewElement> = {
         mockedApi: true,
     },
     parameters: {
-        msw: capitalOverviewHandlers.eligible,
+        msw: {
+            handlers: capitalOverviewHandlers.eligible,
+        },
     },
 };
 
@@ -177,7 +181,9 @@ export const Grants: ElementStory<typeof CapitalOverviewElement> = {
         mockedApi: true,
     },
     parameters: {
-        msw: capitalOverviewHandlers.grants,
+        msw: {
+            handlers: capitalOverviewHandlers.grants,
+        },
     },
 };
 
@@ -187,7 +193,9 @@ export const Pending: ElementStory<typeof CapitalOverviewElement> = {
         mockedApi: true,
     },
     parameters: {
-        msw: capitalOverviewHandlers.pending,
+        msw: {
+            handlers: capitalOverviewHandlers.pending,
+        },
     },
 };
 
@@ -197,7 +205,9 @@ export const MultipleActions: ElementStory<typeof CapitalOverviewElement> = {
         mockedApi: true,
     },
     parameters: {
-        msw: capitalOverviewHandlers.multipleActions,
+        msw: {
+            handlers: capitalOverviewHandlers.multipleActions,
+        },
     },
 };
 
@@ -207,7 +217,9 @@ export const SingleAction: ElementStory<typeof CapitalOverviewElement> = {
         mockedApi: true,
     },
     parameters: {
-        msw: capitalOverviewHandlers.singleAction,
+        msw: {
+            handlers: capitalOverviewHandlers.singleAction,
+        },
     },
 };
 
@@ -217,7 +229,9 @@ export const MultipleHostedActions: ElementStory<typeof CapitalOverviewElement> 
         mockedApi: true,
     },
     parameters: {
-        msw: capitalOverviewHandlers.multipleHostedActions,
+        msw: {
+            handlers: capitalOverviewHandlers.multipleHostedActions,
+        },
     },
 };
 
@@ -227,7 +241,9 @@ export const SingleHostedAction: ElementStory<typeof CapitalOverviewElement> = {
         mockedApi: true,
     },
     parameters: {
-        msw: capitalOverviewHandlers.singleHostedAction,
+        msw: {
+            handlers: capitalOverviewHandlers.singleHostedAction,
+        },
     },
 };
 
@@ -237,7 +253,9 @@ export const RepaymentNL: ElementStory<typeof CapitalOverviewElement> = {
         mockedApi: true,
     },
     parameters: {
-        msw: capitalOverviewHandlers.repaymentNL,
+        msw: {
+            handlers: capitalOverviewHandlers.repaymentNL,
+        },
     },
 };
 
@@ -247,7 +265,9 @@ export const RepaymentGB: ElementStory<typeof CapitalOverviewElement> = {
         mockedApi: true,
     },
     parameters: {
-        msw: capitalOverviewHandlers.repaymentGB,
+        msw: {
+            handlers: capitalOverviewHandlers.repaymentGB,
+        },
     },
 };
 
@@ -257,7 +277,9 @@ export const RepaymentUS: ElementStory<typeof CapitalOverviewElement> = {
         mockedApi: true,
     },
     parameters: {
-        msw: capitalOverviewHandlers.repaymentUS,
+        msw: {
+            handlers: capitalOverviewHandlers.repaymentUS,
+        },
     },
 };
 
@@ -267,7 +289,9 @@ export const RepaymentWithoutTransferInstruments: ElementStory<typeof CapitalOve
         mockedApi: true,
     },
     parameters: {
-        msw: capitalOverviewHandlers.repaymentWithoutTransferInstruments,
+        msw: {
+            handlers: capitalOverviewHandlers.repaymentWithoutTransferInstruments,
+        },
     },
 };
 

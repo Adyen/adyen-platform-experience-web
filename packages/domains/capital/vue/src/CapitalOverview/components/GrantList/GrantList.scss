@@ -1,0 +1,23 @@
+@use '@integration-components/style';
+
+.adyen-pe-grant-list {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+
+    &__new-grant-banner {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+    }
+
+    &__early-renewal-notice {
+        color: style.token(color-label-secondary);
+    }
+
+    &__items {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+    }
+}
