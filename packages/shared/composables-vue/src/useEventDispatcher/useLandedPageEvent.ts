@@ -1,20 +1,19 @@
-import { onMounted, toValue, watch } from 'vue';
-import type { MaybeRefOrGetter } from 'vue';
+import { onMounted, ref, toValue, watch, type MaybeRefOrGetter } from 'vue';
 import type { AdditionalEventProperties } from '@integration-components/core/EventDispatcher/eventDispatcher/user-events';
 import { useEventDispatcherContext } from '@integration-components/core/vue';
 
-export const useLandedPageEvent = (eventProperties: AdditionalEventProperties, enabled: MaybeRefOrGetter<boolean> = true) => {
+export const useLandedPageEvent = (eventProperties: MaybeRefOrGetter<AdditionalEventProperties>, enabled: MaybeRefOrGetter<boolean> = true) => {
     const userEvents = useEventDispatcherContext();
-    let eventSent = false;
+    const hasLanded = ref(false);
 
     onMounted(() => {
         watch(
             () => toValue(enabled),
             isEnabled => {
-                if (isEnabled && !eventSent) {
-                    eventSent = true;
-                    userEvents.addEvent?.('Landed on page', eventProperties);
-                }
+                if (!isEnabled || hasLanded.value) return;
+
+                hasLanded.value = true;
+                userEvents.addEvent?.('Landed on page', toValue(eventProperties));
             },
             { immediate: true }
         );

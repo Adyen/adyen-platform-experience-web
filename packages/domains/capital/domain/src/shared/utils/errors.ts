@@ -8,6 +8,11 @@ export type CapitalErrorMessage = {
     translationValues?: { [key in TranslationKey]?: string };
 };
 
+export type CapitalErrorMessageInfo = Omit<CapitalErrorMessage, 'message' | 'translationValues'> & {
+    messages: TranslationKey[];
+    requestId?: string;
+};
+
 export type BalanceAccountErrorMessage = {
     title: TranslationKey;
     message: TranslationKey;
@@ -79,4 +84,14 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
         default:
             return { ...UNKNOWN_ERROR, refreshComponent: true };
     }
+};
+
+export const getCapitalErrorMessageInfo = (
+    error: AdyenPlatformExperienceError | undefined,
+    onContactSupport?: () => void
+): CapitalErrorMessageInfo => {
+    const { message, translationValues, ...rest } = getCapitalErrorMessage(error, onContactSupport);
+    const messages = message ? (Array.isArray(message) ? message : [message]) : [];
+    const requestId = translationValues && Object.values(translationValues)[0];
+    return { ...rest, messages, requestId };
 };
