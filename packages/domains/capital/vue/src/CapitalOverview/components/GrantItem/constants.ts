@@ -7,6 +7,8 @@ export const GRANT_ITEM_CLASS_NAMES = {
     grantID: 'adyen-pe-grant-item__grant-id',
     mainActionBtn: 'adyen-pe-grant-item__main-action-button',
     progressBar: 'adyen-pe-grant-item__progress-bar',
+    progressBarLegend: 'adyen-pe-grant-item__progress-bar-legend',
+    progressBarLegendLabel: 'adyen-pe-grant-item__progress-bar-legend-label',
     statusContainer: 'adyen-pe-grant-item__status-container',
     textSecondary: 'adyen-pe-grant-item__text--secondary',
 };

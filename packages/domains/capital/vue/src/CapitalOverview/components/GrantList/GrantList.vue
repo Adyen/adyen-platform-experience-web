@@ -45,6 +45,5 @@ console.log(props.grants);
 <template>
     <!-- TODO: Render CapitalOffer when the Vue component is available. -->
     <div v-if="isCapitalOfferVisible" />
-    <!-- TODO: Render GrantsDisplay when the Vue component is available. -->
     <GrantsDisplay v-else :grants="grants" :hide-title="props.hideTitle" :capital-state="props.capitalState" :on-new-offer-request="goToNextStep" />
 </template>

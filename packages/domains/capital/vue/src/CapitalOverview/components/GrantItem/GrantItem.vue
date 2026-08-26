@@ -12,6 +12,7 @@ import {
 } from '@adyen/bento-vue3';
 import ChevronDownIcon from '@adyen/ui-assets-icons-16/vue/chevron-down';
 import ChevronUpIcon from '@adyen/ui-assets-icons-16/vue/chevron-up';
+import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { getGrantConfig, type GrantStatusVariant } from '@integration-components/capital/domain';
 import { useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
@@ -43,6 +44,11 @@ const termEndLabel = computed(() =>
     })
 );
 const statusTooltip = computed(() => (grantConfig.value.statusTooltipKey ? i18n.get(grantConfig.value.statusTooltipKey) : undefined));
+const repaymentProgressLabels = computed(() => ({
+    current: i18n.get('capital.overview.grants.item.amounts.repaid'),
+    max: i18n.get('capital.overview.grants.item.amounts.remaining'),
+}));
+const shouldDisplayLegend = computed(() => !!(repaymentProgressLabels.value.current || repaymentProgressLabels.value.max));
 const repaymentProgressLabel = computed(
     () =>
         `${i18n.amount(props.grant.repaidTotalAmount.value, props.grant.repaidTotalAmount.currency)} ${i18n
@@ -57,7 +63,7 @@ const getStatusTagVariant = (statusVariant: GrantStatusVariant): BentoTagVariant
         case 'Error':
             return 'red';
         case 'Light':
-            return 'grey';
+            return 'white';
         case 'Warning':
             return 'orange';
         case 'Default':
@@ -128,14 +134,33 @@ const toggleGrantDetails = () => {
                         {{ formattedAmount }}
                     </BentoTypography>
 
-                    <progress
-                        v-if="grantConfig.isProgressBarVisible"
-                        v-bento-tooltip="repaymentProgressLabel"
-                        :class="GRANT_ITEM_CLASS_NAMES.progressBar"
-                        :aria-label="i18n.get('capital.overview.grants.item.progressBar.a11y.label')"
-                        :value="props.grant.repaidTotalAmount.value"
-                        :max="props.grant.totalAmount.value"
-                    />
+                    <div v-if="grantConfig.isProgressBarVisible">
+                        <progress
+                            v-bento-tooltip="repaymentProgressLabel"
+                            :class="GRANT_ITEM_CLASS_NAMES.progressBar"
+                            :aria-label="i18n.get('capital.overview.grants.item.progressBar.a11y.label')"
+                            :value="props.grant.repaidTotalAmount.value"
+                            :max="props.grant.totalAmount.value"
+                        />
+                        <div v-if="shouldDisplayLegend" :class="GRANT_ITEM_CLASS_NAMES.progressBarLegend" aria-hidden="true">
+                            <BentoTypography
+                                v-if="repaymentProgressLabels.current"
+                                el="span"
+                                variant="caption"
+                                :class="GRANT_ITEM_CLASS_NAMES.progressBarLegendLabel"
+                            >
+                                {{ repaymentProgressLabels.current }}
+                            </BentoTypography>
+                            <BentoTypography
+                                v-if="repaymentProgressLabels.max"
+                                el="span"
+                                variant="caption"
+                                :class="GRANT_ITEM_CLASS_NAMES.progressBarLegendLabel"
+                            >
+                                {{ repaymentProgressLabels.max }}
+                            </BentoTypography>
+                        </div>
+                    </div>
 
                     <BentoButton
                         v-if="grantConfig.isGrantIdVisible"
@@ -145,6 +170,9 @@ const toggleGrantDetails = () => {
                         @click.stop="copyGrantId"
                     >
                         {{ i18n.get('capital.common.fields.grantID') }}
+                        <template #iconRight>
+                            <CopyIcon />
+                        </template>
                     </BentoButton>
 
                     <div v-if="grantConfig.hasUnscheduledRepaymentDetails" :class="GRANT_ITEM_CLASS_NAMES.actionsBar">
