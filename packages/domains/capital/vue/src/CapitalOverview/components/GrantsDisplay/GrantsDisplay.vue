@@ -7,6 +7,7 @@ import { GRANT_ADJUSTMENT_DETAILS, sharedCapitalOverviewAnalyticsEventProperties
 import type { IGrant } from '@integration-components/types';
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import GrantItem from '../GrantItem/GrantItem.vue';
+import GrantRepaymentDetails from '../GrantRepaymentDetails/GrantRepaymentDetails.vue';
 import './GrantsDisplay.scss';
 
 const props = defineProps<{
@@ -69,10 +70,9 @@ const getShowGrantDetails = (grant: IGrant) => (detail?: GrantAdjustmentDetail) 
     showGrantDetails(grant, detail);
 };
 
-// TODO: Pass this callback to GrantRepaymentDetails when the Vue component is available.
-// const hideGrantDetails = () => {
-//     selectedGrantDetail.value = undefined;
-// };
+const hideGrantDetails = () => {
+    selectedGrantDetail.value = undefined;
+};
 
 onMounted(() => {
     userEvents.addEvent?.('Landed on page', { ...analyticsProperties, label: 'Capital overview' });
@@ -80,8 +80,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <!-- TODO: Render GrantRepaymentDetails when the Vue component is available. -->
-    <div v-if="shouldShowRepaymentDetails" />
+    <GrantRepaymentDetails v-if="shouldShowRepaymentDetails && selectedGrant" :grant="selectedGrant" :on-details-close="hideGrantDetails" />
 
     <div v-else class="adyen-pe-grant-list">
         <CapitalHeader :hide-title="props.hideTitle" :region="props.capitalState.region" title-key="capital.common.title" />
