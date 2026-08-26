@@ -8,7 +8,6 @@ import { normalizeCustomFields } from '@integration-components/utils';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET, sharedTransactionDetailsEventProperties } from '../../../../domain/src';
 import type { TransactionDetailsCustomization, TransactionDetails } from '../../../../domain/src';
 import styles from './TransactionDetailsContainer.module.scss';
-import '@adyen/bento-vue3/styles/bento-light';
 
 const props = defineProps<{
     id: string;

@@ -4,6 +4,7 @@
     "private": true,
     "type": "module",
     "sideEffects": [
+        "./src/vue/index.ts",
         "**/*.css",
         "**/*.scss"
     ],
@@ -25,7 +26,10 @@
         "./*": "./src/*.ts"
     },
     "dependencies": {
+        "@adyen/adyen-shared-web": "0.2.0",
+        "@adyen/bento-design-tokens": "1.107.0",
         "@integration-components/assets": "workspace:*",
+        "@integration-components/style": "workspace:*",
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*",
         "classnames": "catalog:"

@@ -5,17 +5,16 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
 
-export const goToStory = async (page: Page, params: { id: string; args?: Record<string, string> }) => {
-    const { args, ...restOfParams } = params;
+export const goToStory = async (page: Page, params: { id: string; args?: Record<string, string>; globals?: Record<string, string> }) => {
+    const { args, globals, ...restOfParams } = params;
+    const serializeStorybookParams = (values: Record<string, string>) =>
+        Object.entries(values)
+            .map(entry => entry.join(':'))
+            .join(';');
     const queryParams = new URLSearchParams({
         ...restOfParams,
-        ...(args
-            ? {
-                  args: Object.entries(args)
-                      .map(entry => entry.join(':'))
-                      .join(';'),
-              }
-            : {}),
+        ...(args ? { args: serializeStorybookParams(args) } : {}),
+        ...(globals ? { globals: serializeStorybookParams(globals) } : {}),
     });
     await page.goto(`/iframe.html?${queryParams.toString()}`);
 };

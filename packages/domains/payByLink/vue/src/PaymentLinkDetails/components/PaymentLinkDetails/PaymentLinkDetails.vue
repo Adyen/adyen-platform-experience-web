@@ -9,7 +9,6 @@ import PaymentLinkDetailsContent from './PaymentLinkDetailsContent.vue';
 import PaymentLinkExpiration from '../PaymentLinkExpiration/PaymentLinkExpiration.vue';
 import PaymentLinkExpirationSuccess from '../PaymentLinkExpiration/PaymentLinkExpirationSuccess.vue';
 import PaymentLinkSkeleton from '../PaymentLinkSkeleton/PaymentLinkSkeleton.vue';
-import '@adyen/bento-vue3/styles/bento-light';
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import './PaymentLinkDetails.scss';
 

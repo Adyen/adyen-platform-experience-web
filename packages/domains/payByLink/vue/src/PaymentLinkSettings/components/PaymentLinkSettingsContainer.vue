@@ -5,7 +5,6 @@ import { providePaymentLinkSettings } from '../composables/context';
 import { MENU_ITEMS } from '../constants';
 import type { PaymentLinkSettingsProps } from '../types';
 import PaymentLinkSettings from './PaymentLinkSettings.vue';
-import '@adyen/bento-vue3/styles/bento-light';
 import '../PaymentLinkSettingsContainer.scss';
 
 const props = defineProps<PaymentLinkSettingsProps>();

@@ -1,0 +1,7 @@
+@use '@adyen/bento-design-tokens/dist/scss-map/bento/aliases-dark' as dark;
+@use '@adyen/bento-design-tokens/dist/scss-map/bento/definitions-dark' as dark-definitions;
+@use './variable-generator' as style;
+
+[data-adyen-pe-theme='dark'] {
+    @include style.adyen-sdk-print-css-variables(dark.$color, dark-definitions.$gradient);
+}

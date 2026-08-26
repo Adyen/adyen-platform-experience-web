@@ -1,20 +1,23 @@
 import type { AuthSession } from '../session/AuthSession';
 import type { AssetOptions } from '../Assets/Assets';
 import type { SessionObject, SessionRequest } from '../ConfigContext.types';
-import type { DevEnvironment, onErrorHandler, AnalyticsConfig } from '../types';
+import type { AnalyticsConfig, CoreOptions as BaseCoreOptions, DevEnvironment, onErrorHandler } from '../types';
 import type { I18n } from './Context/types';
-import type { SupportedLocales } from '../Localization/types';
+import type { ThemeProps } from '@adyen/adyen-shared-web';
 
 export type { DevEnvironment, onErrorHandler, AnalyticsConfig, SessionObject, SessionRequest };
 
-export interface CoreOptions {
-    environment?: DevEnvironment;
-    locale?: SupportedLocales;
-    onSessionCreate: SessionRequest;
-    onError?: onErrorHandler;
-    analytics?: AnalyticsConfig;
-    loadingContext?: string;
+export type ThemeMode = 'dark' | 'light';
+export type ThemeVariables = Omit<ThemeProps, 'dark'>;
+
+export interface ThemeOptions {
+    mode?: ThemeMode;
+    variables?: ThemeVariables;
+}
+
+export interface CoreOptions extends BaseCoreOptions {
     balanceAccountId?: string;
+    theme?: ThemeOptions;
 }
 
 export interface CoreInstance {
