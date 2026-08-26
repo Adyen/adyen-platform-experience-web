@@ -1,0 +1,97 @@
+@use '@integration-components/style';
+@use '@integration-components/style/skeleton';
+
+//stylelint-disable no-invalid-position-at-import-rule
+@use '@integration-components/style/breakpoints' as *;
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+}
+
+.summaryContainer {
+    border: style.token(border-width-s) solid style.token(color-outline-primary);
+    border-radius: style.token(border-radius-m);
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-030);
+    padding: style.token(spacer-060);
+}
+
+.status {
+    border-radius: style.token(border-radius-s);
+    height: 22px;
+    width: 60px;
+    /* stylelint-disable-next-line order/order */
+    @include skeleton.adyen-pe-skeleton-animation();
+}
+
+.amount {
+    border-radius: style.token(border-radius-s);
+    height: 34px;
+    width: 180px;
+    /* stylelint-disable-next-line order/order */
+    @include skeleton.adyen-pe-skeleton-animation();
+}
+
+.expirationDate {
+    border-radius: style.token(border-radius-s);
+    height: 20px;
+    max-width: 100%;
+    width: 390px;
+    /* stylelint-disable-next-line order/order */
+    @include skeleton.adyen-pe-skeleton-animation();
+}
+
+.tabsContainer {
+    padding-bottom: style.token(spacer-070);
+}
+
+.tabLabelsContainer {
+    display: flex;
+    flex-direction: row;
+    gap: style.token(spacer-090);
+}
+
+.tabLabel {
+    border-radius: style.token(border-radius-s);
+    height: 26px;
+    width: 120px;
+    /* stylelint-disable-next-line order/order */
+    @include skeleton.adyen-pe-skeleton-animation();
+}
+
+.fieldsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+    padding-top: style.token(spacer-080);
+}
+
+.fieldContainer {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-020);
+
+    @include adyen-pe-screen-sm-and-up {
+        flex-direction: row;
+        gap: style.token(spacer-060);
+    }
+}
+
+.fieldLabel {
+    border-radius: style.token(border-radius-s);
+    height: 20px;
+    width: 180px;
+    /* stylelint-disable-next-line order/order */
+    @include skeleton.adyen-pe-skeleton-animation();
+}
+
+.fieldValue {
+    border-radius: style.token(border-radius-s);
+    height: 20px;
+    width: 300px;
+    /* stylelint-disable-next-line order/order */
+    @include skeleton.adyen-pe-skeleton-animation();
+}

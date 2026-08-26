@@ -6,6 +6,8 @@ import type { IPaymentLinkTermsAndConditions } from '@integration-components/typ
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { isTermsAndConditionsData, isValidURL } from '@integration-components/payByLink/domain';
 import Requirements from './Requirements.vue';
+import styles from './TermsAndConditions.module.scss';
+import layoutStyles from './PaymentLinkSettingsLayout.module.scss';
 
 const props = defineProps<{
     data: IPaymentLinkTermsAndConditions;
@@ -117,7 +119,7 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
 </script>
 
 <template>
-    <section class="adyen-pe-payment-link-settings-terms-and-conditions">
+    <section :class="styles.root">
         <template v-if="!isShowingRequirements">
             <BentoAlert v-if="hasValidationError" type="critical" :dismissible="false">
                 <template #description>{{ i18n.get('payByLink.settings.common.alerts.validationError') }}</template>
@@ -128,12 +130,12 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
             <BentoAlert v-else-if="isSaveError" type="critical" variant="tip" :dismissible="false">
                 <template #description>{{ i18n.get('payByLink.settings.common.alerts.saveError') }}</template>
             </BentoAlert>
-            <div class="adyen-pe-payment-link-settings__content-header">
+            <div :class="layoutStyles.contentHeader">
                 <BentoTypography variant="title" medium el="div">{{ i18n.get('payByLink.settings.termsAndConditions.title') }}</BentoTypography>
                 <BentoTypography variant="body" wide>{{ i18n.get('payByLink.settings.termsAndConditions.subtitle') }}</BentoTypography>
             </div>
-            <div class="adyen-pe-payment-link-settings-terms-and-conditions__content">
-                <div class="adyen-pe-payment-link-settings__input-container">
+            <div>
+                <div :class="layoutStyles.inputContainer">
                     <BentoInputField
                         :disabled="!!isSaving"
                         :readonly="!!isSaving"
@@ -145,16 +147,10 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
                         @input="onTermsAndConditionsURLInput"
                     />
                 </div>
-                <BentoAlert
-                    v-if="isTermsAndConditionsChanged"
-                    type="warning"
-                    variant="tip"
-                    role="alert"
-                    class="adyen-pe-payment-link-settings-terms-and-conditions__alert"
-                >
+                <BentoAlert v-if="isTermsAndConditionsChanged" type="warning" variant="tip" role="alert" :class="styles.alert">
                     <template #description>{{ i18n.get('payByLink.settings.termsAndConditions.alert.urlChange') }}</template>
                 </BentoAlert>
-                <div class="adyen-pe-payment-link-settings-terms-and-conditions-checkbox__container">
+                <div :class="styles.checkboxContainer">
                     <BentoCheckbox
                         :model-value="isRequirementsChecked ?? false"
                         :disabled="disabled || !!isSaving"
@@ -164,15 +160,11 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
                                 ? i18n.get('payByLink.settings.termsAndConditions.error.requirementsNotChecked')
                                 : undefined
                         "
-                        class="adyen-pe-payment-link-settings-terms-and-conditions-checkbox"
+                        :class="styles.checkbox"
                         @update:model-value="onCheckboxUpdate"
                     >
                         {{ checkboxLabelPrefix }}
-                        <button
-                            type="button"
-                            class="adyen-pe-payment-link-settings-terms-and-conditions__requirements-link"
-                            @click.stop="openRequirements"
-                        >
+                        <button type="button" :class="styles.requirementsLink" @click.stop="openRequirements">
                             {{ i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.part2') }}
                         </button>
                     </BentoCheckbox>

@@ -1,0 +1,9 @@
+@use '@integration-components/style';
+
+.root {
+    align-items: stretch;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    padding: style.token(spacer-060) 0;
+}

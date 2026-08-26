@@ -1,0 +1,37 @@
+@use '@integration-components/style';
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+}
+
+.sectionsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-090);
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-020);
+}
+
+.sectionContent {
+    color: style.token(color-label-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-040);
+    padding-left: style.token(spacer-060);
+}
+
+.list {
+    padding-left: style.token(spacer-080);
+}
+
+.buttonsContainer {
+    display: flex;
+    gap: style.token(spacer-040);
+    justify-content: end;
+}

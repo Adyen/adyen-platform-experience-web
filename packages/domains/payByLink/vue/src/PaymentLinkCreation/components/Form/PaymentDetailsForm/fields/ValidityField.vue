@@ -6,7 +6,7 @@ import { useWizard } from '../../../../composables/wizardContext';
 import { FLEXIBLE_VALIDITY_ID, LINK_VALIDITY_DURATION_UNITS } from '../../../../../../../domain/src';
 import type { IPaymentLinkValidity } from '@integration-components/types';
 import type { TranslationKey } from '@integration-components/core';
-import './ValidityField.scss';
+import styles from './ValidityField.module.scss';
 
 const props = defineProps<{
     options?: IPaymentLinkValidity[];
@@ -94,7 +94,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
 </script>
 
 <template>
-    <div v-if="config.visible" class="adyen-pe-payment-link-creation-form__validity-container">
+    <div v-if="config.visible" :class="styles.root">
         <FieldWrapper name="linkValidity.durationUnit">
             <BentoDropdown
                 :items="presetItems"
@@ -108,7 +108,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
             />
         </FieldWrapper>
         <FieldWrapper v-if="selection === FLEXIBLE_VALIDITY_ID" name="linkValidity.quantity" :error="error">
-            <div class="adyen-pe-payment-link-creation-form__validity-custom">
+            <div :class="styles.custom">
                 <BentoInputField
                     :label="i18n.get('payByLink.creation.fields.validity.customDuration.label')"
                     type="number"
