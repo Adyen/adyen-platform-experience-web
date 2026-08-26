@@ -29,3 +29,8 @@ export const GRANT_ACTION_CONFIGS: ActionConfigs = {
         successButtonLabelKey: 'capital.overview.grants.item.actions.submitInformationSuccess',
     },
 };
+
+export const GRANT_ADJUSTMENT_DETAILS = {
+    revocation: 'revocation',
+    unscheduledRepayment: 'unscheduledRepayment',
+} as const;

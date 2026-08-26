@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import type { EnhancedCapitalState, OnFundsRequestCallback } from '@integration-components/capital/domain';
 import type { IGrant } from '@integration-components/types';
+import GrantsDisplay from '../GrantsDisplay/GrantsDisplay.vue';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
@@ -13,14 +14,15 @@ const props = defineProps<{
 }>();
 
 const isCapitalOfferVisible = ref(false);
-console.log(props);
 // const goBackToPreviousStep = () => {
 //     isCapitalOfferVisible.value = false;
 // };
 
-// const goToNextStep = () => {
-//     isCapitalOfferVisible.value = true;
-// };
+const goToNextStep = () => {
+    isCapitalOfferVisible.value = true;
+};
+
+console.log(props.grants);
 //
 // const goBackToList = () => {
 //     if (props.onOfferDismiss) {
@@ -44,5 +46,5 @@ console.log(props);
     <!-- TODO: Render CapitalOffer when the Vue component is available. -->
     <div v-if="isCapitalOfferVisible" />
     <!-- TODO: Render GrantsDisplay when the Vue component is available. -->
-    <div v-else />
+    <GrantsDisplay v-else :grants="grants" :hide-title="props.hideTitle" :capital-state="props.capitalState" :on-new-offer-request="goToNextStep" />
 </template>
