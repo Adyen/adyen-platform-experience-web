@@ -49,9 +49,11 @@ onMounted(() => {
             <strong>
                 {{ i18n.get('capital.overview.prequalified.alreadyQualifyInfo.part2', { values: { amount: preQualifiedAmount } }) }}
             </strong>
+            <template #actions>
+                <BentoButton :class="CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton" @click="onOfferOptionsRequestWithTracking">
+                    {{ i18n.get('capital.overview.prequalified.actions.seeOptions') }}
+                </BentoButton>
+            </template>
         </BentoAlert>
-        <BentoButton :class="CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton" @click="onOfferOptionsRequestWithTracking">
-            {{ i18n.get('capital.overview.prequalified.actions.seeOptions') }}
-        </BentoButton>
     </div>
 </template>

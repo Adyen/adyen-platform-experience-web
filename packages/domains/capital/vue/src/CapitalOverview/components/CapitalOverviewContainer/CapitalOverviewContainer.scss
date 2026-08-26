@@ -2,6 +2,10 @@
 @use '@integration-components/style';
 /* stylelint-disable */
 
+.adyen-pe-capital-overview-component {
+    max-width: 600px;
+}
+
 .adyen-pe-capital-overview {
     display: flex;
     flex-direction: column;
@@ -58,7 +62,7 @@
         width: 100%;
     }
 
-    &__pre-qualified-grant-review-button .adyen-pe-button__label {
+    &__pre-qualified-grant-review-button .b-button__label {
         justify-content: center;
     }
 }
