@@ -129,7 +129,7 @@ function onNumberInput(value: string | number) {
             :error="!!error"
             :dropdown="phoneDropdownProps"
             dropdown-position="start"
-            @input="onNumberInput"
+            @update:model-value="onNumberInput"
             @dropdown-input="onPrefixUpdate"
         />
     </FieldWrapper>

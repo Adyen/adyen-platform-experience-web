@@ -4,6 +4,7 @@ import { defineConfig } from 'vite';
 import { preact } from '@preact/preset-vite';
 import svgr from 'vite-plugin-svgr';
 import { getBuildEnvDefines } from '../../config/defines/build-env';
+import { rewriteBentoCssVariables } from '../../config/vite/rewriteBentoCssVariables';
 import rootPkgJson from '../../package.json';
 
 const projectRoot = resolve(fileURLToPath(import.meta.url), '..');
@@ -123,5 +124,6 @@ export default defineConfig(({ mode }) => ({
             include: '**/*.svg?component',
         }),
         preact(),
+        rewriteBentoCssVariables(),
     ],
 }));

@@ -5,6 +5,7 @@ import { preact } from '@preact/preset-vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { realApiProxies } from './endpoints/realApiProxies';
 import { getBuildEnvDefines } from './config/defines/build-env';
+import { rewriteBentoCssVariables } from './config/vite/rewriteBentoCssVariables';
 import { getEnvironment } from './envs/getEnvs';
 import packageJson from './package.json';
 import svgr from 'vite-plugin-svgr';
@@ -146,6 +147,7 @@ export default defineConfig(({ mode }) => {
                 include: '**/*.svg?component',
             }),
             preact(),
+            rewriteBentoCssVariables(),
             isAnalyseMode &&
                 visualizer({
                     title: 'Adyen Platform bundle visualizer',

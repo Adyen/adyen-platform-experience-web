@@ -1,4 +1,4 @@
-@import './variable-generator';
-@import './base';
-@import './accessibility';
-@import './variables';
+@forward './variable-generator';
+@forward './base';
+@forward './accessibility';
+@forward './variables';

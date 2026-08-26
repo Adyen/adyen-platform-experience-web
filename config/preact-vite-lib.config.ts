@@ -2,6 +2,7 @@ import { resolve } from 'node:path';
 import { preact } from '@preact/preset-vite';
 import { defineConfig, mergeConfig, type UserConfig } from 'vite';
 import { getBuildEnvDefines } from './defines/build-env';
+import { rewriteBentoCssVariables } from './vite/rewriteBentoCssVariables';
 import svgr from 'vite-plugin-svgr';
 
 interface PreactViteLibOptions {
@@ -66,6 +67,7 @@ export function getPreactViteLibConfig({
                 include: '**/*.svg?component',
             }),
             preact(),
+            rewriteBentoCssVariables(),
         ],
     } as const;
 

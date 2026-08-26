@@ -2,6 +2,8 @@ import type { Plugin } from 'vite';
 
 const BENTO_VARIABLE_PREFIX = '--b-';
 const SDK_VARIABLE_PREFIX = '--adyen-sdk-';
+const BENTO_DARK_THEME_SELECTOR = '.b-dark-theme';
+const SDK_DARK_THEME_SELECTOR = "[data-adyen-pe-theme='dark']";
 const textDecoder = new TextDecoder();
 const textEncoder = new TextEncoder();
 
@@ -10,12 +12,15 @@ const isStyleModule = (id: string) => /\.(?:css|less|sass|scss|styl|stylus)(?:$|
 
 const sourceToString = (source: string | Uint8Array) => (typeof source === 'string' ? source : textDecoder.decode(source));
 
-const rewriteString = (source: string): string => source.split(BENTO_VARIABLE_PREFIX).join(SDK_VARIABLE_PREFIX);
+const hasBentoStyles = (source: string): boolean => source.includes(BENTO_VARIABLE_PREFIX) || source.includes(BENTO_DARK_THEME_SELECTOR);
+
+const rewriteString = (source: string): string =>
+    source.split(BENTO_VARIABLE_PREFIX).join(SDK_VARIABLE_PREFIX).split(BENTO_DARK_THEME_SELECTOR).join(SDK_DARK_THEME_SELECTOR);
 
 const rewriteSource = (source: string | Uint8Array): string | Uint8Array => {
     const sourceString = sourceToString(source);
 
-    if (!sourceString.includes(BENTO_VARIABLE_PREFIX)) return source;
+    if (!hasBentoStyles(sourceString)) return source;
 
     const rewrittenSource = rewriteString(sourceString);
     return typeof source === 'string' ? rewrittenSource : textEncoder.encode(rewrittenSource);
@@ -25,7 +30,7 @@ export const rewriteBentoCssVariables = (): Plugin => ({
     name: 'rewrite-bento-css-variables',
     enforce: 'post',
     transform(code, id) {
-        if (!isStyleModule(id) || !code.includes(BENTO_VARIABLE_PREFIX)) return null;
+        if (!isStyleModule(id) || !hasBentoStyles(code)) return null;
 
         return {
             code: rewriteString(code),

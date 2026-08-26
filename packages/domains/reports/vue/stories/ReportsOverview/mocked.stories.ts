@@ -1,7 +1,6 @@
 import type { Meta } from '@storybook/vue3';
 import { ReportsOverviewMeta } from './meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
-import type { CoreOptions } from '@integration-components/core/vue';
 import type { ReportsOverviewExternalProps } from '../../src';
 import { REPORTS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/reports';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, getCustomDataReports } from '../../../fixtures/data/ReportsOverview';
@@ -18,21 +17,6 @@ const defaultArgs = { mockedApi: true } as const;
 export const Default: ElementStory<ReportsOverviewExternalProps> = {
     name: 'Default',
     args: defaultArgs,
-};
-
-export const CustomDarkTheme: ElementStory<ReportsOverviewExternalProps, object, CoreOptions> = {
-    name: 'Custom dark theme',
-    args: {
-        ...defaultArgs,
-        coreOptions: {
-            theme: {
-                mode: 'dark',
-                variables: {
-                    primary: '#0066ff',
-                },
-            },
-        },
-    },
 };
 
 export const DataCustomization: ElementStory<ReportsOverviewExternalProps> = {

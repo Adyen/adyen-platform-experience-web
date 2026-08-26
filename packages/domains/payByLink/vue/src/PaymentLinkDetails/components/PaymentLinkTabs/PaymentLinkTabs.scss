@@ -14,7 +14,7 @@
         /* Overriding Bento link colors within this scope to match design */
         --adyen-sdk-color-link-primary: #{style.token(color-label-primary)};
         --adyen-sdk-color-link-primary-active: #{style.token(color-label-primary-active)};
-        --adyen-sdk-color-link-primary-disabled: #{style.token(color-label-primary-disabled)};
+        --adyen-sdk-color-link-primary-disabled: #{style.token(color-label-disabled)};
         --adyen-sdk-color-link-primary-hover: #{style.token(color-label-primary-hover)};
 
         align-items: center;

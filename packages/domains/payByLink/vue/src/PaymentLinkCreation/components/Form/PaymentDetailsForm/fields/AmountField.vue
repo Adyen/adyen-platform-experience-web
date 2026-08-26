@@ -96,7 +96,7 @@ function onDropdownInput(value: string | number | { value?: string | number } | 
             :error="!!error"
             :dropdown="dropdownProps"
             dropdown-position="start"
-            @input="onAmountInput"
+            @update:model-value="onAmountInput"
             @dropdown-input="onDropdownInput"
         />
     </FieldWrapper>

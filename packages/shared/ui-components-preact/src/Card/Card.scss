@@ -63,9 +63,9 @@
     }
 
     &__title {
-        font-size: style.token(font-size-medium);
-        font-weight: style.token(font-size-300);
-        line-height: style.token(line-height-300);
+        font-size: style.token(text-title-font-size);
+        font-weight: style.token(text-title-font-weight);
+        line-height: style.token(text-title-line-height);
     }
 
     &__title-container {

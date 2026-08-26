@@ -116,7 +116,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                     :min="1"
                     :readonly="config.readOnly"
                     :error="!!error"
-                    @input="onQuantityInput"
+                    @update:model-value="onQuantityInput"
                 />
                 <BentoDropdown
                     :items="unitItems"

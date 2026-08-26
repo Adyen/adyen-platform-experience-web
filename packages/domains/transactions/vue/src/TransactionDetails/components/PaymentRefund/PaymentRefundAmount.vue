@@ -48,8 +48,8 @@ watch(
     { immediate: true }
 );
 
-function onInput(rawValue: string) {
-    const value = rawValue.trim();
+function onInput(rawValue: string | number) {
+    const value = String(rawValue).trim();
     const exp = currencyExponent.value;
     const parsed = parseFloat(value);
     const amount = isNaN(parsed) ? 0 : Math.trunc(+`${parsed}e${exp}`);
@@ -80,11 +80,11 @@ function onInput(rawValue: string) {
                 variant="static-value"
                 type="number"
                 :disabled="props.disabled"
-                :value="inputValue"
+                :model-value="inputValue"
                 :min="0"
-                :errorMessage="errorMessage || undefined"
+                :error-message="errorMessage || undefined"
                 :lang="i18n.locale"
-                @input="onInput"
+                @update:model-value="onInput"
             >
                 <template v-if="props.currency" #staticValue>{{ props.currency }}</template>
             </BentoInputField>

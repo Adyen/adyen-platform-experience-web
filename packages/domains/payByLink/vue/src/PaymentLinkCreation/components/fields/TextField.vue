@@ -34,7 +34,7 @@ function onInput(value: string | number) {
             :error="!!error"
             :maxlength="props.maxlength"
             :description="props.supportText"
-            @input="onInput"
+            @update:model-value="onInput"
         />
     </FieldWrapper>
 </template>

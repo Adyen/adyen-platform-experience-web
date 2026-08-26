@@ -1,5 +1,4 @@
-import '@adyen/bento-design-tokens/dist/css/bento/variables.css';
-import '@integration-components/style/vue-theme.scss';
+import '../theme/styles';
 
 export type {
     CoreOptions,

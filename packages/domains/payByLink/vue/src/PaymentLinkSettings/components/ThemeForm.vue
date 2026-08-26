@@ -71,11 +71,12 @@ function removeFieldFromThemePayload(field: string) {
     }
 }
 
-function onBrandNameChange(value: string) {
+function onBrandNameChange(value: string | number) {
+    const name = String(value);
     showMissingBrandName.value = false;
-    brandName.value = value;
+    brandName.value = name;
     const nextFormData = cloneFormData(themePayload);
-    nextFormData.set(ThemeFormDataRequest.BRAND, value);
+    nextFormData.set(ThemeFormDataRequest.BRAND, name);
     themePayload = nextFormData;
     setPayload(nextFormData);
 }
@@ -140,10 +141,10 @@ function getLogoUrl(type: LogoType) {
                     :readonly="!!isSaving"
                     :lang="i18n.locale"
                     :label="i18n.get('payByLink.settings.theme.brandName.input.label')"
-                    :value="brandName"
+                    :model-value="brandName"
                     :placeholder="i18n.get('payByLink.settings.theme.brandName.input.placeholder')"
                     :error-message="showMissingBrandName ? i18n.get('payByLink.settings.theme.inputs.brandName.errors.missing') : undefined"
-                    @input="onBrandNameChange"
+                    @update:model-value="onBrandNameChange"
                 />
             </div>
             <div v-for="logoType in logoOptionsList" :key="logoType" class="adyen-pe-payment-link-settings__input-container">

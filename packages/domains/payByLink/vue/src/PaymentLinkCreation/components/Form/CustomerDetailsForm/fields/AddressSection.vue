@@ -95,7 +95,7 @@ function onInput(field: string, value: string | number) {
                         :readonly="getConfig(field).readOnly"
                         :error="!!getError(field)"
                         :maxlength="getMaxLength(field)"
-                        @input="(value: string | number) => onInput(field, value)"
+                        @update:model-value="(value: string | number) => onInput(field, value)"
                     />
                 </FieldWrapper>
             </template>
@@ -119,7 +119,7 @@ function onInput(field: string, value: string | number) {
                         :readonly="getConfig(field).readOnly"
                         :error="!!getError(field)"
                         :maxlength="getMaxLength(field)"
-                        @input="(value: string | number) => onInput(field, value)"
+                        @update:model-value="(value: string | number) => onInput(field, value)"
                     />
                 </FieldWrapper>
             </template>
