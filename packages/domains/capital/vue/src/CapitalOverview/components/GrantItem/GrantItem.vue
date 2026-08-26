@@ -5,16 +5,20 @@ import {
     BentoButton,
     BentoCard,
     BentoTag,
+    BentoToggleButton,
     BentoTooltipDirective as vBentoTooltip,
     BentoTypography,
     type BentoTagVariant,
 } from '@adyen/bento-vue3';
+import ChevronDownIcon from '@adyen/ui-assets-icons-16/vue/chevron-down';
+import ChevronUpIcon from '@adyen/ui-assets-icons-16/vue/chevron-up';
 import { getGrantConfig, type GrantStatusVariant } from '@integration-components/capital/domain';
 import { useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '@integration-components/utils';
 import type { IGrant } from '@integration-components/types';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
+import GrantDetails from '../GrantDetails/GrantDetails.vue';
 import { GRANT_ITEM_CLASS_NAMES } from './constants';
 import './GrantItem.scss';
 
@@ -149,11 +153,18 @@ const toggleGrantDetails = () => {
                         </BentoButton>
                     </div>
                 </div>
-            </template>
-
-            <template v-if="grantConfig.hasDetails && isGrantDetailsOpen">
-                <!-- TODO: Implement GrantDetails and render it with props.grant. -->
-                <div />
+                <GrantDetails v-if="grantConfig.hasDetails && isGrantDetailsOpen" :grant="props.grant" />
+                <BentoToggleButton
+                    v-if="grantConfig.hasDetails"
+                    :aria-label="i18n.get('capital.overview.grants.item.details.a11y.label')"
+                    :class="GRANT_ITEM_CLASS_NAMES.detailsToggle"
+                    :toggled="isGrantDetailsOpen"
+                    variant="tertiary"
+                    @click="toggleGrantDetails"
+                >
+                    <ChevronUpIcon v-if="isGrantDetailsOpen" />
+                    <ChevronDownIcon v-else />
+                </BentoToggleButton>
             </template>
         </BentoCard>
 
