@@ -81,4 +81,28 @@ export const ErrorAccountHolder: ElementStory<CapitalOfferExternalProps> = {
     },
 };
 
+export const ErrorOffer: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error - Offer',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorOffer,
+        },
+    },
+};
+
+export const ErrorTemporaryOffer: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error (temporary) - Offer',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorTemporaryOffer,
+        },
+    },
+};
+
 export default meta;
