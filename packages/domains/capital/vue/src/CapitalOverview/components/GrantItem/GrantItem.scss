@@ -86,9 +86,6 @@
 
     .b-structured-list-item {
         display: flex;
-
-        &__value {
-            justify-self: flex-end;
-        }
+        justify-content: space-between;
     }
 }

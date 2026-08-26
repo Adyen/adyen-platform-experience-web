@@ -24,7 +24,7 @@ const emit = defineEmits<{
 
 const ANALYTICS_EVENT_DELAY_MS = 50;
 const { i18n, environment: coreEnvironment } = useCoreContext();
-const environment: string | undefined = coreEnvironment;
+const environment: string = coreEnvironment ? coreEnvironment : 'test';
 const config = useConfigContext();
 const userEvents = useEventDispatcherContext();
 const { dateFormat } = useTimezoneAwareDateFormatting();
