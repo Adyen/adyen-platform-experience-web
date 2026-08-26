@@ -8,6 +8,7 @@ import { getBaseEnvDefines } from '../../../../../../config/defines/base-env.ts'
 
 const root = '../../../../../..';
 const rootDir = resolve(import.meta.dirname, root);
+const isKycCustomElement = (tag: string) => tag === 'adyen-business-financing' || tag === 'adyen-terms-of-service-management';
 
 const config: StorybookConfig = {
     stories: [`${root}/packages/domains/*/vue/stories/**/*.stories.*`],
@@ -34,7 +35,13 @@ const config: StorybookConfig = {
             // end tag".
             plugins: [
                 ...(() => {
-                    const result = vue();
+                    const result = vue({
+                        template: {
+                            compilerOptions: {
+                                isCustomElement: isKycCustomElement,
+                            },
+                        },
+                    });
                     const list = Array.isArray(result) ? result : [result];
                     return list.map(p => ({ ...(p as any), enforce: 'pre' as const }));
                 })(),

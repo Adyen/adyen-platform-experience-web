@@ -19,6 +19,7 @@ import { useCoreContext, useEventDispatcherContext } from '@integration-componen
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '@integration-components/utils';
 import type { IGrant } from '@integration-components/types';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
+import GrantActions from '../GrantActions/GrantActions.vue';
 import GrantDetails from '../GrantDetails/GrantDetails.vue';
 import { GRANT_ITEM_CLASS_NAMES } from './constants';
 import './GrantItem.scss';
@@ -88,9 +89,9 @@ const copyGrantId = () => {
     void navigator.clipboard?.writeText(props.grant.id);
 };
 
-// const handleActionsComplete = () => {
-//     areActionsLocallyCompleted.value = true;
-// };
+const handleActionsComplete = () => {
+    areActionsLocallyCompleted.value = true;
+};
 
 const toggleGrantDetails = () => {
     if (grantConfig.value.hasDetails) {
@@ -197,15 +198,16 @@ const toggleGrantDetails = () => {
         </BentoCard>
 
         <template v-if="grantConfig.hasAlerts">
-            <!-- TODO: Implement GrantActions, wire its completion event to areActionsLocallyCompleted -->
-            <BentoAlert :class="GRANT_ITEM_CLASS_NAMES.alert" type="highlight">
-                {{
-                    i18n.get(
-                        props.grant.missingActions?.length
-                            ? 'capital.overview.grants.common.statuses.actionNeeded'
-                            : 'capital.overview.grants.item.alerts.processingRequest'
-                    )
-                }}
+            <GrantActions
+                v-if="props.grant.missingActions?.length"
+                :class-name="GRANT_ITEM_CLASS_NAMES.alert"
+                :grant-id="props.grant.id"
+                :missing-actions="props.grant.missingActions"
+                :offer-expires-at="props.grant.offerExpiresAt"
+                @complete="handleActionsComplete"
+            />
+            <BentoAlert v-else :class="GRANT_ITEM_CLASS_NAMES.alert" type="highlight">
+                {{ i18n.get('capital.overview.grants.item.alerts.processingRequest') }}
             </BentoAlert>
         </template>
     </div>

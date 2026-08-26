@@ -1,0 +1,14 @@
+@use '@integration-components/style';
+
+.adyen-pe-grant-actions-hosted {
+    &__button {
+        margin-top: style.token(spacer-030);
+    }
+
+    &__actions-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
+        padding-left: style.token(spacer-070);
+    }
+}

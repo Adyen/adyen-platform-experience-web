@@ -20,6 +20,7 @@ const coreContextValue = computed<CoreContextValue>(() => ({
     getDatasetAsset: props.getDatasetAsset,
     getCdnConfig: props.getCdnConfig,
     getCdnDataset: props.getCdnDataset,
+    environment: props.environment,
 }));
 
 provide(CORE_CONTEXT_KEY, coreContextValue.value);
