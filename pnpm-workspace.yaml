@@ -27,7 +27,6 @@ catalog:
   webpack: ^5.106.2
 
 overrides:
-  '@adyen/adyen-shared-web': link:../adyen-shared-web
   "@babel/core": "7.29.6"
   "@babel/plugin-transform-modules-systemjs": "7.29.4"
   "@types/node": "24.10.13"
