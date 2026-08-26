@@ -33,7 +33,6 @@ const errorInfo = computed<ErrorMessageInfo>(() => {
     const commonErrorMessage = getCommonErrorMessage(capitalError.value, props.onContactSupport);
     const error = commonErrorMessage ? commonErrorMessage : getCapitalErrorMessage(capitalError.value, props.onContactSupport);
     const { message, translationValues, ...capitalErrorMessage } = error;
-    console.log(error);
     return {
         ...capitalErrorMessage,
         messages: message ? (Array.isArray(message) ? message : [message]) : [],
