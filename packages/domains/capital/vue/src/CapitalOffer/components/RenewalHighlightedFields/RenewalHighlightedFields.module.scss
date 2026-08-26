@@ -1,0 +1,20 @@
+@use '@integration-components/style' as style;
+
+.root {
+    align-items: center;
+    background: style.token(color-background-selected);
+    border-radius: style.token(border-radius-m);
+    display: flex;
+    gap: style.token(spacer-100);
+    justify-content: space-between;
+    padding: style.token(spacer-070);
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    color: style.token(color-label-secondary);
+}
