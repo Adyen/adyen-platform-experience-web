@@ -3,14 +3,67 @@ import { AdyenPlatformExperience } from '@integration-components/sdk-internal';
 import { CapitalOverviewMeta } from './meta';
 import { capitalOverviewHandlers } from '../../../mocks/mock-server';
 import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import type { Meta, StoryObj } from '@storybook/vue3';
+import type { Decorator, Meta, StoryObj } from '@storybook/vue3';
 import { CapitalOverviewElement, type CapitalOverviewExternalProps } from '../../src/CapitalOverview';
 
 type ElementStory<ExtraProps = object> = StoryObj<CapitalOverviewExternalProps & ExtraProps & { mockedApi?: boolean; skipDecorators?: boolean }>;
+type ConditionalMountFlag = 'mountIfInUnsupportedRegion' | 'mountIfIneligible';
+type ConditionalMountArgs = CapitalOverviewExternalProps & Partial<Record<ConditionalMountFlag, boolean>>;
+type GuardedCapitalState = 'isInUnsupportedRegion' | 'isUnqualified';
 
 const meta: Meta<ElementProps<typeof CapitalOverviewElement>> = {
     ...CapitalOverviewMeta,
     title: 'Mocked/Capital/Capital Overview',
+};
+
+const createConditionalMountDecorator = (guardedState: GuardedCapitalState, mountIfFlag: ConditionalMountFlag): Decorator<ConditionalMountArgs> => {
+    return (_story, context) =>
+        defineComponent({
+            setup() {
+                const componentRoot = ref<HTMLElement | null>(null);
+                let capitalOverview: CapitalOverviewElement | undefined;
+                let requestId = 0;
+
+                const mountCapitalOverview = async () => {
+                    const currentRequestId = ++requestId;
+                    capitalOverview?.unmount();
+
+                    const core = await AdyenPlatformExperience({
+                        onSessionCreate: getMySessionToken as any,
+                    });
+                    const element = new CapitalOverviewElement({
+                        core,
+                        hideTitle: context.args.hideTitle,
+                    });
+                    const { state } = await element.getState();
+
+                    if (currentRequestId !== requestId) {
+                        element.unmount();
+                        return;
+                    }
+
+                    capitalOverview = element;
+                    if (state !== guardedState || context.args[mountIfFlag]) {
+                        element.mount(componentRoot.value!);
+                    }
+                };
+
+                onMounted(() => {
+                    watch(
+                        () => [context.args.hideTitle, context.args[mountIfFlag]],
+                        () => void mountCapitalOverview(),
+                        { immediate: true }
+                    );
+                });
+
+                onBeforeUnmount(() => {
+                    requestId++;
+                    capitalOverview?.unmount();
+                });
+
+                return () => h('div', { ref: componentRoot, class: 'component-wrapper' });
+            },
+        });
 };
 
 export const UnsupportedRegion: ElementStory<{ mountIfInUnsupportedRegion: boolean }> = {
@@ -25,55 +78,7 @@ export const UnsupportedRegion: ElementStory<{ mountIfInUnsupportedRegion: boole
             handlers: capitalOverviewHandlers.unsupportedRegion,
         },
     },
-    decorators: [
-        (_story, context) =>
-            defineComponent({
-                setup() {
-                    const componentRoot = ref<HTMLElement | null>(null);
-                    let capitalOverview: CapitalOverviewElement | undefined;
-                    let requestId = 0;
-
-                    const mountCapitalOverview = async () => {
-                        const currentRequestId = ++requestId;
-                        capitalOverview?.unmount();
-
-                        const core = await AdyenPlatformExperience({
-                            onSessionCreate: getMySessionToken as any,
-                        });
-                        const element = new CapitalOverviewElement({
-                            core,
-                            hideTitle: context.args.hideTitle,
-                        });
-                        const { state } = await element.getState();
-
-                        if (currentRequestId !== requestId) {
-                            element.unmount();
-                            return;
-                        }
-
-                        capitalOverview = element;
-                        if (state !== 'isInUnsupportedRegion' || context.args.mountIfInUnsupportedRegion) {
-                            element.mount(componentRoot.value!);
-                        }
-                    };
-
-                    onMounted(() => {
-                        watch(
-                            () => [context.args.hideTitle, context.args.mountIfInUnsupportedRegion],
-                            () => void mountCapitalOverview(),
-                            { immediate: true }
-                        );
-                    });
-
-                    onBeforeUnmount(() => {
-                        requestId++;
-                        capitalOverview?.unmount();
-                    });
-
-                    return () => h('div', { ref: componentRoot, class: 'component-wrapper' });
-                },
-            }),
-    ],
+    decorators: [createConditionalMountDecorator('isInUnsupportedRegion', 'mountIfInUnsupportedRegion')],
 };
 
 export const Ineligible: ElementStory<{ mountIfIneligible: boolean }> = {
@@ -88,55 +93,7 @@ export const Ineligible: ElementStory<{ mountIfIneligible: boolean }> = {
             handlers: capitalOverviewHandlers.ineligible,
         },
     },
-    decorators: [
-        (_story, context) =>
-            defineComponent({
-                setup() {
-                    const componentRoot = ref<HTMLElement | null>(null);
-                    let capitalOverview: CapitalOverviewElement | undefined;
-                    let requestId = 0;
-
-                    const mountCapitalOverview = async () => {
-                        const currentRequestId = ++requestId;
-                        capitalOverview?.unmount();
-
-                        const core = await AdyenPlatformExperience({
-                            onSessionCreate: getMySessionToken as any,
-                        });
-                        const element = new CapitalOverviewElement({
-                            core,
-                            hideTitle: context.args.hideTitle,
-                        });
-                        const { state } = await element.getState();
-
-                        if (currentRequestId !== requestId) {
-                            element.unmount();
-                            return;
-                        }
-
-                        capitalOverview = element;
-                        if (state !== 'isUnqualified' || context.args.mountIfIneligible) {
-                            element.mount(componentRoot.value!);
-                        }
-                    };
-
-                    onMounted(() => {
-                        watch(
-                            () => [context.args.hideTitle, context.args.mountIfIneligible],
-                            () => void mountCapitalOverview(),
-                            { immediate: true }
-                        );
-                    });
-
-                    onBeforeUnmount(() => {
-                        requestId++;
-                        capitalOverview?.unmount();
-                    });
-
-                    return () => h('div', { ref: componentRoot, class: 'component-wrapper' });
-                },
-            }),
-    ],
+    decorators: [createConditionalMountDecorator('isUnqualified', 'mountIfIneligible')],
 };
 
 export const FirstTimeEligible: ElementStory<typeof CapitalOverviewElement> = {
