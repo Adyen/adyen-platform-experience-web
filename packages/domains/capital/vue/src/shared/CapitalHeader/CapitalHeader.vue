@@ -12,7 +12,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const title = computed(() => i18n.get(props.titleKey));
+const title = computed(() => (props.hideTitle ? undefined : i18n.get(props.titleKey)));
 const description = computed(() => {
     const key = `capital.common.loanProviderInfo.${props.region}`;
     return i18n.has(key) ? i18n.get(key) : undefined;
@@ -20,10 +20,11 @@ const description = computed(() => {
 </script>
 
 <template>
-    <div :class="styles.root">
-        <BentoTypography v-if="props.hideTitle" el="div" :class="styles.description">
+    <div v-if="title || description" :class="styles.root">
+        <BentoHeader v-if="title" variant="component" :title="title" :description="description" />
+        <BentoTypography v-else el="div" :class="styles.description">
             {{ description }}
         </BentoTypography>
-        <BentoHeader v-else variant="component" :title="title" :description="description" />
     </div>
 </template>
+xx

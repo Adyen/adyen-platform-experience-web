@@ -2,7 +2,7 @@ import { AdyenErrorResponse, AdyenPlatformExperienceError, type TranslationKey }
 
 export type CapitalErrorMessage = {
     title: TranslationKey;
-    message?: TranslationKey | TranslationKey[];
+    message: TranslationKey | TranslationKey[];
     refreshComponent?: boolean;
     onContactSupport?: () => void;
     translationValues?: { [key in TranslationKey]?: string };
@@ -91,7 +91,7 @@ export const getCapitalErrorMessageInfo = (
     onContactSupport?: () => void
 ): CapitalErrorMessageInfo => {
     const { message, translationValues, ...rest } = getCapitalErrorMessage(error, onContactSupport);
-    const messages = message ? (Array.isArray(message) ? message : [message]) : [];
+    const messages = Array.isArray(message) ? message : [message];
     const requestId = translationValues && Object.values(translationValues)[0];
     return { ...rest, messages, requestId };
 };
