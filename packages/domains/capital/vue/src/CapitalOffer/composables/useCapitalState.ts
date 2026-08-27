@@ -5,21 +5,21 @@ import { useAsyncRequest } from '@integration-components/composables-vue';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 
 export const useCapitalState = (isEnabled: () => boolean) => {
-    const { endpoints } = useConfigContext();
+    const config = useConfigContext();
     const { getCdnConfig } = useCoreContext();
     const request = useAsyncRequest<EnhancedCapitalState | undefined>();
-    const getCapitalState = computed(() => endpoints.getCapitalState);
+    const getCapitalState = computed(() => config.endpoints.getCapitalState);
 
     watch(
         [isEnabled, getCapitalState],
-        ([enabled, getCapitalState]) => {
+        ([enabled, getCapitalStateRequest]) => {
             request.abort();
 
-            if (!enabled || !getCapitalState) return;
+            if (!enabled || !getCapitalStateRequest) return;
 
             void request.execute(async signal => {
                 const [backendCapitalState, supportedRegions] = await Promise.all([
-                    getCapitalState({ signal }, { query: EMPTY_OBJECT }),
+                    getCapitalStateRequest({ signal }, { query: EMPTY_OBJECT }),
                     getSupportedRegions(getCdnConfig),
                 ]);
 

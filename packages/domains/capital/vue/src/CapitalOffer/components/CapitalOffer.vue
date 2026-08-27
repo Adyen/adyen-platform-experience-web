@@ -61,26 +61,24 @@ const handleSummaryBack = () => {
             :empty-grant-offer="!capitalState.dynamicOffer"
             :unsupported-region="!capitalState.isRegionSupported"
         />
-        <template v-else>
-            <OfferSelection
-                v-if="!selectedOffer"
-                :capital-state="capitalState"
-                :selected-amount="selectedAmount"
-                :selected-term="selectedTerm"
-                :on-selected-amount-change="value => (selectedAmount = value)"
-                :on-selected-term-change="term => (selectedTerm = term)"
-                :on-offer-select="handleOfferSelect"
-                :on-contact-support="props.onContactSupport"
-                :on-offer-dismiss="props.onOfferDismiss"
-            />
-            <OfferSummary
-                v-else
-                :capital-state="capitalState"
-                :grant-offer="selectedOffer"
-                :on-back="handleSummaryBack"
-                :on-funds-request="props.onFundsRequest"
-                :on-contact-support="props.onContactSupport"
-            />
-        </template>
+        <OfferSelection
+            v-else-if="!selectedOffer"
+            :capital-state="capitalState"
+            :selected-amount="selectedAmount"
+            :selected-term="selectedTerm"
+            :on-selected-amount-change="value => (selectedAmount = value)"
+            :on-selected-term-change="term => (selectedTerm = term)"
+            :on-offer-select="handleOfferSelect"
+            :on-contact-support="props.onContactSupport"
+            :on-offer-dismiss="props.onOfferDismiss"
+        />
+        <OfferSummary
+            v-else
+            :capital-state="capitalState"
+            :grant-offer="selectedOffer"
+            :on-back="handleSummaryBack"
+            :on-funds-request="props.onFundsRequest"
+            :on-contact-support="props.onContactSupport"
+        />
     </template>
 </template>
