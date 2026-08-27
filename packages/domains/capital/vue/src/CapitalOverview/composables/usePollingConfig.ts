@@ -7,7 +7,11 @@ export const usePollingConfig = () => {
     const pollingConfig = ref<PollingConfig>(DEFAULT_POLLING_CONFIG);
 
     const fetchPollingConfig = async () => {
-        pollingConfig.value = await getDomainPollingConfig(getCdnConfig);
+        try {
+            pollingConfig.value = await getDomainPollingConfig(getCdnConfig);
+        } catch {
+            // Fallback to DEFAULT_POLLING_CONFIG is already set initially
+        }
     };
 
     return { fetchPollingConfig, pollingConfig };

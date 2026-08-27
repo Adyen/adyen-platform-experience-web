@@ -10,7 +10,6 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewExternalPro
 
     constructor(props: CapitalOverviewExternalProps) {
         super(CapitalOverviewContainer, props, 'capitalOverview');
-        this.customClassNames = 'adyen-pe-capital-overview-component';
     }
 
     public async getState(): Promise<CapitalComponentState> {

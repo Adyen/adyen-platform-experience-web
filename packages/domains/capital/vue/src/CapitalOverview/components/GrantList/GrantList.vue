@@ -22,7 +22,7 @@ const goToNextStep = () => {
     isCapitalOfferVisible.value = true;
 };
 
-console.log(props.grants);
+// TODO: Enable these handlers when the Vue offer component is implemented.
 //
 // const goBackToList = () => {
 //     if (props.onOfferDismiss) {

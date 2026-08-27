@@ -8,7 +8,7 @@ export const useSupportedRegions = (): SupportedRegions => {
     const [supportedRegions, setSupportedRegions] = useState<SupportedRegions>(localSupportedRegions);
 
     useEffect(() => {
-        void getSupportedRegions(getCdnConfig).then(setSupportedRegions);
+        getSupportedRegions(getCdnConfig).then(setSupportedRegions);
     }, [getCdnConfig]);
 
     return supportedRegions;

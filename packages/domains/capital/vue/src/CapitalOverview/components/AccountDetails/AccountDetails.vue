@@ -63,7 +63,9 @@ const accountDetails = computed<AccountDetail[]>(() => {
 });
 
 const copyValue = (value: string) => {
-    void navigator.clipboard?.writeText(value);
+    void navigator.clipboard?.writeText(value).catch(() => {
+        // Silently ignore or handle copy failure
+    });
 };
 </script>
 

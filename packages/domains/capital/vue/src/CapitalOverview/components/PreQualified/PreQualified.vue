@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import type { EnhancedCapitalState, OnFundsRequestCallback } from '@integration-components/capital/domain';
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import PreQualifiedIntro from '../PreQualifiedIntro/PreQualifiedIntro.vue';
@@ -15,7 +15,13 @@ const props = defineProps<{
 
 type PreQualifiedState = 'noOffer' | 'intro' | 'offer';
 
-const state = ref<PreQualifiedState>(!props.capitalState.dynamicOffer ? 'noOffer' : props.skipPreQualifiedIntro ? 'offer' : 'intro');
+const getStateFromProps = (): PreQualifiedState => (!props.capitalState.dynamicOffer ? 'noOffer' : props.skipPreQualifiedIntro ? 'offer' : 'intro');
+
+const state = ref<PreQualifiedState>(getStateFromProps());
+
+watch([() => props.capitalState.dynamicOffer, () => props.skipPreQualifiedIntro], () => {
+    state.value = getStateFromProps();
+});
 
 const handleOfferOptionsRequest = () => {
     if (props.onOfferOptionsRequest) {
