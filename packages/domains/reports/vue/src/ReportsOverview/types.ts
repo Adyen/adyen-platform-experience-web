@@ -9,7 +9,7 @@ export interface DataCustomizationList<Fields extends string> {
 }
 
 // ── Component prop types ──
-export interface ReportsOverviewExternalProps extends ReportsOverviewProps {
+export interface ReportsOverviewExternalProps extends Omit<ReportsOverviewProps, 'ref'> {
     core: CoreInstance;
 }
 

@@ -6,7 +6,7 @@ import { PaymentLinksOverviewModalType } from './types';
 import PaymentLinkCreationContainer from '../../PaymentLinkCreation/components/PaymentLinkCreationContainer/PaymentLinkCreationContainer';
 import PaymentLinkSettingsContainer from '../../PaymentLinkSettings/components/PaymentLinkSettingsContainer/PaymentLinkSettingsContainer';
 import { PaymentLinksOverviewComponentProps, StoreIds } from '../types';
-import { PaymentLinkCreationFormValues } from '../../PaymentLinkCreation/components/types';
+import { PaymentLinkCreationFormValues } from '../../PaymentLinkCreation/types';
 
 export interface PaymentLinksOverviewModalProps {
     isModalVisible: boolean;

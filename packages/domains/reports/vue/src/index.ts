@@ -1,1 +1,2 @@
-export { ReportsOverview } from './ReportsOverview';
+export { ReportsOverviewElement } from './ReportsOverview';
+export type { ReportsOverviewExternalProps } from './ReportsOverview';

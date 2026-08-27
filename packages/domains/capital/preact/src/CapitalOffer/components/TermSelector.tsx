@@ -3,7 +3,7 @@ import { TypographyElement, TypographyVariant } from '@integration-components/ui
 import Card from '@integration-components/ui-components-preact/Card/Card';
 import { useCoreContext } from '@integration-components/core/preact';
 import { IGrantOfferResponseDTO } from '@integration-components/types';
-import { getPercentage } from './utils/utils';
+import { calculatePercentageFromBasisPoints } from '@integration-components/capital/domain';
 import { useFormatTermLabel } from './hooks/useFormatTermLabel';
 
 type TermSelectorProps = {
@@ -72,7 +72,7 @@ export const TermSelector = ({
                                     termOffer && (
                                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION}>
                                             {i18n.get('capital.offer.selection.termOptions.dailyRatePercentage', {
-                                                values: { percentage: getPercentage(termOffer.repaymentRate) },
+                                                values: { percentage: calculatePercentageFromBasisPoints(termOffer.repaymentRate) },
                                             })}
                                         </Typography>
                                     )

@@ -1,17 +1,22 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import { BentoStructuredList, BentoStructuredListItem, BentoTypography, BentoLink, BentoButton } from '@adyen/bento-vue3';
+import { useLiveAnnouncement } from '@integration-components/composables-vue';
 import {
-    getTransactionRefundReason,
-    TX_DATA_LIST,
-    TX_DETAILS_FIELDS_REMAPS,
-    sharedTransactionDetailsEventProperties,
-} from '../../../../../domain/src';
+    BentoStructuredList,
+    BentoStructuredListItem,
+    BentoTypography,
+    BentoLink,
+    BentoButton,
+    BentoTooltipDirective as vBentoTooltip,
+} from '@adyen/bento-vue3';
+import { getTransactionRefundReason, TX_DETAILS_FIELDS_REMAPS, sharedTransactionDetailsEventProperties } from '../../../../../domain/src';
 import { normalizeCustomFields } from '@integration-components/utils';
 import type { TransactionDetails, TransactionDetailsCustomization } from '../../../../../domain/src';
 import type { TranslationKey } from '@integration-components/core';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
+import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
+import styles from './PaymentDetails.module.scss';
 
 const props = defineProps<{
     dataCustomization?: { details?: TransactionDetailsCustomization };
@@ -20,7 +25,9 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { announce, announcement } = useLiveAnnouncement();
 const userEvents = useEventDispatcherContext();
+const copiedItemId = ref<string>();
 
 const paymentDataKeys = {
     account: 'transactions.details.fields.account',
@@ -112,8 +119,12 @@ const customItems = computed(() =>
         }))
 );
 
-function onCopyText(text: string, trackingName?: string) {
-    navigator.clipboard?.writeText(text);
+function onCopyText(text: string, itemId?: string, trackingName?: string) {
+    if (!navigator.clipboard) return;
+
+    navigator.clipboard.writeText(text);
+    copiedItemId.value = itemId;
+
     if (trackingName) {
         userEvents.addEvent?.('Clicked button', {
             ...sharedTransactionDetailsEventProperties,
@@ -122,19 +133,33 @@ function onCopyText(text: string, trackingName?: string) {
             subSectionName: trackingName,
         });
     }
+
+    announce(() => i18n.get('common.actions.copy.labels.done'));
+}
+
+function getCopyTooltip(itemId?: string) {
+    const key = copiedItemId.value === itemId ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default';
+    return i18n.get(key);
+}
+
+function resetCopiedItem() {
+    copiedItemId.value = undefined;
 }
 </script>
 
 <template>
-    <BentoStructuredList :class="TX_DATA_LIST">
+    <BentoStructuredList :class="styles.list">
         <BentoStructuredListItem v-for="item in standardItems" :key="item.id ?? item.key" :label="i18n.get(item.key)">
             <template v-if="item.copyable" #default>
-                <div style="display: flex; align-items: center; gap: 4px">
+                <div :class="styles.copyableValue">
                     <BentoTypography variant="body">{{ item.value }}</BentoTypography>
                     <BentoButton
                         variant="tertiary"
+                        v-bento-tooltip="getCopyTooltip(item.id)"
                         :aria-label="item.copyAriaLabelKey ? i18n.get(item.copyAriaLabelKey) : undefined"
-                        @click="() => onCopyText(item.value, item.trackingName)"
+                        @click="() => onCopyText(item.value, item.id, item.trackingName)"
+                        @blur="resetCopiedItem"
+                        @mouseleave="resetCopiedItem"
                     >
                         <CopyIcon />
                     </BentoButton>
@@ -163,4 +188,5 @@ function onCopyText(text: string, trackingName?: string) {
             <BentoTypography v-else variant="body" :class="item.config?.className">{{ item.value }}</BentoTypography>
         </BentoStructuredListItem>
     </BentoStructuredList>
+    <span :class="accessibilityStyles.visuallyHidden" aria-atomic="true" aria-live="polite">{{ announcement }}</span>
 </template>

@@ -1,4 +1,4 @@
-import { PaymentLinkCreationFormValues } from '../../../types';
+import { PaymentLinkCreationFormValues } from '../../../../types';
 import { useCoreContext } from '@integration-components/core/preact';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';

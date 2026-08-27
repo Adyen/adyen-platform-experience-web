@@ -1,32 +1,35 @@
-import { IDynamicOffersConfig, IGrant } from '@integration-components/types';
-import PreQualifiedIntro from '../PreQualifiedIntro';
+import PreQualifiedIntro from '../PreQualifiedIntro/PreQualifiedIntro';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
+import { EnhancedCapitalState, OnFundsRequestCallback } from '@integration-components/capital/domain';
+import { CapitalHeader } from '../../../internal/CapitalHeader';
 
 type PreQualifiedProps = {
-    dynamicOffer: Required<IDynamicOffersConfig>;
+    capitalState: EnhancedCapitalState;
     hideTitle: boolean | undefined;
-    onFundsRequest: (data: IGrant) => void;
+    onFundsRequest: OnFundsRequestCallback;
     onOfferDismiss?: () => void;
     onOfferOptionsRequest?: () => void;
     skipPreQualifiedIntro?: boolean;
 };
 
 export const PreQualified = ({
+    capitalState,
     hideTitle,
-    dynamicOffer,
     skipPreQualifiedIntro,
     onOfferOptionsRequest,
     onFundsRequest,
     onOfferDismiss,
 }: PreQualifiedProps) => {
-    const [state, setState] = useState<'intro' | 'capitalOffer'>(skipPreQualifiedIntro ? 'capitalOffer' : 'intro');
+    const [state, setState] = useState<'noOffer' | 'intro' | 'offer'>(
+        !capitalState.dynamicOffer ? 'noOffer' : skipPreQualifiedIntro ? 'offer' : 'intro'
+    );
 
     const handleOfferOptionsRequest = useCallback(() => {
         if (onOfferOptionsRequest) {
             onOfferOptionsRequest();
         } else {
-            setState('capitalOffer');
+            setState('offer');
         }
     }, [onOfferOptionsRequest]);
 
@@ -41,13 +44,26 @@ export const PreQualified = ({
 
     return (
         <>
-            {state === 'intro' ? (
-                <PreQualifiedIntro hideTitle={hideTitle} dynamicOfferConfig={dynamicOffer} onOfferOptionsRequest={handleOfferOptionsRequest} />
-            ) : (
+            {state === 'noOffer' && (
+                <div>
+                    <CapitalHeader hideTitle={hideTitle} titleKey={'capital.overview.common.titles.qualificationIntro'} />
+                    <CapitalOffer hideTitle onFundsRequest={onFundsRequest} externalCapitalState={capitalState} />
+                </div>
+            )}
+            {state === 'intro' && capitalState.dynamicOffer?.maxAmount && (
+                <PreQualifiedIntro
+                    hideTitle={hideTitle}
+                    maxAmount={capitalState.dynamicOffer.maxAmount}
+                    onOfferOptionsRequest={handleOfferOptionsRequest}
+                    region={capitalState.region}
+                />
+            )}
+            {state === 'offer' && (
                 <CapitalOffer
+                    hideTitle={hideTitle}
                     onFundsRequest={onFundsRequest}
                     onOfferDismiss={isOfferDismissButtonVisible ? handleOfferDismiss : undefined}
-                    externalDynamicOffersConfig={dynamicOffer}
+                    externalCapitalState={capitalState}
                 />
             )}
         </>

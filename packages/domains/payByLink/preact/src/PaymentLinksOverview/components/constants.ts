@@ -1,6 +1,13 @@
-import { TranslationKey } from '@integration-components/core';
-import { IPaymentLinkFilterStatusGroup, IPaymentLinkStatus, IPaymentLinkStatusGroup, IPaymentLinkType } from '@integration-components/types';
+import { IPaymentLinkStatusGroup } from '@integration-components/types';
 import { TabComponentProps } from '@integration-components/ui-components-preact/Tabs/types';
+import {
+    DEFAULT_PAYMENT_LINK_STATUS_GROUP,
+    EARLIEST_PAYMENT_LINK_DATE_DAYS,
+    PAYMENT_LINK_STATUS_GROUPS,
+    PAYMENT_LINK_STATUS_GROUPS_FILTER_MAPPING,
+    PAYMENT_LINK_STATUSES,
+    PAYMENT_LINK_TYPES,
+} from '../../../../domain/src';
 
 export const BASE_CLASS = 'adyen-pe-payment-links-overview';
 export const BASE_DETAILS_CLASS = 'adyen-pe-payment-link-details';
@@ -17,34 +24,12 @@ export const FILTERS_ALERT_CONTAINER_CLASS = `${BASE_CLASS}__filters-alert-conta
 export const ACTION_BUTTON_CLASS = `${BASE_CLASS}__action-button`;
 export const ACTION_BUTTON_MOBILE_CLASS = `${BASE_CLASS}__action-button--xs`;
 
-export const EARLIEST_PAYMENT_LINK_DATE = 90;
+export const EARLIEST_PAYMENT_LINK_DATE = EARLIEST_PAYMENT_LINK_DATE_DAYS;
 
-export const DEFAULT_PAYMENT_LINK_STATUS_GROUP: IPaymentLinkStatusGroup = 'active';
-
-export const PAYMENT_LINK_STATUS_GROUPS = {
-    active: 'payByLink.overview.list.statusGroups.active',
-    inactive: 'payByLink.overview.list.statusGroups.inactive',
-} satisfies Record<keyof IPaymentLinkFilterStatusGroup, TranslationKey>;
+export { DEFAULT_PAYMENT_LINK_STATUS_GROUP, PAYMENT_LINK_STATUS_GROUPS_FILTER_MAPPING, PAYMENT_LINK_STATUSES, PAYMENT_LINK_TYPES };
 
 export const PAYMENT_LINK_STATUS_GROUPS_TABS = Object.entries(PAYMENT_LINK_STATUS_GROUPS).map(([statusGroup, labelTranslationKey]) => ({
     id: statusGroup as IPaymentLinkStatusGroup,
     label: labelTranslationKey,
     content: null,
 })) satisfies TabComponentProps<IPaymentLinkStatusGroup>['tabs'];
-
-export const PAYMENT_LINK_STATUS_GROUPS_FILTER_MAPPING = {
-    active: 'active',
-    inactive: 'inactive',
-} as const satisfies Record<IPaymentLinkStatusGroup, keyof IPaymentLinkFilterStatusGroup>;
-
-export const PAYMENT_LINK_STATUSES = {
-    active: 'payByLink.common.status.active',
-    expired: 'payByLink.common.status.expired',
-    completed: 'payByLink.common.status.completed',
-    paymentPending: 'payByLink.common.status.paymentPending',
-} as const satisfies Record<IPaymentLinkStatus, TranslationKey>;
-
-export const PAYMENT_LINK_TYPES = {
-    open: 'payByLink.common.linkType.open',
-    singleUse: 'payByLink.common.linkType.singleUse',
-} as const satisfies Record<IPaymentLinkType, TranslationKey>;

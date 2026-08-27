@@ -59,8 +59,7 @@ const config: PlaywrightTestConfig = {
             name: 'local-chrome',
             testMatch: frameworkTestFiles,
             use: {
-                // Use the pre-installed browser already on the machine
-                channel: 'chrome',
+                ...(process.env.CI ? { channel: 'chrome' as const } : {}),
                 launchOptions: {
                     args: process.env.CI ? ['--headless=new'] : process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
                 },

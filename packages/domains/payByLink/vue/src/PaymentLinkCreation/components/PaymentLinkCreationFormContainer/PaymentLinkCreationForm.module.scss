@@ -1,0 +1,55 @@
+@use '@integration-components/style' as style;
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonsContainer {
+    display: flex;
+    justify-content: flex-end;
+    gap: style.token(spacer-040);
+    margin-top: style.token(spacer-070);
+}
+
+.errorAlert,
+.warningAlert {
+    margin-top: style.token(spacer-040);
+}
+
+.invalidFieldsError {
+    margin: 0;
+    padding-inline-start: style.token(spacer-060);
+}
+
+.skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-040);
+}
+
+.skeletonItem {
+    height: style.token(spacer-090);
+    border-radius: style.token(border-radius-m);
+    background: style.token(color-background-secondary);
+}
+
+.skeletonItemSmall {
+    width: 40%;
+}
+
+.skeletonItemLarge {
+    width: 100%;
+}

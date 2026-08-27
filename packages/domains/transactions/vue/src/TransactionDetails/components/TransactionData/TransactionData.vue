@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { BentoLoadingIndicator, BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import PaymentDetails from '../PaymentDetails/PaymentDetails.vue';
 import PaymentRefund from '../PaymentRefund/PaymentRefund.vue';
 import { ActiveView } from '../../../../../domain/src';
@@ -10,7 +10,7 @@ import type { TransactionDetails, TransactionDetailsCustomization } from '../../
 import type { ILineItem } from '@integration-components/types';
 import type { useTransaction } from '../../composables/useTransaction';
 import { useRefundMetadata } from '../../composables/useRefundMetadata';
-import './TransactionData.scss';
+import styles from './TransactionData.module.scss';
 
 type TransactionNavigatorState = ReturnType<typeof useTransaction>['transactionNavigator']['value'];
 
@@ -25,6 +25,8 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { withinModal } = useModalContext();
+const shouldHideTitle = computed(() => props.hideTitle || withinModal);
 
 const activeView = ref<ActiveView>(ActiveView.DETAILS);
 const locked = ref(false);
@@ -42,11 +44,11 @@ watch(refundMeta.refundLocked, locked_ => {
 </script>
 
 <template>
-    <div v-if="!props.hideTitle" class="adyen-pe-transaction-data__title">
+    <div v-if="!shouldHideTitle" :class="styles.title">
         <BentoTypography variant="title">{{ i18n.get('transactions.details.title') }}</BentoTypography>
     </div>
 
-    <div v-if="props.fetchingTransaction" class="adyen-pe-transaction-data__loading">
+    <div v-if="props.fetchingTransaction" :class="styles.loading">
         <BentoLoadingIndicator />
     </div>
 

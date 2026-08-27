@@ -6,11 +6,22 @@
  * helpers can be reused from any package.
  */
 
-type QuickSelectDateRange = {
+export type QuickSelectDateRange = {
     startDate: Date;
     endDate: Date;
     range: string;
 };
+
+export function createQuickSelectRanges<Key extends string>(
+    ranges: Record<Key, QuickSelectDateRange>,
+    getLabel: (key: `common.filters.types.date.rangeSelect.options.${Key}`) => string
+) {
+    return (Object.keys(ranges) as Key[]).map(value => ({
+        label: getLabel(`common.filters.types.date.rangeSelect.options.${value}`),
+        value,
+        data: ranges[value],
+    }));
+}
 
 export function startOfDay(date: Date): Date {
     const d = new Date(date);
@@ -74,9 +85,8 @@ function getLastMonthStartDate() {
 export const now = endOfDay(new Date());
 
 export const dateWithoutTimezone = (date: Date) => {
-    const tzoffset = date.getTimezoneOffset() * 60000; //offset in milliseconds
-    const withoutTimezone = new Date(date.valueOf() - tzoffset).toISOString().slice(0, -1);
-    return withoutTimezone;
+    const tzOffset = date.getTimezoneOffset() * 60000; //offset in milliseconds
+    return new Date(date.valueOf() - tzOffset).toISOString().slice(0, -1);
 };
 
 export const toUTCISOStringKeepingLocalDateTime = (date: Date) => {
@@ -95,6 +105,11 @@ export const quickSelectDateRanges = {
         startDate: subDays(now, 29),
         endDate: now,
         range: 'last30Days',
+    },
+    last90Days: {
+        startDate: subDays(now, 89),
+        endDate: now,
+        range: 'last90Days',
     },
     last180Days: {
         startDate: subDays(now, 179),

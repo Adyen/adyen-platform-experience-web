@@ -1,15 +1,25 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { useCoreContext, useConfigContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import { BentoButton, BentoAlert, BentoTypography, BentoTag, BentoToggle, BentoPopover, useClickOutside, BentoDivider } from '@adyen/bento-vue3';
+import {
+    BentoAlert,
+    BentoButton,
+    BentoDivider,
+    BentoPopover,
+    BentoTag,
+    BentoToggle,
+    BentoTypography,
+    useBentoToastController,
+    useClickOutside,
+} from '@adyen/bento-vue3';
 import { useDownload, useUniqueId } from '@integration-components/composables-vue';
 import { isFunction, downloadBlob, EMPTY_ARRAY } from '@integration-components/utils';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
 import { EXPORT_COLUMNS, DEFAULT_EXPORT_COLUMNS } from '../../constants';
 import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '@integration-components/transactions/domain';
 import type { TranslationKey } from '@integration-components/core';
-import './TransactionsExport.scss';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
+import styles from './TransactionsExport.module.scss';
 
 const props = defineProps<{ disabled?: boolean }>();
 
@@ -18,8 +28,10 @@ const config = useConfigContext();
 const userEvents = useEventDispatcherContext();
 const { filters } = useTransactionsOverviewContext();
 
+const { addToast } = useBentoToastController();
+let activeExportErrorToast: ReturnType<typeof addToast> | undefined;
+
 const popoverOpen = ref(false);
-const exportError = ref<Error | undefined>(undefined);
 const exportStarted = ref(false);
 const exportColumns = ref<readonly (typeof EXPORT_COLUMNS)[number][]>(DEFAULT_EXPORT_COLUMNS);
 
@@ -62,12 +74,14 @@ const { isFetching, error } = useDownload(
 );
 
 watch(error, err => {
-    exportError.value = err;
+    if (err) {
+        activeExportErrorToast = addToast({ text: i18n.get('transactions.overview.export.actions.error') });
+    }
 });
 
 watch(popoverOpen, isOpen => {
     if (isOpen) {
-        exportError.value = undefined;
+        activeExportErrorToast?.dismiss();
     } else {
         exportColumns.value = DEFAULT_EXPORT_COLUMNS;
     }
@@ -104,17 +118,15 @@ watch(isFetching, (fetching, wasFetching) => {
     }
 });
 
-let dismissedByClickOutside = false;
-
-useClickOutside(popoverRef, () => {
-    if (popoverOpen.value) {
-        dismissedByClickOutside = true;
-        dismissPopover();
-        requestAnimationFrame(() => {
-            dismissedByClickOutside = false;
-        });
-    }
-});
+useClickOutside(
+    popoverRef,
+    () => {
+        if (popoverOpen.value) {
+            dismissPopover();
+        }
+    },
+    { ignore: [targetElement] }
+);
 
 const masterSwitchChecked = computed(() => exportColumns.value.length === EXPORT_COLUMNS.length);
 
@@ -127,9 +139,6 @@ const columnSwitches = computed(() =>
 );
 
 function togglePopover() {
-    if (dismissedByClickOutside) {
-        return;
-    }
     if (popoverOpen.value) {
         userEvents.addEvent?.('Cancelled export', sharedAnalyticsProps);
     } else {
@@ -176,7 +185,7 @@ const popoverActions = computed(() => [
 </script>
 
 <template>
-    <div v-if="canDownloadTransactions" class="adyen-pe-transactions-export">
+    <div v-if="canDownloadTransactions">
         <BentoButton
             :id="exportButtonId"
             ref="targetElement"
@@ -193,11 +202,8 @@ const popoverActions = computed(() => [
             {{ isFetching ? i18n.get('transactions.overview.export.button.inProgress') : i18n.get('transactions.overview.export.button.label') }}
         </BentoButton>
 
-        <BentoAlert v-if="exportError" type="critical" @close="exportError = undefined">
-            <template #description>{{ i18n.get('transactions.overview.export.actions.error') }}</template>
-        </BentoAlert>
-
         <BentoPopover
+            v-if="popoverOpen"
             ref="popoverRef"
             :open="popoverOpen"
             :target-element="targetElement ?? undefined"
@@ -207,15 +213,15 @@ const popoverActions = computed(() => [
             :actions="popoverActions"
             @dismiss="dismissPopover"
         >
-            <div class="adyen-pe-transactions-export__popover-sections">
-                <div class="adyen-pe-transactions-export__popover-section--filters">
+            <div :class="styles.popoverSections">
+                <div :class="styles.filters">
                     <BentoTypography variant="body" strongest>{{ `${i18n.get('transactions.overview.export.filters.title')}:` }}</BentoTypography>
                     <BentoTag v-for="filter in activeFilters" :key="filter" variant="grey" :label="i18n.get(filter)" />
                 </div>
 
                 <BentoDivider />
 
-                <div class="adyen-pe-transactions-export__popover-section--columns">
+                <div :class="styles.columns">
                     <BentoTypography variant="body" strongest>{{ i18n.get('transactions.overview.export.columns.title') }}</BentoTypography>
                     <BentoToggle label-position="after" :value="masterSwitchChecked" @input="onMasterSwitchChange">
                         {{ i18n.get('transactions.overview.export.columns.types.all', { values: { count: EXPORT_COLUMNS.length } }) }}
@@ -226,7 +232,6 @@ const popoverActions = computed(() => [
                         :key="column"
                         :value="checked"
                         @input="(val: boolean) => onColumnChange(column, val)"
-                        class="adyen-pe-transactions-export__popover-section--toggle"
                     >
                         {{ label }}
                     </BentoToggle>

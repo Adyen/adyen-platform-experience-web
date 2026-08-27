@@ -1,16 +1,24 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoDataGrid, BentoButton, BentoTypography } from '@adyen/bento-vue3';
+import { BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
+import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
+import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import { useCustomColumnsData, CustomDataCell } from '@integration-components/composables-vue';
+import {
+    useCustomColumnsData,
+    CustomDataCell,
+    useResponsiveContainer,
+    containerQueries,
+    DataOverviewError,
+    useTableColumns,
+} from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IPayout, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import { TABLE_CLASS, NET_PAYOUT_CLASS, PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
-import { DATE_FORMAT_PAYOUTS } from '@integration-components/utils';
-import '../styles/PayoutsTable.scss';
-import { TranslationKey } from '@integration-components/core';
+import { PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
+import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '@integration-components/utils';
+import styles from './PayoutsTable.module.scss';
 
 const props = defineProps<{
     balanceAccountId: string | undefined;
@@ -39,22 +47,39 @@ const config = useConfigContext();
 
 // ── Date formatting ──
 const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
+const isMobile = useResponsiveContainer(containerQueries.down.xs);
+const mobileColumns = new Set(['createdAt', 'payoutAmount']);
 
 function formatPayoutDate(dateStr: string): string {
-    return dateFormat(dateStr, DATE_FORMAT_PAYOUTS);
+    return dateFormat(dateStr, isMobile.value ? DATE_FORMAT_PAYOUTS_MOBILE : DATE_FORMAT_PAYOUTS);
 }
 
 // ── Custom columns ──
-const STANDARD_FIELDS = new Set<string>(PAYOUT_TABLE_FIELDS);
-
-const customFieldKeys = computed<string[]>(() =>
-    (props.customColumns ?? [])
-        .filter(c => !!c && c.visibility !== 'hidden')
-        .map(c => (typeof c?.key === 'string' ? c.key.trim() : ''))
-        .filter((k): k is string => !!k && !STANDARD_FIELDS.has(k))
-);
-
-const hasCustomColumn = computed(() => customFieldKeys.value.length > 0);
+const {
+    columns: configuredColumns,
+    customFieldKeys,
+    hasCustomColumn,
+} = useTableColumns({
+    fields: PAYOUT_TABLE_FIELDS,
+    customColumns: () => props.customColumns,
+    fieldsKeys: {
+        createdAt: 'payouts.overview.list.fields.createdAt',
+        fundsCapturedAmount: 'payouts.overview.list.fields.fundsCapturedAmount',
+        adjustmentAmount: 'payouts.overview.list.fields.adjustmentAmount',
+        payoutAmount: 'payouts.overview.list.fields.payoutAmount',
+    },
+    columnConfig: () => ({
+        createdAt: { flex: 1 },
+        fundsCapturedAmount: { flex: 1, numeric: true },
+        adjustmentAmount: { flex: 1, numeric: true },
+        payoutAmount: { flex: 1, numeric: true },
+    }),
+    customColumnDefaults: () => ({ flex: 1 }),
+    resolveCustomColumnLabel: key => {
+        const labelKey = `payouts.overview.list.fields.${key}`;
+        return i18n.has(labelKey as any) ? i18n.get(labelKey as any) : i18n.get(key as any);
+    },
+});
 
 const { customRecords, loadingCustomRecords } = useCustomColumnsData<IPayout>({
     records: () => props.data ?? [],
@@ -69,38 +94,8 @@ const { customRecords, loadingCustomRecords } = useCustomColumnsData<IPayout>({
 
 const isLoading = computed(() => props.loading || config.refreshing || loadingCustomRecords.value);
 
-// ── Grid columns ──
-function amountLabel(key: 'fundsCapturedAmount' | 'adjustmentAmount' | 'payoutAmount'): string {
-    const labelKey = `payouts.overview.list.fields.${key}` as const;
-    const label = i18n.has(labelKey) ? i18n.get(labelKey) : key;
-    const currency = props.data?.[0]?.[key]?.currency;
-    return currency ? `${label} (${currency})` : label;
-}
-
 const columns = computed<BentoColumn[]>(() => {
-    const cols: BentoColumn[] = [
-        { field: 'createdAt', label: i18n.get('payouts.overview.list.fields.createdAt'), flex: 1 },
-        { field: 'fundsCapturedAmount', label: amountLabel('fundsCapturedAmount'), flex: 1 },
-        { field: 'adjustmentAmount', label: amountLabel('adjustmentAmount'), flex: 1 },
-        { field: 'payoutAmount', label: amountLabel('payoutAmount'), flex: 1 },
-    ];
-
-    if (Array.isArray(props.customColumns)) {
-        for (const column of props.customColumns) {
-            if (!column || typeof column.key !== 'string') continue;
-            const key = column.key.trim();
-            if (!key || STANDARD_FIELDS.has(key)) continue;
-            if (column.visibility === 'hidden') continue;
-            const labelKey = `payouts.overview.list.fields.${key}`;
-            cols.push({
-                field: key,
-                label: i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey),
-                autoWidth: true,
-            });
-        }
-    }
-
-    return cols;
+    return isMobile.value ? configuredColumns.value.filter(column => mobileColumns.has(column.field)) : configuredColumns.value;
 });
 
 // ── Grid data ──
@@ -132,10 +127,13 @@ const paginationProps = computed(() => {
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
+        hideFirstLastPageButtons: true,
     };
 });
 
 const emptyStateProps = computed(() => ({
+    image: 'no-results-found' as const,
+    variant: 'embedded' as const,
     title: i18n.get('payouts.overview.errors.listEmpty'),
     description: i18n.get('common.errors.updateFilters'),
 }));
@@ -157,21 +155,23 @@ function handleRowClick(item: BentoDatagridDataItem) {
     props.onRowClick?.(item._raw as IPayout);
 }
 
-function formatAmount(value: { value: number; currency: string } | null | undefined, hideCurrency = true): string {
+function formatAmount(value: { value: number; currency: string } | null | undefined): string {
     if (!value) return '';
-    return i18n.amount(value.value, value.currency, { hideCurrency });
+    return i18n.amount(value.value, value.currency, { hideCurrency: false });
 }
 </script>
 
 <template>
-    <div :class="TABLE_CLASS">
+    <div :class="styles.root">
         <!-- Error state -->
-        <div v-if="props.error" class="adyen-pe-data-overview-error">
-            <p>{{ i18n.get('payouts.overview.errors.listUnavailable') }}</p>
-            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
-            </BentoButton>
-        </div>
+        <DataOverviewError
+            v-if="props.error"
+            :error="props.error"
+            :error-message="'payouts.overview.errors.listUnavailable'"
+            :on-contact-support="props.onContactSupport"
+            :refresh-icon="RefreshIcon"
+            :copy-icon="CopyIcon"
+        />
 
         <BentoDataGrid
             v-else
@@ -206,7 +206,7 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
                 </BentoTypography>
             </template>
             <template #item-payoutAmount="{ item }">
-                <BentoTypography v-if="item.payoutAmount" variant="body" :class="NET_PAYOUT_CLASS">
+                <BentoTypography v-if="item.payoutAmount" variant="body" :stronger="isMobile">
                     {{ formatAmount(item.payoutAmount) }}
                 </BentoTypography>
             </template>

@@ -8,8 +8,14 @@ import Alert from '@integration-components/ui-components-preact/Alert/Alert';
 import Icon from '@integration-components/ui-components-preact/Icon';
 import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
 import DataGrid from '@integration-components/ui-components-preact/DataGrid';
-import { DAY_MS } from '@integration-components/ui-components-preact/Calendar/calendar/constants';
-import { getDisputeReason, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
+import {
+    DisputesTableFields,
+    EMPTY_TABLE_MESSAGE_KEYS,
+    getDisputeDeadlineTimeRemaining,
+    FIELD_KEYS,
+    getDisputeReason,
+    isDisputeActionNeededUrgently,
+} from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE } from '@integration-components/utils';
 import DataOverviewError from '@integration-components/ui-components-preact/DataOverviewError/DataOverviewError';
 import Pagination from '@integration-components/ui-components-preact/Pagination';
@@ -26,29 +32,6 @@ import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
 import { Tooltip } from '@integration-components/ui-components-preact/Tooltip/Tooltip';
 import { Translation } from '@integration-components/ui-components-preact/Translation';
 import './DisputesTable.scss';
-
-export type DisputesTableFields = keyof typeof FIELD_KEYS;
-
-export const FIELD_KEYS = {
-    status: 'disputes.overview.common.fields.status',
-    respondBy: 'disputes.overview.common.fields.respondBy',
-    createdAt: 'disputes.overview.common.fields.openedOn',
-    paymentMethod: 'disputes.overview.common.fields.paymentMethod',
-    disputeReason: 'disputes.overview.common.fields.disputeReason',
-    reason: 'disputes.overview.common.fields.reason',
-    currency: 'disputes.overview.common.fields.currency',
-    disputedAmount: 'disputes.overview.common.fields.disputedAmount',
-    totalPaymentAmount: 'disputes.overview.common.fields.totalPaymentAmount',
-} as const satisfies Record<string, TranslationKey>;
-
-export const EMPTY_TABLE_MESSAGE_KEYS = {
-    CHARGEBACKS: { title: 'disputes.overview.chargebacks.errors.listEmpty', message: 'disputes.overview.chargebacks.errors.updateFilters' },
-    FRAUD_ALERTS: { title: 'disputes.overview.fraudAlerts.errors.listEmpty', message: 'disputes.overview.fraudAlerts.errors.updateFilters' },
-    ONGOING_AND_CLOSED: {
-        title: 'disputes.overview.ongoingAndClosed.errors.listEmpty',
-        message: 'disputes.overview.ongoingAndClosed.errors.updateFilters',
-    },
-} as const satisfies Record<IDisputeStatusGroup, { title: TranslationKey; message: TranslationKey }>;
 
 export const FIELDS = Object.keys(FIELD_KEYS) as readonly DisputesTableFields[];
 
@@ -158,14 +141,16 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     const getTimeToDeadline = useCallback(
         (dueDate: string) => {
             if (!dueDate) return '';
-            const deadline = new Date(dueDate).getTime();
-            const diffInMs = deadline - Date.now();
-            const diffInDays = Math.ceil(diffInMs / DAY_MS);
-            const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
 
-            return diffInDays <= 1
+            const timeRemaining = getDisputeDeadlineTimeRemaining(dueDate);
+            if (!timeRemaining) return '';
+
+            const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
+            if (timeRemaining.expired) return formattedDate;
+
+            return timeRemaining.days <= 1
                 ? i18n.get('disputes.overview.common.actionNeeded.respondToday', { values: { date: formattedDate } })
-                : i18n.get('disputes.overview.common.actionNeeded.respondDays', { values: { days: diffInDays, date: formattedDate } });
+                : i18n.get('disputes.overview.common.actionNeeded.respondDays', { values: { days: timeRemaining.days, date: formattedDate } });
         },
         [dateFormat, i18n]
     );

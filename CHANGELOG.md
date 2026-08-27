@@ -1,5 +1,47 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.14.0
+
+### Minor Changes
+
+- In the Capital Offer component, we added to the offer summary step a detailed breakdown of the new loan amount, current loan balance, and amount the user receives when they request an early renewal.
+- In the Capital Offer and Capital Overview components, we updated the messaging for users without an available financing offer to clearly reflect their eligibility state.
+
+### Patch Changes
+
+- In the Capital Overview component, the title is now correctly hidden based on the hideTitle parameter.
+- In the Disputes Overview component, we resolved an issue to ensure that the payment method is rendered on a single line.
+
+## 1.14.0-rc.0
+
+### Minor Changes
+
+- In the Capital Offer component, we added to the offer summary step a detailed breakdown of the new loan amount, current loan balance, and amount the user receives when they request an early renewal.
+- In the Capital Offer and Capital Overview components, we updated the messaging for users without an available financing offer to clearly reflect their eligibility state.
+
+### Patch Changes
+
+- In the Capital Overview component, the title is now correctly hidden based on the hideTitle parameter.
+- In the Disputes Overview component, we resolved an issue to ensure that the payment method is rendered on a single line.
+
+## 1.13.1
+
+### Patch Changes
+
+- 83c5ab1: In the Capital Overview component, we resolved an issue where grants that closed after renewal were incorrectly hidden from the closed grants list.
+
+## 1.13.0
+
+### Minor Changes
+
+- 31bcf74: In the Capital Overview component, we added an early renewal feature that allows eligible users to request a subsequent grant before their active grant is fully repaid. This action is available provided you meet the [eligibility criteria](https://docs.adyen.com/capital/additional-financing#eligibility).
+
+## 1.13.0-rc.0
+
+### Minor Changes
+
+- 31bcf74: In the Capital Overview component, we added an early renewal feature that allows eligible users to request a subsequent grant before their active grant is fully repaid. This action is available provided you meet the [eligibility criteria](https://docs.adyen.com/capital/additional-financing#eligibility).
+
 ## 1.12.2
 
 ### Patch Changes

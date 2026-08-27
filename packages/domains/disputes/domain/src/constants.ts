@@ -43,6 +43,12 @@ export const DISPUTE_STATUSES = {
     WON: 'disputes.common.statuses.won',
 } as const satisfies Record<IDisputeStatus, TranslationKey>;
 
+export const DISPUTE_TYPE = {
+    CHARGEBACK: 'CHARGEBACK',
+    NOTIFICATION_OF_FRAUD: 'NOTIFICATION_OF_FRAUD',
+    REQUEST_FOR_INFORMATION: 'REQUEST_FOR_INFORMATION',
+} as const satisfies Record<IDisputeType, IDisputeType>;
+
 export const DISPUTE_TYPES = {
     CHARGEBACK: 'disputes.management.details.types.chargeback',
     NOTIFICATION_OF_FRAUD: 'disputes.management.details.types.notificationOfFraud',

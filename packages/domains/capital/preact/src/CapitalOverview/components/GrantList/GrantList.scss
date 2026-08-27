@@ -1,39 +1,23 @@
 @use '@integration-components/style';
 
-//stylelint-disable no-invalid-position-at-import-rule
-@use '@integration-components/style/breakpoints' as *;
-
 .adyen-pe-grant-list {
     display: flex;
     flex-direction: column;
+    gap: style.token(spacer-080);
 
-    &__header-container {
-        align-items: center;
+    &__new-grant-banner {
         display: flex;
-        justify-content: space-between;
-        margin-bottom: style.token(spacer-070);
+        flex-direction: column;
+        gap: style.token(spacer-060);
     }
 
-    &__offer-button {
-        width: fit-content;
+    &__early-renewal-notice {
+        color: style.token(color-label-secondary);
     }
 
     &__items {
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-070);
-    }
-
-    // stylelint-disable order/order
-    @include adyen-pe-screen-sm-and-up {
-        gap: 0;
-
-        &__offer-button {
-            margin-bottom: 0;
-        }
-
-        &__header-container {
-            flex-direction: row;
-        }
     }
 }

@@ -27,9 +27,8 @@ import {
 import Localization from '@integration-components/core/Localization';
 import { TRANSACTIONS_ENDPOINTS } from '../endpoints';
 import { delay as mswDelay, http, HttpResponse, PathParams } from 'msw';
-import { parsePaymentMethodType } from '@integration-components/utils';
 import { compareDates, computeHash, delay, getPaginationLinks } from '@integration-components/testing/msw';
-import { clamp, getMappedValue } from '@integration-components/utils';
+import { clamp, getMappedValue, parsePaymentMethodType } from '@integration-components/utils';
 
 type _ITransactionTotals = Omit<ITransactionTotal, 'currency'>;
 
@@ -604,6 +603,23 @@ export const TRANSACTION_DETAILS_HANDLERS = (() => {
                     return getTransactionJson({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id }, 0);
                 }),
                 ...sharedMockEndpointsHandlers,
+            ],
+        },
+        errorNotFound: {
+            handlers: [
+                http.get(mockEndpoints.transaction, () => {
+                    return HttpResponse.json(
+                        {
+                            type: 'https://docs.adyen.com/errors/not-found',
+                            errorCode: '30_112',
+                            title: 'Not Found',
+                            detail: 'Transaction not found for the specified Account Holder',
+                            requestId: '769ac4ce59f0f159ad672d38d3291e91',
+                            status: 404,
+                        },
+                        { status: 404 }
+                    );
+                }),
             ],
         },
         completeDetails: {

@@ -46,4 +46,20 @@ describe('useLandedPageEvent', () => {
         rerender(updatedProperties);
         expect(mockAddEvent).toHaveBeenCalledTimes(1);
     });
+
+    test('should wait until enabled before logging the event', () => {
+        const resolvedProperties = { ...eventProperties, isEarlyRenewal: true };
+        const { rerender } = renderHook(({ properties, enabled }) => useLandedPageEvent(properties, enabled), {
+            initialProps: { properties: eventProperties, enabled: false },
+        });
+
+        expect(mockAddEvent).not.toHaveBeenCalled();
+
+        rerender({ properties: resolvedProperties, enabled: true });
+        expect(mockAddEvent).toHaveBeenCalledTimes(1);
+        expect(mockAddEvent).toHaveBeenCalledWith('Landed on page', resolvedProperties);
+
+        rerender({ properties: resolvedProperties, enabled: true });
+        expect(mockAddEvent).toHaveBeenCalledTimes(1);
+    });
 });

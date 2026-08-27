@@ -1,15 +1,24 @@
 import { FunctionalComponent } from 'preact';
-import { GrantListProps } from './types';
 import './GrantList.scss';
 import { useCallback, useState } from 'preact/hooks';
 import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
 import { GrantsDisplay } from './GrantsDisplay';
 import { IGrant } from '@integration-components/types';
+import { EnhancedCapitalState, OnFundsRequestCallback } from '@integration-components/capital/domain';
+
+interface GrantListProps {
+    capitalState: EnhancedCapitalState;
+    grants: IGrant[];
+    hideTitle?: boolean;
+    onFundsRequest?: OnFundsRequestCallback;
+    onGrantListUpdateRequest: (data: IGrant) => void;
+    onOfferDismiss?: (goToPreviousStep: () => void) => void;
+}
 
 export const GrantList: FunctionalComponent<GrantListProps> = ({
-    externalDynamicOffersConfig,
-    grantList,
-    newOfferAvailable,
+    capitalState,
+    grants,
+    hideTitle,
     onFundsRequest,
     onGrantListUpdateRequest,
     onOfferDismiss,
@@ -27,12 +36,12 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
         }
     }, [goBackToPreviousStep, onOfferDismiss]);
 
-    const handleFundsRequest = useCallback(
-        (data: IGrant) => {
+    const handleFundsRequest = useCallback<OnFundsRequestCallback>(
+        (data, renewsGrantId) => {
             if (onFundsRequest) {
-                onFundsRequest(data);
+                onFundsRequest(data, renewsGrantId);
             } else {
-                onGrantListUpdateRequest(data);
+                onGrantListUpdateRequest({ ...data, renewsGrantId });
                 setIsCapitalOfferVisible(false);
             }
         },
@@ -43,12 +52,13 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
         <>
             {isCapitalOfferVisible ? (
                 <CapitalOffer
-                    externalDynamicOffersConfig={externalDynamicOffersConfig}
+                    externalCapitalState={capitalState}
+                    hideTitle={hideTitle}
                     onFundsRequest={handleFundsRequest}
                     onOfferDismiss={goBackToList}
                 />
             ) : (
-                <GrantsDisplay grantList={grantList} newOfferAvailable={newOfferAvailable} onNewOfferRequest={goToNextStep} />
+                <GrantsDisplay grants={grants} hideTitle={hideTitle} capitalState={capitalState} onNewOfferRequest={goToNextStep} />
             )}
         </>
     );

@@ -34,6 +34,39 @@ export const getCurrencyExponent = (currencyCode: string): number => Math.log10(
 export const formatAmount = (amount: number, currencyCode: string): string =>
     getDecimalAmount(amount, currencyCode).toFixed(getCurrencyExponent(currencyCode));
 
+export const normalizeAmountInput = (
+    rawValue: string | number,
+    locale: string,
+    currencyCode: string,
+    maxValue?: number
+): { displayValue: string; amount: number; localeDecimalSeparator: string } => {
+    let displayValue = String(rawValue).trim();
+    const decimalSeparator = (1.1).toLocaleString(locale).match(/\d(.*?)\d/)?.[1] || '.';
+    const exponent = getCurrencyExponent(currencyCode);
+    const parts = displayValue.split(decimalSeparator);
+
+    if (parts.length === 2 && parts[1]!.length >= exponent) {
+        displayValue = `${parts[0]}${decimalSeparator}${parts[1]!.substring(0, exponent)}`;
+    }
+
+    if (displayValue.endsWith(decimalSeparator)) {
+        displayValue = displayValue.slice(0, -decimalSeparator.length);
+    }
+
+    const normalizedValue = decimalSeparator === '.' ? displayValue : displayValue.replace(decimalSeparator, '.');
+    const parsedValue = Number.parseFloat(normalizedValue);
+
+    if (maxValue !== undefined && Number.isFinite(parsedValue) && parsedValue > maxValue) {
+        const fixedValue = maxValue.toFixed(exponent);
+        displayValue = decimalSeparator === '.' ? fixedValue : fixedValue.replace('.', decimalSeparator);
+    }
+
+    const normalizedDisplayValue = decimalSeparator === '.' ? displayValue : displayValue.replace(decimalSeparator, '.');
+    const amount = Math.trunc(+`${Number.parseFloat(normalizedDisplayValue)}e${exponent}`) || 0;
+
+    return { displayValue, amount, localeDecimalSeparator: decimalSeparator };
+};
+
 /**
  * @internal
  */

@@ -1,47 +1,52 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
-import { useLandedPageEvent } from '@integration-components/composables-vue';
-import { BentoTypography, BentoLoadingIndicator, BentoButton } from '@adyen/bento-vue3';
+import { useLandedPageEvent, ErrorMessageDisplay } from '@integration-components/composables-vue';
+import { BentoLoadingIndicator } from '@adyen/bento-vue3';
 import TransactionData from './TransactionData/TransactionData.vue';
 import { useTransaction } from '../composables/useTransaction';
 import { normalizeCustomFields } from '@integration-components/utils';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET, sharedTransactionDetailsEventProperties } from '../../../../domain/src';
 import type { TransactionDetailsCustomization, TransactionDetails } from '../../../../domain/src';
-import './TransactionDetailsContainer.scss';
+import styles from './TransactionDetailsContainer.module.scss';
+import '@adyen/bento-vue3/styles/bento-light';
 
 const props = defineProps<{
     id: string;
     dataCustomization?: { details?: TransactionDetailsCustomization };
     onContactSupport?: () => void;
     hideTitle?: boolean;
-    withinModal?: boolean;
+    fromRecordSelection?: boolean;
 }>();
-
-const { i18n } = useCoreContext();
 
 const { error, fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(() => props.id);
 
 const extraFields = ref<Record<string, any> | undefined>(undefined);
 const initialTransaction = ref<TransactionDetails | undefined>(undefined);
+let extraFieldsRequestId = 0;
 
 watch(
     () => props.id,
     () => {
+        extraFieldsRequestId++;
         initialTransaction.value = undefined;
         extraFields.value = undefined;
     }
 );
 
 watch(
-    transaction,
-    async tx => {
-        if (tx && tx.id === props.id) {
-            if (!initialTransaction.value) initialTransaction.value = tx;
+    () => [transaction.value, props.dataCustomization] as const,
+    async ([currentTransaction]) => {
+        const requestId = ++extraFieldsRequestId;
 
-            const customizedDetails = await props.dataCustomization?.details?.onDataRetrieve?.(tx);
+        if (currentTransaction && currentTransaction.id === props.id) {
+            if (!initialTransaction.value) initialTransaction.value = currentTransaction;
+
+            const detailsCustomization = props.dataCustomization?.details;
+            const customizedDetails = await detailsCustomization?.onDataRetrieve?.(currentTransaction);
+            if (requestId !== extraFieldsRequestId) return;
+
             extraFields.value = normalizeCustomFields(
-                props.dataCustomization?.details?.fields,
+                detailsCustomization?.fields,
                 TX_DETAILS_FIELDS_REMAPS,
                 customizedDetails as TransactionDetails
             )?.reduce(
@@ -55,7 +60,7 @@ watch(
                 },
                 {} as Record<string, any>
             );
-        } else if (!tx) {
+        } else if (!currentTransaction) {
             initialTransaction.value = undefined;
             extraFields.value = undefined;
         }
@@ -63,14 +68,17 @@ watch(
     { immediate: true }
 );
 
-useLandedPageEvent({
-    ...sharedTransactionDetailsEventProperties,
-    ...(props.withinModal && { fromPage: 'Transactions overview' }),
-});
+useLandedPageEvent(
+    {
+        ...sharedTransactionDetailsEventProperties,
+        ...(props.fromRecordSelection && { fromPage: 'Transactions overview' }),
+    },
+    () => !!initialTransaction.value
+);
 </script>
 
 <template>
-    <div class="adyen-pe-overview-details">
+    <div>
         <TransactionData
             v-if="initialTransaction"
             :extra-fields="extraFields"
@@ -82,15 +90,21 @@ useLandedPageEvent({
             :transaction-navigator="transactionNavigator"
         />
 
-        <div v-else-if="fetchingTransaction" class="adyen-pe-overview-details__loading">
+        <div v-else-if="fetchingTransaction" :class="styles.loading">
             <BentoLoadingIndicator />
         </div>
 
-        <div v-else-if="error" class="adyen-pe-overview-details--error-container">
-            <BentoTypography variant="body">{{ i18n.get('transactions.details.errors.unavailable') }}</BentoTypography>
-            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
-            </BentoButton>
+        <div v-else-if="error">
+            <ErrorMessageDisplay
+                :error="error"
+                :error-message="'transactions.details.errors.unavailable'"
+                :not-found-message="'transactions.details.errors.notFound'"
+                :on-contact-support="props.onContactSupport"
+                with-image
+                :outlined="false"
+                :absolute-position="false"
+                :with-background="false"
+            />
         </div>
     </div>
 </template>

@@ -1,10 +1,9 @@
 import { AdyenPlatformExperienceError, AssetOptions, TranslationKey } from '@integration-components/core';
+import { ACCOUNT_MISCONFIGURATION, PERMISSION_ERROR, WRONG_STORE_IDS } from '@integration-components/payByLink/domain';
 import { ErrorMessage, UNDEFINED_ERROR } from '@integration-components/ui-components-preact/utils/getCommonErrorCode';
 import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
 
-export const ACCOUNT_MISCONFIGURATION = 'ACCOUNT_MISCONFIGURATION';
-export const WRONG_STORE_IDS = 'WRONG_STORE_IDS';
-export const PERMISSION_ERROR = 'PERMISSION_ERROR';
+export { ACCOUNT_MISCONFIGURATION, PERMISSION_ERROR, WRONG_STORE_IDS };
 
 const getSettingsErrorMessage = (
     error: AdyenPlatformExperienceError | undefined,

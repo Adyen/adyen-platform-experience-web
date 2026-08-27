@@ -1,18 +1,33 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { useTimezoneAwareDateFormatting, useResponsiveContainer, containerQueries, CustomDataCell } from '@integration-components/composables-vue';
-import { BentoDataGrid, BentoTypography, BentoTag, BentoPaymentMethod, BentoButton, BentoColumnOverflow } from '@adyen/bento-vue3';
+import {
+    useTimezoneAwareDateFormatting,
+    useResponsiveContainer,
+    containerQueries,
+    CustomDataCell,
+    DataOverviewError,
+    useTableColumns,
+} from '@integration-components/composables-vue';
+import {
+    BentoDataGrid,
+    BentoTypography,
+    BentoTag,
+    BentoPaymentMethod,
+    BentoColumnOverflow,
+    BentoTooltipDirective as vBentoTooltip,
+} from '@adyen/bento-vue3';
+import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
+import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { getTransactionCategoryDescription, getTransactionCategory, TRANSACTION_FIELDS } from '../../../../../domain/src';
 import { getCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
 import type { ITransaction, CustomColumn } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { TransactionsTableFields, IBalanceAccountBase } from '../../types';
-import { TABLE_CLASS, AMOUNT_CLASS, PAYMENT_METHOD_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from '../../constants';
 import { DATE_FORMAT_TRANSACTIONS } from '@integration-components/utils/datetime/formats';
-import './TransactionsTable.scss';
 import { parsePaymentMethodType } from '@integration-components/utils';
+import styles from './TransactionsTable.module.scss';
 
 const props = defineProps<{
     activeBalanceAccount?: IBalanceAccountBase;
@@ -36,12 +51,9 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const { dateFormat } = useTimezoneAwareDateFormatting(props.activeBalanceAccount?.timeZone);
+const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceAccount?.timeZone);
 
-const containerRef = ref<HTMLElement | null>(null);
-const isMobile = useResponsiveContainer(containerRef, containerQueries.down.sm);
-
-const STANDARD_FIELDS = new Set<string>(TRANSACTION_FIELDS);
+const isMobile = useResponsiveContainer(containerQueries.down.sm);
 
 const FIELDS_KEYS: Record<string, string> = {
     createdAt: 'transactions.overview.list.fields.createdAt',
@@ -52,22 +64,37 @@ const FIELDS_KEYS: Record<string, string> = {
     transactionType: 'transactions.overview.list.fields.transactionType',
 };
 
-const customFieldKeys = computed<string[]>(() =>
-    (props.customColumns ?? [])
-        .filter(c => !!c && c.visibility !== 'hidden')
-        .map(c => (typeof c?.key === 'string' ? c.key.trim() : ''))
-        .filter((k): k is string => !!k && !STANDARD_FIELDS.has(k))
-);
+function amountLabel(field: 'netAmount' | 'grossAmount', defaultLabel: string): string {
+    const currency = props.availableCurrencies?.[0];
+    const currencyCode = currency ? getCurrencyCode(currency) : undefined;
+    return props.hasMultipleCurrencies || !currencyCode ? defaultLabel : `${defaultLabel} (${currencyCode})`;
+}
+
+const { columns: desktopColumns, customFieldKeys } = useTableColumns({
+    fields: TRANSACTION_FIELDS,
+    customColumns: () => props.customColumns,
+    fieldsKeys: FIELDS_KEYS,
+    columnConfig: () => ({
+        createdAt: { flex: 1, minWidth: 140, overflow: BentoColumnOverflow.WRAP },
+        paymentMethod: { flex: 1.2, minWidth: 150 },
+        transactionType: { flex: 1, minWidth: 130 },
+        currency: { flex: 0.7, minWidth: 90, visible: props.hasMultipleCurrencies },
+        netAmount: { flex: 1, minWidth: 120, numeric: true },
+        grossAmount: { flex: 1, minWidth: 120, numeric: true },
+    }),
+    customColumnDefaults: () => ({ flex: 1, minWidth: 120 }),
+    resolveStandardColumnLabel: (field, defaultLabel) =>
+        field === 'netAmount' || field === 'grossAmount' ? amountLabel(field, defaultLabel) : defaultLabel,
+    resolveCustomColumnLabel: key => {
+        const labelKey = `transactions.overview.list.fields.${key}`;
+        return i18n.has(labelKey as any) ? i18n.get(labelKey as any) : i18n.get(key as any);
+    },
+});
 
 const isLoading = computed(() => props.loading);
 
 const columns = computed<BentoColumn[]>(() => {
-    const currency0 = props.availableCurrencies?.[0];
-    const currencyCode = currency0 ? getCurrencyCode(currency0) : undefined;
-
-    const grossAmountLabel = props.hasMultipleCurrencies
-        ? i18n.get(FIELDS_KEYS.grossAmount as any)
-        : `${i18n.get(FIELDS_KEYS.grossAmount as any)}${currencyCode ? ` (${currencyCode})` : ''}`;
+    const grossAmountLabel = amountLabel('grossAmount', i18n.get(FIELDS_KEYS.grossAmount as any));
 
     if (isMobile.value) {
         return [
@@ -76,39 +103,7 @@ const columns = computed<BentoColumn[]>(() => {
         ];
     }
 
-    const cols: BentoColumn[] = [
-        { field: 'createdAt', label: i18n.get(FIELDS_KEYS.createdAt as any), flex: 1, minWidth: 140, overflow: BentoColumnOverflow.WRAP },
-        { field: 'paymentMethod', label: i18n.get(FIELDS_KEYS.paymentMethod as any), flex: 1.2, minWidth: 150 },
-        { field: 'transactionType', label: i18n.get(FIELDS_KEYS.transactionType as any), flex: 1, minWidth: 130 },
-        {
-            field: 'currency',
-            label: i18n.get(FIELDS_KEYS.currency as any),
-            flex: 0.7,
-            minWidth: 90,
-        },
-        {
-            field: 'netAmount',
-            label: props.hasMultipleCurrencies
-                ? i18n.get(FIELDS_KEYS.netAmount as any)
-                : `${i18n.get(FIELDS_KEYS.netAmount as any)}${currencyCode ? ` (${currencyCode})` : ''}`,
-            flex: 1,
-            minWidth: 120,
-            numeric: true,
-        },
-        { field: 'grossAmount', label: grossAmountLabel, flex: 1, minWidth: 120, numeric: true },
-    ];
-
-    for (const key of customFieldKeys.value) {
-        const labelKey = `transactions.overview.list.fields.${key}`;
-        cols.push({
-            field: key,
-            label: i18n.has(labelKey as any) ? i18n.get(labelKey as any) : i18n.get(key as any),
-            flex: 1,
-            minWidth: 120,
-        });
-    }
-
-    return cols;
+    return desktopColumns.value;
 });
 
 const gridData = computed<BentoDatagridDataItem[]>(() => {
@@ -140,9 +135,12 @@ const paginationProps = computed(() => ({
     hasNext: props.hasNext ?? false,
     hasPrevious: props.hasPrevious ?? false,
     hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
+    hideFirstLastPageButtons: true,
 }));
 
 const emptyStateProps = computed(() => ({
+    image: 'no-results-found' as const,
+    variant: 'embedded' as const,
     title: i18n.get('transactions.overview.errors.listEmpty'),
     description: i18n.get('common.errors.updateFilters'),
 }));
@@ -175,13 +173,15 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
 </script>
 
 <template>
-    <div ref="containerRef" :class="TABLE_CLASS">
-        <div v-if="props.error" class="adyen-pe-data-overview-error">
-            <p>{{ i18n.get('transactions.overview.errors.listUnavailable') }}</p>
-            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
-            </BentoButton>
-        </div>
+    <div>
+        <DataOverviewError
+            v-if="props.error"
+            :error="props.error"
+            :error-message="'transactions.overview.errors.listUnavailable'"
+            :on-contact-support="props.onContactSupport"
+            :refresh-icon="RefreshIcon"
+            :copy-icon="CopyIcon"
+        />
 
         <BentoDataGrid
             v-else
@@ -198,8 +198,8 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
             @items-page="handleItemsPage"
         >
             <template #item-paymentMethodAndDate="{ item }">
-                <div :class="DATE_AND_PAYMENT_METHOD_CLASS">
-                    <div :class="PAYMENT_METHOD_CLASS">
+                <div :class="styles.dateAndPaymentMethod">
+                    <div :class="styles.paymentMethod">
                         <template v-if="item.paymentMethod || item.bankAccount">
                             <BentoPaymentMethod :type="item.paymentMethod ? item.paymentMethod?.type : 'bankTransfer'" />
                             <BentoTypography variant="body">
@@ -208,7 +208,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
                         </template>
                         <BentoTag v-else variant="grey" :label="i18n.get('common.tags.noData')" />
                     </div>
-                    <time v-if="item.createdAt" :datetime="item.createdAt" :class="DATE_METHOD_CLASS">
+                    <time v-if="item.createdAt" :datetime="item.createdAt" :class="styles.date">
                         <BentoTypography variant="body">{{ formatDate(item.createdAt) }}</BentoTypography>
                     </time>
                 </div>
@@ -221,7 +221,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
             </template>
 
             <template #item-paymentMethod="{ item }">
-                <div :class="PAYMENT_METHOD_CLASS">
+                <div :class="styles.paymentMethod">
                     <template v-if="item.paymentMethod || item.bankAccount">
                         <BentoPaymentMethod :type="item.paymentMethod ? item.paymentMethod?.type : 'bankTransfer'" />
                         <BentoTypography variant="body">
@@ -233,7 +233,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
             </template>
 
             <template #item-transactionType="{ item }">
-                <BentoTypography variant="body" v-bento-tooltip="getTransactionCategoryDescription(i18n, item.transactionType) ?? ''">
+                <BentoTypography v-bento-tooltip="getTransactionCategoryDescription(i18n, item.transactionType) ?? ''" variant="body">
                     {{ getTransactionCategory(i18n, item.transactionType) }}
                 </BentoTypography>
             </template>
@@ -243,13 +243,13 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
             </template>
 
             <template #item-netAmount="{ item }">
-                <BentoTypography variant="body" :class="AMOUNT_CLASS">
+                <BentoTypography variant="body">
                     {{ formatAmount(item.netAmount) }}
                 </BentoTypography>
             </template>
 
             <template #item-grossAmount="{ item }">
-                <BentoTypography variant="body" :class="AMOUNT_CLASS">
+                <BentoTypography variant="body">
                     {{ formatAmount(item.grossAmount) }}
                 </BentoTypography>
             </template>

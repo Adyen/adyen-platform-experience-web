@@ -1,18 +1,19 @@
 import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { isCapitalRegionSupported } from '../../../internal/CapitalHeader/helpers';
-import { ExternalUIComponentProps, IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
+import { getEnhancedCapitalState, sharedCapitalOfferAnalyticsEventProperties } from '@integration-components/capital/domain';
+import { ExternalUIComponentProps, IGrantOfferResponseDTO } from '@integration-components/types';
 import { useConfigContext } from '@integration-components/core/preact';
 import { useFetch } from '@integration-components/hooks-preact';
 import { useLandedPageEvent } from '@integration-components/hooks-preact/useEventDispatcher/useLandedPageEvent';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { CapitalOfferProps } from '../../types';
-import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
-import { CAPITAL_OFFER_CLASS_NAMES, sharedCapitalOfferAnalyticsEventProperties } from './constants';
+import { CapitalErrorMessageDisplay } from '../../../internal/CapitalErrorMessageDisplay';
+import { CAPITAL_OFFER_CLASS_NAMES } from './constants';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 import { CapitalOfferSelection } from '../CapitalOfferSelection/CapitalOfferSelection';
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
 import './CapitalOffer.scss';
+import { useSupportedRegions } from '../../../utils/capital/useSupportedRegions';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
 
@@ -21,38 +22,32 @@ const sharedAnalyticsEventProperties = {
     subCategory: 'Capital offer',
 } as const;
 
-const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = ({
-    externalDynamicOffersConfig,
+export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = ({
+    externalCapitalState,
     hideTitle,
     onContactSupport,
     onFundsRequest,
     onOfferDismiss,
     onOfferSelect,
 }) => {
-    const [emptyGrantOffer, setEmptyGrantOffer] = useState(false);
     const [selectedAmount, setSelectedAmount] = useState<number | undefined>(undefined);
     const [selectedTerm, setSelectedTerm] = useState<number | undefined>(undefined);
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
 
-    const { getDynamicGrantOffersConfiguration } = useConfigContext().endpoints;
+    const { getCapitalState } = useConfigContext().endpoints;
+    const supportedRegions = useSupportedRegions();
 
-    const onSuccess = useCallback((data: IDynamicOffersConfig | undefined) => {
-        if (data) {
-            setEmptyGrantOffer(false);
-        } else setEmptyGrantOffer(true);
-    }, []);
-
-    const { data: internalDynamicOffersConfig, error: dynamicOffersConfigError } = useFetch({
-        fetchOptions: {
-            enabled: !externalDynamicOffersConfig && !!getDynamicGrantOffersConfiguration,
-            onSuccess: onSuccess,
-        },
+    const { data: internalCapitalState, error: capitalStateError } = useFetch({
+        fetchOptions: { enabled: !externalCapitalState && !!getCapitalState },
         queryFn: useCallback(async () => {
-            return getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT, { query: EMPTY_OBJECT });
-        }, [getDynamicGrantOffersConfiguration]),
+            return getCapitalState?.(EMPTY_OBJECT, { query: EMPTY_OBJECT });
+        }, [getCapitalState]),
     });
 
-    const config = externalDynamicOffersConfig || internalDynamicOffersConfig;
+    const state = useMemo(
+        () => externalCapitalState || (internalCapitalState && getEnhancedCapitalState(internalCapitalState, supportedRegions)),
+        [externalCapitalState, internalCapitalState, supportedRegions]
+    );
 
     const onOfferSelectHandler = useCallback(
         (data: IGrantOfferResponseDTO) => {
@@ -69,13 +64,23 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
         return selectedOffer ? 'OfferSummary' : 'OfferSelection';
     }, [selectedOffer]);
 
-    useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital offer' });
+    useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital offer', isEarlyRenewal: !!state?.renewableGrants.length }, !!state);
+
+    if (state && (!state.isRegionSupported || !state.dynamicOffer)) {
+        return (
+            <div className={CAPITAL_OFFER_CLASS_NAMES.errorContainer}>
+                <CapitalHeader hideTitle={hideTitle} region={state.region} titleKey={'capital.offer.selection.title'} />
+                <CapitalErrorMessageDisplay unsupportedRegion={!state.isRegionSupported} emptyGrantOffer={!state.dynamicOffer} />
+            </div>
+        );
+    }
 
     return (
         <div className={CAPITAL_OFFER_CLASS_NAMES.base}>
             <CapitalHeader
                 hasDivider
                 hideTitle={hideTitle}
+                region={state?.region}
                 titleKey={capitalOfferState === 'OfferSummary' ? 'capital.offer.summary.title' : 'capital.offer.selection.title'}
             />
             {capitalOfferState === 'OfferSelection' && (
@@ -84,17 +89,17 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                     onSelectedAmountChange={setSelectedAmount}
                     selectedTerm={selectedTerm}
                     onSelectedTermChange={setSelectedTerm}
-                    dynamicOffersConfig={config}
-                    dynamicOffersConfigError={dynamicOffersConfigError}
+                    capitalState={state}
+                    capitalStateError={capitalStateError}
                     onOfferDismiss={onOfferDismiss}
                     onOfferSelect={onOfferSelectHandler}
-                    emptyGrantOffer={emptyGrantOffer}
                     onContactSupport={onContactSupport}
                 />
             )}
             {capitalOfferState === 'OfferSummary' && (
                 <CapitalOfferSummary
                     grantOffer={selectedOffer!}
+                    capitalState={state}
                     onBack={() => setSelectedOffer(undefined)}
                     onFundsRequest={onFundsRequest}
                     onContactSupport={onContactSupport}
@@ -102,20 +107,4 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             )}
         </div>
     );
-};
-
-export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = props => {
-    const legalEntity = useConfigContext()?.extraConfig?.legalEntity;
-    const isRegionSupported = useMemo(() => isCapitalRegionSupported(legalEntity), [legalEntity]);
-
-    if (!isRegionSupported) {
-        return (
-            <div className={CAPITAL_OFFER_CLASS_NAMES.errorContainer}>
-                <CapitalHeader hideTitle={props.hideTitle} titleKey={'capital.common.title'} />
-                <CapitalErrorMessageDisplay unsupportedRegion />
-            </div>
-        );
-    }
-
-    return <DynamicCapitalOffer {...props} />;
 };

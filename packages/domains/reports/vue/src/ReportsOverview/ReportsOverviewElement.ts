@@ -1,5 +1,8 @@
+import type { App } from 'vue';
+import BentoVue from '@adyen/bento-vue3';
 import { UIElement } from '@integration-components/core/vue';
 import ReportsOverviewContainer from './components/ReportsOverviewContainer.vue';
+import type { ExternalComponentType } from '@integration-components/types';
 import type { ReportsOverviewExternalProps } from './types';
 
 /**
@@ -13,8 +16,14 @@ import type { ReportsOverviewExternalProps } from './types';
  *   reportsOverview.unmount();
  */
 export class ReportsOverviewElement extends UIElement<ReportsOverviewExternalProps> {
+    public static readonly type: ExternalComponentType = 'reports' as const;
+
     constructor(props: ReportsOverviewExternalProps) {
-        super(ReportsOverviewContainer, props, 'ReportsOverview');
+        super(ReportsOverviewContainer, props, 'reports');
+    }
+
+    protected configureApp(app: App): void {
+        app.use(BentoVue, { withToast: true, withDesignTokensCSSInjection: false });
     }
 }
 

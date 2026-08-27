@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
+import { getTimezoneAwareDateRangeQueryParams } from '@integration-components/composables-vue';
 import ReportsFilters from './ReportsFilters.vue';
 import ReportsTable from './ReportsTable.vue';
 import { useReportsList } from '../composables/useReportsList';
-import { REPORTS_OVERVIEW_CLASS_NAMES } from '../../../../domain/src';
+import { EARLIEST_REPORT_SINCE_DATE } from '../../../../domain/src';
+import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
 import type { IBalanceAccountBase } from '../types';
 import { BentoTypography } from '@adyen/bento-vue3';
-import { quickSelectDateRanges } from '@integration-components/utils';
-import '../styles/index.scss';
+import styles from './ReportsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccountId?: string;
@@ -24,14 +25,19 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 
+const initialDateRangeQueryParams = getTimezoneAwareDateRangeQueryParams({
+    dateRange: quickSelectDateRanges.last30Days,
+    earliestDate: startOfDay(new Date(EARLIEST_REPORT_SINCE_DATE)),
+    timezone: 'UTC',
+});
+
 const filterParams = ref<{
     balanceAccountId: string | undefined;
     createdSince: string;
     createdUntil: string;
 }>({
     balanceAccountId: undefined,
-    createdSince: new Date(quickSelectDateRanges.last30Days.startDate).toISOString(),
-    createdUntil: new Date(quickSelectDateRanges.last30Days.endDate).toISOString(),
+    ...initialDateRangeQueryParams,
 });
 
 function onFiltersChange(params: { balanceAccountId: string | undefined; createdSince: string; createdUntil: string }) {
@@ -62,12 +68,10 @@ const listError = computed(() => reportsListResult.error.value as Error | undefi
 </script>
 
 <template>
-    <div :class="REPORTS_OVERVIEW_CLASS_NAMES.base">
-        <div v-if="!props.hideTitle" class="adyen-pe-reports-overview-header">
+    <div :class="styles.root">
+        <div v-if="!props.hideTitle" :class="styles.header">
             <BentoTypography variant="title">{{ i18n.get('reports.overview.title') }}</BentoTypography>
-            <BentoTypography variant="body" class="adyen-pe-reports-overview-header__description">{{
-                i18n.get('reports.overview.generateInfo')
-            }}</BentoTypography>
+            <BentoTypography variant="body" :class="styles.description">{{ i18n.get('reports.overview.generateInfo') }}</BentoTypography>
         </div>
 
         <ReportsFilters :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />

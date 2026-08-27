@@ -14,7 +14,7 @@ import Button from '@integration-components/ui-components-preact/Button';
 import Icon from '@integration-components/ui-components-preact/Icon';
 import { ButtonActionsList } from '@integration-components/types';
 import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
-import { getDefenseDocumentContent } from '../../utils';
+import { getDefenseDocumentContent } from '@integration-components/disputes/domain';
 import { validationErrors } from '@integration-components/ui-components-preact/FormFields/FileInput/constants';
 import { getHumanReadableFileSize } from '@integration-components/utils';
 import { MapErrorCallback } from './types';

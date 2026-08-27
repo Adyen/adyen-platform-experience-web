@@ -1,5 +1,5 @@
 import FileInput from '@integration-components/ui-components-preact/FormFields/FileInput/FileInput';
-import { getDefenseDocumentContent } from '../../utils';
+import { getDefenseDocumentContent } from '@integration-components/disputes/domain';
 import { useCoreContext } from '@integration-components/core/preact';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';

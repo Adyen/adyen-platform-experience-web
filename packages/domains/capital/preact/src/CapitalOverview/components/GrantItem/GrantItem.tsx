@@ -9,8 +9,6 @@ import { TypographyElement, TypographyVariant } from '@integration-components/ui
 import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
 import ProgressBar from '@integration-components/ui-components-preact/ProgressBar';
 import { GRANT_ITEM_CLASS_NAMES } from './constants';
-import { getGrantConfig } from './utils';
-import { GrantItemProps } from './types';
 import './GrantItem.scss';
 import { GrantDetails } from '../GrantDetails/GrantDetails';
 import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
@@ -18,11 +16,20 @@ import { Tooltip } from '@integration-components/ui-components-preact/Tooltip/To
 import Alert from '@integration-components/ui-components-preact/Alert/Alert';
 import Button from '@integration-components/ui-components-preact/Button';
 import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
-import { ButtonVariant } from '@integration-components/types';
+import { ButtonVariant, IGrant } from '@integration-components/types';
 import ExpandableCard from '@integration-components/ui-components-preact/ExpandableCard/ExpandableCard';
 import { GrantActions } from '../GrantActions/GrantActions';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
 import { Translation } from '@integration-components/ui-components-preact/Translation';
+import { ListWithoutFirst } from '@integration-components/utils/types';
+import { GrantAdjustmentDetailCallback } from '../GrantAdjustmentDetails/types';
+import { getGrantConfig, GrantStatusVariant } from '@integration-components/capital/domain';
+import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
+
+export interface GrantItemProps {
+    grant: IGrant;
+    showDetails?: (...args: ListWithoutFirst<Parameters<GrantAdjustmentDetailCallback>>) => ReturnType<GrantAdjustmentDetailCallback>;
+}
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetails }) => {
     const { i18n } = useCoreContext();
@@ -31,6 +38,19 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
 
     const [areActionsLocallyCompleted, setActionsLocallyCompleted] = useState(false);
     const grantConfig = useMemo(() => getGrantConfig(grant, areActionsLocallyCompleted), [grant, areActionsLocallyCompleted]);
+
+    const getStatusTagVariant = useCallback((statusVariant: GrantStatusVariant) => {
+        switch (statusVariant) {
+            case 'Default':
+                return TagVariant.DEFAULT;
+            case 'Error':
+                return TagVariant.ERROR;
+            case 'Light':
+                return TagVariant.LIGHT;
+            case 'Warning':
+                return TagVariant.WARNING;
+        }
+    }, []);
 
     const showUnscheduledRepaymentAccounts = useCallback(() => {
         try {
@@ -97,11 +117,11 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                             grantConfig.statusTooltipKey ? (
                                 <Tooltip content={i18n.get(grantConfig.statusTooltipKey)}>
                                     <div>
-                                        <Tag label={i18n.get(grantConfig.statusKey)} variant={grantConfig.statusTagVariant} />
+                                        <Tag label={i18n.get(grantConfig.statusKey)} variant={getStatusTagVariant(grantConfig.statusTagVariant)} />
                                     </div>
                                 </Tooltip>
                             ) : (
-                                <Tag label={i18n.get(grantConfig.statusKey)} variant={grantConfig.statusTagVariant} />
+                                <Tag label={i18n.get(grantConfig.statusKey)} variant={getStatusTagVariant(grantConfig.statusTagVariant)} />
                             )
                         ) : null}
                     </div>
@@ -162,7 +182,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                 )}
             </div>
         ),
-        [elementIds, grantConfig, i18n, grant, dateFormat, showUnscheduledRepaymentAccounts]
+        [elementIds, grantConfig, i18n, grant, dateFormat, getStatusTagVariant, showUnscheduledRepaymentAccounts]
     );
 
     const handleActionsComplete = useCallback(() => {

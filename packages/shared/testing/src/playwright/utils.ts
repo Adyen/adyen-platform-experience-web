@@ -1,73 +1,10 @@
-import keys from '@integration-components/assets/translations/en-US.json' with { type: 'json' };
 import type { PageAnalyticsEvent } from '../fixtures/eventDispatcher/events';
-import { expect, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page, Request } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { BalanceAccountFilter } from './utils/filters';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
-
-export const getTranslatedKey = (key: keyof typeof keys) => keys[key] ?? '';
-
-const MONTHS_WITH_30_DAYS = [3, 5, 8, 10] as const;
-
-const _clampTimestamp = (min: number, max: number, date: Date | number | string) => new Date(Math.max(Math.min(new Date(date).getTime(), max), min));
-const _getTimestamp = (date: Date, fallback: number) => (Number.isFinite(date.getTime()) ? date.getTime() : fallback);
-
-type ApplyDateFilterOptions = {
-    earliestDate?: (now: number) => Date;
-    latestDate?: (now: number) => Date;
-};
-
-export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) => {
-    const { earliestDate, latestDate } = options || {};
-    const _minTimestamp = (now: Date) => _getTimestamp(earliestDate?.(now.getTime()) ?? new Date(NaN), -Infinity);
-    const _maxTimestamp = (now: Date) => _getTimestamp(latestDate?.(now.getTime()) ?? new Date(NaN), Infinity);
-
-    return async (from: Date | number | string = Date(), to: Date | number | string = from) => {
-        const applyButton = page.getByLabel(getTranslatedKey('common.actions.apply.labels.default'));
-        const previousMonthButton = page.getByLabel(getTranslatedKey('common.filters.types.date.calendar.navigation.previousMonth'));
-        const now = new Date();
-
-        let maxTimestamp = _maxTimestamp(now);
-        let minTimestamp = _minTimestamp(now);
-        if (minTimestamp > maxTimestamp) [minTimestamp, maxTimestamp] = [maxTimestamp, minTimestamp];
-
-        let fromDate = _clampTimestamp(minTimestamp, maxTimestamp, from);
-        let toDate = _clampTimestamp(minTimestamp, maxTimestamp, to);
-        if (fromDate > toDate) [fromDate, toDate] = [toDate, fromDate];
-
-        const firstMonthDay = (await page.locator(`[data-within-month='1'] [datetime]`).all())[0]!;
-        const firstVisibleDate = new Date((await firstMonthDay.getAttribute('datetime'))!);
-        const rangeDates = [fromDate, toDate, firstVisibleDate];
-
-        for (let i = 1; i >= 0; i--) await firstMonthDay.click();
-
-        for (let i = 1; i >= 0; i--) {
-            const date = rangeDates[i]!;
-            const origin = rangeDates[i + 1]!;
-            const originDate = origin.getDate();
-            const originMonth = origin.getMonth();
-
-            const diff = (origin.getFullYear() - date.getFullYear()) * 12 + (originMonth - date.getMonth());
-            const years = Math.floor(diff / 12);
-            let months = diff % 12;
-
-            if (months) {
-                const nearestShorterMonth = originDate === 31 ? (MONTHS_WITH_30_DAYS.findLast(month => month < originMonth) ?? 1) : 1;
-                if (originDate >= 30 && originMonth - months <= nearestShorterMonth) months++;
-            } else if (years && originMonth === 1 && originDate === 29) months++;
-
-            for (let i = 0; i < years; i++) await previousMonthButton.click({ modifiers: ['Shift'] });
-            for (let i = 0; i < months; i++) await previousMonthButton.click();
-
-            const firstDayCursorPosition = Number(await page.locator(`[data-first-month-day='1']`).getAttribute('data-cursor-position'));
-            const dayOfMonth = page.locator(`[data-cursor-position='${firstDayCursorPosition + date.getDate() - 1}']`);
-
-            for (let j = i; j >= 0; j--) await dayOfMonth.click();
-        }
-
-        await applyButton.click();
-    };
-};
 
 export const goToStory = async (page: Page, params: { id: string; args?: Record<string, string> }) => {
     const { args, ...restOfParams } = params;
@@ -82,6 +19,19 @@ export const goToStory = async (page: Page, params: { id: string; args?: Record<
             : {}),
     });
     await page.goto(`/iframe.html?${queryParams.toString()}`);
+};
+
+export const updateStoryArgs = async (page: Page, storyId: string, updatedArgs: Record<string, unknown>) => {
+    await page.evaluate(
+        ({ storyId, updatedArgs }) => {
+            (
+                window as unknown as Window & {
+                    __STORYBOOK_PREVIEW__: { channel: { emit: (event: string, payload: unknown) => void } };
+                }
+            ).__STORYBOOK_PREVIEW__.channel.emit('updateStoryArgs', { storyId, updatedArgs });
+        },
+        { storyId, updatedArgs }
+    );
 };
 
 export const expectAnalyticsEvents = async <T extends PageAnalyticsEvent>(
@@ -124,10 +74,6 @@ export const setTime = async (page: Page) => {
     await page.clock.setFixedTime('2025-01-01T00:00:00.00Z');
 };
 
-export const sleep = async (ms: number = 100) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-};
-
 export const getComponentRoot = (page: Page) => page.getByTestId('component-root');
 
 export const clickOutsideDialog = async (dialog: Locator) => {
@@ -136,10 +82,62 @@ export const clickOutsideDialog = async (dialog: Locator) => {
     await expect(dialog).toBeHidden();
 };
 
-export const selectFirstUnselectedBalanceAccount = async (balanceAccountSelectorDialog: Locator) => {
-    await expect(balanceAccountSelectorDialog).toBeVisible();
-    const firstUnselectedOption = balanceAccountSelectorDialog.getByRole('option', { selected: false, disabled: false }).nth(0);
+export const expectPaginationReset = async <FilterValue>({
+    endpointPath,
+    isFilterRequest,
+    page,
+    triggerFilterChange,
+}: {
+    endpointPath: string;
+    isFilterRequest: (request: Request, filterValue: FilterValue) => boolean;
+    page: Page;
+    triggerFilterChange: () => Promise<FilterValue>;
+}) => {
+    const nextPageButton = page.getByRole('button', { name: /Next page/i });
+    const previousPageButton = page.getByRole('button', { name: /Previous page/i });
+    const nextPageResponse = page.waitForResponse(response => {
+        const url = new URL(response.url());
+        return url.pathname.endsWith(endpointPath) && url.searchParams.has('cursor');
+    });
 
-    await firstUnselectedOption.click();
-    await expect(balanceAccountSelectorDialog).toBeHidden();
+    await nextPageButton.click();
+    await nextPageResponse;
+    await expect(previousPageButton).toBeEnabled();
+
+    const filterRequests: Request[] = [];
+    const collectFilterRequests = (request: Request) => {
+        if (new URL(request.url()).pathname.endsWith(endpointPath)) filterRequests.push(request);
+    };
+    page.on('request', collectFilterRequests);
+
+    let filterValue!: FilterValue;
+    try {
+        filterValue = await triggerFilterChange();
+        await expect.poll(() => filterRequests.some(request => isFilterRequest(request, filterValue))).toBe(true);
+    } finally {
+        page.off('request', collectFilterRequests);
+    }
+
+    const matchingRequests = filterRequests.filter(request => isFilterRequest(request, filterValue));
+    expect(matchingRequests.length).toBeGreaterThan(0);
+    matchingRequests.forEach(request => expect(new URL(request.url()).searchParams.get('cursor')).toBeNull());
+    await expect(previousPageButton).toBeDisabled();
+};
+
+export const expectBalanceAccountPaginationReset = async ({
+    endpointPath,
+    page,
+    variant,
+}: {
+    endpointPath: string;
+    page: Page;
+    variant: keyof typeof BalanceAccountFilter;
+}) => {
+    const Filter = BalanceAccountFilter[variant];
+    await expectPaginationReset({
+        endpointPath,
+        isFilterRequest: (request, balanceAccountId) => new URL(request.url()).searchParams.get('balanceAccountId') === balanceAccountId,
+        page,
+        triggerFilterChange: () => new Filter(page).selectFirstUnselected(),
+    });
 };

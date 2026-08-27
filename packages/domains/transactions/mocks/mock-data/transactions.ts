@@ -1,21 +1,22 @@
 import type { IAmount, IPaymentMethod, ITransaction, ITransactionRefundDetails, ITransactionWithDetails } from '@integration-components/types';
 import { BALANCE_ACCOUNTS } from '@integration-components/testing/fixtures';
-import { TRANSACTION_DATE_RANGE_MAX_YEARS } from '../../preact/src/TransactionsOverview/constants';
+import { getEarliestTransactionDate } from '@integration-components/transactions/domain';
 
 const getCreatedAt = (() => {
     let index = 0;
 
     const maxSize = 130;
     const skewFactor = -4;
-    const fromDate = new Date();
+    const currentDate = new Date();
+    const earliestDate = getEarliestTransactionDate(currentDate);
     const expBase = Math.exp(skewFactor);
-    const timeSpan = fromDate.getTime() - fromDate.setFullYear(fromDate.getFullYear() - TRANSACTION_DATE_RANGE_MAX_YEARS);
+    const timeSpan = currentDate.getTime() - earliestDate.getTime();
 
     return () => {
         const normalizedIndex = Math.min(index++, maxSize) / maxSize;
         const expTerm = Math.exp(skewFactor * normalizedIndex);
         const nonLinearProgress = (expTerm - 1) / (expBase - 1);
-        return new Date(fromDate.getTime() + nonLinearProgress * timeSpan).toISOString();
+        return new Date(earliestDate.getTime() + nonLinearProgress * timeSpan).toISOString();
     };
 })();
 

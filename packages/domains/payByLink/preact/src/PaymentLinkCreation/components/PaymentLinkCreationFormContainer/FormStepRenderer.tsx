@@ -1,4 +1,4 @@
-import { LinkCreationFormStep } from '../types';
+import { LinkCreationFormStep } from '../../types';
 import { CustomerDetailsForm } from '../Form/CustomerDetailsForm/CustomerDetailsForm';
 import { PaymentDetailsForm } from '../Form/PaymentDetailsForm/PaymentDetailsForm';
 import { FormSummary } from '../Form/Summary/FormSummary';
@@ -6,7 +6,7 @@ import { StoreForm } from '../Form/StoreForm/StoreForm';
 import { Dispatch, SetStateAction } from 'preact/compat';
 import { IPaymentLinkSettings, IPaymentLinkStore, IPaymentLinkConfiguration, IPaymentLinkCountry } from '@integration-components/types';
 import { StateUpdater } from 'preact/hooks';
-import { StoreIds } from '../../../PaymentLinksOverview/types';
+import type { StoreIds } from '@integration-components/payByLink/domain';
 
 type FormStepRendererProps = {
     setShowTermsAndConditions: Dispatch<StateUpdater<boolean>>;

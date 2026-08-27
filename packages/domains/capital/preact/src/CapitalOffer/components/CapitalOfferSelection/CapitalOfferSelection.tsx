@@ -1,33 +1,54 @@
-import Typography from '@integration-components/ui-components-preact/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
-import StructuredList from '@integration-components/ui-components-preact/StructuredList';
 import Button from '@integration-components/ui-components-preact/Button/Button';
 import Card from '@integration-components/ui-components-preact/Card/Card';
-import { ButtonVariant, IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
+import { ButtonVariant, IGrantOfferResponseDTO } from '@integration-components/types';
 import { useCoreContext, useConfigContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useMutation from '@integration-components/hooks-preact/useMutation/useMutation';
-import { containerQueries, useResponsiveContainer, useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
-import { DATE_FORMAT_CAPITAL_OVERVIEW, EMPTY_OBJECT, debounce } from '@integration-components/utils';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
+import { EMPTY_OBJECT, debounce } from '@integration-components/utils';
 import './CapitalOfferSelection.scss';
-import { sharedCapitalOfferAnalyticsEventProperties } from '../CapitalOffer/constants';
-import { getMaximumRepaymentDate, getPercentage } from '../utils/utils';
+import {
+    getCreateGrantOfferBody,
+    DEFAULT_TERM,
+    DYNAMIC_OFFER_DEBOUNCE_MS,
+    DYNAMIC_OFFER_RETRY_COUNT,
+    EnhancedCapitalState,
+    getAvailableTerms,
+    getEstimatedTerms,
+    getOfferForTerm,
+    getRelativeToDefault,
+    getDynamicOfferConfig,
+    getPercentageOfRange,
+    getOffersByTerm,
+    adjustSelectedTerm,
+    sharedCapitalOfferAnalyticsEventProperties,
+    getDefaultAmountValue,
+    getCurrency,
+    getIsEarlyRenewal,
+    getDefaultTerm,
+} from '@integration-components/capital/domain';
 import CapitalSlider from '../../../internal/CapitalSlider';
-import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
-import { calculateSliderAdjustedMidValue } from '@integration-components/ui-components-preact/Slider/Slider';
+import { CapitalErrorMessageDisplay } from '../../../internal/CapitalErrorMessageDisplay';
 import { TermSelector } from '../TermSelector';
-import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
 import { Fragment } from 'preact';
-import { getRelativeToDefault, getValuePercentage } from './utils';
-
-const DEFAULT_TERM = 180;
+import { CapitalOfferInformation } from '../CapitalOfferInformation/CapitalOfferInformation';
+import { RenewalHighlightedFields } from '../RenewalHighlightedFields';
 
 const sharedAnalyticsEventProperties = {
     ...sharedCapitalOfferAnalyticsEventProperties,
     subCategory: 'Business financing offer',
 } as const;
 
-const LoadingSkeleton = ({ hasSingleTerm }: { hasSingleTerm: boolean }) => {
+const HighlightedFieldsLoadingSkeleton = () => {
+    return (
+        <>
+            <div className="adyen-pe-capital-offer-selection__highlighted-fields-loading-skeleton"></div>
+            <div className="adyen-pe-capital-offer-selection__highlighted-fields-loading-spacer"></div>
+        </>
+    );
+};
+
+const OfferInformationLoadingSkeleton = ({ hasSingleTerm }: { hasSingleTerm: boolean }) => {
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const listItems = [...Array(hasSingleTerm ? 5 : 4)];
     return (
@@ -55,71 +76,9 @@ const LoadingSkeleton = ({ hasSingleTerm }: { hasSingleTerm: boolean }) => {
     );
 };
 
-const InformationDisplay = ({ data, hasSingleTerm }: { data: IGrantOfferResponseDTO; hasSingleTerm: boolean }) => {
-    const { i18n } = useCoreContext();
-    const { dateFormat } = useTimezoneAwareDateFormatting();
-    const maximumRepaymentPeriodDate = useMemo(() => {
-        const days = data.maximumRepaymentPeriodDays;
-        const date = days && getMaximumRepaymentDate(days);
-        return date && dateFormat(date, DATE_FORMAT_CAPITAL_OVERVIEW);
-    }, [data.maximumRepaymentPeriodDays, dateFormat]);
-
-    const formatTermLabel = useFormatTermLabel();
-
-    return (
-        <div className="adyen-pe-capital-offer-selection__information">
-            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
-                {i18n.get('capital.common.termsTitle')}
-            </Typography>
-            <StructuredList
-                renderValue={val => (
-                    <Typography el={TypographyElement.SPAN} stronger variant={TypographyVariant.CAPTION}>
-                        {val}
-                    </Typography>
-                )}
-                renderLabel={val => (
-                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION}>
-                        {val}
-                    </Typography>
-                )}
-                items={[
-                    { key: 'capital.common.fields.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
-                    {
-                        key: 'capital.common.fields.totalRepaymentAmount',
-                        value: i18n.amount(data.totalAmount.value, data.totalAmount.currency),
-                    },
-                    {
-                        key: 'capital.common.fields.dailyRepaymentRate',
-                        value: i18n.get('capital.common.values.percentage', {
-                            values: { percentage: getPercentage(data.repaymentRate) },
-                        }),
-                    },
-                    ...(hasSingleTerm
-                        ? [
-                              {
-                                  key: 'capital.common.fields.expectedRepaymentPeriod' as const,
-                                  value: formatTermLabel(data.expectedRepaymentPeriodDays),
-                              },
-                          ]
-                        : []),
-                    ...(data.maximumRepaymentPeriodDays
-                        ? [
-                              {
-                                  key: 'capital.common.fields.maximumRepaymentDate' as const,
-                                  value: maximumRepaymentPeriodDate,
-                              },
-                          ]
-                        : []),
-                ]}
-            />
-        </div>
-    );
-};
-
 type CapitalOfferSelectionProps = {
-    dynamicOffersConfig: IDynamicOffersConfig | undefined;
-    dynamicOffersConfigError?: Error;
-    emptyGrantOffer: boolean;
+    capitalState: EnhancedCapitalState | undefined;
+    capitalStateError?: Error;
     selectedAmount: number | undefined;
     selectedTerm: number | undefined;
     onContactSupport?: () => void;
@@ -130,9 +89,8 @@ type CapitalOfferSelectionProps = {
 };
 
 export const CapitalOfferSelection = ({
-    dynamicOffersConfig,
-    dynamicOffersConfigError,
-    emptyGrantOffer,
+    capitalState,
+    capitalStateError,
     selectedAmount,
     selectedTerm,
     onContactSupport,
@@ -142,28 +100,22 @@ export const CapitalOfferSelection = ({
     onSelectedTermChange,
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
+    const { createGrantOffer, getDynamicGrantOffer } = useConfigContext().endpoints;
     const userEvents = useEventDispatcherContext();
 
-    const defaultAmount = useMemo(
-        () =>
-            dynamicOffersConfig &&
-            calculateSliderAdjustedMidValue(dynamicOffersConfig.minAmount.value, dynamicOffersConfig.maxAmount.value, dynamicOffersConfig.step),
-        [dynamicOffersConfig]
-    );
+    const isEarlyRenewal = useMemo(() => !!capitalState && getIsEarlyRenewal(capitalState), [capitalState]);
+    const dynamicOffersConfig = useMemo(() => capitalState && getDynamicOfferConfig(capitalState), [capitalState]);
+    const currency = useMemo(() => dynamicOffersConfig && getCurrency(dynamicOffersConfig), [dynamicOffersConfig]);
+    const defaultAmountValue = useMemo(() => dynamicOffersConfig && getDefaultAmountValue(dynamicOffersConfig), [dynamicOffersConfig]);
+    const allTerms = useMemo(() => (dynamicOffersConfig ? getEstimatedTerms(dynamicOffersConfig) : []), [dynamicOffersConfig]);
+
     const hasInitializedRef = useRef(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const allTerms = useMemo(
-        () => dynamicOffersConfig?.estimatedRepaymentTermsInDays.toSorted((a, b) => a - b) ?? [],
-        [dynamicOffersConfig?.estimatedRepaymentTermsInDays]
-    );
-
-    const currency = useMemo(() => dynamicOffersConfig?.minAmount.currency, [dynamicOffersConfig?.minAmount.currency]);
-
-    const { createGrantOffer, getDynamicGrantOffer } = useConfigContext().endpoints;
     const getDynamicGrantOfferMutation = useMutation({
         queryFn: getDynamicGrantOffer,
         options: {
-            retry: 1,
+            retry: DYNAMIC_OFFER_RETRY_COUNT,
             shouldRetry: useCallback((error: any) => {
                 return error.status === 500;
             }, []),
@@ -173,18 +125,45 @@ export const CapitalOfferSelection = ({
         },
     });
 
-    const termOfferMap = useMemo<Record<number, IGrantOfferResponseDTO>>(() => {
-        const offers = getDynamicGrantOfferMutation.data?.offers ?? [];
-        return Object.fromEntries(offers.map(offer => [offer.expectedRepaymentPeriodDays, offer]));
-    }, [getDynamicGrantOfferMutation.data]);
+    const reviewOfferMutation = useMutation({
+        queryFn: createGrantOffer,
+        options: {
+            onSuccess: data => onOfferSelect(data),
+        },
+    });
 
-    const availableTerms = useMemo<number[]>(() => Object.keys(termOfferMap).map(Number), [termOfferMap]);
+    const offersByTerm = useMemo(() => getOffersByTerm(getDynamicGrantOfferMutation.data?.offers ?? []), [getDynamicGrantOfferMutation.data]);
+    const availableTerms = useMemo(() => getAvailableTerms(offersByTerm), [offersByTerm]);
+    const matchedOffer = useMemo(() => (selectedTerm ? getOfferForTerm(offersByTerm, selectedTerm) : undefined), [selectedTerm, offersByTerm]);
 
-    const handleTermChange = useCallback(
+    const getDynamicOffer = useCallback(
+        (amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }),
+        [currency, getDynamicGrantOfferMutation]
+    );
+
+    const getDebouncedDynamicOffer = useMemo(() => debounce(getDynamicOffer, DYNAMIC_OFFER_DEBOUNCE_MS), [getDynamicOffer]);
+
+    const reviewOffer = useCallback(() => {
+        try {
+            if (matchedOffer && selectedTerm) {
+                void reviewOfferMutation.mutate(
+                    {
+                        body: getCreateGrantOfferBody(matchedOffer),
+                        contentType: 'application/json',
+                    },
+                    { query: EMPTY_OBJECT }
+                );
+            }
+        } finally {
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Review offer', isEarlyRenewal });
+        }
+    }, [matchedOffer, selectedTerm, reviewOfferMutation, userEvents, isEarlyRenewal]);
+
+    const updateTerm = useCallback(
         (term: number) => {
             const relativeToDefault = getRelativeToDefault(term, DEFAULT_TERM);
-            const availableRates = availableTerms.map(t => termOfferMap[t]?.repaymentRate);
-            const selectedRate = termOfferMap[term]?.repaymentRate;
+            const availableRates = availableTerms.map(t => offersByTerm[t]?.repaymentRate);
+            const selectedRate = offersByTerm[term]?.repaymentRate;
 
             onSelectedTermChange(term);
             userEvents.addEvent?.('Selected repayment term', {
@@ -195,83 +174,43 @@ export const CapitalOfferSelection = ({
                 relativeToDefault,
                 availableRates,
                 selectedRate,
+                isEarlyRenewal,
             });
         },
-        [allTerms, availableTerms, termOfferMap, onSelectedTermChange, userEvents]
+        [availableTerms, offersByTerm, onSelectedTermChange, userEvents, allTerms, isEarlyRenewal]
     );
-
-    const handleUserTermSelect = useCallback((term: number) => handleTermChange(term), [handleTermChange]);
 
     useEffect(() => {
         if (allTerms.length > 0 && selectedTerm === undefined) {
-            const term = availableTerms.includes(DEFAULT_TERM) ? DEFAULT_TERM : availableTerms[0];
-            if (term) {
-                handleTermChange(term);
+            const term = getDefaultTerm(availableTerms);
+            if (term !== undefined) {
+                updateTerm(term);
             }
         }
-    }, [allTerms, availableTerms, handleTermChange, selectedTerm]);
+    }, [allTerms, availableTerms, updateTerm, selectedTerm]);
 
     useEffect(() => {
         if (availableTerms.length > 0 && selectedTerm !== undefined && !availableTerms.includes(selectedTerm)) {
-            const nearest = availableTerms.reduce((prev, curr) => (Math.abs(curr - selectedTerm) < Math.abs(prev - selectedTerm) ? curr : prev));
-            handleTermChange(nearest);
-        }
-    }, [availableTerms, handleTermChange, selectedTerm]);
-
-    const matchedOffer = useMemo<IGrantOfferResponseDTO | undefined>(() => {
-        if (!getDynamicGrantOfferMutation.data?.offers || selectedTerm === undefined) return undefined;
-        return getDynamicGrantOfferMutation.data.offers.find(offer => offer.expectedRepaymentPeriodDays === selectedTerm);
-    }, [getDynamicGrantOfferMutation.data, selectedTerm]);
-
-    const reviewOfferMutation = useMutation({
-        queryFn: createGrantOffer,
-        options: {
-            onSuccess: data => onOfferSelect(data),
-        },
-    });
-
-    const onReview = useCallback(() => {
-        try {
-            if (matchedOffer && selectedTerm) {
-                void reviewOfferMutation.mutate(
-                    {
-                        body: {
-                            amount: matchedOffer.grantAmount.value,
-                            currency: matchedOffer.grantAmount.currency,
-                            selectedEstimatedRepaymentTermDays: selectedTerm,
-                        },
-                        contentType: 'application/json',
-                    },
-                    { query: EMPTY_OBJECT }
-                );
+            const term = adjustSelectedTerm(availableTerms, selectedTerm);
+            if (term !== undefined) {
+                updateTerm(term);
             }
-        } finally {
-            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Review offer' });
         }
-    }, [matchedOffer, reviewOfferMutation, selectedTerm, userEvents]);
+    }, [availableTerms, updateTerm, selectedTerm]);
 
-    const getOffer = useCallback(
-        (amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }),
-        [currency, getDynamicGrantOfferMutation]
-    );
-
-    const [isLoading, setIsLoading] = useState(false);
-
-    const debouncedGetOfferCall = useMemo(() => debounce(getOffer, 300), [getOffer]);
-
-    const onChangeHandler = useCallback(
-        (val: number) => {
-            debouncedGetOfferCall.cancel();
+    const handleAmountValueChange = useCallback(
+        (value: number) => {
+            getDebouncedDynamicOffer.cancel();
             setIsLoading(true);
-            onSelectedAmountChange(val);
+            onSelectedAmountChange(value);
         },
-        [debouncedGetOfferCall, onSelectedAmountChange]
+        [getDebouncedDynamicOffer, onSelectedAmountChange]
     );
 
-    const triggerAmountChangeEvent = useCallback(
+    const emmitAmountValueChangeEvent = useCallback(
         (val: number) => {
-            const relativeToDefault = getRelativeToDefault(val, defaultAmount);
-            const valuePercentage = getValuePercentage(val, dynamicOffersConfig?.minAmount.value, dynamicOffersConfig?.maxAmount.value);
+            const relativeToDefault = getRelativeToDefault(val, defaultAmountValue);
+            const valuePercentage = getPercentageOfRange(val, dynamicOffersConfig?.minAmount.value, dynamicOffersConfig?.maxAmount.value);
 
             userEvents.addEvent?.('Changed capital offer slider', {
                 ...sharedAnalyticsEventProperties,
@@ -282,40 +221,41 @@ export const CapitalOfferSelection = ({
                 min: dynamicOffersConfig?.minAmount.value,
                 max: dynamicOffersConfig?.maxAmount.value,
                 relativeToDefault,
+                isEarlyRenewal,
             });
         },
-        [dynamicOffersConfig, defaultAmount, userEvents, currency]
+        [dynamicOffersConfig, defaultAmountValue, userEvents, currency, isEarlyRenewal]
     );
 
     const handleSliderRelease = useCallback(
         (val: number) => {
             try {
-                return debouncedGetOfferCall(val);
+                return getDebouncedDynamicOffer(val);
             } finally {
-                triggerAmountChangeEvent(val);
+                emmitAmountValueChangeEvent(val);
             }
         },
-        [debouncedGetOfferCall, triggerAmountChangeEvent]
+        [getDebouncedDynamicOffer, emmitAmountValueChangeEvent]
     );
 
     useEffect(() => {
         if (dynamicOffersConfig && !getDynamicGrantOfferMutation.data && !hasInitializedRef.current) {
             hasInitializedRef.current = true;
-            const initialValue = selectedAmount ?? defaultAmount ?? dynamicOffersConfig.minAmount.value;
-            if (!selectedAmount) {
+            const initialValue = selectedAmount ?? getDefaultAmountValue(dynamicOffersConfig);
+            if (selectedAmount === undefined) {
                 onSelectedAmountChange(initialValue);
             }
-            void getOffer(initialValue);
-            triggerAmountChangeEvent(initialValue);
+            void getDynamicOffer(initialValue);
+            emmitAmountValueChangeEvent(initialValue);
         }
     }, [
         dynamicOffersConfig,
         getDynamicGrantOfferMutation.data,
-        getOffer,
-        defaultAmount,
+        getDynamicOffer,
+        defaultAmountValue,
         selectedAmount,
         onSelectedAmountChange,
-        triggerAmountChangeEvent,
+        emmitAmountValueChangeEvent,
     ]);
 
     const loadingButtonState = useMemo(
@@ -330,42 +270,54 @@ export const CapitalOfferSelection = ({
         [getDynamicGrantOfferMutation.isLoading, isLoading, matchedOffer]
     );
 
-    const hasSingleTerm = useMemo(() => allTerms.length === 1, [allTerms.length]);
+    const hasSingleTerm = useMemo(() => allTerms.length === 1, [allTerms]);
+
+    const renderHighlightedFields = () => {
+        const renewableGrant = capitalState?.renewableGrants[0];
+        if (!renewableGrant) return null;
+        return isLoadingIndicatorVisible ? (
+            <HighlightedFieldsLoadingSkeleton />
+        ) : (
+            <RenewalHighlightedFields remainingGrantAmount={renewableGrant.remainingGrantAmount} newGrantAmount={matchedOffer!.grantAmount} />
+        );
+    };
 
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicOffersConfigError || termsError ? (
+            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || capitalStateError || termsError ? (
                 <CapitalErrorMessageDisplay
-                    error={reviewOfferMutation.error || getDynamicGrantOfferMutation.error || dynamicOffersConfigError}
+                    error={reviewOfferMutation.error || getDynamicGrantOfferMutation.error || capitalStateError}
                     onBack={onOfferDismiss}
                     onContactSupport={onContactSupport}
-                    emptyGrantOffer={emptyGrantOffer}
                 />
             ) : (
                 <>
                     {dynamicOffersConfig && (
-                        <CapitalSlider
-                            value={selectedAmount}
-                            dynamicOffersConfig={dynamicOffersConfig}
-                            onValueChange={onChangeHandler}
-                            onRelease={handleSliderRelease}
-                        />
+                        <>
+                            <CapitalSlider
+                                value={selectedAmount}
+                                dynamicOffersConfig={dynamicOffersConfig}
+                                onValueChange={handleAmountValueChange}
+                                onRelease={handleSliderRelease}
+                            />
+                            {renderHighlightedFields()}
+                        </>
                     )}
                     {allTerms.length > 1 && (
                         <TermSelector
                             allTerms={allTerms}
                             availableTerms={availableTerms}
                             selectedTerm={selectedTerm}
-                            termOfferMap={termOfferMap}
+                            termOfferMap={offersByTerm}
                             isLoadingIndicatorVisible={isLoadingIndicatorVisible}
-                            onTermSelect={handleUserTermSelect}
+                            onTermSelect={updateTerm}
                         />
                     )}
                     <Card filled noOutline noPadding classNameModifiers={['adyen-pe-capital-offer-selection__details']}>
                         {isLoadingIndicatorVisible ? (
-                            <LoadingSkeleton hasSingleTerm={hasSingleTerm} />
+                            <OfferInformationLoadingSkeleton hasSingleTerm={hasSingleTerm} />
                         ) : matchedOffer ? (
-                            <InformationDisplay data={matchedOffer} hasSingleTerm={hasSingleTerm} />
+                            <CapitalOfferInformation data={matchedOffer} hasSingleTerm={hasSingleTerm} />
                         ) : null}
                     </Card>
                     <div className="adyen-pe-capital-offer-selection__buttons">
@@ -377,7 +329,7 @@ export const CapitalOfferSelection = ({
                         <Button
                             variant={ButtonVariant.PRIMARY}
                             state={loadingButtonState ? 'loading' : undefined}
-                            onClick={onReview}
+                            onClick={reviewOffer}
                             disabled={reviewOfferMutation.isLoading || !dynamicOffersConfig?.minAmount || !matchedOffer}
                             aria-label={i18n.get('capital.offer.selection.actions.reviewOffer')}
                         >

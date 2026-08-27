@@ -1,16 +1,20 @@
 import cx from 'classnames';
-import { Fragment } from 'preact';
+import { Fragment, h } from 'preact';
 import { useMemo } from 'preact/hooks';
 import { AccountDetail } from './AccountDetail';
-import { AccountDetailsProps, BankAccountField } from './types';
 import {
-    getAccountFieldCopyButtonLabelKey,
-    getAccountFieldFormattedValue,
-    getAccountFieldTextToCopy,
-    getAccountFieldTranslationKey,
-    isAccountFieldPrimary,
-} from './utils';
+    CapitalBankAccount,
+    CapitalBankAccountField,
+    getBankAccountFieldCopyButtonTranslationKey,
+    getBankAccountFieldFormattedValue,
+    getBankAccountFields,
+    getBankAccountFieldTextToCopy,
+    getBankAccountFieldTranslationKey,
+    isBankAccountFieldPrimary,
+} from '@integration-components/capital/domain';
+
 import './AccountDetails.scss';
+import { AriaAttributes } from 'preact/compat';
 
 const BASE_CLASS = 'adyen-pe-capital-account-details';
 
@@ -20,29 +24,29 @@ const CLASS_NAMES = {
     detailLabel: `${BASE_CLASS}__detail-label`,
 };
 
+export interface AccountDetailsProps extends Pick<AriaAttributes, 'aria-label' | 'aria-labelledby'> {
+    bankAccount: CapitalBankAccount;
+    className?: h.JSX.HTMLAttributes['className'];
+}
+
 export const AccountDetails = ({ bankAccount, className, ...ariaAttributes }: AccountDetailsProps) => {
-    const orderedBankAccountFields = useMemo(() => {
-        const { accountNumber, iban, order, region, ...accountDetails } = bankAccount;
-        const accountFields = Object.keys({ iban, accountNumber, ...accountDetails, region });
-        const orderedFields = Array.isArray(order) ? order.filter(field => accountFields.includes(field)) : accountFields;
-        return [...new Set(orderedFields)];
-    }, [bankAccount]);
+    const bankAccountFields = useMemo(() => getBankAccountFields(bankAccount), [bankAccount]);
 
     return (
         <dl className={cx(BASE_CLASS, className)} {...ariaAttributes}>
-            {orderedBankAccountFields.map(field => {
-                const fieldValue = bankAccount[field as BankAccountField];
+            {bankAccountFields.map(field => {
+                const fieldValue = bankAccount[field as CapitalBankAccountField];
                 return fieldValue ? (
                     <Fragment key={field}>
                         <AccountDetail
                             className={CLASS_NAMES.detail}
                             contentClassName={CLASS_NAMES.detailContent}
-                            isPrimary={isAccountFieldPrimary(field)}
+                            isPrimary={isBankAccountFieldPrimary(field)}
                             labelClassName={CLASS_NAMES.detailLabel}
-                            label={getAccountFieldTranslationKey(field)}
-                            copyButtonLabel={getAccountFieldCopyButtonLabelKey(field)}
-                            content={getAccountFieldFormattedValue(field, fieldValue)!}
-                            textToCopy={getAccountFieldTextToCopy(field, fieldValue)}
+                            label={getBankAccountFieldTranslationKey(field)}
+                            copyButtonLabel={getBankAccountFieldCopyButtonTranslationKey(field)}
+                            content={getBankAccountFieldFormattedValue(field, fieldValue)!}
+                            textToCopy={getBankAccountFieldTextToCopy(field, fieldValue)}
                         />
                     </Fragment>
                 ) : null;

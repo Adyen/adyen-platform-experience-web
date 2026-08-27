@@ -2,25 +2,16 @@ import { FC } from 'preact/compat';
 import { useCoreContext } from '@integration-components/core/preact';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
-import { logoOptions, THEME_FORM_ALLOWED_FILE_TYPES, THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from '../ThemeForm/constants';
+import { LOGO_DIMENSIONS, THEME_FORM_ALLOWED_FILE_TYPES, THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from '../ThemeForm/constants';
 import { getHumanReadableFileSize } from '@integration-components/utils';
 import { getHumanReadableFileName } from '@integration-components/utils/file/naming';
 import { LogoTypes } from '../../types';
 
-const getImageSizeLimitation = (logoType: LogoTypes) => {
-    switch (logoType) {
-        case logoOptions.FULL_WIDTH_LOGO:
-            return '300 x 30 px';
-        case logoOptions.LOGO:
-        default:
-            return '200 x 200 px';
-    }
-};
-
 const LogoRequirements: FC<{ logoType: LogoTypes }> = ({ logoType }: { logoType: LogoTypes }) => {
     const { i18n } = useCoreContext();
 
-    const logoFileInformationText = getImageSizeLimitation(logoType);
+    const dimensions = LOGO_DIMENSIONS[logoType];
+    const logoFileInformationText = `${dimensions.width} x ${dimensions.height} px`;
 
     return (
         <div className="adyen-pe-payment-link-theme-form__file-info-container">

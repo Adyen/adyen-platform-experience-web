@@ -37,7 +37,7 @@ export const PayoutsOverview = ({
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('payouts', activeBalanceAccount);
 
     const getPayouts = useCallback(
-        async (pageRequestParams: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
+        async ({ [FilterParam.BALANCE_ACCOUNT]: _, ...pageRequestParams }: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
 
             return payoutsEndpointCall!(requestOptions, {
@@ -70,6 +70,14 @@ export const PayoutsOverview = ({
             preferredLimitOptions,
             enabled: !!activeBalanceAccount?.id && !!payoutsEndpointCall,
         });
+
+    const updateBalanceAccount = useCallback(
+        (event: Parameters<typeof onBalanceAccountSelection>[0]) => {
+            onBalanceAccountSelection(event);
+            updateFilters({ [FilterParam.BALANCE_ACCOUNT]: event.target?.value });
+        },
+        [onBalanceAccountSelection, updateFilters]
+    );
 
     useEffect(() => {
         refreshNowTimestamp();
@@ -123,7 +131,7 @@ export const PayoutsOverview = ({
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
-                    onBalanceAccountSelection={onBalanceAccountSelection}
+                    onBalanceAccountSelection={updateBalanceAccount}
                 />
                 <DateFilter
                     canResetFilters={canResetFilters}

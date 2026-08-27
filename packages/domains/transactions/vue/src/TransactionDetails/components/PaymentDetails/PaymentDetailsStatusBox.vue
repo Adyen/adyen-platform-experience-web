@@ -1,24 +1,19 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
+import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { BentoTypography, BentoTag, BentoCard, BentoPaymentMethod } from '@adyen/bento-vue3';
-import './PaymentDetailsStatusBox.scss';
 import {
     getTransactionCategory,
     getAmountStyleForTransaction,
     getRefundTypeForTransaction,
-    TX_DATA_CONTAINER,
-    TX_STATUS_BOX,
-    TX_DATA_AMOUNT,
-    TX_DATA_TAGS,
-    TX_DATA_PAY_METHOD,
-    TX_DATA_PAY_METHOD_LOGO_CONTAINER,
-    TX_DATA_PAY_METHOD_DETAIL,
     RefundedState,
     RefundType,
 } from '../../../../../domain/src';
 import type { TransactionDetails } from '../../../../../domain/src';
 import { parsePaymentMethodType, DATE_FORMAT_TRANSACTION_DETAILS } from '@integration-components/utils';
+import styles from './PaymentDetailsStatusBox.module.scss';
+import layoutStyles from '../TransactionDataLayout.module.scss';
 
 const props = defineProps<{
     refundedState: RefundedState;
@@ -26,13 +21,26 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { dateFormat } = useTimezoneAwareDateFormatting(() => props.transaction.balanceAccount?.timeZone);
 
 const amountStyle = computed(() => getAmountStyleForTransaction(props.transaction));
 const refundType = computed(() => getRefundTypeForTransaction(props.transaction));
-const formattedDate = computed(() => i18n.date(props.transaction.createdAt, DATE_FORMAT_TRANSACTION_DETAILS));
-const formattedAmount = computed(() => i18n.amount(props.transaction.netAmount.value, props.transaction.netAmount.currency));
+const formattedDate = computed(() => dateFormat(props.transaction.createdAt, DATE_FORMAT_TRANSACTION_DETAILS));
+const formattedAmount = computed(() => {
+    const { value, currency } = props.transaction.netAmount;
+    return `${i18n.amount(value, currency, { hideCurrency: true })} ${currency}`;
+});
 
-const amountClass = computed(() => [`${TX_DATA_AMOUNT}--${amountStyle.value}`]);
+const amountClass = computed(() => {
+    switch (amountStyle.value) {
+        case 'error':
+            return styles.amountError;
+        case 'pending':
+            return styles.amountPending;
+        default:
+            return undefined;
+    }
+});
 const paymentMethodType = computed(() => props.transaction.paymentMethod?.type ?? 'bankTransfer');
 const paymentMethodDetail = computed(() => {
     if (props.transaction.paymentMethod) return parsePaymentMethodType(props.transaction.paymentMethod, 'detail');
@@ -43,8 +51,8 @@ const paymentMethodDetail = computed(() => {
 <template>
     <BentoCard>
         <template #content>
-            <div :class="[TX_DATA_CONTAINER, TX_STATUS_BOX]">
-                <div :class="TX_DATA_TAGS">
+            <div :class="[layoutStyles.container, styles.statusBox]">
+                <div :class="styles.tags">
                     <BentoTag
                         v-if="props.transaction.category"
                         variant="grey"
@@ -76,15 +84,15 @@ const paymentMethodDetail = computed(() => {
                     />
                 </div>
 
-                <div :class="[TX_DATA_AMOUNT, ...amountClass]">
+                <div :class="[amountClass]">
                     <BentoTypography variant="title" large>{{ formattedAmount }}</BentoTypography>
                 </div>
 
-                <div v-if="props.transaction.paymentMethod || props.transaction.bankAccount" :class="TX_DATA_PAY_METHOD">
-                    <div :class="TX_DATA_PAY_METHOD_LOGO_CONTAINER">
+                <div v-if="props.transaction.paymentMethod || props.transaction.bankAccount" :class="styles.paymentMethod">
+                    <div :class="styles.paymentMethodLogoContainer">
                         <BentoPaymentMethod :type="paymentMethodType" />
                     </div>
-                    <BentoTypography v-if="paymentMethodDetail" variant="title" :class="TX_DATA_PAY_METHOD_DETAIL">
+                    <BentoTypography v-if="paymentMethodDetail" variant="title">
                         {{ paymentMethodDetail }}
                     </BentoTypography>
                 </div>

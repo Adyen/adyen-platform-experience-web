@@ -6,46 +6,10 @@
     flex-direction: column;
     gap: style.token(spacer-070);
 
-    &__grant-summary {
-        align-items: stretch;
-        background-color: style.token(color-background-selected);
-        border-radius: style.token(border-radius-m);
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding: style.token(spacer-070) style.token(spacer-090);
-
-        @include adyen-pe-screen-sm-and-down {
-            flex-direction: column;
-            gap: style.token(spacer-060);
-        }
-
-        &-item {
-            align-items: center;
-            display: flex;
-            flex: 1;
-            flex-direction: column;
-
-            @include adyen-pe-screen-sm-and-down {
-                align-items: flex-start;
-            }
-        }
-
-        &-label {
-            color: style.token(color-label-secondary);
-            text-align: center;
-            width: max-content;
-        }
-    }
-
-    &__terms {
+    &__highlighted-fields {
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-040);
-    }
-
-    &__list-label {
-        color: style.token(color-label-secondary);
     }
 
     &__buttons {
@@ -61,28 +25,6 @@
 
         .adyen-pe-button__label {
             width: auto;
-        }
-    }
-
-    &__details {
-        display: flex;
-        flex-direction: column;
-        gap: style.token(spacer-020);
-        margin-bottom: style.token(spacer-030);
-
-        dd {
-            text-align: right;
-        }
-
-        &--error {
-            align-items: center;
-            display: flex;
-            gap: style.token(spacer-020);
-            justify-content: end;
-
-            .adyen-pe-icon {
-                color: style.token(color-label-warning);
-            }
         }
     }
 

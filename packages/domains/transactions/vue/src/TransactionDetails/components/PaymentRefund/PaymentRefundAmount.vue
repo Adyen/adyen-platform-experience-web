@@ -2,16 +2,10 @@
 import { ref, computed, watch } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BentoInputField, BentoTypography } from '@adyen/bento-vue3';
-import {
-    TX_DATA_CONTAINER,
-    TX_DATA_INPUT_CONTAINER,
-    TX_DATA_INPUT_CONTAINER_SHORT,
-    TX_DATA_INPUT_CONTAINER_TEXT,
-    TX_DATA_INPUT_CONTAINER_WITH_ERROR,
-    TX_DATA_INPUT_HEAD,
-} from '../../../../../domain/src';
-import { getDecimalAmount, getDivider } from '@integration-components/core/Localization/amount/amount-util';
+import { getDecimalAmount, getDivider, normalizeAmountInput } from '@integration-components/core/Localization/amount/amount-util';
 import { useUniqueId } from '@integration-components/composables-vue';
+import layoutStyles from '../TransactionDataLayout.module.scss';
+import styles from './PaymentRefund.module.scss';
 
 const props = defineProps<{
     currency: string;
@@ -44,13 +38,6 @@ const errorMessages = computed(() => {
 
 const errorMessage = computed(() => validationError.value && errorMessages.value[validationError.value]);
 
-const containerClass = computed(() => ({
-    [TX_DATA_INPUT_CONTAINER]: true,
-    [TX_DATA_INPUT_CONTAINER_SHORT]: true,
-    [TX_DATA_INPUT_CONTAINER_TEXT]: true,
-    [TX_DATA_INPUT_CONTAINER_WITH_ERROR]: !!errorMessage.value,
-}));
-
 watch(
     () => props.value,
     () => {
@@ -62,13 +49,11 @@ watch(
 );
 
 function onInput(rawValue: string) {
-    const value = rawValue.trim();
-    const exp = currencyExponent.value;
-    const parsed = parseFloat(value);
-    const amount = isNaN(parsed) ? 0 : Math.trunc(+`${parsed}e${exp}`);
-
+    const { displayValue: value, amount, localeDecimalSeparator } = normalizeAmountInput(rawValue, i18n.locale, props.currency);
+    const isInvalid = Number.isNaN(Number.parseFloat(value.replace(localeDecimalSeparator, '.')));
     let error: typeof validationError.value;
-    if (isNaN(parsed) || value === '') {
+
+    if (isInvalid || value === '') {
         error = 'required';
     } else if (amount < 0) {
         error = 'negative';
@@ -83,11 +68,11 @@ function onInput(rawValue: string) {
 </script>
 
 <template>
-    <div :class="TX_DATA_CONTAINER">
-        <div :class="TX_DATA_INPUT_HEAD">
+    <div :class="layoutStyles.container">
+        <div :class="styles.inputHead">
             <BentoTypography variant="body" stronger>{{ i18n.get('transactions.details.refund.inputs.amount.label') }}</BentoTypography>
         </div>
-        <div :class="containerClass">
+        <div>
             <BentoInputField
                 :id="inputId"
                 variant="static-value"

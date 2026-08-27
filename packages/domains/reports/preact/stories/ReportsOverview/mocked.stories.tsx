@@ -1,0 +1,88 @@
+import { Meta } from '@storybook/preact';
+import { getWorker } from 'msw-storybook-addon';
+import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
+import { ReportsOverview } from '../../src';
+import { ReportsOverviewMeta } from './meta';
+import { http, HttpResponse } from 'msw';
+import { REPORTS_ENDPOINTS } from '../../../mocks/endpoints';
+import { createDownloadReportHandler, REPORTS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/reports';
+import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, getCustomDataReports } from '../../../fixtures/data/ReportsOverview';
+
+type ReportsOverviewStoryArgs = ElementProps<typeof ReportsOverview> & { enforceDownloadDelay?: boolean };
+
+const meta: Meta<ReportsOverviewStoryArgs> = {
+    ...ReportsOverviewMeta,
+    title: 'Mocked/Reports/Reports Overview',
+    argTypes: {
+        enforceDownloadDelay: {
+            table: { disable: true },
+        },
+    },
+    loaders: [
+        context => {
+            const enforceDownloadDelay = context.args.enforceDownloadDelay;
+            if (enforceDownloadDelay) getWorker().use(createDownloadReportHandler({ enforceDownloadDelay }));
+        },
+    ],
+};
+
+const defaultArgs = { mockedApi: true } as const;
+
+export const Default: ElementStory<typeof ReportsOverview> = {
+    name: 'Default',
+    args: defaultArgs,
+};
+
+export const DataCustomization: ElementStory<typeof ReportsOverview> = {
+    name: 'Data customization',
+    args: {
+        ...defaultArgs,
+        coreOptions: {
+            translations: { en_US: CUSTOM_TRANSLATIONS },
+        },
+        dataCustomization: { list: DATA_CUSTOMIZATION },
+    },
+    parameters: {
+        msw: {
+            handlers: [
+                http.get(REPORTS_ENDPOINTS.reports, () => {
+                    return HttpResponse.json({ data: getCustomDataReports(), _links: {} });
+                }),
+            ],
+        },
+    },
+};
+
+export const SingleBalanceAccount: ElementStory<typeof ReportsOverview> = {
+    name: 'Single balance account',
+    args: defaultArgs,
+    parameters: {
+        msw: { ...REPORTS_OVERVIEW_HANDLERS.singleBalanceAccount },
+    },
+};
+
+export const EmptyList: ElementStory<typeof ReportsOverview> = {
+    name: 'Empty list',
+    args: defaultArgs,
+    parameters: {
+        msw: { ...REPORTS_OVERVIEW_HANDLERS.emptyList },
+    },
+};
+
+export const ErrorList: ElementStory<typeof ReportsOverview> = {
+    name: 'Error - List',
+    args: defaultArgs,
+    parameters: {
+        msw: { ...REPORTS_OVERVIEW_HANDLERS.errorList },
+    },
+};
+
+export const DownloadError: ElementStory<typeof ReportsOverview> = {
+    name: 'Download error',
+    args: defaultArgs,
+    parameters: {
+        msw: { ...REPORTS_OVERVIEW_HANDLERS.downloadError },
+    },
+};
+
+export default meta;
