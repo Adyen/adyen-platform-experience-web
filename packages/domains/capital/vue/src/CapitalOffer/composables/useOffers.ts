@@ -73,7 +73,7 @@ export function useOffers(dynamicOfferConfig: MaybeRefOrGetter<IDynamicOffersCon
         data: requestState.data,
         error: requestState.error,
         isLoading: requestState.isLoading,
-        isPending,
-        requestOffer,
+        isRequestPending: isPending,
+        requestOffers: requestOffer,
     } as const;
 }
