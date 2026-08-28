@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
-import { getIsEarlyRenewal, sharedCapitalOfferAnalyticsEventProperties } from '@integration-components/capital/domain';
+import { getDynamicOfferConfig, getIsEarlyRenewal, sharedCapitalOfferAnalyticsEventProperties } from '@integration-components/capital/domain';
 import { useLandedPageEvent } from '@integration-components/composables-vue';
-import OfferSelection from './OfferSelection.vue';
+import OfferSelection from './OfferSelection/OfferSelection.vue';
 import OfferSummary from './OfferSummary.vue';
 import type { CapitalOfferComponentProps } from '../types';
 import { useCapitalState } from '../composables/useCapitalState';
@@ -18,6 +18,7 @@ const selectedOffer = ref<IGrantOfferResponseDTO>();
 const externalCapitalState = computed(() => props.externalCapitalState);
 const { capitalState: backendCapitalState, error: capitalStateError } = useCapitalState(() => !externalCapitalState.value);
 const capitalState = computed(() => externalCapitalState.value ?? backendCapitalState.value);
+const dynamicOfferConfig = computed(() => capitalState.value && getDynamicOfferConfig(capitalState.value));
 
 useLandedPageEvent(
     () => ({
@@ -57,13 +58,14 @@ const handleSummaryBack = () => {
     />
     <template v-else-if="capitalState">
         <CapitalErrorMessageDisplay
-            v-if="!capitalState.isRegionSupported || !capitalState.dynamicOffer"
-            :empty-grant-offer="!capitalState.dynamicOffer"
+            v-if="!capitalState.isRegionSupported || !dynamicOfferConfig"
+            :empty-grant-offer="!dynamicOfferConfig"
             :unsupported-region="!capitalState.isRegionSupported"
         />
         <OfferSelection
             v-else-if="!selectedOffer"
             :capital-state="capitalState"
+            :dynamic-offer-config="dynamicOfferConfig"
             :selected-amount="selectedAmount"
             :selected-term="selectedTerm"
             :on-selected-amount-change="value => (selectedAmount = value)"
