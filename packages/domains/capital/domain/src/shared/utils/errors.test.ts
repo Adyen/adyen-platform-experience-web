@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { AdyenErrorResponse, AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
-import { COMMON_CAPITAL_ERROR_MESSAGE, getBalanceAccountErrorMessage, getCapitalErrorMessage } from './errors';
+import { COMMON_CAPITAL_ERROR_MESSAGE, getBalanceAccountErrorMessage, getCapitalErrorMessage, getCapitalErrorMessageInfo } from './errors';
 
 const UNKNOWN_ERROR = {
     title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
@@ -70,6 +70,33 @@ describe('getCapitalErrorMessage', () => {
             message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'common.errors.errorCodeSupport'],
             translationValues: undefined,
             onContactSupport: undefined,
+        });
+    });
+});
+
+describe('getCapitalErrorMessageInfo', () => {
+    test('normalizes single and multiple messages into an array', () => {
+        const onContactSupport = vi.fn();
+
+        expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('NO_OFFER'))).toMatchObject({
+            messages: ['capital.offer.common.noOfferDescription'],
+        });
+        expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('30_016'), onContactSupport)).toMatchObject({
+            messages: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'common.errors.errorCode'],
+        });
+    });
+
+    test('extracts the request ID', () => {
+        expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('30_016'))).toMatchObject({ requestId: 'request-id' });
+    });
+
+    test('preserves the rest of the error message fields', () => {
+        const onContactSupport = vi.fn();
+        expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('30_016'), onContactSupport)).toEqual({
+            title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
+            messages: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'common.errors.errorCode'],
+            requestId: 'request-id',
+            onContactSupport,
         });
     });
 });

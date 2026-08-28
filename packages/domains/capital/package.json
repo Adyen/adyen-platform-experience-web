@@ -10,9 +10,12 @@
     "exports": {
         "./publish": "./publish/src/index.ts",
         "./preact": "./preact/src/index.ts",
+        "./vue": "./vue/src/index.ts",
         "./domain": "./domain/src/index.ts"
     },
     "dependencies": {
+        "@adyen/bento-vue3": "catalog:",
+        "@integration-components/composables-vue": "workspace:*",
         "@adyen/kyc-components": ">=4.0.0-compact.9 <4.0.0",
         "@integration-components/core": "workspace:*",
         "@integration-components/hooks-preact": "workspace:*",
@@ -25,11 +28,13 @@
         "classnames": "catalog:"
     },
     "peerDependencies": {
-        "preact": "catalog:"
+        "preact": "catalog:",
+        "vue": "catalog:"
     },
     "devDependencies": {
         "@playwright/test": "catalog:",
         "@storybook/preact": "catalog:",
+        "@storybook/vue3": "catalog:",
         "@testing-library/preact": "catalog:",
         "dotenv": "catalog:",
         "msw": "catalog:",
