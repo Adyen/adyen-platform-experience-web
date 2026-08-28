@@ -9,9 +9,11 @@ import {
     type EnhancedCapitalState,
 } from '@integration-components/capital/domain';
 import { useEventDispatcherContext } from '@integration-components/core/vue';
+import { useOffers } from '../../composables/useOffers';
 import type { IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
 import AmountSlider from '../AmountSlider/AmountSlider.vue';
 import RenewalHighlightedFields from '../RenewalHighlightedFields/RenewalHighlightedFields.vue';
+import CapitalErrorMessageDisplay from '../../../shared/CapitalErrorMessageDisplay.vue';
 import styles from './OfferSelection.module.scss';
 
 const props = defineProps<{
@@ -29,6 +31,14 @@ const props = defineProps<{
 const renewableGrant = computed(() => props.capitalState.renewableGrants?.[0]);
 const userEvents = useEventDispatcherContext();
 const hasEmittedInitialSliderEvent = ref(false);
+const {
+    cancelRequest,
+    error: offersError,
+    requestOffer,
+} = useOffers(
+    () => props.dynamicOfferConfig,
+    () => props.selectedAmount
+);
 
 // Initialize selectedAmount with default value
 watch(
@@ -60,37 +70,47 @@ const emitAmountValueChangeEvent = (amountValue: number) => {
 
 // Emit initial slider-changed event only once
 watch(
-    () => props.selectedAmount,
-    selectedAmount => {
-        if (!hasEmittedInitialSliderEvent.value && selectedAmount !== undefined) {
+    [() => props.dynamicOfferConfig, () => props.selectedAmount],
+    ([config, amount]) => {
+        if (!hasEmittedInitialSliderEvent.value && config && amount !== undefined) {
             hasEmittedInitialSliderEvent.value = true;
-            emitAmountValueChangeEvent(selectedAmount);
+            emitAmountValueChangeEvent(amount);
         }
     },
     { immediate: true }
 );
 
 const handleAmountValueChange = (amount: number) => {
+    cancelRequest();
     props.onSelectedAmountChange(amount);
 };
 
 const handleSliderRelease = (amount: number) => {
+    requestOffer(amount);
     emitAmountValueChangeEvent(amount);
 };
 </script>
 
 <template>
     <div v-if="props.selectedAmount" :class="styles.root">
-        <AmountSlider
-            :dynamic-offer-config="dynamicOfferConfig"
-            :value="props.selectedAmount"
-            :on-release="handleSliderRelease"
-            :on-value-change="handleAmountValueChange"
+        <CapitalErrorMessageDisplay
+            v-if="offersError"
+            :error="offersError"
+            :on-back="props.onOfferDismiss"
+            :on-contact-support="props.onContactSupport"
         />
-        <RenewalHighlightedFields
-            v-if="renewableGrant"
-            :new-grant-amount-value="props.selectedAmount"
-            :remaining-grant-amount="renewableGrant.remainingGrantAmount"
-        />
+        <template v-else>
+            <AmountSlider
+                :dynamic-offer-config="dynamicOfferConfig"
+                :value="props.selectedAmount"
+                :on-release="handleSliderRelease"
+                :on-value-change="handleAmountValueChange"
+            />
+            <RenewalHighlightedFields
+                v-if="renewableGrant"
+                :new-grant-amount-value="props.selectedAmount"
+                :remaining-grant-amount="renewableGrant.remainingGrantAmount"
+            />
+        </template>
     </div>
 </template>
