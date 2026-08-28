@@ -1,0 +1,30 @@
+@use '@integration-components/style';
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: row;
+    gap: style.token(spacer-090);
+    margin-top: style.token(spacer-070);
+}
+
+.contentContainerMobile {
+    flex-direction: column;
+    margin-top: 0;
+}
+
+.sidebarContainer {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+}
+
+.dividerContainer {
+    align-self: stretch;
+}

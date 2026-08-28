@@ -2,10 +2,10 @@
 import { ref, computed, watch } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BentoInputField, BentoTypography } from '@adyen/bento-vue3';
-import { getDecimalAmount, getDivider } from '@integration-components/core/Localization/amount/amount-util';
+import { getDecimalAmount, getDivider, normalizeAmountInput } from '@integration-components/core/Localization/amount/amount-util';
 import { useUniqueId } from '@integration-components/composables-vue';
-import styles from './PaymentRefund.module.scss';
 import layoutStyles from '../TransactionDataLayout.module.scss';
+import styles from './PaymentRefund.module.scss';
 
 const props = defineProps<{
     currency: string;
@@ -49,13 +49,11 @@ watch(
 );
 
 function onInput(rawValue: string) {
-    const value = rawValue.trim();
-    const exp = currencyExponent.value;
-    const parsed = parseFloat(value);
-    const amount = isNaN(parsed) ? 0 : Math.trunc(+`${parsed}e${exp}`);
-
+    const { displayValue: value, amount, localeDecimalSeparator } = normalizeAmountInput(rawValue, i18n.locale, props.currency);
+    const isInvalid = Number.isNaN(Number.parseFloat(value.replace(localeDecimalSeparator, '.')));
     let error: typeof validationError.value;
-    if (isNaN(parsed) || value === '') {
+
+    if (isInvalid || value === '') {
         error = 'required';
     } else if (amount < 0) {
         error = 'negative';

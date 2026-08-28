@@ -4,6 +4,7 @@ import { BentoButton, BentoLink, BentoStructuredListItem, BentoTypography } from
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER, type ListItemData } from '@integration-components/payByLink/domain';
+import styles from './PaymentLinkTabs.module.scss';
 
 const props = defineProps<{
     item: ListItemData;
@@ -22,7 +23,7 @@ function onCopy() {
     <BentoStructuredListItem :label="i18n.get(props.item.key)">
         <BentoTypography v-if="isRedacted" variant="body">{{ FRONTEND_REDACTED_DATA_MARKER }}</BentoTypography>
 
-        <div v-else-if="props.item.isCopyable" class="adyen-pe-payment-link-tabs__copyable-value">
+        <div v-else-if="props.item.isCopyable" :class="styles.copyableValue">
             <BentoLink v-if="props.item.linkUrl" :to="props.item.linkUrl" target="_blank" rel="noopener noreferrer" external>
                 {{ props.item.value }}
             </BentoLink>

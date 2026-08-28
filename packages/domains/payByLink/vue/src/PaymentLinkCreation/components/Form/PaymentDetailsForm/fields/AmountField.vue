@@ -7,7 +7,7 @@ import { useWizard } from '../../../../composables/wizardContext';
 import { MAX_AMOUNT } from '../../../../../../../domain/src';
 import { useCoreContext } from '@integration-components/core/vue';
 import { formatAmount, normalizeAmountInput } from '@integration-components/core/Localization/amount/amount-util';
-import './AmountField.scss';
+import styles from './AmountField.module.scss';
 
 const props = defineProps<{
     label: string;
@@ -36,7 +36,7 @@ const dropdownProps = computed<BentoInputDropdownProps>(() => ({
     readonly: currencyConfig.value.readOnly,
     'aria-label': i18n.get('payByLink.creation.fields.amount.currency.ariaLabel'),
     placeholder: i18n.get('common.inputs.select.placeholder'),
-    class: 'adyen-pe-payment-link-creation-form__amount-currency',
+    class: styles.amountCurrency,
 }));
 
 watch(
@@ -84,7 +84,6 @@ function onDropdownInput(value: string | number | { value?: string | number } | 
     <FieldWrapper v-if="valueConfig.visible" name="amount.value" :error="error">
         <BentoInputField
             ref="amountInput"
-            class="adyen-pe-payment-link-creation-form__amount-value"
             :variant="variant"
             :label="props.label"
             type="number"

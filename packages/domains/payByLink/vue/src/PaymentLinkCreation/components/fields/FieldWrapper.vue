@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import './FieldWrapper.scss';
+import styles from './FieldWrapper.module.scss';
 
 defineProps<{
     name: string;
@@ -8,9 +8,9 @@ defineProps<{
 </script>
 
 <template>
-    <div class="adyen-pe-payment-link-creation-form__field" :data-testid="`form-field-${name}`">
+    <div :class="styles.root" :data-testid="`form-field-${name}`">
         <slot />
-        <div v-if="error" class="adyen-pe-payment-link-creation-form__field-error" :data-testid="`field-error-${name}`">
+        <div v-if="error" :class="styles.error" :data-testid="`field-error-${name}`">
             {{ error }}
         </div>
     </div>

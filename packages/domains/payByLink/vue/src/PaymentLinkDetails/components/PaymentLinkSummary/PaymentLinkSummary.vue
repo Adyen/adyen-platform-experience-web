@@ -10,13 +10,7 @@ import {
     type PaymentLinkStatusTagVariant,
 } from '@integration-components/payByLink/domain';
 import type { IPaymentLinkDetails } from '@integration-components/types';
-import './PaymentLinkSummary.scss';
-
-const CLASSNAMES = {
-    root: 'adyen-pe-payment-link-summary',
-    content: 'adyen-pe-payment-link-summary__content',
-    expiresLabel: 'adyen-pe-payment-link-summary__expires-label',
-};
+import styles from './PaymentLinkSummary.module.scss';
 
 const TAG_VARIANT_MAP = {
     info: 'blue',
@@ -48,13 +42,13 @@ const formattedExpirationDate = computed(() =>
 </script>
 
 <template>
-    <BentoCard :class="CLASSNAMES.root">
+    <BentoCard>
         <template #content>
-            <div :class="CLASSNAMES.content">
+            <div :class="styles.content">
                 <BentoTag v-if="statusLabel" :label="statusLabel" :variant="statusVariant" />
                 <BentoTypography variant="title" large>{{ formattedAmount }}</BentoTypography>
                 <div>
-                    <BentoTypography el="span" variant="body" :class="CLASSNAMES.expiresLabel">
+                    <BentoTypography el="span" variant="body" :class="styles.expiresLabel">
                         {{ `${i18n.get('payByLink.details.fields.expiresOn')}: ` }}
                     </BentoTypography>
                     <BentoTypography el="span" variant="body">{{ formattedExpirationDate }}</BentoTypography>

@@ -10,6 +10,7 @@ import {
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
+    useTableColumns,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
@@ -17,7 +18,6 @@ import type { CustomColumn, IPayout, OnDataRetrievedCallback, CustomDataRetrieve
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import { PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
 import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '@integration-components/utils';
-import { TranslationKey } from '@integration-components/core';
 import styles from './PayoutsTable.module.scss';
 
 const props = defineProps<{
@@ -47,24 +47,39 @@ const config = useConfigContext();
 
 // ── Date formatting ──
 const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
-
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
+const mobileColumns = new Set(['createdAt', 'payoutAmount']);
 
 function formatPayoutDate(dateStr: string): string {
     return dateFormat(dateStr, isMobile.value ? DATE_FORMAT_PAYOUTS_MOBILE : DATE_FORMAT_PAYOUTS);
 }
 
 // ── Custom columns ──
-const STANDARD_FIELDS = new Set<string>(PAYOUT_TABLE_FIELDS);
-
-const customFieldKeys = computed<string[]>(() =>
-    (props.customColumns ?? [])
-        .filter(c => !!c && c.visibility !== 'hidden')
-        .map(c => (typeof c?.key === 'string' ? c.key.trim() : ''))
-        .filter((k): k is string => !!k && !STANDARD_FIELDS.has(k))
-);
-
-const hasCustomColumn = computed(() => customFieldKeys.value.length > 0);
+const {
+    columns: configuredColumns,
+    customFieldKeys,
+    hasCustomColumn,
+} = useTableColumns({
+    fields: PAYOUT_TABLE_FIELDS,
+    customColumns: () => props.customColumns,
+    fieldsKeys: {
+        createdAt: 'payouts.overview.list.fields.createdAt',
+        fundsCapturedAmount: 'payouts.overview.list.fields.fundsCapturedAmount',
+        adjustmentAmount: 'payouts.overview.list.fields.adjustmentAmount',
+        payoutAmount: 'payouts.overview.list.fields.payoutAmount',
+    },
+    columnConfig: () => ({
+        createdAt: { flex: 1 },
+        fundsCapturedAmount: { flex: 1, numeric: true },
+        adjustmentAmount: { flex: 1, numeric: true },
+        payoutAmount: { flex: 1, numeric: true },
+    }),
+    customColumnDefaults: () => ({ flex: 1 }),
+    resolveCustomColumnLabel: key => {
+        const labelKey = `payouts.overview.list.fields.${key}`;
+        return i18n.has(labelKey as any) ? i18n.get(labelKey as any) : i18n.get(key as any);
+    },
+});
 
 const { customRecords, loadingCustomRecords } = useCustomColumnsData<IPayout>({
     records: () => props.data ?? [],
@@ -79,45 +94,8 @@ const { customRecords, loadingCustomRecords } = useCustomColumnsData<IPayout>({
 
 const isLoading = computed(() => props.loading || config.refreshing || loadingCustomRecords.value);
 
-// ── Grid columns ──
-function amountLabel(key: 'fundsCapturedAmount' | 'adjustmentAmount' | 'payoutAmount'): string {
-    const labelKey = `payouts.overview.list.fields.${key}` as const;
-    const label = i18n.has(labelKey) ? i18n.get(labelKey) : key;
-    const currency = props.data?.[0]?.[key]?.currency;
-    return currency ? `${label} (${currency})` : label;
-}
-
 const columns = computed<BentoColumn[]>(() => {
-    if (isMobile.value) {
-        return [
-            { field: 'createdAt', label: i18n.get('payouts.overview.list.fields.createdAt'), flex: 1 },
-            { field: 'payoutAmount', label: amountLabel('payoutAmount'), flex: 1, numeric: true },
-        ];
-    }
-
-    const cols: BentoColumn[] = [
-        { field: 'createdAt', label: i18n.get('payouts.overview.list.fields.createdAt'), flex: 1 },
-        { field: 'fundsCapturedAmount', label: amountLabel('fundsCapturedAmount'), flex: 1, numeric: true },
-        { field: 'adjustmentAmount', label: amountLabel('adjustmentAmount'), flex: 1, numeric: true },
-        { field: 'payoutAmount', label: amountLabel('payoutAmount'), flex: 1, numeric: true },
-    ];
-
-    if (Array.isArray(props.customColumns)) {
-        for (const column of props.customColumns) {
-            if (!column || typeof column.key !== 'string') continue;
-            const key = column.key.trim();
-            if (!key || STANDARD_FIELDS.has(key)) continue;
-            if (column.visibility === 'hidden') continue;
-            const labelKey = `payouts.overview.list.fields.${key}`;
-            cols.push({
-                field: key,
-                label: i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey),
-                autoWidth: true,
-            });
-        }
-    }
-
-    return cols;
+    return isMobile.value ? configuredColumns.value.filter(column => mobileColumns.has(column.field)) : configuredColumns.value;
 });
 
 // ── Grid data ──
@@ -177,9 +155,9 @@ function handleRowClick(item: BentoDatagridDataItem) {
     props.onRowClick?.(item._raw as IPayout);
 }
 
-function formatAmount(value: { value: number; currency: string } | null | undefined, hideCurrency = true): string {
+function formatAmount(value: { value: number; currency: string } | null | undefined): string {
     if (!value) return '';
-    return i18n.amount(value.value, value.currency, { hideCurrency });
+    return i18n.amount(value.value, value.currency, { hideCurrency: false });
 }
 </script>
 
@@ -229,7 +207,7 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
             </template>
             <template #item-payoutAmount="{ item }">
                 <BentoTypography v-if="item.payoutAmount" variant="body" :stronger="isMobile">
-                    {{ formatAmount(item.payoutAmount, !isMobile) }}
+                    {{ formatAmount(item.payoutAmount) }}
                 </BentoTypography>
             </template>
             <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">

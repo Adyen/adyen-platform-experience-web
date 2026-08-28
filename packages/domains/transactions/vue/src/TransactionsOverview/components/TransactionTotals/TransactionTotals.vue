@@ -45,7 +45,6 @@ const { maxWidths, updateMaxWidths } = useMaxWidths();
         :key="formattedTotals.length > 1 ? 'multi' : 'single'"
         :closed="!open"
         v-if="formattedTotals.length > 0 || loadingTotals"
-        class="adyen-pe-transaction-totals adyen-pe-transactions-overview__summary-card"
         @click="updateToggleState"
         :clickable="formattedTotals.length > 1"
         :expandable="formattedTotals.length > 1"
@@ -66,7 +65,7 @@ const { maxWidths, updateMaxWidths } = useMaxWidths();
         </template>
         <template #content v-if="formattedTotals.length > 1">
             <div :class="styles.summaryGroup">
-                <div v-if="loadingTotals" class="adyen-pe-transaction-totals__loading">
+                <div v-if="loadingTotals">
                     <BentoLoadingIndicator />
                 </div>
                 <BentoDivider />

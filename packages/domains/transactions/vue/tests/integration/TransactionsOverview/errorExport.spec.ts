@@ -13,29 +13,23 @@ test.describe('Error - Export', () => {
         await downloadTransactions(page, analyticsEvents, 'Default', true);
     });
 
-    test('should render export error alert', async ({ page }) => {
-        // [TODO]: Address missing alert dismiss button
-        test.fixme(true, 'Missing alert dismiss button');
-
-        const alert = page.getByRole('alert');
-        await expect(alert).toBeVisible();
-        await expect(alert).toHaveCount(1);
-        await expect(alert.getByText('Download has failed. Please try again.', { exact: true })).toBeVisible();
-        await expect(alert.getByRole('button', { name: 'Dismiss', exact: true, disabled: false })).toBeVisible();
+    test('should show a dismissible export error toast', async ({ page }) => {
+        const toast = page.getByTestId('toast');
+        await expect(toast).toBeVisible();
+        await expect(toast).toHaveCount(1);
+        await expect(toast.getByTestId('toast-item').getByText('Download has failed. Please try again.', { exact: true })).toBeVisible();
+        await expect(toast.getByRole('button', { name: 'Dismiss', exact: true, disabled: false })).toBeVisible();
     });
 
-    test('should dismiss the export error alert when the "x" button is clicked', async ({ page }) => {
-        // [TODO]: Address missing alert dismiss button
-        test.fixme(true, 'Missing alert dismiss button');
-
-        const alert = page.getByRole('alert');
-        const dismissButton = alert.getByRole('button', { name: 'Dismiss', exact: true, disabled: false });
+    test('should dismiss the export error toast when the dismiss button is clicked', async ({ page }) => {
+        const toast = page.getByTestId('toast');
+        const dismissButton = toast.getByRole('button', { name: 'Dismiss', exact: true, disabled: false });
         await dismissButton.click();
-        await expect(alert).toBeHidden();
+        await expect(toast).toBeHidden();
     });
 
-    test('should dismiss the export error alert when the export popover is reopened', async ({ page, analyticsEvents }) => {
+    test('should dismiss the export error toast when the export popover is reopened', async ({ page, analyticsEvents }) => {
         await openExportPopover(page, analyticsEvents);
-        await expect(page.getByRole('alert')).toBeHidden();
+        await expect(page.getByTestId('toast')).toBeHidden();
     });
 });

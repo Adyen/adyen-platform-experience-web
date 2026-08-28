@@ -1,0 +1,11 @@
+@use '@integration-components/style';
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-030);
+}
+
+.expiresLabel {
+    color: style.token(color-label-secondary);
+}
