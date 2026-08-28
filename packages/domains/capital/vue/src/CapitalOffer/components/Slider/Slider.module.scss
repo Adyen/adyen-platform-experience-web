@@ -26,7 +26,7 @@ $adyen-pe-slider-border-radius: style.token(border-radius-m);
     }
 }
 
-.adyen-pe-slider {
+.root {
     -webkit-appearance: none;
     background: $adyen-pe-slider-track-color;
     background-image: linear-gradient($adyen-pe-slider-progress-color, $adyen-pe-slider-progress-color);
@@ -43,16 +43,6 @@ $adyen-pe-slider-border-radius: style.token(border-radius-m);
 
         &::-moz-range-thumb {
             background-color: $adyen-pe-slider-thumb-border-color;
-        }
-    }
-
-    &:focus-within {
-        &::-webkit-slider-thumb {
-            background-color: $adyen-pe-slider-thumb-background-color;
-        }
-
-        &::-moz-range-thumb {
-            background-color: $adyen-pe-slider-thumb-background-color;
         }
     }
 

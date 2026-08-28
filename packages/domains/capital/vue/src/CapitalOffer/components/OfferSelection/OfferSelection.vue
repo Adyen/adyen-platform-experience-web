@@ -26,7 +26,7 @@ const props = defineProps<{
     onSelectedTermChange: (term: number) => void;
 }>();
 
-const renewableGrant = computed(() => props.capitalState.renewableGrants[0]);
+const renewableGrant = computed(() => props.capitalState.renewableGrants?.[0]);
 const userEvents = useEventDispatcherContext();
 const hasEmittedInitialSliderEvent = ref(false);
 
@@ -34,7 +34,7 @@ const hasEmittedInitialSliderEvent = ref(false);
 watch(
     () => props.dynamicOfferConfig,
     config => {
-        if (config && props.selectedAmount === undefined) {
+        if (props.selectedAmount === undefined) {
             props.onSelectedAmountChange(getDefaultAmountValue(config));
         }
     },
@@ -43,7 +43,6 @@ watch(
 
 const emitAmountValueChangeEvent = (amountValue: number) => {
     const config = props.dynamicOfferConfig;
-    if (!config) return;
 
     userEvents.addEvent?.('Changed capital offer slider', {
         ...sharedCapitalOfferAnalyticsEventProperties,
@@ -61,9 +60,9 @@ const emitAmountValueChangeEvent = (amountValue: number) => {
 
 // Emit initial slider-changed event only once
 watch(
-    [() => props.dynamicOfferConfig, () => props.selectedAmount],
-    ([config, selectedAmount]) => {
-        if (!hasEmittedInitialSliderEvent.value && config && selectedAmount !== undefined) {
+    () => props.selectedAmount,
+    selectedAmount => {
+        if (!hasEmittedInitialSliderEvent.value && selectedAmount !== undefined) {
             hasEmittedInitialSliderEvent.value = true;
             emitAmountValueChangeEvent(selectedAmount);
         }
