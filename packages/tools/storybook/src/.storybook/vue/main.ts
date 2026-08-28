@@ -9,9 +9,9 @@ import { getBaseEnvDefines } from '../../../../../../config/defines/base-env.ts'
 const root = '../../../../../..';
 const rootDir = resolve(import.meta.dirname, root);
 
-const CUSTOM_ELEMENT_TAGS = ['adyen-business-financing', 'adyen-terms-of-service-management'];
+const KYC_CUSTOM_ELEMENT_TAGS = ['adyen-business-financing', 'adyen-terms-of-service-management'];
 
-const isKycCustomElement = (tag: string) => CUSTOM_ELEMENT_TAGS.includes(tag);
+const isCustomElement = (tag: string) => KYC_CUSTOM_ELEMENT_TAGS.includes(tag);
 
 const config: StorybookConfig = {
     stories: [`${root}/packages/domains/*/vue/stories/**/*.stories.*`],
@@ -41,7 +41,7 @@ const config: StorybookConfig = {
                     const result = vue({
                         template: {
                             compilerOptions: {
-                                isCustomElement: isKycCustomElement,
+                                isCustomElement: isCustomElement,
                             },
                         },
                     });
