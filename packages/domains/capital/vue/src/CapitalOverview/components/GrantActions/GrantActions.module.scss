@@ -1,0 +1,19 @@
+@use '@integration-components/style';
+@use '@integration-components/style/skeleton';
+
+.actionsTitleSkeleton {
+    border-radius: style.token(border-radius-s);
+    height: 20px;
+    margin-bottom: style.token(spacer-040);
+    width: 200px;
+    /* stylelint-disable-next-line order/order */
+    @include skeleton.adyen-pe-skeleton-animation();
+}
+
+.actionsDescriptionSkeleton {
+    border-radius: style.token(border-radius-s);
+    height: 20px;
+    width: 250px;
+    /* stylelint-disable-next-line order/order */
+    @include skeleton.adyen-pe-skeleton-animation();
+}

@@ -3,8 +3,7 @@ import { BentoButton, BentoHeader } from '@adyen/bento-vue3';
 import CrossIcon from '@adyen/ui-assets-icons-16/vue/cross';
 import type { TranslationKey } from '@integration-components/core';
 import { useCoreContext } from '@integration-components/core/vue';
-import { GRANT_ADJUSTMENT_DETAILS_CLASS_NAMES } from './constants';
-import './GrantAdjustmentDetails.scss';
+import styles from './GrantAdjustmentDetails.module.scss';
 
 const props = defineProps<{
     className?: string;
@@ -17,8 +16,8 @@ const { i18n } = useCoreContext();
 </script>
 
 <template>
-    <div :class="[GRANT_ADJUSTMENT_DETAILS_CLASS_NAMES.base, props.className]">
-        <div :class="GRANT_ADJUSTMENT_DETAILS_CLASS_NAMES.header">
+    <div :class="[styles.root, props.className]">
+        <div :class="styles.header">
             <BentoHeader
                 v-if="props.headerTitleKey"
                 :title="i18n.get(props.headerTitleKey)"

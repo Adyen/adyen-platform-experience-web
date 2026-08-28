@@ -14,8 +14,7 @@ import {
 } from '@integration-components/capital/domain';
 import type { TranslationKey } from '@integration-components/core';
 import { useCoreContext } from '@integration-components/core/vue';
-import { ACCOUNT_DETAILS_CLASS_NAMES } from './constants';
-import './AccountDetails.scss';
+import styles from './AccountDetails.module.scss';
 
 type AccountDetail = {
     content: string;
@@ -70,15 +69,15 @@ const copyValue = (value: string) => {
 </script>
 
 <template>
-    <dl :class="[ACCOUNT_DETAILS_CLASS_NAMES.base, props.className]">
-        <div v-for="detail in accountDetails" :key="detail.field" :class="ACCOUNT_DETAILS_CLASS_NAMES.detail">
-            <dt :class="ACCOUNT_DETAILS_CLASS_NAMES.detailLabel">
+    <dl :class="[styles.root, props.className]">
+        <div v-for="detail in accountDetails" :key="detail.field">
+            <dt :class="styles.detailLabel">
                 <BentoTypography el="span" variant="caption">
                     {{ i18n.get(detail.label) }}
                 </BentoTypography>
             </dt>
-            <dd :class="[ACCOUNT_DETAILS_CLASS_NAMES.detailContent, { [ACCOUNT_DETAILS_CLASS_NAMES.detailContentPrimary]: detail.isPrimary }]">
-                <div v-if="detail.textToCopy" :class="ACCOUNT_DETAILS_CLASS_NAMES.copyableContent">
+            <dd :class="styles.detailContent">
+                <div v-if="detail.textToCopy" :class="styles.copyableContent">
                     <BentoTypography el="span" variant="body" :stronger="detail.isPrimary">
                         {{ detail.content }}
                     </BentoTypography>

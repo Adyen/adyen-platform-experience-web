@@ -5,8 +5,7 @@ import { CAPITAL_REPAYMENT_FREQUENCY, calculatePercentageFromBasisPoints, getEnh
 import type { TranslationKey } from '@integration-components/core';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IGrant } from '@integration-components/types';
-import { GRANT_DETAILS_CLASS_NAMES } from './constants';
-import './GrantDetails.scss';
+import styles from './GrantDetails.module.scss';
 
 type GrantDetailItem = {
     key: TranslationKey;
@@ -81,9 +80,9 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
 </script>
 
 <template>
-    <div :class="GRANT_DETAILS_CLASS_NAMES.base">
-        <div :class="GRANT_DETAILS_CLASS_NAMES.content">
-            <div :class="GRANT_DETAILS_CLASS_NAMES.header">
+    <div :class="styles.root">
+        <div :class="styles.content">
+            <div :class="styles.header">
                 <BentoTypography variant="body">
                     {{ requestedFundsText }}
                 </BentoTypography>

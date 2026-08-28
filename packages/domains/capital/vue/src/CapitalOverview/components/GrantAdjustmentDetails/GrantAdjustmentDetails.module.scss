@@ -16,23 +16,23 @@
     @content;
 }
 
-.adyen-pe-grant-adjustment-details {
+.root {
     align-items: flex-start;
     align-self: stretch;
     display: flex;
     flex-direction: column;
+}
 
-    &__header {
-        align-items: flex-start;
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
+.header {
+    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
 
-        .b-button--icon-only {
-            @include adyen-displace-floating-dismiss-icon(
-                // $base-height => capital heading title line-height
-                $base-height: style.token(text-title-m-line-height)
-            );
-        }
-    }
+.header :global(.b-button--icon-only) {
+    @include adyen-displace-floating-dismiss-icon(
+        // $base-height => capital heading title line-height
+        $base-height: style.token(text-title-m-line-height)
+    );
 }

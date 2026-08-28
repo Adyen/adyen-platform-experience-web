@@ -6,8 +6,7 @@ import { useConfigContext, useCoreContext, useEventDispatcherContext } from '@in
 import type { IMissingAction, IMissingActionType } from '@integration-components/types';
 import { EMPTY_OBJECT, DATE_FORMAT_MISSING_ACTION } from '@integration-components/utils';
 import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
-import { GRANT_ACTIONS_HOSTED_CLASS_NAMES } from './constants';
-import './GrantActionsHosted.scss';
+import styles from './GrantActionsHosted.module.scss';
 
 const props = defineProps<{
     className?: string;
@@ -88,7 +87,7 @@ const handleActionClick = (actionType: IMissingActionType) => {
     <BentoAlert v-if="error" :class="props.className" type="critical">
         {{ i18n.get('capital.overview.grants.item.alerts.somethingWentWrong') }}
         <template #actions>
-            <BentoButton :class="GRANT_ACTIONS_HOSTED_CLASS_NAMES.button" @click="refreshComponent">
+            <BentoButton :class="styles.button" @click="refreshComponent">
                 {{ i18n.get('common.actions.refresh.labels.default') }}
             </BentoButton>
         </template>
@@ -97,10 +96,10 @@ const handleActionClick = (actionType: IMissingActionType) => {
     <BentoAlert v-else :class="props.className" type="warning">
         {{ alertTitle }}
         <template #description>
-            <ol v-if="props.missingActions.length > 1" :class="GRANT_ACTIONS_HOSTED_CLASS_NAMES.actionsContainer">
+            <ol v-if="props.missingActions.length > 1" :class="styles.actionsContainer">
                 <li v-for="action in props.missingActions" :key="action.type">
                     <BentoButton
-                        :class="GRANT_ACTIONS_HOSTED_CLASS_NAMES.button"
+                        :class="styles.button"
                         variant="tertiary"
                         :aria-label="i18n.get(GRANT_ACTION_CONFIGS[action.type].buttonLabelKey)"
                         :disabled="!!loadingAction"
@@ -113,7 +112,7 @@ const handleActionClick = (actionType: IMissingActionType) => {
             </ol>
             <BentoButton
                 v-else
-                :class="GRANT_ACTIONS_HOSTED_CLASS_NAMES.button"
+                :class="styles.button"
                 variant="tertiary"
                 :aria-label="i18n.get(GRANT_ACTION_CONFIGS[props.missingActions[0]!.type].buttonLabelKey)"
                 :disabled="!!loadingAction"

@@ -1,0 +1,19 @@
+@use '@integration-components/style';
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-100);
+}
+
+.root :global(.b-alert__content) {
+    width: 100%;
+}
+
+.offerButton {
+    width: 100%;
+}
+
+.offerButton :global(.b-button__label) {
+    justify-content: center;
+}

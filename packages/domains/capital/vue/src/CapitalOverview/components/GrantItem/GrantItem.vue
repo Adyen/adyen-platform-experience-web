@@ -21,8 +21,7 @@ import type { IGrant } from '@integration-components/types';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
 import GrantActions from '../GrantActions/GrantActions.vue';
 import GrantDetails from '../GrantDetails/GrantDetails.vue';
-import { GRANT_ITEM_CLASS_NAMES } from './constants';
-import './GrantItem.scss';
+import styles from './GrantItem.module.scss';
 
 type GrantAdjustmentDetail = 'revocation' | 'unscheduledRepayment';
 
@@ -101,7 +100,7 @@ const toggleGrantDetails = () => {
 </script>
 
 <template>
-    <div :class="GRANT_ITEM_CLASS_NAMES.base">
+    <div :class="styles.root">
         <BentoCard
             :aria-label="i18n.get('capital.overview.grants.item.details.a11y.label')"
             :background="grantConfig.isBackgroundFilled ? 'secondary' : 'primary'"
@@ -110,11 +109,11 @@ const toggleGrantDetails = () => {
             @click="toggleGrantDetails"
         >
             <template #content>
-                <div :class="GRANT_ITEM_CLASS_NAMES.cardContent">
-                    <div :class="GRANT_ITEM_CLASS_NAMES.statusContainer">
+                <div :class="styles.cardContent">
+                    <div :class="styles.statusContainer">
                         <BentoTypography
                             variant="caption"
-                            :class="{ [GRANT_ITEM_CLASS_NAMES.textSecondary]: grantConfig.isLabelColorSecondary }"
+                            :class="{ [styles.textSecondary]: grantConfig.isLabelColorSecondary }"
                             data-testid="grant-amount-label"
                         >
                             {{ i18n.get(grantConfig.amountLabelKey) }}
@@ -131,33 +130,28 @@ const toggleGrantDetails = () => {
                         </div>
                     </div>
 
-                    <BentoTypography variant="title" medium :class="{ [GRANT_ITEM_CLASS_NAMES.textSecondary]: grantConfig.isAmountColorSecondary }">
+                    <BentoTypography variant="title" medium :class="{ [styles.textSecondary]: grantConfig.isAmountColorSecondary }">
                         {{ formattedAmount }}
                     </BentoTypography>
 
                     <div v-if="grantConfig.isProgressBarVisible">
                         <progress
                             v-bento-tooltip="repaymentProgressLabel"
-                            :class="GRANT_ITEM_CLASS_NAMES.progressBar"
+                            :class="styles.progressBar"
                             :aria-label="i18n.get('capital.overview.grants.item.progressBar.a11y.label')"
                             :value="props.grant.repaidTotalAmount.value"
                             :max="props.grant.totalAmount.value"
                         />
-                        <div v-if="shouldDisplayLegend" :class="GRANT_ITEM_CLASS_NAMES.progressBarLegend" aria-hidden="true">
+                        <div v-if="shouldDisplayLegend" :class="styles.progressBarLegend" aria-hidden="true">
                             <BentoTypography
                                 v-if="repaymentProgressLabels.current"
                                 el="span"
                                 variant="caption"
-                                :class="GRANT_ITEM_CLASS_NAMES.progressBarLegendLabel"
+                                :class="styles.progressBarLegendLabel"
                             >
                                 {{ repaymentProgressLabels.current }}
                             </BentoTypography>
-                            <BentoTypography
-                                v-if="repaymentProgressLabels.max"
-                                el="span"
-                                variant="caption"
-                                :class="GRANT_ITEM_CLASS_NAMES.progressBarLegendLabel"
-                            >
+                            <BentoTypography v-if="repaymentProgressLabels.max" el="span" variant="caption" :class="styles.progressBarLegendLabel">
                                 {{ repaymentProgressLabels.max }}
                             </BentoTypography>
                         </div>
@@ -165,7 +159,7 @@ const toggleGrantDetails = () => {
 
                     <BentoButton
                         v-if="grantConfig.isGrantIdVisible"
-                        :class="GRANT_ITEM_CLASS_NAMES.grantID"
+                        :class="styles.grantID"
                         variant="tertiary"
                         :aria-label="i18n.get('capital.overview.grants.item.actions.copyGrantID')"
                         @click.stop="copyGrantId"
@@ -176,8 +170,8 @@ const toggleGrantDetails = () => {
                         </template>
                     </BentoButton>
 
-                    <div v-if="grantConfig.hasUnscheduledRepaymentDetails" :class="GRANT_ITEM_CLASS_NAMES.actionsBar">
-                        <BentoButton :class="GRANT_ITEM_CLASS_NAMES.mainActionBtn" variant="secondary" @click.stop="sendRepayment">
+                    <div v-if="grantConfig.hasUnscheduledRepaymentDetails" :class="styles.actionsBar">
+                        <BentoButton :class="styles.mainActionBtn" variant="secondary" @click.stop="sendRepayment">
                             {{ i18n.get('capital.overview.grants.item.actions.sendRepayment') }}
                         </BentoButton>
                     </div>
@@ -186,7 +180,7 @@ const toggleGrantDetails = () => {
                 <BentoToggleButton
                     v-if="grantConfig.hasDetails"
                     :aria-label="i18n.get('capital.overview.grants.item.details.a11y.label')"
-                    :class="GRANT_ITEM_CLASS_NAMES.detailsToggle"
+                    :class="styles.detailsToggle"
                     :toggled="isGrantDetailsOpen"
                     variant="tertiary"
                     @click="toggleGrantDetails"
@@ -200,13 +194,13 @@ const toggleGrantDetails = () => {
         <template v-if="grantConfig.hasAlerts">
             <GrantActions
                 v-if="props.grant.missingActions?.length"
-                :class-name="GRANT_ITEM_CLASS_NAMES.alert"
+                :class-name="styles.alert"
                 :grant-id="props.grant.id"
                 :missing-actions="props.grant.missingActions"
                 :offer-expires-at="props.grant.offerExpiresAt"
                 @complete="handleActionsComplete"
             />
-            <BentoAlert v-else :class="GRANT_ITEM_CLASS_NAMES.alert" type="highlight">
+            <BentoAlert v-else :class="styles.alert" type="highlight">
                 {{ i18n.get('capital.overview.grants.item.alerts.processingRequest') }}
             </BentoAlert>
         </template>

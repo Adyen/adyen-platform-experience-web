@@ -8,7 +8,7 @@ import type { IGrant } from '@integration-components/types';
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import GrantItem from '../GrantItem/GrantItem.vue';
 import GrantRepaymentDetails from '../GrantRepaymentDetails/GrantRepaymentDetails.vue';
-import './GrantsDisplay.scss';
+import styles from './GrantsDisplay.module.scss';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
@@ -82,10 +82,10 @@ onMounted(() => {
 <template>
     <GrantRepaymentDetails v-if="shouldShowRepaymentDetails && selectedGrant" :grant="selectedGrant" :on-details-close="hideGrantDetails" />
 
-    <div v-else class="adyen-pe-grant-list">
+    <div v-else :class="styles.root">
         <CapitalHeader :hide-title="props.hideTitle" :region="props.capitalState.region" title-key="capital.common.title" />
 
-        <div v-if="maxAmount" class="adyen-pe-grant-list__new-grant-banner">
+        <div v-if="maxAmount" :class="styles.newGrantBanner">
             <BentoAlert type="highlight">
                 {{ i18n.get('capital.overview.grants.newGrant.title.part1') }}
                 <strong>
@@ -99,7 +99,7 @@ onMounted(() => {
                     {{ i18n.get('capital.overview.grants.newGrant.earlyRenewalNotice') }}
                 </template>
                 <template #actions>
-                    <BentoButton class="adyen-pe-grant-list__offer-button" @click="onNewOfferRequestWithTracking">
+                    <BentoButton :class="styles.offerButton" @click="onNewOfferRequestWithTracking">
                         {{ i18n.get('capital.overview.grants.newGrant.actions.newGrant') }}
                     </BentoButton>
                 </template>
@@ -113,7 +113,7 @@ onMounted(() => {
             :items="grantGroupItems"
         />
 
-        <BentoList class="adyen-pe-grant-list__items">
+        <BentoList :class="styles.items">
             <BentoListItem v-for="grant in displayedGrants" :key="grant.id">
                 <template #content>
                     <GrantItem :grant="grant" :show-details="getShowGrantDetails(grant)" />

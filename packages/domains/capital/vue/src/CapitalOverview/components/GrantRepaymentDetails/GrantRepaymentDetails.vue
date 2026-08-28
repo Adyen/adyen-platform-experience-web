@@ -6,8 +6,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 import type { IGrant } from '@integration-components/types';
 import AccountDetails from '../AccountDetails/AccountDetails.vue';
 import GrantAdjustmentDetails from '../GrantAdjustmentDetails/GrantAdjustmentDetails.vue';
-import { GRANT_REPAYMENT_DETAILS_CLASS_NAMES } from './constants';
-import './GrantRepaymentDetails.scss';
+import styles from './GrantRepaymentDetails.module.scss';
 
 const props = defineProps<{
     grant: IGrant;
@@ -29,31 +28,27 @@ const addingBeneficiaryInstruction = computed(() =>
 <template>
     <GrantAdjustmentDetails
         v-if="bankAccount"
-        :class="GRANT_REPAYMENT_DETAILS_CLASS_NAMES.base"
+        :class="styles.root"
         header-title-key="capital.overview.repayment.title"
         header-subtitle-key="capital.overview.repayment.subtitle"
         :on-details-close="props.onDetailsClose"
     >
-        <div :class="GRANT_REPAYMENT_DETAILS_CLASS_NAMES.repaymentAccount">
+        <div :class="styles.repaymentAccount">
             <BentoTypography variant="body" stronger>
                 {{ i18n.get('capital.overview.repayment.accountDetails.title') }}
             </BentoTypography>
             <AccountDetails :bank-account="bankAccount" />
         </div>
 
-        <div :class="GRANT_REPAYMENT_DETAILS_CLASS_NAMES.notice">
+        <div :class="styles.notice">
             <template v-if="transferInstrumentIds.length">
                 <div>
                     <BentoTypography el="span" variant="caption" stronger>
                         {{ i18n.get('capital.overview.repayment.transferInstruments') }}
                     </BentoTypography>
 
-                    <ul :class="GRANT_REPAYMENT_DETAILS_CLASS_NAMES.transferInstrumentList">
-                        <li
-                            v-for="transferInstrumentId in transferInstrumentIds"
-                            :key="transferInstrumentId"
-                            :class="GRANT_REPAYMENT_DETAILS_CLASS_NAMES.transferInstrumentItem"
-                        >
+                    <ul :class="styles.transferInstrumentList">
+                        <li v-for="transferInstrumentId in transferInstrumentIds" :key="transferInstrumentId" :class="styles.transferInstrumentItem">
                             <BentoTypography el="span" variant="caption">
                                 {{ transferInstrumentId }}
                             </BentoTypography>
@@ -67,7 +62,7 @@ const addingBeneficiaryInstruction = computed(() =>
                 <BentoTypography el="span" variant="caption" stronger>
                     {{ i18n.get('capital.overview.repayment.instructions.title') }}
                 </BentoTypography>
-                <ol :class="GRANT_REPAYMENT_DETAILS_CLASS_NAMES.instructionList">
+                <ol :class="styles.instructionList">
                     <li>
                         <BentoTypography el="span" variant="caption">
                             {{ addingBeneficiaryInstruction }}
@@ -86,7 +81,7 @@ const addingBeneficiaryInstruction = computed(() =>
                 </ol>
             </div>
 
-            <BentoTypography el="span" variant="caption" :class="GRANT_REPAYMENT_DETAILS_CLASS_NAMES.verifiedBankAccountDetails">
+            <BentoTypography el="span" variant="caption" :class="styles.verifiedBankAccountDetails">
                 {{ i18n.get('capital.overview.repayment.instructions.verifiedAccount') }}
             </BentoTypography>
         </div>

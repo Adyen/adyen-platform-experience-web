@@ -7,8 +7,7 @@ import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import GrantActionsEmbedded from '../GrantActionsEmbedded/GrantActionsEmbedded.vue';
 import GrantActionsHosted from '../GrantActionsHosted/GrantActionsHosted.vue';
 import { useMissingActionsPolling } from '../../composables/useMissingActionsPolling';
-import { GRANT_ACTIONS_CLASS_NAMES } from './constants';
-import './GrantActions.scss';
+import styles from './GrantActions.module.scss';
 
 const props = defineProps<{
     className?: string;
@@ -62,9 +61,9 @@ watch(
 <template>
     <template v-if="missingActions.length">
         <BentoAlert v-if="!isPollingComplete || isFetchingOnboardingConfiguration" :class="props.className" type="warning">
-            <div :class="GRANT_ACTIONS_CLASS_NAMES.actionsTitleSkeleton" />
+            <div :class="styles.actionsTitleSkeleton" />
             <template #description>
-                <div :class="GRANT_ACTIONS_CLASS_NAMES.actionsDescriptionSkeleton" />
+                <div :class="styles.actionsDescriptionSkeleton" />
             </template>
         </BentoAlert>
         <GrantActionsEmbedded

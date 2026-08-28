@@ -8,8 +8,7 @@ import type { IMissingAction, IMissingActionType } from '@integration-components
 import { EMPTY_OBJECT, DATE_FORMAT_MISSING_ACTION } from '@integration-components/utils';
 import { useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
 import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
-import { GRANT_ACTIONS_EMBEDDED_CLASS_NAMES } from './constants';
-import './GrantActionsEmbedded.scss';
+import styles from './GrantActionsEmbedded.module.scss';
 
 const props = defineProps<{
     className?: string;
@@ -175,11 +174,11 @@ onUnmounted(() => {
         <BentoAlert :class="props.className" :type="areActionsCompleted ? 'highlight' : 'warning'">
             {{ alertTitle }}
             <template #description>
-                <div v-if="props.missingActions.length > 1" :class="GRANT_ACTIONS_EMBEDDED_CLASS_NAMES.actionButtonsContainer">
+                <div v-if="props.missingActions.length > 1" :class="styles.actionButtonsContainer">
                     <BentoButton
                         v-for="action in props.missingActions"
                         :key="action.type"
-                        :class="GRANT_ACTIONS_EMBEDDED_CLASS_NAMES.actionButton"
+                        :class="styles.actionButton"
                         :variant="missingActionsMetadata.primaryActionType === action.type ? 'primary' : 'secondary'"
                         :aria-label="i18n.get(GRANT_ACTION_CONFIGS[action.type].buttonLabelKey)"
                         @click="handleActionButtonClick(action.type)"
@@ -198,7 +197,7 @@ onUnmounted(() => {
                 </div>
                 <BentoButton
                     v-else
-                    :class="GRANT_ACTIONS_EMBEDDED_CLASS_NAMES.actionButton"
+                    :class="styles.actionButton"
                     :variant="missingActionsMetadata.primaryActionType === props.missingActions[0]?.type ? 'primary' : 'secondary'"
                     :aria-label="i18n.get(GRANT_ACTION_CONFIGS[props.missingActions[0]!.type].buttonLabelKey)"
                     @click="handleActionButtonClick(props.missingActions[0]!.type)"

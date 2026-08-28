@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import './CapitalOverviewContainer.scss';
 import { CapitalOverviewProps } from '../../types';
 import { computed, ref } from 'vue';
 import { useSupportedRegions } from '../../composables/useSupportedRegions';
@@ -12,7 +11,7 @@ import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
 import PreQualified from '../PreQualified/PreQualified.vue';
 import GrantList from '../GrantList/GrantList.vue';
-import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../../../../../domain/src/CapitalOverview/constants';
+import styles from './CapitalOverviewContainer.module.scss';
 
 const props = defineProps<CapitalOverviewProps>();
 type CapitalOverviewState = 'Loading' | 'Error' | 'PreQualified' | 'GrantList' | 'UnsupportedRegion';
@@ -58,11 +57,11 @@ const handleGrantListUpdateRequest = (grant: IGrant) => {
 </script>
 
 <template>
-    <div :class="CAPITAL_OVERVIEW_CLASS_NAMES.base">
+    <div :class="styles.root">
         <div v-if="state === 'Loading'">
-            <div :class="CAPITAL_OVERVIEW_CLASS_NAMES.skeletonContainer">
-                <div :class="CAPITAL_OVERVIEW_CLASS_NAMES.headerSkeleton" />
-                <div :class="CAPITAL_OVERVIEW_CLASS_NAMES.skeleton" />
+            <div :class="styles.skeletonContainer">
+                <div :class="styles.headerSkeleton" />
+                <div :class="styles.skeleton" />
             </div>
         </div>
         <div v-else-if="state === 'Error'">
