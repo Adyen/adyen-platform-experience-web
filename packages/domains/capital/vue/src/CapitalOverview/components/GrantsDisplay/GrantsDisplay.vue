@@ -98,12 +98,10 @@ onMounted(() => {
                 <template v-if="props.capitalState.renewableGrants.length" #description>
                     {{ i18n.get('capital.overview.grants.newGrant.earlyRenewalNotice') }}
                 </template>
-                <template #actions>
-                    <BentoButton :class="styles.offerButton" @click="onNewOfferRequestWithTracking">
-                        {{ i18n.get('capital.overview.grants.newGrant.actions.newGrant') }}
-                    </BentoButton>
-                </template>
             </BentoAlert>
+            <BentoButton :class="styles.offerButton" @click="onNewOfferRequestWithTracking">
+                {{ i18n.get('capital.overview.grants.newGrant.actions.newGrant') }}
+            </BentoButton>
         </div>
 
         <BentoSegmentedControl

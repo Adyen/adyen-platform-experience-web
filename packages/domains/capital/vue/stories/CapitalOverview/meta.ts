@@ -13,6 +13,7 @@ export const CapitalOverviewMeta: Meta<ElementProps<typeof CapitalOverviewElemen
     },
     args: {
         component: CapitalOverviewElement,
+        compact: true,
     },
     parameters: {
         controls: {

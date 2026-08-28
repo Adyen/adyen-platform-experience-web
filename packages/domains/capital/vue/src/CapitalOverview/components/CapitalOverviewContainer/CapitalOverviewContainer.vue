@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CapitalOverviewProps } from '../../types';
+import { CapitalOverviewComponentProps } from '../../types';
 import { computed, ref } from 'vue';
 import { useSupportedRegions } from '../../composables/useSupportedRegions';
 import { useCapitalState } from '../../composables/useCapitalState';
@@ -8,12 +8,12 @@ import { getAdjustedGrants, getEnhancedCapitalState, type OnFundsRequestCallback
 import { useConfigContext } from '@integration-components/core/vue';
 import type { IGrant } from '@integration-components/types';
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
-import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
 import PreQualified from '../PreQualified/PreQualified.vue';
 import GrantList from '../GrantList/GrantList.vue';
 import styles from './CapitalOverviewContainer.module.scss';
+import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
 
-const props = defineProps<CapitalOverviewProps>();
+const props = defineProps<CapitalOverviewComponentProps>();
 type CapitalOverviewState = 'Loading' | 'Error' | 'PreQualified' | 'GrantList' | 'UnsupportedRegion';
 
 const config = useConfigContext();

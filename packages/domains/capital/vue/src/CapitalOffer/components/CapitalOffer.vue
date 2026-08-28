@@ -8,7 +8,7 @@ import OfferSummary from './OfferSummary/OfferSummary.vue';
 import type { CapitalOfferComponentProps } from '../types';
 import { useCapitalState } from '../composables/useCapitalState';
 import CapitalHeader from '../../shared/CapitalHeader/CapitalHeader.vue';
-import CapitalErrorMessageDisplay from '../../shared/CapitalErrorMessageDisplay.vue';
+import CapitalError from '../../shared/CapitalError/CapitalError.vue';
 
 const props = defineProps<CapitalOfferComponentProps>();
 
@@ -50,14 +50,14 @@ const handleSummaryBack = () => {
         :region="capitalState?.region"
         :title-key="selectedOffer ? 'capital.offer.summary.title' : 'capital.offer.selection.title'"
     />
-    <CapitalErrorMessageDisplay
+    <CapitalError
         v-if="capitalStateError"
         :error="capitalStateError"
         :on-back="props.onOfferDismiss"
         :on-contact-support="props.onContactSupport"
     />
     <template v-else-if="capitalState">
-        <CapitalErrorMessageDisplay
+        <CapitalError
             v-if="!capitalState.isRegionSupported || !dynamicOfferConfig"
             :empty-grant-offer="!dynamicOfferConfig"
             :unsupported-region="!capitalState.isRegionSupported"

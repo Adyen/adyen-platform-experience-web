@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
 import { ErrorMessageDisplay, type ErrorMessageInfo } from '@integration-components/composables-vue';
-import { getCapitalErrorMessage } from '@integration-components/capital/domain';
+import { AdyenPlatformExperienceError, AdyenErrorResponse, ErrorTypes } from '@integration-components/core';
+import { getCapitalErrorMessageInfo } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
-import type { AdyenErrorResponse } from '@integration-components/core';
-import { getCommonErrorMessage } from '@integration-components/ui-components-preact/utils/getCommonErrorCode';
 
 const props = defineProps<{
     emptyGrantOffer?: boolean;
@@ -21,36 +19,27 @@ const capitalError = computed(() => {
     if (props.unsupportedRegion) {
         return new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'UnsupportedRegion', 'Unsupported Region', 'UNSUPPORTED_REGION');
     }
-
     if (props.emptyGrantOffer) {
         return new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'NoOffer', 'No Offer', 'NO_OFFER');
     }
-
     return props.error as AdyenPlatformExperienceError | undefined;
 });
 
-const errorInfo = computed<ErrorMessageInfo>(() => {
-    const commonErrorMessage = getCommonErrorMessage(capitalError.value, props.onContactSupport);
-    const error = commonErrorMessage ? commonErrorMessage : getCapitalErrorMessage(capitalError.value, props.onContactSupport);
-    const { message, translationValues, ...capitalErrorMessage } = error;
-    return {
-        ...capitalErrorMessage,
-        messages: message ? (Array.isArray(message) ? message : [message]) : [],
-        requestId: translationValues ? Object.values(translationValues)[0] : undefined,
-    };
-});
+const errorInfo = computed<ErrorMessageInfo>(() => getCapitalErrorMessageInfo(capitalError.value, props.onContactSupport));
+const imageDesktop = computed(() => (props.emptyGrantOffer ? getImageAsset?.({ name: 'no-results-found' }) : undefined));
+const imageMobile = computed(() => (props.emptyGrantOffer ? getImageAsset?.({ name: 'no-results-found', subFolder: 'images/small' }) : undefined));
 </script>
 
 <template>
     <ErrorMessageDisplay
         :absolute-position="false"
-        centered
-        :dismiss-label="props.emptyGrantOffer ? undefined : 'capital.common.actions.goBack'"
         :error-info="errorInfo"
-        :image-desktop="props.emptyGrantOffer ? getImageAsset?.({ name: 'no-results-found' }) : undefined"
-        :image-mobile="props.emptyGrantOffer ? getImageAsset?.({ name: 'no-results-found', subFolder: 'images/small' }) : undefined"
-        :on-dismiss="props.emptyGrantOffer ? undefined : props.onBack"
-        :with-image="!props.emptyGrantOffer"
-        :with-background="true"
+        :image-desktop="imageDesktop"
+        :image-mobile="imageMobile"
+        :on-dismiss="props.onBack"
+        dismiss-label="capital.common.actions.goBack"
+        :outlined="false"
+        :with-background="false"
+        :with-image="true"
     />
 </template>

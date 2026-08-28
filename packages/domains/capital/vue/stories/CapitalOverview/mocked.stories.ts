@@ -8,7 +8,9 @@ import { CapitalOverviewElement, type CapitalOverviewExternalProps } from '../..
 
 type ElementStory<ExtraProps = object> = StoryObj<CapitalOverviewExternalProps & ExtraProps & { mockedApi?: boolean; skipDecorators?: boolean }>;
 type ConditionalMountFlag = 'mountIfInUnsupportedRegion' | 'mountIfIneligible';
-type ConditionalMountArgs = CapitalOverviewExternalProps & Partial<Record<ConditionalMountFlag, boolean>>;
+type ConditionalMountArgs = CapitalOverviewExternalProps &
+    Pick<ElementProps<typeof CapitalOverviewElement>, 'compact'> &
+    Partial<Record<ConditionalMountFlag, boolean>>;
 type GuardedCapitalState = 'isInUnsupportedRegion' | 'isUnqualified';
 
 const meta: Meta<ElementProps<typeof CapitalOverviewElement>> = {
@@ -61,7 +63,7 @@ const createConditionalMountDecorator = (guardedState: GuardedCapitalState, moun
                     capitalOverview?.unmount();
                 });
 
-                return () => h('div', { ref: componentRoot, class: 'component-wrapper' });
+                return () => h('div', { ref: componentRoot, class: context.args.compact ? 'compact-component-wrapper' : 'component-wrapper' });
             },
         });
 };
