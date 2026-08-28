@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
 import { isFunction } from '@integration-components/utils';
@@ -19,6 +19,23 @@ export function usePayoutsList(props: () => UsePayoutsListProps) {
     const config = useConfigContext();
     const getPayouts = computed(() => config.endpoints.getPayouts);
     const canFetch = computed(() => isFunction(getPayouts.value) && props().fetchEnabled);
+
+    const getFiltersKey = () => {
+        const { balanceAccountId, createdSince, createdUntil } = props();
+        return JSON.stringify({ balanceAccountId, createdSince, createdUntil });
+    };
+
+    watch(
+        getFiltersKey,
+        () => {
+            const { onFiltersChanged, balanceAccountId, createdSince, createdUntil } = props();
+
+            if (isFunction(onFiltersChanged)) {
+                onFiltersChanged({ balanceAccountId, createdSince, createdUntil });
+            }
+        },
+        { immediate: true }
+    );
 
     return useCursorPaginatedRecords<IPayout>({
         getFetchKey: () => {
@@ -50,11 +67,5 @@ export function usePayoutsList(props: () => UsePayoutsListProps) {
         },
         preferredLimit: props().preferredLimit ?? DEFAULT_PAGE_LIMIT,
         limitOptions: () => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined),
-        onSuccess: () => {
-            const { onFiltersChanged, balanceAccountId, createdSince, createdUntil } = props();
-            if (isFunction(onFiltersChanged)) {
-                onFiltersChanged({ balanceAccountId, createdSince, createdUntil });
-            }
-        },
     });
 }

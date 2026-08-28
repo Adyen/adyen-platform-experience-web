@@ -45,9 +45,7 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
 
     watch(
         getFiltersKey,
-        newKey => {
-            if (!newKey) return;
-
+        () => {
             const { onFiltersChanged, filters } = props();
 
             if (isFunction(onFiltersChanged)) {
