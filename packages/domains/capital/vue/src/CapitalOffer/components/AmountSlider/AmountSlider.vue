@@ -15,8 +15,9 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const labelId = `label-${useUniqueId()}`;
-const sliderId = `slider-${useUniqueId()}`;
+const elementBaseId = useUniqueId();
+const labelId = `${elementBaseId}-label`;
+const sliderId = `${elementBaseId}-slider`;
 const currency = computed(() => props.dynamicOfferConfig.minAmount.currency);
 const formattedAmount = computed(() => i18n.amount(props.value, currency.value, { maximumFractionDigits: 0 }));
 
@@ -44,10 +45,8 @@ const handleRelease = (event: Event) => props.onRelease?.(getValue(event));
             :min="props.dynamicOfferConfig.minAmount.value"
             :step="props.dynamicOfferConfig.step"
             :value="value"
-            @change="handleValueChange"
-            @keyup="handleRelease"
-            @mouseup="handleRelease"
-            @touchend="handleRelease"
+            @input="handleValueChange"
+            @change="handleRelease"
         />
         <div :class="styles.rangeLabels" aria-hidden="true">
             <div :class="styles.rangeLabel">

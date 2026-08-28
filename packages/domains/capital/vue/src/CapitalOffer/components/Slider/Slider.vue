@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { calculateProgress } from './calculateProgress';
-import './Slider.scss';
+import { calculateProgress } from './utils';
+import styles from './Slider.module.scss';
 
 const props = withDefaults(
     defineProps<{
@@ -18,10 +18,6 @@ const props = withDefaults(
     }
 );
 
-const emit = defineEmits<{
-    change: [event: Event];
-}>();
-
 const value = computed(() => props.value ?? props.min);
 const progress = computed(() => calculateProgress(value.value, props.min, props.max, props.step));
 </script>
@@ -29,13 +25,12 @@ const progress = computed(() => calculateProgress(value.value, props.min, props.
 <template>
     <input
         v-bind="$attrs"
+        :class="styles.root"
         :max="props.max"
         :min="props.min"
         :step="props.step"
         :style="{ backgroundSize: `${progress}% 100%` }"
         :value="value"
-        class="adyen-pe-slider"
         type="range"
-        @input="event => emit('change', event)"
     />
 </template>

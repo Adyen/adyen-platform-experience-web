@@ -10,13 +10,17 @@ test.describe('Early renewal', () => {
     });
 
     test('should render the new financing, current balance, and amount to receive', async ({ page }) => {
+        const newLoanField = page.getByText('New loan').locator('..');
+        const currentLoanBalanceField = page.getByText('Current loan balance').locator('..');
+        const amountToReceiveField = page.getByText("Amount you'll receive").locator('..');
+
         await Promise.all([
-            expect(page.getByText('New loan')).toBeVisible(),
-            expect(page.getByText('€18,600')).toBeVisible(),
-            expect(page.getByText('Current loan balance')).toBeVisible(),
-            expect(page.getByText('€8,130')).toBeVisible(),
-            expect(page.getByText("Amount you'll receive")).toBeVisible(),
-            expect(page.getByText('€10,470')).toBeVisible(),
+            expect(newLoanField).toBeVisible(),
+            expect(newLoanField.getByText('€18,600')).toBeVisible(),
+            expect(currentLoanBalanceField).toBeVisible(),
+            expect(currentLoanBalanceField.getByText('€8,130')).toBeVisible(),
+            expect(amountToReceiveField).toBeVisible(),
+            expect(amountToReceiveField.getByText('€10,470')).toBeVisible(),
         ]);
     });
 });
