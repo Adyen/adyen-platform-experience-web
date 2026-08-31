@@ -117,4 +117,16 @@ export const ErrorTemporaryOffer: ElementStory<CapitalOfferExternalProps> = {
     },
 };
 
+export const ErrorReview: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error - Review',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorReview,
+        },
+    },
+};
+
 export default meta;

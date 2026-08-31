@@ -23,7 +23,7 @@ export function useOffers(dynamicOfferConfig: MaybeRefOrGetter<IDynamicOffersCon
         requestState.abort();
     };
 
-    const fetchOffer = async (amountValue: number): Promise<void> => {
+    const sendGetDynamicGrantOfferRequest = async (amountValue: number): Promise<void> => {
         const config = toValue(dynamicOfferConfig);
         const request = getDynamicGrantOffer.value;
         if (!config || !request) return;
@@ -47,11 +47,11 @@ export function useOffers(dynamicOfferConfig: MaybeRefOrGetter<IDynamicOffersCon
         );
     };
 
-    const requestOffer = (amountValue: number) => {
+    const debounceGetDynamicGrantOfferRequest = (amountValue: number) => {
         cancelPendingRequest();
         isPending.value = true;
         debounceTimeout.value = setTimeout(() => {
-            void fetchOffer(amountValue);
+            void sendGetDynamicGrantOfferRequest(amountValue);
         }, DYNAMIC_OFFER_DEBOUNCE_MS);
     };
 
@@ -61,7 +61,7 @@ export function useOffers(dynamicOfferConfig: MaybeRefOrGetter<IDynamicOffersCon
             if (hasInitialized || !config || selectedAmount === undefined) return;
 
             hasInitialized = true;
-            void fetchOffer(selectedAmount);
+            void sendGetDynamicGrantOfferRequest(selectedAmount);
         },
         { immediate: true }
     );
@@ -74,6 +74,6 @@ export function useOffers(dynamicOfferConfig: MaybeRefOrGetter<IDynamicOffersCon
         error: requestState.error,
         isLoading: requestState.isLoading,
         isRequestPending: isPending,
-        requestOffers: requestOffer,
+        requestOffers: debounceGetDynamicGrantOfferRequest,
     } as const;
 }

@@ -16,8 +16,9 @@ import {
 } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { useOffers } from '../../composables/useOffers';
+import { useCreateOffer } from '../../composables/useCreateOffer';
 import type { IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
-import { BentoCard } from '@adyen/bento-vue3';
+import { BentoButtonActions, BentoCard } from '@adyen/bento-vue3';
 import AmountSlider from '../AmountSlider/AmountSlider.vue';
 import CapitalErrorMessageDisplay from '../../../shared/CapitalErrorMessageDisplay.vue';
 import OfferDetails from '../OfferDetails.vue';
@@ -39,6 +40,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const userEvents = useEventDispatcherContext();
+const isEarlyRenewal = computed(() => getIsEarlyRenewal(props.capitalState));
 const renewableGrant = computed(() => props.capitalState.renewableGrants?.[0]);
 const hasEmittedInitialSliderEvent = ref(false);
 const isAmountChanging = ref(false);
@@ -53,6 +55,7 @@ const {
     () => props.dynamicOfferConfig,
     () => props.selectedAmount
 );
+const { error: createOfferError, isLoading: isCreateOfferLoading, createOffer } = useCreateOffer();
 
 // Initialize selectedAmount with default value
 watch(
@@ -72,6 +75,7 @@ const offersByTerm = computed(() => getOffersByTerm(offers.value?.offers ?? []))
 const availableTerms = computed(() => getAvailableTerms(offersByTerm.value));
 const selectedOffer = computed(() => (props.selectedTerm === undefined ? undefined : getOfferForTerm(offersByTerm.value, props.selectedTerm)));
 const areOffersUpdating = computed(() => isAmountChanging.value || areOffersLoading.value || isOffersRequestPending.value);
+const isReviewDisabled = computed(() => !selectedOffer.value || areOffersUpdating.value || isCreateOfferLoading.value);
 
 watch(
     [availableTerms, () => props.selectedTerm],
@@ -101,7 +105,7 @@ const emitAmountValueChangeEvent = (amountValue: number) => {
         min: config.minAmount.value,
         max: config.maxAmount.value,
         relativeToDefault: getRelativeToDefault(amountValue, getDefaultAmountValue(config)),
-        isEarlyRenewal: getIsEarlyRenewal(props.capitalState),
+        isEarlyRenewal: isEarlyRenewal.value,
     });
 };
 
@@ -142,17 +146,36 @@ const handleTermSelect = (term: number) => {
         relativeToDefault: getRelativeToDefault(term, 180),
         availableRates: availableTerms.value.map(availableTerm => offersByTerm.value[availableTerm]?.repaymentRate),
         selectedRate,
-        isEarlyRenewal: getIsEarlyRenewal(props.capitalState),
+        isEarlyRenewal: isEarlyRenewal.value,
     });
+};
+
+const handleReview = async () => {
+    const offer = selectedOffer.value;
+    if (!offer) return;
+
+    try {
+        const createdOffer = await createOffer(offer);
+        if (createdOffer) {
+            props.onOfferSelect(createdOffer);
+        }
+    } finally {
+        userEvents.addEvent?.('Clicked button', {
+            ...sharedCapitalOfferAnalyticsEventProperties,
+            subCategory: 'Business financing offer',
+            label: 'Review offer',
+            isEarlyRenewal: isEarlyRenewal.value,
+        });
+    }
 };
 </script>
 
 <template>
     <div :class="styles.root">
         <CapitalErrorMessageDisplay
-            v-if="offersError || hasNoOffers"
+            v-if="offersError || hasNoOffers || createOfferError"
             :empty-grant-offer="hasNoOffers"
-            :error="offersError"
+            :error="createOfferError ?? offersError"
             :on-back="props.onOfferDismiss"
             :on-contact-support="props.onContactSupport"
         />
@@ -183,6 +206,24 @@ const handleTermSelect = (term: number) => {
                     <OfferDetails :offer="selectedOffer" :has-single-term="hasSingleTerm" />
                 </template>
             </BentoCard>
+            <BentoButtonActions
+                :actions="[
+                    {
+                        title: i18n.get('capital.offer.selection.actions.reviewOffer'),
+                        disabled: isReviewDisabled,
+                        state: isCreateOfferLoading ? 'loading' : 'start',
+                        event: handleReview,
+                    },
+                    ...(props.onOfferDismiss
+                        ? [
+                              {
+                                  title: i18n.get('capital.common.actions.goBack'),
+                                  event: props.onOfferDismiss,
+                              },
+                          ]
+                        : []),
+                ]"
+            />
         </template>
     </div>
 </template>
