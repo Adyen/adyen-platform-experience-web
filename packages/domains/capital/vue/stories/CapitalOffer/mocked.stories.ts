@@ -57,6 +57,18 @@ export const EarlyRenewal: ElementStory<CapitalOfferExternalProps> = {
     },
 };
 
+export const SingleTerm: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Single term',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.singleTerm,
+        },
+    },
+};
+
 export const ErrorOfferConfig: ElementStory<CapitalOfferExternalProps> = {
     name: 'Error - Offer config',
     args: {
