@@ -7,7 +7,11 @@ export const useFormatTermLabel = () => {
     return (days: number): string => {
         const { months, remainingDays } = calculateMonthsAndDaysFromDays(days);
         const monthsPart =
-            months === 1 ? i18n.get('capital.common.values.oneMonth') : i18n.get('capital.common.values.numberOfMonths', { values: { months } });
+            months === 0
+                ? undefined
+                : months === 1
+                  ? i18n.get('capital.common.values.oneMonth')
+                  : i18n.get('capital.common.values.numberOfMonths', { values: { months } });
         const daysPart =
             remainingDays === 0
                 ? undefined
