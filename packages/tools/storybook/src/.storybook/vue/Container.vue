@@ -42,21 +42,19 @@ const configuredThemeMode = computed<ThemeMode>(() => {
     return props.theme ?? 'light';
 });
 
-const mergedThemeVariables = computed<ThemeVariables>(() => ({
-    ...storyTheme.value?.variables,
-    ...props.themeVariables,
-}));
-
 const componentPropsWithoutCoreOptions = computed(() => {
     const { coreOptions: _, ...rest } = props.componentProps ?? {};
     return rest;
 });
 
-const getTheme = (): ThemeOptions | undefined => {
-    const variables = mergedThemeVariables.value;
+const getTheme = (): ThemeOptions => {
     const mode = configuredThemeMode.value;
+    const variables: ThemeVariables = {
+        ...storyTheme.value?.[mode],
+        ...props.themeVariables,
+    };
 
-    return mode || Object.keys(variables).length > 0 ? { mode, variables } : undefined;
+    return Object.keys(variables).length > 0 ? { mode, [mode]: variables } : { mode };
 };
 
 const applyTheme = async () => {
@@ -98,7 +96,7 @@ async function initializeCore() {
 
 onMounted(initializeCore);
 
-watch([() => props.theme, () => props.themeDark, () => props.themeVariables], applyTheme, { deep: true });
+watch([configuredThemeMode, storyTheme, () => props.themeVariables], applyTheme, { deep: true });
 
 // prettier-ignore
 watch(

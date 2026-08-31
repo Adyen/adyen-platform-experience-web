@@ -1,11 +1,11 @@
-import type { ThemeOptions } from '../types';
+import type { ThemeOptions, ThemeVariables } from '../types';
 import { createThemeStyleGenerator, type ThemeStyleGenerator } from './ThemeGeneratorAdapter';
 
 export const THEME_MODE_ATTRIBUTE = 'data-adyen-pe-theme';
 
 const themeManagers = new WeakMap<Document, ThemeManager>();
 
-const hasVariables = (theme: ThemeOptions): boolean => !!theme.variables && Object.keys(theme.variables).length > 0;
+const hasVariables = (variables: ThemeVariables | undefined): variables is ThemeVariables => !!variables && Object.keys(variables).length > 0;
 
 export class ThemeManager {
     public constructor(
@@ -14,18 +14,19 @@ export class ThemeManager {
     ) {}
 
     public apply(theme: ThemeOptions | undefined): void {
-        const dark = theme?.mode === 'dark';
+        const mode = theme?.mode ?? 'light';
+        const variables = theme?.[mode];
 
-        if (theme && hasVariables(theme)) {
+        if (hasVariables(variables)) {
             this.generator.create({
-                ...theme.variables,
-                dark,
+                ...variables,
+                dark: mode === 'dark',
             });
         } else {
             this.generator.destroy();
         }
 
-        if (dark) {
+        if (mode === 'dark') {
             this.targetDocument.documentElement.setAttribute(THEME_MODE_ATTRIBUTE, 'dark');
         } else {
             this.targetDocument.documentElement.removeAttribute(THEME_MODE_ATTRIBUTE);

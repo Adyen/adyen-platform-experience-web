@@ -15,7 +15,7 @@ const createCore = () =>
         onSessionCreate: vi.fn(),
         theme: {
             mode: 'dark',
-            variables: { primary: '#0066ff' },
+            dark: { primary: '#0066ff' },
         },
     });
 
@@ -30,7 +30,7 @@ describe('Vue Core theme lifecycle', () => {
         expect(applyTheme).toHaveBeenCalledOnce();
         expect(applyTheme).toHaveBeenCalledWith({
             mode: 'dark',
-            variables: { primary: '#0066ff' },
+            dark: { primary: '#0066ff' },
         });
     });
 
@@ -53,7 +53,7 @@ describe('Vue Core theme lifecycle', () => {
         expect(applyTheme).not.toHaveBeenCalled();
         expect(core.options.theme).toEqual({
             mode: 'dark',
-            variables: { primary: '#0066ff' },
+            dark: { primary: '#0066ff' },
         });
     });
 
@@ -91,10 +91,10 @@ describe('Vue Core theme lifecycle', () => {
             throw new Error('Invalid theme');
         });
 
-        await expect(core.update({ theme: { variables: { primary: 'invalid' } } })).rejects.toThrow('Invalid theme');
+        await expect(core.update({ theme: { light: { primary: 'invalid' } } })).rejects.toThrow('Invalid theme');
         expect(core.options.theme).toEqual({
             mode: 'dark',
-            variables: { primary: '#0066ff' },
+            dark: { primary: '#0066ff' },
         });
         expect(component.update).not.toHaveBeenCalled();
     });

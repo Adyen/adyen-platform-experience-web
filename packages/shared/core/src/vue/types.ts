@@ -12,7 +12,8 @@ export type ThemeVariables = Omit<ThemeProps, 'dark'>;
 
 export interface ThemeOptions {
     mode?: ThemeMode;
-    variables?: ThemeVariables;
+    light?: ThemeVariables;
+    dark?: ThemeVariables;
 }
 
 export interface CoreOptions extends BaseCoreOptions {
