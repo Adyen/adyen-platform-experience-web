@@ -5,7 +5,7 @@ import {
     landedOnPageAnalyticsEventProperties,
     selectedRepaymentTermAnalyticsEventProperties,
     sliderChangedAnalyticsEventProperties,
-} from './constants/analytics';
+} from '../../../../fixtures/CapitalOffer/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-offer--early-renewal';
 

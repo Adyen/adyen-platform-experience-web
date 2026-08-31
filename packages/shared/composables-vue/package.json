@@ -11,6 +11,7 @@
         "./*": "./src/*.ts"
     },
     "dependencies": {
+        "@adyen/ui-assets-icons-16": "catalog:",
         "@integration-components/core": "workspace:*",
         "@integration-components/style": "workspace:*",
         "@integration-components/types": "workspace:*",

@@ -1,0 +1,67 @@
+@use '@integration-components/style';
+
+.adyen-pe-copy-text {
+    align-items: center;
+    display: inline-flex;
+    margin-top: style.token(spacer-010);
+    text-decoration: none;
+
+    &__text {
+        color: style.token(color-label-primary);
+    }
+
+    &__label {
+        font-size: style.token(text-caption-font-size);
+        font-weight: style.token(text-caption-font-weight);
+    }
+
+    &__information {
+        display: block;
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
+        max-width: calc(style.token(spacer-100) * 2.5);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__container {
+        align-items: flex-start;
+        display: inline-flex;
+        gap: style.token(spacer-020);
+    }
+
+    &__icon {
+        cursor: pointer;
+        display: flex;
+
+        &:hover {
+            color: style.token(color-label-primary-hover);
+        }
+    }
+
+    &:hover {
+        background-color: inherit;
+        color: inherit;
+        cursor: default;
+    }
+
+    &--stronger {
+        font-weight: style.token(text-body-strongest-font-weight);
+    }
+}
+
+.adyen-pe-tooltip-target {
+    &--underlined {
+        text-decoration: underline;
+        text-decoration-color: style.token(color-outline-tertiary);
+        text-decoration-style: dashed;
+        text-decoration-thickness: 1px;
+        text-underline-offset: style.token(spacer-020);
+
+        &:hover {
+            text-decoration-color: style.token(color-outline-tertiary-active);
+        }
+    }
+}
