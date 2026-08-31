@@ -1,9 +1,9 @@
 import { inject, provide, ref, watch, type InjectionKey, type Ref } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import type { IDisputeDefenseDocument, IDisputeDetail } from '@integration-components/types/api/models/disputes';
 import { type TranslationConfigItem } from '@integration-components/disputes/domain';
 import localDefenseDocumentConfig from '../../../../domain/src/config/defenseDocumentConfig.json';
 import localDefenseReasonConfig from '../../../../domain/src/config/defenseReasonConfig.json';
+import { useDisputesContext } from '../../integration/context';
 
 export enum DisputeFlowState {
     Details = 'details',
@@ -56,7 +56,7 @@ const cloneFormData = (formData: FormData) => {
 };
 
 export function provideDisputeFlow(dispute: Ref<IDisputeDetail | undefined>) {
-    const { getCdnConfig } = useCoreContext();
+    const { runtime } = useDisputesContext();
     const flowState = ref<DisputeFlowState>(DisputeFlowState.Details);
     const selectedDefenseReason = ref<string | null>(null);
     const applicableDocuments = ref<IDisputeDefenseDocument[] | null>([]);
@@ -148,16 +148,10 @@ export function provideDisputeFlow(dispute: Ref<IDisputeDetail | undefined>) {
 
     const getDisputesConfig = async () => {
         try {
-            const nextDefenseReasonConfig = await getCdnConfig?.<Record<string, TranslationConfigItem>>({
-                subFolder: 'disputes',
-                name: 'defenseReasonConfig',
-                fallback: localDefenseReasonConfig,
-            });
-            const nextDefenseDocumentConfig = await getCdnConfig?.<Record<string, TranslationConfigItem>>({
-                subFolder: 'disputes',
-                name: 'defenseDocumentConfig',
-                fallback: localDefenseDocumentConfig,
-            });
+            const [nextDefenseReasonConfig, nextDefenseDocumentConfig] = await Promise.all([
+                runtime.getDisputesConfig('defenseReasonConfig', localDefenseReasonConfig),
+                runtime.getDisputesConfig('defenseDocumentConfig', localDefenseDocumentConfig),
+            ]);
 
             defenseReasonConfig.value = nextDefenseReasonConfig ?? localDefenseReasonConfig;
             defenseDocumentConfig.value = nextDefenseDocumentConfig ?? localDefenseDocumentConfig;

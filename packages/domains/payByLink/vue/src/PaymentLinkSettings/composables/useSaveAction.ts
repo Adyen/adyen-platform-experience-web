@@ -1,7 +1,7 @@
 import { onUnmounted, ref, type Ref } from 'vue';
-import { useConfigContext } from '@integration-components/core/vue';
 import { isFunction, isUndefined } from '@integration-components/utils';
 import type { EndpointHttpCallables } from '@integration-components/core';
+import { usePayByLinkContext } from '../../integration/context';
 import { MenuItem } from '../constants';
 import { isThemePayload } from '@integration-components/payByLink/domain';
 import { getThemePayload } from '../utils/getThemePayload';
@@ -37,7 +37,7 @@ export function useSaveAction({
     setPayload,
     navigateBack,
 }: UseSaveActionParams) {
-    const { updatePayByLinkTheme, savePayByLinkSettings } = useConfigContext().endpoints;
+    const runtime = usePayByLinkContext().runtime;
     const navigationTimeout = ref<ReturnType<typeof setTimeout>>();
 
     onUnmounted(() => {
@@ -53,6 +53,7 @@ export function useSaveAction({
     };
 
     async function onSaveTheme() {
+        const updatePayByLinkTheme = runtime.endpoints.updatePayByLinkTheme;
         const store = selectedStore.value;
         const currentPayload = payload.value;
         if (!store || isUndefined(currentPayload) || !getIsValid() || !isThemePayload(currentPayload)) return;
@@ -78,6 +79,7 @@ export function useSaveAction({
     }
 
     async function onSaveTermsAndConditions() {
+        const savePayByLinkSettings = runtime.endpoints.savePayByLinkSettings;
         const store = selectedStore.value;
         const currentPayload = payload.value;
         if (!store || isUndefined(currentPayload) || !getIsValid() || isThemePayload(currentPayload)) return;

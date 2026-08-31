@@ -1,29 +1,26 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
-import { useLandedPageEvent, useDurationEvent } from '@integration-components/composables-vue';
 import { BentoAlert, BentoButton } from '@adyen/bento-vue3';
 import TransactionTotals from '../TransactionTotals/TransactionTotals.vue';
 import Balances from '../Balances/Balances.vue';
 import TransactionsTable from '../TransactionsTable/TransactionsTable.vue';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
-import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '@integration-components/transactions/domain';
 import type { ITransaction } from '@integration-components/types';
-import type { IBalanceAccountBase, TransactionsOverviewExternalProps } from '../../types';
+import type { IBalanceAccountBase } from '../../types';
+import type { DataOverviewErrorPresentation } from '@integration-components/composables-vue';
 import { BREAKPOINTS } from '@integration-components/utils';
 import styles from '../TransactionsOverview/TransactionsOverview.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
+import { useTransactionsViewEvents } from '../../composables/useTransactionsViewEvents';
 
 const props = defineProps<{
     balanceAccounts?: IBalanceAccountBase[];
     isLoadingBalanceAccount: boolean;
-    onContactSupport?: () => void;
-    onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
-    showDetails?: boolean;
-    dataCustomization?: TransactionsOverviewExternalProps['dataCustomization'];
+    errorPresentation?: DataOverviewErrorPresentation;
     onRowClick: (transaction: ITransaction) => void;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
 const { filters, currenciesLookupResult, accountBalancesResult, transactionsTotalsResult, transactionsListResult } = useTransactionsOverviewContext();
 
 const { currenciesDictionary, defaultCurrencySortedCurrencies, sortedCurrencies } = currenciesLookupResult;
@@ -42,14 +39,11 @@ const loadingTable = computed(() => transactionsListResult.fetching.value || pro
 
 const availableCurrencies = computed(() => sortedCurrencies.value as string[]);
 
-const sharedAnalyticsProps = { category: TRANSACTION_ANALYTICS_CATEGORY, subCategory: TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } as const;
-
 const summaryEl = ref<HTMLElement | null>(null);
 const totalsSectionEl = ref<HTMLElement | null>(null);
 const balancesSectionEl = ref<HTMLElement | null>(null);
 
-useLandedPageEvent(sharedAnalyticsProps);
-useDurationEvent(sharedAnalyticsProps);
+useTransactionsViewEvents('transactions');
 
 function updateSummaryLayout() {
     const totalsHeight = totalsSectionEl.value?.clientHeight ?? 0;
@@ -94,7 +88,7 @@ onMounted(() => {
                 <template #default>{{ i18n.get('transactions.overview.totals.error') }}</template>
                 <template #actions>
                     <BentoButton variant="tertiary" :disabled="!transactionsTotalsResult.canRefresh.value" @click="transactionsTotalsResult.refresh">
-                        {{ i18n.get('common.actions.refresh.labels.default') }}
+                        {{ i18n.get('transactions.actions.refresh.labels.default') }}
                     </BentoButton>
                 </template>
             </BentoAlert>
@@ -105,7 +99,7 @@ onMounted(() => {
                 <template #default>{{ i18n.get('transactions.overview.balances.error') }}</template>
                 <template #actions>
                     <BentoButton variant="tertiary" :disabled="!accountBalancesResult.canRefresh.value" @click="accountBalancesResult.refresh">
-                        {{ i18n.get('common.actions.refresh.labels.default') }}
+                        {{ i18n.get('transactions.actions.refresh.labels.default') }}
                     </BentoButton>
                 </template>
             </BentoAlert>
@@ -116,12 +110,10 @@ onMounted(() => {
     <TransactionsTable
         :active-balance-account="activeBalanceAccount"
         :available-currencies="availableCurrencies"
-        :error="transactionsListResult.error.value as any"
+        :error-presentation="props.errorPresentation"
         :has-multiple-currencies="availableCurrencies.length > 1"
         :loading="loadingTable"
-        :on-contact-support="props.onContactSupport"
         :on-row-click="props.onRowClick"
-        :show-details="props.showDetails"
         :transactions="transactionsListResult.records.value"
         :custom-columns="transactionsListResult.fields.value"
         :has-next="transactionsListResult.hasNext.value"

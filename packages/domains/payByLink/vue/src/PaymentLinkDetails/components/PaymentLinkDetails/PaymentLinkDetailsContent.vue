@@ -3,11 +3,11 @@ import { computed, onUnmounted, ref } from 'vue';
 import { BentoButtonActions, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import CheckmarkIcon from '@adyen/ui-assets-icons-16/vue/checkmark';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
-import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import type { IPaymentLinkDetails } from '@integration-components/types';
 import PaymentLinkSummary from '../PaymentLinkSummary/PaymentLinkSummary.vue';
 import PaymentLinkTabs from '../PaymentLinkTabs/PaymentLinkTabs.vue';
 import { isFunction } from '@integration-components/utils';
+import { usePayByLinkContext } from '../../../integration/context';
 
 const props = defineProps<{
     paymentLink: IPaymentLinkDetails;
@@ -16,8 +16,7 @@ const props = defineProps<{
     isDismissButtonHidden?: boolean;
 }>();
 
-const { i18n } = useCoreContext();
-const config = useConfigContext();
+const { i18n, runtime } = usePayByLinkContext();
 const isCopiedIndicatorVisible = ref(false);
 
 let copiedTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -50,7 +49,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
                   } as const,
               ]
             : []),
-        ...(status !== 'expired' && status !== 'completed' && isFunction(config.endpoints.expirePayByLinkPaymentLink)
+        ...(status !== 'expired' && status !== 'completed' && isFunction(runtime.endpoints.expirePayByLinkPaymentLink)
             ? [{ title: i18n.get('payByLink.details.actions.expire'), event: props.onExpire, variant: 'secondary' as const }]
             : []),
         ...(!props.isDismissButtonHidden && props.onDismiss

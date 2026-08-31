@@ -1,17 +1,17 @@
 import { ref, computed, watch } from 'vue';
 import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
-import { useConfigContext } from '@integration-components/core/vue';
 import type { IPaymentLinkFilters } from '@integration-components/types';
 import { toError } from '../utils/error';
+import { usePayByLinkContext } from '../../integration/context';
 
 /**
  * Vue composable counterpart of the Preact `usePaymentLinkFilters` hook's filter-options portion:
  * fetches the allowed link types and per-status-group statuses from the Pay by Link filters endpoint.
  */
 export function usePaymentLinkFilterOptions() {
-    const config = useConfigContext();
+    const runtime = usePayByLinkContext().runtime;
 
-    const payByLinkFilters = computed(() => config.endpoints.payByLinkFilters);
+    const payByLinkFilters = computed(() => runtime.endpoints.payByLinkFilters);
     const filters = ref<IPaymentLinkFilters | undefined>(undefined);
     const isFetching = ref(false);
     const error = ref<Error | undefined>(undefined);

@@ -1,11 +1,12 @@
 import { ref, computed, provide, inject, watch, type InjectionKey } from 'vue';
-import { useAccountBalances } from '@integration-components/composables-vue';
+import { useTransactionsAccountBalances } from './useTransactionsAccountBalances';
 import { useTransactionsList } from './useTransactionsList';
 import { useTransactionsTotals } from './useTransactionsTotals';
 import { useCurrenciesLookup } from './useCurrenciesLookup';
 import { useTransactionsViewSwitcher, TransactionsView } from './useTransactionsViewSwitcher';
 import { quickSelectDateRanges } from '@integration-components/utils';
-import type { TransactionsFilters, TransactionsOverviewExternalProps } from '../types';
+import type { IBalanceAccountBase } from '@integration-components/types';
+import type { TransactionsFilters, TransactionsOverviewProps } from '../types';
 
 const INSIGHTS_FILTERS: Set<keyof TransactionsFilters> = new Set(['balanceAccountId', 'createdSince', 'createdUntil']);
 
@@ -23,9 +24,12 @@ export type TransactionsOverviewStateKey = ReturnType<typeof useTransactionsOver
 
 const TRANSACTIONS_OVERVIEW_STATE_KEY: InjectionKey<TransactionsOverviewStateKey> = Symbol('TransactionsOverviewState');
 
-type TransactionsOverviewStateProps = TransactionsOverviewExternalProps & {
-    balanceAccounts?: any[];
-    isLoadingBalanceAccount?: boolean;
+type TransactionsOverviewStateProps = Pick<
+    TransactionsOverviewProps,
+    'allowLimitSelection' | 'balanceAccountId' | 'dataCustomization' | 'onFiltersChanged' | 'preferredLimit'
+> & {
+    balanceAccounts?: IBalanceAccountBase[];
+    fetchEnabled: boolean;
     hideInsights?: boolean;
 };
 
@@ -46,7 +50,9 @@ export function useTransactionsOverviewState(componentProps: () => TransactionsO
         view: componentProps().hideInsights ? TransactionsView.TRANSACTIONS : undefined,
     }));
     const isTransactionsView = computed(() => transactionsViewState.activeView.value !== TransactionsView.INSIGHTS);
-    const hasActiveBalanceAccount = computed(() => !!filters.value.balanceAccountId);
+    const hasActiveBalanceAccount = computed(() => {
+        return componentProps().fetchEnabled && !!filters.value.balanceAccountId;
+    });
 
     const onFiltersChange = (nextFilters: TransactionsFilters) => {
         filters.value = nextFilters;
@@ -56,7 +62,7 @@ export function useTransactionsOverviewState(componentProps: () => TransactionsO
         insightsCurrency.value = currency;
     };
 
-    const accountBalancesResult = useAccountBalances(() => filters.value.balanceAccountId);
+    const accountBalancesResult = useTransactionsAccountBalances(() => (hasActiveBalanceAccount.value ? filters.value.balanceAccountId : undefined));
 
     const transactionsTotalsResult = useTransactionsTotals(() => ({
         filters: filters.value,
@@ -82,7 +88,7 @@ export function useTransactionsOverviewState(componentProps: () => TransactionsO
 
     const currenciesLookupResult = useCurrenciesLookup(() => ({
         defaultCurrency: filters.value.balanceAccountId
-            ? componentProps().balanceAccounts?.find((a: any) => a.id === filters.value.balanceAccountId)?.defaultCurrencyCode
+            ? componentProps().balanceAccounts?.find(account => account.id === filters.value.balanceAccountId)?.defaultCurrencyCode
             : undefined,
         balances: accountBalancesResult.balances.value,
         totals: activeTotals.value,

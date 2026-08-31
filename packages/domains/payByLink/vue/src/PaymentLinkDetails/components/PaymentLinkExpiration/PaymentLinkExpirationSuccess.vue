@@ -2,15 +2,15 @@
 import { computed } from 'vue';
 import { BentoButtonActions, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import SuccessIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
-import { useCoreContext } from '@integration-components/core/vue';
 import styles from './PaymentLinkExpirationSuccess.module.scss';
+import { usePayByLinkContext } from '../../../integration/context';
 
 const props = defineProps<{
     onDismiss?: () => void;
     onShowDetails: () => void;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = usePayByLinkContext();
 
 const actionButtons = computed<BentoButtonActionsList>(() => [
     ...(props.onDismiss

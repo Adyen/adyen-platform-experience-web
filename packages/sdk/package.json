@@ -3,6 +3,10 @@
     "version": "0.0.1",
     "private": true,
     "type": "module",
+    "exports": {
+        ".": "./src/index.ts",
+        "./transactions": "./src/transactions/index.ts"
+    },
     "sideEffects": [
         "**/*.css",
         "**/*.scss"
@@ -11,13 +15,24 @@
         "build": "vite build && tsc --project tsconfig-build.json && tsc-alias -p tsconfig-build.json --dir ../../dist/types"
     },
     "dependencies": {
+        "@integration-components/core": "workspace:*",
+        "@integration-components/disputes": "workspace:*",
+        "@integration-components/domain-integration": "workspace:*",
+        "@integration-components/payByLink": "workspace:*",
+        "@integration-components/payouts": "workspace:*",
+        "@integration-components/reports": "workspace:*",
         "@integration-components/sdk-internal": "workspace:*",
-        "@integration-components/style": "workspace:*"
+        "@integration-components/style": "workspace:*",
+        "@integration-components/transactions": "workspace:*",
+        "@integration-components/types": "workspace:*",
+        "@integration-components/utils": "workspace:*"
     },
     "devDependencies": {
         "@preact/preset-vite": "^2.10.2",
+        "@vitejs/plugin-vue": "^6.0.5",
         "tsc-alias": "^1.8.17",
         "vite": "catalog:",
-        "vite-plugin-svgr": "^4.5.0"
+        "vite-plugin-svgr": "^4.5.0",
+        "vue": "catalog:"
     }
 }

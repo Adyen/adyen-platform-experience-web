@@ -16,7 +16,7 @@ export interface PaymentLinkSettingsContextValue {
     storesError: Ref<AdyenPlatformExperienceError | undefined>;
     termsAndConditionsError: Ref<AdyenPlatformExperienceError | undefined>;
     themeError: Ref<AdyenPlatformExperienceError | undefined>;
-    menuItems: MenuItemType[];
+    menuItems: ComputedRef<MenuItemType[]>;
     payload: Ref<PaymentLinkSettingsPayload>;
     activeMenuItem: Ref<PaymentLinkSettingsItem | null>;
     setPayload: (payload: PaymentLinkSettingsPayload) => void;
@@ -46,7 +46,7 @@ export interface PaymentLinkSettingsContextValue {
 const PAYMENT_LINK_SETTINGS_CONTEXT: InjectionKey<PaymentLinkSettingsContextValue> = Symbol('PaymentLinkSettingsContext');
 
 export interface ProvidePaymentLinkSettingsOptions {
-    selectedMenuItems: MenuItemType[];
+    selectedMenuItems: ComputedRef<MenuItemType[]>;
     storeIds?: StoreIds;
     embeddedInOverview?: boolean;
     navigateBack?: () => void;
@@ -59,8 +59,8 @@ export function providePaymentLinkSettings(options: ProvidePaymentLinkSettingsOp
     const { themeEnabled, termsAndConditionsEnabled } = useSettingsPermission();
 
     const menuItemPreSelect = computed<PaymentLinkSettingsItem | undefined>(() => {
-        if (isSmContainer.value && menuItems.length > 1) return undefined;
-        return menuItems.length > 0 && menuItems[0] ? menuItems[0].value : DEFAULT_MENU_ITEM;
+        if (isSmContainer.value && menuItems.value.length > 1) return undefined;
+        return menuItems.value.length > 0 && menuItems.value[0] ? menuItems.value[0].value : DEFAULT_MENU_ITEM;
     });
 
     const activeMenuItem = ref<PaymentLinkSettingsItem | null>(null);

@@ -1,6 +1,6 @@
-import { useCoreContext } from '@integration-components/core/vue';
 import { PAYMENT_LINK_STATUSES, PAYMENT_LINK_TYPES } from '../constants';
 import type { IPaymentLinkStatus, IPaymentLinkType } from '@integration-components/types';
+import { usePayByLinkContext } from '../../integration/context';
 
 /**
  * Resolves human-readable labels for payment link statuses and link types,
@@ -8,7 +8,7 @@ import type { IPaymentLinkStatus, IPaymentLinkType } from '@integration-componen
  * UI never renders an empty label for unknown values.
  */
 export function usePaymentLinkLabels() {
-    const { i18n } = useCoreContext();
+    const { i18n } = usePayByLinkContext();
 
     function getStatusLabel(status: string): string {
         const translationKey = PAYMENT_LINK_STATUSES[status as IPaymentLinkStatus];

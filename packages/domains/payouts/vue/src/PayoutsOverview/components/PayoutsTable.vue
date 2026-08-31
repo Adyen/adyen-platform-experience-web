@@ -1,32 +1,27 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
-import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
-import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import {
     useCustomColumnsData,
     CustomDataCell,
-    useResponsiveContainer,
-    containerQueries,
     DataOverviewError,
     useTableColumns,
+    type DataOverviewErrorPresentation,
 } from '@integration-components/composables-vue';
-import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
+import { useContainerQuery } from '@integration-components/composables-vue/useContainerQuery';
+import { containerQueries } from '@integration-components/composables-vue/containerQueries';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IPayout, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import { PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
 import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '@integration-components/utils';
 import styles from './PayoutsTable.module.scss';
+import { usePayoutsContext } from '../../integration/context';
 
 const props = defineProps<{
-    balanceAccountId: string | undefined;
     loading: boolean;
-    error?: Error;
-    onContactSupport?: () => void;
+    errorPresentation?: DataOverviewErrorPresentation;
     onRowClick?: (payout: IPayout) => void;
-    showDetails?: boolean;
     showPagination: boolean;
     data: IPayout[] | undefined;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<PayoutsTableFields>>[];
@@ -41,17 +36,15 @@ const props = defineProps<{
     currentPage?: number;
 }>();
 
-const { i18n } = useCoreContext();
-// Reactive proxy — destructuring would unwrap `refreshing` into a stale snapshot.
-const config = useConfigContext();
+const { i18n, runtime } = usePayoutsContext();
 
 // ── Date formatting ──
-const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
-const isMobile = useResponsiveContainer(containerQueries.down.xs);
+const containerRef = ref<HTMLElement | null>(null);
+const isMobile = useContainerQuery(containerQueries.down.xs, containerRef);
 const mobileColumns = new Set(['createdAt', 'payoutAmount']);
 
 function formatPayoutDate(dateStr: string): string {
-    return dateFormat(dateStr, isMobile.value ? DATE_FORMAT_PAYOUTS_MOBILE : DATE_FORMAT_PAYOUTS);
+    return i18n.date(dateStr, { timeZone: 'UTC', ...(isMobile.value ? DATE_FORMAT_PAYOUTS_MOBILE : DATE_FORMAT_PAYOUTS) });
 }
 
 // ── Custom columns ──
@@ -68,6 +61,7 @@ const {
         adjustmentAmount: 'payouts.overview.list.fields.adjustmentAmount',
         payoutAmount: 'payouts.overview.list.fields.payoutAmount',
     },
+    translate: key => i18n.get(key),
     columnConfig: () => ({
         createdAt: { flex: 1 },
         fundsCapturedAmount: { flex: 1, numeric: true },
@@ -77,7 +71,7 @@ const {
     customColumnDefaults: () => ({ flex: 1 }),
     resolveCustomColumnLabel: key => {
         const labelKey = `payouts.overview.list.fields.${key}`;
-        return i18n.has(labelKey as any) ? i18n.get(labelKey as any) : i18n.get(key as any);
+        return i18n.has(key) ? i18n.get(key) : i18n.has(labelKey) ? i18n.get(labelKey) : key;
     },
 });
 
@@ -92,7 +86,7 @@ const { customRecords, loadingCustomRecords } = useCustomColumnsData<IPayout>({
         }),
 });
 
-const isLoading = computed(() => props.loading || config.refreshing || loadingCustomRecords.value);
+const isLoading = computed(() => props.loading || runtime.refreshing || loadingCustomRecords.value);
 
 const columns = computed<BentoColumn[]>(() => {
     return isMobile.value ? configuredColumns.value.filter(column => mobileColumns.has(column.field)) : configuredColumns.value;
@@ -135,7 +129,7 @@ const emptyStateProps = computed(() => ({
     image: 'no-results-found' as const,
     variant: 'embedded' as const,
     title: i18n.get('payouts.overview.errors.listEmpty'),
-    description: i18n.get('common.errors.updateFilters'),
+    description: i18n.get('payouts.errors.updateFilters'),
 }));
 
 function handleNavigate(page: number) {
@@ -162,16 +156,9 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
 </script>
 
 <template>
-    <div :class="styles.root">
+    <div ref="containerRef" :class="styles.root">
         <!-- Error state -->
-        <DataOverviewError
-            v-if="props.error"
-            :error="props.error"
-            :error-message="'payouts.overview.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
-            :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
-        />
+        <DataOverviewError v-if="props.errorPresentation" v-bind="props.errorPresentation" />
 
         <BentoDataGrid
             v-else

@@ -4,6 +4,7 @@ export * from './async/debounce';
 export * from './async/main';
 export * from './collection/main';
 export * from './common';
+export * from './currency/decimals';
 export * from './customData/hasCustomField';
 export * from './customData/mergeRecords';
 export * from './customData/normalizeCustomFields';

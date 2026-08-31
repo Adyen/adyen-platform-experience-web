@@ -1,25 +1,25 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useMaxWidths } from '../../composables/useMaxWidths';
-import { useCoreContext } from '@integration-components/core/vue';
-import { formatAmountWithCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
 import { BentoCard, BentoLoadingIndicator, BentoDivider, useClickOutside } from '@adyen/bento-vue3';
 import type { IBalance } from '@integration-components/types';
 import BalanceItem from './BalanceItem.vue';
 import styles from '../TransactionsOverview/TransactionsOverview.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
+import { formatAmountWithCurrencyCode } from '../../../integration/format';
 
 const props = defineProps<{
     balances: readonly Readonly<IBalance>[];
     loadingBalances: boolean;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
 
 const availableBalances = computed(() =>
     props.balances.map(b => ({
         ...b,
-        formattedAvailable: formatAmountWithCurrencyCode(b.value, i18n.locale, b.currency),
-        formattedReserved: formatAmountWithCurrencyCode(b.reservedValue, i18n.locale, b.currency),
+        formattedAvailable: formatAmountWithCurrencyCode(i18n, b.value, b.currency),
+        formattedReserved: formatAmountWithCurrencyCode(i18n, b.reservedValue, b.currency),
     }))
 );
 

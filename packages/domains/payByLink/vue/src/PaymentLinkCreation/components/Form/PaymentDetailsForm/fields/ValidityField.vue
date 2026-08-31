@@ -100,7 +100,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                 :items="presetItems"
                 :label="i18n.get('payByLink.creation.fields.validity.label')"
                 :description="i18n.get('payByLink.creation.fields.validity.supportText')"
-                :placeholder="i18n.get('common.inputs.select.placeholder')"
+                :placeholder="i18n.get('payByLink.inputs.select.placeholder')"
                 :model-value="selection"
                 :optional="!required"
                 :readonly="config.readOnly"
@@ -120,7 +120,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                 />
                 <BentoDropdown
                     :items="unitItems"
-                    :placeholder="i18n.get('common.inputs.select.placeholder')"
+                    :placeholder="i18n.get('payByLink.inputs.select.placeholder')"
                     :model-value="unit"
                     :readonly="config.readOnly"
                     :error="!!error"

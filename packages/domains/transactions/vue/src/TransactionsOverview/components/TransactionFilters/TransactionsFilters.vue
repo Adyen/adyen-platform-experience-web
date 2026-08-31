@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { BentoFilterBar, BentoFilterItemType } from '@adyen/bento-vue3';
 import type { BentoDateRangePickerValue, BentoFilterBarModel, BentoFilterBarValue, BentoFilterValues } from '@adyen/bento-vue3';
 import TransactionPspReferenceFilter from './TransactionPspReferenceFilter.vue';
@@ -12,15 +11,11 @@ import {
 } from '@integration-components/composables-vue';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
 import { createQuickSelectRanges, quickSelectDateRanges, startOfDay, now, DAY_IN_MS } from '@integration-components/utils';
-import {
-    TRANSACTION_ANALYTICS_CATEGORY,
-    TRANSACTION_ANALYTICS_SUBCATEGORY_LIST,
-    TRANSACTION_ANALYTICS_SUBCATEGORY_INSIGHTS,
-    getEarliestTransactionDate,
-} from '@integration-components/transactions/domain';
-import type { FilterType, MixpanelProperty } from '@integration-components/core/EventDispatcher/eventDispatcher/user-events';
+import { getEarliestTransactionDate } from '@integration-components/transactions/domain';
 import { TRANSACTION_CATEGORIES } from '../../constants';
 import type { IBalanceAccountBase, TransactionsFilters } from '../../types';
+import { useTransactionsContext } from '../../../integration/context';
+import { transactionsOverviewEventBridge, type TransactionsFilterField } from '../../../events';
 
 const props = defineProps<{
     balanceAccounts?: IBalanceAccountBase[];
@@ -29,16 +24,9 @@ const props = defineProps<{
 const { filters, isTransactionsView, onFiltersChange, insightsCurrency, setInsightsCurrency, currenciesLookupResult } =
     useTransactionsOverviewContext();
 
-const { i18n } = useCoreContext();
-const userEvents = useEventDispatcherContext();
+const { i18n } = useTransactionsContext();
+const events = transactionsOverviewEventBridge.useEvents();
 const availableCurrencies = computed(() => currenciesLookupResult.sortedCurrencies.value);
-
-const eventSubCategory = computed(() => {
-    // prettier-ignore
-    return isTransactionsView.value
-        ? TRANSACTION_ANALYTICS_SUBCATEGORY_LIST
-        : TRANSACTION_ANALYTICS_SUBCATEGORY_INSIGHTS;
-});
 
 // ── Local filter state (snapshot from shared state once, never read back from it) ──
 const { selectedBalanceAccountId, hasMultipleBalanceAccounts, balanceAccountOptions } = useBalanceAccountFilterState({
@@ -120,7 +108,7 @@ const quickSelectRanges = createQuickSelectRanges(
         lastMonth: quickSelectDateRanges.lastMonth,
         yearToDate: quickSelectDateRanges.yearToDate,
     },
-    key => i18n.get(key)
+    option => i18n.get(`transactions.filters.types.date.rangeSelect.options.${option}`)
 );
 
 const sharedFilterItems = computed<BentoFilterBarModel>(() => {
@@ -129,7 +117,7 @@ const sharedFilterItems = computed<BentoFilterBarModel>(() => {
     if (hasMultipleBalanceAccounts.value) {
         items.push({
             field: 'balanceAccountId',
-            label: i18n.get('common.filters.types.account.label'),
+            label: i18n.get('transactions.filters.types.account.label'),
             type: BentoFilterItemType.SELECT,
             defaultValue: balanceAccountOptions.value[0]?.value,
             options: {
@@ -140,7 +128,7 @@ const sharedFilterItems = computed<BentoFilterBarModel>(() => {
 
     items.push({
         field: 'dateRange',
-        label: i18n.get('common.filters.types.date.label'),
+        label: i18n.get('transactions.filters.types.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         defaultValue: dateRangeDefaultValue,
         options: {
@@ -212,14 +200,14 @@ const filterValues = computed<BentoFilterValues>(() => {
     return values;
 });
 
-const FILTER_LABELS: Partial<Record<string, FilterType>> = {
-    balanceAccountId: 'Balance account filter',
-    dateRange: 'Date filter',
-    categories: 'Category filter',
-    currencies: 'Currency filter',
-    paymentPspReference: 'PSP reference filter',
-    insightsCurrency: 'Currency filter',
-};
+const TRACKED_FILTER_FIELDS = new Set<TransactionsFilterField>([
+    'balanceAccountId',
+    'categories',
+    'currencies',
+    'dateRange',
+    'insightsCurrency',
+    'paymentPspReference',
+]);
 
 function getCustomDateRangeEventValue(dateRange: BentoDateRangePickerValue) {
     const startTimestamp = dateRange.startDate.getTime();
@@ -227,15 +215,14 @@ function getCustomDateRangeEventValue(dateRange: BentoDateRangePickerValue) {
 }
 
 function fireFilterEvent(field: string, value: unknown, actionType?: 'reset' | 'update') {
-    const label = FILTER_LABELS[field];
-    if (!label) return;
+    if (!TRACKED_FILTER_FIELDS.has(field as TransactionsFilterField)) return;
 
     const isEmpty = Array.isArray(value) ? value.length === 0 : !value;
     const eventActionType = actionType ?? (isEmpty ? 'reset' : 'update');
     // PSP reference value is always null to avoid accidentally leaking PII
     const dateRange = value as BentoDateRangePickerValue | undefined;
 
-    let eventValue: MixpanelProperty | null | undefined;
+    let eventValue: string | null | undefined;
 
     if (eventActionType === 'update') {
         if (field === 'paymentPspReference') {
@@ -244,17 +231,16 @@ function fireFilterEvent(field: string, value: unknown, actionType?: 'reset' | '
             eventValue = quickSelectRanges.find(range => range.value === dateRange.range)?.label ?? getCustomDateRangeEventValue(dateRange);
         } else if (Array.isArray(value)) {
             eventValue = String(value);
-        } else {
-            eventValue = value as MixpanelProperty;
+        } else if (value !== undefined) {
+            eventValue = String(value);
         }
     }
 
-    userEvents.addModifyFilterEvent?.({
-        category: TRANSACTION_ANALYTICS_CATEGORY,
-        subCategory: eventSubCategory.value,
-        label,
-        actionType: eventActionType,
-        ...(eventValue !== undefined && { value: eventValue }),
+    events.filterChanged({
+        action: eventActionType,
+        field: field as TransactionsFilterField,
+        value: eventValue,
+        view: isTransactionsView.value ? 'transactions' : 'insights',
     });
 }
 

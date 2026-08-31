@@ -78,6 +78,8 @@
     "test:integration:preact": "cross-env STORYBOOK_FRAMEWORK=preact pnpm run test:integration",
     "test:integration:vue": "cross-env STORYBOOK_FRAMEWORK=vue pnpm run test:integration",
     "test:integration:ui": "pnpm run test:integration --ui",
+    "translations:contract:check": "tsx scripts/translation-contract/generate.ts --check",
+    "translations:contract:generate": "tsx scripts/translation-contract/generate.ts",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
     "types:check": "nx run-many --target=types:check",
     "types:watch": "concurrently --kill-others-on-fail 'nx run-many --target=types:watch' 'tsc --project tsconfig-build.json --watch'",

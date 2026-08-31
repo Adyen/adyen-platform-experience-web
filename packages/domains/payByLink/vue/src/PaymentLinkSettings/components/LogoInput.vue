@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoFileUploader } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { usePayByLinkContext } from '../../integration/context';
 import { LOGO_DIMENSIONS, LogoLabel, THEME_FORM_ALLOWED_FILE_TYPES, THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from '../constants';
 import type { LogoType } from '../types';
 import styles from './ThemeForm.module.scss';
@@ -17,7 +17,7 @@ const emit = defineEmits<{
     fileRemoved: [logoType: LogoType];
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = usePayByLinkContext();
 const modelValue = ref<File | undefined>();
 const error = ref(false);
 const cachedModelValue = ref<File | undefined>();
@@ -46,13 +46,13 @@ function onChange(files?: FileList) {
 
     //TODO: This is old custom error handling clean onces the error handling of bento has been confirmed
     // if (!(THEME_FORM_ALLOWED_FILE_TYPES as readonly string[]).includes(file.type)) {
-    //     errorMessage.value = i18n.get('common.inputs.file.errors.disallowedType');
+    //     errorMessage.value = i18n.get('payByLink.inputs.file.errors.disallowedType');
     //     modelValue.value = undefined;
     //     return;
     // }
     //
     // if (file.size > THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE) {
-    //     errorMessage.value = i18n.get('common.inputs.file.errors.tooLarge');
+    //     errorMessage.value = i18n.get('payByLink.inputs.file.errors.tooLarge');
     //     modelValue.value = undefined;
     //     return;
     // }
@@ -66,7 +66,7 @@ function onChange(files?: FileList) {
     //         return;
     //     }
     // } catch {
-    //     errorMessage.value = i18n.get('common.inputs.file.errors.default');
+    //     errorMessage.value = i18n.get('payByLink.inputs.file.errors.default');
     //     modelValue.value = undefined;
     //     return;
     // }

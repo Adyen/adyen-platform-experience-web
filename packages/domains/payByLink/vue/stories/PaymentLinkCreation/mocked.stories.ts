@@ -140,4 +140,12 @@ export const CountriesNetworkError: ElementStory<PaymentLinkCreationExternalProp
     },
 };
 
+export const CreationRoleNotAssigned: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Error - Role not assigned',
+    args: defaultArgs,
+    parameters: {
+        msw: { ...PaymentLinkCreationMockedResponses.permissionError },
+    },
+};
+
 export default meta;

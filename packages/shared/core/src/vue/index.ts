@@ -4,5 +4,4 @@ export type { SupportedLocales } from '../Localization/types';
 export * from './Context';
 export * from './ConfigContext';
 
-export { createRefreshContext, UIElement } from './UIElement';
-export { default as UIElementProvider } from './UIElementProvider.vue';
+export { createDomainTranslations } from './createDomainTranslations';

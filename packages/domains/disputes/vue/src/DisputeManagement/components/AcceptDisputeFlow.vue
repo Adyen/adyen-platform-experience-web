@@ -1,23 +1,16 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, onUnmounted, ref, watch } from 'vue';
 import { BentoAlert, BentoButton, BentoButtonActions, BentoCheckbox, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import SuccessIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
-import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { DISPUTE_TYPE } from '@integration-components/disputes/domain';
-import { isFunction } from '@integration-components/utils';
 import { useDisputeFlow } from '../composables/useDisputeFlow';
-import type { DisputeManagementProps } from '../types';
 import flowStyles from './DisputeFlow.module.scss';
 import styles from './AcceptDisputeFlow.module.scss';
+import { useDisputesContext } from '../../integration/context';
+import { disputeManagementEventBridge } from '../../events';
 
-const props = defineProps<{
-    onDisputeAccept?: DisputeManagementProps['onDisputeAccept'];
-}>();
-
-const config = useConfigContext();
-const acceptDispute = computed(() => config.endpoints?.acceptDispute);
-
-const { i18n } = useCoreContext();
+const { i18n, runtime } = useDisputesContext();
+const events = disputeManagementEventBridge.useEvents();
 const { dispute, clearStates, goBack } = useDisputeFlow();
 const cachedDispute = ref(dispute.value);
 
@@ -58,9 +51,7 @@ const acceptButtonTitle = computed(() =>
         : i18n.get('disputes.management.accept.chargeback.actions.accept')
 );
 const interactionsDisabled = computed(() => isLoading.value || disputeAccepted.value);
-const canAcceptDispute = computed(
-    () => termsAgreed.value && !interactionsDisabled.value && isFunction(acceptDispute.value) && !!disputePspReference.value
-);
+const canAcceptDispute = computed(() => termsAgreed.value && !interactionsDisabled.value && runtime.canAccept && !!disputePspReference.value);
 const actionButtons = computed(() => [
     {
         title: acceptButtonTitle.value,
@@ -77,31 +68,35 @@ const actionButtons = computed(() => [
 ]);
 
 const acceptError = ref(false);
+let acceptController: AbortController | undefined;
 
 async function acceptDisputeCallback() {
-    const acceptDisputeFn = acceptDispute.value;
     const pspReference = disputePspReference.value;
-    if (!canAcceptDispute.value || !isFunction(acceptDisputeFn) || !pspReference) return;
+    if (!canAcceptDispute.value || !pspReference) return;
 
+    acceptController?.abort();
+    acceptController = new AbortController();
     isLoading.value = true;
     acceptError.value = false;
     try {
-        await acceptDisputeFn({}, { path: { disputePspReference: pspReference } });
+        await runtime.acceptDispute({ disputePspReference: pspReference, signal: acceptController.signal });
         clearStates();
         disputeAccepted.value = true;
     } catch {
-        acceptError.value = true;
+        if (!acceptController.signal.aborted) acceptError.value = true;
     } finally {
-        isLoading.value = false;
+        if (!acceptController.signal.aborted) isLoading.value = false;
     }
 }
 
 watch(disputeAccepted, accepted => {
     const pspReference = disputePspReference.value;
-    if (!accepted || callbackCalled.value || !pspReference || !isFunction(props.onDisputeAccept)) return;
+    if (!accepted || callbackCalled.value || !pspReference) return;
     callbackCalled.value = true;
-    props.onDisputeAccept({ id: pspReference });
+    events.disputeAccepted({ id: pspReference });
 });
+
+onUnmounted(() => acceptController?.abort());
 </script>
 
 <template>

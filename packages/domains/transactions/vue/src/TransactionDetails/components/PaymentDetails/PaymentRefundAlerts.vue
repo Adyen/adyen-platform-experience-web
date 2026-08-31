@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import { BentoAlert } from '@adyen/bento-vue3';
 import { RefundedState, REFUND_STATUSES } from '../../../../../domain/src';
 import styles from './PaymentDetails.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
 
 const props = defineProps<{
     fullRefundFailed: boolean;
@@ -15,7 +15,7 @@ const props = defineProps<{
     refundLocked: boolean;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
 
 const listFormatter = computed(() => new Intl.ListFormat(i18n.locale, { type: 'conjunction' }));
 

@@ -20,6 +20,8 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
+            "@integration-components/domain-integration": ["packages/shared/domain-integration/src/index"],
+            "@integration-components/domain-integration/*": ["packages/shared/domain-integration/src/*"],
             "@integration-components/types": ["packages/shared/types/src/index"],
             "@integration-components/types/*": ["packages/shared/types/src/*"],
             "@integration-components/assets": ["packages/shared/assets/src/index"],

@@ -17,6 +17,7 @@
         "@integration-components/utils": "workspace:*"
     },
     "devDependencies": {
+        "@vitejs/plugin-vue": "^6.0.5",
         "vite": "catalog:"
     },
     "peerDependencies": {

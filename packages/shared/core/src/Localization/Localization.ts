@@ -35,6 +35,8 @@ export default class Localization {
 
     #customTranslations?: CustomTranslations;
     #translations: Translations = DEFAULT_TRANSLATIONS;
+    #sdkLocale: SupportedLocales = FALLBACK_LOCALE;
+    #sdkLocaleTranslations: Translations = DEFAULT_TRANSLATIONS;
     #translationsLoader = createTranslationsLoader.call(this);
     readonly #fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>;
 
@@ -145,6 +147,15 @@ export default class Localization {
         return this.#supportedLocales;
     }
 
+    get translationContractSources() {
+        return {
+            consumerTranslations: this.#customTranslations,
+            sdkDefaultTranslations: DEFAULT_TRANSLATIONS,
+            sdkLocale: this.#sdkLocale,
+            sdkLocaleTranslations: this.#sdkLocaleTranslations,
+        } as const;
+    }
+
     get timezone(): RestamperWithTimezone['tz']['current'] {
         return this.#restamp.tz.current;
     }
@@ -170,7 +181,10 @@ export default class Localization {
         };
 
         const currentRefresh = (this.#currentRefresh = (async () => {
-            this.#translations = await this.#translationsLoader.load(this.#fetchTranslationFromCdnPromise, customTranslations);
+            const loaded = await this.#translationsLoader.load(this.#fetchTranslationFromCdnPromise, customTranslations);
+            this.#translations = loaded.translations;
+            this.#sdkLocale = loaded.sdkLocale;
+            this.#sdkLocaleTranslations = loaded.sdkLocaleTranslations;
             this.#locale = this.#translationsLoader.locale;
             this.#supportedLocales = Object.freeze(this.#translationsLoader.supportedLocales);
             this.#customTranslations = customTranslations;

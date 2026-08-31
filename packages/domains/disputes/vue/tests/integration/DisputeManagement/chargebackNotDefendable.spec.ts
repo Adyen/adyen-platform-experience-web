@@ -12,7 +12,7 @@ test.describe('Chargeback - Not defendable', () => {
         await expect(page.getByText('Chargeback', { exact: true })).toBeVisible();
         await expect(page.getByText('Undefended', { exact: true })).toBeVisible();
 
-        await expect(page.getByRole('alert')).toBeVisible();
+        await expect(page.getByRole('status')).toBeVisible();
 
         await expect(page.getByText('This chargeback can’t be defended. Contact support for details.')).toBeVisible();
     });

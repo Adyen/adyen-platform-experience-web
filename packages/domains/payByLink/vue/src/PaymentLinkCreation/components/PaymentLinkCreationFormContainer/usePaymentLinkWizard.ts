@@ -1,5 +1,4 @@
 import { computed, ref, watch, type ComputedRef } from 'vue';
-import type { Localization } from '@integration-components/core';
 import type { DeepPartial } from '@integration-components/types';
 import {
     buildApiPayload,
@@ -8,11 +7,12 @@ import {
     type FormStepConfig,
     type PaymentLinkCreationFormValues,
     type PaymentLinkFieldName,
+    type StepSchemaI18n,
 } from '../../../../../domain/src';
 import { type FieldRuntimeConfig } from '../../composables/wizardContext';
 
 interface UsePaymentLinkWizardParams {
-    i18n: Localization['i18n'];
+    i18n: StepSchemaI18n;
     steps: ComputedRef<ReadonlyArray<FormStepConfig>>;
     defaults?: () => DeepPartial<PaymentLinkCreationFormValues> | undefined;
 }

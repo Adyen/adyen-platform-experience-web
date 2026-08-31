@@ -1,9 +1,9 @@
 import { computed, ref, watch } from 'vue';
 import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
-import { useConfigContext } from '@integration-components/core/vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import type { IPaymentLinkStore } from '@integration-components/types';
 import type { StoreIds } from '@integration-components/payByLink/domain';
+import { usePayByLinkContext } from '../../integration/context';
 import type { StoreItem } from '../types';
 
 const mapStore = (store: IPaymentLinkStore): StoreItem => ({
@@ -14,8 +14,8 @@ const mapStore = (store: IPaymentLinkStore): StoreItem => ({
 });
 
 export function useStores(storeIds?: StoreIds, preselect = true) {
-    const config = useConfigContext();
-    const getPayByLinkStores = computed(() => config.endpoints.getPayByLinkStores);
+    const runtime = usePayByLinkContext().runtime;
+    const getPayByLinkStores = computed(() => runtime.endpoints.getPayByLinkStores);
 
     const selectedStore = ref<string | undefined>(undefined);
     const rawStores = ref<IPaymentLinkStore[] | undefined>(undefined);

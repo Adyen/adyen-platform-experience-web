@@ -14,8 +14,8 @@ export const getCustomDataReports = () => [
 ];
 
 export const CUSTOM_TRANSLATIONS = {
-    _sendEmail: 'Action',
-    _summary: 'Summary',
+    'reports.overview.list.fields._sendEmail': 'Action',
+    'reports.overview.list.fields._summary': 'Summary',
 };
 
 export const DATA_CUSTOMIZATION: ReportsListCustomization = {

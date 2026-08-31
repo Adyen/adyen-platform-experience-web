@@ -1,5 +1,4 @@
 import { computed, watch } from 'vue';
-import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
 import { useCustomColumnsData } from '@integration-components/composables-vue';
 import { isFunction, normalizeCustomFields, hasCustomField, mergeRecords } from '@integration-components/utils';
@@ -7,6 +6,7 @@ import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '@integration-comp
 import type { ITransaction, CustomDataRetrieved } from '@integration-components/types';
 import type { TransactionsFilters, TransactionsListCustomization, TransactionsListResponse } from '../types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
+import { useTransactionsContext } from '../../integration/context';
 
 interface UseTransactionsListProps {
     filters: TransactionsFilters;
@@ -18,9 +18,8 @@ interface UseTransactionsListProps {
 }
 
 export function useTransactionsList(props: () => UseTransactionsListProps) {
-    const config = useConfigContext();
-    const getTransactions = computed(() => config.endpoints.getTransactions);
-    const canFetch = computed(() => isFunction(getTransactions.value) && props().fetchEnabled);
+    const { runtime } = useTransactionsContext();
+    const canFetch = computed(() => runtime.available === true && props().fetchEnabled);
     const normalizedFields = computed(() => normalizeCustomFields(props().dataCustomization?.list?.fields, TRANSACTION_FIELDS_REMAPS));
     const hasCustomColumn = computed(() => hasCustomField(normalizedFields.value, TRANSACTION_FIELDS));
 
@@ -66,26 +65,15 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
     const pagination = useCursorPaginatedRecords<ITransaction>({
         getFetchKey,
         fetchPage: async ({ cursor, limit, signal }) => {
-            const fn = getTransactions.value;
-            if (!isFunction(fn)) return { records: undefined };
-
             const { filters } = props();
-
-            const query: Parameters<NonNullable<typeof config.endpoints.getTransactions>>[1]['query'] = {
-                limit,
+            const json = (await runtime.getTransactions({
+                ...filters,
                 balanceAccountId: filters.balanceAccountId ?? '',
-                createdSince: filters.createdSince,
-                createdUntil: filters.createdUntil,
-                sortDirection: 'desc' as const,
-                ...(cursor ? { cursor } : {}),
-            };
-
-            if (filters.categories.length) (query as any).categories = filters.categories;
-            if (filters.currencies.length) (query as any).currencies = filters.currencies;
-            if (filters.statuses.length) (query as any).statuses = filters.statuses;
-            if (filters.paymentPspReference) query.paymentPspReference = filters.paymentPspReference;
-
-            const json = (await fn({ signal }, { query })) as TransactionsListResponse;
+                cursor,
+                limit,
+                signal,
+                sortDirection: 'desc',
+            })) as TransactionsListResponse;
 
             return {
                 records: json?.data,

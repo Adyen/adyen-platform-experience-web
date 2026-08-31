@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { BentoStructuredList, BentoTypography } from '@adyen/bento-vue3';
 import type { TranslationKey } from '@integration-components/core';
-import { useCoreContext } from '@integration-components/core/vue';
 import type { ListItemData } from '@integration-components/payByLink/domain';
 import PaymentLinkTabsListItem from './PaymentLinkTabsListItem.vue';
 import styles from './PaymentLinkTabs.module.scss';
+import { usePayByLinkContext } from '../../../integration/context';
 
 const props = defineProps<{
     items: ListItemData[];
     heading?: TranslationKey;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = usePayByLinkContext();
 </script>
 
 <template>

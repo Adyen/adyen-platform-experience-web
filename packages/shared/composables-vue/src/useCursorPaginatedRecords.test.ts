@@ -134,6 +134,36 @@ test('aborts stale fetches and ignores their results', async () => {
     scope.stop();
 });
 
+test('aborts an in-flight fetch when fetching is disabled', async () => {
+    const request = createDeferred<{ records: string[] }>();
+    const fetchPage = vi.fn().mockReturnValue(request.promise);
+    const fetchEnabled = ref(true);
+    const scope = effectScope();
+
+    const pagination = scope.run(() =>
+        useCursorPaginatedRecords({
+            getFetchKey: () => (fetchEnabled.value ? 'enabled' : null),
+            fetchPage,
+            preferredLimit: 10,
+        })
+    )!;
+
+    await vi.waitFor(() => expect(fetchPage).toHaveBeenCalledOnce());
+    const signal = fetchPage.mock.calls[0]?.[0]?.signal;
+
+    fetchEnabled.value = false;
+    await nextTick();
+
+    expect(signal?.aborted).toBe(true);
+    expect(pagination.fetching.value).toBe(false);
+
+    request.resolve({ records: ['stale-page'] });
+    await nextTick();
+    expect(pagination.records.value).toBeUndefined();
+
+    scope.stop();
+});
+
 test('preserves cached pagination when fetching is re-enabled with an unchanged key', async () => {
     const fetchEnabled = ref(true);
 

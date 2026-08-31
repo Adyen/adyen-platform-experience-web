@@ -1,6 +1,6 @@
 import { delay as mswDelay, http, HttpResponse } from 'msw';
 import { BALANCE_ACCOUNTS_SINGLE } from '@integration-components/testing/fixtures';
-import { compareDates, delay, getPaginationLinks } from '@integration-components/testing/msw';
+import { CapitalComponentManage, compareDates, CROSS_DOMAIN_ENDPOINTS, delay, getPaginationLinks } from '@integration-components/testing/msw';
 import { REPORTS_ENDPOINTS as endpoints } from '../endpoints';
 import { getReports } from '../mock-data/reports';
 
@@ -106,6 +106,21 @@ export const reportsMock = [
 ];
 
 export const REPORTS_OVERVIEW_HANDLERS = {
+    // Setup response without any reports or balanceAccounts endpoints (CapitalComponentManage
+    // deliberately contains none), so the Reports Overview component reports `hasPermission === false`
+    // (role not assigned) and no domain data requests fire.
+    permissionError: {
+        handlers: [
+            http.post(CROSS_DOMAIN_ENDPOINTS.setup, async () => {
+                await delay(400);
+                return HttpResponse.json({
+                    endpoints: {
+                        ...CapitalComponentManage,
+                    },
+                });
+            }),
+        ],
+    },
     singleBalanceAccount: {
         handlers: [
             http.get(endpoints.balanceAccounts, () => {

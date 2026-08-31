@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import { BentoAlert } from '@adyen/bento-vue3';
 import PaymentRefundNotice from './PaymentRefundNotice.vue';
 import PaymentRefundReason from './PaymentRefundReason.vue';
@@ -11,6 +10,7 @@ import { clamp } from '@integration-components/utils';
 import type { TransactionDetails, RefundReason, RefundResult } from '../../../../../domain/src';
 import type { IRefundMode } from '@integration-components/types';
 import layoutStyles from '../TransactionDataLayout.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
 
 const props = defineProps<{
     currency: string;
@@ -24,7 +24,7 @@ const props = defineProps<{
     showDetails: () => void;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
 
 const refundInProgress = ref(false);
 const refundReason = ref<RefundReason>(REFUND_REASONS[0]);

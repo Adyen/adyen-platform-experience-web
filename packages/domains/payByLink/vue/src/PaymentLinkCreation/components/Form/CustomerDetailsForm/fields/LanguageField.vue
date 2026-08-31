@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import SelectField from '../../../fields/SelectField.vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import { useWizard } from '../../../../composables/wizardContext';
+import { usePayByLinkContext } from '../../../../../integration/context';
 
 const wizard = useWizard();
-const { i18n, getCdnDataset } = useCoreContext();
+const { i18n, runtime } = usePayByLinkContext();
+const { getCdnDataset } = runtime;
 
 const config = computed(() => wizard.getFieldConfig('shopperLocale'));
 const configOptions = computed(() => (config.value.options as string[] | undefined) ?? []);

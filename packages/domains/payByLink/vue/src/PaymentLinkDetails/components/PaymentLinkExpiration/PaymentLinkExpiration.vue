@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { BentoAlert, BentoButtonActions, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
-import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { isFunction } from '@integration-components/utils';
 import type { IPaymentLinkDetails } from '@integration-components/types';
 import styles from './PaymentLinkExpiration.module.scss';
+import { usePayByLinkContext } from '../../../integration/context';
 
 const props = defineProps<{
     paymentLink: IPaymentLinkDetails;
@@ -12,14 +12,13 @@ const props = defineProps<{
     onExpirationSuccess: () => void;
 }>();
 
-const { i18n } = useCoreContext();
-const config = useConfigContext();
+const { i18n, runtime } = usePayByLinkContext();
 
 const isLoading = ref(false);
 const hasError = ref(false);
 
 async function handleConfirmExpire() {
-    const fn = config.endpoints.expirePayByLinkPaymentLink;
+    const fn = runtime.endpoints.expirePayByLinkPaymentLink;
     if (!isFunction(fn) || isLoading.value) return;
 
     isLoading.value = true;

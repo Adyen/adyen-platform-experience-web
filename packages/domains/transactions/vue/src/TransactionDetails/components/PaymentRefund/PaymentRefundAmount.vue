@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import { BentoInputField, BentoTypography } from '@adyen/bento-vue3';
-import { getDecimalAmount, getDivider, normalizeAmountInput } from '@integration-components/core/Localization/amount/amount-util';
 import { useUniqueId } from '@integration-components/composables-vue';
 import layoutStyles from '../TransactionDataLayout.module.scss';
 import styles from './PaymentRefund.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
+import { getCurrencyDivider, getDecimalAmount, normalizeAmountInput } from '../../../integration/format';
 
 const props = defineProps<{
     currency: string;
@@ -17,10 +17,10 @@ const emit = defineEmits<{
     change: [value: number];
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
 const inputId = useUniqueId();
 
-const currencyExponent = computed(() => Math.log10(getDivider(props.currency)));
+const currencyExponent = computed(() => Math.log10(getCurrencyDivider(props.currency)));
 const refundableAmount = computed(() => parseInt(`${props.value}`, 10));
 const formattedDefault = computed(() => getDecimalAmount(refundableAmount.value, props.currency).toFixed(currencyExponent.value));
 

@@ -1,7 +1,6 @@
 import type { Meta } from '@storybook/vue3';
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
-import type { DisputesOverviewExternalProps } from '../../src';
-import DisputesOverviewElement from '../../src/DisputesOverview/DisputesOverviewElement';
+import { DisputesOverviewDefinition, type DisputesOverviewDomainProps as DisputesOverviewExternalProps } from '../../src/definitions';
 
 export const DisputesOverviewMeta: Meta<ElementProps<DisputesOverviewExternalProps>> = {
     title: 'Components/Disputes/Disputes Overview',
@@ -15,7 +14,7 @@ export const DisputesOverviewMeta: Meta<ElementProps<DisputesOverviewExternalPro
         allowLimitSelection: { control: 'boolean' },
     },
     args: {
-        component: DisputesOverviewElement,
+        component: DisputesOverviewDefinition,
         allowLimitSelection: true,
         showDetails: true,
     },

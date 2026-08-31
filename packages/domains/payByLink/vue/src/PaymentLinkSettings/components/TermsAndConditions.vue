@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoAlert, BentoCheckbox, BentoInputField, BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
 import type { IPaymentLinkTermsAndConditions } from '@integration-components/types';
+import { usePayByLinkContext } from '../../integration/context';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { isTermsAndConditionsData, isValidURL } from '@integration-components/payByLink/domain';
 import Requirements from './Requirements.vue';
@@ -14,7 +14,7 @@ const props = defineProps<{
     initialData: IPaymentLinkTermsAndConditions;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = usePayByLinkContext();
 const {
     savedData,
     setPayload,

@@ -1,11 +1,11 @@
 import { ref, computed, watch, onUnmounted } from 'vue';
-import { useConfigContext } from '@integration-components/core/vue';
 import { isFunction, listFrom } from '@integration-components/utils';
 import type { IPaymentLinkItem, IPaymentLinkStatusGroup } from '@integration-components/types';
 import type { StoreIds } from '../../../../domain/src';
 import type { PaymentLinksOverviewExternalProps } from '../types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
 import { getPaymentLinksErrorMetadata, toError } from '../utils/error';
+import { usePayByLinkContext } from '../../integration/context';
 
 interface UsePaymentLinksListProps {
     fetchEnabled: boolean;
@@ -25,7 +25,7 @@ interface UsePaymentLinksListProps {
 }
 
 export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
-    const config = useConfigContext();
+    const runtime = usePayByLinkContext().runtime;
 
     const records = ref<IPaymentLinkItem[] | undefined>(undefined);
     const error = ref<Error | undefined>(undefined);
@@ -39,7 +39,7 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
 
     let abortController: AbortController | null = null;
 
-    const getPaymentLinks = computed(() => config.endpoints.getPaymentLinks);
+    const getPaymentLinks = computed(() => runtime.endpoints.getPaymentLinks);
     const canFetch = computed(() => isFunction(getPaymentLinks.value) && props().fetchEnabled);
     const limitOptions = computed(() => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined));
 
@@ -59,7 +59,7 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
                 props();
             const effectiveStoreIds = filterStoreIds.length ? filterStoreIds : listFrom(propStoreIds);
 
-            const query: NonNullable<Parameters<NonNullable<typeof config.endpoints.getPaymentLinks>>[1]>['query'] = {
+            const query: NonNullable<Parameters<NonNullable<typeof runtime.endpoints.getPaymentLinks>>[1]>['query'] = {
                 limit: limit.value,
                 statusGroup,
                 createdSince,

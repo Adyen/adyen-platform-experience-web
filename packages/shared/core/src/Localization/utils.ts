@@ -152,15 +152,30 @@ export const loadTranslations = async (
     fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>,
     customTranslations: CustomTranslations = EMPTY_OBJECT as CustomTranslations
 ): Promise<Translations> => {
+    return (await loadTranslationSources(locale, fetchTranslationFromCdnPromise, customTranslations)).translations;
+};
+
+export const loadTranslationSources = async (
+    locale: string,
+    fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>,
+    customTranslations: CustomTranslations = EMPTY_OBJECT as CustomTranslations
+): Promise<{
+    sdkLocale: SupportedLocales;
+    sdkLocaleTranslations: Translations;
+    translations: Translations;
+}> => {
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
     const localeToLoad = parseLocale(locale, SUPPORTED_LOCALES) || FALLBACK_LOCALE;
-
-    const loadedLocale = fetchTranslationFromCdnPromise(localeToLoad as SupportedLocales);
+    const sdkLocaleTranslations = asPlainObject((await fetchTranslationFromCdnPromise(localeToLoad as SupportedLocales)) ?? EMPTY_OBJECT);
 
     return {
-        ...DEFAULT_TRANSLATIONS, // Default en-US translations (in case any other translation file is missing any key)
-        ...((await loadedLocale) ?? EMPTY_OBJECT), // Merge with our locale file of the locale they are loading
-        ...asPlainObject(customTranslations?.[locale]), // Merge with their custom locales if available
+        sdkLocale: localeToLoad as SupportedLocales,
+        sdkLocaleTranslations,
+        translations: {
+            ...DEFAULT_TRANSLATIONS, // Default en-US translations (in case any other translation file is missing any key)
+            ...sdkLocaleTranslations, // Merge with our locale file of the locale they are loading
+            ...asPlainObject(customTranslations?.[locale]), // Merge with their custom locales if available
+        },
     };
 };
 

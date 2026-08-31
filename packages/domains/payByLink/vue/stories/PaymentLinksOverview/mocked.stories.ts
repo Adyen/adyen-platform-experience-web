@@ -118,4 +118,16 @@ export const ErrorFiltersGeneric: ElementStory<PaymentLinksOverviewExternalProps
     },
 };
 
+export const OverviewRoleNotAssigned: ElementStory<PaymentLinksOverviewExternalProps> = {
+    name: 'Error - Role not assigned',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...PayByLinkOverviewMockedResponses.permissionError,
+        },
+    },
+};
+
 export default meta;

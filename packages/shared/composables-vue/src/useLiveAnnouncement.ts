@@ -1,12 +1,24 @@
-import { nextTick, ref, shallowRef, toValue, watch } from 'vue';
-import type { MaybeRefOrGetter } from 'vue';
+import { getCurrentScope, nextTick, onScopeDispose, ref, shallowRef, toValue, watch, type MaybeRefOrGetter, type WatchHandle } from 'vue';
 
 export const useLiveAnnouncement = () => {
     const activeMessage = shallowRef<MaybeRefOrGetter<string>>();
     const announcement = ref('');
     let announcementId = 0;
+    let stopWatching: WatchHandle | undefined;
+
+    if (getCurrentScope()) {
+        onScopeDispose(() => stopWatching?.());
+    }
 
     async function announce(message: MaybeRefOrGetter<string>) {
+        stopWatching ??= watch(
+            () => (activeMessage.value ? toValue(activeMessage.value) : undefined),
+            nextMessage => {
+                if (nextMessage && announcement.value) {
+                    announcement.value = nextMessage;
+                }
+            }
+        );
         const currentAnnouncementId = ++announcementId;
         activeMessage.value = message;
         announcement.value = '';
@@ -19,17 +31,6 @@ export const useLiveAnnouncement = () => {
             announcement.value = toValue(message);
         }
     }
-
-    watch(
-        () => (activeMessage.value ? toValue(activeMessage.value) : undefined),
-        message => {
-            // Update rendered announcement when the message getter changes.
-            // Useful for reactive announcement localization with locale changes.
-            if (message && announcement.value) {
-                announcement.value = message;
-            }
-        }
-    );
 
     return { announce, announcement };
 };

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue';
-import { useEventDispatcherContext } from '@integration-components/core/vue';
 import PaymentRefundForm from './PaymentRefundForm.vue';
 import PaymentRefundResult from './PaymentRefundResult.vue';
-import { sharedTransactionDetailsEventProperties, ActiveView } from '../../../../../domain/src';
+import { ActiveView } from '../../../../../domain/src';
 import type { TransactionDetails, RefundResult } from '../../../../../domain/src';
 import type { ILineItem, IRefundMode } from '@integration-components/types';
+import { transactionDetailsEventBridge } from '../../../events';
 
 const props = defineProps<{
     currency: string;
@@ -21,7 +21,7 @@ const props = defineProps<{
     transaction: TransactionDetails;
 }>();
 
-const userEvents = useEventDispatcherContext();
+const events = transactionDetailsEventBridge.useEvents();
 const refundResult = ref<RefundResult | undefined>(undefined);
 let initiatedRefund = false;
 
@@ -32,12 +32,12 @@ const showDetails = () => props.setActiveView(ActiveView.DETAILS);
 const lockRefunds = () => props.setLocked(true);
 
 onMounted(() => {
-    userEvents.addEvent?.('Switched to refund view', sharedTransactionDetailsEventProperties);
+    events.refundViewOpened({ transactionId: props.transaction.id });
 });
 
 onUnmounted(() => {
     if (!initiatedRefund) {
-        userEvents.addEvent?.('Cancelled refund', sharedTransactionDetailsEventProperties);
+        events.refundCancelled({ transactionId: props.transaction.id });
     }
 });
 

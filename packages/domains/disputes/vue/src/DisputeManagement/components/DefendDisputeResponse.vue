@@ -3,11 +3,11 @@ import { computed } from 'vue';
 import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
 import CrossCircleFillIcon from '@adyen/ui-assets-icons-40/vue/cross-circle-filled';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useDisputesContext } from '../../integration/context';
 import { DefendResponse, DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import flowStyles from './DisputeFlow.module.scss';
 
-const { i18n } = useCoreContext();
+const { i18n } = useDisputesContext();
 const { defendResponse, clearFiles, clearStates, setFlowState } = useDisputeFlow();
 const isSuccess = computed(() => defendResponse.value === DefendResponse.Success);
 

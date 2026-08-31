@@ -1,7 +1,6 @@
 import { computed, onUnmounted, ref, watch } from 'vue';
-import { useConfigContext } from '@integration-components/core/vue';
-import { isFunction } from '@integration-components/utils';
 import type { IDisputeDetail } from '@integration-components/types/api/models/disputes';
+import { useDisputesContext } from '../../integration/context';
 
 interface UseDisputeDetailsProps {
     disputeId: string;
@@ -14,19 +13,17 @@ export type DisputeError = Error & {
 };
 
 export function useDisputeDetails(props: () => UseDisputeDetailsProps) {
-    const config = useConfigContext();
+    const { runtime } = useDisputesContext();
     const data = ref<IDisputeDetail | undefined>(undefined);
     const error = ref<DisputeError | undefined>(undefined);
     const isFetching = ref(false);
     let abortController: AbortController | null = null;
 
-    const getDisputeDetail = computed(() => config.endpoints.getDisputeDetail);
-    const canFetch = computed(() => isFunction(getDisputeDetail.value) && props().fetchEnabled);
+    const canFetch = computed(() => props().fetchEnabled);
 
     async function runFetch() {
-        const fn = getDisputeDetail.value;
         const { disputeId } = props();
-        if (!isFunction(fn) || !canFetch.value || !disputeId) return;
+        if (!canFetch.value || !disputeId) return;
 
         if (abortController) abortController.abort();
         abortController = new AbortController();
@@ -36,7 +33,7 @@ export function useDisputeDetails(props: () => UseDisputeDetailsProps) {
         error.value = undefined;
 
         try {
-            const json = await fn({ signal }, { path: { disputePspReference: disputeId } });
+            const json = await runtime.getDispute({ disputePspReference: disputeId, signal });
             if (!signal.aborted) {
                 data.value = json as IDisputeDetail;
             }
@@ -59,7 +56,14 @@ export function useDisputeDetails(props: () => UseDisputeDetailsProps) {
     watch(
         fetchKey,
         newKey => {
-            if (!newKey) return;
+            abortController?.abort();
+            abortController = null;
+            if (!newKey) {
+                data.value = undefined;
+                error.value = undefined;
+                isFetching.value = false;
+                return;
+            }
             data.value = undefined;
             void runFetch();
         },

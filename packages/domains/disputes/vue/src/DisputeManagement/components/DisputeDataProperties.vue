@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onUnmounted, ref } from 'vue';
 import {
     BentoAlert,
     BentoButton,
@@ -12,10 +12,7 @@ import {
 } from '@adyen/bento-vue3';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
-import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
-import type { TranslationKey } from '@integration-components/core';
 import { useLiveAnnouncement } from '@integration-components/composables-vue';
-import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import {
     DISPUTE_DETAILS_FIELDS_REMAPS,
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
@@ -25,12 +22,14 @@ import {
     isDisputeActionNeeded,
     type DisputeDetailsCustomization,
     type TranslationConfigItem,
+    type DisputesTranslationKey,
 } from '@integration-components/disputes/domain';
-import { DATE_FORMAT_DISPUTE_DETAILS, isFunction, normalizeCustomFields } from '@integration-components/utils';
+import { DATE_FORMAT_DISPUTE_DETAILS, normalizeCustomFields } from '@integration-components/utils';
 import type { IDisputeDetail, IDisputeStatus } from '@integration-components/types/api/models/disputes';
 import { useDisputeFlow } from '../composables/useDisputeFlow';
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import styles from './DisputeData.module.scss';
+import { useDisputesContext } from '../../integration/context';
 
 type CustomDataValue = {
     type?: string;
@@ -46,9 +45,9 @@ type CustomDataValue = {
 };
 
 type DetailItem =
-    | { id: string; label: TranslationKey; kind: 'text'; value: string | undefined }
-    | { id: string; label: TranslationKey; kind: 'date'; value: string }
-    | { id: string; label: TranslationKey; kind: 'evidence'; value: string[] };
+    | { id: string; label: DisputesTranslationKey; kind: 'text'; value: string | undefined }
+    | { id: string; label: DisputesTranslationKey; kind: 'date'; value: string }
+    | { id: string; label: DisputesTranslationKey; kind: 'evidence'; value: string[] };
 
 const DISPUTE_STATUSES_WITH_ACCEPTED_DATE: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
 
@@ -59,10 +58,8 @@ const props = defineProps<{
     extraFields?: Record<string, unknown>;
 }>();
 
-const { i18n } = useCoreContext();
-const config = useConfigContext();
+const { i18n, runtime } = useDisputesContext();
 const { defenseDocumentConfig } = useDisputeFlow();
-const { dateFormat } = useTimezoneAwareDateFormatting(() => props.dispute.payment.balanceAccount?.timeZone);
 const { announce, announcement } = useLiveAnnouncement();
 const downloadErrors = ref<Set<string>>(new Set());
 const copiedItemId = ref<string>();
@@ -85,7 +82,10 @@ function isCustomDataObject(value: unknown): value is CustomDataValue {
 }
 
 function formatDate(date: string) {
-    return dateFormat(date, DATE_FORMAT_DISPUTE_DETAILS);
+    return i18n.date(date, {
+        timeZone: props.dispute.payment.balanceAccount?.timeZone || i18n.timezone,
+        ...DATE_FORMAT_DISPUTE_DETAILS,
+    });
 }
 
 const items = computed<DetailItem[]>(() => {
@@ -220,11 +220,11 @@ function getCopyValue(item: DetailItem) {
 function onCopyText(text: string, itemId: string) {
     navigator.clipboard?.writeText(text);
     copiedItemId.value = itemId;
-    announce(() => i18n.get('common.actions.copy.labels.done'));
+    announce(() => i18n.get('disputes.actions.copy.labels.done'));
 }
 
 function getCopyTooltip(itemId: string) {
-    const key = copiedItemId.value === itemId ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default';
+    const key = copiedItemId.value === itemId ? 'disputes.actions.copy.labels.done' : 'disputes.actions.copy.labels.default';
     return i18n.get(key);
 }
 
@@ -233,17 +233,15 @@ function resetCopiedItem() {
 }
 
 async function downloadEvidence(documentType: string) {
-    const downloadDefenseDocument = config.endpoints?.downloadDefenseDocument;
-    if (!isFunction(downloadDefenseDocument)) return;
+    const controller = new AbortController();
+    downloadControllers.add(controller);
 
     try {
-        const response = await downloadDefenseDocument(
-            {},
-            {
-                path: { disputePspReference: props.dispute.dispute.pspReference },
-                query: { documentType },
-            }
-        );
+        const response = await runtime.downloadDefenseDocument({
+            disputePspReference: props.dispute.dispute.pspReference,
+            documentType,
+            signal: controller.signal,
+        });
         const url = URL.createObjectURL(response.blob);
         const link = document.createElement('a');
         link.href = url;
@@ -256,9 +254,14 @@ async function downloadEvidence(documentType: string) {
             downloadErrors.value = nextErrors;
         }
     } catch {
-        downloadErrors.value = new Set([...downloadErrors.value, documentType]);
+        if (!controller.signal.aborted) downloadErrors.value = new Set([...downloadErrors.value, documentType]);
+    } finally {
+        downloadControllers.delete(controller);
     }
 }
+
+const downloadControllers = new Set<AbortController>();
+onUnmounted(() => downloadControllers.forEach(controller => controller.abort()));
 </script>
 
 <template>
@@ -269,9 +272,9 @@ async function downloadEvidence(documentType: string) {
                     {{ getCopyValue(item) }}
                 </BentoTypography>
                 <BentoButton
-                    variant="tertiary"
                     v-bento-tooltip="getCopyTooltip(item.id)"
-                    :aria-label="i18n.get('common.actions.copy.labels.default')"
+                    variant="tertiary"
+                    :aria-label="i18n.get('disputes.actions.copy.labels.default')"
                     @click="onCopyText(getCopyValue(item)!, item.id)"
                     @blur="resetCopiedItem"
                     @mouseleave="resetCopiedItem"
@@ -304,7 +307,7 @@ async function downloadEvidence(documentType: string) {
             </BentoTypography>
         </BentoStructuredListItem>
 
-        <BentoStructuredListItem v-for="item in extraDetails" :key="item.key" :label="i18n.get(item.key as never)">
+        <BentoStructuredListItem v-for="item in extraDetails" :key="item.key" :label="i18n.get(item.key)">
             <BentoLink
                 v-if="item.type === 'link' && item.config?.href"
                 :class="item.config.className"

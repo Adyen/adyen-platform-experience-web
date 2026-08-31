@@ -1,12 +1,12 @@
 import { computed } from 'vue';
-import { useConfigContext } from '@integration-components/core/vue';
-import { boolOrFalse, isFunction } from '@integration-components/utils';
+import { boolOrFalse } from '@integration-components/utils';
 import { RefundMode, RefundedState, REFUND_STATUSES } from '../../../../domain/src';
 import type { TransactionDetails } from '../../../../domain/src';
 import type { IRefundMode } from '@integration-components/types';
+import { useTransactionsContext } from '../../integration/context';
 
 export function useRefundMetadata(transaction: () => TransactionDetails | undefined) {
-    const config = useConfigContext();
+    const { runtime } = useTransactionsContext();
 
     const details = computed(() => transaction()?.refundDetails);
     const refundMode = computed<IRefundMode>(() => details.value?.refundMode ?? RefundMode.FULL_AMOUNT);
@@ -15,7 +15,7 @@ export function useRefundMetadata(transaction: () => TransactionDetails | undefi
 
     const refundableAmount = computed(() => (transaction() ? Math.max(0, details.value?.refundableAmount?.value ?? 0) : 0));
 
-    const refundAuthorization = computed(() => isFunction(config.endpoints.initiateRefund));
+    const refundAuthorization = computed(() => runtime.canRefund);
     const refundAvailable = computed(() => refundAuthorization.value && refundable.value && refundableAmount.value > 0);
     const refundCurrency = computed(() => details.value?.refundableAmount?.currency ?? transaction()?.netAmount.currency ?? '');
     const refundDisabled = computed(() => !refundAvailable.value || refundLocked.value);

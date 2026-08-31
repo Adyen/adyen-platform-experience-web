@@ -1,14 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
-import {
-    useTimezoneAwareDateFormatting,
-    useResponsiveContainer,
-    containerQueries,
-    CustomDataCell,
-    DataOverviewError,
-    useTableColumns,
-} from '@integration-components/composables-vue';
+import { computed, ref } from 'vue';
+import { CustomDataCell, DataOverviewError, useTableColumns, type DataOverviewErrorPresentation } from '@integration-components/composables-vue';
+import { useContainerQuery } from '@integration-components/composables-vue/useContainerQuery';
+import { containerQueries } from '@integration-components/composables-vue/containerQueries';
 import {
     BentoDataGrid,
     BentoTypography,
@@ -17,27 +11,29 @@ import {
     BentoColumnOverflow,
     BentoTooltipDirective as vBentoTooltip,
 } from '@adyen/bento-vue3';
-import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
-import { getTransactionCategoryDescription, getTransactionCategory, TRANSACTION_FIELDS } from '../../../../../domain/src';
-import { getCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
+import {
+    getTransactionCategoryDescription,
+    getTransactionCategory,
+    TRANSACTION_FIELDS,
+    type TransactionsTranslationKey,
+} from '../../../../../domain/src';
 import type { ITransaction, CustomColumn } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { TransactionsTableFields, IBalanceAccountBase } from '../../types';
 import { DATE_FORMAT_TRANSACTIONS } from '@integration-components/utils/datetime/formats';
 import { parsePaymentMethodType } from '@integration-components/utils';
 import styles from './TransactionsTable.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
+import { formatDate as formatTransactionDate, getCurrencyCode } from '../../../integration/format';
 
 const props = defineProps<{
     activeBalanceAccount?: IBalanceAccountBase;
     availableCurrencies?: string[];
-    error?: Error;
+    errorPresentation?: DataOverviewErrorPresentation;
     hasMultipleCurrencies: boolean;
     loading: boolean;
-    onContactSupport?: () => void;
     onRowClick?: (transaction: ITransaction) => void;
-    showDetails?: boolean;
     transactions?: ITransaction[];
     customColumns?: CustomColumn<StringWithAutocompleteOptions<TransactionsTableFields>>[];
     hasNext?: boolean;
@@ -50,19 +46,19 @@ const props = defineProps<{
     currentPage?: number;
 }>();
 
-const { i18n } = useCoreContext();
-const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceAccount?.timeZone);
+const { i18n } = useTransactionsContext();
 
-const isMobile = useResponsiveContainer(containerQueries.down.sm);
+const containerRef = ref<HTMLElement | null>(null);
+const isMobile = useContainerQuery(containerQueries.down.sm, containerRef);
 
-const FIELDS_KEYS: Record<string, string> = {
+const FIELDS_KEYS = {
     createdAt: 'transactions.overview.list.fields.createdAt',
     currency: 'transactions.overview.list.fields.currency',
     grossAmount: 'transactions.overview.list.fields.grossAmount',
     netAmount: 'transactions.overview.list.fields.netAmount',
     paymentMethod: 'transactions.overview.list.fields.paymentMethod',
     transactionType: 'transactions.overview.list.fields.transactionType',
-};
+} as const;
 
 function amountLabel(field: 'netAmount' | 'grossAmount', defaultLabel: string): string {
     const currency = props.availableCurrencies?.[0];
@@ -74,6 +70,7 @@ const { columns: desktopColumns, customFieldKeys } = useTableColumns({
     fields: TRANSACTION_FIELDS,
     customColumns: () => props.customColumns,
     fieldsKeys: FIELDS_KEYS,
+    translate: key => i18n.get(key),
     columnConfig: () => ({
         createdAt: { flex: 1, minWidth: 140, overflow: BentoColumnOverflow.WRAP },
         paymentMethod: { flex: 1.2, minWidth: 150 },
@@ -87,18 +84,18 @@ const { columns: desktopColumns, customFieldKeys } = useTableColumns({
         field === 'netAmount' || field === 'grossAmount' ? amountLabel(field, defaultLabel) : defaultLabel,
     resolveCustomColumnLabel: key => {
         const labelKey = `transactions.overview.list.fields.${key}`;
-        return i18n.has(labelKey as any) ? i18n.get(labelKey as any) : i18n.get(key as any);
+        return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TransactionsTranslationKey);
     },
 });
 
 const isLoading = computed(() => props.loading);
 
 const columns = computed<BentoColumn[]>(() => {
-    const grossAmountLabel = amountLabel('grossAmount', i18n.get(FIELDS_KEYS.grossAmount as any));
+    const grossAmountLabel = amountLabel('grossAmount', i18n.get(FIELDS_KEYS.grossAmount));
 
     if (isMobile.value) {
         return [
-            { field: 'paymentMethodAndDate', label: i18n.get(FIELDS_KEYS.paymentMethod as any), flex: 2, minWidth: 150 },
+            { field: 'paymentMethodAndDate', label: i18n.get(FIELDS_KEYS.paymentMethod), flex: 2, minWidth: 150 },
             { field: 'grossAmount', label: grossAmountLabel, flex: 1, minWidth: 120, numeric: true },
         ];
     }
@@ -142,7 +139,7 @@ const emptyStateProps = computed(() => ({
     image: 'no-results-found' as const,
     variant: 'embedded' as const,
     title: i18n.get('transactions.overview.errors.listEmpty'),
-    description: i18n.get('common.errors.updateFilters'),
+    description: i18n.get('transactions.errors.updateFilters'),
 }));
 
 function handleNavigate(page: number) {
@@ -163,7 +160,7 @@ function handleRowClick(item: BentoDatagridDataItem) {
 }
 
 function formatDate(dateStr: string): string {
-    return dateFormat(dateStr, DATE_FORMAT_TRANSACTIONS);
+    return formatTransactionDate(i18n, dateStr, DATE_FORMAT_TRANSACTIONS, props.activeBalanceAccount?.timeZone);
 }
 
 function formatAmount(amount: { value: number; currency: string } | null | undefined): string {
@@ -173,15 +170,8 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
 </script>
 
 <template>
-    <div>
-        <DataOverviewError
-            v-if="props.error"
-            :error="props.error"
-            :error-message="'transactions.overview.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
-            :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
-        />
+    <div ref="containerRef">
+        <DataOverviewError v-if="props.errorPresentation" v-bind="props.errorPresentation" />
 
         <BentoDataGrid
             v-else
@@ -206,7 +196,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
                                 {{ item.paymentMethod ? parsePaymentMethodType(item.paymentMethod) : item.bankAccount?.accountNumberLastFourDigits }}
                             </BentoTypography>
                         </template>
-                        <BentoTag v-else variant="grey" :label="i18n.get('common.tags.noData')" />
+                        <BentoTag v-else variant="grey" :label="i18n.get('transactions.tags.noData')" />
                     </div>
                     <time v-if="item.createdAt" :datetime="item.createdAt" :class="styles.date">
                         <BentoTypography variant="body">{{ formatDate(item.createdAt) }}</BentoTypography>
@@ -228,7 +218,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
                             {{ item.paymentMethod ? parsePaymentMethodType(item.paymentMethod) : item.bankAccount?.accountNumberLastFourDigits }}
                         </BentoTypography>
                     </template>
-                    <BentoTag v-else variant="grey" :label="i18n.get('common.tags.noData')" />
+                    <BentoTag v-else variant="grey" :label="i18n.get('transactions.tags.noData')" />
                 </div>
             </template>
 

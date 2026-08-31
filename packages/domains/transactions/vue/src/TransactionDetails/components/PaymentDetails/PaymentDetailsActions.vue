@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { BentoButtonActions } from '@adyen/bento-vue3';
-import { sharedTransactionDetailsEventProperties, ActiveView } from '../../../../../domain/src';
+import { ActiveView } from '../../../../../domain/src';
 import type { TransactionDetails } from '../../../../../domain/src';
 import type { useTransaction } from '../../composables/useTransaction';
 import layoutStyles from '../TransactionDataLayout.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
+import { transactionDetailsEventBridge } from '../../../events';
 
 type TransactionNavigatorState = ReturnType<typeof useTransaction>['transactionNavigator']['value'];
 
@@ -18,8 +19,8 @@ const props = defineProps<{
     transactionNavigator: TransactionNavigatorState;
 }>();
 
-const { i18n } = useCoreContext();
-const userEvents = useEventDispatcherContext();
+const { i18n } = useTransactionsContext();
+const events = transactionDetailsEventBridge.useEvents();
 
 const navigatorState = computed(() => props.transactionNavigator);
 
@@ -49,12 +50,14 @@ const secondaryAction = computed(() => {
     const isBack = nav === 'backToRefund';
     const title = i18n.get(isBack ? 'transactions.details.actions.backToRefund' : 'transactions.details.actions.goToPayment');
     const navAction = isBack ? navigatorState.value.backward : navigatorState.value.forward;
-    const eventLabel = isBack ? 'Return to refund' : 'Go to payment';
     return {
         disabled: false,
         event: () => {
             navAction();
-            userEvents.addEvent?.('Clicked button', { ...sharedTransactionDetailsEventProperties, label: eventLabel });
+            events.navigationRequested({
+                destination: isBack ? 'refund' : 'payment',
+                transactionId: props.transaction.id,
+            });
         },
         title,
         variant: 'secondary' as const,

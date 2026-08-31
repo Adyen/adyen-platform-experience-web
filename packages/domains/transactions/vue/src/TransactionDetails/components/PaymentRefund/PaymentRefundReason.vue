@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import { BentoDropdown, BentoTypography } from '@adyen/bento-vue3';
 import { getTransactionRefundReason, REFUND_REASONS } from '../../../../../domain/src';
 import type { RefundReason } from '../../../../../domain/src';
+import { useTransactionsContext } from '../../../integration/context';
 import layoutStyles from '../TransactionDataLayout.module.scss';
 import styles from './PaymentRefund.module.scss';
 
@@ -16,7 +16,7 @@ const emit = defineEmits<{
     change: [reason: RefundReason];
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
 
 const refundReasons = computed(() =>
     REFUND_REASONS.map(r => ({

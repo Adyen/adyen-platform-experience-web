@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoCard, BentoTag, BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
-import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { DATE_FORMAT_PAYMENT_LINK_DETAILS_SUMMARY } from '@integration-components/utils';
 import {
     getPaymentLinkStatusLabel,
@@ -11,6 +9,7 @@ import {
 } from '@integration-components/payByLink/domain';
 import type { IPaymentLinkDetails } from '@integration-components/types';
 import styles from './PaymentLinkSummary.module.scss';
+import { usePayByLinkContext } from '../../../integration/context';
 
 const TAG_VARIANT_MAP = {
     info: 'blue',
@@ -23,8 +22,8 @@ const props = defineProps<{
     paymentLink: IPaymentLinkDetails;
 }>();
 
-const { i18n } = useCoreContext();
-const { dateFormat } = useTimezoneAwareDateFormatting();
+const { i18n } = usePayByLinkContext();
+const dateFormat: typeof i18n.date = (date, options) => i18n.date(date, { timeZone: i18n.timezone, ...options });
 
 const status = computed(() => props.paymentLink.linkInformation.status);
 const statusLabel = computed(() => getPaymentLinkStatusLabel(i18n, status.value));

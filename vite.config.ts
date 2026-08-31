@@ -112,6 +112,7 @@ export default defineConfig(({ mode }) => {
                 'src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'config/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/domains/*/{domain,preact,vue}/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/sdk/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
             ],
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],

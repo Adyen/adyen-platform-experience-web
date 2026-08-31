@@ -1,5 +1,5 @@
 import { http, HttpResponse, PathParams, StrictResponse } from 'msw';
-import { compareDates, delay, getPaginationLinks } from '@integration-components/testing/msw';
+import { CapitalComponentManage, compareDates, CROSS_DOMAIN_ENDPOINTS, delay, getPaginationLinks } from '@integration-components/testing/msw';
 import { DISPUTES_ENDPOINTS } from '../endpoints';
 import { DISPUTE_PAYMENT_SCHEMES } from '@integration-components/disputes/domain';
 import { IDisputeDetail, IDisputeListItem, IDisputeStatusGroup, IDisputeListResponse } from '@integration-components/types/api/models/disputes';
@@ -282,7 +282,25 @@ const DISPUTES_LIST_ERRORS = {
     },
 };
 
+// Setup response without any Disputes endpoints, so every Disputes component
+// reports `runtime.available === false` (role not assigned). CapitalComponentManage
+// deliberately contains no disputes or balanceAccounts endpoints, so no domain
+// data requests fire.
+const disputesRoleNotAssignedSetup = {
+    handlers: [
+        http.post(CROSS_DOMAIN_ENDPOINTS.setup, async () => {
+            await delay(300);
+            return HttpResponse.json({
+                endpoints: {
+                    ...CapitalComponentManage,
+                },
+            });
+        }),
+    ],
+};
+
 export const DISPUTES_LIST_HANDLERS = {
+    permissionError: disputesRoleNotAssignedSetup,
     emptyList: {
         handlers: [
             httpGetList(DISPUTES_ENDPOINTS.list, () => {
@@ -345,6 +363,7 @@ const DISPUTE_DETAILS_ERRORS = {
 };
 
 export const DISPUTE_DETAILS_HANDLERS = {
+    permissionError: disputesRoleNotAssignedSetup,
     chargebackAutoDefended: {
         handlers: [
             httpGetDetails(DISPUTES_ENDPOINTS.details, () => {

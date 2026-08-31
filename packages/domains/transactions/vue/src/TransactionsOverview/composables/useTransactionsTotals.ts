@@ -1,8 +1,7 @@
 import { ref, computed, watch, onScopeDispose } from 'vue';
-import { useConfigContext } from '@integration-components/core/vue';
-import { isFunction } from '@integration-components/utils';
 import type { ITransactionTotal } from '@integration-components/types';
 import type { TransactionsFilters } from '../types';
+import { useTransactionsContext } from '../../integration/context';
 
 interface UseTransactionsTotalsProps {
     filters: TransactionsFilters;
@@ -11,7 +10,7 @@ interface UseTransactionsTotalsProps {
 }
 
 export function useTransactionsTotals(props: () => UseTransactionsTotalsProps) {
-    const config = useConfigContext();
+    const { runtime } = useTransactionsContext();
 
     const totals = ref<readonly Readonly<ITransactionTotal>[]>([]);
     const error = ref<Error | undefined>(undefined);
@@ -21,12 +20,10 @@ export function useTransactionsTotals(props: () => UseTransactionsTotalsProps) {
 
     let abortController: AbortController | null = null;
 
-    const getTransactionTotals = computed(() => config.endpoints.getTransactionTotals);
-    const canFetch = computed(() => isFunction(getTransactionTotals.value) && props().fetchEnabled);
+    const canFetch = computed(() => runtime.canGetTotals && props().fetchEnabled);
 
     async function fetchTotals() {
-        const fn = getTransactionTotals.value;
-        if (!isFunction(fn) || !canFetch.value) return;
+        if (!canFetch.value) return;
         const requestKey = fetchKey.value;
 
         if (abortController) abortController.abort();
@@ -39,17 +36,16 @@ export function useTransactionsTotals(props: () => UseTransactionsTotalsProps) {
         try {
             const { filters, applicableFilters } = props();
             const hasApplicableFilter = (key: keyof TransactionsFilters) => !applicableFilters || applicableFilters.has(key);
-            const query: { balanceAccountId: string; createdSince?: string; createdUntil?: string; [key: string]: any } = {
+            const request: TransactionsFilters = {
                 balanceAccountId: filters.balanceAccountId ?? '',
+                categories: hasApplicableFilter('categories') ? filters.categories : [],
                 createdSince: filters.createdSince,
                 createdUntil: filters.createdUntil,
+                currencies: hasApplicableFilter('currencies') ? filters.currencies : [],
+                paymentPspReference: hasApplicableFilter('paymentPspReference') ? filters.paymentPspReference : undefined,
+                statuses: hasApplicableFilter('statuses') ? filters.statuses : [],
             };
-            if (hasApplicableFilter('categories') && filters.categories.length) query.categories = filters.categories;
-            if (hasApplicableFilter('currencies') && filters.currencies.length) query.currencies = filters.currencies;
-            if (hasApplicableFilter('statuses') && filters.statuses.length) query.statuses = filters.statuses;
-            if (hasApplicableFilter('paymentPspReference') && filters.paymentPspReference) query.paymentPspReference = filters.paymentPspReference;
-
-            const json = await fn({ signal }, { query } as any);
+            const json = await runtime.getTransactionsTotals({ ...request, signal });
             if (!signal.aborted) {
                 totals.value = Array.isArray(json?.data) ? (json.data as ITransactionTotal[]) : [];
                 hasFetchedData.value = true;
@@ -92,7 +88,13 @@ export function useTransactionsTotals(props: () => UseTransactionsTotalsProps) {
     watch(
         fetchKey,
         newKey => {
-            if (!newKey || newKey === lastFetchedKey.value) return;
+            if (!newKey) {
+                abortController?.abort();
+                abortController = null;
+                isFetching.value = false;
+                return;
+            }
+            if (newKey === lastFetchedKey.value) return;
             void fetchTotals();
         },
         { immediate: true }
@@ -105,8 +107,8 @@ export function useTransactionsTotals(props: () => UseTransactionsTotalsProps) {
         error,
         isFetching,
         canRefresh: computed(() => !isFetching.value && canFetch.value),
-        isAvailable: computed(() => isFunction(getTransactionTotals.value)),
-        isWaiting: computed(() => isFetching.value || (isFunction(getTransactionTotals.value) && !canFetch.value && !hasFetchedData.value)),
+        isAvailable: computed(() => runtime.canGetTotals),
+        isWaiting: computed(() => isFetching.value || (runtime.canGetTotals && !canFetch.value && !hasFetchedData.value)),
         refresh,
     } as const;
 }

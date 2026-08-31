@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { useCoreContext, useConfigContext, useEventDispatcherContext } from '@integration-components/core/vue';
+import { ref, computed, onUnmounted, watch } from 'vue';
 import {
     BentoAlert,
     BentoButton,
@@ -12,38 +11,37 @@ import {
     useBentoToastController,
     useClickOutside,
 } from '@adyen/bento-vue3';
-import { useDownload, useUniqueId } from '@integration-components/composables-vue';
-import { isFunction, downloadBlob, EMPTY_ARRAY } from '@integration-components/utils';
+import { useUniqueId } from '@integration-components/composables-vue';
+import { downloadBlob, EMPTY_ARRAY } from '@integration-components/utils';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
 import { EXPORT_COLUMNS, DEFAULT_EXPORT_COLUMNS } from '../../constants';
-import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '@integration-components/transactions/domain';
-import type { TranslationKey } from '@integration-components/core';
+import type { TransactionsTranslationKey } from '@integration-components/transactions/domain';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import styles from './TransactionsExport.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
+import { transactionsOverviewEventBridge } from '../../../events';
 
 const props = defineProps<{ disabled?: boolean }>();
 
-const { i18n } = useCoreContext();
-const config = useConfigContext();
-const userEvents = useEventDispatcherContext();
+const { i18n, runtime } = useTransactionsContext();
+const events = transactionsOverviewEventBridge.useEvents();
 const { filters } = useTransactionsOverviewContext();
 
 const { addToast } = useBentoToastController();
 let activeExportErrorToast: ReturnType<typeof addToast> | undefined;
 
 const popoverOpen = ref(false);
-const exportStarted = ref(false);
+const isFetching = ref(false);
+const error = ref<unknown>();
 const exportColumns = ref<readonly (typeof EXPORT_COLUMNS)[number][]>(DEFAULT_EXPORT_COLUMNS);
 
 const targetElement = ref<HTMLElement | null>(null);
 const popoverRef = ref<HTMLElement | null>(null);
 const exportButtonId = `elem-${useUniqueId()}`;
 
-const sharedAnalyticsProps = { category: TRANSACTION_ANALYTICS_CATEGORY, subCategory: TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } as const;
+const canDownloadTransactions = computed(() => runtime.canDownload);
 
-const canDownloadTransactions = computed(() => isFunction(config.endpoints.downloadTransactions));
-
-const activeFilters = computed<readonly TranslationKey[]>(() => {
+const activeFilters = computed<readonly TransactionsTranslationKey[]>(() => {
     const { balanceAccountId, paymentPspReference, createdSince, createdUntil, categories, currencies } = filters.value;
     return [
         ...(balanceAccountId ? (['transactions.overview.export.filters.types.account'] as const) : EMPTY_ARRAY),
@@ -51,7 +49,7 @@ const activeFilters = computed<readonly TranslationKey[]>(() => {
         ...(categories.length ? (['transactions.overview.export.filters.types.category'] as const) : EMPTY_ARRAY),
         ...(currencies.length ? (['transactions.overview.export.filters.types.currency'] as const) : EMPTY_ARRAY),
         ...(paymentPspReference ? (['transactions.overview.export.filters.types.paymentPspReference'] as const) : EMPTY_ARRAY),
-    ] as readonly TranslationKey[];
+    ] as readonly TransactionsTranslationKey[];
 });
 
 const exportParams = computed(() => ({
@@ -66,13 +64,6 @@ const exportParams = computed(() => ({
     columns: exportColumns.value as string[],
 }));
 
-const { isFetching, error } = useDownload(
-    'downloadTransactions',
-    () => ({ query: exportParams.value }),
-    () => canDownloadTransactions.value && popoverOpen.value && exportStarted.value && exportColumns.value.length > 0,
-    data => downloadBlob(data as any)
-);
-
 watch(error, err => {
     if (err) {
         activeExportErrorToast = addToast({ text: i18n.get('transactions.overview.export.actions.error') });
@@ -84,37 +75,6 @@ watch(popoverOpen, isOpen => {
         activeExportErrorToast?.dismiss();
     } else {
         exportColumns.value = DEFAULT_EXPORT_COLUMNS;
-    }
-});
-
-watch(
-    exportStarted,
-    started => {
-        if (!started) return;
-        exportStarted.value = false;
-
-        let exportedFields: 'All' | 'Custom' | 'Default' = 'Custom';
-        let exportingOnlyDefaultFields = true;
-        let exportingAllFields = true;
-
-        EXPORT_COLUMNS.forEach(column => {
-            const isExportedField = exportColumns.value.includes(column);
-            const isDefaultField = DEFAULT_EXPORT_COLUMNS.includes(column);
-            exportingOnlyDefaultFields &&= isExportedField ? isDefaultField : !isDefaultField;
-            exportingAllFields &&= isExportedField;
-        });
-
-        if (exportingAllFields) exportedFields = 'All';
-        else if (exportingOnlyDefaultFields) exportedFields = 'Default';
-
-        userEvents.addEvent?.('Completed export', { ...sharedAnalyticsProps, exportedFields });
-    },
-    { flush: 'post' }
-);
-
-watch(isFetching, (fetching, wasFetching) => {
-    if (wasFetching && !fetching) {
-        popoverOpen.value = false;
     }
 });
 
@@ -133,22 +93,22 @@ const masterSwitchChecked = computed(() => exportColumns.value.length === EXPORT
 const columnSwitches = computed(() =>
     EXPORT_COLUMNS.map(column => ({
         column,
-        label: i18n.get(`transactions.overview.export.columns.types.${column}` as TranslationKey),
+        label: i18n.get(`transactions.overview.export.columns.types.${column}` as TransactionsTranslationKey),
         checked: exportColumns.value.includes(column),
     }))
 );
 
 function togglePopover() {
     if (popoverOpen.value) {
-        userEvents.addEvent?.('Cancelled export', sharedAnalyticsProps);
+        events.exportCancelled({ view: 'transactions' });
     } else {
-        userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsProps, label: 'Export' });
+        events.exportOpened({ view: 'transactions' });
     }
     popoverOpen.value = !popoverOpen.value;
 }
 
 function dismissPopover() {
-    userEvents.addEvent?.('Cancelled export', sharedAnalyticsProps);
+    events.exportCancelled({ view: 'transactions' });
     popoverOpen.value = false;
 }
 
@@ -166,8 +126,38 @@ function onColumnChange(column: (typeof EXPORT_COLUMNS)[number], checked: boolea
     }
 }
 
-function startExport() {
-    exportStarted.value = true;
+function getExportedFields(): 'all' | 'custom' | 'default' {
+    const exportingAllFields = EXPORT_COLUMNS.every(column => exportColumns.value.includes(column));
+    if (exportingAllFields) return 'all';
+    const exportingOnlyDefaultFields = EXPORT_COLUMNS.every(column =>
+        DEFAULT_EXPORT_COLUMNS.includes(column) ? exportColumns.value.includes(column) : !exportColumns.value.includes(column)
+    );
+    return exportingOnlyDefaultFields ? 'default' : 'custom';
+}
+
+let exportController: AbortController | undefined;
+
+async function startExport() {
+    if (!canDownloadTransactions.value || isFetching.value || exportColumns.value.length === 0) return;
+    exportController?.abort();
+    const controller = new AbortController();
+    exportController = controller;
+    isFetching.value = true;
+    error.value = undefined;
+    events.exportCompleted({ exportedFields: getExportedFields(), view: 'transactions' });
+
+    try {
+        const data = await runtime.downloadTransactions({ ...exportParams.value, signal: controller.signal });
+        if (controller.signal.aborted) return;
+        downloadBlob(data);
+    } catch (nextError) {
+        if (!controller.signal.aborted) error.value = nextError;
+    } finally {
+        if (!controller.signal.aborted) {
+            isFetching.value = false;
+            popoverOpen.value = false;
+        }
+    }
 }
 
 const popoverActions = computed(() => [
@@ -182,6 +172,8 @@ const popoverActions = computed(() => [
         title: i18n.get('transactions.overview.export.actions.cancel'),
     },
 ]);
+
+onUnmounted(() => exportController?.abort());
 </script>
 
 <template>

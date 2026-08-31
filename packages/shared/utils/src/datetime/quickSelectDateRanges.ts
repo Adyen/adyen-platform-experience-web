@@ -12,12 +12,9 @@ export type QuickSelectDateRange = {
     range: string;
 };
 
-export function createQuickSelectRanges<Key extends string>(
-    ranges: Record<Key, QuickSelectDateRange>,
-    getLabel: (key: `common.filters.types.date.rangeSelect.options.${Key}`) => string
-) {
+export function createQuickSelectRanges<Key extends string>(ranges: Record<Key, QuickSelectDateRange>, getLabel: (value: Key) => string) {
     return (Object.keys(ranges) as Key[]).map(value => ({
-        label: getLabel(`common.filters.types.date.rangeSelect.options.${value}`),
+        label: getLabel(value),
         value,
         data: ranges[value],
     }));

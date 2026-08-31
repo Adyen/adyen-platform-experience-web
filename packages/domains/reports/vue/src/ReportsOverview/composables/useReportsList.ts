@@ -1,10 +1,8 @@
-import { computed, watch } from 'vue';
-import { useConfigContext } from '@integration-components/core/vue';
+import { watch } from 'vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
-import { isFunction } from '@integration-components/utils';
 import type { IReport } from '@integration-components/types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../domain/src';
-import type { ReportsListResponse } from '../types';
+import { useReportsContext } from '../../integration/context';
 
 interface UseReportsListProps {
     fetchEnabled: boolean;
@@ -17,9 +15,7 @@ interface UseReportsListProps {
 }
 
 export function useReportsList(props: () => UseReportsListProps) {
-    const config = useConfigContext();
-    const getReports = computed(() => config.endpoints.getReports);
-    const canFetch = computed(() => isFunction(getReports.value) && props().fetchEnabled);
+    const { runtime } = useReportsContext();
 
     const getFiltersKey = () => {
         const { balanceAccountId, createdSince, createdUntil } = props();
@@ -31,7 +27,7 @@ export function useReportsList(props: () => UseReportsListProps) {
         () => {
             const { onFiltersChanged, balanceAccountId, createdSince, createdUntil } = props();
 
-            if (isFunction(onFiltersChanged)) {
+            if (onFiltersChanged) {
                 onFiltersChanged({ balanceAccountId, createdSince, createdUntil });
             }
         },
@@ -40,26 +36,20 @@ export function useReportsList(props: () => UseReportsListProps) {
 
     return useCursorPaginatedRecords<IReport>({
         getFetchKey: () => {
-            if (!canFetch.value) return null;
+            if (!props().fetchEnabled) return null;
             const { balanceAccountId, createdSince, createdUntil } = props();
             return JSON.stringify({ balanceAccountId, createdSince, createdUntil });
         },
         fetchPage: async ({ cursor, limit, signal }) => {
-            const fn = getReports.value;
-            if (!isFunction(fn)) return { records: undefined };
-
             const { balanceAccountId, createdSince, createdUntil } = props();
-
-            const query: NonNullable<Parameters<NonNullable<typeof config.endpoints.getReports>>[1]>['query'] = {
-                limit,
-                type: 'payout',
+            const json = await runtime.getReports({
                 balanceAccountId: balanceAccountId ?? '',
                 createdSince,
                 createdUntil,
-                ...(cursor ? { cursor } : {}),
-            };
-
-            const json: ReportsListResponse = await fn({ signal }, { query });
+                cursor,
+                limit,
+                signal,
+            });
 
             return {
                 records: json?.data,

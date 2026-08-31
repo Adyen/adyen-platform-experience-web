@@ -17,7 +17,11 @@ export { CustomDataCell } from './CustomDataCell';
 
 export * from './getErrorMessage';
 export { default as getErrorMessage } from './getErrorMessage';
+export * from './getDataOverviewErrorInfo';
+export { default as getDataOverviewErrorInfo } from './getDataOverviewErrorInfo';
 export { DataOverviewError } from './DataOverviewError';
+export * from './useDataOverviewError';
+export { default as useDataOverviewError } from './useDataOverviewError';
 export { ErrorMessageDisplay } from './ErrorMessageDisplay';
 
 export { default as useTimezoneAwareDateFormatting } from './useTimezoneAwareDateFormatting';
@@ -51,3 +55,7 @@ export { default as useCursorPaginatedRecords } from './useCursorPaginatedRecord
 
 export * from './useLiveAnnouncement';
 export { default as useLiveAnnouncement } from './useLiveAnnouncement';
+
+export * from './createDomainEventBridge';
+export * from './createDomainVueInstance';
+export * from './createDomainVuePlugin';

@@ -1,7 +1,9 @@
-import { createDynamicTranslationFactory, createKeyFactoryFromConfig } from '@integration-components/core';
-import type { TranslationFallbackFunction } from '@integration-components/core';
+import { isReportsTranslationKey, type ReportsTranslationKey } from '../translations';
 
-const originalValueFallback: TranslationFallbackFunction = (_, value) => value;
+type ReportsTypeTranslationKey = Extract<ReportsTranslationKey, `reports.common.types.${string}`>;
 
-const reportTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'reports.common.types.' });
-export const getReportType = createDynamicTranslationFactory(reportTypeKeyFactory, originalValueFallback);
+export const getReportType = (i18n: Readonly<{ get(key: ReportsTypeTranslationKey): string }>, value?: string): string | undefined => {
+    if (value === undefined) return undefined;
+    const key = `reports.common.types.${value}`;
+    return isReportsTranslationKey(key) && key.startsWith('reports.common.types.') ? i18n.get(key as ReportsTypeTranslationKey) : value;
+};

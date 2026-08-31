@@ -2,8 +2,7 @@
 import { computed } from 'vue';
 import { BentoDataGrid, BentoTag, BentoTypography, BentoTooltipDirective as vBentoTooltip } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem, BentoTagVariant } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
-import { containerQueries, DataOverviewError, useResponsiveContainer, useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
+import { containerQueries, DataOverviewError, useDataOverviewError, useResponsiveContainer } from '@integration-components/composables-vue';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import { isActionNeededUrgently, BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '../../../../domain/src';
@@ -16,6 +15,8 @@ import { usePaymentLinkLabels } from '../composables/usePaymentLinkLabels';
 import type { IPaymentLinkItem, IPaymentLinkStatus } from '@integration-components/types';
 import { getPaymentLinksErrorMessage } from '../utils/getPaymentLinksErrorMessage';
 import styles from './PaymentLinksTable.module.scss';
+import { usePayByLinkContext } from '../../integration/context';
+import { PAY_BY_LINK_DATA_OVERVIEW_ACTION_KEYS } from '../../integration/translationKeys';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -23,6 +24,7 @@ const props = defineProps<{
     error?: Error;
     loading: boolean;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     onRowClick?: (paymentLink: IPaymentLinkItem) => void;
     showPagination: boolean;
     paymentLinks: IPaymentLinkItem[] | undefined;
@@ -37,12 +39,25 @@ const props = defineProps<{
     currentPage?: number;
 }>();
 
-const { i18n } = useCoreContext();
-const { dateFormat } = useTimezoneAwareDateFormatting();
+const { i18n, runtime } = usePayByLinkContext();
+const dateFormat: typeof i18n.date = (date, options) => i18n.date(date, options);
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
 
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
-const errorInfo = computed(() => getPaymentLinksErrorMessage(props.error, 'payByLink.overview.errors.couldNotLoadLinks', props.onContactSupport));
+const errorInfo = computed(
+    () =>
+        getPaymentLinksErrorMessage(props.error, 'payByLink.overview.errors.couldNotLoadLinks', props.onContactSupport) ?? {
+            messages: [],
+        }
+);
+const { presentation: errorPresentation } = useDataOverviewError({
+    actionKeys: PAY_BY_LINK_DATA_OVERVIEW_ACTION_KEYS,
+    copyIcon: CopyIcon,
+    errorInfo,
+    onRefresh: () => props.onRefresh?.() ?? runtime.refresh(),
+    refreshIcon: RefreshIcon,
+    translate: (key, options) => i18n.get(key, options),
+});
 
 function getTagVariantForStatus(status: IPaymentLinkStatus): BentoTagVariant {
     switch (status) {
@@ -157,12 +172,9 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
     <div>
         <DataOverviewError
             v-if="props.error"
-            :error="props.error"
-            :error-info="errorInfo"
+            v-bind="errorPresentation"
             :image="errorInfo?.imageName ?? 'wrong-environment'"
             :variant="isMobile ? 'condensed' : 'embedded'"
-            :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
         />
 
         <BentoDataGrid

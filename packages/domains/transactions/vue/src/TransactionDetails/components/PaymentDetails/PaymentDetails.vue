@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import { BentoTabs, BentoTab } from '@adyen/bento-vue3';
 import PaymentDetailsStatusBox from './PaymentDetailsStatusBox.vue';
 import PaymentDetailsProperties from './PaymentDetailsProperties.vue';
@@ -13,6 +12,7 @@ import type { TransactionDetails, TransactionDetailsCustomization } from '../../
 import { useTransaction } from '../../composables/useTransaction.js';
 import layoutStyles from '../TransactionDataLayout.module.scss';
 import styles from './PaymentDetails.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
 
 type TransactionNavigatorState = ReturnType<typeof useTransaction>['transactionNavigator']['value'];
 
@@ -33,7 +33,7 @@ const props = defineProps<{
     transactionNavigator: TransactionNavigatorState;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
 
 const navigationTabs = computed(() =>
     TX_DETAILS_TABS.filter(({ id }) => {

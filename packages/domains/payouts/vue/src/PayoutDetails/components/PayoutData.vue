@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import {
     BentoTypography,
     BentoCard,
@@ -14,11 +13,11 @@ import {
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { IPayoutDetails } from '@integration-components/types';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '@integration-components/utils';
-import { formatAmountWithCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
-import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '@integration-components/payouts/domain';
 import type { PayoutDetailsCustomization } from '../types';
 import styles from './PayoutData.module.scss';
+import { usePayoutsContext } from '../../integration/context';
+import type { PayoutDetailsRenderMode } from '../../integration/types';
 
 const props = defineProps<{
     payout?: IPayoutDetails;
@@ -27,14 +26,13 @@ const props = defineProps<{
     extraFields?: Record<string, any> | undefined;
     dataCustomization?: { details?: PayoutDetailsCustomization };
     hideTitle?: boolean;
+    renderMode: PayoutDetailsRenderMode;
 }>();
 
-const { i18n } = useCoreContext();
-const { withinModal } = useModalContext();
-const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
+const { i18n } = usePayoutsContext();
 
 const payoutInner = computed(() => props.payout?.payout);
-const shouldHideTitle = computed(() => props.hideTitle || withinModal);
+const shouldHideTitle = computed(() => props.hideTitle || props.renderMode === 'modal');
 
 // Adjustments: split into additions/subtractions, each sorted alphabetically by translation key.
 type ListItem = { key: string; value: string };
@@ -118,10 +116,13 @@ const buttonActions = computed(() => {
 const titleClass = computed(() => [styles.title, extraDetails.value.length ? styles.titleWithExtraDetails : '']);
 
 function formatPayoutDate(dateStr: string): string {
-    return dateFormat(dateStr, DATE_FORMAT_PAYOUT_DETAILS);
+    return i18n.date(dateStr, { timeZone: 'UTC', ...DATE_FORMAT_PAYOUT_DETAILS });
 }
 
-const formatAmount = (amount: { value: number; currency: string }) => formatAmountWithCurrencyCode(amount.value, i18n.locale, amount.currency);
+const formatAmount = ({ value, currency }: { value: number; currency: string }) => {
+    const formattedAmount = i18n.amount(Math.abs(value), currency, { hideCurrency: true });
+    return `${value < 0 ? `- ${formattedAmount}` : formattedAmount} ${currency}`;
+};
 
 const fundsCapturedColumns = computed<BentoColumn[]>(() => [
     {

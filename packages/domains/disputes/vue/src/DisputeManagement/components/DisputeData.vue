@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { BentoButtonActions, BentoCard, BentoLoadingIndicator, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
-import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
-import { ErrorMessageDisplay } from '@integration-components/composables-vue';
+import { computed, onUnmounted, ref, watch } from 'vue';
+import { BentoButton, BentoButtonActions, BentoCard, BentoLoadingIndicator, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
+import { DataOverviewError, getErrorMessage, useDataOverviewError } from '@integration-components/composables-vue';
+import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
+import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import {
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
     getDisputeType,
@@ -17,24 +18,27 @@ import DisputeDataAlert from './DisputeDataAlert.vue';
 import DisputeDataProperties from './DisputeDataProperties.vue';
 import DisputeIssuerComments from './DisputeIssuerComments.vue';
 import DisputeStatusTag from './DisputeStatusTag.vue';
-import type { DisputeDataAlertMode, DisputeManagementProps } from '../types';
+import type { DisputeDataAlertMode } from '../types';
 import flowStyles from './DisputeFlow.module.scss';
 import styles from './DisputeData.module.scss';
+import { useDisputesContext } from '../../integration/context';
+import { DISPUTES_DATA_OVERVIEW_ACTION_KEYS, DISPUTES_ERROR_MESSAGE_KEYS } from '../../integration/translationKeys';
+import { disputeManagementEventBridge } from '../../events';
 
 const props = defineProps<{
     disputeId: string;
     dataCustomization?: { details?: DisputeDetailsCustomization };
-    onContactSupport?: () => void;
-    onDismiss?: DisputeManagementProps['onDismiss'];
+    canContactSupport: boolean;
+    canDismiss: boolean;
 }>();
 
-const { i18n } = useCoreContext();
-const config = useConfigContext();
+const { i18n, runtime } = useDisputesContext();
+const events = disputeManagementEventBridge.useEvents();
 const { dispute: storedDispute, setDispute, setFlowState, defenseReasonConfig } = useDisputeFlow();
 
 const { data, error, isFetching, refetch } = useDisputeDetails(() => ({
     disputeId: props.disputeId,
-    fetchEnabled: !!props.disputeId && !storedDispute.value,
+    fetchEnabled: runtime.available === true && !!props.disputeId && !storedDispute.value,
 }));
 
 watch(data, nextData => {
@@ -42,10 +46,9 @@ watch(data, nextData => {
 });
 
 const dispute = computed(() => storedDispute.value || data.value);
+const activeError = computed(() => (runtime.available === false ? new Error() : error.value));
 const defensibility = computed(() => dispute.value?.dispute.defensibility);
-const acceptAuthorization = computed(() => isFunction(config.endpoints?.acceptDispute));
-const defendAuthorization = computed(() => isFunction(config.endpoints?.getApplicableDefenseDocuments));
-const showLoadingPlaceholder = computed(() => (!dispute.value && !error.value) || isFetching.value);
+const showLoadingPlaceholder = computed(() => runtime.available === undefined || (!dispute.value && !activeError.value) || isFetching.value);
 const disputeType = computed(() => getDisputeType(i18n, dispute.value?.dispute.type));
 const isFraudNotification = computed(() => dispute.value?.dispute.type === 'NOTIFICATION_OF_FRAUD');
 const isDefended = computed(() => !!dispute.value?.defense?.defendedOn);
@@ -55,8 +58,8 @@ const showContactSupport = computed(
         (!!defensibility.value && ['ACCEPTABLE', 'DEFENDABLE_EXTERNALLY'].includes(defensibility.value)) ||
         dispute.value?.dispute.type === 'NOTIFICATION_OF_FRAUD'
 );
-const isDefendable = computed(() => !!defensibility.value && defensibility.value === 'DEFENDABLE' && defendAuthorization.value);
-const isAcceptable = computed(() => !!defensibility.value && ['ACCEPTABLE', 'DEFENDABLE'].includes(defensibility.value) && acceptAuthorization.value);
+const isDefendable = computed(() => !!defensibility.value && defensibility.value === 'DEFENDABLE' && runtime.canDefend);
+const isAcceptable = computed(() => !!defensibility.value && ['ACCEPTABLE', 'DEFENDABLE'].includes(defensibility.value) && runtime.canAccept);
 
 const issuerComments = computed(() => {
     const { chargeback, preArbitration } = dispute.value?.dispute.issuerExtraData ?? {};
@@ -156,10 +159,10 @@ const actionButtons = computed(() => {
             variant: 'secondary',
         });
     }
-    if (showContactSupport.value && props.onContactSupport) {
+    if (showContactSupport.value && props.canContactSupport) {
         buttons.push({
             title: i18n.get('disputes.management.details.actions.contactSupport'),
-            event: props.onContactSupport,
+            event: requestContactSupport,
             variant: 'secondary',
         });
     }
@@ -178,10 +181,40 @@ function retryFetch() {
     void refetch();
 }
 
+const requestContactSupport = () => events.contactSupportRequested({ component: 'management', disputeId: props.disputeId });
+const dismiss = () => events.dismissed({ id: props.disputeId });
+const errorInfo = computed(() =>
+    runtime.available === false
+        ? // Mirrors the Preact ConfigProvider permission-unavailable composition.
+          {
+              title: 'disputes.errors.somethingWentWrong',
+              messages: ['disputes.management.common.errors.unavailable', 'disputes.errors.contactSupport'],
+          }
+        : getErrorMessage({
+              error: activeError.value,
+              keys: DISPUTES_ERROR_MESSAGE_KEYS,
+              message: 'disputes.management.common.errors.unavailable',
+              notFoundMessage: 'disputes.management.common.errors.notFound',
+              onContactSupport: props.canContactSupport ? requestContactSupport : undefined,
+          })
+);
+const { presentation: errorPresentation } = useDataOverviewError({
+    actionKeys: DISPUTES_DATA_OVERVIEW_ACTION_KEYS,
+    copyIcon: CopyIcon,
+    errorInfo,
+    onRefresh: retryFetch,
+    refreshIcon: RefreshIcon,
+    translate: (key, options) => i18n.get(key, options),
+});
+
 const paymentMethodType = computed(() => dispute.value?.payment.paymentMethod?.type ?? null);
 const paymentMethodDetail = computed(() =>
     dispute.value?.payment.paymentMethod ? parsePaymentMethodType(dispute.value.payment.paymentMethod, 'detail') : null
 );
+
+onUnmounted(() => {
+    extraFieldsRequestId++;
+});
 </script>
 
 <template>
@@ -190,20 +223,11 @@ const paymentMethodDetail = computed(() =>
             <BentoLoadingIndicator />
         </div>
 
-        <div v-else-if="error" :class="styles.errorContainer">
-            <ErrorMessageDisplay
-                :error="error"
-                :error-message="'disputes.management.common.errors.unavailable'"
-                :not-found-message="'disputes.management.common.errors.notFound'"
-                :on-contact-support="props.onContactSupport"
-                :on-dismiss="props.onDismiss"
-                :dismiss-label="'disputes.management.common.actions.goBack'"
-                :on-refresh="retryFetch"
-                with-image
-                :outlined="false"
-                :absolute-position="false"
-                :with-background="false"
-            />
+        <div v-else-if="activeError" :class="styles.errorContainer">
+            <DataOverviewError v-bind="errorPresentation" />
+            <BentoButton v-if="props.canDismiss" variant="secondary" @click="dismiss">
+                {{ i18n.get('disputes.management.common.actions.goBack') }}
+            </BentoButton>
         </div>
 
         <template v-else-if="dispute">

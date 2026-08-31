@@ -1,9 +1,8 @@
 import type { Meta } from '@storybook/vue3';
-import type { TransactionDetailsExternalProps } from '../../src';
-import TransactionDetailsElement from '../../src/TransactionDetails/TransactionDetailsElement';
+import { TransactionDetailsDefinition, type TransactionDetailsDomainProps } from '../../src/definitions';
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
-export const TransactionDetailsMeta: Meta<ElementProps<TransactionDetailsExternalProps>> = {
+export const TransactionDetailsMeta: Meta<ElementProps<TransactionDetailsDomainProps>> = {
     title: 'Components/Transactions/Transaction Details',
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
@@ -11,7 +10,7 @@ export const TransactionDetailsMeta: Meta<ElementProps<TransactionDetailsExterna
         id: { control: 'text' },
     },
     args: {
-        component: TransactionDetailsElement,
+        component: TransactionDetailsDefinition,
         compact: true,
     },
     parameters: {

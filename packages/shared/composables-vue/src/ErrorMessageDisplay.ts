@@ -2,7 +2,8 @@ import { defineComponent, computed, h, type PropType, type VNode } from 'vue';
 import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
-import { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from './getErrorMessage';
+import { getErrorMessage, type ErrorMessageInfo, type ErrorMessageKeys, type ErrorWithCode } from './getErrorMessage';
+import type { DataOverviewActionKeys } from './useDataOverviewError';
 import styles from './ErrorMessageDisplay.module.scss';
 
 const IMAGE_BREAKPOINT_MEDIUM_PX = 680;
@@ -12,12 +13,17 @@ export const ErrorMessageDisplay = defineComponent({
 
     props: {
         error: { type: Object as PropType<ErrorWithCode | undefined>, default: undefined },
-        errorMessage: { type: String as PropType<TranslationKey>, default: undefined },
-        notFoundMessage: { type: String as PropType<TranslationKey>, default: undefined },
-        errorInfo: { type: Object as PropType<ErrorMessageInfo>, default: undefined },
+        // Keys are supplied by the embedding domain: its local translation names are opaque to
+        // portable code, so no cross-domain defaults are hardcoded here. The `string` types
+        // accept any domain catalog key; the cast below matches the runtime i18n signature.
+        errorMessage: { type: String as PropType<string>, default: undefined },
+        notFoundMessage: { type: String as PropType<string>, default: undefined },
+        errorInfo: { type: Object as PropType<ErrorMessageInfo<string>>, default: undefined },
+        errorKeys: { type: Object as PropType<ErrorMessageKeys<string>>, default: undefined },
+        actionKeys: { type: Object as PropType<DataOverviewActionKeys<string>>, default: undefined },
         onContactSupport: { type: Function as PropType<() => void>, default: undefined },
         onDismiss: { type: Function as PropType<() => void>, default: undefined },
-        dismissLabel: { type: String as PropType<TranslationKey>, default: undefined },
+        dismissLabel: { type: String as PropType<string>, default: undefined },
         onRefresh: { type: Function as PropType<() => void>, default: undefined },
         withImage: { type: Boolean, default: false },
         outlined: { type: Boolean, default: true },
@@ -33,11 +39,19 @@ export const ErrorMessageDisplay = defineComponent({
     setup(props) {
         const { i18n, refreshComponent: refreshCurrentComponent, getImageAsset } = useCoreContext();
 
-        const errorInfo = computed(
-            () =>
-                props.errorInfo ??
-                getErrorMessage(props.error, props.errorMessage ?? 'common.errors.unexpected', props.onContactSupport, props.notFoundMessage)
-        );
+        const translate = (key: string, options?: { values: Record<string, unknown> }) => i18n.get(key as TranslationKey, options);
+
+        const errorInfo = computed<ErrorMessageInfo<string> | undefined>(() => {
+            if (props.errorInfo) return props.errorInfo;
+            if (!props.errorKeys) return undefined;
+            return getErrorMessage({
+                error: props.error,
+                keys: props.errorKeys,
+                message: props.errorMessage ?? props.errorKeys.unexpected,
+                notFoundMessage: props.notFoundMessage,
+                onContactSupport: props.onContactSupport,
+            });
+        });
 
         const rootClass = computed(() => [
             styles.root,
@@ -67,36 +81,40 @@ export const ErrorMessageDisplay = defineComponent({
             ]);
 
         const renderMessages = () => {
-            const { messages, requestId } = errorInfo.value;
+            const { messages, requestId } = errorInfo.value ?? { messages: [] as string[], requestId: undefined };
             const options = requestId ? { values: { requestId } } : undefined;
             const nodes: (VNode | string)[] = [];
             messages.forEach((key, index) => {
                 if (index > 0) nodes.push(' ', h('br'), ' ');
-                nodes.push(i18n.get(key, options));
+                nodes.push(translate(key, options));
             });
             return nodes;
         };
 
         const renderButtons = () => {
-            const { onContactSupport, refreshComponent, contactSupportLabel } = errorInfo.value;
+            const { onContactSupport, refreshComponent, contactSupportLabel } = errorInfo.value ?? {};
             const buttons: VNode[] = [];
 
             if (props.onDismiss && props.dismissLabel) {
                 const dismiss = props.onDismiss;
-                buttons.push(h(BentoButton, { type: 'button', variant: 'secondary', onClick: () => dismiss() }, () => i18n.get(props.dismissLabel!)));
+                buttons.push(
+                    h(BentoButton, { type: 'button', variant: 'secondary', onClick: () => dismiss() }, () => translate(props.dismissLabel!))
+                );
             }
 
             if (onContactSupport) {
+                const contactSupport = contactSupportLabel ?? props.actionKeys?.contactSupport;
                 buttons.push(
                     h(BentoButton, { type: 'button', variant: 'primary', onClick: () => onContactSupport() }, () =>
-                        i18n.get(contactSupportLabel ?? 'common.actions.contactSupport.labels.reachOut')
+                        contactSupport ? translate(contactSupport) : ''
                     )
                 );
             } else if (refreshComponent) {
                 const refresh = props.onRefresh ?? refreshCurrentComponent;
+                const refreshLabel = props.actionKeys?.refresh;
                 buttons.push(
                     h(BentoButton, { type: 'button', variant: 'primary', onClick: () => refresh?.() }, () =>
-                        i18n.get('common.actions.refresh.labels.default')
+                        refreshLabel ? translate(refreshLabel) : ''
                     )
                 );
             }
@@ -105,13 +123,13 @@ export const ErrorMessageDisplay = defineComponent({
         };
 
         return () => {
-            const { title } = errorInfo.value;
+            const { title } = errorInfo.value ?? {};
             const messages = renderMessages();
             const buttons = renderButtons();
 
             return h('div', { class: rootClass.value, 'data-testid': 'error-message-display' }, [
                 props.withImage || props.imageDesktop || props.imageMobile ? renderIllustration() : null,
-                title ? h(BentoTypography, { el: 'div', variant: 'title' }, () => i18n.get(title)) : null,
+                title ? h(BentoTypography, { el: 'div', variant: 'title' }, () => translate(title)) : null,
                 messages.length ? h(BentoTypography, { variant: 'body' }, () => messages) : null,
                 buttons.length ? h('div', { class: styles.button }, buttons) : null,
             ]);

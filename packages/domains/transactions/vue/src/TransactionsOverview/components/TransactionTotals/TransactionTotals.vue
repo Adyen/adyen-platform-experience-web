@@ -1,25 +1,25 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useMaxWidths } from '../../composables/useMaxWidths';
-import { useCoreContext } from '@integration-components/core/vue';
-import { formatAmountWithCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
 import { BentoCard, BentoLoadingIndicator, BentoDivider, useClickOutside } from '@adyen/bento-vue3';
 import type { ITransactionTotal } from '@integration-components/types';
 import TransactionTotalItem from './TransactionTotalItem.vue';
 import styles from '../TransactionsOverview/TransactionsOverview.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
+import { formatAmountWithCurrencyCode } from '../../../integration/format';
 
 const props = defineProps<{
     totals: readonly Readonly<ITransactionTotal>[];
     loadingTotals: boolean;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
 
 const formattedTotals = computed(() =>
     props.totals.map(t => ({
         ...t,
-        formattedIncomings: formatAmountWithCurrencyCode(t.incomings, i18n.locale, t.currency),
-        formattedExpenses: formatAmountWithCurrencyCode(t.expenses, i18n.locale, t.currency),
+        formattedIncomings: formatAmountWithCurrencyCode(i18n, t.incomings, t.currency),
+        formattedExpenses: formatAmountWithCurrencyCode(i18n, t.expenses, t.currency),
     }))
 );
 

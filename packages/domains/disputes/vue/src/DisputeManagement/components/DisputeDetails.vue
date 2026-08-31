@@ -1,22 +1,40 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext, useModalContext } from '@integration-components/core/vue';
+import { useDisputesContext } from '../../integration/context';
 import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import AcceptDisputeFlow from './AcceptDisputeFlow.vue';
 import DefendDisputeFlow from './DefendDisputeFlow.vue';
 import DisputeData from './DisputeData.vue';
 import type { DisputeManagementProps } from '../types';
 import styles from './DisputeData.module.scss';
+import type { DisputeManagementRenderMode } from '../../integration/types';
 
-const props = defineProps<DisputeManagementProps>();
-const { i18n } = useCoreContext();
+const props = defineProps<
+    Pick<DisputeManagementProps, 'dataCustomization' | 'hideTitle' | 'id'> & {
+        canContactSupport: boolean;
+        canDismiss: boolean;
+        renderMode: DisputeManagementRenderMode;
+    }
+>();
+const { i18n, runtime } = useDisputesContext();
 const { flowState, getDisputesConfig } = useDisputeFlow();
 
-const { withinModal } = useModalContext();
-const shouldHideTitle = computed(() => props.hideTitle || withinModal);
+const shouldHideTitle = computed(() => props.hideTitle || props.renderMode === 'modal');
 
-onMounted(() => getDisputesConfig());
+// The dispute flow is only reachable when the component is authorized; do not fetch
+// defense configuration while availability is pending or the role is not assigned.
+let disputesConfigRequested = false;
+watch(
+    () => runtime.available,
+    available => {
+        if (available === true && !disputesConfigRequested) {
+            disputesConfigRequested = true;
+            void getDisputesConfig();
+        }
+    },
+    { immediate: true }
+);
 </script>
 
 <template>
@@ -30,9 +48,9 @@ onMounted(() => getDisputesConfig());
         v-if="flowState === DisputeFlowState.Details"
         :dispute-id="props.id"
         :data-customization="props.dataCustomization"
-        :on-contact-support="props.onContactSupport"
-        :on-dismiss="props.onDismiss"
+        :can-contact-support="props.canContactSupport"
+        :can-dismiss="props.canDismiss"
     />
-    <AcceptDisputeFlow v-else-if="flowState === DisputeFlowState.Accept" :on-dispute-accept="props.onDisputeAccept" />
-    <DefendDisputeFlow v-else :on-dispute-defend="props.onDisputeDefend" />
+    <AcceptDisputeFlow v-else-if="flowState === DisputeFlowState.Accept" />
+    <DefendDisputeFlow v-else />
 </template>

@@ -1,5 +1,5 @@
 import type { IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
-import type { TranslationKey } from '@integration-components/core';
+import type { DisputesTranslationKey } from '../translations/index';
 
 export const FIELD_KEYS = {
     status: 'disputes.overview.common.fields.status',
@@ -11,7 +11,7 @@ export const FIELD_KEYS = {
     currency: 'disputes.overview.common.fields.currency',
     disputedAmount: 'disputes.overview.common.fields.disputedAmount',
     totalPaymentAmount: 'disputes.overview.common.fields.totalPaymentAmount',
-} as const satisfies Record<string, TranslationKey>;
+} as const satisfies Record<string, DisputesTranslationKey>;
 
 export const EMPTY_TABLE_MESSAGE_KEYS = {
     CHARGEBACKS: { title: 'disputes.overview.chargebacks.errors.listEmpty', message: 'disputes.overview.chargebacks.errors.updateFilters' },
@@ -20,4 +20,4 @@ export const EMPTY_TABLE_MESSAGE_KEYS = {
         title: 'disputes.overview.ongoingAndClosed.errors.listEmpty',
         message: 'disputes.overview.ongoingAndClosed.errors.updateFilters',
     },
-} as const satisfies Record<IDisputeStatusGroup, { title: TranslationKey; message: TranslationKey }>;
+} as const satisfies Record<IDisputeStatusGroup, { title: DisputesTranslationKey; message: DisputesTranslationKey }>;

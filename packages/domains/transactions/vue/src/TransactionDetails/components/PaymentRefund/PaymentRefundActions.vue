@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { useCoreContext, useConfigContext, useEventDispatcherContext } from '@integration-components/core/vue';
+import { ref, computed, onUnmounted, watch } from 'vue';
 import { BentoButtonActions } from '@adyen/bento-vue3';
-import { sharedTransactionDetailsEventProperties } from '../../../../../domain/src';
-import { isFunction } from '@integration-components/utils';
 import type { RefundReason, RefundResult } from '../../../../../domain/src';
 import layoutStyles from '../TransactionDataLayout.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
+import { transactionDetailsEventBridge } from '../../../events';
 
 const props = defineProps<{
     beginRefund: () => void;
@@ -22,15 +21,14 @@ const props = defineProps<{
     transactionId: string;
 }>();
 
-const { i18n } = useCoreContext();
-const config = useConfigContext();
-const userEvents = useEventDispatcherContext();
+const { i18n, runtime } = useTransactionsContext();
+const events = transactionDetailsEventBridge.useEvents();
 
 const isLoading = ref(false);
 
 const amountWithinRange = computed(() => props.refundAmount > 0 && props.refundAmount <= props.maxAmount);
 const isFullRefund = computed(() => props.refundedAmount === 0 && props.refundingAmounts.length === 0 && props.refundAmount === props.maxAmount);
-const refundDisabled = computed(() => props.disabled || isLoading.value || !amountWithinRange.value);
+const refundDisabled = computed(() => props.disabled || isLoading.value || !runtime.canRefund || !amountWithinRange.value);
 
 const refundButtonLabel = computed(() => {
     if (isLoading.value) {
@@ -47,32 +45,35 @@ watch(isLoading, v => props.setRefundInProgress(v));
 
 async function handleRefund() {
     if (refundDisabled.value) return;
-    const fn = config.endpoints.initiateRefund;
-    if (!isFunction(fn)) return;
 
     props.beginRefund();
-    userEvents.addEvent?.('Completed refund', {
-        ...sharedTransactionDetailsEventProperties,
-        isFullRefund: isFullRefund.value,
-        refundReason: props.refundReason,
+    events.refundCompleted({
+        full: isFullRefund.value,
+        reason: props.refundReason,
+        transactionId: props.transactionId,
     });
 
+    refundController?.abort();
+    const requestController = new AbortController();
+    refundController = requestController;
     isLoading.value = true;
     try {
-        await fn(
-            {
-                contentType: 'application/json',
-                body: { amount: { currency: props.currency, value: props.refundAmount }, refundReason: props.refundReason },
-            },
-            { path: { transactionId: props.transactionId } }
-        );
+        await runtime.initiateRefund({
+            amount: { currency: props.currency, value: props.refundAmount },
+            refundReason: props.refundReason,
+            signal: requestController.signal,
+            transactionId: props.transactionId,
+        });
+        if (requestController.signal.aborted) return;
         props.setRefundResult('done');
     } catch {
-        props.setRefundResult('error');
+        if (!requestController.signal.aborted) props.setRefundResult('error');
     } finally {
-        isLoading.value = false;
+        if (!requestController.signal.aborted) isLoading.value = false;
     }
 }
+
+let refundController: AbortController | undefined;
 
 const primaryAction = computed(() => ({
     disabled: refundDisabled.value,
@@ -88,6 +89,8 @@ const secondaryAction = computed(() => ({
     title: i18n.get('transactions.details.refund.actions.back'),
     variant: 'secondary' as const,
 }));
+
+onUnmounted(() => refundController?.abort());
 </script>
 
 <template>

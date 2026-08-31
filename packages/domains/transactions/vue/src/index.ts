@@ -1,5 +1,59 @@
-export { TransactionsOverviewElement } from './TransactionsOverview';
-export type { TransactionsOverviewExternalProps } from './TransactionsOverview';
-
-export { TransactionDetailsElement } from './TransactionDetails';
+export { TransactionDetails } from './TransactionDetails';
 export type { TransactionDetailsExternalProps } from './TransactionDetails';
+export { TransactionsOverview } from './TransactionsOverview';
+export type { TransactionsOverviewExternalProps, TransactionsOverviewProps } from './TransactionsOverview';
+
+export type {
+    TransactionDetailsDomainProps,
+    TransactionDetailsRenderMode,
+    TransactionsBalanceAccounts,
+    TransactionsBalanceAccountsSnapshot,
+    TransactionsDependencies,
+    TransactionsFilters,
+    TransactionsI18n,
+    TransactionsOverviewDomainProps,
+    TransactionsRuntime,
+    TransactionsRuntimeSnapshot,
+    TransactionsTranslations,
+} from './integration';
+
+export type {
+    TransactionDetailsEmits,
+    TransactionDetailsEventCallbacks,
+    TransactionDetailsEventMap,
+    TransactionDetailsLoadedCallback,
+    TransactionDetailsLoadedPayload,
+    TransactionNavigationRequestedCallback,
+    TransactionNavigationRequestedPayload,
+    TransactionRefundCancelledCallback,
+    TransactionRefundCancelledPayload,
+    TransactionRefundCompletedCallback,
+    TransactionRefundCompletedPayload,
+    TransactionRefundViewOpenedCallback,
+    TransactionRefundViewOpenedPayload,
+    TransactionSelectedCallback,
+    TransactionSelectedPayload,
+    TransactionValueCopiedCallback,
+    TransactionValueCopiedPayload,
+    TransactionsContactSupportRequestedCallback,
+    TransactionsContactSupportRequestedPayload,
+    TransactionsExportCancelledCallback,
+    TransactionsExportCancelledPayload,
+    TransactionsExportCompletedCallback,
+    TransactionsExportCompletedPayload,
+    TransactionsExportOpenedCallback,
+    TransactionsExportOpenedPayload,
+    TransactionsFilterChangedCallback,
+    TransactionsFilterChangedPayload,
+    TransactionsFilterField,
+    TransactionsFiltersChangedCallback,
+    TransactionsFiltersChangedPayload,
+    TransactionsOverviewEmits,
+    TransactionsOverviewEventCallbacks,
+    TransactionsOverviewEventMap,
+    TransactionsView,
+    TransactionsViewDurationRecordedCallback,
+    TransactionsViewDurationRecordedPayload,
+    TransactionsViewEnteredCallback,
+    TransactionsViewEnteredPayload,
+} from './events';

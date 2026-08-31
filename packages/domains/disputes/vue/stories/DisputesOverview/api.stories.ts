@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/vue3';
 import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT, SessionControls } from '@integration-components/testing/storybook-helpers';
-import type { DisputesOverviewExternalProps } from '../../src';
+import type { DisputesOverviewDomainProps as DisputesOverviewExternalProps } from '../../src/definitions';
 import { DisputesOverviewMeta } from './meta';
 
 const meta: Meta<ElementProps<DisputesOverviewExternalProps>> = {

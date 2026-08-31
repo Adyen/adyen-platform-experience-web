@@ -2,18 +2,18 @@
 import { computed, watch } from 'vue';
 import { BentoFilterBar, BentoFilterItemType } from '@adyen/bento-vue3';
 import type { BentoDateRangePickerValue, BentoFilterBarModel, BentoFilterValues } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
 import { useBalanceAccountFilterState, useDateRangeFilterState } from '@integration-components/composables-vue';
 import type { IBalanceAccountBase } from '@integration-components/types';
 import { createQuickSelectRanges, quickSelectDateRanges, startOfDay } from '@integration-components/utils';
 import { EARLIEST_PAYOUT_SINCE_DATE } from '../constants';
+import { usePayoutsContext } from '../../integration/context';
 
 const props = defineProps<{
     balanceAccounts?: IBalanceAccountBase[];
     onChange?: (params: { balanceAccountId: string | undefined; createdSince: string; createdUntil: string }) => void;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = usePayoutsContext();
 const earliestDate = startOfDay(new Date(EARLIEST_PAYOUT_SINCE_DATE));
 
 const quickSelectRanges = createQuickSelectRanges(
@@ -27,7 +27,7 @@ const quickSelectRanges = createQuickSelectRanges(
         lastMonth: quickSelectDateRanges.lastMonth,
         yearToDate: quickSelectDateRanges.yearToDate,
     },
-    key => i18n.get(key)
+    option => i18n.get(`payouts.filters.types.date.rangeSelect.options.${option}`)
 );
 
 const { selectedBalanceAccountId, hasMultipleBalanceAccounts, balanceAccountOptions } = useBalanceAccountFilterState({
@@ -48,7 +48,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
     if (hasMultipleBalanceAccounts.value) {
         filters.push({
             field: 'balanceAccountId',
-            label: i18n.get('common.filters.types.account.label'),
+            label: i18n.get('payouts.filters.types.account.label'),
             type: BentoFilterItemType.SELECT,
             defaultValue: balanceAccountOptions.value[0]?.value,
             options: {
@@ -59,7 +59,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
     filters.push({
         field: 'dateRange',
-        label: i18n.get('common.filters.types.date.label'),
+        label: i18n.get('payouts.filters.types.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         defaultValue: defaultDateRange,
         options: {

@@ -1,6 +1,6 @@
 import { ref } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
+import { usePayByLinkContext } from '../../integration/context';
 import localTermsRequirementsConfig from '../../../../domain/src/config/termsRequirementsConfig.json';
 
 export interface TermsRequirementItem {
@@ -20,13 +20,13 @@ export interface TermsRequirementsConfig {
 }
 
 export function useTermsRequirementsConfig() {
-    const { getCdnConfig } = useCoreContext();
+    const runtime = usePayByLinkContext().runtime;
 
     const localTerms = localTermsRequirementsConfig as unknown as TermsRequirementsConfig;
     const termsRequirementsConfig = ref<TermsRequirementsConfig>(localTerms);
 
     const getTermsRequirementsConfig = async () => {
-        const config = await getCdnConfig?.<TermsRequirementsConfig>({
+        const config = await runtime.getCdnConfig<TermsRequirementsConfig>({
             subFolder: 'payByLink',
             name: 'termsRequirementsConfig',
             fallback: localTerms,

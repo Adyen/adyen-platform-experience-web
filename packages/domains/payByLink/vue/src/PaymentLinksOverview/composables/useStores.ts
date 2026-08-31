@@ -1,7 +1,7 @@
 import { ref, computed, watch } from 'vue';
 import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
-import { useConfigContext } from '@integration-components/core/vue';
 import type { StoreData, StoreIds } from '../../../../domain/src';
+import { usePayByLinkContext } from '../../integration/context';
 import { toError } from '../utils/error';
 
 /**
@@ -9,9 +9,9 @@ import { toError } from '../utils/error';
  * stores once, then derives the `storeIds`-filtered subset alongside the unfiltered full list.
  */
 export function useStores(storeIds?: () => StoreIds | undefined) {
-    const config = useConfigContext();
+    const runtime = usePayByLinkContext().runtime;
 
-    const getPayByLinkStores = computed(() => config.endpoints.getPayByLinkStores);
+    const getPayByLinkStores = computed(() => runtime.endpoints.getPayByLinkStores);
     const allStores = ref<StoreData[] | undefined>(undefined);
     const isFetching = ref(false);
     const error = ref<Error | undefined>(undefined);

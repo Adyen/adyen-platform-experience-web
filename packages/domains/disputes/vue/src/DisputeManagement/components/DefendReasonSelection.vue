@@ -1,22 +1,19 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, onUnmounted, ref, watch } from 'vue';
 import { BentoAlert, BentoButtonActions, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
-import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { DISPUTE_TYPE, getDefenseReasonContent } from '@integration-components/disputes/domain';
-import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import SelectDropdown from './SelectDropdown.vue';
 import type { SelectDropdownItem } from '../types';
 import flowStyles from './DisputeFlow.module.scss';
 import styles from './DefendDispute.module.scss';
+import { useDisputesContext } from '../../integration/context';
 
 const props = defineProps<{
     pspReference?: string;
 }>();
 
-const { i18n } = useCoreContext();
-const config = useConfigContext();
-const getApplicableDefenseDocuments = computed(() => config.endpoints?.getApplicableDefenseDocuments);
+const { i18n, runtime } = useDisputesContext();
 const {
     dispute,
     applicableDocuments,
@@ -31,6 +28,7 @@ const {
 const isReasonSubmitting = ref(false);
 const reasonError = ref(false);
 const showFeeAlert = ref(dispute.value?.dispute.type !== DISPUTE_TYPE.REQUEST_FOR_INFORMATION);
+let documentsController: AbortController | undefined;
 
 const defendDisputeLabel = computed(() =>
     dispute.value?.dispute.type === DISPUTE_TYPE.REQUEST_FOR_INFORMATION
@@ -65,24 +63,28 @@ async function submitDefenseReason() {
         return;
     }
     const pspReference = props.pspReference;
-    const getApplicableDefenseDocumentsFn = getApplicableDefenseDocuments.value;
-    if (!isFunction(getApplicableDefenseDocumentsFn) || !selectedDefenseReason.value || !pspReference) return;
+    if (!runtime.canDefend || !selectedDefenseReason.value || !pspReference) return;
 
+    documentsController?.abort();
+    documentsController = new AbortController();
     isReasonSubmitting.value = true;
     reasonError.value = false;
     try {
-        const response = await getApplicableDefenseDocumentsFn(EMPTY_OBJECT, {
-            query: { defenseReason: selectedDefenseReason.value },
-            path: { disputePspReference: pspReference },
+        const response = await runtime.getApplicableDefenseDocuments({
+            defenseReason: selectedDefenseReason.value,
+            disputePspReference: pspReference,
+            signal: documentsController.signal,
         });
         setApplicableDocuments(response?.data ?? null);
         if (response?.data?.length) setFlowState(DisputeFlowState.UploadDefenseFiles);
     } catch {
-        reasonError.value = true;
+        if (!documentsController.signal.aborted) reasonError.value = true;
     } finally {
-        isReasonSubmitting.value = false;
+        if (!documentsController.signal.aborted) isReasonSubmitting.value = false;
     }
 }
+
+onUnmounted(() => documentsController?.abort());
 
 function onDefenseReasonChange(reason: string) {
     if (selectedDefenseReason.value !== reason && applicableDocuments.value?.length) {

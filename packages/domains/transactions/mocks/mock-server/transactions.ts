@@ -27,7 +27,14 @@ import {
 import Localization from '@integration-components/core/Localization';
 import { TRANSACTIONS_ENDPOINTS } from '../endpoints';
 import { delay as mswDelay, http, HttpResponse, PathParams } from 'msw';
-import { compareDates, computeHash, delay, getPaginationLinks } from '@integration-components/testing/msw';
+import {
+    CapitalComponentManage,
+    compareDates,
+    computeHash,
+    CROSS_DOMAIN_ENDPOINTS,
+    delay,
+    getPaginationLinks,
+} from '@integration-components/testing/msw';
 import { clamp, getMappedValue, parsePaymentMethodType } from '@integration-components/utils';
 
 type _ITransactionTotals = Omit<ITransactionTotal, 'currency'>;
@@ -561,6 +568,22 @@ export const transactionsMocks = [
     }),
 ];
 
+// Setup response without any transactions or balanceAccounts endpoints, so every Transactions
+// component reports `runtime.available === false` (role not assigned). CapitalComponentManage
+// deliberately contains no transactions or balanceAccounts endpoints, so no domain data requests fire.
+const transactionsRoleNotAssignedSetup = {
+    handlers: [
+        http.post(CROSS_DOMAIN_ENDPOINTS.setup, async () => {
+            await delay(300);
+            return HttpResponse.json({
+                endpoints: {
+                    ...CapitalComponentManage,
+                },
+            });
+        }),
+    ],
+};
+
 export const TRANSACTION_DETAILS_HANDLERS = (() => {
     const refundedTransactions = new Set<string>();
 
@@ -597,6 +620,7 @@ export const TRANSACTION_DETAILS_HANDLERS = (() => {
     ] as const;
 
     return {
+        permissionError: transactionsRoleNotAssignedSetup,
         default: {
             handlers: [
                 http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
@@ -785,6 +809,7 @@ export const TRANSACTIONS_OVERVIEW_HANDLERS = (() => {
     };
 
     return {
+        permissionError: transactionsRoleNotAssignedSetup,
         singleBalanceAccount: {
             handlers: [
                 http.get(mockEndpoints.balanceAccounts, () => {

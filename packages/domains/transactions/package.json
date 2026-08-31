@@ -11,6 +11,7 @@
         "./publish": "./publish/src/index.ts",
         "./preact": "./preact/src/index.ts",
         "./vue": "./vue/src/index.ts",
+        "./vue/definitions": "./vue/src/definitions.ts",
         "./domain": "./domain/src/index.ts"
     },
     "dependencies": {
@@ -19,6 +20,7 @@
         "@adyen/ui-assets-icons-40": "catalog:",
         "@integration-components/composables-vue": "workspace:*",
         "@integration-components/core": "workspace:*",
+        "@integration-components/domain-integration": "workspace:*",
         "@integration-components/hooks-preact": "workspace:*",
         "@integration-components/sdk-internal": "workspace:*",
         "@integration-components/style": "workspace:*",
@@ -37,6 +39,7 @@
         "@storybook/preact": "catalog:",
         "@storybook/vue3": "catalog:",
         "@testing-library/preact": "catalog:",
+        "@vue/compiler-sfc": "3.5.31",
         "dotenv": "catalog:",
         "msw": "catalog:",
         "vitest": "catalog:",

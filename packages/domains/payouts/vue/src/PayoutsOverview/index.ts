@@ -1,2 +1,1 @@
-export { PayoutsOverviewElement } from './PayoutsOverviewElement';
-export type { PayoutsOverviewExternalProps } from './types';
+export type { PayoutsOverviewDomainProps } from '../integration';

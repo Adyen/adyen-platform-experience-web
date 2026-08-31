@@ -1,9 +1,7 @@
-import { ref, computed, watch, onUnmounted } from 'vue';
-import { useConfigContext } from '@integration-components/core/vue';
-import { useBalanceAccounts } from '@integration-components/composables-vue';
-import { isFunction } from '@integration-components/utils';
+import { ref, computed, watch, onScopeDispose } from 'vue';
 import { createDuplexTransactionNavigator } from '../../../../domain/src';
 import type { TransactionDetails, TransactionNavigator } from '../../../../domain/src';
+import { useTransactionsContext } from '../../integration/context';
 
 const getNavigatorState = (nav: TransactionNavigator) => ({
     canNavigateBackward: nav.canNavigateBackward,
@@ -14,7 +12,7 @@ const getNavigatorState = (nav: TransactionNavigator) => ({
 });
 
 export function useTransaction(id: () => string) {
-    const config = useConfigContext();
+    const { balanceAccounts, runtime } = useTransactionsContext();
 
     const transactionId = ref<string | undefined>(id());
     const transaction = ref<TransactionDetails | undefined>(undefined);
@@ -28,22 +26,17 @@ export function useTransaction(id: () => string) {
     const transactionNavigator = createDuplexTransactionNavigator();
     const navigatorState = ref(getNavigatorState(transactionNavigator));
 
-    const { balanceAccounts } = useBalanceAccounts();
-
     let abortController: AbortController | null = null;
     let lastFetchedTransactionId = id();
 
-    const getTransaction = computed(() => config.endpoints.getTransaction);
-
     const transactionWithBalanceAccount = computed<TransactionDetails | undefined>(() => {
         if (!transaction.value) return undefined;
-        const balanceAccount = balanceAccounts.value?.find(a => a.id === transaction.value!.balanceAccountId);
+        const balanceAccount = balanceAccounts.accounts?.find(a => a.id === transaction.value!.balanceAccountId);
         return { ...transaction.value, balanceAccount } as TransactionDetails;
     });
 
     async function fetchTransaction(txId?: string) {
-        const fn = getTransaction.value;
-        if (!isFunction(fn) || !txId) return;
+        if (!txId) return;
 
         if (abortController) abortController.abort();
         abortController = new AbortController();
@@ -53,7 +46,7 @@ export function useTransaction(id: () => string) {
         error.value = undefined;
 
         try {
-            const result = await fn({ signal }, { path: { transactionId: txId } });
+            const result = await runtime.getTransaction({ signal, transactionId: txId });
             if (!signal.aborted) {
                 transaction.value = result as TransactionDetails;
                 lastFetchedTransactionId = txId;
@@ -81,12 +74,13 @@ export function useTransaction(id: () => string) {
     });
 
     watch(
-        transactionId,
-        async newId => {
+        () => [transactionId.value, runtime.available] as const,
+        async ([newId, available]) => {
             if (!newId) {
                 transactionId.value = lastFetchedTransactionId;
                 return;
             }
+            if (available !== true) return;
             await fetchTransaction(newId);
         },
         { immediate: true }
@@ -96,7 +90,7 @@ export function useTransaction(id: () => string) {
         fetchTransaction(transactionId.value);
     };
 
-    onUnmounted(() => {
+    onScopeDispose(() => {
         abortController?.abort();
         transactionNavigator.onNavigation = null;
         transactionNavigator.reset();

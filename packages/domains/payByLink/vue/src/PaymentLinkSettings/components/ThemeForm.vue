@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { BentoAlert, BentoInputField, BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { usePayByLinkContext } from '../../integration/context';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { cloneFormData } from '../utils/getThemePayload';
 import { logoOptionsList, ThemeFormDataRequest } from '../constants';
@@ -13,7 +13,7 @@ import layoutStyles from './PaymentLinkSettingsLayout.module.scss';
 
 const props = defineProps<{ theme: ThemeFormData }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = usePayByLinkContext();
 const {
     setPayload,
     saveActionCalled,

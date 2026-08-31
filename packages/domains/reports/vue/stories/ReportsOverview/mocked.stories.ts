@@ -2,13 +2,13 @@ import type { Meta } from '@storybook/vue3';
 import { ReportsOverviewMeta } from './meta';
 import { getWorker } from 'msw-storybook-addon';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
-import type { ReportsOverviewExternalProps } from '../../src';
 import { createDownloadReportHandler, REPORTS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/reports';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, getCustomDataReports } from '../../../fixtures/data/ReportsOverview';
 import { REPORTS_ENDPOINTS } from '../../../mocks/endpoints';
 import { http, HttpResponse } from 'msw';
+import type { ReportsOverviewDomainProps } from '../../src/definitions';
 
-type ReportsOverviewStoryArgs = ReportsOverviewExternalProps & { enforceDownloadDelay?: boolean };
+type ReportsOverviewStoryArgs = ReportsOverviewDomainProps & { enforceDownloadDelay?: boolean };
 
 const meta: Meta<ElementProps<ReportsOverviewStoryArgs>> = {
     ...ReportsOverviewMeta,
@@ -28,12 +28,43 @@ const meta: Meta<ElementProps<ReportsOverviewStoryArgs>> = {
 
 const defaultArgs = { mockedApi: true } as const;
 
-export const Default: ElementStory<ReportsOverviewExternalProps> = {
+export const Default: ElementStory<ReportsOverviewDomainProps> = {
     name: 'Default',
     args: defaultArgs,
 };
 
-export const DataCustomization: ElementStory<ReportsOverviewExternalProps> = {
+export const CustomTranslations: ElementStory<ReportsOverviewDomainProps> = {
+    name: 'Custom translations',
+    args: {
+        ...defaultArgs,
+        coreOptions: {
+            locale: 'fi-FI',
+            translations: {
+                'fi-FI': {
+                    'reports.overview.generateInfo': 'Mukautettu raporttikuvaus',
+                    'reports.overview.title': 'Mukautetut raportit',
+                },
+            },
+        },
+    },
+};
+
+export const InvalidCustomTranslations: ElementStory<ReportsOverviewDomainProps> = {
+    name: 'Invalid custom translations',
+    args: {
+        ...defaultArgs,
+        coreOptions: {
+            locale: 'fi-FI',
+            translations: {
+                'fi-FI': {
+                    'reports.overview.title': 'Invalid title %{unexpected}',
+                },
+            },
+        },
+    },
+};
+
+export const DataCustomization: ElementStory<ReportsOverviewDomainProps> = {
     name: 'Data customization',
     args: {
         ...defaultArgs,
@@ -53,7 +84,7 @@ export const DataCustomization: ElementStory<ReportsOverviewExternalProps> = {
     },
 };
 
-export const SingleBalanceAccount: ElementStory<ReportsOverviewExternalProps> = {
+export const SingleBalanceAccount: ElementStory<ReportsOverviewDomainProps> = {
     name: 'Single balance account',
     args: defaultArgs,
     parameters: {
@@ -61,7 +92,7 @@ export const SingleBalanceAccount: ElementStory<ReportsOverviewExternalProps> = 
     },
 };
 
-export const EmptyList: ElementStory<ReportsOverviewExternalProps> = {
+export const EmptyList: ElementStory<ReportsOverviewDomainProps> = {
     name: 'Empty list',
     args: defaultArgs,
     parameters: {
@@ -69,7 +100,7 @@ export const EmptyList: ElementStory<ReportsOverviewExternalProps> = {
     },
 };
 
-export const ErrorList: ElementStory<ReportsOverviewExternalProps> = {
+export const ErrorList: ElementStory<ReportsOverviewDomainProps> = {
     name: 'Error - List',
     args: defaultArgs,
     parameters: {
@@ -77,7 +108,15 @@ export const ErrorList: ElementStory<ReportsOverviewExternalProps> = {
     },
 };
 
-export const DownloadError: ElementStory<ReportsOverviewExternalProps> = {
+export const OverviewRoleNotAssigned: ElementStory<ReportsOverviewDomainProps> = {
+    name: 'Error - Role not assigned',
+    args: defaultArgs,
+    parameters: {
+        msw: { ...REPORTS_OVERVIEW_HANDLERS.permissionError },
+    },
+};
+
+export const DownloadError: ElementStory<ReportsOverviewDomainProps> = {
     name: 'Download error',
     args: defaultArgs,
     parameters: {

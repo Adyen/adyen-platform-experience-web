@@ -38,6 +38,7 @@ describe('supported locales', async () => {
             // prettier-ignore
             expect(i18n.translationSourcePaths).toStrictEqual([
                 `${relativeTranslationsDir}/${englishLocale}.json`,
+                `packages/domains/reports/domain/src/translations/${englishLocale}.json`,
             ]);
         });
 

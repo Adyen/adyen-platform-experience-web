@@ -88,7 +88,28 @@ const getErrorHandler = (error: any, status = 500) => {
     };
 };
 
+// Setup response without any Pay by Link endpoints, so every PBL component
+// reports `hasPermission === false` (role not assigned).
+const pblRoleNotAssignedSetup = {
+    handlers: [
+        http.post(CROSS_DOMAIN_ENDPOINTS.setup, async () => {
+            await delay(DELAY_TIME);
+            return HttpResponse.json({
+                endpoints: {
+                    ...TransactionsOverviewComponentView,
+                    ...TransactionsOverviewComponentManageRefunds,
+                    ...ReportsOverviewComponentView,
+                    ...PayoutsOverviewComponentView,
+                    ...CapitalComponentManage,
+                    ...DisputesComponentManage,
+                },
+            });
+        }),
+    ],
+};
+
 export const PayByLinkOverviewMockedResponses = {
+    permissionError: pblRoleNotAssignedSetup,
     tooManyStores: {
         handlers: [http.get(mockPayByLinkEndpoints.list, getErrorHandler(PAY_BY_LINK_ERRORS.TOO_MANY_STORES, 422))],
     },
@@ -126,6 +147,7 @@ export const PayByLinkOverviewMockedResponses = {
 };
 
 export const PaymentLinkCreationMockedResponses = {
+    permissionError: pblRoleNotAssignedSetup,
     submitNetworkError: {
         handlers: [
             http.post(mockPayByLinkEndpoints.list, async () => {
@@ -169,6 +191,7 @@ export const PaymentLinkCreationMockedResponses = {
 };
 
 export const PaymentLinkDetailsMockedResponses = {
+    permissionError: pblRoleNotAssignedSetup,
     redacted: {
         handlers: [
             http.get(mockPayByLinkEndpoints.details, async ({ params }) => {

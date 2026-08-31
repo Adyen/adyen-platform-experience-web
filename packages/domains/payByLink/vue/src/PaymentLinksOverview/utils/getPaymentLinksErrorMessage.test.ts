@@ -7,14 +7,14 @@ const ERROR_MESSAGE = 'payByLink.overview.errors.couldNotLoadLinks' as const;
 
 describe('getPaymentLinksErrorMessage', () => {
     test.each([
-        [ACCOUNT_MISCONFIGURATION, ['payByLink.common.errors.accountConfiguration', 'common.errors.contactSupport']],
-        [WRONG_STORE_IDS, ['payByLink.common.errors.storeID', 'common.errors.contactSupport']],
+        [ACCOUNT_MISCONFIGURATION, ['payByLink.common.errors.accountConfiguration', 'payByLink.errors.contactSupport']],
+        [WRONG_STORE_IDS, ['payByLink.common.errors.storeID', 'payByLink.errors.contactSupport']],
     ])('maps the %s synthetic store error', (errorCode, messages) => {
         const onContactSupport = vi.fn();
         const content = getPaymentLinksErrorMessage(createPaymentLinksError('Store error', { errorCode }), ERROR_MESSAGE, onContactSupport);
 
         expect(content).toMatchObject({
-            title: 'common.errors.somethingWentWrong',
+            title: 'payByLink.errors.somethingWentWrong',
             messages,
             imageName: 'wrong-environment',
             onContactSupport,
@@ -42,7 +42,7 @@ describe('getPaymentLinksErrorMessage', () => {
         });
 
         expect(getPaymentLinksErrorMessage(error, ERROR_MESSAGE, onContactSupport)).toMatchObject({
-            messages: ['payByLink.overview.errors.couldNotLoadLinks', 'common.errors.retry'],
+            messages: ['payByLink.overview.errors.couldNotLoadLinks', 'payByLink.errors.retry'],
             onContactSupport,
         });
     });
@@ -54,7 +54,7 @@ describe('getPaymentLinksErrorMessage', () => {
         });
 
         expect(getPaymentLinksErrorMessage(error, ERROR_MESSAGE)).toMatchObject({
-            messages: ['payByLink.overview.errors.couldNotLoadLinks', 'common.errors.errorCodeSupport'],
+            messages: ['payByLink.overview.errors.couldNotLoadLinks', 'payByLink.errors.errorCodeSupport'],
             requestId: 'request-id',
             refreshComponent: true,
         });
@@ -68,7 +68,7 @@ describe('getPaymentLinksErrorMessage', () => {
         });
 
         expect(getPaymentLinksErrorMessage(error, ERROR_MESSAGE, onContactSupport)).toMatchObject({
-            messages: [ERROR_MESSAGE, 'common.errors.errorCode'],
+            messages: [ERROR_MESSAGE, 'payByLink.errors.errorCode'],
             requestId: 'request-id',
             onContactSupport,
             refreshComponent: true,

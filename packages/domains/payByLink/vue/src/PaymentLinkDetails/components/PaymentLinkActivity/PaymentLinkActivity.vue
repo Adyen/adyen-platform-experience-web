@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import { BentoDateFormat, BentoTimeline, BentoTimelineItem } from '@adyen/bento-vue3';
 import { getActivityDescriptionKey, getActivityStatus, getActivityTitleKey } from '../../../../../domain/src';
 import type { IPaymentLinkActivity } from '@integration-components/types';
+import { usePayByLinkContext } from '../../../integration/context';
 
 const props = defineProps<{
     activities: IPaymentLinkActivity[];
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = usePayByLinkContext();
 
 const timelineItems = computed(() =>
     props.activities.map(activity => {

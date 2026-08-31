@@ -13,6 +13,7 @@ export type DisputeCallbackData = {
 export interface DisputeManagementProps extends UIElementProps, DetailsWithExtraData<DisputeDetailsCustomization> {
     id: string;
     onContactSupport?: () => void;
+    showContactSupport?: boolean;
     onDisputeAccept?: <T extends DisputeCallbackData>(dispute: T) => void;
     onDisputeDefend?: <T extends DisputeCallbackData>(dispute: T) => void;
     onDismiss?: () => void;

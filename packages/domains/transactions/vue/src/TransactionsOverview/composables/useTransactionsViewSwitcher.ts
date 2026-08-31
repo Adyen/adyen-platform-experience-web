@@ -1,5 +1,5 @@
 import { ref, computed, watch } from 'vue';
-import type { TranslationKey } from '@integration-components/core';
+import type { TransactionsTranslationKey } from '../../../../domain/src';
 
 export const enum TransactionsView {
     TRANSACTIONS = 'transactions',
@@ -7,8 +7,8 @@ export const enum TransactionsView {
 }
 
 export const TRANSACTIONS_VIEW_TABS = [
-    { id: TransactionsView.TRANSACTIONS, label: 'transactions.overview.views.transactions' as TranslationKey, content: null },
-    { id: TransactionsView.INSIGHTS, label: 'transactions.overview.views.insights' as TranslationKey, content: null },
+    { id: TransactionsView.TRANSACTIONS, label: 'transactions.overview.views.transactions' as TransactionsTranslationKey, content: null },
+    { id: TransactionsView.INSIGHTS, label: 'transactions.overview.views.insights' as TransactionsTranslationKey, content: null },
 ] as const;
 
 interface UseTransactionsViewSwitcherProps {

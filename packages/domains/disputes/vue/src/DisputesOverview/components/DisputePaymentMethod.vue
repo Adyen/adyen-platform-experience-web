@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useDisputesContext } from '../../integration/context';
 import { parsePaymentMethodType } from '@integration-components/utils';
 import type { IPaymentMethod } from '@integration-components/types';
 import styles from './DisputesTable.module.scss';
@@ -10,7 +10,7 @@ const props = defineProps<{
     stronger?: boolean;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useDisputesContext();
 
 function getPaymentMethodLabel(paymentMethod: IPaymentMethod): string {
     if (paymentMethod.lastFourDigits) return `•••• ${paymentMethod.lastFourDigits}`;
@@ -26,6 +26,6 @@ function getPaymentMethodLabel(paymentMethod: IPaymentMethod): string {
                 {{ getPaymentMethodLabel(props.paymentMethod) }}
             </BentoTypography>
         </template>
-        <BentoTag v-else variant="grey" :label="i18n.get('common.tags.noData')" />
+        <BentoTag v-else variant="grey" :label="i18n.get('disputes.tags.noData')" />
     </div>
 </template>

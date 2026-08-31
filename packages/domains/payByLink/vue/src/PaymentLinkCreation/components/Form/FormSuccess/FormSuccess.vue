@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
 import styles from './FormSuccess.module.scss';
+import { usePayByLinkContext } from '../../../../integration/context';
 
 const props = defineProps<{
     paymentLinkUrl: string;
     onShowDetails?: () => void;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = usePayByLinkContext();
 
 const copied = ref(false);
 let copiedTimeout: ReturnType<typeof setTimeout> | null = null;

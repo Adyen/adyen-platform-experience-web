@@ -3,7 +3,6 @@ import { ref, computed, watch } from 'vue';
 import { BentoTypography, BentoTabs, BentoTab, BentoButton, BentoAlert, BentoModal } from '@adyen/bento-vue3';
 import PlusIcon from '@adyen/ui-assets-icons-16/vue/plus';
 import SettingsIcon from '@adyen/ui-assets-icons-16/vue/settings';
-import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
 import PaymentLinksFilters from './PaymentLinksFilters.vue';
 import PaymentLinksTable from './PaymentLinksTable.vue';
@@ -19,6 +18,7 @@ import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../../../../domain/sr
 import type { PaymentLinksOverviewExternalProps } from '../types';
 import { createPaymentLinksError } from '../utils/error';
 import styles from './PaymentLinksOverview.module.scss';
+import { usePayByLinkContext } from '../../integration/context';
 
 const props = defineProps<{
     allowLimitSelection?: boolean;
@@ -39,8 +39,8 @@ const props = defineProps<{
     filterOptionsError?: Error;
 }>();
 
-const { i18n } = useCoreContext();
-const config = useConfigContext();
+const { i18n, provideTranslationOverrides, runtime } = usePayByLinkContext();
+provideTranslationOverrides();
 
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
@@ -184,7 +184,7 @@ function onPaymentLinkCreated(paymentLink: any) {
     hasToRefresh.value = true;
 }
 
-const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettings || config.endpoints?.createPBLPaymentLink));
+const hasActionButtons = computed(() => !!(runtime.endpoints.savePayByLinkSettings || runtime.endpoints.createPBLPaymentLink));
 </script>
 
 <template>
@@ -195,11 +195,11 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
             </BentoTypography>
             <div v-else />
             <div v-if="hasActionButtons" :class="styles.actionsContainer">
-                <BentoButton v-if="!isMobile && config.endpoints?.createPBLPaymentLink" variant="primary" @click="openPaymentLinkModal">
+                <BentoButton v-if="!isMobile && runtime.endpoints.createPBLPaymentLink" variant="primary" @click="openPaymentLinkModal">
                     {{ i18n.get('payByLink.overview.list.actions.createPaymentLink') }}
                 </BentoButton>
                 <BentoButton
-                    v-if="!isMobile && config.endpoints?.savePayByLinkSettings"
+                    v-if="!isMobile && runtime.endpoints.savePayByLinkSettings"
                     variant="secondary"
                     :class="styles.settingsButton"
                     :aria-label="i18n.get('payByLink.overview.actions.settings.a11y.label')"
@@ -208,7 +208,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
                     <SettingsIcon />
                 </BentoButton>
                 <BentoButton
-                    v-if="isMobile && config.endpoints?.createPBLPaymentLink"
+                    v-if="isMobile && runtime.endpoints.createPBLPaymentLink"
                     variant="primary"
                     condensed
                     :class="styles.actionButtonXs"
@@ -218,7 +218,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
                     <PlusIcon />
                 </BentoButton>
                 <BentoButton
-                    v-if="isMobile && config.endpoints?.savePayByLinkSettings"
+                    v-if="isMobile && runtime.endpoints.savePayByLinkSettings"
                     variant="secondary"
                     condensed
                     :class="styles.actionButtonXs"
@@ -269,6 +269,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
             :error="paymentLinksError"
             :loading="paymentLinksListResult.fetching.value || props.isFiltersLoading"
             :on-contact-support="props.onContactSupport"
+            :on-refresh="refreshPaymentLinkList"
             :on-row-click="onRowClick"
             :show-pagination="true"
             :payment-links="paymentLinksListResult.records.value"
@@ -294,6 +295,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
                 <PaymentLinkDetails
                     v-if="selectedPaymentLink"
                     :id="selectedPaymentLink.paymentLinkId"
+                    embedded-in-overview
                     hide-title
                     :on-contact-support="props.onContactSupport"
                     :on-dismiss="closeDetailsModal"

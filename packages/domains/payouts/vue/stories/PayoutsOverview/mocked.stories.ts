@@ -2,23 +2,23 @@ import type { Meta } from '@storybook/vue3';
 import { http, HttpResponse } from 'msw';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { PayoutsOverviewMeta } from './meta';
-import type { PayoutsOverviewExternalProps } from '../../src';
+import type { PayoutsOverviewDomainProps } from '../../src/definitions';
 import { PAYOUTS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/payouts';
 import { PAYOUTS_ENDPOINTS } from '../../../mocks/endpoints';
 import { DEFAULT_PAYOUT_DETAILS } from '../../../fixtures/data/PayoutDetails';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION_DETAILS, DATA_CUSTOMIZATION_LIST } from '../../../fixtures/data/PayoutsOverview';
 
-const meta: Meta<ElementProps<PayoutsOverviewExternalProps>> = {
+const meta: Meta<ElementProps<PayoutsOverviewDomainProps>> = {
     ...PayoutsOverviewMeta,
     title: 'Mocked/Payouts/Payouts Overview',
 };
 
-export const Default: ElementStory<PayoutsOverviewExternalProps> = {
+export const Default: ElementStory<PayoutsOverviewDomainProps> = {
     name: 'Default',
     args: { mockedApi: true },
 };
 
-export const SingleBalanceAccount: ElementStory<PayoutsOverviewExternalProps> = {
+export const SingleBalanceAccount: ElementStory<PayoutsOverviewDomainProps> = {
     name: 'Single balance account',
     args: { mockedApi: true },
     parameters: {
@@ -26,7 +26,7 @@ export const SingleBalanceAccount: ElementStory<PayoutsOverviewExternalProps> = 
     },
 };
 
-export const EmptyList: ElementStory<PayoutsOverviewExternalProps> = {
+export const EmptyList: ElementStory<PayoutsOverviewDomainProps> = {
     name: 'Empty list',
     args: { mockedApi: true },
     parameters: {
@@ -34,7 +34,7 @@ export const EmptyList: ElementStory<PayoutsOverviewExternalProps> = {
     },
 };
 
-export const ErrorList: ElementStory<PayoutsOverviewExternalProps> = {
+export const ErrorList: ElementStory<PayoutsOverviewDomainProps> = {
     name: 'Error - List',
     args: { mockedApi: true },
     parameters: {
@@ -42,7 +42,15 @@ export const ErrorList: ElementStory<PayoutsOverviewExternalProps> = {
     },
 };
 
-export const DataCustomization: ElementStory<PayoutsOverviewExternalProps> = {
+export const OverviewRoleNotAssigned: ElementStory<PayoutsOverviewDomainProps> = {
+    name: 'Error - Role not assigned',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...PAYOUTS_OVERVIEW_HANDLERS.permissionError },
+    },
+};
+
+export const DataCustomization: ElementStory<PayoutsOverviewDomainProps> = {
     name: 'Data customization',
     args: {
         mockedApi: true,

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, provide, ref, watch } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import { BentoAlert, BentoButton, BentoStep, BentoStepper, BentoTypography } from '@adyen/bento-vue3';
 import type { PaymentLinkCreationProps, PaymentLinkSettingsItem } from '../../../../../domain/src';
 import { usePaymentLinkFormData } from './usePaymentLinkFormData';
@@ -11,6 +10,7 @@ import PaymentLinkSettingsContainer from '../../../PaymentLinkSettings/component
 import FormStepRenderer from './FormStepRenderer.vue';
 import ArrowRightIcon from '@adyen/ui-assets-icons-16/vue/arrow-right';
 import styles from './PaymentLinkCreationForm.module.scss';
+import { usePayByLinkContext } from '../../../integration/context';
 
 type PaymentLinkCreationFormProps = Pick<
     PaymentLinkCreationProps,
@@ -22,7 +22,8 @@ type PaymentLinkCreationFormProps = Pick<
 const props = defineProps<PaymentLinkCreationFormProps>();
 const emit = defineEmits<{ 'payment-link-created': [data: any] }>();
 
-const { i18n } = useCoreContext();
+const { i18n, provideTranslationOverrides } = usePayByLinkContext();
+if (!props.embeddedInOverview) provideTranslationOverrides();
 const TERMS_AND_CONDITIONS_SETTINGS_ITEMS: PaymentLinkSettingsItem[] = ['termsAndConditions'];
 
 const data = usePaymentLinkFormData(() => ({ storeIds: props.storeIds, fieldsConfig: props.fieldsConfig }));
@@ -124,7 +125,7 @@ function navigateBackFromTermsAndConditions() {
 async function handleSubmit() {
     if (!wizard.validateStep()) return;
     const { store, payload } = wizard.getApiPayload();
-    const createPaymentLink = data.createPaymentLink;
+    const createPaymentLink = data.createPaymentLink.value;
     if (typeof createPaymentLink !== 'function') return;
 
     isSubmitting.value = true;
@@ -198,19 +199,19 @@ async function handleSubmit() {
                     />
 
                     <BentoAlert v-if="showConfigurationError" :class="styles.errorAlert" type="critical" role="alert">
-                        {{ i18n.get('common.errors.somethingWentWrong') }}
+                        {{ i18n.get('payByLink.errors.somethingWentWrong') }}
                         <template #description>
                             <span>{{ i18n.get('payByLink.creation.errors.unavailable') }}</span>
-                            <span>{{ i18n.get('common.errors.retry') }}</span>
+                            <span>{{ i18n.get('payByLink.errors.retry') }}</span>
                         </template>
                     </BentoAlert>
 
                     <BentoAlert v-if="accountIsMisconfigured" :class="styles.warningAlert" type="warning" role="alert">
                         {{ i18n.get('payByLink.common.errors.accountConfiguration') }}
                         <template #description>
-                            <span>{{ i18n.get('common.errors.contactSupport') }}</span>
+                            <span>{{ i18n.get('payByLink.errors.contactSupport') }}</span>
                             <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                                {{ i18n.get('common.actions.contactSupport.labels.reachOut') }}
+                                {{ i18n.get('payByLink.actions.contactSupport.labels.reachOut') }}
                             </BentoButton>
                         </template>
                     </BentoAlert>
@@ -222,7 +223,7 @@ async function handleSubmit() {
                                 <li v-for="(message, index) in mappedInvalidFields" :key="index">{{ message }}</li>
                             </ul>
                             <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                                {{ i18n.get('common.actions.contactSupport.labels.reachOut') }}
+                                {{ i18n.get('payByLink.actions.contactSupport.labels.reachOut') }}
                             </BentoButton>
                         </template>
                     </BentoAlert>

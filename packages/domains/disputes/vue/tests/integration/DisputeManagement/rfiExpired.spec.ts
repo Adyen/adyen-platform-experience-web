@@ -12,7 +12,7 @@ test.describe('Request for information - Expired', () => {
         await expect(page.getByText('Request for information', { exact: true })).toBeVisible();
         await expect(page.getByText('Expired', { exact: true })).toBeVisible();
 
-        await expect(page.getByRole('alert')).toBeVisible();
+        await expect(page.getByRole('status')).toBeVisible();
 
         await expect(page.getByText('This request for information wasn’t responded to and was lost by default.')).toBeVisible();
     });

@@ -1,5 +1,4 @@
 import { computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import type { CustomColumn } from '@integration-components/types';
 import { hasCustomField } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
@@ -38,12 +37,12 @@ function addAutoWidth<TExtra extends object>(column: TableColumn<TExtra>): Table
     return column;
 }
 
-function createStandardColumns<T extends string, TExtra extends object>(
+function createStandardColumns<T extends string, TExtra extends object, TTranslationKey extends string>(
     fields: Readonly<T[]>,
-    fieldsKeys: { [k in T]?: string },
+    fieldsKeys: { [k in T]?: TTranslationKey },
     customColumns: ReadonlyMap<string, NormalizedCustomColumn>,
     configuredColumns: Partial<Record<T, TableColumnOptions<TExtra>>>,
-    getLabel: (key: string) => string,
+    getLabel: (key: TTranslationKey) => string,
     resolveLabel?: (field: T, defaultLabel: string) => string
 ): TableColumn<TExtra>[] {
     const columns: TableColumn<TExtra>[] = [];
@@ -95,7 +94,7 @@ function createCustomColumns<TExtra extends object>(
     return columns;
 }
 
-export interface UseTableColumnsOptions<T extends string, TExtra extends object = object> {
+export interface UseTableColumnsOptions<T extends string, TExtra extends object = object, TTranslationKey extends string = string> {
     /**
      * All known standard field names for this table.
      * Fields present here but absent from `fieldsKeys` are treated as "reserved"
@@ -108,7 +107,9 @@ export interface UseTableColumnsOptions<T extends string, TExtra extends object 
      * Maps each standard field key to its i18n translation key.
      * Only fields with an entry here are rendered as columns.
      */
-    fieldsKeys: { [k in T]?: string };
+    fieldsKeys: { [k in T]?: TTranslationKey };
+    /** Resolves a standard column translation key. */
+    translate: (key: TTranslationKey) => string;
     /** Optional defaults for standard fields, including responsive visibility. */
     columnConfig?: () => Partial<Record<T, TableColumnOptions<TExtra>>>;
     /** Optional defaults applied to non-standard custom columns. */
@@ -127,16 +128,16 @@ export interface UseTableColumnsOptions<T extends string, TExtra extends object 
  * standard fields and optional consumer-supplied custom columns, handling
  * hidden-column filtering and i18n label resolution.
  */
-export function useTableColumns<T extends string, TExtra extends object = object>({
+export function useTableColumns<T extends string, TExtra extends object = object, TTranslationKey extends string = string>({
     fields,
     customColumns,
     fieldsKeys,
+    translate,
     columnConfig,
     customColumnDefaults,
     resolveStandardColumnLabel,
     resolveCustomColumnLabel,
-}: UseTableColumnsOptions<T, TExtra>) {
-    const { i18n } = useCoreContext();
+}: UseTableColumnsOptions<T, TExtra, TTranslationKey>) {
     const standardFields = new Set<string>(fields);
 
     const normalizedCustomColumns = computed(() => {
@@ -164,14 +165,7 @@ export function useTableColumns<T extends string, TExtra extends object = object
         const configuredCustomColumnDefaults = customColumnDefaults?.();
 
         return [
-            ...createStandardColumns(
-                fields,
-                fieldsKeys,
-                customMap,
-                configuredColumns,
-                translationKey => i18n.get(translationKey as Parameters<typeof i18n.get>[0]),
-                resolveStandardColumnLabel
-            ),
+            ...createStandardColumns(fields, fieldsKeys, customMap, configuredColumns, translate, resolveStandardColumnLabel),
             ...createCustomColumns(normalizedCustomColumns.value, standardFields, configuredCustomColumnDefaults, resolveCustomColumnLabel),
         ];
     });

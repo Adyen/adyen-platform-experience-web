@@ -1,39 +1,54 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { useBalanceAccounts, ErrorMessageDisplay } from '@integration-components/composables-vue';
+import { ref, computed, watch, onUnmounted } from 'vue';
+import { DataOverviewError, getErrorMessage, useDataOverviewError } from '@integration-components/composables-vue';
 import { isFunction } from '@integration-components/utils';
 import { BentoLoadingIndicator } from '@adyen/bento-vue3';
+import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
+import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import PayoutData from './PayoutData.vue';
 import { usePayoutDetails } from '../composables/usePayoutDetails';
 import { PAYOUT_TABLE_FIELDS } from '../../PayoutsOverview/constants';
 import type { PayoutDetailsCustomization } from '../types';
 import type { CustomDataRetrieved } from '@integration-components/types';
 import styles from './PayoutDetailsContainer.module.scss';
+import { usePayoutsContext } from '../../integration/context';
+import { PAYOUTS_DATA_OVERVIEW_ACTION_KEYS, PAYOUTS_ERROR_MESSAGE_KEYS } from '../../integration/translationKeys';
+import type { PayoutDetailsRenderMode } from '../../integration/types';
+import { payoutDetailsEventBridge, type PayoutDetailsEmits, type PayoutDetailsEventMap } from '../../events';
 import '@adyen/bento-vue3/styles/bento-light';
 
-const props = defineProps<{
-    id: string;
-    date: string;
-    balanceAccountDescription?: string;
-    hideTitle?: boolean;
-    onContactSupport?: () => void;
-    dataCustomization?: { details?: PayoutDetailsCustomization };
-}>();
+const props = withDefaults(
+    defineProps<{
+        id: string;
+        date: string;
+        balanceAccountDescription?: string;
+        hideTitle?: boolean;
+        onContactSupport?: () => void;
+        showContactSupport?: boolean;
+        dataCustomization?: { details?: PayoutDetailsCustomization };
+        renderMode: PayoutDetailsRenderMode;
+    }>(),
+    { showContactSupport: undefined }
+);
+const emit = defineEmits<PayoutDetailsEmits>();
+const hasContactSupportListener = payoutDetailsEventBridge.hasListener('contactSupportRequested');
+const canContactSupport = computed(() => props.showContactSupport ?? (!!props.onContactSupport || hasContactSupportListener.value));
+payoutDetailsEventBridge.provideEvents({
+    contactSupportRequested: payload => emit('contactSupportRequested', payload),
+});
+
+const { balanceAccounts, i18n, provideTranslationOverrides, runtime } = usePayoutsContext();
+if (props.renderMode === 'standalone') provideTranslationOverrides();
 
 const { data, error, isFetching } = usePayoutDetails(() => ({
-    fetchEnabled: !!props.id && !!props.date,
+    fetchEnabled: runtime.available === true && !!props.id && !!props.date,
     balanceAccountId: props.id,
     createdAt: props.date,
 }));
 
-// Balance-account description fallback: only fetched when consumer doesn't pass one.
-const hasDescription = computed(() => !!props.balanceAccountDescription);
-const { balanceAccounts } = useBalanceAccounts(
-    () => props.id,
-    () => !hasDescription.value
+const resolvedBalanceAccountDescription = computed(
+    () => props.balanceAccountDescription || balanceAccounts.accounts?.find(account => account.id === props.id)?.description
 );
-
-const resolvedBalanceAccountDescription = computed(() => props.balanceAccountDescription || balanceAccounts.value?.[0]?.description);
 
 // Extra (consumer-supplied) fields, retrieved via dataCustomization.details.onDataRetrieve.
 // Re-fetched whenever the underlying details data changes.
@@ -69,22 +84,43 @@ watch(
     { immediate: true }
 );
 
-const showError = computed(() => !!error.value);
-const showLoadingPlaceholder = computed(() => isFetching.value && !data.value && !error.value);
+const activeError = computed(() => (runtime.available === false ? new Error() : error.value));
+const requestContactSupport = () => {
+    const payload: PayoutDetailsEventMap['contactSupportRequested'] = { component: 'details' };
+    emit('contactSupportRequested', payload);
+    props.onContactSupport?.();
+};
+const errorInfo = computed(() =>
+    runtime.available === false
+        ? // Mirrors the Preact ConfigProvider permission-unavailable composition.
+          { title: 'payouts.errors.somethingWentWrong', messages: ['payouts.details.errors.unavailable', 'payouts.errors.contactSupport'] }
+        : getErrorMessage({
+              error: activeError.value,
+              keys: PAYOUTS_ERROR_MESSAGE_KEYS,
+              message: 'payouts.details.errors.unavailable',
+              onContactSupport: canContactSupport.value ? requestContactSupport : undefined,
+          })
+);
+const { presentation: errorPresentation } = useDataOverviewError({
+    actionKeys: PAYOUTS_DATA_OVERVIEW_ACTION_KEYS,
+    copyIcon: CopyIcon,
+    errorInfo,
+    onRefresh: () => runtime.refresh(),
+    refreshIcon: RefreshIcon,
+    translate: (key, options) => i18n.get(key, options),
+});
+const showError = computed(() => !!activeError.value);
+const showLoadingPlaceholder = computed(() => runtime.available === undefined || (isFetching.value && !data.value && !activeError.value));
+
+onUnmounted(() => {
+    extraFieldsRequestId++;
+});
 </script>
 
 <template>
     <div>
         <div v-if="showError">
-            <ErrorMessageDisplay
-                :error="error"
-                :error-message="'payouts.details.errors.unavailable'"
-                :on-contact-support="props.onContactSupport"
-                with-image
-                :outlined="false"
-                :absolute-position="false"
-                :with-background="false"
-            />
+            <DataOverviewError v-bind="errorPresentation" join-messages />
         </div>
 
         <div v-else-if="showLoadingPlaceholder" :class="styles.loading" aria-busy="true">
@@ -99,6 +135,7 @@ const showLoadingPlaceholder = computed(() => isFetching.value && !data.value &&
             :extra-fields="extraFields"
             :data-customization="props.dataCustomization"
             :hide-title="props.hideTitle"
+            :render-mode="props.renderMode"
         />
     </div>
 </template>

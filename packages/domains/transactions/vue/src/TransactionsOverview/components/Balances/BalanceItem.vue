@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useCoreContext } from '@integration-components/core/vue';
 import SummaryItemPair from '../SummaryItemPair/SummaryItemPair.vue';
+import { useTransactionsContext } from '../../../integration/context';
 
 const props = defineProps<{
     formattedAvailable: string;
@@ -13,7 +13,7 @@ const emit = defineEmits<{
     widthsSet: [widths: number[]];
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
 </script>
 
 <template>

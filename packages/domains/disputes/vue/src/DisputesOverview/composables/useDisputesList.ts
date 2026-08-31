@@ -1,10 +1,10 @@
 import { computed, watch } from 'vue';
-import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
 import { isFunction, listFrom } from '@integration-components/utils';
-import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
-import type { DisputesOverviewFilters } from '../../../../domain/src';
+import type { IDisputeListItem, IDisputeReasonCategory, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
+import { DISPUTE_PAYMENT_SCHEMES, type DisputesOverviewFilters } from '../../../../domain/src';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
+import { useDisputesContext } from '../../integration/context';
 
 interface UseDisputesListProps {
     fetchEnabled: boolean;
@@ -21,9 +21,8 @@ interface UseDisputesListProps {
 }
 
 export function useDisputesList(props: () => UseDisputesListProps) {
-    const config = useConfigContext();
-    const getDisputeList = computed(() => config.endpoints.getDisputeList);
-    const canFetch = computed(() => isFunction(getDisputeList.value) && props().fetchEnabled);
+    const { runtime } = useDisputesContext();
+    const canFetch = computed(() => props().fetchEnabled);
 
     const getFiltersKey = () => {
         const { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil } = props();
@@ -50,23 +49,18 @@ export function useDisputesList(props: () => UseDisputesListProps) {
             return JSON.stringify({ balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil, refreshToken });
         },
         fetchPage: async ({ cursor, limit, signal }) => {
-            const fn = getDisputeList.value;
-            if (!isFunction(fn)) return { records: undefined };
-
             const { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil } = props();
-
-            const query: NonNullable<Parameters<NonNullable<typeof config.endpoints.getDisputeList>>[1]>['query'] = {
+            const json = await runtime.getDisputes({
                 statusGroup,
                 limit,
                 ...(balanceAccountId ? { balanceAccountId } : {}),
-                reasonCategories: listFrom(reasonCategories) as NonNullable<typeof query.reasonCategories>,
-                schemeCodes: listFrom(schemeCodes) as NonNullable<typeof query.schemeCodes>,
+                reasonCategories: listFrom<IDisputeReasonCategory>(reasonCategories),
+                schemeCodes: listFrom<keyof typeof DISPUTE_PAYMENT_SCHEMES>(schemeCodes),
                 ...(createdSince ? { createdSince } : {}),
                 ...(createdUntil ? { createdUntil } : {}),
                 ...(cursor ? { cursor } : {}),
-            };
-
-            const json = await fn({ signal, errorLevel: 'error' }, { query });
+                signal,
+            });
 
             return {
                 records: json?.data,

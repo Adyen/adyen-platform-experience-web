@@ -1,7 +1,6 @@
 import { ref, computed, watch, onUnmounted } from 'vue';
-import { useConfigContext } from '@integration-components/core/vue';
-import { isFunction } from '@integration-components/utils';
 import type { IPayoutDetails } from '@integration-components/types';
+import { usePayoutsContext } from '../../integration/context';
 
 interface UsePayoutDetailsProps {
     fetchEnabled: boolean;
@@ -16,20 +15,18 @@ interface UsePayoutDetailsProps {
  * update or unmount.
  */
 export function usePayoutDetails(props: () => UsePayoutDetailsProps) {
-    const config = useConfigContext();
+    const { runtime } = usePayoutsContext();
 
     const data = ref<IPayoutDetails | undefined>(undefined);
     const error = ref<Error | undefined>(undefined);
     const isFetching = ref(false);
     let abortController: AbortController | null = null;
 
-    const getPayout = computed(() => config.endpoints.getPayout);
-    const canFetch = computed(() => isFunction(getPayout.value) && props().fetchEnabled);
+    const canFetch = computed(() => props().fetchEnabled);
 
     async function runFetch() {
-        const fn = getPayout.value;
         const { balanceAccountId, createdAt } = props();
-        if (!isFunction(fn) || !canFetch.value || !balanceAccountId || !createdAt) return;
+        if (!canFetch.value || !balanceAccountId || !createdAt) return;
 
         if (abortController) abortController.abort();
         abortController = new AbortController();
@@ -39,7 +36,7 @@ export function usePayoutDetails(props: () => UsePayoutDetailsProps) {
         error.value = undefined;
 
         try {
-            const json = await fn({ signal }, { query: { balanceAccountId, createdAt } });
+            const json = await runtime.getPayout({ balanceAccountId, createdAt, signal });
             if (!signal.aborted) {
                 data.value = json as IPayoutDetails;
             }
@@ -63,7 +60,14 @@ export function usePayoutDetails(props: () => UsePayoutDetailsProps) {
     watch(
         fetchKey,
         newKey => {
-            if (!newKey) return;
+            abortController?.abort();
+            abortController = null;
+            if (!newKey) {
+                data.value = undefined;
+                error.value = undefined;
+                isFetching.value = false;
+                return;
+            }
             data.value = undefined;
             void runFetch();
         },

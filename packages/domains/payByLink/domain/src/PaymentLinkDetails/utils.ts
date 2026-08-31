@@ -153,6 +153,11 @@ export const buildPaymentLinkListItems = (
     };
 };
 
+/**
+ * Shared with the Preact elements, which render these keys against the public V1 catalog.
+ * The Vue elements resolve the same error content through their own domain-keyed copy in
+ * `payByLink/vue/src/PaymentLinkDetails/utils/getPaymentLinkErrorMessageContent.ts`.
+ */
 export const getPaymentLinkErrorMessageContent = (
     error: ErrorLike,
     errorMessage: TranslationKey,

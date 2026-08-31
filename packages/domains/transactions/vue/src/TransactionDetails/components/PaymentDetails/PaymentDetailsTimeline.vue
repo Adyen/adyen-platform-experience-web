@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
-import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { BentoDateFormat, BentoTimeline, BentoTimelineItem, BentoTimelineShowMorePlacement } from '@adyen/bento-vue3';
 import { getTransactionTimelineTxStatus, getTransactionTimelineTxType } from '../../../../../domain/src';
 import { DATE_FORMAT_TRANSACTIONS } from '@integration-components/utils/datetime/formats';
 import type { TransactionDetails } from '../../../../../domain/src';
+import { useTransactionsContext } from '../../../integration/context';
+import { formatDate } from '../../../integration/format';
 
 const props = defineProps<{
     transaction: TransactionDetails;
 }>();
 
-const { i18n } = useCoreContext();
-const { dateFormat } = useTimezoneAwareDateFormatting(() => props.transaction.balanceAccount?.timeZone);
+const { i18n } = useTransactionsContext();
 
 const events = computed(() => props.transaction.events ?? []);
 
@@ -27,7 +26,7 @@ function getFixedType(status: string, formattedType: string): string {
 }
 
 function formatTimestamp(date: string): string {
-    return dateFormat(date, DATE_FORMAT_TRANSACTIONS);
+    return formatDate(i18n, date, DATE_FORMAT_TRANSACTIONS, props.transaction.balanceAccount?.timeZone);
 }
 </script>
 

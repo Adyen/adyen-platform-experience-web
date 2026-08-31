@@ -1,25 +1,22 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref } from 'vue';
 import { BentoDataGrid, BentoToast, BentoTypography, useBentoToastController } from '@adyen/bento-vue3';
-import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import {
+    DataOverviewError,
     useCustomColumnsData,
     useTableColumns,
     CustomDataCell,
-    useResponsiveContainer,
-    containerQueries,
-    DataOverviewError,
+    type DataOverviewErrorPresentation,
 } from '@integration-components/composables-vue';
+import { useContainerQuery } from '@integration-components/composables-vue/useContainerQuery';
+import { containerQueries } from '@integration-components/composables-vue/containerQueries';
 import { DATE_FORMAT_REPORTS, downloadBlob } from '@integration-components/utils';
+import { useReportsContext } from '../../integration/context';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
-import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import type { BentoDatagridDataItem, BentoDataGridRowActionsProp } from '@adyen/bento-vue3';
 import type { CustomColumn, IReport, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
-import { getReportType, REPORTS_DOWNLOAD_DISABLED_TIMEOUT, REPORTS_TABLE_FIELDS } from '../../../../domain/src';
+import { getReportType, isReportsTranslationKey, REPORTS_DOWNLOAD_DISABLED_TIMEOUT, REPORTS_TABLE_FIELDS } from '../../../../domain/src';
 import DownloadErrorIcon from './DownloadErrorIcon.vue';
 import SmallLoadingIndicator from './SmallLoadingIndicator.vue';
 import styles from './ReportsTable.module.scss';
@@ -43,8 +40,7 @@ const withoutItem = <T,>(set: Set<T>, item: T) => {
 const props = defineProps<{
     balanceAccountId: string | undefined;
     loading: boolean;
-    error?: Error;
-    onContactSupport?: () => void;
+    errorPresentation?: DataOverviewErrorPresentation;
     showPagination: boolean;
     data: IReport[] | undefined;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<ReportsTableFields>>[];
@@ -59,11 +55,7 @@ const props = defineProps<{
     currentPage?: number;
 }>();
 
-const { i18n } = useCoreContext();
-// Keep the reactive proxy here — destructuring `useConfigContext()` would unwrap
-// the `refreshing` primitive into a one-time snapshot and capture a stale
-// `endpoints` reference, breaking reactivity when the session is refreshed.
-const config = useConfigContext();
+const { i18n, runtime } = useReportsContext();
 
 // ── Download freeze logic ──
 const frozen = ref(false);
@@ -99,7 +91,7 @@ onUnmounted(() => {
 const { addToast } = useBentoToastController();
 let activeDownloadErrorToast: ReturnType<typeof addToast> | undefined;
 
-function onDownloadErrorAlert(reportKey: string, error?: AdyenPlatformExperienceError) {
+function onDownloadErrorAlert(reportKey: string, error?: { errorCode?: string }) {
     failedReportKeys.value = withItem(failedReportKeys.value, reportKey);
 
     // prettier-ignore
@@ -113,9 +105,6 @@ function onDownloadErrorAlert(reportKey: string, error?: AdyenPlatformExperience
 
 // ── Download handler ──
 async function handleDownload(item: IReport) {
-    const downloadReport = config.endpoints.downloadReport;
-    if (typeof downloadReport !== 'function') return;
-
     const reportKey = getReportKey(item);
     if (frozen.value || isDownloadingReport(reportKey)) return;
 
@@ -128,21 +117,16 @@ async function handleDownload(item: IReport) {
     }
 
     try {
-        const result = await downloadReport(
-            {},
-            {
-                query: {
-                    balanceAccountId: props.balanceAccountId ?? '',
-                    createdAt: item.createdAt ?? '',
-                    type: item.type ?? '',
-                },
-            }
-        );
+        const result = await runtime.downloadReport({
+            balanceAccountId: props.balanceAccountId ?? '',
+            createdAt: item.createdAt ?? '',
+            type: item.type ?? '',
+        });
         if (result?.blob) {
             downloadBlob(result, 'report.csv');
         }
     } catch (e) {
-        onDownloadErrorAlert(reportKey, e as AdyenPlatformExperienceError);
+        onDownloadErrorAlert(reportKey, e as { errorCode?: string });
     } finally {
         downloadingReportKeys.value = withoutItem(downloadingReportKeys.value, reportKey);
         retryingReportKeys.value = withoutItem(retryingReportKeys.value, reportKey);
@@ -150,7 +134,8 @@ async function handleDownload(item: IReport) {
 }
 
 // ── Responsive ──
-const isMobile = useResponsiveContainer(containerQueries.down.sm);
+const containerRef = ref<HTMLElement | null>(null);
+const isMobile = useContainerQuery(containerQueries.down.sm, containerRef);
 
 // ── Custom columns ──
 const {
@@ -164,9 +149,10 @@ const {
         createdAt: 'reports.overview.list.fields.createdAt',
         reportType: 'reports.overview.list.fields.reportType',
     },
+    translate: key => i18n.get(key),
     resolveCustomColumnLabel: key => {
-        const labelKey = `reports.overview.list.fields.${key}` as any;
-        return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
+        const labelKey = `reports.overview.list.fields.${key}`;
+        return isReportsTranslationKey(labelKey) ? i18n.get(labelKey) : key;
     },
 });
 
@@ -192,7 +178,7 @@ const columns = computed(() => {
     return desktopColumns.value;
 });
 
-const isLoading = computed(() => props.loading || config.refreshing || loadingCustomRecords.value);
+const isLoading = computed(() => props.loading || runtime.refreshing || loadingCustomRecords.value);
 
 // ── Grid data ──
 const gridData = computed<BentoDatagridDataItem[]>(() => {
@@ -221,7 +207,7 @@ const getRowActions: BentoDataGridRowActionsProp = (item: BentoDatagridDataItem)
     const ButtonIcon = failedReportKeys.value.has(reportKey) ? DownloadErrorIcon : DownloadIcon;
 
     const label = isDownloading
-        ? `${i18n.get('common.actions.download.labels.inProgress')}..`
+        ? `${i18n.get('reports.actions.download.labels.inProgress')}..`
         : i18n.get('reports.overview.list.controls.downloadReport.label');
 
     return [
@@ -251,7 +237,7 @@ const emptyStateProps = computed(() => ({
     image: 'no-results-found' as const,
     variant: 'embedded' as const,
     title: i18n.get('reports.overview.errors.listEmpty'),
-    description: i18n.get('common.errors.updateFilters'),
+    description: i18n.get('reports.errors.updateFilters'),
 }));
 
 function handleNavigate(page: number) {
@@ -266,25 +252,16 @@ function handleItemsPage(size: number) {
     props.updateLimit?.(size);
 }
 
-const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
-
 function formatDate(dateStr: string): string {
-    return dateFormat(dateStr, DATE_FORMAT_REPORTS);
+    return i18n.date(dateStr, { timeZone: 'UTC', ...DATE_FORMAT_REPORTS });
 }
 </script>
 
 <template>
-    <div :class="styles.root">
+    <div ref="containerRef" :class="styles.root">
         <BentoToast />
 
-        <DataOverviewError
-            v-if="props.error"
-            :error="props.error"
-            :error-message="'reports.overview.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
-            :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
-        />
+        <DataOverviewError v-if="props.errorPresentation" v-bind="props.errorPresentation" />
 
         <BentoDataGrid
             v-else

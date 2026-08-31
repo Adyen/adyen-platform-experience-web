@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
-import { BentoTypography, BentoSegmentedControl, BentoCard } from '@adyen/bento-vue3';
+import { BentoCard, BentoTypography, BentoSegmentedControl } from '@adyen/bento-vue3';
 import type { BentoSegmentedControlItem } from '@adyen/bento-vue3';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
 import type { IBalanceAccountBase } from '../../types';
 import styles from './TransactionsOverview.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
 
 defineProps<{
     hideTitle?: boolean;
     balanceAccounts?: IBalanceAccountBase[];
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
 const { transactionsViewState } = useTransactionsOverviewContext();
 const { activeView, onViewChange, viewTabs } = transactionsViewState;
 

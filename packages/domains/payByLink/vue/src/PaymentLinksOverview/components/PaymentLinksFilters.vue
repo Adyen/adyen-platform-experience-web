@@ -2,12 +2,12 @@
 import { ref, computed, watch } from 'vue';
 import { BentoFilterBar, BentoFilterItemType } from '@adyen/bento-vue3';
 import type { BentoFilterBarModel, BentoFilterValues, BentoDateRangePickerValue } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
 import { endOfDay, now, quickSelectDateRanges, startOfDay, toUTCISOStringKeepingLocalDateTime } from '@integration-components/utils';
 import { EARLIEST_PAYMENT_LINK_DATE_DAYS } from '../constants';
 import type { IPaymentLinkFilterStatusGroup, IPaymentLinkStatus, IPaymentLinkStatusGroup, IPaymentLinkType } from '@integration-components/types';
 import type { StoreData } from '../../../../domain/src';
 import { usePaymentLinkLabels } from '../composables/usePaymentLinkLabels';
+import { usePayByLinkContext } from '../../integration/context';
 
 export interface PaymentLinksFiltersValue {
     statuses: string[];
@@ -29,7 +29,7 @@ const props = defineProps<{
     onChange?: (value: PaymentLinksFiltersValue) => void;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = usePayByLinkContext();
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
 
 function cloneDateRange(value: BentoDateRangePickerValue): BentoDateRangePickerValue {
@@ -70,12 +70,12 @@ function normalizeDateRange(value: BentoDateRangePickerValue): BentoDateRangePic
 }
 
 const quickSelectRanges = [
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.last7Days'), value: 'last7Days', data: quickSelectDateRanges.last7Days },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.last30Days'), value: 'last30Days', data: quickSelectDateRanges.last30Days },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.thisWeek'), value: 'thisWeek', data: quickSelectDateRanges.thisWeek },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.lastWeek'), value: 'lastWeek', data: quickSelectDateRanges.lastWeek },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.thisMonth'), value: 'thisMonth', data: quickSelectDateRanges.thisMonth },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.lastMonth'), value: 'lastMonth', data: quickSelectDateRanges.lastMonth },
+    { label: i18n.get('payByLink.filters.types.date.rangeSelect.options.last7Days'), value: 'last7Days', data: quickSelectDateRanges.last7Days },
+    { label: i18n.get('payByLink.filters.types.date.rangeSelect.options.last30Days'), value: 'last30Days', data: quickSelectDateRanges.last30Days },
+    { label: i18n.get('payByLink.filters.types.date.rangeSelect.options.thisWeek'), value: 'thisWeek', data: quickSelectDateRanges.thisWeek },
+    { label: i18n.get('payByLink.filters.types.date.rangeSelect.options.lastWeek'), value: 'lastWeek', data: quickSelectDateRanges.lastWeek },
+    { label: i18n.get('payByLink.filters.types.date.rangeSelect.options.thisMonth'), value: 'thisMonth', data: quickSelectDateRanges.thisMonth },
+    { label: i18n.get('payByLink.filters.types.date.rangeSelect.options.lastMonth'), value: 'lastMonth', data: quickSelectDateRanges.lastMonth },
 ];
 
 const defaultDateRange = cloneDateRange(quickSelectDateRanges.last30Days);
@@ -122,7 +122,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
     config.push({
         field: 'dateRange',
-        label: i18n.get('common.filters.types.date.label'),
+        label: i18n.get('payByLink.filters.types.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         defaultValue: defaultDateRange,
         options: {

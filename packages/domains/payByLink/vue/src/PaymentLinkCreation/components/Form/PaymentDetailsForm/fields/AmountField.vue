@@ -5,9 +5,9 @@ import type { BentoInputDropdownProps } from '@adyen/bento-vue3';
 import FieldWrapper from '../../../fields/FieldWrapper.vue';
 import { useWizard } from '../../../../composables/wizardContext';
 import { MAX_AMOUNT } from '../../../../../../../domain/src';
-import { useCoreContext } from '@integration-components/core/vue';
-import { formatAmount, normalizeAmountInput } from '@integration-components/core/Localization/amount/amount-util';
+import { formatAmount, normalizeAmountInput } from '../../../../../integration/format';
 import styles from './AmountField.module.scss';
+import { usePayByLinkContext } from '../../../../../integration/context';
 
 const props = defineProps<{
     label: string;
@@ -15,7 +15,7 @@ const props = defineProps<{
 }>();
 
 const wizard = useWizard();
-const { i18n } = useCoreContext();
+const { i18n } = usePayByLinkContext();
 const valueConfig = computed(() => wizard.getFieldConfig('amount.value'));
 const currencyConfig = computed(() => wizard.getFieldConfig('amount.currency'));
 const error = computed(() => wizard.getError('amount.value'));
@@ -35,7 +35,7 @@ const dropdownProps = computed<BentoInputDropdownProps>(() => ({
     modelValue: currencyValue.value,
     readonly: currencyConfig.value.readOnly,
     'aria-label': i18n.get('payByLink.creation.fields.amount.currency.ariaLabel'),
-    placeholder: i18n.get('common.inputs.select.placeholder'),
+    placeholder: i18n.get('payByLink.inputs.select.placeholder'),
     class: styles.amountCurrency,
 }));
 

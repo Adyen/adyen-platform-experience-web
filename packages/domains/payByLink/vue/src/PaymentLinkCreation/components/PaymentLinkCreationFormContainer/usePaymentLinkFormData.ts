@@ -1,20 +1,18 @@
 import { computed, ref, watch } from 'vue';
-import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import type { IPaymentLinkConfiguration, IPaymentLinkCountry, IPaymentLinkSettings, IPaymentLinkStore } from '@integration-components/types';
-import { getFormSteps, type FormStepConfig } from '../../../../../domain/src';
+import { getFormSteps, type FormStepConfig, type PaymentLinkCreationProps } from '../../../../../domain/src';
 import type { TranslationKey } from '@integration-components/core';
-import type { PaymentLinkCreationExternalProps } from '../../types';
+import { usePayByLinkContext } from '../../../integration/context';
 
 interface CountryDatasetItem {
     id: string;
     name: string;
 }
 
-export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExternalProps, 'storeIds' | 'fieldsConfig'>) {
-    const { i18n, getCdnDataset } = useCoreContext();
-    const config = useConfigContext();
-    const endpoints = config.endpoints;
+export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationProps, 'storeIds' | 'fieldsConfig'>) {
+    const { i18n, runtime } = usePayByLinkContext();
+    const { getCdnDataset } = runtime;
 
     const selectedStore = ref('');
     const setSelectedStore = (storeId: string) => {
@@ -33,9 +31,13 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
     const isFetchingCountries = ref(false);
     const countryDatasetData = ref<CountryDatasetItem[] | undefined>(undefined);
     const isFetchingCountryDataset = ref(false);
+    const getPayByLinkStores = computed(() => runtime.endpoints.getPayByLinkStores);
+    const getPayByLinkConfiguration = computed(() => runtime.endpoints.getPayByLinkConfiguration);
+    const getPayByLinkSettings = computed(() => runtime.endpoints.getPayByLinkSettings);
+    const getCountries = computed(() => runtime.endpoints.countries);
 
     async function fetchStores() {
-        const fn = endpoints.getPayByLinkStores;
+        const fn = getPayByLinkStores.value;
         if (!isFunction(fn)) return;
         isFetchingStores.value = true;
         try {
@@ -48,7 +50,7 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
     }
 
     async function fetchConfiguration(storeId: string) {
-        const fn = endpoints.getPayByLinkConfiguration;
+        const fn = getPayByLinkConfiguration.value;
         if (!isFunction(fn) || !storeId) return;
         isFetchingConfiguration.value = true;
         configurationError.value = undefined;
@@ -63,7 +65,7 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
     }
 
     async function fetchSettings(storeId: string) {
-        const fn = endpoints.getPayByLinkSettings;
+        const fn = getPayByLinkSettings.value;
         if (!isFunction(fn) || !storeId) return;
         isFetchingSettings.value = true;
         settingsError.value = undefined;
@@ -78,7 +80,7 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
     }
 
     async function fetchCountries() {
-        const fn = endpoints.countries;
+        const fn = getCountries.value;
         if (!isFunction(fn)) return;
         isFetchingCountries.value = true;
         try {
@@ -125,7 +127,8 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
     });
 
     const termsAndConditionsProvisioned = computed(() => !!settingsData.value?.termsOfServiceUrl);
-    const canModifySettings = computed(() => isFunction(endpoints.savePayByLinkSettings));
+    const canModifySettings = computed(() => isFunction(runtime.endpoints.savePayByLinkSettings));
+    const createPaymentLink = computed(() => runtime.endpoints.createPBLPaymentLink);
 
     const getFieldConfig = (field: keyof IPaymentLinkConfiguration) => configurationData.value?.[field];
 
@@ -135,9 +138,11 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
 
     const formSteps = computed<ReadonlyArray<FormStepConfig>>(() => {
         const skipStoreStep = storesSelectorItems.value.length === 1 && termsAndConditionsProvisioned.value;
-        return getFormSteps({ i18n, getFieldConfig, visibilityConfig: props().fieldsConfig?.visibility }).filter(
-            step => !(step.id === 'store' && skipStoreStep)
-        );
+        return getFormSteps({
+            i18n: i18n as Parameters<typeof getFormSteps>[0]['i18n'],
+            getFieldConfig,
+            visibilityConfig: props().fieldsConfig?.visibility,
+        }).filter(step => !(step.id === 'store' && skipStoreStep));
     });
 
     const stepperItems = computed(() =>
@@ -160,19 +165,37 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
     const accountIsMisconfigured = computed(() => !!storesData.value?.data && storesData.value.data.length === 0);
     const displayConfigurationError = (currentStepId: string) => currentStepId !== 'store' && !configurationData.value;
 
-    watch(selectedStore, storeId => {
-        if (storeId) {
-            void fetchConfiguration(storeId);
-            void fetchSettings(storeId);
-        }
-    });
+    watch(getPayByLinkStores, () => void fetchStores(), { immediate: true });
+
+    watch(
+        [selectedStore, getPayByLinkConfiguration],
+        ([storeId]) => {
+            if (storeId) void fetchConfiguration(storeId);
+        },
+        { immediate: true }
+    );
+
+    watch(
+        [selectedStore, getPayByLinkSettings],
+        ([storeId]) => {
+            if (storeId) void fetchSettings(storeId);
+        },
+        { immediate: true }
+    );
+
+    watch(
+        [isCountriesQueryEnabled, getCountries],
+        ([enabled]) => {
+            if (enabled && !countriesData.value) void fetchCountries();
+        },
+        { immediate: true }
+    );
 
     watch(
         isCountriesQueryEnabled,
         enabled => {
-            if (enabled) {
-                if (!countriesData.value) void fetchCountries();
-                if (!countryDatasetData.value) void fetchCountryDataset();
+            if (enabled && !countryDatasetData.value) {
+                void fetchCountryDataset();
             }
         },
         { immediate: true }
@@ -188,11 +211,8 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
         { immediate: true }
     );
 
-    void fetchStores();
-
     return {
         i18n,
-        endpoints,
         selectedStore,
         setSelectedStore,
         storesData,
@@ -213,6 +233,6 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
         isFirstLoadDone,
         accountIsMisconfigured,
         displayConfigurationError,
-        createPaymentLink: endpoints.createPBLPaymentLink,
+        createPaymentLink,
     };
 }

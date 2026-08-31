@@ -1,7 +1,7 @@
 import type { Meta } from '@storybook/vue3';
 import { DisputeManagementMeta } from './meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
-import type { DisputeManagementExternalProps } from '../../src';
+import type { DisputeManagementDomainProps as DisputeManagementExternalProps } from '../../src/definitions';
 import { DISPUTE_DETAILS_HANDLERS } from '../../../mocks/mock-server/disputes';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, INITIAL_DISPUTE_ID } from '../../../fixtures/data/DisputeManagement';
 
@@ -176,6 +176,14 @@ export const DefenseServerError: ElementStory<DisputeManagementExternalProps> = 
     args: sharedArgs,
     parameters: {
         msw: { ...DISPUTE_DETAILS_HANDLERS.defendServerError },
+    },
+};
+
+export const ManagementRoleNotAssigned: ElementStory<DisputeManagementExternalProps> = {
+    name: 'Error - Role not assigned',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...DISPUTE_DETAILS_HANDLERS.permissionError },
     },
 };
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoAlert } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
-import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
+import { useDisputesContext } from '../../integration/context';
 import { DATE_FORMAT_RESPONSE_DEADLINE } from '@integration-components/utils';
+import { BASE_LOCALE } from '@integration-components/utils/datetime/restamper/constants';
 import type { IDisputeDetail } from '@integration-components/types/api/models/disputes';
 import type { DisputeDataAlertMode } from '../types';
 
@@ -12,8 +12,18 @@ const props = defineProps<{
     dispute: IDisputeDetail;
 }>();
 
-const { i18n } = useCoreContext();
-const { dateFormat } = useTimezoneAwareDateFormatting(() => props.dispute.payment.balanceAccount?.timeZone);
+const { i18n } = useDisputesContext();
+const activeTimezone = computed(() => {
+    const timezone = props.dispute.payment.balanceAccount?.timeZone;
+    if (!timezone) return i18n.timezone;
+    try {
+        return new Intl.DateTimeFormat(BASE_LOCALE, { timeZone: timezone }).resolvedOptions().timeZone;
+    } catch {
+        return i18n.timezone;
+    }
+});
+
+const dateFormat: typeof i18n.date = (date, options) => i18n.date(date, { timeZone: activeTimezone.value, ...options });
 
 const alertText = computed(() => {
     const currentDispute = props.dispute.dispute;
@@ -50,7 +60,7 @@ const alertType = computed(() => (props.alertMode === 'contactSupport' ? 'warnin
 </script>
 
 <template>
-    <BentoAlert v-if="alertText" :type="alertType" role="alert" variant="tip">
+    <BentoAlert v-if="alertText" :type="alertType" variant="tip">
         <template #description>
             {{ alertText }}
         </template>

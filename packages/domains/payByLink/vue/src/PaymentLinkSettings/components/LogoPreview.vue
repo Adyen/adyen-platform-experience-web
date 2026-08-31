@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { usePayByLinkContext } from '../../integration/context';
 import { LogoLabel } from '../constants';
 import type { LogoType } from '../types';
 import styles from './ThemeForm.module.scss';
@@ -15,7 +15,7 @@ const emit = defineEmits<{
     removeLogo: [logoType: LogoType];
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = usePayByLinkContext();
 
 function onRemove() {
     emit('removeLogo', props.logoType);

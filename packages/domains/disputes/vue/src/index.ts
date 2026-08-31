@@ -1,18 +1,27 @@
-export { DisputeManagementElement } from './DisputeManagement';
-export { DisputesOverviewElement } from './DisputesOverview';
+export type { DisputeManagementDomainProps, DisputeManagementRenderMode, DisputesDependencies, DisputesOverviewDomainProps } from './integration';
 
-export type {
-    DisputeManagementExternalProps,
-    DisputeManagementProps,
-    DisputeDetailsFields,
-    DisputeDetailsCustomization,
-    DisputeCallbackData,
-} from './DisputeManagement';
+export type { DisputeManagementProps, DisputeDetailsFields, DisputeDetailsCustomization, DisputeCallbackData } from './DisputeManagement';
 
+export type { DisputesOverviewProps, DisputesListCustomization, DisputesTableFields, DisputeStatusGroup } from './DisputesOverview';
+
+export { default as DisputeManagement } from './DisputeManagement/components/DisputeDetailsContainer.vue';
+export { default as DisputesOverview } from './DisputesOverview/components/DisputesOverview.vue';
 export type {
-    DisputesOverviewExternalProps,
-    DisputesOverviewProps,
-    DisputesListCustomization,
-    DisputesTableFields,
-    DisputeStatusGroup,
-} from './DisputesOverview';
+    DisputeAcceptedCallback,
+    DisputeAcceptedPayload,
+    DisputeDefendedCallback,
+    DisputeDefendedPayload,
+    DisputeDismissedCallback,
+    DisputeDismissedPayload,
+    DisputeManagementEmits,
+    DisputeManagementEventCallbacks,
+    DisputeManagementEventMap,
+    DisputeSelectedCallback,
+    DisputeSelectedPayload,
+    DisputesContactSupportRequestedCallback,
+    DisputesContactSupportRequestedPayload,
+    DisputesFiltersChangedCallback,
+    DisputesOverviewEmits,
+    DisputesOverviewEventCallbacks,
+    DisputesOverviewEventMap,
+} from './events';

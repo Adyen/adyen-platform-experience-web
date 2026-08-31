@@ -3,7 +3,16 @@ import { AuthSession } from './session/AuthSession';
 import Localization from './Localization';
 import { Assets, AssetOptions } from './Assets/Assets';
 import { getCustomTranslationsAnalyticsPayload } from './EventDispatcher/eventDispatcher/customTranslations';
+import { getTranslationDiagnosticAnalyticsPayload } from './EventDispatcher/eventDispatcher/translationDiagnostics';
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
+import {
+    CoreDomainTranslations,
+    TranslationContractResolver,
+    type ConsumerTranslations,
+    type DomainTranslationConnection,
+    type DomainTranslationInputs,
+    type TranslationDiagnostic,
+} from './translation-contract';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
 import type { CoreOptions, onErrorHandler, ResolvedEnvironment } from './types';
 import type { TranslationSourceRecord } from './translations';
@@ -16,6 +25,7 @@ export interface ManagedElement {
     readonly _id: string;
     readonly core: unknown;
     update(props: any): any;
+    updateCoreOptions?(options: CoreOptions<any, any>): any;
     unmount(): any;
 }
 
@@ -40,6 +50,10 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
     public analyticsEnabled!: boolean;
     public session = new AuthSession();
     public localization: Localization;
+    /** @internal */
+    public translationContract: TranslationContractResolver;
+    /** @internal */
+    public domainTranslations: CoreDomainTranslations;
     public onError?: onErrorHandler;
     public getImageAsset!: (props: AssetOptions) => string;
     public getDatasetAsset!: (props: AssetOptions) => string;
@@ -50,7 +64,7 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
     private hasWarnedAboutAvailableTranslationsDeprecation = false;
     private hasWarnedAboutServerSideInitialization = false;
     private readyCustomTranslationsAnalytics = false;
-
+    private translationDiagnosticAnalyticsPayload: URLSearchParams[] = [];
     constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
         this.options = { environment: FALLBACK_ENV, ...options };
         const { cdnTranslationsUrl, cdnConfigUrl } = this.resolveEnvironment();
@@ -59,6 +73,21 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
         this.applyAnalyticsOptions();
 
         this.localization = new Localization(this.options.locale, this.options.availableTranslations, cdnTranslationsUrl, cdnConfigUrl);
+        this.translationContract = new TranslationContractResolver({
+            diagnosticReporter: diagnostic => this.queueTranslationDiagnostic(diagnostic),
+            sources: this.localization.translationContractSources,
+        });
+        if (hasOwnProperty(this.options, 'translations')) {
+            this.localization.customTranslations = this.options.translations;
+            this.translationContract.update({
+                ...this.localization.translationContractSources,
+                consumerTranslations: this.options.translations as ConsumerTranslations | undefined,
+            });
+        }
+        this.domainTranslations = new CoreDomainTranslations({
+            locale: this.localization.locale,
+            resolver: this.translationContract,
+        });
 
         this.setOptions(this.options);
     }
@@ -78,11 +107,19 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
         const environmentChanged = options.environment !== undefined && options.environment !== this.options.environment;
         const loadingContextChanged = options.loadingContext !== undefined && options.loadingContext !== this.options.loadingContext;
         const analyticsChanged = options.analytics !== undefined && options.analytics !== this.options.analytics;
+        const localeChanged = hasOwnProperty(options, 'locale') && options.locale !== this.options.locale;
+        const translationsChanged = hasOwnProperty(options, 'translations') && options.translations !== this.options.translations;
 
         this.options = { ...this.options, ...options };
 
-        this.localization.locale = this.options.locale;
-        this.localization.customTranslations = this.options.translations;
+        if (localeChanged) this.localization.locale = this.options.locale;
+        if (translationsChanged) {
+            this.localization.customTranslations = this.options.translations;
+            this.translationContract?.update({
+                ...this.localization.translationContractSources,
+                consumerTranslations: this.options.translations as ConsumerTranslations | undefined,
+            });
+        }
 
         if (environmentChanged) {
             this.applyEnvironmentAssets();
@@ -135,16 +172,32 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
         }
 
         await this.localization.ready;
+        this.translationContract.update(this.localization.translationContractSources);
+        this.domainTranslations.refresh(this.localization.locale);
 
-        if (!this.readyCustomTranslationsAnalytics && this.analyticsEnabled) {
-            const analyticsPayload = getCustomTranslationsAnalyticsPayload(this.localization.i18n.customTranslations);
-            if (analyticsPayload.length > 0) {
-                this.session.analyticsPayload = analyticsPayload;
+        if (this.analyticsEnabled) {
+            const analyticsPayload = [...this.translationDiagnosticAnalyticsPayload];
+            this.translationDiagnosticAnalyticsPayload = [];
+
+            if (!this.readyCustomTranslationsAnalytics) {
+                analyticsPayload.push(...getCustomTranslationsAnalyticsPayload(this.localization.i18n.customTranslations));
                 this.readyCustomTranslationsAnalytics = true;
             }
+
+            if (analyticsPayload.length > 0) this.session.analyticsPayload = analyticsPayload;
         }
 
         return this;
+    }
+
+    /** @internal */
+    public getDomainTranslationInputs<DomainKey extends string>(domain: string): DomainTranslationInputs<DomainKey> {
+        return this.domainTranslations.getInputs<DomainKey>(domain);
+    }
+
+    /** @internal */
+    public connectDomainTranslations<DomainKey extends string>(domain: string, signal: AbortSignal): DomainTranslationConnection<DomainKey> {
+        return this.domainTranslations.connect(domain, signal) as DomainTranslationConnection<DomainKey>;
     }
 
     /**
@@ -161,7 +214,11 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
 
         this.components.forEach(component => {
             if (component.core === this) {
-                component.update({ ...this.options });
+                if (component.updateCoreOptions) {
+                    component.updateCoreOptions(this.options);
+                } else {
+                    component.update({ ...this.options });
+                }
             }
         });
 
@@ -187,6 +244,11 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
         if (component.core === this) {
             this.components.push(component);
         }
+    }
+
+    private queueTranslationDiagnostic(diagnostic: TranslationDiagnostic): void {
+        const payload = getTranslationDiagnosticAnalyticsPayload(diagnostic);
+        if (payload) this.translationDiagnosticAnalyticsPayload.push(payload);
     }
 }
 

@@ -3,12 +3,13 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { BentoInputField } from '@adyen/bento-vue3';
 import type { BentoInputDropdownProps } from '@adyen/bento-vue3';
 import FieldWrapper from '../../../fields/FieldWrapper.vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import { useWizard } from '../../../../composables/wizardContext';
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../../domain/src';
+import { usePayByLinkContext } from '../../../../../integration/context';
 
 const wizard = useWizard();
-const { i18n, getCdnDataset } = useCoreContext();
+const { i18n, runtime } = usePayByLinkContext();
+const { getCdnDataset } = runtime;
 
 const config = computed(() => wizard.getFieldConfig('telephoneNumber'));
 const error = computed(() => wizard.getError('telephoneNumber'));

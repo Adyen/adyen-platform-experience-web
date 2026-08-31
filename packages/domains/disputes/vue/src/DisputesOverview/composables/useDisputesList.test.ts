@@ -2,19 +2,19 @@ import { effectScope, nextTick } from 'vue';
 import { expect, test, vi } from 'vitest';
 import { useDisputesList } from './useDisputesList';
 
-const getDisputeList = vi.fn();
+const getDisputes = vi.fn();
 
-vi.mock('@integration-components/core/vue', () => ({
-    useConfigContext: () => ({
-        endpoints: {
-            getDisputeList,
+vi.mock('../../integration/context', () => ({
+    useDisputesContext: () => ({
+        runtime: {
+            getDisputes,
         },
     }),
 }));
 
 test('does not report filter changes when paginating', async () => {
-    getDisputeList.mockReset();
-    getDisputeList.mockResolvedValue({
+    getDisputes.mockReset();
+    getDisputes.mockResolvedValue({
         data: [],
         _links: {
             next: { cursor: 'next-cursor' },
@@ -41,7 +41,7 @@ test('does not report filter changes when paginating', async () => {
 
     disputes.goToNextPage();
 
-    await vi.waitFor(() => expect(getDisputeList).toHaveBeenCalledTimes(2));
+    await vi.waitFor(() => expect(getDisputes).toHaveBeenCalledTimes(2));
     await nextTick();
 
     expect(onFiltersChanged).toHaveBeenCalledTimes(1);
@@ -49,8 +49,8 @@ test('does not report filter changes when paginating', async () => {
 });
 
 test('reports filter changes when the request fails', async () => {
-    getDisputeList.mockReset();
-    getDisputeList.mockRejectedValue(new Error('Network error'));
+    getDisputes.mockReset();
+    getDisputes.mockRejectedValue(new Error('Network error'));
 
     const onFiltersChanged = vi.fn();
     const scope = effectScope();

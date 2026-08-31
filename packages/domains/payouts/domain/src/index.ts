@@ -1,3 +1,3 @@
-export * from './PayoutsOverview/types';
-export * from './PayoutDetails/types';
-export * from './PayoutDetails/translations';
+export * from './PayoutsOverview';
+export * from './PayoutDetails';
+export * from './translations';

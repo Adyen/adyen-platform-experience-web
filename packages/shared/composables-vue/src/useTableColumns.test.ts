@@ -1,16 +1,8 @@
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { ref } from 'vue';
 import type { CustomColumn } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import { useTableColumns } from './useTableColumns';
-
-vi.mock('@integration-components/core/vue', () => ({
-    useCoreContext: () => ({
-        i18n: {
-            get: (key: string) => key,
-        },
-    }),
-}));
 
 const FIELDS = ['createdAt', 'amount'] as const;
 type Field = (typeof FIELDS)[number];
@@ -29,6 +21,7 @@ describe('useTableColumns', () => {
                 createdAt: 'createdAt',
                 amount: 'amount',
             },
+            translate: key => key,
             columnConfig: () => ({
                 createdAt: { flex: 1, visible: true },
                 amount: { flex: 1, numeric: true, visible: true },
@@ -51,6 +44,7 @@ describe('useTableColumns', () => {
             fieldsKeys: {
                 createdAt: 'createdAt',
             },
+            translate: key => key,
             resolveStandardColumnLabel: (_field, label) => `standard:${label}`,
             resolveCustomColumnLabel: key => `custom:${key}`,
         });
@@ -68,6 +62,7 @@ describe('useTableColumns', () => {
             fieldsKeys: {
                 createdAt: 'createdAt',
             },
+            translate: key => key,
             columnConfig: () => ({
                 createdAt: { overflow: 'wrap' as const },
             }),

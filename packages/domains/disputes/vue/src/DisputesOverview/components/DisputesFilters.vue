@@ -2,7 +2,7 @@
 import { computed, watch } from 'vue';
 import { BentoFilterBar, BentoFilterItemType } from '@adyen/bento-vue3';
 import type { BentoFilterBarModel, BentoFilterValues, BentoDateRangePickerValue } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useDisputesContext } from '../../integration/context';
 import { useBalanceAccountFilterState, useDateRangeFilterState, useSortedMultiSelection } from '@integration-components/composables-vue';
 import { DISPUTE_PAYMENT_SCHEMES, DISPUTE_REASON_CATEGORIES } from '@integration-components/disputes/domain';
 import { createQuickSelectRanges, quickSelectDateRanges, startOfDay, uniqueId } from '@integration-components/utils';
@@ -25,7 +25,7 @@ const props = defineProps<{
     }) => void;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useDisputesContext();
 
 const quickSelectRanges = createQuickSelectRanges(
     {
@@ -38,7 +38,7 @@ const quickSelectRanges = createQuickSelectRanges(
         lastMonth: quickSelectDateRanges.lastMonth,
         yearToDate: quickSelectDateRanges.yearToDate,
     },
-    key => i18n.get(key)
+    option => i18n.get(`disputes.filters.types.date.rangeSelect.options.${option}`)
 );
 
 const schemeItems = Object.entries(DISPUTE_PAYMENT_SCHEMES).map(([value, label]) => ({ label, value }));
@@ -70,7 +70,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
     if (hasMultipleBalanceAccounts.value) {
         filters.push({
             field: 'balanceAccountId',
-            label: i18n.get('common.filters.types.account.label'),
+            label: i18n.get('disputes.filters.types.account.label'),
             type: BentoFilterItemType.SELECT,
             visible: !props.compact,
             ...(!props.compact ? { defaultValue: balanceAccountOptions.value[0]?.value } : {}),
@@ -78,7 +78,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
                 listboxItems: [
                     ...balanceAccountOptions.value,
                     {
-                        label: i18n.get('common.filters.types.account.options.all'),
+                        label: i18n.get('disputes.filters.types.account.options.all'),
                         value: ALL_BALANCE_ACCOUNTS_VALUE,
                     },
                 ],
@@ -88,7 +88,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
     filters.push({
         field: 'dateRange',
-        label: i18n.get('common.filters.types.date.label'),
+        label: i18n.get('disputes.filters.types.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         visible: !props.compact,
         ...(!props.compact ? { defaultValue: defaultDateRange } : {}),

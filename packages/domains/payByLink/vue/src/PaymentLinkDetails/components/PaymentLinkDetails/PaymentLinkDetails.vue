@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
-import { ErrorMessageDisplay } from '@integration-components/composables-vue';
-import { getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';
 import PaymentLinkDetailsContent from './PaymentLinkDetailsContent.vue';
 import PaymentLinkExpiration from '../PaymentLinkExpiration/PaymentLinkExpiration.vue';
 import PaymentLinkExpirationSuccess from '../PaymentLinkExpiration/PaymentLinkExpirationSuccess.vue';
+import PaymentLinkError from '../PaymentLinkError/PaymentLinkError.vue';
 import PaymentLinkSkeleton from '../PaymentLinkSkeleton/PaymentLinkSkeleton.vue';
 import '@adyen/bento-vue3/styles/bento-light';
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import styles from './PaymentLinkDetails.module.scss';
+import { usePayByLinkContext } from '../../../integration/context';
 
 const props = defineProps<{
     id: string;
@@ -20,21 +19,12 @@ const props = defineProps<{
     onDismiss?: () => void;
     onUpdate?: () => void;
     isDismissButtonHidden?: boolean;
+    embeddedInOverview?: boolean;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n, provideTranslationOverrides } = usePayByLinkContext();
+if (!props.embeddedInOverview) provideTranslationOverrides();
 const { paymentLink, error, isFetching, refetch } = usePaymentLinkDetails(() => ({ id: props.id }));
-
-const errorInfo = computed(() => {
-    const content = getPaymentLinkErrorMessageContent(error.value, 'payByLink.details.errors.unavailable', !!props.onContactSupport);
-    return {
-        title: content.title,
-        messages: content.message,
-        refreshComponent: content.refreshComponent,
-        requestId: content.requestId,
-        onContactSupport: error.value?.errorCode === '500' ? props.onContactSupport : undefined,
-    };
-});
 
 type Screen = 'details' | 'expirationConfirmation' | 'expirationSuccess';
 const activeScreen = ref<Screen>('details');
@@ -73,16 +63,7 @@ function handleNavigationToDetailsAfterExpiration() {
             <PaymentLinkSkeleton v-if="isFetching" />
 
             <div v-else-if="!paymentLink || error">
-                <ErrorMessageDisplay
-                    :error-info="errorInfo"
-                    :on-dismiss="props.onDismiss"
-                    dismiss-label="payByLink.common.actions.goBack"
-                    :on-refresh="refetch"
-                    :outlined="false"
-                    :absolute-position="false"
-                    :with-background="false"
-                    with-image
-                />
+                <PaymentLinkError :error="error" :on-contact-support="props.onContactSupport" :on-dismiss="props.onDismiss" :on-refresh="refetch" />
             </div>
 
             <PaymentLinkExpiration

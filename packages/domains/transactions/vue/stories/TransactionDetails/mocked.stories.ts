@@ -132,6 +132,14 @@ export const ErrorNotFound: ElementStory<TransactionDetailsExternalProps> = {
     },
 };
 
+export const DetailsRoleNotAssigned: ElementStory<TransactionDetailsExternalProps> = {
+    name: 'Error - Role not assigned',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...TRANSACTION_DETAILS_HANDLERS.permissionError },
+    },
+};
+
 export const DataCustomization: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Data customization',
     args: {

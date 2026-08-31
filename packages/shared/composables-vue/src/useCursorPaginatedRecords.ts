@@ -50,6 +50,12 @@ export function useCursorPaginatedRecords<T>({
 
     let abortController: AbortController | undefined;
 
+    const cancelRequest = () => {
+        abortController?.abort();
+        abortController = undefined;
+        fetching.value = false;
+    };
+
     const requestKey = computed(() => {
         const fetchKey = getFetchKey();
         return fetchKey ? JSON.stringify({ fetchKey, limit: limit.value }) : null;
@@ -134,7 +140,11 @@ export function useCursorPaginatedRecords<T>({
     watch(
         requestKey,
         (newKey, oldKey) => {
-            if (!newKey || newKey === lastFetchedRequestKey.value) return;
+            if (!newKey) {
+                cancelRequest();
+                return;
+            }
+            if (newKey === lastFetchedRequestKey.value) return;
             if (oldKey !== undefined) resetPagination();
             requestPage();
         },

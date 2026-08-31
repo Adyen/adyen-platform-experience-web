@@ -1,14 +1,14 @@
 import type { Meta } from '@storybook/vue3';
 import { PayoutDetailsMeta } from './meta';
-import type { PayoutDetailsExternalProps } from '../../src';
+import type { PayoutDetailsDomainProps } from '../../src/definitions';
 import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT, SessionControls } from '@integration-components/testing/storybook-helpers';
 
-const meta: Meta<ElementProps<PayoutDetailsExternalProps>> = {
+const meta: Meta<ElementProps<PayoutDetailsDomainProps>> = {
     ...PayoutDetailsMeta,
     title: 'API-connected/Payouts/Payout Details',
 };
 
-export const Default: ElementStory<PayoutDetailsExternalProps, SessionControls> = {
+export const Default: ElementStory<PayoutDetailsDomainProps, SessionControls> = {
     name: 'Default',
     argTypes: {
         session: { control: 'object' },

@@ -1,16 +1,15 @@
 import type { Meta } from '@storybook/vue3';
-import type { PayoutDetailsExternalProps } from '../../src';
-import PayoutDetailsElement from '../../src/PayoutDetails/PayoutDetailsElement';
+import { PayoutDetailsDefinition, type PayoutDetailsDomainProps } from '../../src/definitions';
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
-export const PayoutDetailsMeta: Meta<ElementProps<PayoutDetailsExternalProps>> = {
+export const PayoutDetailsMeta: Meta<ElementProps<PayoutDetailsDomainProps>> = {
     title: 'Components/Payouts/Payout Details',
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         hideTitle: { control: 'boolean' },
     },
     args: {
-        component: PayoutDetailsElement,
+        component: PayoutDetailsDefinition,
         compact: true,
     },
     parameters: {

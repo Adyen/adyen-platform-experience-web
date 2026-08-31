@@ -48,6 +48,10 @@ jobs:
         if: steps.skip-check.outcome != 'success'
         run: pnpm run test
 
+      - name: Validate V2 translation contract
+        if: steps.skip-check.outcome != 'success'
+        run: pnpm run translations:contract:check
+
       - name: Build library
         if: steps.skip-check.outcome != 'success'
         run: pnpm run build

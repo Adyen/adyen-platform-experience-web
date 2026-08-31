@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
-import { DISPUTE_TYPE, type DisputeManagementProps } from '@integration-components/disputes/domain';
-import { isFunction } from '@integration-components/utils';
+import { useDisputesContext } from '../../integration/context';
+import { DISPUTE_TYPE } from '@integration-components/disputes/domain';
 import { DefendResponse, DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import DefendDocumentUpload from './DefendDocumentUpload.vue';
 import DefendDisputeResponse from './DefendDisputeResponse.vue';
 import DefendReasonSelection from './DefendReasonSelection.vue';
 import flowStyles from './DisputeFlow.module.scss';
+import { disputeManagementEventBridge } from '../../events';
 
-const props = defineProps<{
-    onDisputeDefend?: DisputeManagementProps['onDisputeDefend'];
-}>();
-
-const { i18n } = useCoreContext();
+const { i18n } = useDisputesContext();
+const events = disputeManagementEventBridge.useEvents();
 const { dispute, flowState, defendResponse } = useDisputeFlow();
 const cachedDispute = ref(dispute.value);
 
@@ -39,9 +36,9 @@ const callbackCalled = ref(false);
 
 watch(defendResponse, response => {
     const pspReference = disputePspReference.value;
-    if (response !== DefendResponse.Success || callbackCalled.value || !pspReference || !isFunction(props.onDisputeDefend)) return;
+    if (response !== DefendResponse.Success || callbackCalled.value || !pspReference) return;
     callbackCalled.value = true;
-    props.onDisputeDefend({ id: pspReference });
+    events.disputeDefended({ id: pspReference });
 });
 </script>
 

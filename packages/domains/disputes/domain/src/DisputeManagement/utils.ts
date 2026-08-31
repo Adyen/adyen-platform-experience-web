@@ -1,4 +1,4 @@
-import type Localization from '@integration-components/core/Localization';
+import { isDisputesTranslationKey, type DisputesTranslationKey } from '../translations/index';
 
 export type TranslationConfigItem = {
     title: string;
@@ -12,13 +12,28 @@ export type TranslationConfigContent = {
     secondaryDescriptionItems?: string[];
 };
 
-const getTranslationIfExists = (i18n: Localization['i18n'], prefix: string, key: string): string | undefined => {
+/**
+ * The defense-content keys these helpers can produce. Shared with the Preact elements, whose
+ * `Localization` i18n accepts the public V1 catalog: this subset keeps both the Preact and the
+ * Vue i18n assignable without exposing the full domain catalog union.
+ */
+type DisputesConfigTranslationKey = Extract<
+    DisputesTranslationKey,
+    `disputes.management.common.defenseDocuments.${string}` | `disputes.management.common.defenseReasons.${string}`
+>;
+
+type DisputesConfigI18n = Readonly<{
+    get(key: DisputesConfigTranslationKey): string;
+    has(key: string): boolean;
+}>;
+
+const getTranslationIfExists = (i18n: DisputesConfigI18n, prefix: string, key: string): string | undefined => {
     const prefixedKey = `${prefix}.${key}`;
-    return i18n.has(prefixedKey) ? i18n.get(prefixedKey) : undefined;
+    return isDisputesTranslationKey(prefixedKey) && i18n.has(prefixedKey) ? i18n.get(prefixedKey as DisputesConfigTranslationKey) : undefined;
 };
 
 const getContent = (
-    i18n: Localization['i18n'],
+    i18n: DisputesConfigI18n,
     config: Record<string, TranslationConfigItem>,
     configItemKey: string,
     translationPrefix: string
@@ -47,12 +62,12 @@ const getContent = (
 
 export const getDefenseDocumentContent = (
     defenseDocumentConfig: Record<string, TranslationConfigItem>,
-    i18n: Localization['i18n'],
+    i18n: DisputesConfigI18n,
     defenseDocumentKey: string
 ) => getContent(i18n, defenseDocumentConfig, defenseDocumentKey, 'disputes.management.common.defenseDocuments');
 
 export const getDefenseReasonContent = (
     defenseReasonConfig: Record<string, TranslationConfigItem>,
-    i18n: Localization['i18n'],
+    i18n: DisputesConfigI18n,
     defenseReasonKey: string
 ) => getContent(i18n, defenseReasonConfig, defenseReasonKey, 'disputes.management.common.defenseReasons');

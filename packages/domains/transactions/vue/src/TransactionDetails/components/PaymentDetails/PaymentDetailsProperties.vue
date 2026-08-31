@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { useLiveAnnouncement } from '@integration-components/composables-vue';
 import {
     BentoStructuredList,
@@ -10,13 +9,14 @@ import {
     BentoButton,
     BentoTooltipDirective as vBentoTooltip,
 } from '@adyen/bento-vue3';
-import { getTransactionRefundReason, TX_DETAILS_FIELDS_REMAPS, sharedTransactionDetailsEventProperties } from '../../../../../domain/src';
+import { getTransactionRefundReason, TX_DETAILS_FIELDS_REMAPS } from '../../../../../domain/src';
 import { normalizeCustomFields } from '@integration-components/utils';
-import type { TransactionDetails, TransactionDetailsCustomization } from '../../../../../domain/src';
-import type { TranslationKey } from '@integration-components/core';
+import type { TransactionDetails, TransactionDetailsCustomization, TransactionsTranslationKey } from '../../../../../domain/src';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import styles from './PaymentDetails.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
+import { transactionDetailsEventBridge } from '../../../events';
 
 const props = defineProps<{
     dataCustomization?: { details?: TransactionDetailsCustomization };
@@ -24,9 +24,9 @@ const props = defineProps<{
     transaction: TransactionDetails;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
 const { announce, announcement } = useLiveAnnouncement();
-const userEvents = useEventDispatcherContext();
+const events = transactionDetailsEventBridge.useEvents();
 const copiedItemId = ref<string>();
 
 const paymentDataKeys = {
@@ -42,15 +42,15 @@ const paymentDataCopyButtonKeys = {
     referenceId: 'transactions.details.actions.copyReferenceID',
     merchantReference: 'transactions.details.actions.copyMerchantReference',
     pspReference: 'transactions.details.actions.copyPspReference',
-} as const satisfies Record<string, TranslationKey>;
+} as const satisfies Record<string, TransactionsTranslationKey>;
 
 interface ListItem {
     id?: string;
-    key: TranslationKey;
+    key: TransactionsTranslationKey;
     value: string;
     copyable?: boolean;
-    copyAriaLabelKey?: TranslationKey;
-    trackingName?: string;
+    copyAriaLabelKey?: TransactionsTranslationKey;
+    trackedField?: 'merchantReference' | 'pspReference' | 'referenceId';
 }
 
 const standardItems = computed<ListItem[]>(() => {
@@ -62,46 +62,46 @@ const standardItems = computed<ListItem[]>(() => {
     const isVisible = customizedFields ? (fid: string) => customizedFields.find(f => f.key === fid)?.visibility !== 'hidden' : () => true;
 
     const items: (ListItem | null)[] = [
-        account && isVisible('account') ? { id: 'account', key: paymentDataKeys.account as TranslationKey, value: account } : null,
+        account && isVisible('account') ? { id: 'account', key: paymentDataKeys.account, value: account } : null,
         isRefund && refundMetadata?.refundReason && isVisible('refundReason')
             ? {
                   id: 'refundReason',
-                  key: paymentDataKeys.refundReason as TranslationKey,
+                  key: paymentDataKeys.refundReason,
                   value: getTransactionRefundReason(i18n, refundMetadata.refundReason) as string,
               }
             : null,
         isVisible('id')
             ? {
                   id: 'id',
-                  key: paymentDataKeys.id as TranslationKey,
+                  key: paymentDataKeys.id,
                   value: id,
                   copyable: true,
                   copyAriaLabelKey: paymentDataCopyButtonKeys.referenceId,
-                  trackingName: 'Reference ID',
+                  trackedField: 'referenceId',
               }
             : null,
         merchantReference && isVisible('merchantReference')
             ? {
                   id: 'merchantReference',
-                  key: paymentDataKeys.merchantReference as TranslationKey,
+                  key: paymentDataKeys.merchantReference,
                   value: merchantReference,
                   copyable: true,
                   copyAriaLabelKey: paymentDataCopyButtonKeys.merchantReference,
-                  trackingName: 'Merchant reference',
+                  trackedField: 'merchantReference',
               }
             : null,
         paymentPspReference && isVisible('paymentPspReference')
             ? {
                   id: 'paymentPspReference',
-                  key: paymentDataKeys.pspReference as TranslationKey,
+                  key: paymentDataKeys.pspReference,
                   value: paymentPspReference,
                   copyable: true,
                   copyAriaLabelKey: paymentDataCopyButtonKeys.pspReference,
-                  trackingName: 'PSP reference',
+                  trackedField: 'pspReference',
               }
             : null,
         isRefund && refundMetadata?.refundPspReference && isVisible('refundPspReference')
-            ? { id: 'refundPspReference', key: paymentDataKeys.refundPspReference as TranslationKey, value: refundMetadata.refundPspReference }
+            ? { id: 'refundPspReference', key: paymentDataKeys.refundPspReference, value: refundMetadata.refundPspReference }
             : null,
     ];
 
@@ -112,33 +112,28 @@ const customItems = computed(() =>
     Object.entries(props.extraFields ?? {})
         .filter(([, value]) => (value as any)?.type !== 'button')
         .map(([key, value]) => ({
-            key: key as TranslationKey,
+            key: key as TransactionsTranslationKey,
             value: (value as any)?.value ?? value,
             type: (value as any)?.type ?? 'text',
             config: (value as any)?.config,
         }))
 );
 
-function onCopyText(text: string, itemId?: string, trackingName?: string) {
+function onCopyText(text: string, itemId?: string, trackedField?: ListItem['trackedField']) {
     if (!navigator.clipboard) return;
 
     navigator.clipboard.writeText(text);
     copiedItemId.value = itemId;
 
-    if (trackingName) {
-        userEvents.addEvent?.('Clicked button', {
-            ...sharedTransactionDetailsEventProperties,
-            sectionName: 'Details',
-            label: 'Copy button',
-            subSectionName: trackingName,
-        });
+    if (trackedField) {
+        events.valueCopied({ field: trackedField, transactionId: props.transaction.id });
     }
 
-    announce(() => i18n.get('common.actions.copy.labels.done'));
+    announce(() => i18n.get('transactions.actions.copy.labels.done'));
 }
 
 function getCopyTooltip(itemId?: string) {
-    const key = copiedItemId.value === itemId ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default';
+    const key = copiedItemId.value === itemId ? 'transactions.actions.copy.labels.done' : 'transactions.actions.copy.labels.default';
     return i18n.get(key);
 }
 
@@ -157,7 +152,7 @@ function resetCopiedItem() {
                         variant="tertiary"
                         v-bento-tooltip="getCopyTooltip(item.id)"
                         :aria-label="item.copyAriaLabelKey ? i18n.get(item.copyAriaLabelKey) : undefined"
-                        @click="() => onCopyText(item.value, item.id, item.trackingName)"
+                        @click="() => onCopyText(item.value, item.id, item.trackedField)"
                         @blur="resetCopiedItem"
                         @mouseleave="resetCopiedItem"
                     >

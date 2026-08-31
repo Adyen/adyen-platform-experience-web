@@ -1,15 +1,15 @@
 import { effectScope, ref } from 'vue';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { useConfigContext } from '@integration-components/core/vue';
 import type { TransactionsFilters } from '../types';
+import { useTransactionsContext } from '../../integration/context';
 import { useTransactionsTotals } from './useTransactionsTotals';
 
-vi.mock('@integration-components/core/vue', () => ({
-    useConfigContext: vi.fn(),
+vi.mock('../../integration/context', () => ({
+    useTransactionsContext: vi.fn(),
 }));
 
 describe('useTransactionsTotals', () => {
-    const mockUseConfigContext = vi.mocked(useConfigContext);
+    const mockUseTransactionsContext = vi.mocked(useTransactionsContext);
     type TotalsProps = {
         filters: TransactionsFilters;
         fetchEnabled: boolean;
@@ -29,9 +29,12 @@ describe('useTransactionsTotals', () => {
         getTransactionTotals: ReturnType<typeof vi.fn> | undefined,
         initialProps: TotalsProps = { filters: defaultFilters, fetchEnabled: true }
     ) => {
-        mockUseConfigContext.mockReturnValue({
-            endpoints: { getTransactionTotals },
-        } as unknown as ReturnType<typeof useConfigContext>);
+        mockUseTransactionsContext.mockReturnValue({
+            runtime: {
+                canGetTotals: !!getTransactionTotals,
+                getTransactionsTotals: getTransactionTotals,
+            },
+        } as unknown as ReturnType<typeof useTransactionsContext>);
 
         const props = ref(initialProps);
         const scope = effectScope();
@@ -51,10 +54,14 @@ describe('useTransactionsTotals', () => {
 
         await vi.waitFor(() => expect(result.totals.value).toEqual(totals));
 
-        expect(getTransactionTotals.mock.lastCall?.[1]?.query).toEqual({
+        expect(getTransactionTotals.mock.lastCall?.[0]).toEqual({
             balanceAccountId: 'BA1',
+            categories: [],
             createdSince: defaultFilters.createdSince,
             createdUntil: defaultFilters.createdUntil,
+            currencies: [],
+            paymentPspReference: undefined,
+            signal: expect.any(AbortSignal),
             statuses: ['Booked'],
         });
         expect(result.error.value).toBeUndefined();
@@ -152,5 +159,20 @@ describe('useTransactionsTotals', () => {
         const secondSignal = getTransactionTotals.mock.calls[1]?.[0]?.signal;
         scope.stop();
         expect(secondSignal?.aborted).toBe(true);
+    });
+
+    test('aborts an in-flight request when fetching is disabled', async () => {
+        const getTransactionTotals = vi.fn().mockReturnValue(new Promise(() => undefined));
+        const { props, result, scope } = createHook(getTransactionTotals);
+
+        await vi.waitFor(() => expect(getTransactionTotals).toHaveBeenCalledOnce());
+        const signal = getTransactionTotals.mock.calls[0]?.[0]?.signal;
+
+        props.value = { ...props.value, fetchEnabled: false };
+        await vi.waitFor(() => expect(result.isFetching.value).toBe(false));
+
+        expect(signal?.aborted).toBe(true);
+
+        scope.stop();
     });
 });

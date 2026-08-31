@@ -1,12 +1,12 @@
 import { computed, ref, watch, type Ref } from 'vue';
 import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
-import { useConfigContext } from '@integration-components/core/vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import type { IPaymentLinkTermsAndConditions } from '@integration-components/types';
+import { usePayByLinkContext } from '../../integration/context';
 
 export function useStoreTermsAndConditions(selectedStore: Ref<string | undefined>, enabled: Ref<boolean>) {
-    const config = useConfigContext();
-    const getPayByLinkSettings = computed(() => config.endpoints.getPayByLinkSettings);
+    const runtime = usePayByLinkContext().runtime;
+    const getPayByLinkSettings = computed(() => runtime.endpoints.getPayByLinkSettings);
 
     const raw = ref<IPaymentLinkTermsAndConditions | undefined>(undefined);
     const isFetching = ref(false);

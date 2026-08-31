@@ -4,9 +4,9 @@ import { usePayoutsList } from './usePayoutsList';
 
 const getPayouts = vi.fn();
 
-vi.mock('@integration-components/core/vue', () => ({
-    useConfigContext: () => ({
-        endpoints: {
+vi.mock('../../integration/context', () => ({
+    usePayoutsContext: () => ({
+        runtime: {
             getPayouts,
         },
     }),

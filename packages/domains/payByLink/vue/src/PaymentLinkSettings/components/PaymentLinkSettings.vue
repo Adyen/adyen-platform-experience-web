@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoDivider, BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
 import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
-import type { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
+import type { AdyenPlatformExperienceError } from '@integration-components/core';
+import type { PayByLinkTranslationKey } from '@integration-components/payByLink/domain';
+import { usePayByLinkContext } from '../../integration/context';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../constants';
 import type { PaymentLinkSettingsItem } from '../types';
@@ -14,7 +15,7 @@ import PaymentLinkSettingsContent from './PaymentLinkSettingsContent.vue';
 import SettingsActionButtons from './SettingsActionButtons.vue';
 import styles from './PaymentLinkSettings.module.scss';
 
-const ERROR_MESSAGE_KEY: TranslationKey = 'payByLink.settings.errors.couldNotLoadSettings';
+const ERROR_MESSAGE_KEY: PayByLinkTranslationKey = 'payByLink.settings.errors.couldNotLoadSettings';
 
 const props = defineProps<{
     hideTitle?: boolean;
@@ -22,7 +23,7 @@ const props = defineProps<{
     navigateBack?: () => void;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = usePayByLinkContext();
 const {
     activeMenuItem,
     setSelectedMenuItem,
@@ -40,10 +41,10 @@ const {
 } = usePaymentLinkSettingsContext();
 
 const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
-const contentVisible = ref(!isSmContainer.value || menuItems.length === 1);
+const contentVisible = ref(!isSmContainer.value || menuItems.value.length === 1);
 
 watch(isSmContainer, value => {
-    contentVisible.value = !value || menuItems.length === 1;
+    contentVisible.value = !value || menuItems.value.length === 1;
 });
 
 function onSelectMenuItem(value: PaymentLinkSettingsItem) {

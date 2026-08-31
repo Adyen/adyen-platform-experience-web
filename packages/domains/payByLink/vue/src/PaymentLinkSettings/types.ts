@@ -9,7 +9,6 @@ export type {
     PaymentLinkSettingsMenuItem,
     PaymentLinkSettingsPayload,
     PaymentLinkSettingsProps,
-    SettingsErrorContent,
     StoreItem,
     ThemeFormData,
 } from '../../../domain/src';

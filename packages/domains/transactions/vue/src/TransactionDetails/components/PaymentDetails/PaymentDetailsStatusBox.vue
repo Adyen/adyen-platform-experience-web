@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
-import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { BentoTypography, BentoTag, BentoCard, BentoPaymentMethod } from '@adyen/bento-vue3';
 import {
     getTransactionCategory,
@@ -14,18 +12,21 @@ import type { TransactionDetails } from '../../../../../domain/src';
 import { parsePaymentMethodType, DATE_FORMAT_TRANSACTION_DETAILS } from '@integration-components/utils';
 import styles from './PaymentDetailsStatusBox.module.scss';
 import layoutStyles from '../TransactionDataLayout.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
+import { formatDate } from '../../../integration/format';
 
 const props = defineProps<{
     refundedState: RefundedState;
     transaction: TransactionDetails;
 }>();
 
-const { i18n } = useCoreContext();
-const { dateFormat } = useTimezoneAwareDateFormatting(() => props.transaction.balanceAccount?.timeZone);
+const { i18n } = useTransactionsContext();
 
 const amountStyle = computed(() => getAmountStyleForTransaction(props.transaction));
 const refundType = computed(() => getRefundTypeForTransaction(props.transaction));
-const formattedDate = computed(() => dateFormat(props.transaction.createdAt, DATE_FORMAT_TRANSACTION_DETAILS));
+const formattedDate = computed(() =>
+    formatDate(i18n, props.transaction.createdAt, DATE_FORMAT_TRANSACTION_DETAILS, props.transaction.balanceAccount?.timeZone)
+);
 const formattedAmount = computed(() => {
     const { value, currency } = props.transaction.netAmount;
     return `${i18n.amount(value, currency, { hideCurrency: true })} ${currency}`;

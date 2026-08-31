@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, toRef } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import { BentoBaseFilter, BentoInputField, useBentoBaseFilter } from '@adyen/bento-vue3';
 import styles from './TransactionPspReferenceFilter.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
 
 const PSP_REFERENCE_LENGTH = 16;
 
@@ -31,7 +31,7 @@ const emit = defineEmits<{
     update: [updatedProps: PspReferenceFilterProps];
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
 const { internalFilterValue, isApplyButtonDisabled, clearFilter, openFilter, resetFilter } = useBentoBaseFilter(
     toRef(props, 'value'),
     toRef(props, 'defaultValue')

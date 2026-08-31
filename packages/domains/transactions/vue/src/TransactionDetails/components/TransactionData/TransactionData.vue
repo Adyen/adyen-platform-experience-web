@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { BentoLoadingIndicator, BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import PaymentDetails from '../PaymentDetails/PaymentDetails.vue';
 import PaymentRefund from '../PaymentRefund/PaymentRefund.vue';
 import { ActiveView } from '../../../../../domain/src';
@@ -11,6 +10,8 @@ import type { ILineItem } from '@integration-components/types';
 import type { useTransaction } from '../../composables/useTransaction';
 import { useRefundMetadata } from '../../composables/useRefundMetadata';
 import styles from './TransactionData.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
+import type { TransactionDetailsRenderMode } from '../../../integration/types';
 
 type TransactionNavigatorState = ReturnType<typeof useTransaction>['transactionNavigator']['value'];
 
@@ -22,11 +23,11 @@ const props = defineProps<{
     refreshTransaction: () => void;
     transaction: TransactionDetails;
     transactionNavigator: TransactionNavigatorState;
+    renderMode: TransactionDetailsRenderMode;
 }>();
 
-const { i18n } = useCoreContext();
-const { withinModal } = useModalContext();
-const shouldHideTitle = computed(() => props.hideTitle || withinModal);
+const { i18n } = useTransactionsContext();
+const shouldHideTitle = computed(() => props.hideTitle || props.renderMode === 'modal');
 
 const activeView = ref<ActiveView>(ActiveView.DETAILS);
 const locked = ref(false);

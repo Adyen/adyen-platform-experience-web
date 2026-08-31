@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { BentoTab, BentoTabs } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
-import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { buildPaymentLinkListItems } from '@integration-components/payByLink/domain';
 import type { IPaymentLinkDetails } from '@integration-components/types';
 import PaymentLinkActivity from '../PaymentLinkActivity/PaymentLinkActivity.vue';
 import PaymentLinkTabsList from './PaymentLinkTabsList.vue';
 import styles from './PaymentLinkTabs.module.scss';
+import { usePayByLinkContext } from '../../../integration/context';
 
 const props = defineProps<{
     paymentLink: IPaymentLinkDetails;
 }>();
 
-const { i18n } = useCoreContext();
-const { dateFormat } = useTimezoneAwareDateFormatting();
+const { i18n } = usePayByLinkContext();
+const dateFormat: typeof i18n.date = (date, options) => i18n.date(date, { timeZone: i18n.timezone, ...options });
 
 const tabs = [
     { id: 'linkInformation', label: 'payByLink.details.tabs.linkInformation' },

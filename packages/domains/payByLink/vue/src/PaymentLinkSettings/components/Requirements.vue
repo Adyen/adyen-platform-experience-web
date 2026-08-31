@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { BentoButton, BentoModal, BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { usePayByLinkContext } from '../../integration/context';
 import { useTermsRequirementsConfig } from '../composables/useTermsRequirementsConfig';
 import styles from './Requirements.module.scss';
 
@@ -14,7 +14,7 @@ const emit = defineEmits<{
     acceptRequirements: [];
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = usePayByLinkContext();
 const { termsRequirementsConfig, getTermsRequirementsConfig } = useTermsRequirementsConfig();
 
 onMounted(() => {

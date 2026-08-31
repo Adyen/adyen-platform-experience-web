@@ -1,7 +1,7 @@
 import { ref } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
 import localInvalidFieldsConfig from '../../../../../domain/src/config/invalidFieldsConfig.json';
+import { usePayByLinkContext } from '../../../integration/context';
 
 export interface InvalidFieldsConfig {
     fields: Record<string, TranslationKey>;
@@ -15,7 +15,8 @@ interface AdyenErrorLike {
 }
 
 export function useInvalidFields() {
-    const { i18n, getCdnConfig } = useCoreContext();
+    const { i18n, runtime } = usePayByLinkContext();
+    const { getCdnConfig } = runtime;
     const localConfig = localInvalidFieldsConfig as unknown as InvalidFieldsConfig;
     const invalidFieldsConfig = ref<InvalidFieldsConfig>(localConfig);
 

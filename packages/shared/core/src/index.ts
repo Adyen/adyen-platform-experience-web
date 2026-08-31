@@ -47,6 +47,11 @@ export type {
 
 export { setupAnalytics } from './setupAnalytics';
 export type { AnalyticsSetupOptions, AnalyticsSetupResult } from './setupAnalytics';
+export { encodeAnalyticsEvent } from './EventDispatcher/eventDispatcher/utils';
+export type { AdditionalEventProperties, EventQueueItem, FilterType, UserEvents } from './EventDispatcher/eventDispatcher/user-events';
+export { setupConfigAnalytics } from './setupConfigAnalytics';
+export { createBalanceAccounts } from './createBalanceAccounts';
+export type { BalanceAccountsController, BalanceAccountsSnapshot } from './createBalanceAccounts';
 
 export { default as Analytics } from './EventDispatcher';
 export type { AnalyticsOptions, Experiment } from './EventDispatcher/types';

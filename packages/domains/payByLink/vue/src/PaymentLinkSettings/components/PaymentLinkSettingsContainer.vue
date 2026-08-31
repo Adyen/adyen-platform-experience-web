@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
+import { usePayByLinkContext } from '../../integration/context';
 import { providePaymentLinkSettings } from '../composables/context';
 import { MENU_ITEMS } from '../constants';
 import type { PaymentLinkSettingsProps } from '../types';
@@ -9,7 +9,8 @@ import '@adyen/bento-vue3/styles/bento-light';
 
 const props = defineProps<PaymentLinkSettingsProps>();
 
-const { i18n } = useCoreContext();
+const { i18n, provideTranslationOverrides } = usePayByLinkContext();
+if (!props.embeddedInOverview) provideTranslationOverrides();
 
 const filteredMenuItems = computed(() =>
     props.settingsItems && props.settingsItems.length > 0 ? MENU_ITEMS.filter(item => props.settingsItems?.includes(item.value)) : MENU_ITEMS
@@ -21,7 +22,7 @@ const selectedMenuItems = computed(() => {
 });
 
 providePaymentLinkSettings({
-    selectedMenuItems: selectedMenuItems.value,
+    selectedMenuItems,
     storeIds: props.storeIds,
     embeddedInOverview: props.embeddedInOverview,
     navigateBack: props.navigateBack,

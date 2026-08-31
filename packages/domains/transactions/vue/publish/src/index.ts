@@ -1,2 +1,9 @@
-export { TransactionDetailsElement } from '../../src';
-export type { TransactionDetailsExternalProps } from '../../src';
+export { TransactionDetails, TransactionsOverview } from '../../src';
+export type {
+    TransactionDetailsDomainProps,
+    TransactionDetailsEmits,
+    TransactionDetailsEventMap,
+    TransactionsOverviewDomainProps,
+    TransactionsOverviewEmits,
+    TransactionsOverviewEventMap,
+} from '../../src';

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { BentoFileUploader } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useDisputesContext } from '../../integration/context';
 import { ALLOWED_FILE_TYPES, DOCUMENT_MAX_SIZE } from '@integration-components/disputes/domain';
 import { getHumanReadableFileSize } from '@integration-components/utils';
 import styles from './DisputeFileInput.module.scss';
@@ -15,7 +15,7 @@ const emit = defineEmits<{
     change: [file: File | undefined];
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useDisputesContext();
 const modelValue = ref<File | undefined>();
 const errorMessage = ref<string | undefined>();
 
@@ -23,7 +23,7 @@ const accept = '.pdf,.jpg,.jpeg,.tiff';
 
 function validateFile(file: File) {
     if (!(ALLOWED_FILE_TYPES as readonly string[]).includes(file.type)) {
-        return i18n.get('common.inputs.file.errors.disallowedType');
+        return i18n.get('disputes.inputs.file.errors.disallowedType');
     }
     const maxSize = DOCUMENT_MAX_SIZE[file.type as keyof typeof DOCUMENT_MAX_SIZE];
     if (maxSize !== undefined && file.size > maxSize) {
@@ -67,11 +67,11 @@ function onUploadError(hasError: boolean) {
         :accept="accept"
         :disabled="props.disabled"
         :error-message="errorMessage"
-        :label="i18n.get('common.inputs.file.labels.default')"
+        :label="i18n.get('disputes.inputs.file.labels.default')"
         :max-count="1"
         :required="props.required"
+        condensed
         @change="onChange"
         @error:upload="onUploadError"
-        condensed
     />
 </template>

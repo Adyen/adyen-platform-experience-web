@@ -80,6 +80,14 @@ export const ErrorTotals: ElementStory<TransactionsOverviewExternalProps> = {
     },
 };
 
+export const OverviewRoleNotAssigned: ElementStory<TransactionsOverviewExternalProps> = {
+    name: 'Error - Role not assigned',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.permissionError },
+    },
+};
+
 export const DataCustomization: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Data customization',
     args: {

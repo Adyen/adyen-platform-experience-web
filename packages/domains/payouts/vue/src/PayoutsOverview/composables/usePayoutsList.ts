@@ -1,9 +1,9 @@
 import { computed, watch } from 'vue';
-import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
 import { isFunction } from '@integration-components/utils';
 import type { IPayout } from '@integration-components/types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
+import { usePayoutsContext } from '../../integration/context';
 
 interface UsePayoutsListProps {
     fetchEnabled: boolean;
@@ -16,9 +16,8 @@ interface UsePayoutsListProps {
 }
 
 export function usePayoutsList(props: () => UsePayoutsListProps) {
-    const config = useConfigContext();
-    const getPayouts = computed(() => config.endpoints.getPayouts);
-    const canFetch = computed(() => isFunction(getPayouts.value) && props().fetchEnabled);
+    const { runtime } = usePayoutsContext();
+    const canFetch = computed(() => props().fetchEnabled);
 
     const getFiltersKey = () => {
         const { balanceAccountId, createdSince, createdUntil } = props();
@@ -44,20 +43,16 @@ export function usePayoutsList(props: () => UsePayoutsListProps) {
             return JSON.stringify({ balanceAccountId, createdSince, createdUntil });
         },
         fetchPage: async ({ cursor, limit, signal }) => {
-            const fn = getPayouts.value;
-            if (!isFunction(fn)) return { records: undefined };
-
             const { balanceAccountId, createdSince, createdUntil } = props();
-
-            const query: NonNullable<Parameters<NonNullable<typeof config.endpoints.getPayouts>>[1]>['query'] = {
+            if (!balanceAccountId) return { records: undefined };
+            const json = await runtime.getPayouts({
                 limit,
-                balanceAccountId: balanceAccountId ?? '',
+                balanceAccountId,
                 createdSince,
                 createdUntil,
                 ...(cursor ? { cursor } : {}),
-            };
-
-            const json = await fn({ signal }, { query });
+                signal,
+            });
 
             return {
                 records: json?.data,

@@ -1,13 +1,13 @@
 import { computed, ref, watch, type Ref } from 'vue';
 import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
-import { useConfigContext } from '@integration-components/core/vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import type { IPaymentLinkTheme } from '@integration-components/types';
+import { usePayByLinkContext } from '../../integration/context';
 import type { ThemeFormData } from '../types';
 
 export function useStoreTheme(selectedStore: Ref<string | undefined>, enabled: Ref<boolean>) {
-    const config = useConfigContext();
-    const getPayByLinkTheme = computed(() => config.endpoints.getPayByLinkTheme);
+    const runtime = usePayByLinkContext().runtime;
+    const getPayByLinkTheme = computed(() => runtime.endpoints.getPayByLinkTheme);
 
     const data = ref<IPaymentLinkTheme | undefined>(undefined);
     const isFetching = ref(false);

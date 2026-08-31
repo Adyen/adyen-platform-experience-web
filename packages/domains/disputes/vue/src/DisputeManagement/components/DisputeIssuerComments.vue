@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { BentoAlert, BentoButton, BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useDisputesContext } from '../../integration/context';
 import styles from './DisputeData.module.scss';
 
 const props = defineProps<{
     issuerComments: string[];
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useDisputesContext();
 const expanded = ref(false);
 const visibleComments = computed(() => (expanded.value ? props.issuerComments : props.issuerComments.slice(0, 1)));
 const toggleLabel = computed(() =>

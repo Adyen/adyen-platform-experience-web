@@ -1,6 +1,10 @@
 @use '@integration-components/style';
 @use '@integration-components/style/breakpoints' as breakpoints;
 
+.errorContainer {
+    margin: 0 auto;
+}
+
 .breakdowns {
     display: grid;
     gap: style.token(spacer-100) style.token(spacer-120);

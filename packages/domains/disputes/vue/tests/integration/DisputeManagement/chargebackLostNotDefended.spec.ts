@@ -12,7 +12,7 @@ test.describe('Chargeback - Lost (Not defended)', () => {
         await expect(page.getByText('Chargeback', { exact: true })).toBeVisible();
         await expect(page.getByText('Lost', { exact: true })).toBeVisible();
 
-        await expect(page.getByRole('alert')).toBeVisible();
+        await expect(page.getByRole('status')).toBeVisible();
 
         await expect(page.getByText('This chargeback wasn’t defended and was lost by default.')).toBeVisible();
     });

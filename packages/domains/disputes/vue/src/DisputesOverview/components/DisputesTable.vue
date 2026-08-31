@@ -13,19 +13,16 @@ import {
     BentoTypography,
 } from '@adyen/bento-vue3';
 import WarningFilledIcon from '@adyen/ui-assets-icons-16/vue/warning-filled';
-import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import type { BentoCurrencyISOCode, BentoDatagridDataItem } from '@adyen/bento-vue3';
-import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import {
     useCustomColumnsData,
     CustomDataCell,
-    useResponsiveContainer,
-    containerQueries,
     DataOverviewError,
     useTableColumns,
+    type DataOverviewErrorPresentation,
 } from '@integration-components/composables-vue';
-import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
+import { useContainerQuery } from '@integration-components/composables-vue/useContainerQuery';
+import { containerQueries } from '@integration-components/composables-vue/containerQueries';
 import { getDisputeDeadlineTimeRemaining, getDisputeReason, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE, mergeRecords } from '@integration-components/utils';
 import type { CustomColumn, CustomDataRetrieved, IBalanceAccountBase, OnDataRetrievedCallback } from '@integration-components/types';
@@ -35,15 +32,15 @@ import DisputeStatusTag from './DisputeStatusTag.vue';
 import DisputePaymentMethod from './DisputePaymentMethod.vue';
 import { DISPUTES_TABLE_FIELDS, EMPTY_TABLE_MESSAGE_KEYS, FIELD_KEYS, type DisputesTableFields } from '../constants';
 import styles from './DisputesTable.module.scss';
+import { useDisputesContext } from '../../integration/context';
 
 const props = defineProps<{
     statusGroup: IDisputeStatusGroup;
     loading: boolean;
-    error?: Error;
+    errorPresentation?: DataOverviewErrorPresentation;
     data: IDisputeListItem[] | undefined;
     activeBalanceAccount?: IBalanceAccountBase;
     showPagination: boolean;
-    onContactSupport?: () => void;
     onRowClick?: (dispute: IDisputeListItem) => void;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<DisputesTableFields>>[];
     onDataRetrieve?: OnDataRetrievedCallback<IDisputeListItem[], CustomDataRetrieved[]>;
@@ -57,17 +54,22 @@ const props = defineProps<{
     currentPage?: number;
 }>();
 
-const { i18n } = useCoreContext();
-const config = useConfigContext();
+const { i18n, runtime } = useDisputesContext();
+const dateFormat: typeof i18n.date = (date, options) =>
+    i18n.date(date, {
+        timeZone: props.activeBalanceAccount?.timeZone ?? i18n.timezone,
+        ...options,
+    });
 
-const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceAccount?.timeZone);
-const isMobile = useResponsiveContainer(containerQueries.down.xs);
+const containerRef = ref<HTMLElement | null>(null);
+const isMobile = useContainerQuery(containerQueries.down.xs, containerRef);
 const hasMultipleCurrencies = ref(true);
 
 const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
     fields: DISPUTES_TABLE_FIELDS,
     customColumns: () => props.customColumns,
     fieldsKeys: FIELD_KEYS,
+    translate: key => i18n.get(key),
     customColumnDefaults: () => ({ flex: 1, minWidth: 0 }),
     columnConfig: () => {
         const statusGroup = props.statusGroup;
@@ -112,7 +114,7 @@ watch(
     { immediate: true }
 );
 
-const isLoading = computed(() => props.loading || config.refreshing || loadingCustomRecords.value);
+const isLoading = computed(() => props.loading || runtime.refreshing || loadingCustomRecords.value);
 const showMobilePagination = computed(() => props.showPagination && (props.hasNext || props.hasPrevious));
 
 const gridData = computed<BentoDatagridDataItem[]>(() => {
@@ -172,7 +174,11 @@ function getTimeToDeadline(dueDate: string): string {
     const timeRemaining = getDisputeDeadlineTimeRemaining(dueDate);
     if (!timeRemaining) return '';
 
-    const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
+    const formattedDate = i18n.date(dueDate, {
+        timeZone: props.activeBalanceAccount?.timeZone || i18n.timezone,
+        ...DATE_FORMAT_RESPONSE_DEADLINE,
+        weekday: undefined,
+    });
     if (timeRemaining.expired) return formattedDate;
 
     return timeRemaining.days <= 1
@@ -203,16 +209,8 @@ function handleListItemClick(dispute: IDisputeListItem) {
 </script>
 
 <template>
-    <div :class="styles.root">
-        <DataOverviewError
-            v-if="props.error"
-            :error="props.error"
-            :error-message="'disputes.overview.common.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
-            :variant="isMobile ? 'condensed' : 'embedded'"
-            :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
-        />
+    <div ref="containerRef" :class="styles.root">
+        <DataOverviewError v-if="props.errorPresentation" v-bind="props.errorPresentation" :variant="isMobile ? 'condensed' : 'embedded'" />
 
         <template v-else-if="isMobile">
             <div v-if="isLoading" :class="styles.loading" aria-busy="true">
@@ -260,8 +258,8 @@ function handleListItemClick(dispute: IDisputeListItem) {
                 </BentoList>
 
                 <BentoPagination
-                    hide-first-last-page-buttons
                     v-if="showMobilePagination"
+                    hide-first-last-page-buttons
                     :page="props.currentPage"
                     :size="props.limit"
                     :has-next="props.hasNext"

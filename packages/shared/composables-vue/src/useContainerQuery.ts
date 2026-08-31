@@ -1,10 +1,8 @@
-import { ref, computed, watch, onUnmounted, inject } from 'vue';
-import { COMPONENT_REF_KEY } from '@integration-components/core/vue/Context/constants';
+import { computed, watch, onUnmounted, ref, type Ref } from 'vue';
 
 type ContainerQuery = readonly [string, number, { min?: number; max?: number }?];
 
-export const useContainerQuery = <T extends ContainerQuery>(query: T) => {
-    const containerRef = inject(COMPONENT_REF_KEY, ref<HTMLElement | null>(null));
+export const useContainerQuery = <T extends ContainerQuery>(query: T, containerRef: Ref<HTMLElement | null>) => {
     const width = ref(0);
     const [type, breakpoint, minMax] = query;
 

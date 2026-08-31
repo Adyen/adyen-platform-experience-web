@@ -1,11 +1,11 @@
 import type { Meta } from '@storybook/vue3';
-import type { PayoutDetailsExternalProps } from '../../src';
+import type { PayoutDetailsDomainProps } from '../../src/definitions';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, DEFAULT_PAYOUT_DETAILS } from '../../../fixtures/data/PayoutDetails';
 import { PAYOUT_DETAILS_HANDLERS } from '../../../mocks/mock-server/payouts';
 import { PayoutDetailsMeta } from './meta';
 
-const meta: Meta<ElementProps<PayoutDetailsExternalProps>> = {
+const meta: Meta<ElementProps<PayoutDetailsDomainProps>> = {
     ...PayoutDetailsMeta,
     title: 'Mocked/Payouts/Payout Details',
 };
@@ -16,7 +16,7 @@ const sharedArgs = {
     mockedApi: true,
 };
 
-export const Default: ElementStory<PayoutDetailsExternalProps> = {
+export const Default: ElementStory<PayoutDetailsDomainProps> = {
     name: 'Default',
     args: sharedArgs,
     parameters: {
@@ -24,7 +24,7 @@ export const Default: ElementStory<PayoutDetailsExternalProps> = {
     },
 };
 
-export const ErrorDetails: ElementStory<PayoutDetailsExternalProps> = {
+export const ErrorDetails: ElementStory<PayoutDetailsDomainProps> = {
     name: 'Error - Details',
     args: sharedArgs,
     parameters: {
@@ -32,7 +32,7 @@ export const ErrorDetails: ElementStory<PayoutDetailsExternalProps> = {
     },
 };
 
-export const ErrorNotFound: ElementStory<PayoutDetailsExternalProps> = {
+export const ErrorNotFound: ElementStory<PayoutDetailsDomainProps> = {
     name: 'Error - Not found',
     args: sharedArgs,
     parameters: {
@@ -40,7 +40,15 @@ export const ErrorNotFound: ElementStory<PayoutDetailsExternalProps> = {
     },
 };
 
-export const SumOfSameDayPayouts: ElementStory<PayoutDetailsExternalProps> = {
+export const DetailsRoleNotAssigned: ElementStory<PayoutDetailsDomainProps> = {
+    name: 'Error - Role not assigned',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...PAYOUT_DETAILS_HANDLERS.permissionError },
+    },
+};
+
+export const SumOfSameDayPayouts: ElementStory<PayoutDetailsDomainProps> = {
     name: 'Sum of same-day payouts',
     args: sharedArgs,
     parameters: {
@@ -48,7 +56,7 @@ export const SumOfSameDayPayouts: ElementStory<PayoutDetailsExternalProps> = {
     },
 };
 
-export const DataCustomization: ElementStory<PayoutDetailsExternalProps> = {
+export const DataCustomization: ElementStory<PayoutDetailsDomainProps> = {
     name: 'Data customization',
     args: {
         ...sharedArgs,

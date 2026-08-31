@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
-import { ErrorMessageDisplay } from '@integration-components/composables-vue';
+import { DataOverviewError, useDataOverviewError } from '@integration-components/composables-vue';
 import { BentoTypography, BentoDataGrid, BentoDivider } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
+import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import { getTransactionCategory } from '@integration-components/transactions/domain';
 import type { CurrencyLookupRecord } from '../../composables/useCurrenciesLookup';
 import type { useTransactionsTotals } from '../../composables/useTransactionsTotals';
 import styles from './InsightsTotals.module.scss';
+import { useTransactionsContext } from '../../../integration/context';
+import { TRANSACTIONS_DATA_OVERVIEW_ACTION_KEYS } from '../../../integration/translationKeys';
 
 const props = defineProps<{
     currency?: string;
@@ -15,7 +17,19 @@ const props = defineProps<{
     transactionsTotalsResult: ReturnType<typeof useTransactionsTotals>;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
+const totalsErrorInfo = computed(() => ({
+    title: 'transactions.errors.somethingWentWrong' as const,
+    messages: ['transactions.errors.retry' as const],
+    refreshComponent: true,
+}));
+const { presentation: errorPresentation } = useDataOverviewError({
+    actionKeys: TRANSACTIONS_DATA_OVERVIEW_ACTION_KEYS,
+    errorInfo: totalsErrorInfo,
+    onRefresh: props.transactionsTotalsResult.refresh,
+    refreshIcon: RefreshIcon,
+    translate: (key, options) => i18n.get(key, options),
+});
 
 const data = computed<CurrencyLookupRecord['totals'] | undefined>(() => {
     if (!props.currency) return undefined;
@@ -64,15 +78,8 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
         </template>
 
         <template v-else-if="props.transactionsTotalsResult.error.value">
-            <div class="adyen-pe-transaction-insights-totals__error-container">
-                <ErrorMessageDisplay
-                    :error-info="{ title: 'common.errors.somethingWentWrong', messages: ['common.errors.retry'], refreshComponent: true }"
-                    :on-refresh="props.transactionsTotalsResult.refresh"
-                    with-image
-                    :outlined="false"
-                    :absolute-position="false"
-                    :with-background="false"
-                />
+            <div :class="styles.errorContainer">
+                <DataOverviewError v-bind="errorPresentation" />
             </div>
         </template>
 

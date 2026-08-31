@@ -1,32 +1,53 @@
-import { createDynamicTranslationFactory, createKeyFactoryFromConfig } from '@integration-components/core';
-import type { KeyFactoryFunction, TranslationFallbackFunction, TranslationKey } from '@integration-components/core';
 import type { IRefundReason } from '@integration-components/types';
+import { isTransactionsTranslationKey, type TransactionsTranslationKey } from '../translations';
 
-const originalValueFallback: TranslationFallbackFunction = (_, value) => value;
+/**
+ * The exact transaction keys these helpers can produce. Shared with the Preact elements, whose
+ * `Localization` i18n accepts the public V1 catalog: this subset keeps both the Preact and the
+ * Vue i18n assignable without exposing the full domain catalog union.
+ */
+type TransactionsTypeTranslationKey =
+    | Extract<TransactionsTranslationKey, `transactions.details.summary.adjustments.types.${string}`>
+    | Extract<TransactionsTranslationKey, `transactions.common.types.${string}`>
+    | Extract<TransactionsTranslationKey, `transactions.common.statuses.${string}`>
+    | Extract<TransactionsTranslationKey, `transactions.details.timeline.statuses.${string}`>
+    | Extract<TransactionsTranslationKey, `transactions.details.timeline.types.${string}`>
+    | Extract<TransactionsTranslationKey, `transactions.details.common.refundReasons.${string}`>;
 
-const txAmountAdjustmentTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.details.summary.adjustments.types.' });
-export const getTransactionAmountAdjustmentType = createDynamicTranslationFactory(txAmountAdjustmentTypeKeyFactory, originalValueFallback);
+type TransactionsTypeI18n = Readonly<{ get(key: TransactionsTypeTranslationKey): string }>;
 
-const txAmountAdjustmentInformationKeyFactory = createKeyFactoryFromConfig({
-    prefix: 'transactions.details.summary.adjustments.types.',
-    suffix: '.information',
-});
-export const getTransactionAmountAdjustmentTypeInformation = createDynamicTranslationFactory(txAmountAdjustmentInformationKeyFactory);
+const getDynamicTranslation = (
+    i18n: TransactionsTypeI18n,
+    prefix: string,
+    value?: string,
+    suffix = '',
+    fallbackToValue = false
+): string | undefined => {
+    if (value === undefined) return undefined;
+    const key = `${prefix}${value}${suffix}`;
+    return isTransactionsTranslationKey(key) ? i18n.get(key as TransactionsTypeTranslationKey) : fallbackToValue ? value : undefined;
+};
 
-const txCategoryKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.common.types.' });
-export const getTransactionCategory = createDynamicTranslationFactory(txCategoryKeyFactory, originalValueFallback);
+export const getTransactionAmountAdjustmentType = (i18n: TransactionsTypeI18n, value?: string): string | undefined =>
+    getDynamicTranslation(i18n, 'transactions.details.summary.adjustments.types.', value, '', true);
 
-const txCategoryDescriptionKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.common.types.', suffix: '.description' });
-export const getTransactionCategoryDescription = createDynamicTranslationFactory(txCategoryDescriptionKeyFactory);
+export const getTransactionAmountAdjustmentTypeInformation = (i18n: TransactionsTypeI18n, value?: string): string | undefined =>
+    getDynamicTranslation(i18n, 'transactions.details.summary.adjustments.types.', value, '.information');
 
-const txStatusKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.common.statuses.' });
-export const getTransactionStatus = createDynamicTranslationFactory(txStatusKeyFactory, originalValueFallback);
+export const getTransactionCategory = (i18n: TransactionsTypeI18n, value?: string): string | undefined =>
+    getDynamicTranslation(i18n, 'transactions.common.types.', value, '', true);
 
-const txTimelineStatusKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.details.timeline.statuses.' });
-export const getTransactionTimelineTxStatus = createDynamicTranslationFactory(txTimelineStatusKeyFactory, originalValueFallback);
+export const getTransactionCategoryDescription = (i18n: TransactionsTypeI18n, value?: string): string | undefined =>
+    getDynamicTranslation(i18n, 'transactions.common.types.', value, '.description');
 
-const txTimelineTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.details.timeline.types.' });
-export const getTransactionTimelineTxType = createDynamicTranslationFactory(txTimelineTypeKeyFactory, originalValueFallback);
+export const getTransactionStatus = (i18n: TransactionsTypeI18n, value?: string): string | undefined =>
+    getDynamicTranslation(i18n, 'transactions.common.statuses.', value, '', true);
+
+export const getTransactionTimelineTxStatus = (i18n: TransactionsTypeI18n, value?: string): string | undefined =>
+    getDynamicTranslation(i18n, 'transactions.details.timeline.statuses.', value, '', true);
+
+export const getTransactionTimelineTxType = (i18n: TransactionsTypeI18n, value?: string): string | undefined =>
+    getDynamicTranslation(i18n, 'transactions.details.timeline.types.', value, '', true);
 
 export const REFUND_REASONS_KEYS = Object.freeze({
     requested_by_customer: 'transactions.details.common.refundReasons.requestedByCustomer',
@@ -34,8 +55,10 @@ export const REFUND_REASONS_KEYS = Object.freeze({
     fraudulent: 'transactions.details.common.refundReasons.fraudulent',
     duplicate: 'transactions.details.common.refundReasons.duplicate',
     other: 'transactions.details.common.refundReasons.other',
-} as const) satisfies Readonly<Record<IRefundReason, TranslationKey>>;
+} as const) satisfies Readonly<Record<IRefundReason, TransactionsTranslationKey>>;
 
-const txRefundReasonKey = createKeyFactoryFromConfig({ prefix: 'transactions.details.common.refundReasons.' });
-const txRefundReasonKeyFactory: KeyFactoryFunction = reason => reason && (REFUND_REASONS_KEYS[reason as IRefundReason] ?? txRefundReasonKey(reason));
-export const getTransactionRefundReason = createDynamicTranslationFactory(txRefundReasonKeyFactory, originalValueFallback);
+export const getTransactionRefundReason = (i18n: TransactionsTypeI18n, reason?: string): string | undefined => {
+    if (reason === undefined) return undefined;
+    const key = REFUND_REASONS_KEYS[reason as IRefundReason] ?? `transactions.details.common.refundReasons.${reason}`;
+    return isTransactionsTranslationKey(key) ? i18n.get(key as TransactionsTypeTranslationKey) : reason;
+};

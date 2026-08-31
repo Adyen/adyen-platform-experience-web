@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoButtonActions, type BentoButtonActionsList } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { usePayByLinkContext } from '../../integration/context';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { useSettingsPermission } from '../composables/useSettingsPermission';
 import { MenuItem } from '../constants';
@@ -12,7 +12,7 @@ const props = defineProps<{
     closeContent?: () => void;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = usePayByLinkContext();
 const { activeMenuItem, onSave, isSaving, isLoadingContent, isLoadingStores, isSaveSuccess } = usePaymentLinkSettingsContext();
 const { themeEnabled, termsAndConditionsEnabled } = useSettingsPermission();
 

@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import type { IPayout, IPayoutDetails } from '@integration-components/types';
-import { compareDates, delay, getPaginationLinks } from '@integration-components/testing/msw';
+import { CapitalComponentManage, compareDates, CROSS_DOMAIN_ENDPOINTS, delay, getPaginationLinks } from '@integration-components/testing/msw';
 import { BALANCE_ACCOUNTS_SINGLE } from '@integration-components/testing/fixtures';
 import { PAYOUTS_WITH_DETAILS } from '../mock-data/payouts';
 import { PAYOUTS_ENDPOINTS } from '../endpoints';
@@ -9,6 +9,22 @@ const mockEndpoints = PAYOUTS_ENDPOINTS;
 const networkError = false;
 const defaultPaginationLimit = 20;
 const DEFAULT_SORT_DIRECTION = 'desc';
+const DELAY_TIME = 300;
+
+// Setup response without any payouts or balanceAccounts endpoints, so both payouts components
+// report `hasPermission === false` (role not assigned).
+const payoutsRoleNotAssignedSetup = {
+    handlers: [
+        http.post(CROSS_DOMAIN_ENDPOINTS.setup, async () => {
+            await delay(DELAY_TIME);
+            return HttpResponse.json({
+                endpoints: {
+                    ...CapitalComponentManage,
+                },
+            });
+        }),
+    ],
+};
 
 const getPayouts = (balanceAccountId: string) => {
     // prettier-ignore
@@ -78,6 +94,7 @@ export const PAYOUT_DETAILS_HANDLERS = (() => {
     const DEFAULT_PAYOUT_DETAILS = { ...basePayoutDetails, payout: basePayout } satisfies IPayoutDetails & { balanceAccountId: string };
 
     return {
+        permissionError: payoutsRoleNotAssignedSetup,
         default: {
             handlers: [
                 http.get(mockEndpoints.payout, () => {
@@ -121,6 +138,7 @@ export const PAYOUT_DETAILS_HANDLERS = (() => {
 })();
 
 export const PAYOUTS_OVERVIEW_HANDLERS = {
+    permissionError: payoutsRoleNotAssignedSetup,
     singleBalanceAccount: {
         handlers: [
             http.get(mockEndpoints.balanceAccounts, () => {

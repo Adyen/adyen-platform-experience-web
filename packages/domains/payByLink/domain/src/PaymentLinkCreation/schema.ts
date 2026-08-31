@@ -1,12 +1,19 @@
 import { z, type ZodType } from 'zod';
-import type { Localization } from '@integration-components/core';
 import type { IPaymentLinkValidity } from '@integration-components/types';
 import { transformToMS } from '@integration-components/utils';
+import type { PayByLinkTranslationKey } from '../translations';
 import type { FormFieldConfig, FormStepConfig } from './formSteps';
 import type { PaymentLinkFieldName } from './types';
 import { FLEXIBLE_VALIDITY_ID, MAX_VALIDITY_DAYS, PAYMENT_LINK_CREATION_FIELD_LENGTHS } from './constants';
 
-type I18n = Localization['i18n'];
+/**
+ * Consumed only by the Vue creation flow, which resolves keys through the Pay by Link
+ * translation catalog. Accepts just the operations the schema needs, so the Vue domain
+ * i18n satisfies it structurally.
+ */
+export type StepSchemaI18n = Readonly<{
+    get(key: PayByLinkTranslationKey, options?: Readonly<{ values?: Readonly<Record<string, unknown>> }>): string;
+}>;
 
 type FlatValues = Record<string, unknown>;
 
@@ -34,7 +41,7 @@ const DELIVERY_ADDRESS_FIELDS: PaymentLinkFieldName[] = [
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const validateAmount = (data: FlatValues, fields: FormFieldConfig[], i18n: I18n, ctx: z.RefinementCtx) => {
+const validateAmount = (data: FlatValues, fields: FormFieldConfig[], i18n: StepSchemaI18n, ctx: z.RefinementCtx) => {
     const valueField = fields.find(f => f.fieldName === 'amount.value');
     if (!valueField?.visible) return;
     const currencyVisible = fields.some(f => f.fieldName === 'amount.currency' && f.visible);
@@ -50,11 +57,11 @@ const validateAmount = (data: FlatValues, fields: FormFieldConfig[], i18n: I18n,
         return;
     }
     if (valueField.required && (isEmpty(rawValue) || numericValue === 0)) {
-        addRequiredIssue(ctx, 'amount.value', i18n.get('common.errors.fieldRequired'));
+        addRequiredIssue(ctx, 'amount.value', i18n.get('payByLink.errors.fieldRequired'));
     }
 };
 
-const validateValidity = (data: FlatValues, fields: FormFieldConfig[], i18n: I18n, ctx: z.RefinementCtx) => {
+const validateValidity = (data: FlatValues, fields: FormFieldConfig[], i18n: StepSchemaI18n, ctx: z.RefinementCtx) => {
     const quantityField = fields.find(f => f.fieldName === 'linkValidity.quantity');
     const unitField = fields.find(f => f.fieldName === 'linkValidity.durationUnit');
     if (!quantityField?.visible && !unitField?.visible) return;
@@ -98,7 +105,7 @@ const validateAddressSection = (
     data: FlatValues,
     fields: FormFieldConfig[],
     sectionFields: PaymentLinkFieldName[],
-    i18n: I18n,
+    i18n: StepSchemaI18n,
     ctx: z.RefinementCtx
 ) => {
     const visibleSectionFields = sectionFields.filter(name => fields.some(f => f.fieldName === name && f.visible));
@@ -110,7 +117,7 @@ const validateAddressSection = (
     if (!sectionRequired && !anyFilled) return;
 
     visibleSectionFields.forEach(name => {
-        if (isEmpty(data[name])) addRequiredIssue(ctx, name, i18n.get('common.errors.fieldRequired'));
+        if (isEmpty(data[name])) addRequiredIssue(ctx, name, i18n.get('payByLink.errors.fieldRequired'));
     });
 };
 
@@ -141,7 +148,7 @@ const SPECIAL_FIELDS: PaymentLinkFieldName[] = [
     ...DELIVERY_ADDRESS_FIELDS,
 ];
 
-const validateSimpleField = (data: FlatValues, field: FormFieldConfig, i18n: I18n, ctx: z.RefinementCtx) => {
+const validateSimpleField = (data: FlatValues, field: FormFieldConfig, i18n: StepSchemaI18n, ctx: z.RefinementCtx) => {
     if (!field.visible || SPECIAL_FIELDS.includes(field.fieldName)) return;
     const value = data[field.fieldName];
 
@@ -151,7 +158,7 @@ const validateSimpleField = (data: FlatValues, field: FormFieldConfig, i18n: I18
     }
 
     if (field.required && isEmpty(value)) {
-        addRequiredIssue(ctx, field.fieldName, i18n.get('common.errors.fieldRequired'));
+        addRequiredIssue(ctx, field.fieldName, i18n.get('payByLink.errors.fieldRequired'));
         return;
     }
 
@@ -162,17 +169,17 @@ const validateSimpleField = (data: FlatValues, field: FormFieldConfig, i18n: I18
 
     const minLength = MIN_LENGTHS[field.fieldName];
     if (minLength && !isEmpty(value) && typeof value === 'string' && value.length < minLength) {
-        addRequiredIssue(ctx, field.fieldName, i18n.get('common.errors.minLength', { values: { minLength } }));
+        addRequiredIssue(ctx, field.fieldName, i18n.get('payByLink.errors.minLength', { values: { minLength } }));
         return;
     }
 
     const maxLength = MAX_LENGTHS[field.fieldName];
     if (maxLength && typeof value === 'string' && value.length > maxLength) {
-        addRequiredIssue(ctx, field.fieldName, i18n.get('common.errors.maxLength', { values: { maxLength } }));
+        addRequiredIssue(ctx, field.fieldName, i18n.get('payByLink.errors.maxLength', { values: { maxLength } }));
     }
 };
 
-export const buildStepSchema = (step: FormStepConfig, i18n: I18n): ZodType => {
+export const buildStepSchema = (step: FormStepConfig, i18n: StepSchemaI18n): ZodType => {
     const visibleFields = step.fields.filter(field => field.visible);
     const shape: Record<string, ZodType> = {};
     visibleFields.forEach(field => {

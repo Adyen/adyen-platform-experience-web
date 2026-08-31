@@ -28,9 +28,3 @@ export type StoreItem = {
     storeCode: string;
     description: string;
 };
-
-export type SettingsErrorContent = {
-    title: TranslationKey;
-    messages: TranslationKey[];
-    refreshComponent: boolean;
-};

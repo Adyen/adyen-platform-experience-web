@@ -80,4 +80,17 @@ export const ErrorExpire: ElementStory<PaymentLinkDetailsExternalProps> = {
     },
 };
 
+export const DetailsRoleNotAssigned: ElementStory<PaymentLinkDetailsExternalProps> = {
+    name: 'Error - Role not assigned',
+    args: {
+        id: 'PLTEST001',
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: PaymentLinkDetailsMockedResponses.permissionError,
+        },
+    },
+};
+
 export default meta;

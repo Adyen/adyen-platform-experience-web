@@ -1,12 +1,13 @@
 import { effectScope, nextTick, ref } from 'vue';
-import { expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { useTransactionsList } from './useTransactionsList';
 
 const getTransactions = vi.fn();
 
-vi.mock('@integration-components/core/vue', () => ({
-    useConfigContext: () => ({
-        endpoints: {
+vi.mock('../../integration/context', () => ({
+    useTransactionsContext: () => ({
+        runtime: {
+            available: true,
             getTransactions,
         },
     }),
@@ -18,6 +19,10 @@ vi.mock('@integration-components/composables-vue', () => ({
         loadingCustomRecords: ref(false),
     }),
 }));
+
+beforeEach(() => {
+    getTransactions.mockReset();
+});
 
 test('does not report filter changes when paginating', async () => {
     getTransactions.mockResolvedValue({

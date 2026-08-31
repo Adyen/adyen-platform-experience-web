@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/vue3';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
-import type { DisputesOverviewExternalProps } from '../../src';
+import type { DisputesOverviewDomainProps as DisputesOverviewExternalProps } from '../../src/definitions';
 import { DisputesOverviewMeta } from './meta';
 import { DISPUTES_LIST_HANDLERS } from '../../../mocks/mock-server/disputes';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION_DETAILS, DATA_CUSTOMIZATION_LIST } from '../../../fixtures/data/DisputesOverview';
@@ -38,6 +38,14 @@ export const NetworkError: ElementStory<DisputesOverviewExternalProps> = {
     args: sharedArgs,
     parameters: {
         msw: { ...DISPUTES_LIST_HANDLERS.networkError },
+    },
+};
+
+export const OverviewRoleNotAssigned: ElementStory<DisputesOverviewExternalProps> = {
+    name: 'Error - Role not assigned',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...DISPUTES_LIST_HANDLERS.permissionError },
     },
 };
 

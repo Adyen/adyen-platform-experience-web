@@ -1,7 +1,7 @@
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { isFunction } from '@integration-components/utils';
-import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import type { IPaymentLinkDetails } from '@integration-components/types';
+import { usePayByLinkContext } from '../../integration/context';
 
 export type PaymentLinkDetailsError = Error & {
     errorCode?: string;
@@ -18,8 +18,7 @@ interface UsePaymentLinkDetailsProps {
 }
 
 export function usePaymentLinkDetails(props: () => UsePaymentLinkDetailsProps) {
-    const config = useConfigContext();
-    const { i18n, getCdnDataset } = useCoreContext();
+    const { i18n, runtime } = usePayByLinkContext();
 
     const data = ref<IPaymentLinkDetails | undefined>(undefined);
     const error = ref<PaymentLinkDetailsError | undefined>(undefined);
@@ -27,14 +26,13 @@ export function usePaymentLinkDetails(props: () => UsePaymentLinkDetailsProps) {
     const countries = ref<CountryOption[]>([]);
     let abortController: AbortController | null = null;
 
-    const getPaymentLinkById = computed(() => config.endpoints.getPayByLinkPaymentLinkById);
+    const getPaymentLinkById = computed(() => runtime.endpoints.getPayByLinkPaymentLinkById);
     const canFetch = computed(() => isFunction(getPaymentLinkById.value) && !!props().id);
 
     async function loadCountries() {
-        if (!isFunction(getCdnDataset)) return;
         try {
             countries.value =
-                (await getCdnDataset<CountryOption[]>({
+                (await runtime.getCdnDataset<CountryOption[]>({
                     name: i18n.locale ?? 'en-US',
                     extension: 'json',
                     subFolder: 'countries',

@@ -1,3 +1,3 @@
-export { DisputesOverviewElement } from './DisputesOverviewElement';
-export type { DisputesOverviewExternalProps, DisputesOverviewProps, DisputesListCustomization, DisputeStatusGroup } from './types';
+export type { DisputesOverviewDomainProps } from '../integration';
+export type { DisputesOverviewProps, DisputesListCustomization, DisputeStatusGroup } from './types';
 export type { DisputesTableFields } from './constants';

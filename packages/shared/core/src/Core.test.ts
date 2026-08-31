@@ -97,4 +97,49 @@ describe('Core', () => {
             expect(component.update).toHaveBeenCalledWith(expect.objectContaining({ locale: 'de-DE' }));
         });
     });
+
+    it('keeps a domain callback stable until translation state changes', async () => {
+        vi.stubGlobal('window', {});
+        const core = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+        });
+
+        await core.initialize();
+        const initial = core.getDomainTranslationInputs('reports').getCustomTranslations;
+        await core.update({});
+
+        expect(core.getDomainTranslationInputs('reports').getCustomTranslations).toBe(initial);
+
+        await core.update({
+            translations: {
+                'en-US': {
+                    'reports.overview.title': 'Custom reports',
+                },
+            },
+        });
+
+        expect(core.getDomainTranslationInputs('reports').getCustomTranslations).not.toBe(initial);
+    });
+
+    it('creates scoped domain translation connections', () => {
+        const core = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            translations: {
+                'en-US': {
+                    'reports.overview.title': 'Custom reports',
+                },
+            },
+        });
+        const controller = new AbortController();
+        const connection = core.connectDomainTranslations('reports', controller.signal);
+
+        expect(connection.translations.getInputs().locale).toBe('en-US');
+        expect(connection.translations.getInputs().getCustomTranslations?.('reports.overview.title', 'en-US')).toEqual({
+            defaultTranslation: 'Custom reports',
+            localeTranslation: 'Custom reports',
+        });
+        expect(() => connection.dispose()).not.toThrow();
+    });
 });

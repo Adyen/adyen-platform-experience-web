@@ -1,0 +1,11 @@
+{
+    "name": "@integration-components/domain-integration",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "packages/shared/domain-integration/src",
+    "tags": ["type:domain-integration"],
+    "targets": {
+        "types:check": {},
+        "types:watch": {}
+    }
+}

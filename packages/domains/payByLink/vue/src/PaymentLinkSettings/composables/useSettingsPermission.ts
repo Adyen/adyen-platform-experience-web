@@ -1,11 +1,11 @@
 import { computed } from 'vue';
-import { useConfigContext } from '@integration-components/core/vue';
+import { usePayByLinkContext } from '../../integration/context';
 
 export function useSettingsPermission() {
-    const config = useConfigContext();
+    const runtime = usePayByLinkContext().runtime;
 
-    const themeEnabled = computed(() => !!config.endpoints.getPayByLinkTheme && !!config.endpoints.updatePayByLinkTheme);
-    const termsAndConditionsEnabled = computed(() => !!config.endpoints.getPayByLinkSettings && !!config.endpoints.savePayByLinkSettings);
+    const themeEnabled = computed(() => !!runtime.endpoints.getPayByLinkTheme && !!runtime.endpoints.updatePayByLinkTheme);
+    const termsAndConditionsEnabled = computed(() => !!runtime.endpoints.getPayByLinkSettings && !!runtime.endpoints.savePayByLinkSettings);
 
     return { themeEnabled, termsAndConditionsEnabled };
 }

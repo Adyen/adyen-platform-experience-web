@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
 import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
 import CrossCircleFillIcon from '@adyen/ui-assets-icons-40/vue/cross-circle-filled';
 import type { RefundResult } from '../../../../../domain/src';
+import { useTransactionsContext } from '../../../integration/context';
 import styles from './PaymentRefund.module.scss';
 
 const props = defineProps<{
@@ -13,11 +13,11 @@ const props = defineProps<{
     showDetails: () => void;
 }>();
 
-const { i18n } = useCoreContext();
+const { i18n } = useTransactionsContext();
 
 const isError = computed(() => props.result === 'error');
 
-const titleKey = computed(() => (isError.value ? 'common.errors.somethingWentWrong' : 'transactions.details.refund.alerts.refundSent'));
+const titleKey = computed(() => (isError.value ? 'transactions.errors.somethingWentWrong' : 'transactions.details.refund.alerts.refundSent'));
 const descriptionKey = computed(() =>
     isError.value ? 'transactions.details.refund.alerts.refundFailure' : 'transactions.details.refund.alerts.refundSuccess'
 );

@@ -8,6 +8,7 @@ export interface PayoutDetailsProps extends UIElementProps {
     id: string;
     date: string;
     onContactSupport?: () => void;
+    showContactSupport?: boolean;
     dataCustomization?: {
         details?: PayoutDetailsCustomization;
     };

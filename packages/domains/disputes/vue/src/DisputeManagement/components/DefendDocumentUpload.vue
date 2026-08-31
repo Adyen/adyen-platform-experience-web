@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, onUnmounted, ref, watch } from 'vue';
 import { BentoButton, BentoButtonActions, BentoCard, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import PlusIcon from '@adyen/ui-assets-icons-16/vue/plus';
 import BinIcon from '@adyen/ui-assets-icons-16/vue/bin';
-import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
-import type { EndpointHttpCallables } from '@integration-components/core';
 import { getDefenseDocumentContent } from '@integration-components/disputes/domain';
-import { isFunction } from '@integration-components/utils';
 import type { IDisputeDefenseDocument } from '@integration-components/types/api/models/disputes';
 import { DefendResponse, DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import DisputeFileInput from './DisputeFileInput.vue';
@@ -14,14 +11,13 @@ import SelectDropdown from './SelectDropdown.vue';
 import type { SelectDropdownItem } from '../types';
 import flowStyles from './DisputeFlow.module.scss';
 import styles from './DefendDispute.module.scss';
+import { useDisputesContext } from '../../integration/context';
 
 const props = defineProps<{
     pspReference?: string;
 }>();
 
-const { i18n } = useCoreContext();
-const config = useConfigContext();
-const defendDispute = computed(() => config.endpoints?.defendDispute);
+const { i18n, runtime } = useDisputesContext();
 const {
     addFileToDefendPayload,
     applicableDocuments,
@@ -39,6 +35,7 @@ const {
 const isSubmittingDefense = ref(false);
 const oneOrMoreSelectedDocument = ref<string | undefined>();
 const optionalSelectedDocuments = ref<(string | undefined)[]>([]);
+let defendController: AbortController | undefined;
 
 const mapDocumentsByRequirement = (requirementLevel: IDisputeDefenseDocument['requirementLevel']): SelectDropdownItem[] =>
     (applicableDocuments.value ?? [])
@@ -154,27 +151,33 @@ function onFileChange(documentType: string | undefined, file: File | undefined) 
 }
 
 async function submitDefenseDocuments() {
-    const defendDisputeFn = defendDispute.value;
     const pspReference = props.pspReference;
-    if (!canSubmitDocuments.value || !isFunction(defendDisputeFn) || !defendDisputePayload.value || !pspReference) return;
+    if (!canSubmitDocuments.value || !runtime.canDefend || !defendDisputePayload.value || !pspReference) return;
 
+    defendController?.abort();
+    defendController = new AbortController();
     isSubmittingDefense.value = true;
     try {
-        type DefendDisputeRequest = Parameters<EndpointHttpCallables<'defendDispute'>>[0];
-        await defendDisputeFn(
-            { contentType: 'multipart/form-data', body: defendDisputePayload.value as unknown as DefendDisputeRequest['body'] },
-            { path: { disputePspReference: pspReference } }
-        );
+        await runtime.defendDispute({
+            body: defendDisputePayload.value,
+            disputePspReference: pspReference,
+            signal: defendController.signal,
+        });
         clearFiles();
         onDefendSubmit(DefendResponse.Success);
     } catch {
+        if (defendController.signal.aborted) return;
         clearFiles();
         onDefendSubmit(DefendResponse.Error);
     } finally {
-        setFlowState(DisputeFlowState.DefenseSubmitResponse);
-        isSubmittingDefense.value = false;
+        if (!defendController.signal.aborted) {
+            setFlowState(DisputeFlowState.DefenseSubmitResponse);
+            isSubmittingDefense.value = false;
+        }
     }
 }
+
+onUnmounted(() => defendController?.abort());
 
 const uploadActionButtons = computed(() => [
     {
