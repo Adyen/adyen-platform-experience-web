@@ -12,12 +12,14 @@
     },
     "dependencies": {
         "@integration-components/sdk-internal": "workspace:*",
-        "@integration-components/style": "workspace:*"
+        "@integration-components/style": "workspace:*",
+        "vue": "catalog:",
+        "vue-i18n": "^11.3.2"
     },
     "devDependencies": {
-        "@preact/preset-vite": "^2.10.2",
+        "@vitejs/plugin-vue": "^6.0.5",
+        "terser": "5.46.2",
         "tsc-alias": "^1.8.17",
-        "vite": "catalog:",
-        "vite-plugin-svgr": "^4.5.0"
+        "vite": "catalog:"
     }
 }

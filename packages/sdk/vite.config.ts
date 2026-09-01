@@ -1,8 +1,7 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vite';
-import { preact } from '@preact/preset-vite';
-import svgr from 'vite-plugin-svgr';
+import { defineConfig, type Plugin } from 'vite';
+import vue from '@vitejs/plugin-vue';
 import { getBuildEnvDefines } from '../../config/defines/build-env';
 import rootPkgJson from '../../package.json';
 
@@ -21,51 +20,86 @@ const shouldExcludeAsset = (id: string) => {
     return externalDependencies.includes(id);
 };
 
+const UNUSED_BENTO_ILLUSTRATIONS = [
+    'delight',
+    'success',
+    'upload-files',
+    'referrals',
+    'planned-maintenance',
+    'page-not-found',
+    'notifications-cleared',
+    'internal-error',
+    'adyen-giving',
+    'adding-payment-methods',
+    '1-generic-use',
+    '2-generic-use',
+    '3-generic-use',
+    '4-generic-use',
+] as const;
+
+const unusedBentoIllustrationPattern = new RegExp(`(?:^|/)(?:${UNUSED_BENTO_ILLUSTRATIONS.join('|')})\\.[^/]+\\.js$`);
+
+const isBentoVueModule = (id: string) =>
+    id.includes('/@adyen/bento-vue3/') || id.includes('/@adyen+bento-vue3@') || id.includes('/packages/vue3/dist/');
+
+const pruneUnusedBentoIllustrations = (): Plugin => ({
+    name: 'prune-unused-bento-illustrations',
+    apply: 'build',
+    enforce: 'pre',
+    transform(_code, id) {
+        if (!isBentoVueModule(id) || !unusedBentoIllustrationPattern.test(id)) return null;
+        return { code: `export default '';`, map: null };
+    },
+});
+
 export default defineConfig(({ mode }) => ({
     root: projectRoot,
     resolve: {
+        dedupe: ['vue', 'vue-i18n'],
         alias: [
+            { find: /^vue$/, replacement: resolve(projectRoot, 'node_modules/vue') },
+            { find: /^vue-i18n$/, replacement: resolve(projectRoot, 'node_modules/vue-i18n') },
             { find: /^@integration-components\/style\/(.+)$/, replacement: `${styleDir}/$1` },
             { find: /^@integration-components\/style$/, replacement: resolve(styleDir, 'index.scss') },
-            { find: '@integration-components/hooks-preact', replacement: resolve(rootDir, 'packages/shared/hooks-preact/src') },
+            { find: '@integration-components/composables-vue', replacement: resolve(rootDir, 'packages/shared/composables-vue/src') },
             { find: '@integration-components/assets', replacement: resolve(rootDir, 'packages/shared/assets/src') },
             { find: '@integration-components/core', replacement: resolve(rootDir, 'packages/shared/core/src') },
             { find: '@integration-components/types', replacement: resolve(rootDir, 'packages/shared/types/src') },
             { find: '@integration-components/utils', replacement: resolve(rootDir, 'packages/shared/utils/src') },
-            { find: '@integration-components/ui-components-preact', replacement: resolve(rootDir, 'packages/shared/ui-components-preact/src') },
             { find: '@integration-components/sdk-internal', replacement: resolve(rootDir, 'src') },
-            { find: '@integration-components/disputes/publish', replacement: resolve(rootDir, 'packages/domains/disputes/publish/src') },
-            { find: '@integration-components/disputes/preact', replacement: resolve(rootDir, 'packages/domains/disputes/preact/src') },
+            { find: '@integration-components/disputes/vue', replacement: resolve(rootDir, 'packages/domains/disputes/vue/src') },
             { find: '@integration-components/disputes/domain', replacement: resolve(rootDir, 'packages/domains/disputes/domain/src') },
-            { find: '@integration-components/payouts/publish', replacement: resolve(rootDir, 'packages/domains/payouts/publish/src') },
-            { find: '@integration-components/payouts/preact', replacement: resolve(rootDir, 'packages/domains/payouts/preact/src') },
+            { find: '@integration-components/payouts/vue', replacement: resolve(rootDir, 'packages/domains/payouts/vue/src') },
             { find: '@integration-components/payouts/domain', replacement: resolve(rootDir, 'packages/domains/payouts/domain/src') },
-            { find: '@integration-components/reports/publish', replacement: resolve(rootDir, 'packages/domains/reports/publish/src') },
-            { find: '@integration-components/reports/preact', replacement: resolve(rootDir, 'packages/domains/reports/preact/src') },
+            { find: '@integration-components/reports/vue', replacement: resolve(rootDir, 'packages/domains/reports/vue/src') },
             { find: '@integration-components/reports/domain', replacement: resolve(rootDir, 'packages/domains/reports/domain/src') },
-            { find: '@integration-components/transactions/publish', replacement: resolve(rootDir, 'packages/domains/transactions/publish/src') },
-            { find: '@integration-components/transactions/preact', replacement: resolve(rootDir, 'packages/domains/transactions/preact/src') },
+            { find: '@integration-components/transactions/vue', replacement: resolve(rootDir, 'packages/domains/transactions/vue/src') },
             { find: '@integration-components/transactions/domain', replacement: resolve(rootDir, 'packages/domains/transactions/domain/src') },
-            { find: '@integration-components/payByLink/publish', replacement: resolve(rootDir, 'packages/domains/payByLink/publish/src') },
-            { find: '@integration-components/payByLink/preact', replacement: resolve(rootDir, 'packages/domains/payByLink/preact/src') },
+            { find: '@integration-components/payByLink/vue', replacement: resolve(rootDir, 'packages/domains/payByLink/vue/src') },
             { find: '@integration-components/payByLink/domain', replacement: resolve(rootDir, 'packages/domains/payByLink/domain/src') },
-            { find: '@integration-components/capital/publish', replacement: resolve(rootDir, 'packages/domains/capital/publish/src') },
-            { find: '@integration-components/capital/preact', replacement: resolve(rootDir, 'packages/domains/capital/preact/src') },
+            { find: '@integration-components/capital/vue', replacement: resolve(rootDir, 'packages/domains/capital/vue/src') },
             { find: '@integration-components/capital/domain', replacement: resolve(rootDir, 'packages/domains/capital/domain/src') },
         ],
     },
     build: {
-        minify: true,
+        minify: 'terser',
+        terserOptions: {
+            format: { comments: false },
+            compress: { passes: 2 },
+            mangle: true,
+        },
+        sourcemap: false,
         lib: {
             cssFileName: 'adyen-platform-experience-web',
             name: 'AdyenPlatformExperienceWeb',
             entry: resolve(projectRoot, 'src/index.ts'),
             fileName: (format, entryName) => {
+                const extension = format === 'cjs' ? 'cjs' : 'js';
                 if (entryName.includes('node_modules')) {
                     const normalized = entryName.slice(entryName.lastIndexOf('node_modules/') + 'node_modules/'.length);
-                    return `${format}/external/${normalized}.js`;
+                    return `${format}/external/${normalized}.${extension}`;
                 }
-                return `${format}/${entryName}.js`;
+                return `${format}/${entryName}.${extension}`;
             },
         },
         rollupOptions: {
@@ -74,13 +108,12 @@ export default defineConfig(({ mode }) => ({
                 {
                     format: 'es',
                     preserveModules: true,
-                    preserveModulesRoot: resolve(rootDir, 'src'),
-                    sourcemap: false,
+                    preserveModulesRoot: rootDir,
                     indent: false,
                 },
                 {
                     format: 'cjs',
-                    sourcemap: true,
+                    preserveModules: true,
                     indent: false,
                 },
             ],
@@ -117,11 +150,7 @@ export default defineConfig(({ mode }) => ({
                 }
             },
         },
-        svgr({
-            svgrOptions: { jsxRuntime: 'automatic', exportType: 'default' },
-            esbuildOptions: { jsx: 'automatic' },
-            include: '**/*.svg?component',
-        }),
-        preact(),
+        vue(),
+        pruneUnusedBentoIllustrations(),
     ],
 }));
