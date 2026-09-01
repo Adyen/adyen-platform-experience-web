@@ -3,23 +3,12 @@ import { BentoButton, BentoTooltipDirective } from '@adyen/bento-vue3';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import type { TranslationKey } from '@integration-components/core';
 import { useCoreContext } from '@integration-components/core/vue';
+import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import { useCopyText } from './useCopyText';
-import './CopyText.scss';
+import { useLiveAnnouncement } from './useLiveAnnouncement';
+import styles from './CopyText.module.scss';
 
 export type CopyTextType = 'Default' | 'Text' | 'Trimmed';
-
-const BASE_CLASSNAME = 'adyen-pe-copy-text';
-
-const classes = {
-    base: BASE_CLASSNAME,
-    container: `${BASE_CLASSNAME}__container`,
-    icon: `${BASE_CLASSNAME}__icon`,
-    information: `${BASE_CLASSNAME}__information`,
-    label: `${BASE_CLASSNAME}__label`,
-    stronger: `${BASE_CLASSNAME}--stronger`,
-    text: `${BASE_CLASSNAME}__text`,
-    underline: 'adyen-pe-tooltip-target--underlined',
-};
 
 export const CopyText = defineComponent({
     name: 'CopyText',
@@ -39,9 +28,13 @@ export const CopyText = defineComponent({
 
     setup(props, { attrs, slots }) {
         const { i18n } = useCoreContext();
+        const { announce, announcement } = useLiveAnnouncement();
         const { copyText, isCopied, resetCopyState } = useCopyText(
             () => props.textToCopy,
-            () => props.onCopyText?.()
+            () => {
+                props.onCopyText?.();
+                announce(() => i18n.get('common.actions.copy.labels.done'));
+            }
         );
         const copyButtonLabel = computed(() => i18n.get(props.copyButtonAriaLabelKey ?? 'common.actions.copy.labels.default'));
         const copyButtonTooltip = computed(() => i18n.get(isCopied.value ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default'));
@@ -51,11 +44,11 @@ export const CopyText = defineComponent({
                 'span',
                 {
                     class: [
-                        props.type === 'Trimmed' && classes.information,
-                        props.type !== 'Default' && classes.label,
-                        props.stronger && classes.stronger,
-                        props.type === 'Text' && classes.text,
-                        props.isUnderlineVisible && classes.underline,
+                        props.type === 'Trimmed' && styles.information,
+                        props.type !== 'Default' && styles.label,
+                        props.stronger && styles.stronger,
+                        props.type === 'Text' && styles.text,
+                        props.isUnderlineVisible && styles.underline,
                     ],
                 },
                 (slots.default?.() ?? props.visibleText) || props.textToCopy
@@ -68,7 +61,7 @@ export const CopyText = defineComponent({
                     BentoButton,
                     {
                         'aria-label': copyButtonLabel.value,
-                        class: classes.base,
+                        class: styles.root,
                         'data-testid': 'copyText',
                         variant: 'tertiary',
                         onBlur: resetCopyState,
@@ -76,20 +69,16 @@ export const CopyText = defineComponent({
                         onMouseleave: resetCopyState,
                     },
                     {
-                        iconRight: () => h('div', { class: classes.icon }, [h(CopyIcon)]),
+                        iconRight: () => h('div', { class: styles.icon }, [h(CopyIcon)]),
                     }
                 ),
                 [[BentoTooltipDirective, copyButtonTooltip.value]]
             );
 
-            return h('span', mergeProps(attrs, { class: classes.container }), [
+            return h('span', mergeProps(attrs, { class: styles.container }), [
                 textWithTooltip,
                 copyButton,
-                h(
-                    'div',
-                    { class: 'adyen-pe-visually-hidden', 'aria-atomic': 'true', 'aria-live': 'polite' },
-                    isCopied.value ? copyButtonTooltip.value : ''
-                ),
+                h('span', { class: accessibilityStyles.visuallyHidden, 'aria-atomic': 'true', 'aria-live': 'polite' }, announcement.value),
             ]);
         };
     },
