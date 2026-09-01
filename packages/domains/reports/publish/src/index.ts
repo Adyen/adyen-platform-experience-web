@@ -1,2 +1,2 @@
-export { ReportsOverview } from '../../preact/publish/src';
-export type { ReportsOverviewComponentProps, ReportsOverviewProps, ReportsTableFields, ReportsListCustomization } from '../../preact/publish/src';
+export * from '../../vue/publish/src';
+export type * from '../../vue/publish/src';
