@@ -89,7 +89,6 @@ const completeAction = () => {
 const handleActionButtonClick = async (actionType: IMissingActionType) => {
     await loadKycComponent(actionType);
     activeAction.value = actionType;
-
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
         subCategory: 'Missing action',
@@ -186,14 +185,7 @@ onUnmounted(() => {
             </template>
         </BentoAlert>
 
-        <BentoModal
-            v-if="activeAction"
-            :is-open="!!activeAction"
-            :is-dismissible="false"
-            :header-with-border="false"
-            size="large"
-            @close-modal="close"
-        >
+        <BentoModal :is-open="!!activeAction" :is-dismissible="false" :header-with-border="false" size="large" @close-modal="close">
             <template #content>
                 <adyen-business-financing
                     v-if="activeAction === 'AnaCredit'"
