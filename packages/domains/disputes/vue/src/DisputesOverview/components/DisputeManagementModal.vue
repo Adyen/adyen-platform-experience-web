@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { BentoModal } from '@adyen/bento-vue3';
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
+import { BentoLoadingIndicator, BentoModal } from '@adyen/bento-vue3';
 import { ModalContextProvider, useCoreContext } from '@integration-components/core/vue';
 import type { IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 import type { DisputeDetailsCustomization } from '@integration-components/disputes/domain';
-import DisputeDetailsContainer from '../../DisputeManagement/components/DisputeDetailsContainer.vue';
 
 const props = defineProps<{
     disputeId?: string;
@@ -16,6 +15,11 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 
+const DisputeDetailsContainer = defineAsyncComponent({
+    loader: () => import('../../DisputeManagement/components/DisputeDetailsContainer.vue'),
+    loadingComponent: BentoLoadingIndicator,
+    delay: 0,
+});
 const disputeManagementSuccessful = ref(false);
 const isOpen = computed(() => !!props.disputeId);
 
