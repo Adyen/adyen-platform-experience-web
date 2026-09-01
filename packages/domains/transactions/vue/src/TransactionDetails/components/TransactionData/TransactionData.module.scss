@@ -2,8 +2,10 @@
 
 .loading {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: style.token(spacer-040);
     width: 100%;
     height: 100%;
 }
