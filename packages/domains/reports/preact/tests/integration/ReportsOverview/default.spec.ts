@@ -1,17 +1,18 @@
 import { expect, test, type Page } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
 import { testBalanceAccountFilter, testDateRangeFilter } from '../../../../fixtures/integration/filters';
 
 const STORY_ID = 'mocked-reports-reports-overview--default';
-const INITIAL_DATETIME = new Date('2024-07-17T00:00:00.000Z').getTime();
 const REPORTS_PER_PAGE = 10;
 
 const getReportsTable = (page: Page) => page.getByRole('table');
 const getReportRows = (page: Page) => getReportsTable(page).getByRole('rowgroup').nth(1).getByRole('row');
 
 test.describe('Default', () => {
+    const NOW = Date.now();
+
     test.beforeEach(async ({ page }) => {
-        await page.clock.setFixedTime(INITIAL_DATETIME);
+        await page.clock.setFixedTime(NOW);
         await goToStory(page, { id: STORY_ID });
     });
 
@@ -45,11 +46,37 @@ test.describe('Default', () => {
             await expect(pagination.getByRole('button', { name: 'Previous page', exact: true })).toBeVisible();
             await expect(pagination.getByRole('button', { name: 'Next page', exact: true })).toBeVisible();
         });
+
+        test('should disable downloading in desktop and small containers', async ({ page }) => {
+            await goToStory(page, { id: STORY_ID, args: { enforceDownloadDelay: 'true' } });
+
+            const downloadButtonsDisabled = page.getByRole('button', { name: 'Download report', exact: true, disabled: true });
+            const downloadButtons = page.getByRole('button', { name: 'Download report', exact: true });
+            const firstDownloadButton = downloadButtons.first();
+
+            const downloadFirstReport = async (iconOnly = false) => {
+                await expect(downloadButtons).toHaveCount(REPORTS_PER_PAGE);
+                await expect(downloadButtonsDisabled).toHaveCount(0);
+                if (!iconOnly) await expect(firstDownloadButton).toHaveText('Download');
+                await expect(firstDownloadButton).toBeEnabled();
+
+                await firstDownloadButton.click();
+                await expect(firstDownloadButton).toBeDisabled();
+                if (!iconOnly) await expect(firstDownloadButton).toHaveText('Downloading..');
+                await expect(downloadButtonsDisabled).toHaveCount(REPORTS_PER_PAGE);
+            };
+
+            await downloadFirstReport(false);
+
+            await expect(firstDownloadButton).toBeEnabled();
+            await page.setViewportSize({ width: 479, height: 800 }); // and switch to smaller viewport container
+            await downloadFirstReport(true);
+        });
     });
 });
 
 test.describe('Filters', () => {
-    const now = INITIAL_DATETIME;
+    const now = Date.now();
     const variant = 'Default';
 
     test.beforeEach(async ({ page }) => {
@@ -59,4 +86,9 @@ test.describe('Filters', () => {
 
     testBalanceAccountFilter({ variant, getReportRows, reportsPerPage: REPORTS_PER_PAGE });
     testDateRangeFilter({ variant, now });
+
+    test('should reset pagination when selecting another balance account', async ({ page }) => {
+        await expectBalanceAccountPaginationReset({ endpointPath: '/reports', page, variant });
+        await expect(getReportRows(page)).toHaveCount(REPORTS_PER_PAGE);
+    });
 });

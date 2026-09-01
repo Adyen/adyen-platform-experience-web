@@ -6,7 +6,7 @@ import UIElementProvider from './UIElementProvider.vue';
 
 export const createRefreshContext = () => {
     const refreshCount = ref(0);
-    const refresh = () => void refreshCount.value++;
+    const refresh: () => void = () => refreshCount.value++;
     return { refresh, refreshCount };
 };
 
@@ -62,6 +62,10 @@ export class UIElement<Props extends Record<string, any>> {
         this.core?.registerComponent(this);
     }
 
+    protected configureApp(_app: App): void {
+        // UI element subclasses can register framework-specific plugins before mounting.
+    }
+
     public mount(target: Element | string): this {
         if (this._app) this.unmount();
 
@@ -98,6 +102,7 @@ export class UIElement<Props extends Record<string, any>> {
         // instance here so mounted components (and nested Bento primitives)
         // resolve without throwing "Need to install with `app.use` function".
         const locale = this._core?.options?.locale || 'en-US';
+
         this._app.use(
             createVueI18n({
                 legacy: false,
@@ -107,6 +112,7 @@ export class UIElement<Props extends Record<string, any>> {
             })
         );
 
+        this.configureApp(this._app);
         this._app.mount(el);
 
         return this;

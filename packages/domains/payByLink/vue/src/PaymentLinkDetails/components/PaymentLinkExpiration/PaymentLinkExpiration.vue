@@ -4,7 +4,7 @@ import { BentoAlert, BentoButtonActions, BentoTypography, type BentoButtonAction
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { isFunction } from '@integration-components/utils';
 import type { IPaymentLinkDetails } from '@integration-components/types';
-import './PaymentLinkExpiration.scss';
+import styles from './PaymentLinkExpiration.module.scss';
 
 const props = defineProps<{
     paymentLink: IPaymentLinkDetails;
@@ -52,7 +52,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
 </script>
 
 <template>
-    <div class="adyen-pe-payment-link-expiration">
+    <div :class="styles.root">
         <BentoTypography el="h2" variant="subtitle" stronger>
             {{ i18n.get('payByLink.details.expiration.title') }}
         </BentoTypography>

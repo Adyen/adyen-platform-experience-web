@@ -45,7 +45,6 @@ const { maxWidths, updateMaxWidths } = useMaxWidths();
         :key="availableBalances.length > 1 ? 'multi' : 'single'"
         :closed="!open"
         v-if="availableBalances.length > 0 || loadingBalances"
-        class="adyen-pe-balances adyen-pe-transactions-overview__summary-card"
         @click="updateToggleState"
         :clickable="availableBalances.length > 1"
         :expandable="availableBalances.length > 1"
@@ -66,7 +65,7 @@ const { maxWidths, updateMaxWidths } = useMaxWidths();
         </template>
         <template #content v-if="availableBalances.length > 1">
             <div :class="styles.summaryGroup">
-                <div v-if="loadingBalances" class="adyen-pe-balances__loading">
+                <div v-if="loadingBalances">
                     <BentoLoadingIndicator />
                 </div>
                 <BentoDivider />

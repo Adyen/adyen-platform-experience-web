@@ -1,3 +1,5 @@
+import type { App } from 'vue';
+import BentoVue from '@adyen/bento-vue3';
 import { UIElement } from '@integration-components/core/vue';
 import ReportsOverviewContainer from './components/ReportsOverviewContainer.vue';
 import type { ExternalComponentType } from '@integration-components/types';
@@ -18,6 +20,10 @@ export class ReportsOverviewElement extends UIElement<ReportsOverviewExternalPro
 
     constructor(props: ReportsOverviewExternalProps) {
         super(ReportsOverviewContainer, props, 'reports');
+    }
+
+    protected configureApp(app: App): void {
+        app.use(BentoVue, { withToast: true, withDesignTokensCSSInjection: false });
     }
 }
 

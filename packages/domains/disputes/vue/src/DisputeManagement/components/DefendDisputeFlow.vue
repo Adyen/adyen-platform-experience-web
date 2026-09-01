@@ -8,7 +8,7 @@ import { DefendResponse, DisputeFlowState, useDisputeFlow } from '../composables
 import DefendDocumentUpload from './DefendDocumentUpload.vue';
 import DefendDisputeResponse from './DefendDisputeResponse.vue';
 import DefendReasonSelection from './DefendReasonSelection.vue';
-import styles from './DisputeFlow.module.scss';
+import flowStyles from './DisputeFlow.module.scss';
 
 const props = defineProps<{
     onDisputeDefend?: DisputeManagementProps['onDisputeDefend'];
@@ -16,7 +16,6 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const { dispute, flowState, defendResponse } = useDisputeFlow();
-
 const cachedDispute = ref(dispute.value);
 
 watch(
@@ -36,7 +35,6 @@ const defendDisputeTitle = computed(() =>
 );
 
 const showResponseView = computed(() => flowState.value === DisputeFlowState.DefenseSubmitResponse);
-
 const callbackCalled = ref(false);
 
 watch(defendResponse, response => {
@@ -48,7 +46,7 @@ watch(defendResponse, response => {
 </script>
 
 <template>
-    <div :class="styles.container">
+    <div :class="flowStyles.container">
         <BentoTypography v-if="!showResponseView" el="h2" variant="title">
             {{ defendDisputeTitle }}
         </BentoTypography>
