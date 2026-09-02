@@ -55,7 +55,7 @@ export function useFinancingDetailItems() {
                     }),
                 };
             case 'annualPercentageRate':
-                return financingDetails.aprBasisPoints
+                return financingDetails.aprBasisPoints !== undefined
                     ? {
                           key: key,
                           label: i18n.get('capital.common.fields.annualPercentageRate'),
