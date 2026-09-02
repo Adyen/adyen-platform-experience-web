@@ -5,12 +5,13 @@ import { getRenewableGrantDetails, type EnhancedCapitalState } from '@integratio
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
 import { useFinancingDetailItems, type FinancingDetailItemKey } from '../../composables/useFinancingDetailItems';
-import FinancingDetailList from '../FinancingDetailList.vue';
+import FinancingDetailList from '../FinancingDetailList/FinancingDetailList.vue';
 import styles from './OfferSummaryDetails.module.scss';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
     grantOffer: IGrantOfferResponseDTO;
+    hasBalanceAccountError?: boolean;
 }>();
 
 const { i18n } = useCoreContext();
@@ -38,17 +39,17 @@ const renewableGrantItems = computed(() => (renewableGrantDetails.value ? getIte
     <section>
         <BentoTabs v-if="isEarlyRenewal">
             <BentoTab :title="i18n.get('capital.offer.summary.earlyRenewal.tabs.newGrant')">
-                <FinancingDetailList :items="offerItems" :class="styles.list" />
+                <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="offerItems" :class="styles.list" />
             </BentoTab>
             <BentoTab :title="i18n.get('capital.offer.summary.earlyRenewal.tabs.currentGrant')">
-                <FinancingDetailList :items="renewableGrantItems" :class="styles.list" />
+                <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="renewableGrantItems" :class="styles.list" />
             </BentoTab>
         </BentoTabs>
         <template v-else>
             <BentoTypography variant="body" strongest>
                 {{ i18n.get('capital.common.termsTitle') }}
             </BentoTypography>
-            <FinancingDetailList :items="offerItems" :class="styles.list" />
+            <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="offerItems" :class="styles.list" />
         </template>
     </section>
 </template>

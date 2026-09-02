@@ -323,6 +323,9 @@ importers:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
         version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+      '@adyen/ui-assets-icons-16':
+        specifier: 'catalog:'
+        version: 7.9.3(vue@3.5.31(typescript@5.8.3))
       '@adyen/kyc-components':
         specifier: '>=4.0.0-compact.9 <4.0.0'
         version: 4.0.0-compact.9(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))

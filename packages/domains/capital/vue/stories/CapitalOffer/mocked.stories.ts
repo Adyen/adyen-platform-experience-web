@@ -153,4 +153,40 @@ export const ErrorReview: ElementStory<CapitalOfferExternalProps> = {
     },
 };
 
+export const ErrorSubmit: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error - Submit',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorSubmit,
+        },
+    },
+};
+
+export const ErrorWithCodeSubmit: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error (with code) - Submit',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorWithCodeSubmit,
+        },
+    },
+};
+
+export const ErrorBalanceAccount: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error - Balance account',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorBalanceAccount,
+        },
+    },
+};
+
 export default meta;

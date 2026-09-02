@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "@adyen/bento-vue3": "catalog:",
+        "@adyen/ui-assets-icons-16": "catalog:",
         "@integration-components/composables-vue": "workspace:*",
         "@adyen/kyc-components": ">=4.0.0-compact.9 <4.0.0",
         "@integration-components/core": "workspace:*",

@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
 import { useFinancingDetailItems, type FinancingDetailItemKey } from '../composables/useFinancingDetailItems';
-import FinancingDetailList from './FinancingDetailList.vue';
+import FinancingDetailList from './FinancingDetailList/FinancingDetailList.vue';
 import { BentoCard } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 
