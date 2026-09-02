@@ -18,11 +18,11 @@ import { useCoreContext, useEventDispatcherContext } from '@integration-componen
 import { useOffers } from '../../composables/useOffers';
 import { useCreateOffer } from '../../composables/useCreateOffer';
 import type { IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
-import { BentoButtonActions, BentoCard } from '@adyen/bento-vue3';
+import { BentoButtonActions } from '@adyen/bento-vue3';
 import AmountSlider from '../AmountSlider/AmountSlider.vue';
 import CapitalErrorMessageDisplay from '../../../shared/CapitalErrorMessageDisplay.vue';
-import OfferDetails from '../OfferDetails.vue';
-import RenewalHighlightedFields from '../RenewalHighlightedFields/RenewalHighlightedFields.vue';
+import OfferSelectionDetails from '../OfferSelectionDetails.vue';
+import RenewalHighlights from '../RenewalHighlights.vue';
 import TermSelector from '../TermSelector.vue';
 import styles from './OfferSelection.module.scss';
 
@@ -186,7 +186,7 @@ const handleReview = async () => {
                 :on-release="handleSliderRelease"
                 :on-value-change="handleAmountValueChange"
             />
-            <RenewalHighlightedFields
+            <RenewalHighlights
                 v-if="renewableGrant"
                 :new-grant-amount-value="props.selectedAmount"
                 :remaining-grant-amount="renewableGrant.remainingGrantAmount"
@@ -200,12 +200,7 @@ const handleReview = async () => {
                 :selected-term="props.selectedTerm"
                 @select="handleTermSelect"
             />
-            <BentoCard v-if="selectedOffer && !areOffersUpdating" background="secondary">
-                {{ i18n.get('capital.common.termsTitle') }}
-                <template #content>
-                    <OfferDetails :offer="selectedOffer" :has-single-term="hasSingleTerm" />
-                </template>
-            </BentoCard>
+            <OfferSelectionDetails v-if="selectedOffer && !areOffersUpdating" :offer="selectedOffer" :has-expected-repayment-period="hasSingleTerm" />
             <BentoButtonActions
                 :actions="[
                     {

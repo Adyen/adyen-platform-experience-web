@@ -4,7 +4,7 @@ import type { IGrantOfferResponseDTO } from '@integration-components/types';
 import { getDynamicOfferConfig, getIsEarlyRenewal, sharedCapitalOfferAnalyticsEventProperties } from '@integration-components/capital/domain';
 import { useLandedPageEvent } from '@integration-components/composables-vue';
 import OfferSelection from './OfferSelection/OfferSelection.vue';
-import OfferSummary from './OfferSummary.vue';
+import OfferSummary from './OfferSummary/OfferSummary.vue';
 import type { CapitalOfferComponentProps } from '../types';
 import { useCapitalState } from '../composables/useCapitalState';
 import CapitalHeader from '../../shared/CapitalHeader/CapitalHeader.vue';
@@ -77,7 +77,7 @@ const handleSummaryBack = () => {
         <OfferSummary
             v-else
             :capital-state="capitalState"
-            :grant-offer="selectedOffer"
+            :offer="selectedOffer"
             :on-back="handleSummaryBack"
             :on-funds-request="props.onFundsRequest"
             :on-contact-support="props.onContactSupport"

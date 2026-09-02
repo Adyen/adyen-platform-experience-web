@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoTypography } from '@adyen/bento-vue3';
 import { getRenewalAmountBreakdown } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IAmount } from '@integration-components/types';
-import styles from './RenewalHighlightedFields.module.scss';
+import Highlights from './Highlights/Highlights.vue';
 
 const props = defineProps<{
     newGrantAmountValue: number;
@@ -12,8 +11,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-
-const fields = computed(() => {
+const items = computed(() => {
     const breakdown = getRenewalAmountBreakdown(props.newGrantAmountValue, props.remainingGrantAmount);
     const formatAmount = (value: number) => i18n.amount(value, breakdown.currency, { minimumFractionDigits: 0 });
 
@@ -37,14 +35,5 @@ const fields = computed(() => {
 </script>
 
 <template>
-    <div :class="styles.root">
-        <div v-for="field in fields" :key="field.label ?? field.value" :class="styles.item">
-            <BentoTypography v-if="field.label" variant="caption" :class="styles.label">
-                {{ field.label }}
-            </BentoTypography>
-            <BentoTypography variant="body" strongest>
-                {{ field.value }}
-            </BentoTypography>
-        </div>
-    </div>
+    <Highlights :items="items" />
 </template>

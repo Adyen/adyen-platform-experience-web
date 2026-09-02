@@ -1,13 +1,17 @@
 @use '@integration-components/style' as style;
+@use '@integration-components/style/breakpoints' as *;
 
-.root {
+.content {
     align-items: center;
-    background: style.token(color-background-selected);
-    border-radius: style.token(border-radius-m);
     display: flex;
     gap: style.token(spacer-100);
     justify-content: space-between;
-    padding: style.token(spacer-070);
+
+    @include adyen-pe-screen-sm-and-down {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+    }
 }
 
 .item {

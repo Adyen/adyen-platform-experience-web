@@ -45,6 +45,30 @@ export const Eligible: ElementStory<CapitalOfferExternalProps> = {
     },
 };
 
+export const EligibleCA: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Eligible CA',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.eligibleCA,
+        },
+    },
+};
+
+export const EligibleUS: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Eligible US',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.eligibleUS,
+        },
+    },
+};
+
 export const EarlyRenewal: ElementStory<CapitalOfferExternalProps> = {
     name: 'Early renewal',
     args: {
