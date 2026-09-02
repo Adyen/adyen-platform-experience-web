@@ -18,7 +18,7 @@ import { useCoreContext, useEventDispatcherContext } from '@integration-componen
 import { useOffers } from '../../composables/useOffers';
 import { useCreateOffer } from '../../composables/useCreateOffer';
 import type { IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
-import { BentoButtonActions } from '@adyen/bento-vue3';
+import { BentoButtonActions, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import AmountSlider from '../AmountSlider/AmountSlider.vue';
 import CapitalErrorMessageDisplay from '../../../shared/CapitalErrorMessageDisplay.vue';
 import OfferSelectionDetails from '../OfferSelectionDetails.vue';
@@ -168,6 +168,23 @@ const handleReview = async () => {
         });
     }
 };
+
+const actions = computed<BentoButtonActionsList>(() => [
+    {
+        title: i18n.get('capital.offer.selection.actions.reviewOffer'),
+        disabled: isReviewDisabled.value,
+        state: isCreateOfferLoading.value ? 'loading' : 'start',
+        event: handleReview,
+    },
+    ...(props.onOfferDismiss
+        ? [
+              {
+                  title: i18n.get('capital.common.actions.goBack'),
+                  event: props.onOfferDismiss,
+              },
+          ]
+        : []),
+]);
 </script>
 
 <template>
@@ -201,24 +218,7 @@ const handleReview = async () => {
                 @select="handleTermSelect"
             />
             <OfferSelectionDetails v-if="selectedOffer && !areOffersUpdating" :offer="selectedOffer" :has-expected-repayment-period="hasSingleTerm" />
-            <BentoButtonActions
-                :actions="[
-                    {
-                        title: i18n.get('capital.offer.selection.actions.reviewOffer'),
-                        disabled: isReviewDisabled,
-                        state: isCreateOfferLoading ? 'loading' : 'start',
-                        event: handleReview,
-                    },
-                    ...(props.onOfferDismiss
-                        ? [
-                              {
-                                  title: i18n.get('capital.common.actions.goBack'),
-                                  event: props.onOfferDismiss,
-                              },
-                          ]
-                        : []),
-                ]"
-            />
+            <BentoButtonActions :actions="actions" />
         </template>
     </div>
 </template>
