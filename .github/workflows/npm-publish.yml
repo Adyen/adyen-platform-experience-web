@@ -3,20 +3,32 @@ name: NPM publish package
 on:
   workflow_call:
     inputs:
-      called-from-other-workflow:
-        description: 'Used as a way to distinguish workflow_call from workflow_dispatch'
-        type: boolean
-        required: false
-        default: true
       source_run_id:
         description: 'Run ID that produced the build artifact'
         required: true
         type: string
       npm_tag:
-        description: 'npm dist-tag to publish under (latest, beta, alpha, rc, next)'
+        description: 'Validated mainline or V1 npm dist-tag'
+        required: true
+        type: string
+      release_version:
+        description: 'Exact package version contained in the artifact'
+        required: true
+        type: string
+      source_sha:
+        description: 'Exact commit used to build the artifact'
+        required: true
+        type: string
+      release_line:
+        description: 'Release line that owns the package version (mainline or v1)'
         required: false
         type: string
-        default: 'latest'
+        default: mainline
+      allow_existing:
+        description: 'Allow a matching existing version when retrying downstream V1 publication'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   npm-publish:
@@ -29,21 +41,39 @@ jobs:
 
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v4
-
-      - name: Run the preliminary setup steps
-        uses: ./.github/actions/setup-env
+        uses: actions/checkout@v4.2.2
         with:
-          NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
+          ref: ${{ inputs.source_sha }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: 24.18.0
 
       - name: Determine the release version
+        env:
+          RELEASE_VERSION: ${{ inputs.release_version }}
+          NPM_TAG: ${{ inputs.npm_tag }}
+          RELEASE_LINE: ${{ inputs.release_line }}
         run: |
-          PACKAGE_VERSION=$(jq -r .version package.json)
-          echo "PACKAGE_VERSION=${PACKAGE_VERSION}" >> $GITHUB_ENV
-          echo "PACKAGE_TARBALL=${RUNNER_TEMP}/artifact/adyen-adyen-platform-experience-web-${PACKAGE_VERSION}.tgz" >> $GITHUB_ENV
+          node scripts/npm-publish/determine-release.mjs determine \
+            --package-json package.json \
+            --release-version "$RELEASE_VERSION" \
+            --npm-tag "$NPM_TAG" \
+            --release-line "$RELEASE_LINE" \
+            --runner-temp "$RUNNER_TEMP" \
+            >> "$GITHUB_ENV"
+
+      - name: Verify V2 GA prerequisite
+        if: env.REQUIRES_STABLE_V1_TAG == 'true'
+        run: |
+          set -euo pipefail
+          V1_LATEST_VERSION=$(npm view @adyen/adyen-platform-experience-web@v1-latest version)
+          node scripts/npm-publish/determine-release.mjs validate-stable-v1 \
+            --version "$V1_LATEST_VERSION"
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.3.0
         with:
           name: adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}
           run-id: ${{ inputs.source_run_id }}
@@ -51,17 +81,48 @@ jobs:
           merge-multiple: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish to the NPM registry (dry run)
-        if: github.event.inputs.dry-run-publish == 'true'
+      - name: Verify package artifact
         run: |
-          npm publish "${{ env.PACKAGE_TARBALL }}" --dry-run
+          PACKED_PACKAGE_JSON=$(tar -xOf "$PACKAGE_TARBALL" package/package.json)
+          PACKED_NAME=$(jq -r '.name' <<< "$PACKED_PACKAGE_JSON")
+          PACKED_VERSION=$(jq -r '.version' <<< "$PACKED_PACKAGE_JSON")
+
+          if [[ "$PACKED_NAME" != "@adyen/adyen-platform-experience-web" ]] ||
+             [[ "$PACKED_VERSION" != "$PACKAGE_VERSION" ]]; then
+            echo "::error::Package artifact identity does not match the release."
+            exit 1
+          fi
 
       - name: Publish to the NPM registry
-        if: github.event.inputs.dry-run-publish != 'true'
         env:
           NPM_TAG: ${{ inputs.npm_tag }}
+          ALLOW_EXISTING: ${{ inputs.allow_existing }}
         run: |
-          npm publish "${{ env.PACKAGE_TARBALL }}" --tag="$NPM_TAG"
+          rm -f .npmrc
+          if REMOTE_INTEGRITY=$(npm view "@adyen/adyen-platform-experience-web@${PACKAGE_VERSION}" dist.integrity 2>"$RUNNER_TEMP/npm-view-error"); then
+            if [[ "$ALLOW_EXISTING" != "true" ]]; then
+              echo "::error::Package version ${PACKAGE_VERSION} is already published."
+              exit 1
+            fi
+
+            LOCAL_INTEGRITY=$(
+              node -e \
+                'const { createHash } = require("node:crypto"); const { readFileSync } = require("node:fs"); process.stdout.write(`sha512-${createHash("sha512").update(readFileSync(process.argv[1])).digest("base64")}`);' \
+                "$PACKAGE_TARBALL"
+            )
+            if [[ "$REMOTE_INTEGRITY" != "$LOCAL_INTEGRITY" ]]; then
+              echo "::error::Existing npm version ${PACKAGE_VERSION} does not match the release artifact."
+              exit 1
+            fi
+            if [[ "$(npm view "@adyen/adyen-platform-experience-web@${NPM_TAG}" version)" != "$PACKAGE_VERSION" ]]; then
+              echo "::error::Existing npm version ${PACKAGE_VERSION} is not active on ${NPM_TAG}."
+              exit 1
+            fi
+            echo "Package version ${PACKAGE_VERSION} is already published with matching integrity."
+          else
+            npm view @adyen/adyen-platform-experience-web name >/dev/null
+            npm publish "$PACKAGE_TARBALL" --provenance --access public --tag="$NPM_TAG"
+          fi
 
       - name: Archive npm failure logs
         uses: ./.github/actions/publish-npm-logs

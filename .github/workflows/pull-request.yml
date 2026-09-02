@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - version/v1.x
       - group/*
       - bot/translations
     types: [opened, synchronize, reopened]
@@ -19,11 +20,17 @@ jobs:
   build:
     if: |
       github.event_name == 'pull_request' ||
-      (github.event_name == 'pull_request_review' && github.event.review.state == 'approved')
+      (github.event_name == 'pull_request_review' &&
+       github.event.review.state == 'approved' &&
+       (github.event.pull_request.base.ref == 'main' ||
+        github.event.pull_request.base.ref == 'develop' ||
+        github.event.pull_request.base.ref == 'version/v1.x' ||
+        startsWith(github.event.pull_request.base.ref, 'group/')))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
+      pull-requests: read
 
     steps:
       - name: Check if automated sync PR
@@ -36,7 +43,263 @@ jobs:
 
       - name: Checkout the repo
         if: steps.skip-check.outcome != 'success'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Validate V1 Changesets policy
+        if: steps.skip-check.outcome != 'success' && github.event.pull_request.base.ref == 'version/v1.x'
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          git fetch --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+          DIFF_BASE="origin/${BASE_REF}"
+          BASE_VERSION=$(git show "origin/${BASE_REF}:package.json" | jq -r '.version')
+          CURRENT_VERSION=$(jq -r '.version' package.json)
+          PACKAGE_NAME="@adyen/adyen-platform-experience-web"
+
+          CONFIG_BASE_BRANCH=$(jq -r '.baseBranch // empty' .changeset/config.json)
+          if [[ "$CONFIG_BASE_BRANCH" != "version/v1.x" ]]; then
+            echo "::error::.changeset/config.json must use version/v1.x as baseBranch for V1 pull requests."
+            exit 1
+          fi
+
+          node scripts/release-v1/release-v1.mjs validate-version --version "$BASE_VERSION"
+          node scripts/release-v1/release-v1.mjs validate-version --version "$CURRENT_VERSION"
+
+          mapfile -d '' -t CHANGED_FILES < <(git diff --name-only -z "${DIFF_BASE}...HEAD")
+          mapfile -d '' -t ADDED_FILES < <(git diff --diff-filter=A --name-only -z "${DIFF_BASE}...HEAD")
+          declare -A ADDED_FILE_SET=()
+          for FILE in "${ADDED_FILES[@]}"; do
+            ADDED_FILE_SET["$FILE"]=1
+          done
+          mapfile -d '' -t DELETED_FILES_LIST < <(git diff --diff-filter=D --name-only -z "${DIFF_BASE}...HEAD")
+          declare -A DELETED_FILES=()
+          for FILE in "${DELETED_FILES_LIST[@]}"; do
+            DELETED_FILES["$FILE"]=1
+          done
+
+          IS_TRUSTED_AUTOMATION=false
+          if [[ "$HEAD_REPOSITORY" == "$REPOSITORY" && "$PR_AUTHOR" == "github-actions[bot]" ]]; then
+            IS_TRUSTED_AUTOMATION=true
+          fi
+
+          IS_BOOTSTRAP_PR=false
+          if [[ "$IS_TRUSTED_AUTOMATION" == "true" &&
+                "$HEAD_REF" == "chore/v1-release-automation" &&
+                "$PR_TITLE" == "chore(release): bootstrap V1 automation" ]]; then
+            IS_BOOTSTRAP_PR=true
+          fi
+
+          IS_VERSION_PR=false
+          if [[ "$IS_TRUSTED_AUTOMATION" == "true" && "$HEAD_REF" =~ ^chore/v1-release-(1\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|beta|rc|next)\.(0|[1-9][0-9]*))?)$ ]]; then
+            BRANCH_VERSION=${BASH_REMATCH[1]}
+            if [[ "$CURRENT_VERSION" == "$BRANCH_VERSION" && "$PR_TITLE" == "chore(release): prepare v${BRANCH_VERSION}" ]]; then
+              IS_VERSION_PR=true
+            fi
+          fi
+
+          IS_STATE_PR=false
+          STATE_ACTION=
+          STATE_CHANNEL=
+          if [[ "$IS_TRUSTED_AUTOMATION" == "true" && "$HEAD_REF" =~ ^chore/v1-prerelease-enter-(alpha|beta|rc|next)$ ]]; then
+            STATE_CHANNEL=${BASH_REMATCH[1]}
+            if [[ "$PR_TITLE" == "chore(release): enter V1 prerelease mode (${STATE_CHANNEL})" ]]; then
+              IS_STATE_PR=true
+              STATE_ACTION=enter
+            fi
+          elif [[ "$IS_TRUSTED_AUTOMATION" == "true" && "$HEAD_REF" =~ ^chore/v1-prerelease-exit-(alpha|beta|rc|next)$ ]]; then
+            STATE_CHANNEL=${BASH_REMATCH[1]}
+            if [[ "$PR_TITLE" == "chore(release): exit V1 prerelease mode (${STATE_CHANNEL})" ]]; then
+              IS_STATE_PR=true
+              STATE_ACTION=exit
+            fi
+          fi
+
+          if [[ "$IS_STATE_PR" == "true" ]]; then
+            if [[ "${#CHANGED_FILES[@]}" -ne 1 || "${CHANGED_FILES[0]}" != ".changeset/pre.json" ]]; then
+              echo "::error::A V1 prerelease state PR may change only .changeset/pre.json."
+              printf 'Changed file: %s\n' "${CHANGED_FILES[@]}"
+              exit 1
+            fi
+
+            if [[ "$STATE_ACTION" == "enter" ]]; then
+              if git cat-file -e "${DIFF_BASE}:.changeset/pre.json" 2>/dev/null; then
+                echo "::error::A V1 prerelease enter PR requires no active base prerelease state."
+                exit 1
+              fi
+              if [[ "$(git diff --name-status "${DIFF_BASE}...HEAD" -- .changeset/pre.json | cut -f1)" != "A" ]]; then
+                echo "::error::A V1 prerelease enter PR must add .changeset/pre.json."
+                exit 1
+              fi
+              if ! jq -e \
+                --arg package "$PACKAGE_NAME" \
+                --arg tag "$STATE_CHANNEL" \
+                --arg version "$BASE_VERSION" \
+                '
+                  (keys | sort) == ["changesets", "initialVersions", "mode", "tag"] and
+                  .mode == "pre" and
+                  .tag == $tag and
+                  (.changesets | type) == "array" and
+                  (.changesets | length) == 0 and
+                  (.initialVersions | type) == "object" and
+                  (.initialVersions | keys) == [$package] and
+                  .initialVersions[$package] == $version
+                ' .changeset/pre.json >/dev/null; then
+                echo "::error::Invalid V1 prerelease enter state."
+                exit 1
+              fi
+            else
+              if ! git show "${DIFF_BASE}:.changeset/pre.json" > "$RUNNER_TEMP/base-pre.json" 2>/dev/null; then
+                echo "::error::A V1 prerelease exit PR requires active base prerelease state."
+                exit 1
+              fi
+              if [[ "$(git diff --name-status "${DIFF_BASE}...HEAD" -- .changeset/pre.json | cut -f1)" != "M" ]]; then
+                echo "::error::A V1 prerelease exit PR must modify .changeset/pre.json."
+                exit 1
+              fi
+              if ! jq -e --arg tag "$STATE_CHANNEL" '.mode == "pre" and .tag == $tag' "$RUNNER_TEMP/base-pre.json" >/dev/null; then
+                echo "::error::The base prerelease state does not match the requested V1 exit channel."
+                exit 1
+              fi
+              if ! jq -e \
+                --arg package "$PACKAGE_NAME" \
+                --arg tag "$STATE_CHANNEL" \
+                '
+                  (keys | sort) == ["changesets", "initialVersions", "mode", "tag"] and
+                  .mode == "exit" and
+                  .tag == $tag and
+                  (.changesets | type) == "array" and
+                  (.initialVersions | type) == "object" and
+                  (.initialVersions | keys) == [$package]
+                ' .changeset/pre.json >/dev/null; then
+                echo "::error::Invalid V1 prerelease exit state."
+                exit 1
+              fi
+
+              jq -S --arg package "$PACKAGE_NAME" \
+                '{tag, changesets, packageVersion: .initialVersions[$package]}' \
+                "$RUNNER_TEMP/base-pre.json" > "$RUNNER_TEMP/base-pre-state.json"
+              jq -S --arg package "$PACKAGE_NAME" \
+                '{tag, changesets, packageVersion: .initialVersions[$package]}' \
+                .changeset/pre.json > "$RUNNER_TEMP/exit-pre-state.json"
+              if ! cmp "$RUNNER_TEMP/base-pre-state.json" "$RUNNER_TEMP/exit-pre-state.json"; then
+                echo "::error::A V1 prerelease exit PR may only exit mode and remove non-root initialVersions."
+                exit 1
+              fi
+            fi
+
+            if [[ "$CURRENT_VERSION" != "$BASE_VERSION" ]]; then
+              echo "::error::A V1 prerelease state PR must not change the package version."
+              exit 1
+            fi
+          elif [[ "$IS_VERSION_PR" == "true" ]]; then
+            if [[ "$CURRENT_VERSION" == "$BASE_VERSION" ]]; then
+              echo "::error::A V1 version PR must change the package version."
+              exit 1
+            fi
+
+            node scripts/release-v1/release-v1.mjs validate-transition \
+              --previous "$BASE_VERSION" \
+              --current "$CURRENT_VERSION"
+
+            git show "origin/${BASE_REF}:package.json" | jq -S 'del(.version)' > "$RUNNER_TEMP/base-package.json"
+            jq -S 'del(.version)' package.json > "$RUNNER_TEMP/release-package.json"
+            if ! cmp "$RUNNER_TEMP/base-package.json" "$RUNNER_TEMP/release-package.json"; then
+              echo "::error::A V1 version PR may change only the package.json version field."
+              exit 1
+            fi
+
+            HAS_PACKAGE_JSON=false
+            HAS_CHANGELOG=false
+            for FILE in "${CHANGED_FILES[@]}"; do
+              case "$FILE" in
+                package.json)
+                  HAS_PACKAGE_JSON=true
+                  ;;
+                CHANGELOG.md)
+                  HAS_CHANGELOG=true
+                  ;;
+                .changeset/pre.json)
+                  ;;
+                .changeset/*.md)
+                  if [[ -z "${DELETED_FILES[$FILE]:-}" ]]; then
+                    echo "::error::A V1 version PR may only delete consumed .changeset/*.md files."
+                    exit 1
+                  fi
+                  ;;
+                *)
+                  echo "::error::A V1 version PR contains an unexpected generated file: $FILE"
+                  exit 1
+                  ;;
+              esac
+            done
+
+            if [[ "$HAS_PACKAGE_JSON" != "true" || "$HAS_CHANGELOG" != "true" ]]; then
+              echo "::error::A V1 version PR must change package.json and CHANGELOG.md."
+              exit 1
+            fi
+          else
+            if [[ "$CURRENT_VERSION" != "$BASE_VERSION" ]]; then
+              echo "::error::Only an automated V1 version PR may change the package version."
+              exit 1
+            fi
+
+            for FILE in "${CHANGED_FILES[@]}"; do
+              if [[ "$FILE" == ".changeset/pre.json" ]]; then
+                echo "::error::Only an automated V1 prerelease state or version PR may change .changeset/pre.json."
+                exit 1
+              fi
+              if [[ "$FILE" =~ ^\.changeset/[^/]+\.md$ &&
+                    "$FILE" != ".changeset/README.md" &&
+                    -z "${ADDED_FILE_SET[$FILE]:-}" ]]; then
+                echo "::error::Ordinary V1 pull requests may only add, not modify or delete, Changeset files."
+                exit 1
+              fi
+            done
+
+            if [[ "$IS_BOOTSTRAP_PR" == "true" ]]; then
+              EXPECTED_TEST_COMMAND="node --test scripts/release-v1/*.test.mjs scripts/npm-publish/*.test.mjs"
+              git show "origin/${BASE_REF}:package.json" |
+                jq -S --arg command "$EXPECTED_TEST_COMMAND" '.scripts["test:release"] = $command' > "$RUNNER_TEMP/expected-bootstrap-package.json"
+              jq -S . package.json > "$RUNNER_TEMP/bootstrap-package.json"
+              if ! cmp "$RUNNER_TEMP/expected-bootstrap-package.json" "$RUNNER_TEMP/bootstrap-package.json"; then
+                echo "::error::A V1 bootstrap PR may change only the test:release package script."
+                exit 1
+              fi
+            fi
+
+            RELEASE_IMPACTING=false
+            for FILE in "${CHANGED_FILES[@]}"; do
+              if [[ "$FILE" =~ ^(src/|packages/|declarations/|endpoints/|mocks/) ]] ||
+                 [[ "$FILE" == "package.json" && "$IS_BOOTSTRAP_PR" != "true" ]] ||
+                 [[ "$FILE" == "pnpm-lock.yaml" ]] ||
+                 [[ "$FILE" == "pnpm-workspace.yaml" ]] ||
+                 [[ "$FILE" == "vite.config.ts" ]] ||
+                 [[ "$FILE" =~ ^tsconfig[^/]*\.json$ ]]; then
+                RELEASE_IMPACTING=true
+              fi
+            done
+
+            ADDED_CHANGESET_COUNT=0
+            for FILE in "${ADDED_FILES[@]}"; do
+              if [[ "$FILE" =~ ^\.changeset/[^/]+\.md$ && "$FILE" != ".changeset/README.md" ]]; then
+                ADDED_CHANGESET_COUNT=$((ADDED_CHANGESET_COUNT + 1))
+                node scripts/release-v1/release-v1.mjs validate-changeset --file "$FILE"
+              fi
+            done
+
+            if [[ "$RELEASE_IMPACTING" == "true" && "$ADDED_CHANGESET_COUNT" -eq 0 ]]; then
+              echo "::error::V1 code and package configuration changes require a newly added patch Changeset."
+              exit 1
+            fi
+          fi
 
       - name: Run the preliminary setup steps
         if: steps.skip-check.outcome != 'success'
@@ -46,7 +309,15 @@ jobs:
 
       - name: Run unit tests
         if: steps.skip-check.outcome != 'success'
-        run: pnpm run test
+        run: pnpm run test -- --run
+
+      - name: Run lint checks
+        if: steps.skip-check.outcome != 'success' && github.event.pull_request.base.ref == 'version/v1.x'
+        run: pnpm run lint
+
+      - name: Run type checks
+        if: steps.skip-check.outcome != 'success' && github.event.pull_request.base.ref == 'version/v1.x'
+        run: pnpm run types:check
 
       - name: Build library
         if: steps.skip-check.outcome != 'success'

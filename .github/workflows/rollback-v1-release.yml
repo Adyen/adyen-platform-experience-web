@@ -1,0 +1,133 @@
+name: Roll back V1 release
+
+on:
+    workflow_dispatch:
+        inputs:
+            version:
+                description: Existing stable or supported prerelease V1 version to restore
+                required: true
+                type: string
+
+concurrency:
+    group: release-v1
+    cancel-in-progress: false
+
+jobs:
+    rollback:
+        if: github.repository == 'adyen/adyen-platform-experience-web' && github.ref == 'refs/heads/version/v1.x'
+        runs-on: ubuntu-latest
+        environment: v1-release
+        permissions:
+            contents: write
+        steps:
+            - name: Checkout V1 maintenance branch
+              uses: actions/checkout@v4.2.2
+              with:
+                  ref: version/v1.x
+                  fetch-depth: 0
+
+            - name: Set up Node
+              uses: actions/setup-node@v4.4.0
+              with:
+                  node-version: 24.18.0
+                  registry-url: https://registry.npmjs.org/
+
+            - name: Validate rollback target
+              env:
+                  VERSION: ${{ inputs.version }}
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  node scripts/release-v1/release-v1.mjs validate-config --config config/release-v1.json
+                  node scripts/release-v1/release-v1.mjs validate-version --version "$VERSION"
+                  CHANNEL=$(
+                    node scripts/release-v1/release-v1.mjs resolve-channel \
+                      --config config/release-v1.json \
+                      --version "$VERSION"
+                  )
+                  echo "ROLLBACK_CDN_TAG=$(jq -r '.cdnTag' <<< "$CHANNEL")" >> "$GITHUB_ENV"
+                  NPM_TAG=$(jq -r '.npmTag' <<< "$CHANNEL")
+
+                  git fetch origin version/v1.x --tags --force
+
+                  if ! git rev-parse --verify "refs/tags/v${VERSION}^{commit}" >/dev/null 2>&1; then
+                    echo "::error::Tag v${VERSION} does not exist."
+                    exit 1
+                  fi
+
+                  if ! git merge-base --is-ancestor "v${VERSION}" origin/version/v1.x; then
+                    echo "::error::Tag v${VERSION} is not part of version/v1.x."
+                    exit 1
+                  fi
+
+                  gh release view "v${VERSION}" --repo "${{ github.repository }}" >/dev/null
+                  test "$(npm view "@adyen/adyen-platform-experience-web@${VERSION}" version)" = "$VERSION"
+                  if [[ "$(npm view "@adyen/adyen-platform-experience-web@${NPM_TAG}" version)" != "$VERSION" ]]; then
+                    echo "::error::Move npm dist-tag ${NPM_TAG} to ${VERSION} manually, then rerun this workflow."
+                    exit 1
+                  fi
+
+            - name: Download rollback-ready CDN asset
+              env:
+                  VERSION: ${{ inputs.version }}
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  mkdir release-artifacts
+                  gh release download "v${VERSION}" \
+                    --repo "${{ github.repository }}" \
+                    --pattern "platform-components-v1_cdn_${VERSION}.tar.gz" \
+                    --pattern SHA256SUMS \
+                    --dir release-artifacts
+                  grep "platform-components-v1_cdn_${VERSION}.tar.gz" release-artifacts/SHA256SUMS \
+                    | (cd release-artifacts && shasum -a 256 -c -)
+
+            - name: Restore V1 CDN asset
+              env:
+                  VERSION: ${{ inputs.version }}
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  CDN_TAG="$ROLLBACK_CDN_TAG"
+                  ASSET_NAME=$(jq -r '.cdn.assetName' config/release-v1.json)
+                  BACKUP_DIR="$RUNNER_TEMP/v1-cdn-current"
+                  VERIFY_DIR="$RUNNER_TEMP/v1-cdn-verify"
+                  HAD_PREVIOUS_ASSET=false
+                  mkdir -p "$BACKUP_DIR" "$VERIFY_DIR"
+
+                  if gh release view "$CDN_TAG" --repo "${{ github.repository }}" --json assets \
+                    --jq '.assets[].name' | grep -Fxq "$ASSET_NAME"; then
+                    gh release download "$CDN_TAG" \
+                      --repo "${{ github.repository }}" \
+                      --pattern "$ASSET_NAME" \
+                      --dir "$BACKUP_DIR"
+                    HAD_PREVIOUS_ASSET=true
+                  fi
+
+                  restore() {
+                    local status=$?
+                    set +e
+
+                    if [[ "$HAD_PREVIOUS_ASSET" == "true" ]]; then
+                      gh release upload "$CDN_TAG" "$BACKUP_DIR/$ASSET_NAME" \
+                        --repo "${{ github.repository }}" \
+                        --clobber \
+                        || echo "::error::Failed to restore V1 CDN asset."
+                    else
+                      gh release delete-asset "$CDN_TAG" "$ASSET_NAME" \
+                        --repo "${{ github.repository }}" \
+                        --yes || true
+                    fi
+
+                    exit "$status"
+                  }
+                  trap restore ERR
+
+                  cp "release-artifacts/platform-components-v1_cdn_${VERSION}.tar.gz" \
+                    "release-artifacts/${ASSET_NAME}"
+                  gh release upload "$CDN_TAG" "release-artifacts/${ASSET_NAME}" \
+                    --repo "${{ github.repository }}" \
+                    --clobber
+                  gh release download "$CDN_TAG" \
+                    --repo "${{ github.repository }}" \
+                    --pattern "$ASSET_NAME" \
+                    --dir "$VERIFY_DIR"
+                  cmp "release-artifacts/${ASSET_NAME}" "$VERIFY_DIR/${ASSET_NAME}"
+                  trap - ERR
