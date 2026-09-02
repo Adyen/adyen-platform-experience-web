@@ -27,4 +27,3 @@ const description = computed(() => {
         </BentoTypography>
     </div>
 </template>
-xx
