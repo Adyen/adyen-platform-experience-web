@@ -66,7 +66,6 @@ const handleGrantListUpdateRequest = (grant: IGrant) => {
         </div>
         <div v-else-if="state === 'Error'">
             <CapitalHeader :hide-title="props.hideTitle" :region="capitalState?.region" title-key="capital.common.title" />
-            <!-- TODO: Change this as generic errors -->
             <CapitalError :error="error" />
         </div>
         <div v-else-if="state === 'UnsupportedRegion'">

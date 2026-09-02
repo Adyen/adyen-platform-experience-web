@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type { EnhancedCapitalState, OnFundsRequestCallback } from '@integration-components/capital/domain';
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import PreQualifiedIntro from '../PreQualifiedIntro/PreQualifiedIntro.vue';
+import CapitalOffer from '../../../CapitalOffer/components/CapitalOffer.vue';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
@@ -31,23 +32,26 @@ const handleOfferOptionsRequest = () => {
     }
 };
 
-// TODO: Enable these handlers when the Vue offer component is implemented.
-//
-// const isOfferDismissButtonVisible = computed(() => !props.skipPreQualifiedIntro || !!props.onOfferDismiss);
-//
-// const handleOfferDismiss = () => {
-//     if (props.onOfferDismiss) {
-//         props.onOfferDismiss();
-//     } else {
-//         state.value = 'intro';
-//     }
-// };
+const isOfferDismissButtonVisible = computed(() => !props.skipPreQualifiedIntro || !!props.onOfferDismiss);
+
+const handleOfferDismiss = () => {
+    if (props.onOfferDismiss) {
+        props.onOfferDismiss();
+    } else {
+        state.value = 'intro';
+    }
+};
 </script>
 
 <template>
-    <div v-if="state === 'noOffer'">
-        <CapitalHeader :hide-title="props.hideTitle" title-key="capital.overview.common.titles.qualificationIntro" />
-        <!-- TODO: Render CapitalOffer when the Vue component is available. -->
+    <div v-if="state === 'noOffer' || state === 'offer'">
+        <CapitalHeader v-if="state === 'noOffer'" :hide-title="props.hideTitle" title-key="capital.overview.common.titles.qualificationIntro" />
+        <CapitalOffer
+            :hide-title="state === 'noOffer' ? true : props.hideTitle"
+            :on-funds-request="props.onFundsRequest"
+            :external-capital-state="props.capitalState"
+            :on-offer-dismiss="isOfferDismissButtonVisible && state === 'offer' ? handleOfferDismiss : undefined"
+        />
     </div>
     <PreQualifiedIntro
         v-else-if="state === 'intro' && props.capitalState.dynamicOffer?.maxAmount"
@@ -56,7 +60,4 @@ const handleOfferOptionsRequest = () => {
         :on-offer-options-request="handleOfferOptionsRequest"
         :region="props.capitalState.region"
     />
-    <div v-else-if="state === 'offer'">
-        <!-- TODO: Render CapitalOffer when the Vue component is available. -->
-    </div>
 </template>
