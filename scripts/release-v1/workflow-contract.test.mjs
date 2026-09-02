@@ -101,6 +101,13 @@ test('V1 releases require a pull request created by GitHub Actions', () => {
     assert.match(workflow, /github\.event\.pull_request\.user\.login == 'github-actions\[bot\]'/);
 });
 
+test('V1 GitHub releases cannot become the latest repository release', () => {
+    const workflow = readRepositoryFile('.github/workflows/release-v1.yml');
+    const releaseCreation = workflow.match(/gh release create "v\$\{VERSION\}"[\s\S]*?release-artifacts\/\*/)?.[0] ?? '';
+
+    assert.match(releaseCreation, /--latest=false/);
+});
+
 test('V1 and mainline npm publishes use one trusted top-level workflow', () => {
     const trustedPublisher = readRepositoryFile('.github/workflows/tag-and-release.yml');
     const v1Release = readRepositoryFile('.github/workflows/release-v1.yml');
@@ -138,11 +145,14 @@ test('V1 and mainline releases use strict npm channels', () => {
 test('CDN publishing isolates V1 and all mainline majors', () => {
     const workflow = readRepositoryFile('.github/workflows/upload-assets-to-release-tag.yml');
     const packageScript = readRepositoryFile('scripts/upload-assets/package-assets.sh');
+    const coreConstants = readRepositoryFile('packages/shared/core/src/constants.ts');
 
     assert.match(workflow, /Release line must be v1 or a mainline major/);
     assert.match(workflow, /MAINLINE_MAJOR=\$\{RELEASE_LINE#v\}/);
     assert.match(workflow, /Mainline prereleases may publish only to test CDN channels/);
     assert.match(packageScript, /RELEASE_LINE must be v1 or a mainline major/);
+    assert.match(coreConstants, /process\.env\.SDK_VERSION/);
+    assert.doesNotMatch(coreConstants, /platform-components\/v1-cdn/);
 });
 
 test('integration-test deduplication requires a successful test job', () => {

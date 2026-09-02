@@ -234,6 +234,7 @@ jobs:
                     --target "$COMMIT_SHA" \
                     --title "v${VERSION}" \
                     --notes-file release-artifacts/release-notes.md \
+                    --latest=false \
                     "${PRERELEASE_ARGS[@]}" \
                     release-artifacts/*
 
