@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { expectPaginationReset, goToStory, updateStoryArgs } from '@integration-components/testing/playwright/utils';
 import { applyTextFilter, goToTab, openCreatePaymentLinkModal, openSettingsModal } from '../../../../fixtures/integration/utils';
 import { DEFAULT_STORY_ID, INVALID_PAYMENT_LINK_ID, MERCHANT_REFERENCE, PAYMENT_LINK_ID } from '../../../../fixtures/constants/PaymentLinksOverview';
 
@@ -142,8 +142,8 @@ test.describe('Payment Links Overview', () => {
 
             const grid = page.getByRole('grid');
             const rows = grid.getByRole('rowgroup').nth(1).getByRole('row');
+            await expect.poll(async () => rows.count()).toBeGreaterThan(0);
             const rowCount = await rows.count();
-            expect(rowCount).toBeGreaterThan(0);
 
             for (let i = 0; i < rowCount; i++) {
                 await expect(rows.nth(i).getByText('Single use', { exact: true })).toBeVisible();
@@ -160,8 +160,8 @@ test.describe('Payment Links Overview', () => {
 
             const grid = page.getByRole('grid');
             const rows = grid.getByRole('rowgroup').nth(1).getByRole('row');
+            await expect.poll(async () => rows.count()).toBeGreaterThan(0);
             const rowCount = await rows.count();
-            expect(rowCount).toBeGreaterThan(0);
 
             for (let i = 0; i < rowCount; i++) {
                 await expect(rows.nth(i).getByText('Payment pending', { exact: true })).toBeVisible();
@@ -184,6 +184,22 @@ test.describe('Payment Links Overview', () => {
             const rows = grid.getByRole('rowgroup').nth(1).getByRole('row');
             await expect(rows).toHaveCount(1);
             await expect(rows.first().getByText(PAYMENT_LINK_ID)).toBeVisible();
+        });
+
+        test('should reset pagination without sending private store state', async ({ page }) => {
+            const storeId = 'STORE_NY_001';
+            await expectPaginationReset({
+                endpointPath: '/paymentLinks',
+                isFilterRequest: (request, expectedStoreId) => {
+                    const url = new URL(request.url());
+                    return url.searchParams.get('storeIds') === expectedStoreId && !url.searchParams.has('_storeIds');
+                },
+                page,
+                triggerFilterChange: async () => {
+                    await updateStoryArgs(page, DEFAULT_STORY_ID, { storeIds: storeId });
+                    return storeId;
+                },
+            });
         });
     });
 });
