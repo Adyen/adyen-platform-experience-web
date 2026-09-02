@@ -23,7 +23,7 @@ const error = computed(() => wizard.getError('amount.value'));
 const storedAmountValue = computed(() => (wizard.values.value['amount.value'] as string | number | undefined) ?? '');
 const currencyValue = computed(() => (wizard.values.value['amount.currency'] as string | undefined) ?? '');
 const displayValue = ref('');
-const amountInput = ref<{ $el: HTMLElement } | null>(null);
+const amountInput = ref<InstanceType<typeof BentoInputField> | null>(null);
 let amountUpdatedFromInput = false;
 
 const currencyItems = computed(() => (props.currencyOptions ?? []).map(code => ({ label: code, value: code })));
@@ -69,7 +69,8 @@ const computedNumberAmount = (value: string) => {
     return Math.trunc(+`${parseFloat(normalizedValue)}e${exponent}`) || 0;
 };
 
-function onAmountInput(value: string) {
+function onAmountInput(rawValue: string) {
+    let value = rawValue;
     // Get the decimal separator based on the user's locale
     const decimalSeparator = (1.1).toLocaleString(i18n.locale).match(/\d(.*?)\d/)?.[1] || '.';
     // Split the input value at the decimal separator
@@ -95,9 +96,15 @@ function onAmountInput(value: string) {
             const exponent = getCurrencyExponent(currencyValue.value);
             const fixed = MAX_AMOUNT.toFixed(exponent);
             value = decimalSeparator === '.' ? fixed : fixed.replace('.', decimalSeparator);
-            displayValue.value = value;
         }
     }
+
+    if (value !== rawValue) {
+        const inputElement = amountInput.value?.inputFieldElement;
+        if (inputElement) inputElement.value = value;
+    }
+
+    displayValue.value = value;
     amountUpdatedFromInput = true;
     wizard.setValue('amount.value', computedNumberAmount(value));
 }
@@ -117,7 +124,7 @@ function onDropdownInput(value: string | number | { value?: string | number } | 
             ref="amountInput"
             :variant="variant"
             :label="props.label"
-            type="text"
+            type="number"
             inputmode="decimal"
             :model-value="displayValue"
             :lang="i18n.locale"

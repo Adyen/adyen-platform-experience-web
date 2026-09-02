@@ -121,6 +121,42 @@ test.describe('Payment link creation - Link creation success', () => {
 });
 
 test.describe('Payment link creation - Link creation validation', () => {
+    test('Should retain the amount when currency validation fails', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID });
+
+        // Step 1: Store Selection
+        await page.getByTestId('form-field-store').getByRole('combobox').click();
+        await page.getByRole('option', { name: 'NY001' }).click();
+        await page.getByRole('button', { name: 'Continue' }).click();
+
+        // Step 2: Payment Details
+        const amountField = page.getByTestId('form-field-amount.value').getByRole('spinbutton');
+        await amountField.fill('3000');
+        await page.getByRole('button', { name: 'Continue' }).click();
+
+        await expect(page.getByTestId('field-error-amount.value')).toHaveText('Please select a currency');
+        await expect(amountField).toHaveValue('3000');
+    });
+
+    test('Should prevent entering more decimals than the selected currency supports', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID });
+
+        // Step 1: Store Selection
+        await page.getByTestId('form-field-store').getByRole('combobox').click();
+        await page.getByRole('option', { name: 'NY001' }).click();
+        await page.getByRole('button', { name: 'Continue' }).click();
+
+        // Step 2: Payment Details
+        await page.getByRole('combobox', { name: 'Amount currency' }).click();
+        await page.getByRole('option', { name: 'CNY' }).click();
+
+        const amountField = page.getByTestId('form-field-amount.value').getByRole('spinbutton');
+        await amountField.fill('123.456');
+        await expect(amountField).toHaveValue('123.45');
+        await amountField.press('6');
+        await expect(amountField).toHaveValue('123.45');
+    });
+
     test('Should validate all required form fields', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
