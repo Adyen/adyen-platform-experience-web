@@ -29,11 +29,11 @@ const { i18n } = useCoreContext();
 const userEvents = useEventDispatcherContext();
 const renewableGrant = computed(() => props.capitalState.renewableGrants[0]);
 const isEarlyRenewal = computed(() => !!renewableGrant.value);
-const offerAmount = i18n.amount(props.offer.grantAmount.value, props.offer.grantAmount.currency, { minimumFractionDigits: 0 });
+const offerAmount = computed(() => i18n.amount(props.offer.grantAmount.value, props.offer.grantAmount.currency, { minimumFractionDigits: 0 }));
 const highlights = computed(() => [
     {
         label: i18n.get('capital.common.fields.financing'),
-        value: offerAmount,
+        value: offerAmount.value,
     },
     {
         label: i18n.get('capital.common.fields.fees'),
@@ -73,7 +73,7 @@ function handleBack() {
 
 const actions = computed<BentoButtonActionsList>(() => [
     {
-        title: i18n.get('capital.offer.summary.actions.requestFundsWithAmount', { values: { amount: offerAmount } }),
+        title: i18n.get('capital.offer.summary.actions.requestFundsWithAmount', { values: { amount: offerAmount.value } }),
         state: isRequestFundsLoading.value ? 'loading' : undefined,
         disabled: isRequestFundsLoading.value || !!requestFundsError.value || !!requestedFunds.value,
         event: handleRequestFunds,
@@ -103,7 +103,7 @@ const actions = computed<BentoButtonActionsList>(() => [
                 <Highlights :items="highlights" />
             </div>
             <OfferSummaryDetails :capital-state="props.capitalState" :grant-offer="props.offer" :has-balance-account-error="!!balanceAccountError" />
-            <BentoAlert v-if="balanceAccountError" type="warning" role="alert">
+            <BentoAlert v-if="balanceAccountError" type="warning">
                 <template #default>
                     {{ i18n.get(balanceAccountError.title) }}
                 </template>

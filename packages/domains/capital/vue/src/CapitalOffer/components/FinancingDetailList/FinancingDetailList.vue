@@ -13,7 +13,7 @@ const props = defineProps<{
 <template>
     <BentoStructuredList layout="50-50">
         <BentoStructuredListItem v-for="item in props.items" :key="item.key" :label="item.label" :label-info="item.info">
-            <BentoTypography :class="props.hasBalanceAccountError ? styles.valueWithIcon : undefined">
+            <BentoTypography :class="props.hasBalanceAccountError && item.key === 'account' ? styles.valueWithIcon : undefined">
                 <WarningIcon
                     v-if="props.hasBalanceAccountError && item.key === 'account'"
                     :class="styles.icon"
