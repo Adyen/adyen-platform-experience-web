@@ -10,7 +10,7 @@ import {
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
 import { useRequestFunds } from '../../composables/useRequestFunds';
-import CapitalErrorMessageDisplay from '../../../shared/CapitalErrorMessageDisplay.vue';
+import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
 import Highlights from '../Highlights/Highlights.vue';
 import LegalNotice from '../LegalNotice/LegalNotice.vue';
 import RenewalHighlights from '../RenewalHighlights.vue';
@@ -87,7 +87,7 @@ const actions = computed<BentoButtonActionsList>(() => [
 
 <template>
     <div :class="styles.root">
-        <CapitalErrorMessageDisplay
+        <CapitalError
             v-if="requestFundsError && !balanceAccountError"
             :error="requestFundsError"
             :on-back="handleBack"

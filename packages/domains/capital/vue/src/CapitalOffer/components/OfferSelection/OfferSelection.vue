@@ -20,7 +20,7 @@ import { useCreateOffer } from '../../composables/useCreateOffer';
 import type { IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
 import { BentoButtonActions, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import AmountSlider from '../AmountSlider/AmountSlider.vue';
-import CapitalError from '../../../shared/CapitalError.vue';
+import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
 import OfferSelectionDetails from '../OfferSelectionDetails.vue';
 import RenewalHighlights from '../RenewalHighlights.vue';
 import TermSelector from '../TermSelector.vue';

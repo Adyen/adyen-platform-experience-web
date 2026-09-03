@@ -7,7 +7,7 @@ import { useFetch } from '@integration-components/hooks-preact';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { CapitalErrorMessageDisplay } from '../../../internal/CapitalErrorMessageDisplay';
 import { CapitalOverviewProps } from '../../../../../domain/src/CapitalOverview/types';
-import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../../../../../domain/src/CapitalOverview/constants';
+import { CAPITAL_OVERVIEW_CLASS_NAMES } from './constants';
 import { FunctionalComponent } from 'preact';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 import './CapitalOverview.scss';

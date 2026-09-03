@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { CapitalOverviewComponentProps } from '../../types';
 import { computed, ref } from 'vue';
-import { useSupportedRegions } from '../../composables/useSupportedRegions';
-import { useCapitalState } from '../../composables/useCapitalState';
-import { useGrants } from '../../composables/useGrants';
-import { getAdjustedGrants, getEnhancedCapitalState, type OnFundsRequestCallback } from '@integration-components/capital/domain';
+import { useAdjustedGrants } from '../../composables/useAdjustedGrants';
+import { type OnFundsRequestCallback } from '@integration-components/capital/domain';
 import { useConfigContext } from '@integration-components/core/vue';
 import type { IGrant } from '@integration-components/types';
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
@@ -12,26 +10,25 @@ import PreQualified from '../PreQualified/PreQualified.vue';
 import GrantList from '../GrantList/GrantList.vue';
 import styles from './CapitalOverviewContainer.module.scss';
 import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
+import { useEnhancedCapitalState } from '../../../shared/composables/useEnhancedCapitalState';
 
 const props = defineProps<CapitalOverviewComponentProps>();
 type CapitalOverviewState = 'Loading' | 'Error' | 'PreQualified' | 'GrantList' | 'UnsupportedRegion';
 
 const config = useConfigContext();
-const supportedRegions = useSupportedRegions();
-const capitalStateQuery = useCapitalState();
 const requestedGrant = ref<IGrant>();
-
-const capitalState = computed(() => getEnhancedCapitalState(capitalStateQuery.data.value, supportedRegions.value, requestedGrant.value));
-const grantsQuery = useGrants(
-    capitalStateQuery.data,
-    computed(() => capitalState.value?.isRegionSupported)
+const { capitalState, error: capitalStateError, isLoading: capitalStateIsLoading } = useEnhancedCapitalState(() => true, requestedGrant);
+const grantsQuery = useAdjustedGrants(
+    capitalState,
+    computed(() => capitalState.value?.isRegionSupported),
+    requestedGrant
 );
-const error = computed(() => capitalStateQuery.error.value ?? grantsQuery.error.value);
-const grants = computed(() => getAdjustedGrants(capitalState.value, grantsQuery.data.value, requestedGrant.value));
+const error = computed(() => capitalStateError.value ?? grantsQuery.error);
+const grants = computed(() => grantsQuery.data);
 const hasCapitalEndpoints = computed(() => !!config.endpoints.getCapitalState || !!config.endpoints.getGrants);
 
 const state = computed<CapitalOverviewState>(() => {
-    if (!hasCapitalEndpoints.value || capitalStateQuery.isFetching.value || grantsQuery.isFetching.value) {
+    if (!hasCapitalEndpoints.value || capitalStateIsLoading.value || grantsQuery.isFetching) {
         return 'Loading';
     } else if (error.value || !capitalState.value) {
         return 'Error';
@@ -59,18 +56,19 @@ const handleGrantListUpdateRequest = (grant: IGrant) => {
 <template>
     <div :class="styles.root">
         <div v-if="state === 'Loading'">
+            <!-- TODO: Replace this temporary loading skeleton with the Bento loading component when available. -->
             <div :class="styles.skeletonContainer">
                 <div :class="styles.headerSkeleton" />
                 <div :class="styles.skeleton" />
             </div>
         </div>
         <div v-else-if="state === 'Error'">
-            <CapitalHeader :hide-title="props.hideTitle" :region="capitalState?.region" title-key="capital.common.title" />
+            <CapitalHeader :hide-title="props.hideTitle" title-key="capital.common.title" />
             <CapitalError :error="error" />
         </div>
         <div v-else-if="state === 'UnsupportedRegion'">
-            <CapitalHeader :hide-title="props.hideTitle" :region="capitalState?.region" title-key="capital.common.title" />
-            <CapitalError unsupportedRegion />
+            <CapitalHeader :hide-title="props.hideTitle" title-key="capital.common.title" />
+            <CapitalError unsupported-region />
         </div>
         <PreQualified
             v-else-if="state === 'PreQualified' && capitalState"

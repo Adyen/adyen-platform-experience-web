@@ -2,28 +2,9 @@
 import { computed } from 'vue';
 import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
-import {
-    getBankAccountFieldCopyButtonTranslationKey,
-    getBankAccountFieldFormattedValue,
-    getBankAccountFields,
-    getBankAccountFieldTextToCopy,
-    getBankAccountFieldTranslationKey,
-    isBankAccountFieldPrimary,
-    type CapitalBankAccount,
-    type CapitalBankAccountField,
-} from '@integration-components/capital/domain';
-import type { TranslationKey } from '@integration-components/core';
+import { getBankAccountDetails, type CapitalBankAccount } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
 import styles from './AccountDetails.module.scss';
-
-type AccountDetail = {
-    content: string;
-    copyButtonLabel?: TranslationKey;
-    field: string;
-    isPrimary: boolean;
-    label: TranslationKey;
-    textToCopy?: string;
-};
 
 const props = defineProps<{
     bankAccount: CapitalBankAccount;
@@ -32,34 +13,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 
-const accountDetails = computed<AccountDetail[]>(() => {
-    const details: AccountDetail[] = [];
-
-    for (const field of getBankAccountFields(props.bankAccount)) {
-        const value = props.bankAccount[field as CapitalBankAccountField];
-
-        if (typeof value !== 'string' || !value) {
-            continue;
-        }
-
-        const content = getBankAccountFieldFormattedValue(field, value);
-
-        if (!content) {
-            continue;
-        }
-
-        details.push({
-            content,
-            copyButtonLabel: getBankAccountFieldCopyButtonTranslationKey(field),
-            field,
-            isPrimary: isBankAccountFieldPrimary(field),
-            label: getBankAccountFieldTranslationKey(field),
-            textToCopy: getBankAccountFieldTextToCopy(field, value),
-        });
-    }
-
-    return details;
-});
+const accountDetails = computed(() => getBankAccountDetails(props.bankAccount));
 
 const copyValue = (value: string) => {
     void navigator.clipboard?.writeText(value).catch(() => {
