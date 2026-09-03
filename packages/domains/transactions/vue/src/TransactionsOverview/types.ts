@@ -1,4 +1,4 @@
-import type { CoreInstance } from '@integration-components/core/vue';
+import type { UIElementProps } from '@integration-components/core/vue';
 import type { TransactionDetailsCustomization, TransactionsListCustomization } from '../../../domain/src';
 import type { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus } from '@integration-components/types';
 
@@ -14,8 +14,7 @@ export interface TransactionsFilters {
     paymentPspReference?: string;
 }
 
-export interface TransactionsOverviewExternalProps {
-    core: CoreInstance;
+export interface TransactionsOverviewExternalProps extends UIElementProps {
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
     preferredLimit?: number;

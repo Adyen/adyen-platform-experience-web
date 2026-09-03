@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, provide, ref, watch } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import { BentoAlert, BentoButton, BentoStep, BentoStepper, BentoTypography } from '@adyen/bento-vue3';
 import type { PaymentLinkCreationProps, PaymentLinkSettingsItem } from '../../../../../domain/src';
 import { usePaymentLinkFormData } from './usePaymentLinkFormData';
@@ -23,6 +24,7 @@ const props = defineProps<PaymentLinkCreationFormProps>();
 const emit = defineEmits<{ 'payment-link-created': [data: any] }>();
 
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 const TERMS_AND_CONDITIONS_SETTINGS_ITEMS: PaymentLinkSettingsItem[] = ['termsAndConditions'];
 
 const data = usePaymentLinkFormData(() => ({ storeIds: props.storeIds, fieldsConfig: props.fieldsConfig }));
@@ -153,7 +155,9 @@ async function handleSubmit() {
     />
     <div v-else :class="styles.root">
         <div v-if="!data.isFirstLoadDone.value" :class="styles.header">
-            <BentoTypography variant="title" stronger>{{ i18n.get('payByLink.creation.form.title') }}</BentoTypography>
+            <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title" stronger>{{
+                i18n.get('payByLink.creation.form.title')
+            }}</BentoTypography>
             <div :class="styles.skeleton">
                 <div :class="[styles.skeletonItem, styles.skeletonItemLarge]" />
                 <div :class="[styles.skeletonItem, styles.skeletonItemSmall]" />
@@ -163,7 +167,7 @@ async function handleSubmit() {
 
         <template v-else>
             <div :class="styles.header">
-                <BentoTypography v-if="!props.hideTitle" variant="title" stronger>
+                <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title" stronger>
                     {{ i18n.get('payByLink.creation.form.title') }}
                 </BentoTypography>
                 <BentoStepper

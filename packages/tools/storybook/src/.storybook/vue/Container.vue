@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { type CoreInstance, type SupportedLocales, type CoreOptions, UIElement } from '@integration-components/core/vue';
+import { type Appearance, type CoreInstance, type SupportedLocales, type CoreOptions, UIElement } from '@integration-components/core/vue';
 import { getMySessionToken } from '@integration-components/testing/storybook-helpers';
 import { Core } from '@integration-components/core';
 import '../../shared/styles.scss';
@@ -10,6 +10,8 @@ const props = defineProps<{
     componentProps?: Record<string, any>;
     locale?: SupportedLocales;
     fontFamily?: string;
+    illustrations?: Appearance['illustrations'];
+    titles?: Appearance['titles'];
     session?: { roles: string[]; accountHolderId?: string };
     compact?: boolean;
 }>();
@@ -33,12 +35,19 @@ async function initializeCore() {
         error.value = null;
 
         const { coreOptions } = props.componentProps ?? {};
+        const resolvedCoreOptions = (coreOptions ?? {}) as Partial<CoreOptions>;
+        const appearance = {
+            ...resolvedCoreOptions.appearance,
+            ...(props.illustrations && { illustrations: props.illustrations }),
+            ...(props.titles && { titles: props.titles }),
+        };
 
         const instance = new Core<[], Record<never, never>>({
             environment: 'test',
             locale: props.locale || 'en-US',
             onSessionCreate: (_signal: AbortSignal) => getMySessionToken(props.session),
-            ...((coreOptions ?? {}) as Partial<CoreOptions>),
+            ...resolvedCoreOptions,
+            appearance,
         });
 
         core = await instance.initialize();

@@ -1,31 +1,20 @@
 <script setup lang="ts">
-import { provide, ref, computed, onMounted } from 'vue';
-import type { CoreProviderProps, CoreContextValue } from './types';
-import Localization from '../../Localization';
+import { provide, ref, onMounted } from 'vue';
+import type { CoreProviderProps } from './types';
 import { CORE_CONTEXT_KEY } from './constants';
+import { createCoreContextValue } from './createCoreContextValue';
 
 const props = withDefaults(defineProps<CoreProviderProps>(), {
     loadingContext: '',
 });
 
 const ready = ref(false);
+const coreContextValue = createCoreContextValue(props);
 
-const coreContextValue = computed<CoreContextValue>(() => ({
-    i18n: props.i18n ?? new Localization().i18n,
-    commonProps: props.commonProps || {},
-    loadingContext: props.loadingContext ?? '',
-    refreshComponent: props.refreshComponent,
-    externalErrorHandler: props.externalErrorHandler,
-    getImageAsset: props.getImageAsset,
-    getDatasetAsset: props.getDatasetAsset,
-    getCdnConfig: props.getCdnConfig,
-    getCdnDataset: props.getCdnDataset,
-}));
-
-provide(CORE_CONTEXT_KEY, coreContextValue.value);
+provide(CORE_CONTEXT_KEY, coreContextValue);
 
 onMounted(async () => {
-    await coreContextValue.value.i18n?.ready;
+    await coreContextValue.i18n?.ready;
     ready.value = true;
 });
 </script>

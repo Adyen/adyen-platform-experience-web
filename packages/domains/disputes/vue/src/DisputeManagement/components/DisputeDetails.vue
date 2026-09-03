@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import AcceptDisputeFlow from './AcceptDisputeFlow.vue';
@@ -11,10 +12,11 @@ import styles from './DisputeData.module.scss';
 
 const props = defineProps<DisputeManagementProps>();
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 const { flowState, getDisputesConfig } = useDisputeFlow();
 
 const { withinModal } = useModalContext();
-const shouldHideTitle = computed(() => props.hideTitle || withinModal);
+const shouldHideTitle = computed(() => props.hideTitle || withinModal || hideTitles);
 
 onMounted(() => getDisputesConfig());
 </script>

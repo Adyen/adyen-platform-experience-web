@@ -3,6 +3,7 @@ import { BentoEmptyState } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
 import { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from './getErrorMessage';
+import { useShouldHideIllustrations } from './customization';
 import { useLiveAnnouncement } from './useLiveAnnouncement';
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 
@@ -23,6 +24,7 @@ export const DataOverviewError = defineComponent({
 
     setup(props) {
         const { i18n, refreshComponent: refreshCurrentComponent } = useCoreContext();
+        const hideIllustrations = useShouldHideIllustrations();
         const { announce, announcement } = useLiveAnnouncement();
         const isErrorCodeCopied = ref(false);
 
@@ -97,7 +99,7 @@ export const DataOverviewError = defineComponent({
             h(
                 BentoEmptyState,
                 {
-                    image: props.image,
+                    image: hideIllustrations.value ? undefined : props.image,
                     variant: props.variant,
                     title: title.value,
                     action: action.value,

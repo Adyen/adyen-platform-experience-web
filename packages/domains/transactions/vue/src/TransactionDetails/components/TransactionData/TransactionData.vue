@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { BentoLoadingIndicator, BentoTypography } from '@adyen/bento-vue3';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import PaymentDetails from '../PaymentDetails/PaymentDetails.vue';
 import PaymentRefund from '../PaymentRefund/PaymentRefund.vue';
@@ -25,6 +26,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 const { withinModal } = useModalContext();
 const shouldHideTitle = computed(() => props.hideTitle || withinModal);
 
@@ -44,7 +46,7 @@ watch(refundMeta.refundLocked, locked_ => {
 </script>
 
 <template>
-    <div v-if="!shouldHideTitle" :class="styles.title">
+    <div v-if="!hideTitles && !shouldHideTitle" :class="styles.title">
         <BentoTypography variant="title">{{ i18n.get('transactions.details.title') }}</BentoTypography>
     </div>
 

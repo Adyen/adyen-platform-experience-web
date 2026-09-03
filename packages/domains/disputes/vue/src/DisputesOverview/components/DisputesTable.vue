@@ -23,6 +23,7 @@ import {
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
+    useShouldHideIllustrations,
     useTableColumns,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
@@ -58,6 +59,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const hideIllustrations = useShouldHideIllustrations();
 const config = useConfigContext();
 
 const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceAccount?.timeZone);
@@ -144,7 +146,7 @@ const paginationProps = computed(() => {
 });
 
 const emptyStateProps = computed(() => ({
-    image: 'no-results-found' as const,
+    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
     variant: 'embedded' as const,
     title: i18n.get(EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].title),
     description: i18n.get(EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].message),

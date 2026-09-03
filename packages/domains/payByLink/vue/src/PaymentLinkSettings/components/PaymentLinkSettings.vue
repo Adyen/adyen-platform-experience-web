@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { BentoDivider, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
+import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
 import type { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../constants';
@@ -23,6 +23,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 const {
     activeMenuItem,
     setSelectedMenuItem,
@@ -77,7 +78,7 @@ const showActionButtons = computed(
 
 <template>
     <div v-if="menuItems.length > 0" :class="styles.root">
-        <BentoTypography v-if="!props.hideTitle && (!isSmContainer || !contentVisible)" variant="title" el="h1">
+        <BentoTypography v-if="!props.hideTitle && !hideTitles && (!isSmContainer || !contentVisible)" variant="title" el="h1">
             {{ i18n.get('payByLink.settings.title') }}
         </BentoTypography>
         <SettingsError v-if="hasError" :error="error" :error-message="ERROR_MESSAGE_KEY" :on-contact-support="props.onContactSupport" />

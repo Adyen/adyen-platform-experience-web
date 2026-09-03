@@ -3,6 +3,7 @@ import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
 import { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from './getErrorMessage';
+import { useShouldHideIllustrations } from './customization';
 import styles from './ErrorMessageDisplay.module.scss';
 
 const IMAGE_BREAKPOINT_MEDIUM_PX = 680;
@@ -32,6 +33,7 @@ export const ErrorMessageDisplay = defineComponent({
 
     setup(props) {
         const { i18n, refreshComponent: refreshCurrentComponent, getImageAsset } = useCoreContext();
+        const hideIllustrations = useShouldHideIllustrations();
 
         const errorInfo = computed(
             () =>
@@ -110,7 +112,7 @@ export const ErrorMessageDisplay = defineComponent({
             const buttons = renderButtons();
 
             return h('div', { class: rootClass.value, 'data-testid': 'error-message-display' }, [
-                props.withImage || props.imageDesktop || props.imageMobile ? renderIllustration() : null,
+                !hideIllustrations.value && (props.withImage || props.imageDesktop || props.imageMobile) ? renderIllustration() : null,
                 title ? h(BentoTypography, { el: 'div', variant: 'title' }, () => i18n.get(title)) : null,
                 messages.length ? h(BentoTypography, { variant: 'body' }, () => messages) : null,
                 buttons.length ? h('div', { class: styles.button }, buttons) : null,

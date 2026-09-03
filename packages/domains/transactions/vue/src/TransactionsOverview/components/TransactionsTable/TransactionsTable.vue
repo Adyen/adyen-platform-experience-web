@@ -7,6 +7,7 @@ import {
     containerQueries,
     CustomDataCell,
     DataOverviewError,
+    useShouldHideIllustrations,
     useTableColumns,
 } from '@integration-components/composables-vue';
 import {
@@ -51,6 +52,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const hideIllustrations = useShouldHideIllustrations();
 const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceAccount?.timeZone);
 
 const isMobile = useResponsiveContainer(containerQueries.down.sm);
@@ -139,7 +141,7 @@ const paginationProps = computed(() => ({
 }));
 
 const emptyStateProps = computed(() => ({
-    image: 'no-results-found' as const,
+    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
     variant: 'embedded' as const,
     title: i18n.get('transactions.overview.errors.listEmpty'),
     description: i18n.get('common.errors.updateFilters'),
