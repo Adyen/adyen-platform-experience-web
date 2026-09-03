@@ -72,5 +72,6 @@ function onUploadError(hasError: boolean) {
         :required="props.required"
         @change="onChange"
         @error:upload="onUploadError"
+        condensed
     />
 </template>

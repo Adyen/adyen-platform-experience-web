@@ -10,11 +10,10 @@ import {
 } from './shared/utils';
 import type { Locator, Page } from '@playwright/test';
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
-import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
+import { expectAnalyticsEvents, expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
 import { testBalanceAccountFilter, testDateRangeFilter } from '../../../../fixtures/integration/filters';
 import { sharedTransactionsListAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionsOverview';
 import { goToView } from '../../../../fixtures/integration/utils';
-import { sleep } from '@integration-components/testing/fixtures/utils';
 
 const STORY_ID = 'mocked-transactions-transactions-overview--default';
 
@@ -102,6 +101,23 @@ test.describe('Default', () => {
             await expect(totalsCard.getByText(/EUR/)).toHaveCount(2);
         });
 
+        test('should not refetch transactions when returning from Insights with unchanged filters', async ({ page, analyticsEvents }) => {
+            await expect(page.getByRole('gridcell')).toHaveCount(60);
+
+            const transactionRequests: string[] = [];
+            page.on('request', request => {
+                if (new URL(request.url()).pathname.endsWith('/transactions')) {
+                    transactionRequests.push(request.url());
+                }
+            });
+
+            await goToView(page, analyticsEvents, 'Insights');
+            await goToView(page, analyticsEvents, 'Transactions');
+
+            await expect(page.getByRole('grid')).toBeVisible();
+            expect(transactionRequests).toHaveLength(0);
+        });
+
         test('should render data grid', async ({ page }) => {
             const dataGrid = page.getByRole('grid');
 
@@ -136,7 +152,9 @@ test.describe('Default', () => {
         test('should render transaction details modal for clicked row', async ({ page, analyticsEvents }) => {
             await openTransactionDetailsModal(page, analyticsEvents, 0 /* first row transaction */);
 
-            const detailsModal = page.getByRole('dialog');
+            const detailsModal = page.getByRole('dialog', { name: 'Transaction details', exact: true });
+
+            await expect(detailsModal.getByText('Transaction details', { exact: true })).toHaveCount(0);
             await detailsModal.getByRole('tab', { name: 'Details', exact: true }).click();
             await expect(page.getByText('B78I76Y77072H127', { exact: true }).first()).toBeVisible();
         });
@@ -190,9 +208,6 @@ test.describe('Default', () => {
         });
 
         test('should render correctly with previous valid input when filter dialog is reopened', async ({ page, analyticsEvents }) => {
-            // [TODO]: Address multiple unrelated "Modified filter" events being triggered for untouched filters (Bento only)
-            test.fixme(true, 'Multiple unrelated "Modified filter" events being triggered for untouched filters');
-
             const filterDialog = page.getByRole('dialog');
             const inputField = getPSPReferenceInput(filterDialog);
             const pspReference = 'PSP0000000000056';
@@ -216,9 +231,6 @@ test.describe('Default', () => {
         });
 
         test('should reset previous valid input', async ({ page, analyticsEvents }) => {
-            // [TODO]: Address multiple unrelated "Modified filter" events being triggered for untouched filters (Bento only)
-            test.fixme(true, 'Multiple unrelated "Modified filter" events being triggered for untouched filters');
-
             const filterDialog = page.getByRole('dialog');
             await getPSPReferenceInput(filterDialog).fill('PSP0000000000056');
             await applyPspReferenceFilter(page, analyticsEvents);
@@ -237,12 +249,24 @@ test.describe('Default', () => {
             await expect(filterDialog.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled();
         });
 
-        test('should only accept valid length long input (without previous input)', async ({ page }) => {
-            // [TODO]: Address input rules for PSP reference filter not correctly applied
-            test.fixme(true, 'Input rules for PSP reference filter not correctly applied');
-
+        test('should track each filter when resetting all filters', async ({ page, analyticsEvents }) => {
             const filterDialog = page.getByRole('dialog');
-            const errorMessage = filterDialog.getByText('Should be 16 characters long', { exact: true });
+            await getPSPReferenceInput(filterDialog).fill('PSP0000000000056');
+            await applyPspReferenceFilter(page, analyticsEvents);
+            await selectSingleCategoryFromMultiSelectFilter(page, analyticsEvents, 'Payment');
+
+            await page.getByRole('button', { name: 'Reset filters', exact: true }).click();
+
+            await expect(page.getByRole('button', { name: /^PSP reference/, exact: true })).toBeVisible();
+            await expectAnalyticsEvents(analyticsEvents, [
+                ['Modified filter', { ...sharedTransactionsListAnalyticsEventProperties, label: 'Category filter', actionType: 'reset' }],
+                ['Modified filter', { ...sharedTransactionsListAnalyticsEventProperties, label: 'PSP reference filter', actionType: 'reset' }],
+            ]);
+        });
+
+        test('should only accept valid length long input (without previous input)', async ({ page }) => {
+            const filterDialog = page.getByRole('dialog');
+            const errorMessage = filterDialog.getByText(/Should be 16 characters long/);
             const inputField = getPSPReferenceInput(filterDialog);
             const applyButton = filterDialog.getByRole('button', { name: 'Apply', exact: true });
             const resetButton = filterDialog.getByRole('button', { name: 'Clear', exact: true });
@@ -284,11 +308,8 @@ test.describe('Default', () => {
         });
 
         test('should only accept valid length long input (with previous input)', async ({ page, analyticsEvents }) => {
-            // [TODO]: Address input rules for PSP reference filter not correctly applied
-            test.fixme(true, 'Input rules for PSP reference filter not correctly applied');
-
             const filterDialog = page.getByRole('dialog');
-            const errorMessage = filterDialog.getByText('Should be 16 characters long', { exact: true });
+            const errorMessage = filterDialog.getByText(/Should be 16 characters long/);
             const inputField = getPSPReferenceInput(filterDialog);
             const applyButton = filterDialog.getByRole('button', { name: 'Apply', exact: true });
             const resetButton = filterDialog.getByRole('button', { name: 'Clear', exact: true });
@@ -429,11 +450,7 @@ test.describe('Default', () => {
             await popover.getByText('All 10 columns', { exact: true }).click();
 
             // Click "Export" button twice, to close and reopen popover
-            // A short delay is introduced between clicks to escape an inconsistent behavior resulting in
-            // non-deterministic state when the export popover is toggled very quickly (like in this test).
-            // [TODO]: Investigate and address cause of inconsistent behavior when export popover is toggled quickly
             await exportButton.click();
-            await sleep(500);
             await exportButton.click();
 
             await expectAnalyticsEvents(analyticsEvents, [
@@ -485,9 +502,6 @@ test.describe('Default', () => {
 
     test.describe('Export: With modified filters', () => {
         test('should show all applied filters', async ({ page, analyticsEvents }) => {
-            // [TODO]: Address multiple unrelated "Modified filter" events being triggered for untouched filters (Bento only)
-            test.fixme(true, 'Multiple unrelated "Modified filter" events being triggered for untouched filters');
-
             await selectSingleCategoryFromMultiSelectFilter(page, analyticsEvents, 'Payment');
             await selectSingleCurrencyFromMultiSelectFilter(page, analyticsEvents, 'USD');
             await setExactPspReference(page, analyticsEvents, 'PSP0000000000056');
@@ -507,13 +521,9 @@ test.describe('Default', () => {
         });
 
         test('should disable "Export" button if applied filters match no transactions', async ({ page, analyticsEvents }) => {
-            // [TODO]: Address multiple unrelated "Modified filter" events being triggered for untouched filters (Bento only)
-            test.fixme(true, 'Multiple unrelated "Modified filter" events being triggered for untouched filters');
-
             await setExactPspReference(page, analyticsEvents, 'PSP1234567890123');
             await expect(page.getByRole('button', { name: 'Export', exact: true })).toBeDisabled();
-            await expect(page.getByRole('row')).toHaveCount(0);
-            await expect(page.getByRole('cell')).toHaveCount(0);
+            await expect(page.getByText('No transactions found', { exact: true })).toBeVisible();
         });
     });
 });
@@ -531,4 +541,8 @@ test.describe('Filters', () => {
 
     testBalanceAccountFilter({ variant });
     testDateRangeFilter({ variant, now });
+
+    test('should reset pagination when selecting another balance account', async ({ page }) => {
+        await expectBalanceAccountPaginationReset({ endpointPath: '/transactions', page, variant });
+    });
 });

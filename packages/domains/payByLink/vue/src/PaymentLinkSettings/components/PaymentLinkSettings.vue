@@ -5,22 +5,14 @@ import { useCoreContext } from '@integration-components/core/vue';
 import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
 import type { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
 import { usePaymentLinkSettingsContext } from '../composables/context';
-import {
-    ACCOUNT_MISCONFIGURATION,
-    CONTAINER_CLASS_NAME,
-    CONTENT_CONTAINER_CLASS_NAME,
-    CONTENT_CONTAINER_MOBILE_CLASS_NAME,
-    DIVIDER_CONTAINER_CLASS_NAME,
-    SIDEBAR_CONTAINER_CLASS_NAME,
-    SECONDARY_NAV_CLASS_NAME,
-    WRONG_STORE_IDS,
-} from '../constants';
+import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../constants';
 import type { PaymentLinkSettingsItem } from '../types';
 import SettingsError from './SettingsError.vue';
 import StoreSelector from './StoreSelector.vue';
 import SecondaryNav from './SecondaryNav.vue';
 import PaymentLinkSettingsContent from './PaymentLinkSettingsContent.vue';
 import SettingsActionButtons from './SettingsActionButtons.vue';
+import styles from './PaymentLinkSettings.module.scss';
 
 const ERROR_MESSAGE_KEY: TranslationKey = 'payByLink.settings.errors.couldNotLoadSettings';
 
@@ -85,24 +77,19 @@ const showActionButtons = computed(
 </script>
 
 <template>
-    <div v-if="menuItems.length > 0" :class="CONTAINER_CLASS_NAME">
+    <div v-if="menuItems.length > 0" :class="styles.root">
         <BentoTypography v-if="!props.hideTitle && !hideTitles && (!isSmContainer || !contentVisible)" variant="title" el="h1">
             {{ i18n.get('payByLink.settings.title') }}
         </BentoTypography>
         <SettingsError v-if="hasError" :error="error" :error-message="ERROR_MESSAGE_KEY" :on-contact-support="props.onContactSupport" />
         <template v-else>
-            <div :class="[CONTENT_CONTAINER_CLASS_NAME, { [CONTENT_CONTAINER_MOBILE_CLASS_NAME]: isSmContainer && contentVisible }]">
+            <div :class="[styles.contentContainer, { [styles.contentContainerMobile]: isSmContainer && contentVisible }]">
                 <template v-if="menuItems.length > 1">
-                    <div v-if="!contentVisible || !isSmContainer" :class="SIDEBAR_CONTAINER_CLASS_NAME">
+                    <div v-if="!contentVisible || !isSmContainer" :class="styles.sidebarContainer">
                         <StoreSelector :stores="filteredStores" :selected-store-id="selectedStore" @update:selected-store-id="setSelectedStore" />
-                        <SecondaryNav
-                            :class="SECONDARY_NAV_CLASS_NAME"
-                            :items="menuItems"
-                            :active-value="activeMenuItem"
-                            @select="onSelectMenuItem"
-                        />
+                        <SecondaryNav :items="menuItems" :active-value="activeMenuItem" @select="onSelectMenuItem" />
                     </div>
-                    <div v-if="!isSmContainer" :class="DIVIDER_CONTAINER_CLASS_NAME">
+                    <div v-if="!isSmContainer" :class="styles.dividerContainer">
                         <BentoDivider variant="vertical" />
                     </div>
                     <PaymentLinkSettingsContent

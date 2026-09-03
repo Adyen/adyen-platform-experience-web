@@ -3,8 +3,9 @@
 
 .breakdowns {
     display: grid;
-    gap: style.token(spacer-100) calc(#{style.token(spacer-110)} * 2);
+    gap: style.token(spacer-100) style.token(spacer-120);
     grid-template-columns: 1fr;
+    margin-top: style.token(spacer-070);
 
     @include breakpoints.adyen-pe-screen-md-and-up {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -31,9 +32,20 @@
 }
 
 .breakdowns .breakdownList {
+    :global(.b-data-grid-columns) {
+        display: none;
+    }
+
     @include breakpoints.adyen-pe-screen-md-and-up {
         margin-inline: unset;
     }
+}
+
+.amountDisplay {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-020);
+    margin-bottom: style.token(spacer-070);
 }
 
 .amountDisplayAmount {

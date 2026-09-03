@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onUnmounted } from 'vue';
 import { BentoCard, BentoTab, BentoTabs, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
@@ -28,6 +28,11 @@ const isMobile = useResponsiveContainer(containerQueries.down.xs);
 const DISPUTE_STATUS_GROUP_VALUES = Object.keys(DISPUTE_STATUS_GROUPS) as IDisputeStatusGroup[];
 
 const statusGroup = ref<IDisputeStatusGroup>(DEFAULT_DISPUTE_STATUS_GROUP);
+const fetchStatusGroup = ref<IDisputeStatusGroup>(statusGroup.value);
+const statusGroupFetchPending = ref(false);
+
+let statusGroupDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+
 const refreshToken = ref(0);
 const selectedDisputeId = ref<string | undefined>(undefined);
 const filtersInitialized = ref(false);
@@ -63,19 +68,34 @@ const statusGroupItems = computed(() =>
 const activeStatusGroupIndex = computed(() => DISPUTE_STATUS_GROUP_VALUES.indexOf(statusGroup.value));
 const statusGroupAriaLabel = computed(() => i18n.get('disputes.overview.common.filters.types.statusGroup'));
 
+function updateStatusGroup(statusGroupToFetch: IDisputeStatusGroup) {
+    if (statusGroupDebounceTimer) {
+        clearTimeout(statusGroupDebounceTimer);
+    }
+
+    statusGroup.value = statusGroupToFetch;
+    statusGroupFetchPending.value = true;
+
+    statusGroupDebounceTimer = setTimeout(() => {
+        fetchStatusGroup.value = statusGroupToFetch;
+        statusGroupFetchPending.value = false;
+        statusGroupDebounceTimer = undefined;
+    }, 500);
+}
+
 function onStatusGroupChange(index: number) {
-    statusGroup.value = DISPUTE_STATUS_GROUP_VALUES[index] ?? DEFAULT_DISPUTE_STATUS_GROUP;
+    updateStatusGroup(DISPUTE_STATUS_GROUP_VALUES[index] ?? DEFAULT_DISPUTE_STATUS_GROUP);
 }
 
 const activeBalanceAccount = computed(() => {
     const id = filterParams.value.balanceAccountId;
-    return props.balanceAccounts?.find(account => account.id === id);
+    return props.balanceAccounts?.find(account => account.id === id) ?? props.balanceAccounts?.[0];
 });
 
 const disputesListResult = useDisputesList(() => ({
-    fetchEnabled: filtersInitialized.value,
+    fetchEnabled: filtersInitialized.value && !statusGroupFetchPending.value,
     balanceAccountId: filterParams.value.balanceAccountId,
-    statusGroup: statusGroup.value,
+    statusGroup: fetchStatusGroup.value,
     schemeCodes: filterParams.value.schemeCodes,
     reasonCategories: filterParams.value.reasonCategories,
     createdSince: filterParams.value.createdSince,
@@ -87,7 +107,12 @@ const disputesListResult = useDisputesList(() => ({
 }));
 
 const isLoading = computed(
-    () => disputesListResult.fetching.value || props.isLoadingBalanceAccount || !props.balanceAccounts || !filtersInitialized.value
+    () =>
+        statusGroupFetchPending.value ||
+        disputesListResult.fetching.value ||
+        props.isLoadingBalanceAccount ||
+        !props.balanceAccounts ||
+        !filtersInitialized.value
 );
 
 const disputesError = computed(() => disputesListResult.error.value as Error | undefined);
@@ -104,7 +129,7 @@ function onRowClick(dispute: IDisputeListItem) {
 
 function refreshDisputesList(gotoStatusGroup?: IDisputeStatusGroup) {
     if (gotoStatusGroup && DISPUTE_STATUS_GROUP_VALUES.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup.value) {
-        statusGroup.value = gotoStatusGroup;
+        updateStatusGroup(gotoStatusGroup);
     } else {
         refreshToken.value = performance.now();
     }
@@ -113,6 +138,12 @@ function refreshDisputesList(gotoStatusGroup?: IDisputeStatusGroup) {
 function closeModal() {
     selectedDisputeId.value = undefined;
 }
+
+onUnmounted(() => {
+    if (statusGroupDebounceTimer) {
+        clearTimeout(statusGroupDebounceTimer);
+    }
+});
 </script>
 
 <template>

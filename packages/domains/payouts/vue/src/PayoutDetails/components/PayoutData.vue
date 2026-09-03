@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import {
     BentoTypography,
     BentoCard,
@@ -32,9 +32,11 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
+const { withinModal } = useModalContext();
 const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
 
 const payoutInner = computed(() => props.payout?.payout);
+const shouldHideTitle = computed(() => props.hideTitle || withinModal);
 
 // Adjustments: split into additions/subtractions, each sorted alphabetically by translation key.
 type ListItem = { key: string; value: string };
@@ -111,6 +113,7 @@ const buttonActions = computed(() => {
         .map(field => ({
             title: field.value,
             event: field.config?.action,
+            variant: 'secondary' as const,
         }));
 });
 
@@ -190,7 +193,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
 </script>
 
 <template>
-    <div v-if="!props.hideTitle && !hideTitles" :class="styles.pageTitle">
+    <div v-if="!hideTitles && !shouldHideTitle" :class="styles.pageTitle">
         <BentoTypography variant="title">{{ i18n.get('payouts.details.title') }}</BentoTypography>
     </div>
 
@@ -200,12 +203,12 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
             <template #content>
                 <div :class="titleClass">
                     <div :class="styles.titleContainer">
-                        <BentoTypography variant="title" stronger>
+                        <BentoTypography variant="body">
                             {{ i18n.get('payouts.details.tags.netPayout') }}
                         </BentoTypography>
                         <BentoTag v-if="payoutInner.isSumOfSameDayPayouts" variant="blue" :label="i18n.get('payouts.details.tags.sameDaySum')" />
                     </div>
-                    <BentoTypography v-if="payoutInner.payoutAmount" variant="title" large>
+                    <BentoTypography v-if="payoutInner.payoutAmount" variant="title" medium>
                         {{ formatAmount(payoutInner.payoutAmount) }}
                     </BentoTypography>
                     <time v-if="payoutInner.createdAt" :datetime="payoutInner.createdAt">
@@ -217,7 +220,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                         <BentoTypography v-if="balanceAccountDescription" variant="body" strongest wide>
                             {{ balanceAccountDescription }}
                         </BentoTypography>
-                        <BentoTypography variant="caption" :class="styles.balanceAccountId">
+                        <BentoTypography variant="body" :class="styles.balanceAccountId">
                             {{ balanceAccountId }}
                         </BentoTypography>
                     </div>
@@ -270,7 +273,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                                     <BentoDataGrid
                                         outline
                                         data-testid="payout-funds-captured-breakdown"
-                                        :class="styles.dataGrid"
+                                        :class="[styles.dataGrid, styles.dataGridNoHeader]"
                                         :columns="fundsCapturedColumns"
                                         :data="fundsCapturedRows"
                                         :allow-row-clicks="false"
@@ -367,7 +370,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                             <BentoTypography variant="body" strongest>
                                 {{ i18n.get('payouts.details.breakdown.fields.adjustments') }}
                             </BentoTypography>
-                            <BentoTypography v-if="payoutInner.adjustmentAmount" variant="body" stronger>
+                            <BentoTypography v-if="payoutInner.adjustmentAmount" variant="body">
                                 {{ formatAmount(payoutInner.adjustmentAmount) }}
                             </BentoTypography>
                         </div>
@@ -406,7 +409,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
 
         <!-- Button actions -->
         <div v-if="buttonActions.length" :class="styles.buttonActions">
-            <BentoButtonActions :actions="buttonActions" layout="BUTTONS_END" />
+            <BentoButtonActions :actions="buttonActions" layout="buttons-end" />
         </div>
     </div>
 </template>

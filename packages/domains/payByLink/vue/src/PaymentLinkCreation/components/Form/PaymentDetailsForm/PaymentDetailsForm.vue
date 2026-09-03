@@ -6,15 +6,15 @@ import AmountField from './fields/AmountField.vue';
 import SelectField from '../../fields/SelectField.vue';
 import TextField from '../../fields/TextField.vue';
 import DateField from './fields/DateField.vue';
-import { PAYMENT_LINK_CREATION_CLASS_NAMES, PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../domain/src';
+import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../domain/src';
 import type { IPaymentLinkConfiguration, IPaymentLinkType, IPaymentLinkValidity } from '@integration-components/types';
 import type { TranslationKey } from '@integration-components/core';
+import styles from '../FormLayout.module.scss';
 
 const props = defineProps<{ configuration?: IPaymentLinkConfiguration }>();
 
 const wizard = useWizard();
 const { i18n } = wizard;
-const CLASS_NAMES = PAYMENT_LINK_CREATION_CLASS_NAMES;
 
 const LINK_TYPE_FALLBACK: IPaymentLinkType[] = ['open', 'singleUse'];
 
@@ -29,7 +29,7 @@ const linkTypeItems = computed(() => {
 </script>
 
 <template>
-    <div :class="CLASS_NAMES.fieldsContainer">
+    <div :class="styles.fieldsContainer">
         <ValidityField :options="validityOptions" />
         <AmountField :label="i18n.get('payByLink.creation.fields.amount.label')" :currency-options="currencyOptions" />
         <TextField

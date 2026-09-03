@@ -7,11 +7,7 @@ import { buildPaymentLinkListItems } from '@integration-components/payByLink/dom
 import type { IPaymentLinkDetails } from '@integration-components/types';
 import PaymentLinkActivity from '../PaymentLinkActivity/PaymentLinkActivity.vue';
 import PaymentLinkTabsList from './PaymentLinkTabsList.vue';
-import './PaymentLinkTabs.scss';
-
-const CLASSNAMES = {
-    root: 'adyen-pe-payment-link-tabs',
-};
+import styles from './PaymentLinkTabs.module.scss';
 
 const props = defineProps<{
     paymentLink: IPaymentLinkDetails;
@@ -36,7 +32,7 @@ const listItems = computed(() => buildPaymentLinkListItems(props.paymentLink, { 
 </script>
 
 <template>
-    <div :class="CLASSNAMES.root">
+    <div :class="styles.root">
         <BentoTabs :active-tab-index="activeTabIndex" @update:active-tab-index="onTabChange">
             <BentoTab v-for="tab in tabs" :key="tab.id" :title="i18n.get(tab.label)">
                 <PaymentLinkTabsList v-if="tab.id === 'linkInformation'" :items="listItems.linkInformation" />

@@ -11,14 +11,14 @@ import PaymentLinkCreation from '../../PaymentLinkCreation/components/PaymentLin
 import PaymentLinkDetails from '../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails.vue';
 import PaymentLinkSettings from '../../PaymentLinkSettings/components/PaymentLinkSettingsContainer.vue';
 import { usePaymentLinksList } from '../composables/usePaymentLinksList';
-import { BASE_CLASS, DEFAULT_PAYMENT_LINK_STATUS_GROUP, PAYMENT_LINK_STATUS_GROUPS_TABS } from '../constants';
+import { DEFAULT_PAYMENT_LINK_STATUS_GROUP, PAYMENT_LINK_STATUS_GROUPS_TABS } from '../constants';
 import type { PaymentLinksFiltersValue } from './PaymentLinksFilters.vue';
 import type { IPaymentLinkFilters, IPaymentLinkItem, IPaymentLinkStatusGroup } from '@integration-components/types';
 import type { StoreData, PaymentLinksOverviewModalType } from '../../../../domain/src';
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../../../../domain/src';
 import type { PaymentLinksOverviewExternalProps } from '../types';
 import { createPaymentLinksError } from '../utils/error';
-import '../styles/PaymentLinksOverview.scss';
+import styles from './PaymentLinksOverview.module.scss';
 
 const props = defineProps<{
     allowLimitSelection?: boolean;
@@ -189,20 +189,20 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
 </script>
 
 <template>
-    <div :class="[BASE_CLASS, { [`${BASE_CLASS}--xs`]: isMobile }]">
-        <div class="adyen-pe-payment-links-overview__header">
+    <div :class="[styles.root, { [styles.rootXs]: isMobile }]">
+        <div :class="styles.header">
             <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title">
                 {{ i18n.get('payByLink.overview.title') }}
             </BentoTypography>
             <div v-else />
-            <div v-if="hasActionButtons" class="adyen-pe-payment-links-overview__actions-container">
+            <div v-if="hasActionButtons" :class="styles.actionsContainer">
                 <BentoButton v-if="!isMobile && config.endpoints?.createPBLPaymentLink" variant="primary" @click="openPaymentLinkModal">
                     {{ i18n.get('payByLink.overview.list.actions.createPaymentLink') }}
                 </BentoButton>
                 <BentoButton
                     v-if="!isMobile && config.endpoints?.savePayByLinkSettings"
                     variant="secondary"
-                    class="adyen-pe-payment-links-overview__settings-button"
+                    :class="styles.settingsButton"
                     :aria-label="i18n.get('payByLink.overview.actions.settings.a11y.label')"
                     @click="openSettingsModal"
                 >
@@ -212,7 +212,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
                     v-if="isMobile && config.endpoints?.createPBLPaymentLink"
                     variant="primary"
                     condensed
-                    class="adyen-pe-payment-links-overview__action-button--xs"
+                    :class="styles.actionButtonXs"
                     :aria-label="i18n.get('payByLink.overview.list.actions.createPaymentLink')"
                     @click="openPaymentLinkModal"
                 >
@@ -222,7 +222,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
                     v-if="isMobile && config.endpoints?.savePayByLinkSettings"
                     variant="secondary"
                     condensed
-                    class="adyen-pe-payment-links-overview__action-button--xs"
+                    :class="styles.actionButtonXs"
                     :aria-label="i18n.get('payByLink.overview.actions.settings.a11y.label')"
                     @click="openSettingsModal"
                 >
@@ -231,7 +231,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
             </div>
         </div>
 
-        <div class="adyen-pe-payment-links-overview__tabs-container">
+        <div :class="styles.tabsContainer">
             <BentoTabs
                 :aria-label="i18n.get('payByLink.overview.list.filters.types.statusGroup')"
                 :active-tab-index="activeStatusGroupTabIndex"
@@ -241,7 +241,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
             </BentoTabs>
         </div>
 
-        <div class="adyen-pe-payment-links-overview__filters-container">
+        <div :class="styles.filtersContainer">
             <PaymentLinksFilters
                 :stores="props.stores"
                 :store-error="props.storeError"
@@ -255,7 +255,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
 
         <BentoAlert
             v-if="showFiltersAlert && !filtersAlertDismissed"
-            class="adyen-pe-payment-links-overview__filters-alert-container"
+            :class="styles.filtersAlertContainer"
             type="critical"
             variant="tip"
             close-button
@@ -319,6 +319,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
                     :on-payment-link-created="onPaymentLinkCreated"
                     :on-creation-dismiss="props.paymentLinkCreation?.onCreationDismiss"
                     :on-contact-support="props.onContactSupport"
+                    embedded-in-overview
                 />
                 <PaymentLinkSettings
                     v-else-if="modalType === 'Settings'"

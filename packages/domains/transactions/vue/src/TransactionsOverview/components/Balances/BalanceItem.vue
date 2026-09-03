@@ -17,7 +17,7 @@ const { i18n } = useCoreContext();
 </script>
 
 <template>
-    <div role="listitem" class="adyen-pe-balances__item">
+    <div role="listitem">
         <SummaryItemPair
             :label1="i18n.get('transactions.overview.balances.tags.available')"
             :value1="formattedAvailable"

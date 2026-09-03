@@ -22,7 +22,19 @@
     gap: style.token(spacer-060);
 }
 
+.tooltipPlaceholder {
+    width: style.token(spacer-070);
+}
+
 .pair {
     display: flex;
     gap: style.token(spacer-030);
+}
+
+.itemValueContainer {
+    white-space: nowrap;
+}
+
+.itemValue {
+    display: inline-block;
 }

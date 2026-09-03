@@ -7,6 +7,7 @@ import LoadingSkeleton from './LoadingSkeleton.vue';
 import SettingsError from './SettingsError.vue';
 import ThemeForm from './ThemeForm.vue';
 import type { ThemeFormData } from '../types';
+import styles from './PaymentLinkThemeContainer.module.scss';
 
 const ERROR_MESSAGE_KEY: TranslationKey = 'payByLink.settings.theme.errors.couldNotLoad';
 
@@ -21,11 +22,11 @@ const data = computed<ThemeFormData>(() => {
 </script>
 
 <template>
-    <section v-if="themeError" class="adyen-pe-payment-link-theme">
+    <section v-if="themeError" :class="styles.root">
         <SettingsError :error="themeError" :error-message="ERROR_MESSAGE_KEY" />
     </section>
     <LoadingSkeleton v-else-if="!theme || !isThemeData(data)" :row-number="3" />
-    <section v-else class="adyen-pe-payment-link-theme">
+    <section v-else :class="styles.root">
         <ThemeForm :theme="data" />
     </section>
 </template>

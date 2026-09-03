@@ -1,0 +1,6 @@
+@use '@integration-components/style';
+
+.root {
+    margin-bottom: style.token(spacer-070);
+    width: 100%;
+}

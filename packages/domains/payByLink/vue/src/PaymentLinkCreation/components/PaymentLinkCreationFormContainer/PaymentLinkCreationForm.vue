@@ -3,22 +3,29 @@ import { computed, provide, ref, watch } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useShouldHideTitles } from '@integration-components/composables-vue';
 import { BentoAlert, BentoButton, BentoStep, BentoStepper, BentoTypography } from '@adyen/bento-vue3';
-import { PAYMENT_LINK_CREATION_CLASS_NAMES } from '../../../../../domain/src';
-import type { PaymentLinkCreationProps } from '../../../../../domain/src';
+import type { PaymentLinkCreationProps, PaymentLinkSettingsItem } from '../../../../../domain/src';
 import { usePaymentLinkFormData } from './usePaymentLinkFormData';
 import { usePaymentLinkWizard } from './usePaymentLinkWizard';
 import { useInvalidFields } from './useInvalidFields';
 import { PAYMENT_LINK_WIZARD_KEY } from '../../composables/wizardContext';
+import PaymentLinkSettingsContainer from '../../../PaymentLinkSettings/components/PaymentLinkSettingsContainer.vue';
 import FormStepRenderer from './FormStepRenderer.vue';
 import ArrowRightIcon from '@adyen/ui-assets-icons-16/vue/arrow-right';
-import './PaymentLinkCreationForm.scss';
+import styles from './PaymentLinkCreationForm.module.scss';
 
-const props = defineProps<Pick<PaymentLinkCreationProps, 'fieldsConfig' | 'storeIds' | 'hideTitle' | 'onCreationDismiss' | 'onContactSupport'>>();
+type PaymentLinkCreationFormProps = Pick<
+    PaymentLinkCreationProps,
+    'fieldsConfig' | 'storeIds' | 'hideTitle' | 'onCreationDismiss' | 'onContactSupport'
+> & {
+    embeddedInOverview?: boolean;
+};
+
+const props = defineProps<PaymentLinkCreationFormProps>();
 const emit = defineEmits<{ 'payment-link-created': [data: any] }>();
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
-const CLASS_NAMES = PAYMENT_LINK_CREATION_CLASS_NAMES;
+const TERMS_AND_CONDITIONS_SETTINGS_ITEMS: PaymentLinkSettingsItem[] = ['termsAndConditions'];
 
 const data = usePaymentLinkFormData(() => ({ storeIds: props.storeIds, fieldsConfig: props.fieldsConfig }));
 const wizard = usePaymentLinkWizard({
@@ -66,6 +73,8 @@ const isSameAddress = ref(!(props.fieldsConfig?.data?.billingAddress || props.fi
 const isSubmitting = ref(false);
 const submitError = ref<any>(null);
 const isSubmitError = ref(false);
+const selectedStoreNavigationCache = ref('');
+const showTermsAndConditions = ref(false);
 
 const currentFormStepId = computed(() => wizard.currentStep.value?.id ?? 'store');
 const showConfigurationError = computed(() => data.displayConfigurationError(currentFormStepId.value));
@@ -101,6 +110,19 @@ function handleStepSelect(index: number) {
     wizard.goToStep(index);
 }
 
+function handleSetupTermsAndConditions() {
+    if (!data.selectedStore.value) return;
+    selectedStoreNavigationCache.value = data.selectedStore.value;
+    data.setSelectedStore('');
+    showTermsAndConditions.value = true;
+}
+
+function navigateBackFromTermsAndConditions() {
+    data.setSelectedStore(selectedStoreNavigationCache.value);
+    showTermsAndConditions.value = false;
+    selectedStoreNavigationCache.value = '';
+}
+
 async function handleSubmit() {
     if (!wizard.validateStep()) return;
     const { store, payload } = wizard.getApiPayload();
@@ -123,20 +145,28 @@ async function handleSubmit() {
 </script>
 
 <template>
-    <div :class="CLASS_NAMES.formComponent">
-        <div v-if="!data.isFirstLoadDone.value" :class="CLASS_NAMES.formHeader">
-            <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title" stronger>
-                {{ i18n.get('payByLink.creation.form.title') }}
-            </BentoTypography>
-            <div :class="CLASS_NAMES.skeleton">
-                <div :class="`${CLASS_NAMES.skeletonItem} ${CLASS_NAMES.skeletonItem}--large`" />
-                <div :class="`${CLASS_NAMES.skeletonItem} ${CLASS_NAMES.skeletonItem}--small`" />
-                <div :class="`${CLASS_NAMES.skeletonItem} ${CLASS_NAMES.skeletonItem}--large`" />
+    <PaymentLinkSettingsContainer
+        v-if="showTermsAndConditions"
+        hide-title
+        :store-ids="selectedStoreNavigationCache"
+        :settings-items="TERMS_AND_CONDITIONS_SETTINGS_ITEMS"
+        :navigate-back="navigateBackFromTermsAndConditions"
+        :embedded-in-overview="props.embeddedInOverview"
+    />
+    <div v-else :class="styles.root">
+        <div v-if="!data.isFirstLoadDone.value" :class="styles.header">
+            <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title" stronger>{{
+                i18n.get('payByLink.creation.form.title')
+            }}</BentoTypography>
+            <div :class="styles.skeleton">
+                <div :class="[styles.skeletonItem, styles.skeletonItemLarge]" />
+                <div :class="[styles.skeletonItem, styles.skeletonItemSmall]" />
+                <div :class="[styles.skeletonItem, styles.skeletonItemLarge]" />
             </div>
         </div>
 
         <template v-else>
-            <div :class="CLASS_NAMES.formHeader">
+            <div :class="styles.header">
                 <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title" stronger>
                     {{ i18n.get('payByLink.creation.form.title') }}
                 </BentoTypography>
@@ -151,8 +181,8 @@ async function handleSubmit() {
                 </BentoStepper>
             </div>
 
-            <div :class="CLASS_NAMES.formContainer">
-                <form :class="CLASS_NAMES.form" @submit.prevent="handleSubmit">
+            <div :class="styles.container">
+                <form @submit.prevent="handleSubmit">
                     <FormStepRenderer
                         :current-form-step="currentFormStepId"
                         :select-items="data.storesSelectorItems.value"
@@ -168,9 +198,10 @@ async function handleSubmit() {
                         :is-same-address="isSameAddress"
                         :on-contact-support="props.onContactSupport"
                         @update:is-same-address="(value: boolean) => (isSameAddress = value)"
+                        @setup-terms-and-conditions="handleSetupTermsAndConditions"
                     />
 
-                    <BentoAlert v-if="showConfigurationError" :class="CLASS_NAMES.errorAlert" type="critical" role="alert">
+                    <BentoAlert v-if="showConfigurationError" :class="styles.errorAlert" type="critical" role="alert">
                         {{ i18n.get('common.errors.somethingWentWrong') }}
                         <template #description>
                             <span>{{ i18n.get('payByLink.creation.errors.unavailable') }}</span>
@@ -178,7 +209,7 @@ async function handleSubmit() {
                         </template>
                     </BentoAlert>
 
-                    <BentoAlert v-if="accountIsMisconfigured" :class="CLASS_NAMES.warningAlert" type="warning" role="alert">
+                    <BentoAlert v-if="accountIsMisconfigured" :class="styles.warningAlert" type="warning" role="alert">
                         {{ i18n.get('payByLink.common.errors.accountConfiguration') }}
                         <template #description>
                             <span>{{ i18n.get('common.errors.contactSupport') }}</span>
@@ -188,10 +219,10 @@ async function handleSubmit() {
                         </template>
                     </BentoAlert>
 
-                    <BentoAlert v-if="isSubmitError" :class="CLASS_NAMES.errorAlert" type="critical" role="alert">
+                    <BentoAlert v-if="isSubmitError" :class="styles.errorAlert" type="critical" role="alert">
                         {{ submitErrorTitle }}
                         <template #description>
-                            <ul v-if="mappedInvalidFields.length" :class="CLASS_NAMES.invalidFieldsError">
+                            <ul v-if="mappedInvalidFields.length" :class="styles.invalidFieldsError">
                                 <li v-for="(message, index) in mappedInvalidFields" :key="index">{{ message }}</li>
                             </ul>
                             <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
@@ -200,7 +231,7 @@ async function handleSubmit() {
                         </template>
                     </BentoAlert>
 
-                    <div :class="CLASS_NAMES.buttonsContainer">
+                    <div :class="styles.buttonsContainer">
                         <BentoButton
                             v-if="!wizard.isFirstStep.value || props.onCreationDismiss"
                             variant="secondary"
@@ -211,7 +242,6 @@ async function handleSubmit() {
                         </BentoButton>
                         <BentoButton
                             v-if="wizard.isLastStep.value"
-                            :class="CLASS_NAMES.submitButton"
                             variant="primary"
                             type="submit"
                             :disabled="nextButtonDisabled || isNextStepLoading"
@@ -220,7 +250,6 @@ async function handleSubmit() {
                         </BentoButton>
                         <BentoButton
                             v-else
-                            :class="CLASS_NAMES.submitButton"
                             variant="primary"
                             type="button"
                             :disabled="nextButtonDisabled || isNextStepLoading"

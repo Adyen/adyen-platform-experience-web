@@ -29,6 +29,17 @@ test.describe('Data customization', () => {
         await expect(dataGrid.getByRole('columnheader', { name: 'Gross amount', exact: true })).toBeVisible();
     });
 
+    test('should retain the mobile table layout without custom columns', async ({ page }) => {
+        await page.setViewportSize({ width: 479, height: 800 });
+
+        const dataGrid = page.getByRole('table');
+        await expect(dataGrid.getByRole('row').first().getByRole('cell')).toHaveCount(2);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Store', exact: true })).toHaveCount(0);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Product', exact: true })).toHaveCount(0);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Reference', exact: true })).toHaveCount(0);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Action', exact: true })).toHaveCount(0);
+    });
+
     test('should render custom data grid columns', async ({ page }) => {
         const dataGrid = page.getByRole('table');
         await expect(dataGrid.getByRole('columnheader', { name: 'Store', exact: true })).toBeVisible();

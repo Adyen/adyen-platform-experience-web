@@ -1,6 +1,6 @@
 import { IMissingActionType, UIElementProps } from '@integration-components/types';
 import { TranslationKey } from '@integration-components/core';
-import { OnFundsRequestCallback } from '../types';
+import { OnFundsRequestCallback } from '@integration-components/capital/domain';
 
 export interface CapitalOverviewProps extends UIElementProps {
     onFundsRequest?: OnFundsRequestCallback;
@@ -8,13 +8,6 @@ export interface CapitalOverviewProps extends UIElementProps {
     onOfferOptionsRequest?: () => void;
     skipPreQualifiedIntro?: boolean;
 }
-
-export type CapitalComponentState = {
-    hasGrants: boolean;
-    hasOffer: boolean;
-    hasRenewableGrants: boolean;
-    state: 'isUnqualified' | 'isPreQualified' | 'hasRequestedGrants' | 'isInUnsupportedRegion';
-};
 
 export type CapitalOverviewComponentProps = CapitalOverviewProps;
 

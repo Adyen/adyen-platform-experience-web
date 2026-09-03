@@ -75,7 +75,7 @@ const showLoadingPlaceholder = computed(() => isFetching.value && !data.value &&
 
 <template>
     <div>
-        <div v-if="showError" :class="styles.errorContainer">
+        <div v-if="showError">
             <ErrorMessageDisplay
                 :error="error"
                 :error-message="'payouts.details.errors.unavailable'"
