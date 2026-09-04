@@ -3,6 +3,7 @@ import type { CapitalOfferExternalProps } from '../../src';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { capitalOfferMeta } from './meta';
 import { capitalOfferHandlers } from '../../../mocks/mock-server';
+import { CapitalOffer } from '@integration-components/capital/preact';
 
 const meta: Meta<ElementProps<CapitalOfferExternalProps>> = {
     ...capitalOfferMeta,
@@ -65,6 +66,18 @@ export const EligibleUS: ElementStory<CapitalOfferExternalProps> = {
     parameters: {
         msw: {
             handlers: capitalOfferHandlers.eligibleUS,
+        },
+    },
+};
+
+export const EligibleWithOngoingGrants: ElementStory<typeof CapitalOffer> = {
+    name: 'Eligible with ongoing grants',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.eligibleWithOngoingGrants,
         },
     },
 };

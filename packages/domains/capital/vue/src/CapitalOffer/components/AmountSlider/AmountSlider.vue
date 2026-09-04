@@ -33,7 +33,7 @@ const handleRelease = (event: Event) => props.onRelease?.(getValue(event));
                 {{ i18n.get('capital.offer.selection.slider.a11y.label') }}
             </BentoTypography>
         </label>
-        <output :aria-labelledby="labelId" :for="sliderId" :class="styles.value" aria-live="polite">
+        <output :aria-labelledby="labelId" :for="sliderId" aria-live="polite">
             <BentoTypography variant="title" large>
                 {{ formattedAmount }}
             </BentoTypography>
