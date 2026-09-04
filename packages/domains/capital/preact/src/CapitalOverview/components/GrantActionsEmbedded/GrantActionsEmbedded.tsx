@@ -6,7 +6,7 @@ import { EMPTY_OBJECT } from '@integration-components/utils';
 import Alert from '@integration-components/ui-components-preact/Alert/Alert';
 import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
 import Button from '@integration-components/ui-components-preact/Button';
-import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
+import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
 import Modal from '@integration-components/ui-components-preact/Modal';
 import { useActionsAlertTitles } from '../../hooks';
 import Icon from '@integration-components/ui-components-preact/Icon';

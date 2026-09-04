@@ -1,5 +1,6 @@
 import type { Ref } from 'vue';
 import type Localization from '../../Localization';
+import type { DevEnvironment } from '../../types';
 
 export type I18n = Localization['i18n'];
 
@@ -26,6 +27,7 @@ export interface CoreProviderProps {
     getDatasetAsset?: (props: AssetOptions) => string;
     getCdnConfig?: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
     getCdnDataset?: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
+    environment?: DevEnvironment;
 }
 
 export interface CoreContextValue extends CoreProviderProps {

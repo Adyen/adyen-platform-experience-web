@@ -6,9 +6,9 @@ import { useLandedPageEvent } from '@integration-components/composables-vue';
 import OfferSelection from './OfferSelection/OfferSelection.vue';
 import OfferSummary from './OfferSummary/OfferSummary.vue';
 import type { CapitalOfferComponentProps } from '../types';
-import { useCapitalState } from '../composables/useCapitalState';
+import { useEnhancedCapitalState } from '../../shared/composables/useEnhancedCapitalState';
 import CapitalHeader from '../../shared/CapitalHeader/CapitalHeader.vue';
-import CapitalErrorMessageDisplay from '../../shared/CapitalErrorMessageDisplay.vue';
+import CapitalError from '../../shared/CapitalError/CapitalError.vue';
 
 const props = defineProps<CapitalOfferComponentProps>();
 
@@ -16,7 +16,7 @@ const selectedAmount = ref<number>();
 const selectedTerm = ref<number>();
 const selectedOffer = ref<IGrantOfferResponseDTO>();
 const externalCapitalState = computed(() => props.externalCapitalState);
-const { capitalState: backendCapitalState, error: capitalStateError } = useCapitalState(() => !externalCapitalState.value);
+const { capitalState: backendCapitalState, error: capitalStateError } = useEnhancedCapitalState(() => !externalCapitalState.value);
 const capitalState = computed(() => externalCapitalState.value ?? backendCapitalState.value);
 const dynamicOfferConfig = computed(() => capitalState.value && getDynamicOfferConfig(capitalState.value));
 
@@ -50,14 +50,9 @@ const handleSummaryBack = () => {
         :region="capitalState?.region"
         :title-key="selectedOffer ? 'capital.offer.summary.title' : 'capital.offer.selection.title'"
     />
-    <CapitalErrorMessageDisplay
-        v-if="capitalStateError"
-        :error="capitalStateError"
-        :on-back="props.onOfferDismiss"
-        :on-contact-support="props.onContactSupport"
-    />
+    <CapitalError v-if="capitalStateError" :error="capitalStateError" :on-back="props.onOfferDismiss" :on-contact-support="props.onContactSupport" />
     <template v-else-if="capitalState">
-        <CapitalErrorMessageDisplay
+        <CapitalError
             v-if="!capitalState.isRegionSupported || !dynamicOfferConfig"
             :empty-grant-offer="!dynamicOfferConfig"
             :unsupported-region="!capitalState.isRegionSupported"
