@@ -43,6 +43,16 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
                 values: { percentage: calculatePercentageFromBasisPoints(enhancedGrant.repaymentRate) },
             }),
         },
+        ...(enhancedGrant.maximumRepaymentPeriodMonths
+            ? ([
+                  {
+                      key: 'capital.common.fields.maximumRepaymentPeriod',
+                      value: i18n.get('capital.common.values.numberOfMonths', {
+                          values: { months: enhancedGrant.maximumRepaymentPeriodMonths },
+                      }),
+                  },
+              ] satisfies GrantDetailItem[])
+            : []),
         {
             key: 'capital.common.fields.expectedRepaymentPeriod',
             value: i18n.get('capital.common.values.daysWithDaysLeft', {
@@ -65,15 +75,6 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
         { key: 'capital.common.fields.accountDescription', value: enhancedGrant.balanceAccountDescription ?? '' },
         { key: 'capital.common.fields.accountID', value: enhancedGrant.balanceAccountCode ?? '' },
     ];
-
-    if (enhancedGrant.maximumRepaymentPeriodMonths) {
-        items.splice(5, 0, {
-            key: 'capital.common.fields.maximumRepaymentPeriod',
-            value: i18n.get('capital.common.values.numberOfMonths', {
-                values: { months: enhancedGrant.maximumRepaymentPeriodMonths },
-            }),
-        });
-    }
 
     return items;
 });
