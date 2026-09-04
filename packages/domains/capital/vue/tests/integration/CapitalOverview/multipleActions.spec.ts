@@ -107,7 +107,7 @@ test.describe('Multiple actions', () => {
 
     test('should indicate when business financing information is submitted successfully', async ({ page, analyticsEvents }) => {
         await submitBusinessFinancingInformation(page);
-        await expect(page.getByText('Information submitted')).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Information submitted', exact: true })).toBeVisible();
 
         await expectAnalyticsEvents(analyticsEvents, [clickedButtonEvents.submitInformationClicked, clickedButtonEvents.submittedAnaCredit]);
     });
@@ -135,7 +135,7 @@ test.describe('Multiple actions', () => {
 
     test('should indicate when terms of service are completed successfully', async ({ page, analyticsEvents }) => {
         await completeTermsOfService(page);
-        await expect(page.getByText('Terms signed')).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Terms signed', exact: true })).toBeVisible();
 
         await expectAnalyticsEvents(analyticsEvents, [
             clickedButtonEvents.signTermsClicked,

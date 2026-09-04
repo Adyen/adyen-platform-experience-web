@@ -34,6 +34,7 @@ const closeTimeouts = new Map<IMissingActionType, ReturnType<typeof setTimeout>>
 const missingActionsMetadata = computed(() => getMissingActionsMetadata(props.missingActions, completedActions.value));
 const areActionsCompleted = computed(() => missingActionsMetadata.value.areActionsCompleted);
 const alertTitles = useActionsAlertTitles(() => props.expirationDate);
+console.log(props.missingActions);
 const alertTitle = computed(() => {
     if (areActionsCompleted.value) {
         return i18n.get('capital.overview.grants.item.alerts.actionsCompleted');
@@ -184,8 +185,14 @@ onUnmounted(() => {
                 <BentoButtonActions layout="buttons-start" :actions="actionButtons" />
             </template>
         </BentoAlert>
-
-        <BentoModal :is-open="!!activeAction" :is-dismissible="false" :header-with-border="false" size="large" @close-modal="close">
+        <BentoModal
+            v-if="!!activeAction"
+            :is-open="!!activeAction"
+            :is-dismissible="false"
+            :header-with-border="false"
+            size="large"
+            @close-modal="close"
+        >
             <template #content>
                 <adyen-business-financing
                     v-if="activeAction === 'AnaCredit'"
