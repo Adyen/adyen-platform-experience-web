@@ -74,7 +74,6 @@ export const UnsupportedRegion: ElementStory<{ mountIfInUnsupportedRegion: boole
         mockedApi: true,
         skipDecorators: true,
         mountIfInUnsupportedRegion: true,
-        onContactSupport: 'Enabled',
     },
     parameters: {
         msw: {

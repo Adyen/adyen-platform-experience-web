@@ -78,6 +78,7 @@ const handleGrantListUpdateRequest = (grant: IGrant) => {
             :on-offer-dismiss="props.onOfferDismiss"
             :on-offer-options-request="props.onOfferOptionsRequest"
             :skip-pre-qualified-intro="props.skipPreQualifiedIntro"
+            :on-contact-support="props.onContactSupport"
         />
         <GrantList
             v-else-if="state === 'GrantList' && capitalState && grants"

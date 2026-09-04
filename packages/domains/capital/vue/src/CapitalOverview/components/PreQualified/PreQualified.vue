@@ -11,6 +11,7 @@ const props = defineProps<{
     onFundsRequest: OnFundsRequestCallback;
     onOfferDismiss?: () => void;
     onOfferOptionsRequest?: () => void;
+    onContactSupport?: () => void;
     skipPreQualifiedIntro?: boolean;
 }>();
 
@@ -51,6 +52,7 @@ const handleOfferDismiss = () => {
             :on-funds-request="props.onFundsRequest"
             :external-capital-state="props.capitalState"
             :on-offer-dismiss="isOfferDismissButtonVisible && state === 'offer' ? handleOfferDismiss : undefined"
+            :on-contact-support="props.onContactSupport"
         />
     </div>
     <PreQualifiedIntro
