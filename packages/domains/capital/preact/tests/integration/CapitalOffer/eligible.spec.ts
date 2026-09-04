@@ -7,7 +7,7 @@ import {
     sharedCapitalOfferSelectionAnalyticsEventProperties,
     sharedCapitalOfferSummaryAnalyticsEventProperties,
     sliderChangedAnalyticsEventProperties,
-} from './constants/analytics';
+} from '../../../../fixtures/CapitalOffer/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-offer--eligible';
 

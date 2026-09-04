@@ -12,9 +12,8 @@ import {
 } from '@adyen/bento-vue3';
 import ChevronDownIcon from '@adyen/ui-assets-icons-16/vue/chevron-down';
 import ChevronUpIcon from '@adyen/ui-assets-icons-16/vue/chevron-up';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { getGrantConfig, type GrantStatusVariant } from '@integration-components/capital/domain';
-import { useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
+import { CopyText, useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '@integration-components/utils';
 import type { IGrant } from '@integration-components/types';
@@ -82,10 +81,6 @@ const sendRepayment = () => {
             label: 'Send repayment',
         });
     }
-};
-
-const copyGrantId = () => {
-    void navigator.clipboard?.writeText(props.grant.id);
 };
 
 const handleActionsComplete = () => {
@@ -157,18 +152,16 @@ const toggleGrantDetails = () => {
                         </div>
                     </div>
 
-                    <BentoButton
-                        v-if="grantConfig.isGrantIdVisible"
-                        :class="styles.grantID"
-                        variant="tertiary"
-                        :aria-label="i18n.get('capital.overview.grants.item.actions.copyGrantID')"
-                        @click.stop="copyGrantId"
-                    >
-                        {{ i18n.get('capital.common.fields.grantID') }}
-                        <template #iconRight>
-                            <CopyIcon />
-                        </template>
-                    </BentoButton>
+                    <div v-if="grantConfig.isGrantIdVisible" :class="styles.grantID">
+                        <CopyText
+                            copy-button-aria-label-key="capital.overview.grants.item.actions.copyGrantID"
+                            data-testid="grant-id-copy-text"
+                            is-underline-visible
+                            :text-to-copy="props.grant.id"
+                            type="Text"
+                            :visible-text="i18n.get('capital.common.fields.grantID')"
+                        />
+                    </div>
 
                     <div v-if="grantConfig.hasUnscheduledRepaymentDetails" :class="styles.actionsBar">
                         <BentoButton :class="styles.mainActionBtn" variant="secondary" @click.stop="sendRepayment">

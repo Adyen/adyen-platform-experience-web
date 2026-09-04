@@ -11,27 +11,27 @@ test.describe('Pending', () => {
     });
 
     test('should render pending grant', async ({ page }) => {
-        await expect(page.getByText('Requested funds')).toBeVisible();
-        await expect(page.getByText('€20,000.00')).toBeVisible();
-        await expect(page.getByText('Pending')).toBeVisible();
-        await expect(page.getByText('Grant ID')).toBeVisible();
-        await expect(page.getByTestId('grant-id-copy-text')).toBeVisible();
-        await expect(page.getByText('We received your request and we’re working on it now. Check back soon for the next steps.')).toBeVisible();
-        await expect(page.getByRole('progressbar')).toBeHidden();
-        await expect(page.getByTestId('expand-button')).toBeHidden();
+        await Promise.all([
+            expect(page.getByText('Requested funds')).toBeVisible(),
+            expect(page.getByText('€20,000.00')).toBeVisible(),
+            expect(page.getByText('Pending')).toBeVisible(),
+            expect(page.getByText('Grant ID')).toBeVisible(),
+            expect(page.getByTestId('grant-id-copy-text')).toBeVisible(),
+            expect(page.getByText('We received your request and we’re working on it now. Check back soon for the next steps.')).toBeVisible(),
+            expect(page.getByRole('progressbar', { name: 'Grant repayment' })).toHaveCount(0),
+            expect(page.getByRole('button', { name: 'Show grant details' })).toHaveCount(0),
+        ]);
     });
 
     test('should render a tooltip when status tag is hovered', async ({ page }) => {
         await page.getByText('Pending').hover();
-        const tooltip = page.getByText('You should get the funds within one business day');
-        await tooltip.waitFor();
-        await expect(tooltip).toBeVisible();
+
+        await expect(page.getByRole('tooltip', { name: 'You should get the funds within one business day' })).toBeVisible();
     });
 
     test('should render a tooltip with the grant ID when "Grant ID" label is hovered', async ({ page }) => {
         await page.getByText('Grant ID').hover();
-        const tooltip = page.getByText('7e18b082372f');
-        await tooltip.waitFor();
-        await expect(tooltip).toBeVisible();
+
+        await expect(page.getByRole('tooltip', { name: '7e18b082372f' })).toBeVisible();
     });
 });
