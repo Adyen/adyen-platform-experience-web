@@ -39,6 +39,7 @@ describe('supported locales', async () => {
             expect(i18n.translationSourcePaths).toStrictEqual([
                 `${relativeTranslationsDir}/${englishLocale}.json`,
                 `packages/domains/reports/domain/src/translations/${englishLocale}.json`,
+                `packages/sdk/localization/translations/${englishLocale}.json`,
             ]);
         });
 

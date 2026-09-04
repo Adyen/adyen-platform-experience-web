@@ -98,6 +98,7 @@ export const V2_TRANSLATION_REGISTRY = {
         {
             publicKey: 'common.actions.copy.labels.done',
             targets: [
+                bentoTarget('bento.copy.copied'),
                 reportsTarget('reports.actions.copy.labels.done'),
                 payoutsTarget('payouts.actions.copy.labels.done'),
                 disputesTarget('disputes.actions.copy.labels.done'),
@@ -252,6 +253,7 @@ export const V2_TRANSLATION_REGISTRY = {
         {
             publicKey: 'common.filters.types.date.rangeSelect.options.last7Days',
             targets: [
+                bentoTarget('bento.date.range.picker.calendar.lastSevenDays'),
                 reportsTarget('reports.filters.types.date.rangeSelect.options.last7Days'),
                 payoutsTarget('payouts.filters.types.date.rangeSelect.options.last7Days'),
                 disputesTarget('disputes.filters.types.date.rangeSelect.options.last7Days'),
@@ -270,6 +272,7 @@ export const V2_TRANSLATION_REGISTRY = {
         {
             publicKey: 'common.filters.types.date.rangeSelect.options.lastMonth',
             targets: [
+                bentoTarget('bento.date.range.picker.calendar.lastMonth'),
                 reportsTarget('reports.filters.types.date.rangeSelect.options.lastMonth'),
                 payoutsTarget('payouts.filters.types.date.rangeSelect.options.lastMonth'),
                 disputesTarget('disputes.filters.types.date.rangeSelect.options.lastMonth'),
@@ -549,6 +552,8 @@ export const V2_TRANSLATION_REGISTRY = {
         {
             publicKey: 'common.actions.copy.labels.default',
             targets: [
+                bentoTarget('bento.copy.copy'),
+                bentoTarget('bento.data.grid.cell.actions.copy'),
                 disputesTarget('disputes.actions.copy.labels.default'),
                 transactionsTarget('transactions.actions.copy.labels.default'),
                 payByLinkTarget('payByLink.actions.copy.labels.default'),
@@ -556,7 +561,11 @@ export const V2_TRANSLATION_REGISTRY = {
         },
         {
             publicKey: 'common.actions.dismiss.labels.dismiss',
-            targets: [disputesTarget('disputes.actions.dismiss.labels.dismiss'), transactionsTarget('transactions.actions.dismiss.labels.dismiss')],
+            targets: [
+                bentoTarget('bento.toast.item.dismiss'),
+                disputesTarget('disputes.actions.dismiss.labels.dismiss'),
+                transactionsTarget('transactions.actions.dismiss.labels.dismiss'),
+            ],
         },
         {
             publicKey: 'common.actions.download.labels.default',
@@ -564,7 +573,12 @@ export const V2_TRANSLATION_REGISTRY = {
         },
         {
             publicKey: 'common.actions.reset.labels.default',
-            targets: [disputesTarget('disputes.actions.reset.labels.default'), transactionsTarget('transactions.actions.reset.labels.default')],
+            targets: [
+                bentoTarget('bento.base.filter.reset'),
+                bentoTarget('bento.date.range.filter.reset'),
+                disputesTarget('disputes.actions.reset.labels.default'),
+                transactionsTarget('transactions.actions.reset.labels.default'),
+            ],
         },
         {
             publicKey: 'common.errors.componentUnavailable',
@@ -596,11 +610,21 @@ export const V2_TRANSLATION_REGISTRY = {
         },
         {
             publicKey: 'common.filters.controls.resetAll.label',
-            targets: [disputesTarget('disputes.filters.controls.resetAll.label'), transactionsTarget('transactions.filters.controls.resetAll.label')],
+            targets: [
+                bentoTarget('bento.all.filters.modal.clearAll'),
+                bentoTarget('bento.filter.bar.clearFilters'),
+                bentoTarget('bento.filter.bar.resetFilters'),
+                disputesTarget('disputes.filters.controls.resetAll.label'),
+                transactionsTarget('transactions.filters.controls.resetAll.label'),
+            ],
         },
         {
             publicKey: 'common.filters.label',
-            targets: [disputesTarget('disputes.filters.label'), transactionsTarget('transactions.filters.label')],
+            targets: [
+                bentoTarget('bento.data.grid.filterBar'),
+                disputesTarget('disputes.filters.label'),
+                transactionsTarget('transactions.filters.label'),
+            ],
         },
         {
             publicKey: 'common.filters.mobile.label',
@@ -677,6 +701,7 @@ export const V2_TRANSLATION_REGISTRY = {
         {
             publicKey: 'common.filters.types.date.calendar.navigation.nextMonth',
             targets: [
+                bentoTarget('bento.calendar.month.nextMonth'),
                 disputesTarget('disputes.filters.types.date.calendar.navigation.nextMonth'),
                 transactionsTarget('transactions.filters.types.date.calendar.navigation.nextMonth'),
             ],
@@ -684,6 +709,7 @@ export const V2_TRANSLATION_REGISTRY = {
         {
             publicKey: 'common.filters.types.date.calendar.navigation.previousMonth',
             targets: [
+                bentoTarget('bento.calendar.month.previousMonth'),
                 disputesTarget('disputes.filters.types.date.calendar.navigation.previousMonth'),
                 transactionsTarget('transactions.filters.types.date.calendar.navigation.previousMonth'),
             ],
@@ -713,6 +739,7 @@ export const V2_TRANSLATION_REGISTRY = {
         {
             publicKey: 'common.filters.types.date.rangeSelect.options.custom',
             targets: [
+                bentoTarget('bento.date.range.picker.calendar.customRange'),
                 disputesTarget('disputes.filters.types.date.rangeSelect.options.custom'),
                 transactionsTarget('transactions.filters.types.date.rangeSelect.options.custom'),
             ],
@@ -739,6 +766,7 @@ export const V2_TRANSLATION_REGISTRY = {
         {
             publicKey: 'common.inputs.file.errors.invalidDimensions',
             targets: [
+                bentoTarget('bento.file.uploader.file.card.imageDimensionsExceedLimits'),
                 disputesTarget('disputes.inputs.file.errors.invalidDimensions'),
                 transactionsTarget('transactions.inputs.file.errors.invalidDimensions'),
             ],
@@ -749,23 +777,46 @@ export const V2_TRANSLATION_REGISTRY = {
         },
         {
             publicKey: 'common.inputs.file.errors.tooLarge',
-            targets: [disputesTarget('disputes.inputs.file.errors.tooLarge'), transactionsTarget('transactions.inputs.file.errors.tooLarge')],
+            targets: [
+                bentoTarget('bento.file.uploader.file.card.fileExceedsSizeLimit'),
+                bentoTarget('bento.file.uploader.fileExceedsSizeLimit'),
+                disputesTarget('disputes.inputs.file.errors.tooLarge'),
+                transactionsTarget('transactions.inputs.file.errors.tooLarge'),
+            ],
         },
         {
             publicKey: 'common.inputs.file.errors.tooMany',
-            targets: [disputesTarget('disputes.inputs.file.errors.tooMany'), transactionsTarget('transactions.inputs.file.errors.tooMany')],
+            targets: [
+                bentoTarget('bento.file.uploader.tooManyFiles'),
+                disputesTarget('disputes.inputs.file.errors.tooMany'),
+                transactionsTarget('transactions.inputs.file.errors.tooMany'),
+            ],
         },
         {
             publicKey: 'common.inputs.file.labels.default',
-            targets: [disputesTarget('disputes.inputs.file.labels.default'), transactionsTarget('transactions.inputs.file.labels.default')],
+            targets: [
+                bentoTarget('bento.file.uploader.browseFiles'),
+                disputesTarget('disputes.inputs.file.labels.default'),
+                transactionsTarget('transactions.inputs.file.labels.default'),
+            ],
         },
         {
             publicKey: 'common.inputs.search.clearSearch',
-            targets: [disputesTarget('disputes.inputs.search.clearSearch'), transactionsTarget('transactions.inputs.search.clearSearch')],
+            targets: [
+                bentoTarget('bento.dropdown.base.textbox.clearSearch'),
+                bentoTarget('bento.dropdown.clearSearch'),
+                bentoTarget('bento.search.bar.clearSearch'),
+                disputesTarget('disputes.inputs.search.clearSearch'),
+                transactionsTarget('transactions.inputs.search.clearSearch'),
+            ],
         },
         {
             publicKey: 'common.inputs.select.errors.noOptions',
-            targets: [disputesTarget('disputes.inputs.select.errors.noOptions'), transactionsTarget('transactions.inputs.select.errors.noOptions')],
+            targets: [
+                bentoTarget('bento.dropdown.options.container.noOptionsMatchThisSearch'),
+                disputesTarget('disputes.inputs.select.errors.noOptions'),
+                transactionsTarget('transactions.inputs.select.errors.noOptions'),
+            ],
         },
         {
             publicKey: 'common.inputs.select.placeholder',
@@ -792,7 +843,11 @@ export const V2_TRANSLATION_REGISTRY = {
         },
         {
             publicKey: 'common.pagination.label',
-            targets: [disputesTarget('disputes.pagination.label'), transactionsTarget('transactions.pagination.label')],
+            targets: [
+                bentoTarget('bento.data.grid.pagination'),
+                disputesTarget('disputes.pagination.label'),
+                transactionsTarget('transactions.pagination.label'),
+            ],
         },
         {
             publicKey: 'common.tags.noData',
@@ -800,11 +855,16 @@ export const V2_TRANSLATION_REGISTRY = {
         },
         {
             publicKey: 'common.timeline.timelineItem.showLess',
-            targets: [disputesTarget('disputes.timeline.timelineItem.showLess'), transactionsTarget('transactions.timeline.timelineItem.showLess')],
+            targets: [
+                bentoTarget('bento.timeline.item.showLess'),
+                disputesTarget('disputes.timeline.timelineItem.showLess'),
+                transactionsTarget('transactions.timeline.timelineItem.showLess'),
+            ],
         },
         {
             publicKey: 'common.timeline.timelineItem.showMoreItems',
             targets: [
+                bentoTarget('bento.timeline.item.showMore'),
                 disputesTarget('disputes.timeline.timelineItem.showMoreItems'),
                 transactionsTarget('transactions.timeline.timelineItem.showMoreItems'),
             ],
@@ -2887,6 +2947,7 @@ export const V2_TRANSLATION_REGISTRY = {
             targets: [
                 bentoTarget('bento.alert.close'),
                 bentoTarget('bento.base.modal.close'),
+                bentoTarget('bento.modal.fullscreen.page.close'),
                 disputesTarget('disputes.actions.dismiss.labels.close'),
                 transactionsTarget('transactions.actions.dismiss.labels.close'),
             ],
@@ -2894,7 +2955,10 @@ export const V2_TRANSLATION_REGISTRY = {
         {
             publicKey: 'common.actions.apply.labels.default',
             targets: [
+                bentoTarget('bento.base.filter.apply'),
+                bentoTarget('bento.date.range.filter.apply'),
                 bentoTarget('bento.date.range.picker.apply'),
+                bentoTarget('bento.dropdown.options.container.apply'),
                 disputesTarget('disputes.actions.apply.labels.default'),
                 transactionsTarget('transactions.actions.apply.labels.default'),
             ],
@@ -2902,12 +2966,237 @@ export const V2_TRANSLATION_REGISTRY = {
         {
             publicKey: 'common.actions.cancel.labels.default',
             placeholders: [],
-            targets: [bentoTarget('bento.date.range.picker.cancel')],
+            targets: [
+                bentoTarget('bento.all.filters.modal.cancel'),
+                bentoTarget('bento.date.range.picker.cancel'),
+                bentoTarget('bento.dropdown.options.container.cancel'),
+                bentoTarget('bento.file.uploader.file.card.cancel'),
+                bentoTarget('bento.timeline.cancel'),
+            ],
         },
         {
             publicKey: 'common.states.loading',
             placeholders: [],
-            targets: [bentoTarget('bento.data.grid.loading')],
+            targets: [bentoTarget('bento.data.grid.loading'), bentoTarget('bento.data.grid.lazy.load.loading')],
+        },
+        {
+            publicKey: 'common.a11y.dropdown',
+            targets: [bentoTarget('bento.dropdown.ariaLabelFallback')],
+        },
+        {
+            publicKey: 'common.a11y.icons.alertCritical',
+            targets: [bentoTarget('bento.alert.criticalIcon')],
+        },
+        {
+            publicKey: 'common.a11y.icons.alertHighlight',
+            targets: [bentoTarget('bento.alert.highlightIcon')],
+        },
+        {
+            publicKey: 'common.a11y.icons.alertSuccess',
+            targets: [bentoTarget('bento.alert.successIcon')],
+        },
+        {
+            publicKey: 'common.a11y.icons.alertWarning',
+            targets: [bentoTarget('bento.alert.warningIcon')],
+        },
+        {
+            publicKey: 'common.a11y.inputField',
+            targets: [bentoTarget('bento.input.field.ariaLabelFallback')],
+        },
+        {
+            publicKey: 'common.a11y.modal',
+            targets: [bentoTarget('bento.base.modal.ariaLabelFallback')],
+        },
+        {
+            publicKey: 'common.a11y.rowActionsColumn',
+            targets: [bentoTarget('bento.data.grid.columns.rowActionsColumn')],
+        },
+        {
+            publicKey: 'common.actions.apply.labels.all',
+            targets: [bentoTarget('bento.all.filters.modal.applyAll')],
+        },
+        {
+            publicKey: 'common.actions.clear.labels.default',
+            targets: [bentoTarget('bento.all.filters.modal.clear'), bentoTarget('bento.base.filter.clear')],
+        },
+        {
+            publicKey: 'common.actions.retry.labels.default',
+            targets: [bentoTarget('bento.file.uploader.file.card.retry')],
+        },
+        {
+            publicKey: 'common.actions.undo.labels.default',
+            targets: [bentoTarget('bento.filter.bar.undo')],
+        },
+        {
+            publicKey: 'common.card.hideContent',
+            targets: [bentoTarget('bento.card.hideContent')],
+        },
+        {
+            publicKey: 'common.card.showContent',
+            targets: [bentoTarget('bento.card.showContent')],
+        },
+        {
+            publicKey: 'common.fields.optional.label',
+            targets: [bentoTarget('bento.checkbox.optional'), bentoTarget('bento.field.label.optional')],
+        },
+        {
+            publicKey: 'common.filters.a11y.clearFilter',
+            targets: [bentoTarget('bento.base.filter.clearFilter')],
+        },
+        {
+            publicKey: 'common.filters.a11y.resetFilter',
+            targets: [bentoTarget('bento.base.filter.resetFilter')],
+        },
+        {
+            publicKey: 'common.filters.a11y.searchBar',
+            targets: [bentoTarget('bento.all.filters.modal.searchBar')],
+        },
+        {
+            publicKey: 'common.filters.a11y.searchFilter',
+            targets: [bentoTarget('bento.select.filter.button.searchFilter')],
+        },
+        {
+            publicKey: 'common.filters.activeFilters.label',
+            targets: [bentoTarget('bento.all.filters.modal.activeFilters')],
+        },
+        {
+            publicKey: 'common.filters.allFilters.label',
+            targets: [bentoTarget('bento.all.filters.modal.allFilters')],
+        },
+        {
+            publicKey: 'common.filters.cleared',
+            targets: [bentoTarget('bento.filter.bar.filtersHaveBeenCleared')],
+        },
+        {
+            publicKey: 'common.filters.errors.noMatches',
+            targets: [
+                bentoTarget('bento.all.filters.modal.noFiltersMatchThisSearch'),
+                bentoTarget('bento.select.filter.button.noFiltersMatchThisSearch'),
+            ],
+        },
+        {
+            publicKey: 'common.filters.numberSelected',
+            targets: [bentoTarget('bento.base.filter.numberSelected')],
+        },
+        {
+            publicKey: 'common.filters.options.all',
+            targets: [
+                bentoTarget('bento.all.filters.modal.all'),
+                bentoTarget('bento.checkbox.group.filter.all'),
+                bentoTarget('bento.select.filter.button.all'),
+            ],
+        },
+        {
+            publicKey: 'common.filters.otherFilters.label',
+            targets: [bentoTarget('bento.all.filters.modal.otherFilters')],
+        },
+        {
+            publicKey: 'common.filters.reset',
+            targets: [bentoTarget('bento.filter.bar.filtersHaveBeenReset')],
+        },
+        {
+            publicKey: 'common.filters.types.date.a11y.dateFrom',
+            targets: [bentoTarget('bento.date.range.picker.calendar.dateFrom')],
+        },
+        {
+            publicKey: 'common.filters.types.date.a11y.dateTo',
+            targets: [bentoTarget('bento.date.range.picker.calendar.dateTo')],
+        },
+        {
+            publicKey: 'common.filters.types.date.calendar.navigation.nextYear',
+            targets: [bentoTarget('bento.calendar.year.nextYear')],
+        },
+        {
+            publicKey: 'common.filters.types.date.calendar.navigation.previousYear',
+            targets: [bentoTarget('bento.calendar.year.previousYear')],
+        },
+        {
+            publicKey: 'common.filters.types.date.calendar.navigation.selectYear',
+            targets: [bentoTarget('bento.calendar.year.selector.selectYear')],
+        },
+        {
+            publicKey: 'common.filters.types.date.errors.dateUnavailable',
+            targets: [bentoTarget('bento.date.range.picker.calendar.selectedDateIsNotAvailable')],
+        },
+        {
+            publicKey: 'common.filters.types.date.errors.invalidFormat',
+            targets: [
+                bentoTarget('bento.date.picker.invalidDateFormat'),
+                bentoTarget('bento.date.range.picker.calendar.invalidDateFormat'),
+                bentoTarget('bento.date.range.picker.invalidDateFormat'),
+            ],
+        },
+        {
+            publicKey: 'common.filters.types.date.errors.startAfterEnd',
+            targets: [bentoTarget('bento.date.range.picker.calendar.startDateMustPrecedeEndDate')],
+        },
+        {
+            publicKey: 'common.filters.types.date.formats.DD-MM-YYYY',
+            targets: [bentoTarget('bento.date.range.picker.calendar.DD-MM-YYYY')],
+        },
+        {
+            publicKey: 'common.filters.types.date.formats.MM-DD-YYYY',
+            targets: [bentoTarget('bento.date.range.picker.calendar.MM-DD-YYYY')],
+        },
+        {
+            publicKey: 'common.filters.types.date.formats.YYYY-MM-DD',
+            targets: [bentoTarget('bento.date.range.picker.calendar.YYYY-MM-DD')],
+        },
+        {
+            publicKey: 'common.filters.types.date.inputs.from.label',
+            targets: [bentoTarget('bento.date.range.picker.calendar.from')],
+        },
+        {
+            publicKey: 'common.filters.types.date.inputs.to.label',
+            targets: [bentoTarget('bento.date.range.picker.calendar.to')],
+        },
+        {
+            publicKey: 'common.filters.types.date.selectDate',
+            targets: [bentoTarget('bento.date.picker.selectDate')],
+        },
+        {
+            publicKey: 'common.inputs.file.actions.remove',
+            targets: [bentoTarget('bento.file.uploader.file.card.remove')],
+        },
+        {
+            publicKey: 'common.inputs.file.errors.exceededMaximum',
+            targets: [bentoTarget('bento.file.uploader.youHaveExceededTheMaximum')],
+        },
+        {
+            publicKey: 'common.inputs.file.errors.fileTypeMustBe',
+            targets: [bentoTarget('bento.file.uploader.file.card.fileTypeMustBe')],
+        },
+        {
+            publicKey: 'common.inputs.file.restrictions.maxFileSize',
+            targets: [bentoTarget('bento.file.uploader.restrictions.maxFileSize')],
+        },
+        {
+            publicKey: 'common.inputs.file.restrictions.maxImageDimensions',
+            targets: [bentoTarget('bento.file.uploader.restrictions.maxImageDimensions')],
+        },
+        {
+            publicKey: 'common.inputs.file.restrictions.maxUpload',
+            targets: [bentoTarget('bento.file.uploader.restrictions.maxUpload')],
+        },
+        {
+            publicKey: 'common.inputs.file.restrictions.supportedFileTypes',
+            targets: [bentoTarget('bento.file.uploader.restrictions.supportedFileTypes')],
+        },
+        {
+            publicKey: 'common.pagination.context.pageNumber',
+            targets: [bentoTarget('bento.pagination.context.pageNumber')],
+        },
+        {
+            publicKey: 'common.pagination.context.pageNumberOfTotal',
+            targets: [bentoTarget('bento.pagination.context.pageNumberOfTotal')],
+        },
+        {
+            publicKey: 'common.pagination.results.per.page.showingItems',
+            targets: [bentoTarget('bento.pagination.results.per.page.showingItems')],
+        },
+        {
+            publicKey: 'common.states.gettingData',
+            targets: [bentoTarget('bento.data.grid.gettingYourData')],
         },
         {
             publicKey: 'common.errors.noResults',

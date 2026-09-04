@@ -1,0 +1,7 @@
+{
+    "name": "@integration-components/sdk-localization",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "packages/sdk/localization/translations",
+    "tags": ["type:shared"]
+}

@@ -2,6 +2,7 @@ import { DEFAULT_TRANSLATIONS, FALLBACK_LOCALE, SUPPORTED_LOCALES } from './cons
 import { asPlainObject, EMPTY_OBJECT, hasOwnProperty, isFunction } from '@integration-components/utils';
 import type { CustomTranslations, Locale, TranslationOptions, Translations } from '../translations';
 import { SupportedLocales } from './types';
+import { loadV2SdkBentoLocaleTranslations, loadV2SdkLocaleTranslations } from '../translation-contract/sdkTranslations';
 
 const DEFAULT_TRANSLATION_OPTIONS: TranslationOptions = { values: EMPTY_OBJECT, count: 0 } as const;
 const LOCALE_FORMAT_REGEX = /^[a-z]{2}-[A-Z]{2}$/;
@@ -160,20 +161,26 @@ export const loadTranslationSources = async (
     fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>,
     customTranslations: CustomTranslations = EMPTY_OBJECT as CustomTranslations
 ): Promise<{
+    sdkBentoLocaleTranslations: Translations;
     sdkLocale: SupportedLocales;
     sdkLocaleTranslations: Translations;
     translations: Translations;
 }> => {
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
     const localeToLoad = parseLocale(locale, SUPPORTED_LOCALES) || FALLBACK_LOCALE;
-    const sdkLocaleTranslations = asPlainObject((await fetchTranslationFromCdnPromise(localeToLoad as SupportedLocales)) ?? EMPTY_OBJECT);
+    const [localeTranslations, sdkLocaleTranslations, sdkBentoLocaleTranslations] = await Promise.all([
+        fetchTranslationFromCdnPromise(localeToLoad as SupportedLocales),
+        loadV2SdkLocaleTranslations(localeToLoad as SupportedLocales),
+        loadV2SdkBentoLocaleTranslations(localeToLoad as SupportedLocales),
+    ]);
 
     return {
+        sdkBentoLocaleTranslations,
         sdkLocale: localeToLoad as SupportedLocales,
         sdkLocaleTranslations,
         translations: {
             ...DEFAULT_TRANSLATIONS, // Default en-US translations (in case any other translation file is missing any key)
-            ...sdkLocaleTranslations, // Merge with our locale file of the locale they are loading
+            ...asPlainObject(localeTranslations), // Merge with our locale file of the locale they are loading
             ...asPlainObject(customTranslations?.[locale]), // Merge with their custom locales if available
         },
     };

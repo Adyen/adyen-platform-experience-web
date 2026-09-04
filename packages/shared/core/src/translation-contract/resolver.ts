@@ -32,6 +32,8 @@ export class TranslationContractResolver {
     readonly #routesByTarget = new Map<string, { format: TranslationTarget['format']; publicKey: string }>();
 
     #consumerTranslations: ValidConsumerTranslations = {};
+    #sdkBentoDefaultTranslations: TranslationSource = {};
+    #sdkBentoLocaleTranslations: TranslationSource = {};
     #sdkDefaultTranslations: TranslationSource = {};
     #sdkLocale?: string;
     #sdkLocaleTranslations: TranslationSource = {};
@@ -68,6 +70,8 @@ export class TranslationContractResolver {
         if (
             currentSources &&
             currentSources.consumerTranslations === sources.consumerTranslations &&
+            currentSources.sdkBentoDefaultTranslations === sources.sdkBentoDefaultTranslations &&
+            currentSources.sdkBentoLocaleTranslations === sources.sdkBentoLocaleTranslations &&
             currentSources.sdkDefaultTranslations === sources.sdkDefaultTranslations &&
             this.#sdkLocale === sdkLocale &&
             currentSources.sdkLocaleTranslations === sources.sdkLocaleTranslations
@@ -76,6 +80,8 @@ export class TranslationContractResolver {
         }
 
         this.#sourceState = sources;
+        this.#sdkBentoDefaultTranslations = sources.sdkBentoDefaultTranslations ?? {};
+        this.#sdkBentoLocaleTranslations = sources.sdkBentoLocaleTranslations ?? {};
         this.#sdkDefaultTranslations = sources.sdkDefaultTranslations;
         this.#sdkLocale = sdkLocale;
         this.#sdkLocaleTranslations = sources.sdkLocaleTranslations ?? {};
@@ -95,14 +101,14 @@ export class TranslationContractResolver {
     }
 
     #getCandidates(domain: string, key: string, locale: string): CustomTranslationCandidates {
-        const route = key.startsWith('bento.') ? this.#routesByTarget.get(`bento:${key}`) : this.#routesByTarget.get(`domain:${domain}:${key}`);
+        const isBentoKey = key.startsWith('bento.');
+        const route = isBentoKey ? this.#routesByTarget.get(`bento:${key}`) : this.#routesByTarget.get(`domain:${domain}:${key}`);
 
         if (!route) {
+            if (isBentoKey) return this.#getBentoFallbackCandidates(key, locale);
             const extensionCandidates = this.#getExtensionCandidates(key, locale);
             if (extensionCandidates) return extensionCandidates;
-            if (!key.startsWith('bento.')) {
-                this.#diagnostics.report({ code: 'unmapped_domain_key', domain });
-            }
+            this.#diagnostics.report({ code: 'unmapped_domain_key', domain });
             return {};
         }
 
@@ -115,12 +121,40 @@ export class TranslationContractResolver {
         const defaultTemplate = this.#resolvePublicTemplate(route.publicKey, 'en-US');
         const localeTemplate = canonicalLocale === 'en-US' ? defaultTemplate : this.#resolvePublicTemplate(route.publicKey, canonicalLocale);
 
+        if (defaultTemplate === undefined && localeTemplate === undefined && isBentoKey) {
+            // A routed key whose public copy is absent falls back to the SDK-owned Bento copy.
+            return this.#getBentoFallbackCandidates(key, canonicalLocale);
+        }
+
         return {
             ...(defaultTemplate !== undefined && {
                 defaultTranslation: this.#compileTemplate(route.publicKey, defaultTemplate, route.format),
             }),
             ...(localeTemplate !== undefined && {
                 localeTranslation: this.#compileTemplate(route.publicKey, localeTemplate, route.format),
+            }),
+        };
+    }
+
+    /**
+     * SDK-owned Bento fallback candidates, used when a Bento key has no public route or the
+     * public-route candidates are absent. Consumer custom translations on the public key are
+     * resolved first through the route and always win over this fallback.
+     */
+    #getBentoFallbackCandidates(key: string, locale: string): CustomTranslationCandidates {
+        const canonicalLocale = canonicalizeTranslationLocale(locale);
+        if (!canonicalLocale) return {};
+
+        const defaultTemplate = this.#sdkBentoDefaultTranslations[key];
+        const localeTemplate =
+            canonicalLocale === 'en-US' ? defaultTemplate : canonicalLocale === this.#sdkLocale ? this.#sdkBentoLocaleTranslations[key] : undefined;
+
+        return {
+            ...(defaultTemplate !== undefined && {
+                defaultTranslation: this.#compileTemplate(key, defaultTemplate, 'bento'),
+            }),
+            ...(localeTemplate !== undefined && {
+                localeTranslation: this.#compileTemplate(key, localeTemplate, 'bento'),
             }),
         };
     }

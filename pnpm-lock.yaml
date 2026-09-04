@@ -793,6 +793,8 @@ importers:
         specifier: 'catalog:'
         version: 3.5.31(typescript@5.8.3)
 
+  packages/sdk/localization: {}
+
   packages/shared/assets: {}
 
   packages/shared/composables-vue:
@@ -828,6 +830,9 @@ importers:
       '@integration-components/assets':
         specifier: workspace:*
         version: link:../assets
+      '@integration-components/sdk-localization':
+        specifier: workspace:*
+        version: link:../../sdk/localization
       '@integration-components/types':
         specifier: workspace:*
         version: link:../types

@@ -60,6 +60,26 @@ describe('DomainLocalization', () => {
         expect(getCustomTranslations).not.toHaveBeenCalled();
     });
 
+    test('resolves routed Bento keys from the SDK contract before local values', () => {
+        const getCustomTranslations = vi.fn((key: string) => (key === 'bento.data.grid.loading' ? { defaultTranslation: 'SDK loading' } : {}));
+        const i18n = createDomainI18n<Key>({
+            inputs: { getCustomTranslations, locale: 'en-US' },
+            localSources: { 'en-US': { 'bento.data.grid.loading': 'Local loading' } },
+            source: { 'bento.data.grid.loading': 'Local default loading' },
+        });
+
+        expect(i18n.resolveTemplate('bento.data.grid.loading')).toBe('SDK loading');
+
+        const protectedI18n = createDomainI18n<Key>({
+            inputs: { getCustomTranslations, locale: 'en-US' },
+            protectedKeys: new Set(['bento.data.grid.loading']),
+            localSources: { 'en-US': { 'bento.data.grid.loading': 'Local loading' } },
+            source: { 'bento.data.grid.loading': 'Local default loading' },
+        });
+
+        expect(protectedI18n.resolveTemplate('bento.data.grid.loading')).toBe('Local loading');
+    });
+
     test('requests exact unsupported locales and reacts to locale or callback changes', () => {
         const initial = vi.fn(() => ({ localeTranslation: 'Finnish' }));
         const next = vi.fn(() => ({ localeTranslation: 'Updated Finnish' }));

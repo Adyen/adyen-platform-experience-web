@@ -255,7 +255,7 @@ test.describe('Default', () => {
             await applyPspReferenceFilter(page, analyticsEvents);
             await selectSingleCategoryFromMultiSelectFilter(page, analyticsEvents, 'Payment');
 
-            await page.getByRole('button', { name: 'Reset filters', exact: true }).click();
+            await page.getByRole('button', { name: 'Clear all', exact: true }).click();
 
             await expect(page.getByRole('button', { name: /^PSP reference/, exact: true })).toBeVisible();
             await expectAnalyticsEvents(analyticsEvents, [

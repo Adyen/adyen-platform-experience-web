@@ -19,8 +19,9 @@ const domainSources = Object.fromEntries(
 const artifacts = buildTranslationContractArtifacts({
     bentoKeys: getInstalledBentoTranslationKeys(ROOT),
     domainSources,
-    publicTemplates: readJson<TranslationSource>(resolve(ROOT, 'packages/shared/assets/src/translations/en-US.json')),
+    publicTemplates: readJson<TranslationSource>(resolve(ROOT, 'packages/sdk/localization/translations/en-US.json')),
     registry: V2_TRANSLATION_REGISTRY as TranslationContractRegistry,
+    sdkBentoFallbacks: readJson<TranslationSource>(resolve(ROOT, 'packages/sdk/localization/translations/bento/en-US.json')),
 });
 const runtimeTypescript = await format(artifacts.runtimeTypescript, {
     ...(await resolveConfig(RUNTIME_PATH)),

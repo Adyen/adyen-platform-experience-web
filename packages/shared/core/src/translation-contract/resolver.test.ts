@@ -208,8 +208,75 @@ describe('TranslationContractResolver', () => {
         const callback = createResolver(reporter).getCallback('reports');
 
         expect(callback('local.unknown', 'en-US')).toEqual({});
-        expect(callback('bento.unrouted', 'en-US')).toEqual({});
         expect(reporter).toHaveBeenCalledTimes(1);
         expect(reporter).toHaveBeenCalledWith({ code: 'unmapped_domain_key', domain: 'reports' });
+    });
+
+    test('resolves unrouted Bento keys from SDK fallback copy', () => {
+        const resolver = new TranslationContractResolver({
+            routes: [],
+            sources: {
+                sdkBentoDefaultTranslations: { 'bento.unrouted': 'Fallback %{count}' },
+                sdkBentoLocaleTranslations: { 'bento.unrouted': 'Repli %{count}' },
+                sdkDefaultTranslations: {},
+                sdkLocale: 'fr-FR',
+            },
+        });
+        const callback = resolver.getCallback('reports');
+
+        expect(callback('bento.unrouted', 'fr-FR')).toEqual({
+            defaultTranslation: 'Fallback {count}',
+            localeTranslation: 'Repli {count}',
+        });
+        expect(callback('bento.unrouted', 'en-US')).toEqual({
+            defaultTranslation: 'Fallback {count}',
+            localeTranslation: 'Fallback {count}',
+        });
+        expect(callback('bento.unrouted', 'de-DE')).toEqual({
+            defaultTranslation: 'Fallback {count}',
+        });
+        expect(callback('bento.absent', 'fr-FR')).toEqual({});
+    });
+
+    test('falls back to SDK Bento copy when a routed key has no public copy', () => {
+        const resolver = new TranslationContractResolver({
+            routes: [{ publicKey: 'common.states.loading', targets: [{ format: 'bento', key: 'bento.loading', kind: 'bento' }] }],
+            sources: {
+                sdkBentoDefaultTranslations: { 'bento.loading': 'Loading' },
+                sdkDefaultTranslations: {},
+            },
+        });
+
+        expect(resolver.getCallback('reports')('bento.loading', 'en-US')).toEqual({
+            defaultTranslation: 'Loading',
+            localeTranslation: 'Loading',
+        });
+    });
+
+    test('prefers public route candidates and consumer custom translations over SDK Bento fallback', () => {
+        const resolver = new TranslationContractResolver({
+            routes: [
+                {
+                    publicKey: 'common.supportedTypes',
+                    targets: [{ format: 'bento', key: 'bento.file.supportedTypes', kind: 'bento' }],
+                },
+            ],
+            sources: {
+                consumerTranslations: { 'fr-FR': { 'common.supportedTypes': 'Custom %{list}' } },
+                sdkBentoDefaultTranslations: { 'bento.file.supportedTypes': 'Fallback %{list}' },
+                sdkDefaultTranslations: {},
+                sdkLocale: 'fr-FR',
+                sdkLocaleTranslations: {},
+            },
+        });
+        const callback = resolver.getCallback('reports');
+
+        expect(callback('bento.file.supportedTypes', 'en-US')).toEqual({
+            defaultTranslation: 'Fallback {list}',
+            localeTranslation: 'Fallback {list}',
+        });
+        expect(callback('bento.file.supportedTypes', 'fr-FR')).toEqual({
+            localeTranslation: 'Custom {list}',
+        });
     });
 });

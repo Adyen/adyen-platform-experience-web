@@ -2,6 +2,7 @@ export type TranslationDiagnosticCode =
     | 'deprecated_translation_key'
     | 'duplicate_translation_alias'
     | 'duplicate_translation_route'
+    | 'invalid_bento_fallback'
     | 'invalid_translation_alias'
     | 'invalid_translation_fan_out'
     | 'invalid_translation_key'
@@ -115,6 +116,8 @@ export type TranslationPlaceholderContracts = Readonly<Record<string, readonly s
 
 export type TranslationResolverSources = Readonly<{
     consumerTranslations?: ConsumerTranslations;
+    sdkBentoDefaultTranslations?: TranslationSource;
+    sdkBentoLocaleTranslations?: TranslationSource;
     sdkDefaultTranslations: TranslationSource;
     sdkLocale?: string;
     sdkLocaleTranslations?: TranslationSource;

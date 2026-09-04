@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "@integration-components/assets": "workspace:*",
+        "@integration-components/sdk-localization": "workspace:*",
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*",
         "classnames": "catalog:"

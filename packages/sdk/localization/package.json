@@ -1,0 +1,12 @@
+{
+    "name": "@integration-components/sdk-localization",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "sideEffects": false,
+    "main": "./translations/en-US.json",
+    "exports": {
+        "./package.json": "./package.json",
+        "./translations/*": "./translations/*"
+    }
+}

@@ -25,6 +25,7 @@ import { ALREADY_RESOLVED_PROMISE, createWatchlist, isNull, isNullish, isUndefin
 import { httpGet } from '../Http/http';
 import { SupportedLocales } from './types';
 import { translations_dev_assets } from '../translations/local';
+import { V2_SDK_BENTO_DEFAULT_TRANSLATIONS, V2_SDK_DEFAULT_TRANSLATIONS } from '../translation-contract/sdkTranslations';
 import localSwapConfig from '../config/translations/swapConfig.json';
 
 export default class Localization {
@@ -35,8 +36,9 @@ export default class Localization {
 
     #customTranslations?: CustomTranslations;
     #translations: Translations = DEFAULT_TRANSLATIONS;
+    #sdkBentoLocaleTranslations: Translations = V2_SDK_BENTO_DEFAULT_TRANSLATIONS;
     #sdkLocale: SupportedLocales = FALLBACK_LOCALE;
-    #sdkLocaleTranslations: Translations = DEFAULT_TRANSLATIONS;
+    #sdkLocaleTranslations: Translations = V2_SDK_DEFAULT_TRANSLATIONS;
     #translationsLoader = createTranslationsLoader.call(this);
     readonly #fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>;
 
@@ -150,7 +152,9 @@ export default class Localization {
     get translationContractSources() {
         return {
             consumerTranslations: this.#customTranslations,
-            sdkDefaultTranslations: DEFAULT_TRANSLATIONS,
+            sdkBentoDefaultTranslations: V2_SDK_BENTO_DEFAULT_TRANSLATIONS,
+            sdkBentoLocaleTranslations: this.#sdkBentoLocaleTranslations,
+            sdkDefaultTranslations: V2_SDK_DEFAULT_TRANSLATIONS,
             sdkLocale: this.#sdkLocale,
             sdkLocaleTranslations: this.#sdkLocaleTranslations,
         } as const;
@@ -183,6 +187,7 @@ export default class Localization {
         const currentRefresh = (this.#currentRefresh = (async () => {
             const loaded = await this.#translationsLoader.load(this.#fetchTranslationFromCdnPromise, customTranslations);
             this.#translations = loaded.translations;
+            this.#sdkBentoLocaleTranslations = loaded.sdkBentoLocaleTranslations;
             this.#sdkLocale = loaded.sdkLocale;
             this.#sdkLocaleTranslations = loaded.sdkLocaleTranslations;
             this.#locale = this.#translationsLoader.locale;

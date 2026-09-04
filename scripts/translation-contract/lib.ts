@@ -62,6 +62,7 @@ const getFallbackPlaceholderContracts = (
 const toRuntimeSource = (
     registry: TranslationContractRegistry,
     bentoKeys: readonly string[],
+    sdkBentoFallbackKeys: readonly string[],
     fallbackPlaceholderContracts: Readonly<Record<string, readonly string[]>>
 ): string => {
     const publicKeys = [...new Set(registry.routes.map(({ publicKey }) => publicKey))].sort();
@@ -73,6 +74,7 @@ export const V2_PUBLIC_TRANSLATION_KEYS = ${JSON.stringify(publicKeys, null, 4)}
 export const V2_PUBLIC_TRANSLATION_PLACEHOLDER_CONTRACTS = ${JSON.stringify(fallbackPlaceholderContracts, null, 4)} as const;
 export const V2_BENTO_TRANSLATION_KEYS = ${JSON.stringify(bentoKeys, null, 4)} as const;
 export const V2_ROUTED_BENTO_TRANSLATION_KEYS = ${JSON.stringify(routedBentoKeys, null, 4)} as const;
+export const V2_SDK_BENTO_FALLBACK_TRANSLATION_KEYS = ${JSON.stringify(sdkBentoFallbackKeys, null, 4)} as const;
 export const V2_TRANSLATION_ROUTES = ${JSON.stringify(registry.routes, null, 4)} as const;
 export const V2_TRANSLATION_ALIASES = ${JSON.stringify(registry.aliases, null, 4)} as const;
 
@@ -81,7 +83,7 @@ export type V2BentoTranslationKey = (typeof V2_BENTO_TRANSLATION_KEYS)[number];
 `;
 };
 
-const toCatalogMarkdown = (registry: TranslationContractRegistry, bentoKeys: readonly string[]): string => {
+const toCatalogMarkdown = (registry: TranslationContractRegistry, bentoKeys: readonly string[], sdkBentoFallbackKeys: readonly string[]): string => {
     const rows = registry.routes
         .flatMap(route =>
             route.targets.map(target => {
@@ -101,6 +103,7 @@ const toCatalogMarkdown = (registry: TranslationContractRegistry, bentoKeys: rea
 - Installed Bento keys: ${bentoKeys.length}
 - Routed Bento keys: ${routedBentoKeys.length}
 - Intentionally unrouted Bento keys: ${bentoKeys.length - routedBentoKeys.length}
+- SDK Bento fallback keys: ${sdkBentoFallbackKeys.length}
 
 | Public key | Target kind | Target | Format |
 | --- | --- | --- | --- |
@@ -113,17 +116,21 @@ export const buildTranslationContractArtifacts = (input: {
     domainSources: DomainTranslationSources;
     publicTemplates: TranslationSource;
     registry: TranslationContractRegistry;
+    sdkBentoFallbacks?: TranslationSource;
 }): TranslationContractArtifacts => {
     assertValidTranslationContract({
         ...input,
         bentoKeys: new Set(input.bentoKeys),
     });
 
+    const sdkBentoFallbackKeys = Object.keys(input.sdkBentoFallbacks ?? {}).sort();
+
     return {
-        catalogMarkdown: toCatalogMarkdown(input.registry, input.bentoKeys),
+        catalogMarkdown: toCatalogMarkdown(input.registry, input.bentoKeys, sdkBentoFallbackKeys),
         runtimeTypescript: toRuntimeSource(
             input.registry,
             input.bentoKeys,
+            sdkBentoFallbackKeys,
             getFallbackPlaceholderContracts(input.registry, input.domainSources, input.publicTemplates)
         ),
     };

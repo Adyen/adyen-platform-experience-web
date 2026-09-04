@@ -1,9 +1,23 @@
-import { V2_ROUTED_BENTO_TRANSLATION_KEYS, type DomainI18n, type DomainTranslationInputs, type V2BentoTranslationKey } from '../translation-contract';
+import {
+    V2_ROUTED_BENTO_TRANSLATION_KEYS,
+    V2_SDK_BENTO_FALLBACK_TRANSLATION_KEYS,
+    type DomainI18n,
+    type DomainTranslationInputs,
+    type V2BentoTranslationKey,
+} from '../translation-contract';
 import { createDomainTranslationVueBinding } from './translationBinding';
 import type { CoreInstance } from './types';
 import type { App } from 'vue';
 
 type TranslationSource = Readonly<Record<string, string>>;
+
+/**
+ * Every Bento key the SDK can supply copy for: keys with a public route plus keys that only have
+ * SDK-owned Bento fallback copy. Bento consults overrides only for these keys.
+ */
+const UNIVERSAL_BENTO_TRANSLATION_KEYS: readonly string[] = [
+    ...new Set([...V2_ROUTED_BENTO_TRANSLATION_KEYS, ...V2_SDK_BENTO_FALLBACK_TRANSLATION_KEYS]),
+];
 
 type DomainTranslations<Key extends string> = Readonly<{
     configure(app: App): void;
@@ -54,7 +68,7 @@ export const createDomainTranslations = async <Key extends string, Locale extend
         localSources,
         protectedKeys,
         source,
-        universalKeys: V2_ROUTED_BENTO_TRANSLATION_KEYS,
+        universalKeys: UNIVERSAL_BENTO_TRANSLATION_KEYS,
     });
     let syncVersion = 0;
     const sync = async (nextInputs: DomainTranslationInputs<TranslationKey>) => {

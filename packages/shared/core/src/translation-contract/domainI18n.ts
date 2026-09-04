@@ -141,6 +141,11 @@ export class DomainLocalization<DomainKey extends string> implements DomainI18n<
         }
 
         const candidates = this.#inputs.getCustomTranslations?.(selectedKey as DomainKey, this.locale);
+        if (selectedKey.startsWith('bento.')) {
+            // Routed Bento keys resolve from the SDK contract. A domain-local value is honoured
+            // only when the domain protects the key.
+            return candidates?.localeTranslation ?? candidates?.defaultTranslation ?? localLocaleTemplate ?? localDefaultTemplate;
+        }
         return candidates?.localeTranslation ?? localLocaleTemplate ?? candidates?.defaultTranslation ?? localDefaultTemplate;
     }
 

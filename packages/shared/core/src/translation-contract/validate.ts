@@ -12,6 +12,7 @@ export type TranslationContractValidationInput = Readonly<{
     domainSources: DomainTranslationSources;
     publicTemplates: TranslationSource;
     registry: TranslationContractRegistry;
+    sdkBentoFallbacks?: TranslationSource;
 }>;
 
 const isPublicKey = (key: string, domains: ReadonlySet<string>): boolean => {
@@ -32,6 +33,7 @@ export const validateTranslationContract = ({
     domainSources,
     publicTemplates,
     registry,
+    sdkBentoFallbacks,
 }: TranslationContractValidationInput): readonly TranslationDiagnostic[] => {
     const diagnostics: TranslationDiagnostic[] = [];
     const domains = new Set(registry.domains);
@@ -147,6 +149,18 @@ export const validateTranslationContract = ({
             if (!targetRoutes.has(`domain:${domain}:${key}`)) {
                 diagnostics.push({ code: 'missing_translation_route', domain, targetKey: key });
             }
+        }
+    }
+
+    for (const [key, template] of Object.entries(sdkBentoFallbacks ?? {})) {
+        if (!key.startsWith('bento.') || !bentoKeys.has(key)) {
+            diagnostics.push({ code: 'invalid_bento_fallback', targetKey: key });
+            continue;
+        }
+        try {
+            compileTranslationTemplate(parseV1TranslationTemplate(template), 'bento');
+        } catch {
+            diagnostics.push({ code: 'invalid_bento_fallback', targetKey: key });
         }
     }
 
