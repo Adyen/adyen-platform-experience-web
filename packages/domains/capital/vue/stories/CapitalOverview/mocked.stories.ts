@@ -74,6 +74,7 @@ export const UnsupportedRegion: ElementStory<{ mountIfInUnsupportedRegion: boole
         mockedApi: true,
         skipDecorators: true,
         mountIfInUnsupportedRegion: true,
+        onContactSupport: 'Enabled',
     },
     parameters: {
         msw: {
@@ -258,6 +259,7 @@ export const ErrorOfferConfig: ElementStory<typeof CapitalOverviewElement> = {
     name: 'Error - Offer config',
     args: {
         mockedApi: true,
+        onContactSupport: 'Enabled',
     },
     parameters: {
         msw: {
