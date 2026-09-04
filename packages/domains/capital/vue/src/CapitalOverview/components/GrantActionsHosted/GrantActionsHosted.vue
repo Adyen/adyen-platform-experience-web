@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { BentoAlert, BentoButton } from '@adyen/bento-vue3';
-import { useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
-import { useConfigContext, useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import type { IMissingAction, IMissingActionType } from '@integration-components/types';
-import { EMPTY_OBJECT, DATE_FORMAT_MISSING_ACTION } from '@integration-components/utils';
-import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
+import { useCoreContext } from '@integration-components/core/vue';
+import type { IMissingAction } from '@integration-components/types';
+import { GRANT_ACTION_CONFIGS } from '../../../../../domain/src/CapitalOverview/constants';
+import { useActionsAlertTitles } from '../../composables/useActionsAlertTitles';
+import { useHostedAction } from '../../composables/useHostedAction';
 import styles from './GrantActionsHosted.module.scss';
 
 const props = defineProps<{
@@ -15,72 +15,10 @@ const props = defineProps<{
 }>();
 
 const { i18n, refreshComponent } = useCoreContext();
-const config = useConfigContext();
-const userEvents = useEventDispatcherContext();
-const { dateFormat } = useTimezoneAwareDateFormatting();
-const loadingAction = ref<IMissingActionType>();
-const error = ref<Error>();
+const { error, handleActionClick, loadingAction } = useHostedAction();
 
-const formattedExpirationDate = computed(() => (props.expirationDate ? dateFormat(props.expirationDate, DATE_FORMAT_MISSING_ACTION) : undefined));
-const alertTitle = computed(() => {
-    const key =
-        props.missingActions.length > 1 ? 'capital.overview.grants.item.alerts.actionNeededMany' : 'capital.overview.grants.item.alerts.actionNeeded';
-    const keyWithDate =
-        props.missingActions.length > 1
-            ? 'capital.overview.grants.item.alerts.actionNeededByMany'
-            : 'capital.overview.grants.item.alerts.actionNeededBy';
-
-    return formattedExpirationDate.value ? i18n.get(keyWithDate, { values: { date: formattedExpirationDate.value } }) : i18n.get(key);
-});
-
-const getTopWindowHref = () => window.top?.location.href || window.location.href;
-
-const redirectTopWindow = (url: string) => {
-    if (window.top) {
-        window.top.location.href = url;
-    } else {
-        window.location.href = url;
-    }
-};
-
-const redirectToHostedAction = async (actionType: IMissingActionType) => {
-    const endpoint = actionType === 'AnaCredit' ? config.endpoints.anaCreditActionDetails : config.endpoints.signToSActionDetails;
-
-    if (!endpoint) {
-        loadingAction.value = undefined;
-        return;
-    }
-
-    loadingAction.value = actionType;
-    error.value = undefined;
-
-    try {
-        const response = await endpoint(EMPTY_OBJECT, {
-            query: { locale: i18n.locale, redirectUrl: getTopWindowHref() },
-        });
-
-        if (response.url) {
-            redirectTopWindow(response.url);
-        } else {
-            loadingAction.value = undefined;
-        }
-    } catch (requestError) {
-        error.value = requestError as Error;
-        loadingAction.value = undefined;
-    }
-};
-
-const handleActionClick = (actionType: IMissingActionType) => {
-    try {
-        void redirectToHostedAction(actionType);
-    } finally {
-        userEvents.addEvent?.('Clicked link', {
-            ...sharedCapitalOverviewAnalyticsEventProperties,
-            subCategory: 'Missing action',
-            label: GRANT_ACTION_CONFIGS[actionType].eventLabel,
-        });
-    }
-};
+const alertTitles = useActionsAlertTitles(() => props.expirationDate);
+const alertTitle = computed(() => (props.missingActions.length > 1 ? alertTitles.value.multiple : alertTitles.value.single));
 </script>
 
 <template>
