@@ -9,7 +9,7 @@ import { AlertTypeOption } from '@integration-components/ui-components-preact/Al
 import Button from '@integration-components/ui-components-preact/Button';
 import { useActionsAlertTitles } from '../../hooks';
 import { getTopWindowHref, setTopWindowHref } from '../GrantActions/utils';
-import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
+import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
 import './GrantActionsHosted.scss';
 
 const CLASSNAMES = {

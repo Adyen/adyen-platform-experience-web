@@ -2,10 +2,15 @@ import { AdyenErrorResponse, AdyenPlatformExperienceError, type TranslationKey }
 
 export type CapitalErrorMessage = {
     title: TranslationKey;
-    message?: TranslationKey | TranslationKey[];
+    message: TranslationKey | TranslationKey[];
     refreshComponent?: boolean;
     onContactSupport?: () => void;
     translationValues?: { [key in TranslationKey]?: string };
+};
+
+export type CapitalErrorMessageInfo = Omit<CapitalErrorMessage, 'message' | 'translationValues'> & {
+    messages: TranslationKey[];
+    requestId?: string;
 };
 
 export type BalanceAccountErrorMessage = {
@@ -79,4 +84,14 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
         default:
             return { ...UNKNOWN_ERROR, refreshComponent: true };
     }
+};
+
+export const getCapitalErrorMessageInfo = (
+    error: AdyenPlatformExperienceError | undefined,
+    onContactSupport?: () => void
+): CapitalErrorMessageInfo => {
+    const { message, translationValues, ...rest } = getCapitalErrorMessage(error, onContactSupport);
+    const messages = Array.isArray(message) ? message : [message];
+    const requestId = translationValues && Object.values(translationValues)[0];
+    return { ...rest, messages, requestId };
 };

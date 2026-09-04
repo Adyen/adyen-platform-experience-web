@@ -1,0 +1,24 @@
+@use '@integration-components/style' as style;
+@use '@integration-components/style/breakpoints' as *;
+
+.content {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-100);
+    justify-content: space-between;
+
+    @include adyen-pe-screen-sm-and-down {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+    }
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    color: style.token(color-label-secondary);
+}

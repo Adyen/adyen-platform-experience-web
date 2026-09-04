@@ -1,5 +1,3 @@
-import { parseDate } from '@integration-components/utils';
-
 const DAY_MS = 24 * 60 * 60 * 1000;
 const DAYS_PER_MONTH = 30;
 
@@ -20,10 +18,10 @@ export const calculateMonthsAndDaysFromDays = (days: number): { months: number; 
     return { months, remainingDays };
 };
 
-export const calculateTimestampAfterDays = (days: number) => {
+export const calculateTimestampAfterDays = (days: number): number => {
     const startOfCurrentUTCDay = new Date().setUTCHours(0, 0, 0, 0);
     const daysInMs = Math.floor(days) * DAY_MS;
-    return parseDate(new Date(startOfCurrentUTCDay + daysInMs));
+    return new Date(startOfCurrentUTCDay + daysInMs).getTime();
 };
 
 export const getRelativeToDefault = (value: number, defaultValue: number | undefined): 'Increased' | 'Decreased' | 'Equal' | undefined => {

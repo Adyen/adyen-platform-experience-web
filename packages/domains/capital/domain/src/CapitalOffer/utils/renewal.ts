@@ -1,11 +1,11 @@
 import type { IAmount } from '@integration-components/types';
 import type { RenewalAmountBreakdown } from './generic';
 
-export const getRenewalAmountBreakdown = (newGrantAmount: IAmount, remainingGrantAmount: IAmount): RenewalAmountBreakdown => {
+export const getRenewalAmountBreakdown = (newGrantAmountValue: number, remainingGrantAmount: IAmount): RenewalAmountBreakdown => {
     return {
-        amountToReceive: newGrantAmount.value - remainingGrantAmount.value,
-        currency: newGrantAmount.currency,
-        newGrantAmountValue: newGrantAmount.value,
+        amountToReceive: newGrantAmountValue - remainingGrantAmount.value,
+        currency: remainingGrantAmount.currency,
+        newGrantAmountValue: newGrantAmountValue,
         remainingGrantAmountValue: remainingGrantAmount.value,
     };
 };

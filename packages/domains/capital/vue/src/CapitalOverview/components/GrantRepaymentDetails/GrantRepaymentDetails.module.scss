@@ -1,0 +1,44 @@
+@use '@integration-components/style';
+
+.root {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-090);
+    width: 100%;
+}
+
+.instructionList {
+    list-style: inherit;
+    padding-left: style.token(spacer-090);
+}
+
+.notice {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+    padding-bottom: style.token(spacer-070);
+}
+
+.verifiedBankAccountDetails {
+    color: style.token(color-label-secondary);
+}
+
+.repaymentAccount {
+    border: style.token(border-width-s) solid style.token(color-outline-primary);
+    border-radius: style.token(spacer-040);
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+    padding: style.token(spacer-060) style.token(spacer-080);
+    width: 100%;
+}
+
+.transferInstrumentItem {
+    list-style: none;
+    padding: style.token(spacer-030) 0;
+}
+
+.transferInstrumentList {
+    padding-left: style.token(spacer-060);
+}
