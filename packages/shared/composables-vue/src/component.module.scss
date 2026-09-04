@@ -1,0 +1,12 @@
+@use '@integration-components/style';
+@use '@integration-components/style/breakpoints' as breakpoints;
+
+.container {
+    background: style.token(color-background-primary);
+    padding: var(--adyen-pe-content-padding);
+
+    @include breakpoints.adyen-pe-screen-sm-and-up {
+        border: style.token(border-width-s) solid style.token(color-outline-secondary);
+        border-radius: style.token(spacer-040);
+    }
+}
