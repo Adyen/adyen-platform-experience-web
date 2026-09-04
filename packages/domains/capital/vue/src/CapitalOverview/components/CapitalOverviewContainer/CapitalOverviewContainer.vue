@@ -88,6 +88,7 @@ const handleGrantListUpdateRequest = (grant: IGrant) => {
             :on-funds-request="props.onFundsRequest"
             :on-grant-list-update-request="handleGrantListUpdateRequest"
             :on-offer-dismiss="props.onOfferDismiss"
+            :on-contact-support="props.onContactSupport"
         />
     </div>
 </template>

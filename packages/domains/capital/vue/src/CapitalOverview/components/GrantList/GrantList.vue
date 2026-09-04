@@ -11,6 +11,7 @@ const props = defineProps<{
     hideTitle?: boolean;
     onFundsRequest?: OnFundsRequestCallback;
     onGrantListUpdateRequest: (data: IGrant) => void;
+    onContactSupport?: () => void;
     onOfferDismiss?: (goToPreviousStep: () => void) => void;
 }>();
 
@@ -48,6 +49,7 @@ const handleFundsRequest: OnFundsRequestCallback = (data, renewsGrantId) => {
         :on-funds-request="handleFundsRequest"
         :external-capital-state="props.capitalState"
         :on-offer-dismiss="goBackToList"
+        :on-contact-support="props.onContactSupport"
     />
     <GrantsDisplay v-else :grants="grants" :hide-title="props.hideTitle" :capital-state="props.capitalState" :on-new-offer-request="goToNextStep" />
 </template>
