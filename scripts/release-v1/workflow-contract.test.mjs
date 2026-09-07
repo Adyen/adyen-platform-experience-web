@@ -28,6 +28,15 @@ test('workflow event mappings use valid YAML structure', () => {
     }
 });
 
+test('compressed-size checks run on supported pull request events', () => {
+    const workflow = readRepositoryFile('.github/workflows/compressed-size.yml');
+
+    assert.match(workflow, /^on:\n\s+pull_request:\n/m);
+    assert.doesNotMatch(workflow, /^\s+pull_request_review:\n/m);
+    assert.doesNotMatch(workflow, /^\s+is-pr-approved:\n/m);
+    assert.match(workflow, /uses: preactjs\/compressed-size-action@v2/);
+});
+
 test(
     'V1 bootstrap installs every maintenance-branch release prerequisite',
     { skip: !hasRepositoryFile('.github/workflows/configure-v1-changesets.yml') },
