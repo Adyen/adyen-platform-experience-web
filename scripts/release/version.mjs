@@ -16,11 +16,11 @@ export const parseSupportedReleaseVersion = version => {
     }
 
     return {
-        major: Number(match[1]),
-        minor: Number(match[2]),
-        patch: Number(match[3]),
+        major: numericIdentifiers[0],
+        minor: numericIdentifiers[1],
+        patch: numericIdentifiers[2],
         isPrerelease: match[4] !== undefined,
         prereleaseTag: match[4] ?? null,
-        prereleaseNumber: match[5] === undefined ? null : Number(match[5]),
+        prereleaseNumber: numericIdentifiers[3] ?? null,
     };
 };
