@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import { BentoModal } from '@adyen/bento-vue3';
+import { ModalContextProvider, useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
+import { BentoModal, BentoToast } from '@adyen/bento-vue3';
 import TransactionsOverviewShell from './TransactionsOverviewShell.vue';
 import TransactionsOverviewList from '../TransactionsList/TransactionsOverviewList.vue';
 import TransactionsOverviewInsights from './TransactionsOverviewInsights.vue';
@@ -12,6 +12,7 @@ import type { ITransaction } from '@integration-components/types';
 import type { TransactionsOverviewExternalProps, IBalanceAccountBase } from '../../types';
 import TransactionsFilters from '../TransactionFilters/TransactionsFilters.vue';
 import TransactionsExport from '../TransactionsExport/TransactionsExport.vue';
+import styles from './TransactionsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccountId?: string;
@@ -72,7 +73,7 @@ const canExport = computed(() => state.transactionsListResult.records.value.leng
 
 <template>
     <TransactionsOverviewShell :hide-title="props.hideTitle">
-        <div role="toolbar" class="adyen-pe-transactions-overview__toolbar">
+        <div role="toolbar" :class="styles.toolbar">
             <TransactionsFilters :balance-accounts="props.balanceAccounts" />
             <TransactionsExport v-if="showExport" :disabled="!canExport" />
         </div>
@@ -89,24 +90,27 @@ const canExport = computed(() => state.transactionsListResult.records.value.leng
         <TransactionsOverviewInsights v-else />
     </TransactionsOverviewShell>
 
-    <BentoModal
-        :is-open="isModalOpen"
-        size="medium"
-        :is-dismissible="true"
-        @close-modal="closeModal"
-        :aria-label="i18n.get('transactions.details.title')"
-    >
-        <!-- Empty header needed for no padding -->
-        <span />
-        <template #content>
-            <TransactionDetailsContainer
-                v-if="selectedTransactionId"
-                :id="selectedTransactionId"
-                :data-customization="props.dataCustomization"
-                :on-contact-support="props.onContactSupport"
-                hide-title
-                within-modal
-            />
-        </template>
-    </BentoModal>
+    <ModalContextProvider>
+        <BentoModal
+            size="medium"
+            :is-open="isModalOpen"
+            :is-dismissible="true"
+            :aria-label="i18n.get('transactions.details.title')"
+            @close-modal="closeModal"
+        >
+            <!-- Keep this default slot empty — needed for no padding -->
+            <template #default />
+            <template #content>
+                <TransactionDetailsContainer
+                    v-if="selectedTransactionId"
+                    :id="selectedTransactionId"
+                    :data-customization="props.dataCustomization"
+                    :on-contact-support="props.onContactSupport"
+                    from-record-selection
+                />
+            </template>
+        </BentoModal>
+    </ModalContextProvider>
+
+    <BentoToast />
 </template>

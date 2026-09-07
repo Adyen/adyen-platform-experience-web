@@ -4,23 +4,6 @@ import { JSX } from 'preact';
 import { calculateProgress } from './calculateProgress';
 import cx from 'classnames';
 
-export function calculateSliderAdjustedMinValue(minValue: number, step: number) {
-    return Math.ceil(minValue / step) * step;
-}
-
-export function calculateSliderAdjustedMidValue(minValue: number, maxValue: number, step: number) {
-    const mid = (maxValue - minValue) / 2 + minValue;
-    let adjustedMid = Math.round(mid / step) * step;
-
-    if (adjustedMid < minValue) {
-        adjustedMid = minValue;
-    } else if (adjustedMid > maxValue) {
-        adjustedMid = maxValue;
-    }
-
-    return adjustedMid;
-}
-
 /**
  * Props for the Slider component.
  */

@@ -52,6 +52,7 @@ test.describe('Default', () => {
 
     test.describe('render', () => {
         test('should render payment transaction details', async ({ page }) => {
+            await expect(page.getByText('Transaction details', { exact: true })).toHaveCount(1);
             await expectSamePaymentStatusBoxRendering(page);
             await expectSamePaymentDetailsRendering(page);
             await expectBeforePaymentRefundDetailsRendering(page);

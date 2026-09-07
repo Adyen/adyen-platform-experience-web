@@ -13,9 +13,6 @@ test.describe('Single balance currency', () => {
 
     test.describe('Transactions view', () => {
         test('should not render currency selector in the filter bar', async ({ page }) => {
-            // [TODO]: Address currency selector rendering for single balance account currency
-            test.fixme(true, 'Currency selector should not be rendered for single currency');
-
             const toolbar = page.getByRole('toolbar');
             await expect(toolbar.getByRole('button', { name: /^Balance account/ })).toBeHidden();
             await expect(toolbar.getByRole('button', { name: /^Date range/, disabled: false })).toBeVisible();
@@ -25,9 +22,6 @@ test.describe('Single balance currency', () => {
         });
 
         test('should not render currency column in the data grid', async ({ page }) => {
-            // [TODO]: Address currency column rendering for single balance account currency
-            test.fixme(true, 'Currency column should not be rendered for single currency');
-
             const dataGrid = page.getByRole('grid');
             await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
             await expect(dataGrid.getByRole('columnheader', { name: 'Payment method', exact: true })).toBeVisible();
@@ -57,9 +51,6 @@ test.describe('Single balance currency', () => {
         });
 
         test('should not render currency selector in the filter bar', async ({ page }) => {
-            // [TODO]: Address currency selector rendering for single balance account currency
-            test.fixme(true, 'Currency selector should not be rendered for single currency');
-
             const toolbar = page.getByRole('toolbar');
             await expect(toolbar.getByRole('button', { name: /^Balance account/ })).toBeHidden();
             await expect(toolbar.getByRole('button', { name: /^Date range/, disabled: false })).toBeVisible();

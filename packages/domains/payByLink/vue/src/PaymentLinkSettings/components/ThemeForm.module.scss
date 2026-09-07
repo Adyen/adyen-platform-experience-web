@@ -1,0 +1,49 @@
+@use '@integration-components/style';
+
+.root {
+    align-items: flex-start;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+}
+
+.container {
+    align-items: flex-start;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+    width: 100%;
+}
+
+.fileInput {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-040);
+    margin-bottom: style.token(spacer-040);
+    width: 100%;
+}
+
+.fileInfo {
+    color: style.token(color-label-secondary);
+}
+
+.fileInfoContainer {
+    margin-top: style.token(spacer-060);
+}
+
+.previewContainer {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+    width: fit-content;
+}
+
+.previewImage {
+    width: fit-content;
+}
+
+.previewRemove {
+    width: fit-content;
+}

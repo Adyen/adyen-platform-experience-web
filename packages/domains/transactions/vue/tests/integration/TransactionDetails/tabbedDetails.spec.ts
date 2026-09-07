@@ -10,15 +10,11 @@ test.describe('Tabbed details', () => {
         await expect(page.getByText('Payment', { exact: true }).first()).toBeVisible();
         await expect(page.getByText('Partially refunded', { exact: true })).toBeVisible();
 
-        // [TODO]: Address amount formatting discrepancy (use currency code instead of symbol)
         // Using first here to prevent clashes with other amounts displayed on page
-        // await expect(page.getByText('607.50 EUR', { exact: true }).first()).toBeVisible();
-        await expect(page.getByText('€607.50', { exact: true }).first()).toBeVisible();
+        await expect(page.getByText('607.50 EUR', { exact: true }).first()).toBeVisible();
         await expect(page.getByText('•••• •••• •••• 1945', { exact: true })).toBeVisible();
 
-        // [TODO]: Address wrong timezone used for date formatting (use balance account timezone)
-        // await expect(page.getByText('Monday, August 29, 2022 at 09:47 AM GMT-3', { exact: true })).toBeVisible();
-        await expect(page.getByText('Monday, August 29, 2022 at 12:47 PM GMT+0', { exact: true })).toBeVisible();
+        await expect(page.getByText('Monday, August 29, 2022 at 09:47 AM GMT-3', { exact: true })).toBeVisible();
     };
 
     const expectBeforePaymentRefundDetailsRendering = async (page: Page) => {
@@ -60,10 +56,7 @@ test.describe('Tabbed details', () => {
 
         await expect(page.getByText('Net amount', { exact: true })).toBeVisible();
         await expect(page.getByText('607.50 EUR', { exact: true }).first()).toBeVisible();
-
-        // [TODO]: Address amount formatting discrepancy (use currency code instead of symbol)
-        // await expect(page.getByText('607.50 EUR', { exact: true })).toHaveCount(2);
-        await expect(page.getByText('607.50 EUR', { exact: true })).toHaveCount(1);
+        await expect(page.getByText('607.50 EUR', { exact: true })).toHaveCount(2);
     };
 
     const expectSamePaymentDetailsRendering = async (page: Page) => {
@@ -84,9 +77,7 @@ test.describe('Tabbed details', () => {
 
     const expectSamePaymentTimelineRendering = async (page: Page) => {
         const expectTimelineItems = async (count: number) => {
-            // [TODO]: Address wrong timezone used for date formatting (use balance account timezone)
-            // for (const text of ['Aug 29, 2022, 09:47', 'Amount', 'Status']) {
-            for (const text of ['Aug 29, 2022, 12:47', 'Amount', 'Status']) {
+            for (const text of ['Aug 29, 2022, 09:47', 'Amount', 'Status']) {
                 const elems = page.getByText(text, { exact: true });
                 const allElems = await elems.all();
 
@@ -152,9 +143,6 @@ test.describe('Tabbed details', () => {
     });
 
     test('should render the "Timeline" tab', async ({ page }) => {
-        // [TODO]: Address inconsistent timeline items rendering (should initially render at most 2 items)
-        test.fixme(true, 'Inconsistent transaction timeline items rendering');
-
         await navigateToTab(page, 'Timeline');
         await expectSamePaymentStatusBoxRendering(page);
         await expectSamePaymentTimelineRendering(page);

@@ -24,4 +24,24 @@ test.describe('Disputes Overview - Status groups', () => {
 
         await expect(grid.getByRole('columnheader', { name: 'Status', exact: true })).toBeVisible();
     });
+
+    test('should only fetch the final status group after rapidly tabbing', async ({ page }) => {
+        const initialDisputesRequest = page.waitForResponse(response => new URL(response.url()).pathname.endsWith('/disputes'));
+        await goToStory(page, { id: STORY_ID });
+        await initialDisputesRequest;
+
+        const statusGroupRequests: string[] = [];
+
+        page.on('request', request => {
+            const url = new URL(request.url());
+            if (request.method() === 'GET' && url.pathname.endsWith('/disputes')) {
+                const statusGroup = url.searchParams.get('statusGroup');
+                if (statusGroup) statusGroupRequests.push(statusGroup);
+            }
+        });
+
+        await page.getByRole('tab', { name: 'Fraud alerts' }).click();
+        await page.getByRole('tab', { name: 'Ongoing & closed' }).click();
+        await expect.poll(() => statusGroupRequests.filter(statusGroup => statusGroup !== 'CHARGEBACKS')).toEqual(['ONGOING_AND_CLOSED']);
+    });
 });

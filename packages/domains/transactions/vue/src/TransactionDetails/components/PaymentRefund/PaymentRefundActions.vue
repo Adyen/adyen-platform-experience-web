@@ -2,9 +2,10 @@
 import { ref, computed, watch } from 'vue';
 import { useCoreContext, useConfigContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { BentoButtonActions } from '@adyen/bento-vue3';
-import { TX_DATA_ACTION_BAR, TX_DATA_CONTAINER, sharedTransactionDetailsEventProperties } from '../../../../../domain/src';
+import { sharedTransactionDetailsEventProperties } from '../../../../../domain/src';
 import { isFunction } from '@integration-components/utils';
 import type { RefundReason, RefundResult } from '../../../../../domain/src';
+import layoutStyles from '../TransactionDataLayout.module.scss';
 
 const props = defineProps<{
     beginRefund: () => void;
@@ -90,7 +91,7 @@ const secondaryAction = computed(() => ({
 </script>
 
 <template>
-    <div :class="[TX_DATA_CONTAINER, TX_DATA_ACTION_BAR]">
+    <div :class="[layoutStyles.container, layoutStyles.actionBar]">
         <BentoButtonActions :actions="[primaryAction, secondaryAction]" />
     </div>
 </template>

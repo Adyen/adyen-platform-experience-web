@@ -3,7 +3,6 @@ import { useCoreContext, useEventDispatcherContext } from '@integration-componen
 import { useLandedPageEvent } from '@integration-components/hooks-preact/useEventDispatcher/useLandedPageEvent';
 import { BaseList } from '@integration-components/ui-components-preact/BaseList/BaseList';
 import { GrantItem } from '../GrantItem/GrantItem';
-import { getGrantConfig } from '../GrantItem/utils';
 import { FunctionalComponent } from 'preact';
 import { GRANT_ADJUSTMENT_DETAILS } from '../GrantAdjustmentDetails/constants';
 import { GrantAdjustmentDetail, GrantAdjustmentDetailCallback } from '../GrantAdjustmentDetails/types';
@@ -16,7 +15,7 @@ import Button from '@integration-components/ui-components-preact/Button/Button';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import InfoBox from '@integration-components/ui-components-preact/InfoBox';
-import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
+import { EnhancedCapitalState, getHasGrantGroups, getGroupedGrants, getGrantConfig } from '@integration-components/capital/domain';
 
 const sharedAnalyticsEventProperties = {
     ...sharedCapitalOverviewAnalyticsEventProperties,
@@ -36,40 +35,23 @@ const List = ({ grants, showDetails }: { grants: IGrant[]; showDetails: GrantAdj
 };
 
 interface GrantsDisplayProps {
-    capitalState?: EnhancedCapitalState;
-    grantList: IGrant[];
+    capitalState: EnhancedCapitalState;
+    grants: IGrant[];
     hideTitle?: boolean;
     onNewOfferRequest: () => void;
 }
 
-export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ capitalState, grantList, hideTitle, onNewOfferRequest }) => {
+export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ capitalState, grants, hideTitle, onNewOfferRequest }) => {
     const [selectedGrantDetail, setSelectedGrantDetail] = useState<GrantAdjustmentDetail>();
     const [selectedGrant, setSelectedGrant] = useState<IGrant>();
     const { i18n } = useCoreContext();
 
     const userEvents = useEventDispatcherContext();
 
-    const [ongoingGrants, closedGrants] = useMemo(() => {
-        const ongoing: IGrant[] = [];
-        const closed: IGrant[] = [];
+    const grantGroups = useMemo(() => getGroupedGrants(grants), [grants]);
+    const hasGrantGroups = useMemo(() => getHasGrantGroups(grantGroups), [grantGroups]);
 
-        grantList?.forEach(grant => {
-            if (grant.status === 'Active' || grant.status === 'Pending') {
-                ongoing.push(grant);
-            } else {
-                closed.push(grant);
-            }
-        });
-
-        return [ongoing, closed];
-    }, [grantList]);
-
-    const displayMode = useMemo<'UnifiedGrants' | 'SegmentedGrants'>(() => {
-        if (grantList.length > 1 && ongoingGrants.length && closedGrants.length) return 'SegmentedGrants';
-        return 'UnifiedGrants';
-    }, [ongoingGrants.length, grantList.length, closedGrants.length]);
-
-    const maxAmount = useMemo(() => capitalState?.dynamicOffer?.maxAmount, [capitalState?.dynamicOffer?.maxAmount]);
+    const maxAmount = useMemo(() => capitalState.dynamicOffer?.maxAmount, [capitalState.dynamicOffer?.maxAmount]);
 
     const onNewOfferRequestWithTracking = useCallback<typeof onNewOfferRequest>(() => {
         try {
@@ -90,32 +72,19 @@ export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ capital
 
     useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital overview' });
 
-    if (selectedGrant) {
-        switch (selectedGrantDetail) {
-            case GRANT_ADJUSTMENT_DETAILS.unscheduledRepayment: {
-                if (selectedGrantConfig?.hasUnscheduledRepaymentDetails) {
-                    return <GrantRepaymentDetails grant={selectedGrant} onDetailsClose={hideGrantDetails} />;
-                }
-                break;
-            }
-
-            // The grant revocation account details is currently not ready to be rendered.
-            // A future iteration of this component might include revocation account details.
-            // Only then should the following lines be uncommented.
-            //
-            // case GRANT_DETAILS_VIEWS.revocation:
-            //     if (selectedGrantConfig?.hasRevocationDetails) {
-            //         return <GrantRevocationDetails grant={selectedGrant} onDetailsClose={hideGrantDetailsView} />;
-            //     }
-            //     break;
-        }
+    if (
+        selectedGrant &&
+        selectedGrantDetail === GRANT_ADJUSTMENT_DETAILS.unscheduledRepayment &&
+        selectedGrantConfig?.hasUnscheduledRepaymentDetails
+    ) {
+        return <GrantRepaymentDetails grant={selectedGrant} onDetailsClose={hideGrantDetails} />;
     }
 
     return (
         <div className="adyen-pe-grant-list">
-            <CapitalHeader hideTitle={hideTitle} region={capitalState?.region} titleKey={'capital.common.title'} />
+            <CapitalHeader hideTitle={hideTitle} region={capitalState.region} titleKey={'capital.common.title'} />
 
-            {capitalState?.dynamicOffer && maxAmount ? (
+            {capitalState.dynamicOffer && maxAmount ? (
                 <InfoBox className="adyen-pe-grant-list__new-grant-banner">
                     <Typography variant={TypographyVariant.BODY}>
                         {i18n.get('capital.overview.grants.newGrant.title.part1')}
@@ -130,7 +99,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ capital
                         </strong>
                     </Typography>
 
-                    {!!capitalState?.renewableGrants.length && (
+                    {!!capitalState.renewableGrants.length && (
                         <Typography variant={TypographyVariant.CAPTION} className="adyen-pe-grant-list__early-renewal-notice">
                             {i18n.get('capital.overview.grants.newGrant.earlyRenewalNotice')}
                         </Typography>
@@ -142,24 +111,25 @@ export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ capital
                 </InfoBox>
             ) : null}
 
-            {displayMode === 'UnifiedGrants' && <List grants={grantList} showDetails={showGrantDetails} />}
-            {displayMode === 'SegmentedGrants' && (
+            {hasGrantGroups ? (
                 <SegmentedControl
                     items={[
                         {
                             label: 'capital.overview.grants.list.tabs.labels.inProgress',
-                            content: <List grants={ongoingGrants} showDetails={showGrantDetails} />,
+                            content: <List grants={grantGroups.ongoing} showDetails={showGrantDetails} />,
                             id: 'active',
                         },
                         {
                             label: 'capital.overview.grants.list.tabs.labels.closed',
-                            content: <List grants={closedGrants} showDetails={showGrantDetails} />,
+                            content: <List grants={grantGroups.closed} showDetails={showGrantDetails} />,
                             id: 'inactive',
                         },
                     ]}
                     activeItem={'active'}
                     aria-label={i18n.get('capital.overview.grants.list.tabs.a11y.label')}
                 />
+            ) : (
+                <List grants={grants} showDetails={showGrantDetails} />
             )}
         </div>
     );

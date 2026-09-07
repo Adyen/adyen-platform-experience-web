@@ -4,6 +4,11 @@ import { isWatchlistUnsubscribeToken, noop } from '@integration-components/utils
 import sessionAwareComponentAvailability from './session/utils/sessionAwareComponentAvailability';
 import sessionReady from './session/utils/sessionReady';
 
+type PermissionUpdateOptions = {
+    waitForSession?: boolean;
+    resetPermission?: boolean;
+};
+
 export function createConfigContextValue(session: AuthSession) {
     const { context, http, refresh } = session;
     return { ...context, http, refresh };
@@ -43,15 +48,18 @@ export function createConfigController(
             let refreshing = session.context.refreshing;
             let unsubscribe = noop;
 
-            const updatePermission = (options?: { waitForSession?: boolean }) => {
+            const updatePermission = ({ resetPermission = true, ...getPermissionOptions }: PermissionUpdateOptions = {}) => {
                 const checkId = ++permissionCheckId;
 
-                if (hasPermission !== undefined) {
+                if (hasPermission !== undefined && resetPermission) {
                     hasPermission = undefined;
                     onChange();
                 }
 
-                const permission = options ? getPermission(type, session, options) : getPermission(type, session);
+                const permission =
+                    getPermissionOptions.waitForSession === undefined
+                        ? getPermission(type, session)
+                        : getPermission(type, session, getPermissionOptions);
 
                 permission
                     .then(nextHasPermission => {
@@ -72,7 +80,7 @@ export function createConfigController(
                 refreshing = nextRefreshing;
 
                 onChange();
-                if (refreshCompleted) updatePermission({ waitForSession: false });
+                if (refreshCompleted) updatePermission({ waitForSession: false, resetPermission: false });
             };
 
             const resubscribe = () => {

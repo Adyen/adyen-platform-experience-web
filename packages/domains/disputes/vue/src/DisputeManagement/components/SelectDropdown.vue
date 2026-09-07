@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { BentoDropdown } from '@adyen/bento-vue3';
 import type { SelectDropdownItem } from '../types';
+import styles from './SelectDropdown.module.scss';
 
 const props = defineProps<{
     items: SelectDropdownItem[];
@@ -35,7 +36,7 @@ function onUpdate(value: string | number | { value?: string | number } | Array<s
 
 <template>
     <BentoDropdown
-        class="adyen-pe-dispute-select"
+        :class="styles.root"
         :disabled="props.disabled"
         :is-option-disabled="isOptionDisabled"
         :items="dropdownItems"

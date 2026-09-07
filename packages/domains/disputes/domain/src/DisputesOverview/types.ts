@@ -7,16 +7,18 @@ export type DisputeStatusGroup = IDisputeStatusGroup;
 export type DisputesTableFields = keyof typeof FIELD_KEYS;
 export type DisputesListCustomization = DataCustomizationObject<DisputesTableFields, IDisputeListItem[], CustomDataRetrieved[]>;
 
+export type DisputesOverviewFilters = {
+    balanceAccountId?: string;
+    statusGroup: DisputeStatusGroup;
+    schemeCodes?: string;
+    createdSince?: string;
+    createdUntil?: string;
+};
+
 export interface DisputesOverviewProps extends UIElementProps {
     allowLimitSelection?: boolean;
     balanceAccountId?: string;
-    onFiltersChanged?: (filters: {
-        balanceAccountId?: string;
-        disputeType?: string;
-        statuses?: string;
-        createdSince?: string;
-        createdUntil?: string;
-    }) => any;
+    onFiltersChanged?: (filters: DisputesOverviewFilters) => any;
     preferredLimit?: 10 | 20;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
     dataCustomization?: {

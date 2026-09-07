@@ -1,0 +1,5 @@
+@use '@integration-components/style' as style;
+
+.tcAlert {
+    margin-top: style.token(spacer-040);
+}

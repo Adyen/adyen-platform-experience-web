@@ -5,7 +5,7 @@ import { FilterParam } from '@integration-components/types';
 import { hasCustomField, isFunction, mergeRecords } from '@integration-components/utils';
 import { useBalanceAccountSelection, useCustomColumnsData, useDefaultOverviewFilterParams } from '@integration-components/hooks-preact';
 import { useConfigContext } from '@integration-components/core/preact';
-import { EARLIEST_PAYOUT_SINCE_DATE, REPORTS_OVERVIEW_CLASS_NAMES, type ReportsOverviewComponentProps } from '@integration-components/reports/domain';
+import { EARLIEST_REPORT_SINCE_DATE, REPORTS_OVERVIEW_CLASS_NAMES, type ReportsOverviewComponentProps } from '@integration-components/reports/domain';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '@integration-components/ui-components-preact/FilterBar';
 import DateFilter from '@integration-components/ui-components-preact/FilterBar/filters/DateFilter/DateFilter';
 import BalanceAccountSelector from '@integration-components/ui-components-preact/FormFields/Select/BalanceAccountSelector';
@@ -32,7 +32,7 @@ export const ReportsOverview = ({
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('reports', activeBalanceAccount);
 
     const getReports = useCallback(
-        async (pageRequestParams: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
+        async ({ [FilterParam.BALANCE_ACCOUNT]: _, ...pageRequestParams }: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
 
             return reportsEndpointCall!(requestOptions, {
@@ -67,6 +67,14 @@ export const ReportsOverview = ({
             enabled: !!activeBalanceAccount?.id && !!reportsEndpointCall,
         });
 
+    const updateBalanceAccount = useCallback(
+        (event: Parameters<typeof onBalanceAccountSelection>[0]) => {
+            onBalanceAccountSelection(event);
+            updateFilters({ [FilterParam.BALANCE_ACCOUNT]: event.target?.value });
+        },
+        [onBalanceAccountSelection, updateFilters]
+    );
+
     const mergeCustomData = useCallback(
         ({ records, retrievedData }: { records: IReport[]; retrievedData: CustomDataRetrieved[] }) =>
             mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.createdAt === record.createdAt),
@@ -94,7 +102,7 @@ export const ReportsOverview = ({
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
-                    onBalanceAccountSelection={onBalanceAccountSelection}
+                    onBalanceAccountSelection={updateBalanceAccount}
                 />
                 <DateFilter
                     canResetFilters={canResetFilters}
@@ -102,7 +110,7 @@ export const ReportsOverview = ({
                     filters={filters}
                     nowTimestamp={nowTimestamp}
                     refreshNowTimestamp={refreshNowTimestamp}
-                    sinceDate={EARLIEST_PAYOUT_SINCE_DATE}
+                    sinceDate={EARLIEST_REPORT_SINCE_DATE}
                     timezone={'UTC'}
                     updateFilters={updateFilters}
                 />

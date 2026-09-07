@@ -32,11 +32,16 @@ export const DisputeDetails = ({
     onDisputeDefend,
     onDismiss,
 }: ExternalUIComponentProps<DisputeManagementProps>) => {
-    const { flowState, getDisputesConfig } = useDisputeFlow();
+    const { flowState, getDisputesConfig, clearStates, setFlowState } = useDisputeFlow();
 
     useEffect(() => {
         void getDisputesConfig();
     }, [getDisputesConfig]);
+
+    useEffect(() => {
+        clearStates();
+        setFlowState('details');
+    }, [clearStates, id, setFlowState]);
 
     switch (flowState) {
         case 'details':

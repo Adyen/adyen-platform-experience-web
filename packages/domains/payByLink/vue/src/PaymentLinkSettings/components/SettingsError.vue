@@ -24,7 +24,7 @@ const errorInfo = computed(() =>
 </script>
 
 <template>
-    <div v-if="errorInfo" class="adyen-pe-payment-link-settings__error">
+    <div v-if="errorInfo">
         <ErrorMessageDisplay :error-info="errorInfo" :absolute-position="false" />
     </div>
 </template>

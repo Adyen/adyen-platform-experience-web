@@ -1,21 +1,23 @@
-import { computed } from 'vue';
+import { computed, toValue } from 'vue';
+import type { MaybeRefOrGetter } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BASE_LOCALE } from '@integration-components/utils/datetime/restamper/constants';
 
-const useActiveTimezone = (timezone?: string) => {
+const useActiveTimezone = (timezone?: MaybeRefOrGetter<string | undefined>) => {
     const { i18n } = useCoreContext();
 
     return computed(() => {
-        if (!timezone) return i18n.timezone;
+        const timezoneValue = toValue(timezone);
+        if (!timezoneValue) return i18n.timezone;
         try {
-            return new Intl.DateTimeFormat(BASE_LOCALE, { timeZone: timezone }).resolvedOptions().timeZone;
+            return new Intl.DateTimeFormat(BASE_LOCALE, { timeZone: timezoneValue }).resolvedOptions().timeZone;
         } catch {
             return i18n.timezone;
         }
     });
 };
 
-const useTimezoneAwareDateFormatting = (timezone?: string) => {
+const useTimezoneAwareDateFormatting = (timezone?: MaybeRefOrGetter<string | undefined>) => {
     const { i18n } = useCoreContext();
     const activeTimezone = useActiveTimezone(timezone);
 

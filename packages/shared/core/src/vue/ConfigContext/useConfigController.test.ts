@@ -19,6 +19,8 @@ const createSessionStub = (hasTransactionsEndpoint: boolean) => {
     const listeners = new Set<(value: unknown) => void>();
 
     return {
+        context,
+        emit: () => listeners.forEach(listener => listener(context)),
         session: {
             context,
             http: vi.fn(),
@@ -94,5 +96,34 @@ describe('useConfigController', () => {
         await vi.waitFor(() => {
             expect(controller?.hasPermission.value).toBe(true);
         });
+    });
+
+    test('keeps permitted content mounted while a session refresh rechecks permissions', async () => {
+        const { context, session, emit } = createSessionStub(true);
+        let controller: ReturnType<typeof useConfigController> | undefined;
+
+        const ConfigControllerHarness = () => {
+            controller = useConfigController({
+                getSession: () => session,
+                getType: () => 'transactions',
+            });
+            return () => h('div');
+        };
+
+        target = document.createElement('div');
+        app = createApp({ setup: ConfigControllerHarness });
+        app.mount(target);
+
+        await vi.waitFor(() => {
+            expect(controller?.hasPermission.value).toBe(true);
+        });
+
+        context.refreshing = true;
+        emit();
+
+        context.refreshing = false;
+        emit();
+
+        expect(controller?.hasPermission.value).toBe(true);
     });
 });

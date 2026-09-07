@@ -1,0 +1,30 @@
+@use '@integration-components/style' as style;
+
+.statusBox {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-030);
+}
+
+.tags {
+    display: flex;
+    gap: style.token(spacer-020);
+}
+
+.paymentMethod {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-030);
+}
+
+.paymentMethodLogoContainer {
+    width: style.token(spacer-100);
+}
+
+.amountError {
+    color: style.token(color-label-critical);
+}
+
+.amountPending {
+    color: style.token(color-label-secondary);
+}

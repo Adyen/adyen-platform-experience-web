@@ -2,7 +2,8 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BentoAlert } from '@adyen/bento-vue3';
-import { TX_REFUND_STATUSES_CONTAINER, RefundedState, REFUND_STATUSES } from '../../../../../domain/src';
+import { RefundedState, REFUND_STATUSES } from '../../../../../domain/src';
+import styles from './PaymentDetails.module.scss';
 
 const props = defineProps<{
     fullRefundFailed: boolean;
@@ -68,7 +69,7 @@ const alerts = computed<AlertItem[]>(() => {
 </script>
 
 <template>
-    <div v-if="alerts.length > 0" :class="TX_REFUND_STATUSES_CONTAINER">
+    <div v-if="alerts.length > 0" :class="styles.refundStatusesContainer">
         <BentoAlert v-for="(alert, idx) in alerts" :key="idx" :type="alert.type" variant="tip">
             <template #description>{{ alert.description }}</template>
         </BentoAlert>

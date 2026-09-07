@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { BentoTypography } from '@adyen/bento-vue3';
 import type { MenuItemType, PaymentLinkSettingsItem } from '../types';
+import styles from './SecondaryNav.module.scss';
 
 defineProps<{
     items: MenuItemType[];
@@ -13,13 +14,12 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <nav class="adyen-pe-payment-link-settings__secondary-nav">
-        <ul class="adyen-pe-payment-link-settings__secondary-nav-list">
+    <nav :class="styles.root">
+        <ul :class="styles.list">
             <li v-for="item in items" :key="item.value">
                 <button
                     type="button"
-                    class="adyen-pe-payment-link-settings__secondary-nav-item"
-                    :class="{ 'adyen-pe-payment-link-settings__secondary-nav-item--active': item.value === activeValue }"
+                    :class="[styles.item, { [styles.itemActive]: item.value === activeValue }]"
                     :aria-current="item.value === activeValue ? 'true' : undefined"
                     @click="emit('select', item.value)"
                 >

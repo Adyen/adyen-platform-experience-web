@@ -20,9 +20,6 @@ test.describe('Data customization', () => {
     });
 
     test('should not render hidden data grid columns', async ({ page }) => {
-        // [TODO]: Address visibility for hidden data grid columns
-        test.fixme(true, 'Hidden data grid columns are still visible');
-
         const dataGrid = page.getByRole('grid');
         await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
         await expect(dataGrid.getByRole('columnheader', { name: 'Payment method', exact: true })).toBeVisible();
@@ -30,6 +27,19 @@ test.describe('Data customization', () => {
         await expect(dataGrid.getByRole('columnheader', { name: 'Currency', exact: true })).toBeVisible();
         await expect(dataGrid.getByRole('columnheader', { name: 'Net amount', exact: true })).toBeVisible();
         await expect(dataGrid.getByRole('columnheader', { name: 'Gross amount', exact: true })).toBeVisible();
+    });
+
+    test('should retain the mobile table layout without custom columns', async ({ page }) => {
+        await page.setViewportSize({ width: 479, height: 800 });
+
+        const dataGrid = page.getByRole('grid');
+        await expect(dataGrid.getByRole('columnheader', { name: 'Payment method', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Gross amount', exact: true })).toBeVisible();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toHaveCount(0);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Store', exact: true })).toHaveCount(0);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Product', exact: true })).toHaveCount(0);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Reference', exact: true })).toHaveCount(0);
+        await expect(dataGrid.getByRole('columnheader', { name: 'Action', exact: true })).toHaveCount(0);
     });
 
     test('should render custom data grid columns', async ({ page }) => {

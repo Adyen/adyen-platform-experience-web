@@ -1,0 +1,5 @@
+@use '@integration-components/style' as style;
+
+.root {
+    padding: style.token(spacer-060) style.token(spacer-070);
+}

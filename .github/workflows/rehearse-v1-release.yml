@@ -1,0 +1,263 @@
+name: Rehearse V1 release
+
+on:
+    workflow_dispatch:
+        inputs:
+            npm_dist_tag_rehearsed:
+                description: 'Confirm an authorized maintainer manually moved and restored a temporary npm dist-tag'
+                required: true
+                type: boolean
+                default: false
+
+concurrency:
+    group: release-v1
+    cancel-in-progress: false
+
+jobs:
+    rehearse:
+        if: github.repository == 'adyen/adyen-platform-experience-web' && github.ref == 'refs/heads/version/v1.x'
+        runs-on: ubuntu-latest
+        environment: v1-release-rehearsal
+        permissions:
+            contents: write
+        steps:
+            - name: Checkout V1 maintenance branch
+              uses: actions/checkout@v4.2.2
+              with:
+                  ref: version/v1.x
+                  fetch-depth: 0
+
+            - name: Set up repository
+              uses: ./.github/actions/setup-env
+              with:
+                  NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
+
+            - name: Validate V1 release state
+              id: release
+              run: |
+                  node scripts/release-v1/release-v1.mjs validate-config --config config/release-v1.json
+                  test "$(jq -r '.baseBranch' .changeset/config.json)" = "version/v1.x"
+                  VERSION=$(jq -r '.version' package.json)
+                  node scripts/release-v1/release-v1.mjs validate-version --version "$VERSION"
+                  echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+            - name: Rehearse V1 Changesets lifecycle in isolated worktree
+              env:
+                  GITHUB_TOKEN: ${{ github.token }}
+              run: |
+                  set -euo pipefail
+
+                  PACKAGE_NAME="@adyen/adyen-platform-experience-web"
+                  CHECKOUT_DIR="$GITHUB_WORKSPACE"
+                  REHEARSAL_DIR="$RUNNER_TEMP/v1-changesets-rehearsal"
+                  CHECKOUT_STATUS=$(git status --porcelain --untracked-files=no)
+
+                  cleanup() {
+                    local status=$?
+                    local cleanup_status=0
+                    trap - EXIT
+                    set +e
+                    cd "$CHECKOUT_DIR" || cleanup_status=$?
+                    git worktree remove --force "$REHEARSAL_DIR" || cleanup_status=$?
+                    git worktree prune || cleanup_status=$?
+                    if [[ "$(git status --porcelain --untracked-files=no)" != "$CHECKOUT_STATUS" ]]; then
+                      echo "::error::The Changesets rehearsal modified the checked-out working tree."
+                      status=1
+                    fi
+                    if [[ "$status" -eq 0 && "$cleanup_status" -ne 0 ]]; then
+                      status=$cleanup_status
+                    fi
+                    exit "$status"
+                  }
+                  trap cleanup EXIT
+
+                  git worktree add --detach "$REHEARSAL_DIR" HEAD
+                  ln -s "$GITHUB_WORKSPACE/node_modules" "$REHEARSAL_DIR/node_modules"
+                  cd "$REHEARSAL_DIR"
+
+                  jq '.baseBranch = "version/v1.x"' .changeset/config.json > "$RUNNER_TEMP/v1-rehearsal-changesets-config.json"
+                  mv "$RUNNER_TEMP/v1-rehearsal-changesets-config.json" .changeset/config.json
+                  test "$(jq -r '.baseBranch' .changeset/config.json)" = "version/v1.x"
+
+                  rm -f .changeset/pre.json
+                  for changeset_file in .changeset/*.md; do
+                    if [[ -e "$changeset_file" && "$changeset_file" != ".changeset/README.md" ]]; then
+                      rm -f "$changeset_file"
+                    fi
+                  done
+                  jq '.version = "1.0.0"' package.json > "$RUNNER_TEMP/v1-rehearsal-package.json"
+                  mv "$RUNNER_TEMP/v1-rehearsal-package.json" package.json
+                  node scripts/release-v1/release-v1.mjs validate-version --version "1.0.0"
+
+                  write_patch_changeset() {
+                    local changeset_name=$1
+                    local summary=$2
+                    cat > ".changeset/${changeset_name}.md" <<EOF
+                  ---
+                  "${PACKAGE_NAME}": patch
+                  ---
+
+                  ${summary}
+                  EOF
+                    node scripts/release-v1/release-v1.mjs validate-changeset \
+                      --file ".changeset/${changeset_name}.md"
+                  }
+
+                  assert_channel() {
+                    local version=$1
+                    local npm_tag=$2
+                    local cdn_tag=$3
+                    local deploy_environment=$4
+                    local is_prerelease=$5
+                    local prerelease_tag=$6
+                    local channel
+
+                    channel=$(
+                      node scripts/release-v1/release-v1.mjs resolve-channel \
+                        --config config/release-v1.json \
+                        --version "$version"
+                    )
+                    test "$(jq -r '.npmTag' <<< "$channel")" = "$npm_tag"
+                    test "$(jq -r '.cdnTag' <<< "$channel")" = "$cdn_tag"
+                    test "$(jq -r '.deployEnvironment' <<< "$channel")" = "$deploy_environment"
+                    test "$(jq -r '.isPrerelease' <<< "$channel")" = "$is_prerelease"
+                    test "$(jq -r '.prereleaseTag // ""' <<< "$channel")" = "$prerelease_tag"
+                  }
+
+                  write_patch_changeset "v1-rehearsal-beta" "Rehearse the first V1 beta patch."
+                  pnpm changeset status
+                  pnpm changeset pre enter beta
+                  jq \
+                    --arg package "$PACKAGE_NAME" \
+                    '.initialVersions |= with_entries(select(.key == $package))' \
+                    .changeset/pre.json > "$RUNNER_TEMP/v1-rehearsal-pre.json"
+                  mv "$RUNNER_TEMP/v1-rehearsal-pre.json" .changeset/pre.json
+                  test "$(jq -r '.mode' .changeset/pre.json)" = "pre"
+                  test "$(jq -r '.tag' .changeset/pre.json)" = "beta"
+
+                  PREVIOUS_VERSION=$(jq -r '.version' package.json)
+                  pnpm changeset version
+                  BETA_VERSION=$(jq -r '.version' package.json)
+                  test "$BETA_VERSION" = "1.0.1-beta.0"
+                  node scripts/release-v1/release-v1.mjs validate-transition \
+                    --previous "$PREVIOUS_VERSION" \
+                    --current "$BETA_VERSION"
+                  assert_channel "$BETA_VERSION" "v1-beta" "v1-cdn-test" "test" "true" "beta"
+
+                  write_patch_changeset "v1-rehearsal-continuation" "Rehearse a follow-up V1 beta patch."
+                  pnpm changeset status
+                  PREVIOUS_VERSION=$BETA_VERSION
+                  pnpm changeset version
+                  CONTINUATION_VERSION=$(jq -r '.version' package.json)
+                  test "$CONTINUATION_VERSION" = "1.0.1-beta.1"
+                  node scripts/release-v1/release-v1.mjs validate-transition \
+                    --previous "$PREVIOUS_VERSION" \
+                    --current "$CONTINUATION_VERSION"
+                  assert_channel "$CONTINUATION_VERSION" "v1-beta" "v1-cdn-test" "test" "true" "beta"
+
+                  pnpm changeset pre exit
+                  test "$(jq -r '.mode' .changeset/pre.json)" = "exit"
+                  PREVIOUS_VERSION=$CONTINUATION_VERSION
+                  pnpm changeset version
+                  STABLE_VERSION=$(jq -r '.version' package.json)
+                  test "$STABLE_VERSION" = "1.0.1"
+                  node scripts/release-v1/release-v1.mjs validate-transition \
+                    --previous "$PREVIOUS_VERSION" \
+                    --current "$STABLE_VERSION"
+                  STABLE_NPM_TAG=$(jq -r '.npmTag' config/release-v1.json)
+                  assert_channel "$STABLE_VERSION" "$STABLE_NPM_TAG" "v1-cdn-live" "live" "false" ""
+
+            - name: Build and verify release artifacts
+              env:
+                  DEPLOY_ENV: test
+                  SKIP_UMD_BUILD: true
+                  VERSION: ${{ steps.release.outputs.version }}
+              run: |
+                  set -euo pipefail
+
+                  pnpm run test:release
+                  pnpm run lint
+                  pnpm run types:check
+                  pnpm run test -- --run
+                  pnpm run build:publish
+                  node scripts/release-v1/release-v1.mjs verify-tarball \
+                    --tarball "adyen-adyen-platform-experience-web-${VERSION}.tgz" \
+                    --version "$VERSION"
+                  npm publish "adyen-adyen-platform-experience-web-${VERSION}.tgz" --dry-run
+
+                  ./scripts/upload-assets/generate-umd-file.sh
+                  ./scripts/upload-assets/package-assets.sh
+
+                  shasum -a 256 \
+                    "adyen-adyen-platform-experience-web-${VERSION}.tgz" \
+                    "platform-components_cdn_${VERSION}.tar.gz" \
+                    platform-components-v1_cdn.tar.gz \
+                    > SHA256SUMS
+                  shasum -a 256 -c SHA256SUMS
+
+            - name: Verify manual npm dist-tag rehearsal
+              env:
+                  NPM_DIST_TAG_REHEARSED: ${{ inputs.npm_dist_tag_rehearsed }}
+                  VERSION: ${{ steps.release.outputs.version }}
+              run: |
+                  set -euo pipefail
+
+                  if [[ "$NPM_DIST_TAG_REHEARSED" != "true" ]]; then
+                    echo "::error::Manually rehearse npm dist-tag movement and restoration, then rerun with confirmation enabled."
+                    exit 1
+                  fi
+                  test "$(npm view "@adyen/adyen-platform-experience-web@${VERSION}" version)" = "$VERSION"
+                  echo "Manual npm dist-tag rehearsal confirmed for V1 release operations." >> "$GITHUB_STEP_SUMMARY"
+
+            - name: Rehearse V1 test CDN publish and rollback
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  set -euo pipefail
+
+                  CDN_TAG=$(jq -r '.cdn.test' config/release-v1.json)
+                  ASSET_NAME=$(jq -r '.cdn.assetName' config/release-v1.json)
+                  test "$CDN_TAG" = "v1-cdn-test"
+                  BACKUP_DIR="$RUNNER_TEMP/v1-cdn-backup"
+                  VERIFY_DIR="$RUNNER_TEMP/v1-cdn-verify"
+                  HAD_PREVIOUS=false
+                  mkdir -p "$BACKUP_DIR" "$VERIFY_DIR"
+
+                  gh release view "$CDN_TAG" --repo "${{ github.repository }}" >/dev/null
+                  if gh release view "$CDN_TAG" --repo "${{ github.repository }}" --json assets \
+                    --jq '.assets[].name' | grep -Fxq "$ASSET_NAME"; then
+                    gh release download "$CDN_TAG" \
+                      --repo "${{ github.repository }}" \
+                      --pattern "$ASSET_NAME" \
+                      --dir "$BACKUP_DIR"
+                    HAD_PREVIOUS=true
+                  fi
+
+                  restore() {
+                    local status=$?
+                    local restore_status=0
+                    trap - EXIT
+                    set +e
+                    if [[ "$HAD_PREVIOUS" == "true" ]]; then
+                      gh release upload "$CDN_TAG" "$BACKUP_DIR/$ASSET_NAME" \
+                        --repo "${{ github.repository }}" \
+                        --clobber || restore_status=$?
+                    else
+                      gh release delete-asset "$CDN_TAG" "$ASSET_NAME" \
+                        --repo "${{ github.repository }}" --yes || restore_status=$?
+                    fi
+                    if [[ "$status" -eq 0 && "$restore_status" -ne 0 ]]; then
+                      status=$restore_status
+                    fi
+                    exit "$status"
+                  }
+                  trap restore EXIT
+
+                  gh release upload "$CDN_TAG" "$ASSET_NAME" \
+                    --repo "${{ github.repository }}" \
+                    --clobber
+                  gh release download "$CDN_TAG" \
+                    --repo "${{ github.repository }}" \
+                    --pattern "$ASSET_NAME" \
+                    --dir "$VERIFY_DIR"
+                  cmp "$ASSET_NAME" "$VERIFY_DIR/$ASSET_NAME"

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
 
 const STORY_ID = 'mocked-disputes-disputes-overview--default';
 
@@ -25,5 +25,10 @@ test.describe('Disputes Overview - Default', () => {
         await expect(grid.getByRole('columnheader', { name: 'Opened on', exact: true })).toBeVisible();
         await expect(grid.getByRole('columnheader', { name: 'Disputed amount', exact: true })).toBeVisible();
         await expect(page.getByText('No chargebacks found')).toBeHidden();
+    });
+
+    test('should reset pagination when selecting another balance account', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID });
+        await expectBalanceAccountPaginationReset({ endpointPath: '/disputes', page, variant: 'Bento' });
     });
 });

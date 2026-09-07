@@ -1,0 +1,56 @@
+@use '@integration-components/style';
+@use '@integration-components/style/breakpoints' as breakpoints;
+
+.breakdowns {
+    display: grid;
+    gap: style.token(spacer-100) style.token(spacer-120);
+    grid-template-columns: 1fr;
+    margin-top: style.token(spacer-070);
+
+    @include breakpoints.adyen-pe-screen-md-and-up {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        position: relative;
+    }
+}
+
+.divider {
+    display: none;
+
+    @include breakpoints.adyen-pe-screen-md-and-up {
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+.breakdown {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.breakdowns .breakdownList {
+    :global(.b-data-grid-columns) {
+        display: none;
+    }
+
+    @include breakpoints.adyen-pe-screen-md-and-up {
+        margin-inline: unset;
+    }
+}
+
+.amountDisplay {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-020);
+    margin-bottom: style.token(spacer-070);
+}
+
+.amountDisplayAmount {
+    display: flex;
+    align-items: center;
+    gap: style.token(spacer-040);
+    margin-bottom: style.token(spacer-070);
+}

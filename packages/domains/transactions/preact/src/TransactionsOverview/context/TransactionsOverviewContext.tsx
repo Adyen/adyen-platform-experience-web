@@ -80,7 +80,7 @@ export const TransactionsOverviewProvider = ({
     });
 
     const transactionsListResult = useTransactionsList({
-        fetchEnabled: mode !== 'insights' && hasActiveBalanceAccount,
+        fetchEnabled: isTransactionsView && hasActiveBalanceAccount,
         now: lastFiltersChangeTimestamp,
         allowLimitSelection,
         dataCustomization,

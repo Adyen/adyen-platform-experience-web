@@ -2,11 +2,11 @@
 import { computed } from 'vue';
 import { BentoAlert, BentoDivider, BentoStructuredList, BentoStructuredListItem, BentoTag, BentoTypography } from '@adyen/bento-vue3';
 import { useWizard } from '../../../composables/wizardContext';
-import { PAYMENT_LINK_CREATION_CLASS_NAMES, PAYMENT_LINK_CREATION_SUMMARY_INVISIBLE_FIELDS } from '../../../../../../domain/src';
+import { PAYMENT_LINK_CREATION_SUMMARY_INVISIBLE_FIELDS } from '../../../../../../domain/src';
 import type { FormFieldConfig } from '../../../../../../domain/src';
 import type { TranslationKey } from '@integration-components/core';
 import type { IPaymentLinkType } from '@integration-components/types';
-import './FormSummary.scss';
+import styles from './FormSummary.module.scss';
 
 const props = defineProps<{
     selectItems: { id: string; name: string }[];
@@ -15,7 +15,6 @@ const props = defineProps<{
 
 const wizard = useWizard();
 const { i18n } = wizard;
-const CLASS_NAMES = PAYMENT_LINK_CREATION_CLASS_NAMES;
 
 const INVISIBLE = PAYMENT_LINK_CREATION_SUMMARY_INVISIBLE_FIELDS as string[];
 
@@ -98,9 +97,9 @@ const showEmailNotifications = computed(() => sendLink.value || sendSuccess.valu
 </script>
 
 <template>
-    <section :class="CLASS_NAMES.summary">
-        <section :class="CLASS_NAMES.summarySection">
-            <BentoTypography variant="title" :class="CLASS_NAMES.summarySectionTitle">
+    <section :class="styles.root">
+        <section :class="styles.section">
+            <BentoTypography variant="title" :class="styles.sectionTitle">
                 {{ i18n.get('payByLink.creation.summary.paymentDetails') }}
             </BentoTypography>
             <BentoStructuredList layout="42-58">
@@ -112,8 +111,8 @@ const showEmailNotifications = computed(() => sendLink.value || sendSuccess.valu
 
         <template v-if="nonAddressRows.length">
             <BentoDivider />
-            <section :class="CLASS_NAMES.summarySection">
-                <BentoTypography variant="title" :class="CLASS_NAMES.summarySectionTitle">
+            <section :class="styles.section">
+                <BentoTypography variant="title" :class="styles.sectionTitle">
                     {{ i18n.get('payByLink.creation.summary.shopperInformation') }}
                 </BentoTypography>
                 <BentoStructuredList layout="42-58">
@@ -121,7 +120,7 @@ const showEmailNotifications = computed(() => sendLink.value || sendSuccess.valu
                         <BentoTypography variant="body">{{ row.rendered }}</BentoTypography>
                     </BentoStructuredListItem>
                     <BentoStructuredListItem v-if="showEmailNotifications" :label="i18n.get('payByLink.creation.summary.fields.emailNotifications')">
-                        <div :class="CLASS_NAMES.summaryTagsContainer">
+                        <div :class="styles.tagsContainer">
                             <BentoTag v-if="sendLink">{{ i18n.get('payByLink.creation.summary.fields.emailNotifications.emailCreation') }}</BentoTag>
                             <BentoTag v-if="sendSuccess">{{
                                 i18n.get('payByLink.creation.summary.fields.emailNotifications.paymentSuccess')
@@ -132,8 +131,8 @@ const showEmailNotifications = computed(() => sendLink.value || sendSuccess.valu
             </section>
         </template>
 
-        <section v-if="deliveryRows.length" :class="CLASS_NAMES.summarySection">
-            <BentoTypography variant="body" stronger :class="CLASS_NAMES.summarySectionTitle">
+        <section v-if="deliveryRows.length" :class="styles.section">
+            <BentoTypography variant="body" stronger :class="styles.sectionTitle">
                 {{ i18n.get('payByLink.creation.summary.deliveryAddress') }}
             </BentoTypography>
             <BentoStructuredList layout="42-58">
@@ -143,8 +142,8 @@ const showEmailNotifications = computed(() => sendLink.value || sendSuccess.valu
             </BentoStructuredList>
         </section>
 
-        <section v-if="billingRows.length" :class="CLASS_NAMES.summarySection">
-            <BentoTypography variant="body" stronger :class="CLASS_NAMES.summarySectionTitle">
+        <section v-if="billingRows.length" :class="styles.section">
+            <BentoTypography variant="body" stronger :class="styles.sectionTitle">
                 {{ i18n.get('payByLink.creation.summary.billingAddress') }}
             </BentoTypography>
             <BentoStructuredList layout="42-58">
@@ -154,7 +153,7 @@ const showEmailNotifications = computed(() => sendLink.value || sendSuccess.valu
             </BentoStructuredList>
         </section>
 
-        <BentoAlert :class="CLASS_NAMES.summaryAlert" type="highlight" variant="tip" role="alert">
+        <BentoAlert :class="styles.alert" type="highlight" variant="tip" role="alert">
             <template #description>{{ i18n.get('payByLink.creation.summary.alertDescription') }}</template>
         </BentoAlert>
     </section>

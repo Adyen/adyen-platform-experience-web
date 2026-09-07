@@ -21,7 +21,10 @@ const props = defineProps<{
     onContactSupport?: () => void;
 }>();
 
-const emit = defineEmits<{ 'update:isSameAddress': [value: boolean] }>();
+const emit = defineEmits<{
+    'update:isSameAddress': [value: boolean];
+    setupTermsAndConditions: [];
+}>();
 </script>
 
 <template>
@@ -32,6 +35,7 @@ const emit = defineEmits<{ 'update:isSameAddress': [value: boolean] }>();
         :stores-data="props.storesData?.data"
         :terms-and-conditions-provisioned="props.termsAndConditionsProvisioned"
         :can-modify-settings="props.canModifySettings"
+        @setup-terms-and-conditions="emit('setupTermsAndConditions')"
     />
     <PaymentDetailsForm v-else-if="props.currentFormStep === 'payment'" :configuration="props.configurationData" />
     <CustomerDetailsForm

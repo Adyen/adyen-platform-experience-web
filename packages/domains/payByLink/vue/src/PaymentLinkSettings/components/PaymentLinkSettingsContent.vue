@@ -9,6 +9,7 @@ import PaymentLinkThemeContainer from './PaymentLinkThemeContainer.vue';
 import TermsAndConditionsContainer from './TermsAndConditionsContainer.vue';
 import SettingsError from './SettingsError.vue';
 import LoadingSkeleton from './LoadingSkeleton.vue';
+import layoutStyles from './PaymentLinkSettingsLayout.module.scss';
 
 const THEME_ERROR_MESSAGE_KEY = 'payByLink.settings.theme.errors.couldNotLoad';
 const TERMS_AND_CONDITIONS_ERROR_MESSAGE_KEY = 'payByLink.settings.termsAndConditions.errors.couldNotLoad';
@@ -28,7 +29,7 @@ const permissionError = computed<AdyenPlatformExperienceError | undefined>(() =>
 </script>
 
 <template>
-    <div :class="isSmContainer ? 'adyen-pe-payment-link-settings__content-item--mobile' : 'adyen-pe-payment-link-settings__content-item'">
+    <div :class="isSmContainer ? layoutStyles.contentItemMobile : layoutStyles.contentItem">
         <LoadingSkeleton v-if="isLoadingContent" :row-number="activeMenuItem === MenuItem.termsAndConditions ? 2 : 3" />
         <template v-else-if="activeMenuItem === MenuItem.theme">
             <SettingsError v-if="!themeEnabled" :error="permissionError" :error-message="THEME_ERROR_MESSAGE_KEY" />

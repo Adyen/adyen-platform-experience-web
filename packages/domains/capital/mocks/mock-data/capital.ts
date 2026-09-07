@@ -207,9 +207,9 @@ export const WRITTEN_OFF_GRANT: IGrant = {
     status: 'WrittenOff',
 };
 
-export const ACTIVE_RENEWING_GRANT: IGrant = { ...ACTIVE_GRANT, renewsGrantId: REPAID_GRANT.id };
+export const RENEWING_ACTIVE_GRANT: IGrant = { ...ACTIVE_GRANT, renewsGrantId: REPAID_GRANT.id };
 
-export const GRANTS: IGrant[] = [ACTIVE_RENEWING_GRANT, REPAID_GRANT, REVOKED_GRANT, WRITTEN_OFF_GRANT, FAILED_GRANT];
+export const GRANTS: IGrant[] = [RENEWING_ACTIVE_GRANT, REPAID_GRANT, REVOKED_GRANT, WRITTEN_OFF_GRANT, FAILED_GRANT];
 
 export const SIGNED_OFFER = {
     id: '66e12a9a64a6',
@@ -328,7 +328,7 @@ export const CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS: ICapitalState = 
 
 export const CAPITAL_STATE_GRANTS: ICapitalState = {
     ...CAPITAL_STATE_DEFAULT,
-    activeOrPendingGrants: [ACTIVE_RENEWING_GRANT],
+    activeOrPendingGrants: [RENEWING_ACTIVE_GRANT],
     hasClosedGrants: true,
 };
 

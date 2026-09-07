@@ -15,6 +15,8 @@ test.describe('Default', () => {
     test('should render payout details', async ({ page }) => {
         const formattedPayoutDate = getFormattedPayoutDate(new Date(NOW));
 
+        await expect(page.getByText('Payout details', { exact: true })).toHaveCount(1);
+
         // Using first here to prevent clashes with other same texts displayed on page
         await expect(page.getByText('Net payout', { exact: true }).first()).toBeVisible();
         await expect(page.getByText('900.00 EUR', { exact: true }).first()).toBeVisible();

@@ -1,10 +1,11 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { ExternalUIComponentProps, ICapitalState, IGrant } from '@integration-components/types';
+import { getEnhancedCapitalState, OnFundsRequestCallback, shouldGetGrants, getAdjustedGrants } from '@integration-components/capital/domain';
+import { ExternalUIComponentProps, IGrant } from '@integration-components/types';
 import { useConfigContext } from '@integration-components/core/preact';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
 import { useFetch } from '@integration-components/hooks-preact';
 import { EMPTY_OBJECT } from '@integration-components/utils';
-import { CapitalErrorMessageDisplay } from '../../../CapitalOffer/components/utils/CapitalErrorMessageDisplay';
+import { CapitalErrorMessageDisplay } from '../../../internal/CapitalErrorMessageDisplay';
 import { CapitalOverviewProps } from '../../types';
 import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../../constants';
 import { FunctionalComponent } from 'preact';
@@ -13,10 +14,8 @@ import './CapitalOverview.scss';
 import { PreQualified } from '../PreQualified/PreQualified';
 import { GrantList } from '../GrantList/GrantList';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
-import { getCapitalErrorMessage } from '../../../utils/capital/getCapitalErrorMessage';
-import { getEnhancedCapitalState } from '../../../utils/capital/getCapitalState';
+import { getEnhancedCapitalErrorMessage } from '../../../utils/capital/getEnhancedCapitalErrorMessage';
 import { useSupportedRegions } from '../../../utils/capital/useSupportedRegions';
-import { OnFundsRequestCallback } from '../../../types';
 
 type CapitalOverviewState = 'Loading' | 'Error' | 'PreQualified' | 'GrantList' | 'UnsupportedRegion';
 
@@ -30,6 +29,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 }) => {
     const { getCapitalState: capitalStateEndpointCall, getGrants: grantsEndpointCall } = useConfigContext().endpoints;
     const supportedRegions = useSupportedRegions();
+    const [requestedGrant, setRequestedGrant] = useState<IGrant>();
 
     const capitalStateQuery = useFetch({
         fetchOptions: { enabled: !!capitalStateEndpointCall },
@@ -38,41 +38,22 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         }, [capitalStateEndpointCall]),
     });
 
-    const [requestedGrant, setRequestedGrant] = useState<IGrant>();
-
     const capitalState = useMemo(
-        () =>
-            getEnhancedCapitalState(
-                capitalStateQuery.data &&
-                    ({
-                        ...capitalStateQuery.data,
-                        activeOrPendingGrants: requestedGrant
-                            ? [requestedGrant, ...capitalStateQuery.data.activeOrPendingGrants]
-                            : capitalStateQuery.data.activeOrPendingGrants,
-                    } as ICapitalState),
-                supportedRegions
-            ),
+        () => getEnhancedCapitalState(capitalStateQuery.data, supportedRegions, requestedGrant),
         [capitalStateQuery.data, requestedGrant, supportedRegions]
-    );
-
-    const hasGrantsOnServer = useMemo(
-        () => !!(capitalStateQuery.data?.activeOrPendingGrants?.length || capitalStateQuery.data?.hasClosedGrants),
-        [capitalStateQuery.data]
     );
 
     const grantsQuery = useFetch({
         fetchOptions: {
-            enabled: capitalState.isRegionSupported && hasGrantsOnServer && !!grantsEndpointCall,
+            enabled: !!grantsEndpointCall && shouldGetGrants(capitalStateQuery.data, !!capitalState?.isRegionSupported),
         },
         queryFn: useCallback(async () => {
             return grantsEndpointCall?.(EMPTY_OBJECT);
         }, [grantsEndpointCall]),
     });
 
-    const grantList = useMemo(() => {
-        const grants = requestedGrant ? [requestedGrant, ...(grantsQuery.data?.data || [])] : grantsQuery.data?.data;
-        return grants?.filter(grant => !(grant.status === 'Active' && capitalState.renewsGrantIds.has(grant.id)));
-    }, [capitalState.renewsGrantIds, grantsQuery.data?.data, requestedGrant]);
+    const error = capitalStateQuery.error ?? grantsQuery.error;
+    const grants = useMemo(() => getAdjustedGrants(capitalState, grantsQuery.data, requestedGrant), [capitalState, grantsQuery.data, requestedGrant]);
 
     const handlePreQualifiedFundsRequest = useCallback<OnFundsRequestCallback>(
         (data, renewsGrantId) => {
@@ -86,20 +67,17 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     );
 
     const state = useMemo<CapitalOverviewState>(() => {
-        if (capitalStateQuery.error || grantsQuery.error) {
-            return 'Error';
-        } else if (
-            (!capitalStateEndpointCall && !grantsEndpointCall) ||
-            (!capitalState && !grantList) ||
-            capitalStateQuery.isFetching ||
-            grantsQuery.isFetching
-        ) {
+        if ((!capitalStateEndpointCall && !grantsEndpointCall) || capitalStateQuery.isFetching || grantsQuery.isFetching) {
             return 'Loading';
-        } else if (capitalStateQuery.data && !capitalState.isRegionSupported) {
+        } else if (error || !capitalState) {
+            return 'Error';
+        } else if (!capitalState.isRegionSupported) {
             return 'UnsupportedRegion';
+        } else if (!capitalState.hasGrants) {
+            return 'PreQualified';
         }
-        return capitalState.hasGrants ? 'GrantList' : 'PreQualified';
-    }, [capitalState, capitalStateEndpointCall, capitalStateQuery, grantList, grantsEndpointCall, grantsQuery]);
+        return 'GrantList';
+    }, [capitalState, capitalStateEndpointCall, capitalStateQuery.isFetching, error, grantsEndpointCall, grantsQuery.isFetching]);
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
@@ -115,20 +93,20 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                     case 'Error':
                         return (
                             <div className={CAPITAL_OVERVIEW_CLASS_NAMES.errorContainer}>
-                                <CapitalHeader hideTitle={hideTitle} region={capitalState.region} titleKey={'capital.common.title'} />
+                                <CapitalHeader hideTitle={hideTitle} region={capitalState?.region} titleKey={'capital.common.title'} />
                                 <ErrorMessageDisplay
                                     absolutePosition={false}
                                     outlined={false}
                                     withImage
                                     onContactSupport={onContactSupport}
-                                    {...getCapitalErrorMessage(capitalStateQuery.error as AdyenPlatformExperienceError, onContactSupport)}
+                                    {...getEnhancedCapitalErrorMessage(error as AdyenPlatformExperienceError, onContactSupport)}
                                 />
                             </div>
                         );
                     case 'UnsupportedRegion':
                         return (
                             <div className={CAPITAL_OVERVIEW_CLASS_NAMES.errorContainer}>
-                                <CapitalHeader hideTitle={hideTitle} region={capitalState.region} titleKey={'capital.common.title'} />
+                                <CapitalHeader hideTitle={hideTitle} region={capitalState?.region} titleKey={'capital.common.title'} />
                                 <CapitalErrorMessageDisplay unsupportedRegion />
                             </div>
                         );
@@ -145,10 +123,10 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                         );
                     case 'GrantList':
                         return (
-                            grantList && (
+                            grants && (
                                 <GrantList
-                                    capitalState={capitalState}
-                                    grantList={grantList}
+                                    capitalState={capitalState!}
+                                    grants={grants}
                                     hideTitle={hideTitle}
                                     onFundsRequest={onFundsRequest}
                                     onGrantListUpdateRequest={setRequestedGrant}
