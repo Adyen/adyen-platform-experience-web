@@ -12,7 +12,13 @@ echo "Changing working directory to project root..."
 
 cd "$PROJECT_ROOT"
 
-ARCHIVE_NAME="platform-components-v1_cdn.tar.gz"
+RELEASE_LINE=${RELEASE_LINE:-v1}
+if [[ ! "$RELEASE_LINE" =~ ^v(1|[2-9][0-9]*)$ ]]; then
+  echo "Error: RELEASE_LINE must be v1 or a mainline major (v2 or higher). Received '$RELEASE_LINE'." >&2
+  exit 1
+fi
+
+ARCHIVE_NAME="platform-components-${RELEASE_LINE}_cdn.tar.gz"
 BUILD_SCRIPT="build:umd"
 ASSETS_DIR="./packages/shared/assets/src"
 CONFIG_DIR="./packages/shared/core/src/config"
@@ -25,8 +31,12 @@ CSS_FILE="./dist/adyen-platform-experience-web.css"
 STAGING_DIR=$(mktemp -d)
 
 echo "Running the build process from directory: $(pwd)"
-pnpm run "$BUILD_SCRIPT"
-echo "Build complete"
+if [[ "${SKIP_UMD_BUILD:-false}" == "true" ]]; then
+  echo "Using the existing UMD build output"
+else
+  pnpm run "$BUILD_SCRIPT"
+  echo "Build complete"
+fi
 
 echo "Verifying required paths exist..."
 if [[ ! -d "$ASSETS_DIR" ]]; then

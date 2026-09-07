@@ -10,12 +10,35 @@ on:
         options:
           - test
           - live
+      release_line:
+        description: 'Release line that owns the CDN channel'
+        required: true
+        type: choice
+        options:
+          - v1
+          - v2
+      source_ref:
+        description: 'Immutable commit SHA or supported stable/prerelease version tag to publish'
+        required: true
+        type: string
   workflow_call:
     inputs:
       environment_choice:
         description: 'Environment to modify assets (test or live)'
         required: true
         type: string
+      release_line:
+        description: 'Release line that owns the CDN channel (v1 or a mainline major such as v2)'
+        required: true
+        type: string
+      source_ref:
+        description: 'Exact commit or supported version tag to build and publish'
+        required: true
+        type: string
+
+concurrency:
+  group: release-${{ inputs.release_line }}
+  cancel-in-progress: false
 
 jobs:
   replace-asset:
@@ -27,10 +50,90 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
         with:
-          # If 'live' is chosen, check out 'main'. Otherwise, check out 'develop'.
-          ref: ${{ (github.event.inputs.environment_choice || inputs.environment_choice) == 'live' && 'main' || 'develop' }}
+          ref: ${{ inputs.source_ref }}
+          fetch-depth: 0
+
+      - name: Validate CDN target
+        id: map_tag
+        env:
+          DEPLOY_ENV: ${{ (github.event.inputs.environment_choice || inputs.environment_choice) }}
+          RELEASE_LINE: ${{ (github.event.inputs.release_line || inputs.release_line) }}
+          SOURCE_REF: ${{ inputs.source_ref }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [[ ! "$DEPLOY_ENV" =~ ^(test|live)$ ]]; then
+            echo "::error::Environment must be test or live."
+            exit 1
+          fi
+          if [[ ! "$RELEASE_LINE" =~ ^v(1|[2-9][0-9]*)$ ]]; then
+            echo "::error::Release line must be v1 or a mainline major (v2 or higher)."
+            exit 1
+          fi
+          if [[ ! "$SOURCE_REF" =~ ^([0-9a-f]{40}|v(1|[2-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|beta|rc|next)\.(0|[1-9][0-9]*))?)$ ]]; then
+            echo "::error::Source ref must be a full commit SHA or a supported V1/mainline version tag."
+            exit 1
+          fi
+
+          PACKAGE_VERSION=$(jq -r '.version' package.json)
+          PACKAGE_RELEASE_LINE="v${PACKAGE_VERSION%%.*}"
+          if [[ "$PACKAGE_RELEASE_LINE" != "$RELEASE_LINE" ]]; then
+            echo "::error::Package version belongs to $PACKAGE_RELEASE_LINE, not $RELEASE_LINE."
+            exit 1
+          fi
+
+          if [[ "$SOURCE_REF" == v* && "$SOURCE_REF" != "v${PACKAGE_VERSION}" ]]; then
+            echo "::error::Source tag $SOURCE_REF does not match package version $PACKAGE_VERSION."
+            exit 1
+          fi
+
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            SOURCE_SHA=$(git rev-parse HEAD)
+            if [[ "$RELEASE_LINE" == "v1" ]]; then
+              git fetch origin version/v1.x:refs/remotes/origin/version/v1.x
+              git merge-base --is-ancestor "$SOURCE_SHA" origin/version/v1.x || {
+                echo "::error::Manual V1 CDN publishes must come from version/v1.x."
+                exit 1
+              }
+            else
+              git fetch origin main:refs/remotes/origin/main
+              git merge-base --is-ancestor "$SOURCE_SHA" origin/main || {
+                echo "::error::Manual mainline CDN publishes must come from main."
+                exit 1
+              }
+            fi
+          fi
+
+          if [[ "$RELEASE_LINE" == "v1" ]]; then
+            node scripts/release-v1/release-v1.mjs validate-version --version "$PACKAGE_VERSION"
+            CHANNEL=$(
+              node scripts/release-v1/release-v1.mjs resolve-channel \
+                --config config/release-v1.json \
+                --version "$PACKAGE_VERSION"
+            )
+            IS_PRERELEASE=$(jq -r '.isPrerelease' <<< "$CHANNEL")
+
+            if [[ "$IS_PRERELEASE" == "true" && "$DEPLOY_ENV" != "test" ]]; then
+              echo "::error::V1 prereleases may publish only to v1-cdn-test."
+              exit 1
+            fi
+          else
+            MAINLINE_MAJOR=${RELEASE_LINE#v}
+            if [[ ! "$PACKAGE_VERSION" =~ ^${MAINLINE_MAJOR}\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|beta|rc|next)\.(0|[1-9][0-9]*))?$ ]]; then
+              echo "::error::Mainline source must contain a stable or supported prerelease ${RELEASE_LINE} package version."
+              exit 1
+            fi
+            if [[ "$PACKAGE_VERSION" == *"-"* && "$DEPLOY_ENV" != "test" ]]; then
+              echo "::error::Mainline prereleases may publish only to test CDN channels."
+              exit 1
+            fi
+          fi
+
+          TAG_NAME="${RELEASE_LINE}-cdn-${DEPLOY_ENV}"
+          ASSET_NAME="platform-components-${RELEASE_LINE}_cdn.tar.gz"
+          echo "TAG_NAME=$TAG_NAME" >> "$GITHUB_ENV"
+          echo "ASSET_NAME=$ASSET_NAME" >> "$GITHUB_ENV"
 
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
@@ -40,32 +143,57 @@ jobs:
       - name: Build and package assets
         env:
           DEPLOY_ENV: ${{ (github.event.inputs.environment_choice || inputs.environment_choice) }}
+          RELEASE_LINE: ${{ (github.event.inputs.release_line || inputs.release_line) }}
         run: |
           ./scripts/upload-assets/package-assets.sh
 
-      - name: Map environment to tag name
-        id: map_tag
-        run: |
-          if [[ "${{ (github.event.inputs.environment_choice || inputs.environment_choice) }}" == "test" ]]; then
-            echo "TAG_NAME=v1-cdn-test" >> $GITHUB_ENV
-          elif [[ "${{ (github.event.inputs.environment_choice || inputs.environment_choice) }}" == "live" ]]; then
-            echo "TAG_NAME=v1-cdn-live" >> $GITHUB_ENV
-          fi
-
-      - name: Delete and Upload Asset in Target Repo
+      - name: Replace asset in target repository
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARGET_REPO: ${{ github.repository }}
-          ASSET_PATH: './platform-components-v1_cdn.tar.gz'
-          ASSET_NAME: 'platform-components-v1_cdn.tar.gz'
         run: |
           echo "Targeting repository: $TARGET_REPO"
-          echo "User selected: ${{ (github.event.inputs.environment_choice || inputs.environment_choice) }}, using mapped tag: ${{ env.TAG_NAME }}"
+          echo "Using CDN tag: $TAG_NAME"
           
-          # Delete the old asset from the target repo using the mapped tag
-          gh release delete-asset ${{ env.TAG_NAME }} "$ASSET_NAME" \
-            --repo "$TARGET_REPO"
+          BACKUP_DIR="$RUNNER_TEMP/cdn-backup"
+          VERIFY_DIR="$RUNNER_TEMP/cdn-verify"
+          HAD_PREVIOUS_ASSET=false
+          mkdir -p "$BACKUP_DIR" "$VERIFY_DIR"
 
-          # Upload the new asset to the target repo using the mapped tag
-          gh release upload ${{ env.TAG_NAME }} "$ASSET_PATH" \
-            --repo "$TARGET_REPO"
+          if gh release view "$TAG_NAME" --repo "$TARGET_REPO" --json assets \
+            --jq '.assets[].name' | grep -Fxq "$ASSET_NAME"; then
+            gh release download "$TAG_NAME" \
+              --repo "$TARGET_REPO" \
+              --pattern "$ASSET_NAME" \
+              --dir "$BACKUP_DIR"
+            HAD_PREVIOUS_ASSET=true
+          fi
+
+          restore() {
+            local status=$?
+            set +e
+
+            if [[ "$HAD_PREVIOUS_ASSET" == "true" ]]; then
+              gh release upload "$TAG_NAME" "$BACKUP_DIR/$ASSET_NAME" \
+                --repo "$TARGET_REPO" \
+                --clobber \
+                || echo "::error::Failed to restore CDN asset."
+            else
+              gh release delete-asset "$TAG_NAME" "$ASSET_NAME" \
+                --repo "$TARGET_REPO" \
+                --yes || true
+            fi
+
+            exit "$status"
+          }
+          trap restore ERR
+
+          gh release upload "$TAG_NAME" "./$ASSET_NAME" \
+            --repo "$TARGET_REPO" \
+            --clobber
+          gh release download "$TAG_NAME" \
+            --repo "$TARGET_REPO" \
+            --pattern "$ASSET_NAME" \
+            --dir "$VERIFY_DIR"
+          cmp "./$ASSET_NAME" "$VERIFY_DIR/$ASSET_NAME"
+          trap - ERR
