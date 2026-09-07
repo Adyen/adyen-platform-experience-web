@@ -81,7 +81,8 @@
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
     "types:check": "nx run-many --target=types:check",
     "types:watch": "concurrently --kill-others-on-fail 'nx run-many --target=types:watch' 'tsc --project tsconfig-build.json --watch'",
-    "version": "./scripts/bump-version.sh"
+    "version": "./scripts/bump-version.sh",
+    "test:release": "node --test scripts/release-v1/*.test.mjs scripts/npm-publish/*.test.mjs"
   },
   "dependencies": {
     "core-js": "^3.36.0"
