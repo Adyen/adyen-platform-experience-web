@@ -8,6 +8,8 @@ import { logoOptionsList, ThemeFormDataRequest } from '../constants';
 import type { LogoType, ThemeFormData } from '../types';
 import LogoInput from './LogoInput.vue';
 import LogoPreview from './LogoPreview.vue';
+import styles from './ThemeForm.module.scss';
+import layoutStyles from './PaymentLinkSettingsLayout.module.scss';
 
 const props = defineProps<{ theme: ThemeFormData }>();
 
@@ -118,7 +120,7 @@ function getLogoUrl(type: LogoType) {
 </script>
 
 <template>
-    <div class="adyen-pe-payment-link-theme-form-container">
+    <div :class="styles.container">
         <BentoAlert v-if="showMissingBrandName" type="critical" :dismissible="false">
             <template #description>{{ i18n.get('payByLink.settings.common.alerts.validationError') }}</template>
         </BentoAlert>
@@ -128,12 +130,12 @@ function getLogoUrl(type: LogoType) {
         <BentoAlert v-else-if="isSaveError" type="critical" variant="tip" :dismissible="false">
             <template #description>{{ i18n.get('payByLink.settings.common.alerts.saveError') }}</template>
         </BentoAlert>
-        <div class="adyen-pe-payment-link-settings__content-header">
+        <div :class="layoutStyles.contentHeader">
             <BentoTypography variant="title" medium el="div">{{ i18n.get('payByLink.settings.theme.title') }}</BentoTypography>
             <BentoTypography variant="body" wide>{{ i18n.get('payByLink.settings.theme.subtitle') }}</BentoTypography>
         </div>
-        <div class="adyen-pe-payment-link-theme-form">
-            <div class="adyen-pe-payment-link-settings__input-container">
+        <div :class="styles.root">
+            <div :class="layoutStyles.inputContainer">
                 <BentoInputField
                     type="text"
                     :disabled="!!isSaving"
@@ -146,7 +148,7 @@ function getLogoUrl(type: LogoType) {
                     @input="onBrandNameChange"
                 />
             </div>
-            <div v-for="logoType in logoOptionsList" :key="logoType" class="adyen-pe-payment-link-settings__input-container">
+            <div v-for="logoType in logoOptionsList" :key="logoType" :class="layoutStyles.inputContainer">
                 <LogoPreview
                     v-if="getLogoUrl(logoType) && !isTouched(logoType)"
                     :disabled="!!isSaving"

@@ -1,0 +1,7 @@
+@use '@integration-components/style';
+
+.input {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-040);
+}

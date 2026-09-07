@@ -38,9 +38,7 @@ test.describe('Refundable - Full amount', () => {
         await page.getByRole('button', { name: 'Go back', exact: true, disabled: false }).click();
 
         await expect(page.getByText('Payment', { exact: true })).toBeVisible();
-        // [TODO]: Address amount formatting discrepancy (use currency code instead of symbol)
-        // await expect(page.getByText('607.50 EUR', { exact: true })).toBeVisible();
-        await expect(page.getByText('€607.50', { exact: true })).toBeVisible();
+        await expect(page.getByText('607.50 EUR', { exact: true })).toBeVisible();
 
         await expect(page.getByText('The refund is being processed. Please come back later.', { exact: true })).toBeVisible();
         await expect(page.getByRole('status')).toHaveCount(1);

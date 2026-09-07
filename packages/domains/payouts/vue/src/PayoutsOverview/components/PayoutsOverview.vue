@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
+import { ModalContextProvider, useCoreContext } from '@integration-components/core/vue';
 import { BentoTypography, BentoModal } from '@adyen/bento-vue3';
-import { quickSelectDateRanges } from '@integration-components/utils';
+import { getTimezoneAwareDateRangeQueryParams } from '@integration-components/composables-vue';
+import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
 import PayoutsFilters from './PayoutsFilters.vue';
 import PayoutsTable from './PayoutsTable.vue';
 import PayoutDetailsContainer from '../../PayoutDetails/components/PayoutDetailsContainer.vue';
 import { usePayoutsList } from '../composables/usePayoutsList';
-import { BASE_CLASS } from '../constants';
+import { EARLIEST_PAYOUT_SINCE_DATE } from '../constants';
 import type { IBalanceAccountBase, PayoutsOverviewExternalProps } from '../types';
 import type { IPayout } from '@integration-components/types';
-import '../styles/index.scss';
+import styles from './PayoutsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccountId?: string;
@@ -28,14 +29,19 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 
+const initialDateRangeQueryParams = getTimezoneAwareDateRangeQueryParams({
+    dateRange: quickSelectDateRanges.last30Days,
+    earliestDate: startOfDay(new Date(EARLIEST_PAYOUT_SINCE_DATE)),
+    timezone: 'UTC',
+});
+
 const filterParams = ref<{
     balanceAccountId: string | undefined;
     createdSince: string;
     createdUntil: string;
 }>({
     balanceAccountId: undefined,
-    createdSince: new Date(quickSelectDateRanges.last30Days.startDate).toISOString(),
-    createdUntil: new Date(quickSelectDateRanges.last30Days.endDate).toISOString(),
+    ...initialDateRangeQueryParams,
 });
 
 function onFiltersChange(params: { balanceAccountId: string | undefined; createdSince: string; createdUntil: string }) {
@@ -97,15 +103,13 @@ function closeModal() {
 </script>
 
 <template>
-    <div :class="BASE_CLASS">
-        <div v-if="!props.hideTitle" class="adyen-pe-payouts-overview-header">
+    <div :class="styles.root">
+        <div v-if="!props.hideTitle" :class="styles.header">
             <BentoTypography variant="title">{{ i18n.get('payouts.overview.title') }}</BentoTypography>
-            <BentoTypography variant="body" class="adyen-pe-payouts-overview-header__description">{{
-                i18n.get('payouts.overview.generateInfo')
-            }}</BentoTypography>
+            <BentoTypography variant="body" :class="styles.description">{{ i18n.get('payouts.overview.generateInfo') }}</BentoTypography>
         </div>
 
-        <div role="toolbar" class="adyen-pe-payouts-overview__toolbar">
+        <div role="toolbar" :class="styles.toolbar">
             <PayoutsFilters :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />
         </div>
 
@@ -130,23 +134,27 @@ function closeModal() {
             :current-page="payoutsListResult.page.value + 1"
         />
 
-        <BentoModal
-            :is-open="isModalOpen"
-            size="medium"
-            :is-dismissible="true"
-            @close-modal="closeModal"
-            :aria-label="i18n.get('payouts.details.title')"
-        >
-            {{ i18n.get('payouts.details.title') }}
-            <template #content>
-                <PayoutDetailsContainer
-                    v-if="selectedPayout && activeBalanceAccount"
-                    :id="activeBalanceAccount.id"
-                    :balance-account-description="activeBalanceAccount.description"
-                    :date="selectedPayout.createdAt ?? ''"
-                    :on-contact-support="props.onContactSupport"
-                />
-            </template>
-        </BentoModal>
+        <ModalContextProvider>
+            <BentoModal
+                :is-open="isModalOpen"
+                size="medium"
+                :is-dismissible="true"
+                :aria-label="i18n.get('payouts.details.title')"
+                @close-modal="closeModal"
+            >
+                <!-- Keep this default slot empty so Bento preserves its header layout without rendering a duplicate title. -->
+                <template #default />
+                <template #content>
+                    <PayoutDetailsContainer
+                        v-if="selectedPayout && activeBalanceAccount"
+                        :id="activeBalanceAccount.id"
+                        :balance-account-description="activeBalanceAccount.description"
+                        :date="selectedPayout.createdAt ?? ''"
+                        :data-customization="props.dataCustomization"
+                        :on-contact-support="props.onContactSupport"
+                    />
+                </template>
+            </BentoModal>
+        </ModalContextProvider>
     </div>
 </template>

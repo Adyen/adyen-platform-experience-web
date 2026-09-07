@@ -3,6 +3,7 @@ import { DISPUTE_ACTION_NEEDED_URGENTLY_THRESHOLD_DAYS } from './constants';
 import {
     DisputeActionNeededLevel,
     getDisputeActionNeededLevel,
+    getDisputeDeadlineTimeRemaining,
     isDisputeActionNeeded,
     isDisputeActionNeededNow,
     isDisputeActionNeededUrgently,
@@ -20,6 +21,29 @@ const hoursFromNow = (hours = 0) => {
 };
 
 const daysFromNow = (days = 0) => hoursFromNow(days * 24);
+
+describe('getDisputeDeadlineTimeRemaining', () => {
+    const now = new Date('2026-08-21T12:00:00.000Z').getTime();
+
+    test('should report an expired deadline even when it passed less than a day ago', () => {
+        expect(getDisputeDeadlineTimeRemaining('2026-08-21T11:59:00.000Z', now)).toEqual({
+            days: 0,
+            expired: true,
+        });
+    });
+
+    test('should report the rounded number of remaining days for a future deadline', () => {
+        expect(getDisputeDeadlineTimeRemaining('2026-08-22T12:01:00.000Z', now)).toEqual({
+            days: 2,
+            expired: false,
+        });
+    });
+
+    test('should return undefined without a valid deadline', () => {
+        expect(getDisputeDeadlineTimeRemaining(undefined, now)).toBeUndefined();
+        expect(getDisputeDeadlineTimeRemaining('invalid', now)).toBeUndefined();
+    });
+});
 
 describe('getDisputeActionNeededLevel', () => {
     test('should return correct action needed level based on dispute status', () => {

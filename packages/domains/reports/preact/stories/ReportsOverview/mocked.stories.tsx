@@ -1,13 +1,31 @@
 import { Meta } from '@storybook/preact';
+import { getWorker } from 'msw-storybook-addon';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { ReportsOverview } from '../../src';
 import { ReportsOverviewMeta } from './meta';
 import { http, HttpResponse } from 'msw';
-import { REPORTS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/reports';
 import { REPORTS_ENDPOINTS } from '../../../mocks/endpoints';
+import { createDownloadReportHandler, REPORTS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/reports';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, getCustomDataReports } from '../../../fixtures/data/ReportsOverview';
 
-const meta: Meta<ElementProps<typeof ReportsOverview>> = { ...ReportsOverviewMeta, title: 'Mocked/Reports/Reports Overview' };
+type ReportsOverviewStoryArgs = ElementProps<typeof ReportsOverview> & { enforceDownloadDelay?: boolean };
+
+const meta: Meta<ReportsOverviewStoryArgs> = {
+    ...ReportsOverviewMeta,
+    title: 'Mocked/Reports/Reports Overview',
+    argTypes: {
+        enforceDownloadDelay: {
+            table: { disable: true },
+        },
+    },
+    loaders: [
+        context => {
+            const enforceDownloadDelay = context.args.enforceDownloadDelay;
+            if (enforceDownloadDelay) getWorker().use(createDownloadReportHandler({ enforceDownloadDelay }));
+        },
+    ],
+};
+
 const defaultArgs = { mockedApi: true } as const;
 
 export const Default: ElementStory<typeof ReportsOverview> = {

@@ -9,13 +9,9 @@ import {
 
 type FilterVariant = keyof (typeof BalanceAccountFilter | typeof DateRangeFilter);
 
-// [TODO]: Remove once "Modified filter" analytics events stop firing for untouched filters (Bento only)
-const FIXME_UNNECESSARY_ANALYTICS_EVENTS_REASON = 'Triggers unnecessary analytic events for untouched filters';
-
 export const testBalanceAccountFilter = (options: { variant: FilterVariant }) => {
     const { variant } = options;
     const Filter = BalanceAccountFilter[variant];
-    const fixmeUnnecessaryAnalyticsEvents = variant === 'Bento';
 
     test.describe('Balance account', () => {
         test.beforeEach(async ({ page }) => {
@@ -29,8 +25,6 @@ export const testBalanceAccountFilter = (options: { variant: FilterVariant }) =>
         });
 
         test('should select another balance account option (Transactions View)', async ({ page, analyticsEvents }) => {
-            test.fixme(fixmeUnnecessaryAnalyticsEvents, FIXME_UNNECESSARY_ANALYTICS_EVENTS_REASON);
-
             const selectedBalanceAccountId = await new Filter(page).selectFirstUnselected();
 
             await expectAnalyticsEvents(analyticsEvents, [
@@ -47,8 +41,6 @@ export const testBalanceAccountFilter = (options: { variant: FilterVariant }) =>
         });
 
         test('should select another balance account option (Insights View)', async ({ page, analyticsEvents }) => {
-            test.fixme(fixmeUnnecessaryAnalyticsEvents, FIXME_UNNECESSARY_ANALYTICS_EVENTS_REASON);
-
             await goToView(page, analyticsEvents, 'Insights');
 
             const filter = new Filter(page);
@@ -69,6 +61,53 @@ export const testBalanceAccountFilter = (options: { variant: FilterVariant }) =>
             ]);
         });
 
+        test('should not request the transactions list when selecting another account in Insights', async ({ page, analyticsEvents }) => {
+            await new Filter(page).collapse('clickButton');
+
+            const nextPageResponse = page.waitForResponse(response => {
+                const url = new URL(response.url());
+                return url.pathname.endsWith('/transactions') && url.searchParams.has('cursor');
+            });
+            await page.getByRole('button', { name: /Next page/i }).click();
+            await nextPageResponse;
+            await expect(page.getByRole('button', { name: /Previous page/i })).toBeEnabled();
+
+            await goToView(page, analyticsEvents, 'Insights');
+
+            const transactionListRequests: URL[] = [];
+            const transactionTotalsResponses: URL[] = [];
+
+            page.on('request', request => {
+                const url = new URL(request.url());
+                if (url.pathname.endsWith('/transactions')) transactionListRequests.push(url);
+            });
+            page.on('response', response => {
+                const url = new URL(response.url());
+                if (url.pathname.endsWith('/transactions/totals')) transactionTotalsResponses.push(url);
+            });
+
+            const filter = new Filter(page);
+            await filter.expand('clickButton');
+            const selectedBalanceAccountId = await filter.selectFirstUnselected();
+
+            await expect
+                .poll(() => transactionTotalsResponses.some(url => url.searchParams.get('balanceAccountId') === selectedBalanceAccountId))
+                .toBe(true);
+            expect(transactionListRequests).toEqual([]);
+
+            await page.getByRole('radio', { name: 'Transactions', exact: true }).click();
+            await expect(page.getByRole('radio', { name: 'Transactions', exact: true, checked: true })).toBeVisible();
+            await expect
+                .poll(() => transactionListRequests.some(url => url.searchParams.get('balanceAccountId') === selectedBalanceAccountId))
+                .toBe(true);
+
+            const selectedAccountRequests = transactionListRequests.filter(
+                url => url.searchParams.get('balanceAccountId') === selectedBalanceAccountId
+            );
+            selectedAccountRequests.forEach(url => expect(url.searchParams.get('cursor')).toBeNull());
+            await expect(page.getByRole('button', { name: /Previous page/i })).toBeDisabled();
+        });
+
         test('should close filter dialog when the filter button is clicked again', async ({ page }) => {
             await new Filter(page).collapse('clickButton');
         });
@@ -84,7 +123,6 @@ export const testDateRangeFilter = (options: { variant: FilterVariant; now: numb
 
     const Filter = DateRangeFilter[variant];
     const datePickerOptions = { defaultPreset: 'Last 180 days' } as const;
-    const fixmeUnnecessaryAnalyticsEvents = variant === 'Bento';
     const now = nowFromOptions + (variant === 'Bento' ? 0 : 1); /* +1 here compensates for a time shift */
 
     const sharedModifiedDateFilterEventProperties = {
@@ -95,8 +133,6 @@ export const testDateRangeFilter = (options: { variant: FilterVariant; now: numb
 
     test.describe('Date range', () => {
         test.beforeEach(async ({ page }) => {
-            // [TODO]: Address default date range preset mismatch when this whole describe block is un-fixme'd
-            test.fixme(fixmeUnnecessaryAnalyticsEvents, FIXME_UNNECESSARY_ANALYTICS_EVENTS_REASON);
             await new Filter(page, datePickerOptions).expand('clickButton');
         });
 

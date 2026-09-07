@@ -39,9 +39,14 @@ export default class BentoDatePicker extends AbstractDatePicker {
         return `${todayDateString} - ${todayDateString}`;
     }
 
-    protected override _getTodayTimestamps(options: TodayRangeOptions) {
+    protected override async _getTodayTimestamps(options: TodayRangeOptions) {
         const todayDateString = this._getTodayDateString(options.today);
-        const startTimestamp = new Date(`${todayDateString}, 12:00 AM`).getTime();
+        const startTimestamp = await this._button.page().evaluate(
+            ({ dateString, timezone }) => {
+                return new Date(`${dateString}, 12:00 AM ${timezone}`).getTime();
+            },
+            { dateString: todayDateString, timezone: options.timezone ?? '' }
+        );
         const endTimestamp = Math.min(startTimestamp + 86_400_000 /* 24 hours in ms */, options.now ?? Date.now());
         return [startTimestamp, endTimestamp] as const;
     }

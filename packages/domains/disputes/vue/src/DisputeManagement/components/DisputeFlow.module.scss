@@ -1,0 +1,59 @@
+@use '@integration-components/style';
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+    padding-top: style.token(spacer-020);
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+    width: 100%;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: style.token(spacer-040);
+}
+
+.actionBar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: style.token(spacer-040);
+    justify-content: flex-end;
+}
+
+.response {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+    padding: style.token(spacer-100) 0;
+    text-align: center;
+}
+
+.success,
+.error {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+    justify-content: center;
+}
+
+.successDescription {
+    max-width: 350px;
+}
+
+.successIcon {
+    color: style.token(color-background-success-strong);
+}
+
+.errorIcon {
+    color: style.token(color-background-critical-strong);
+}

@@ -1,0 +1,18 @@
+@use '@integration-components/style' as style;
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.actionBar {
+    align-self: flex-end;
+    flex-direction: row;
+}

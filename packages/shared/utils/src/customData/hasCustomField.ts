@@ -2,10 +2,12 @@ import type { CustomColumn } from '@integration-components/types';
 import { EMPTY_ARRAY } from '../value/constants';
 
 type _Fields<Field extends string> = readonly CustomColumn<Field>[];
+type HasCustomFieldOptions = { ignoreHiddenFields?: boolean };
 
 export const hasCustomField = <Field extends string, StandardFields extends readonly string[] = string[]>(
     preferredFields?: _Fields<Field>,
-    standardFields = EMPTY_ARRAY as unknown as StandardFields
+    standardFields = EMPTY_ARRAY as unknown as StandardFields,
+    options?: HasCustomFieldOptions
 ) => {
     if (Array.isArray(preferredFields)) {
         for (const field of preferredFields) {
@@ -18,6 +20,8 @@ export const hasCustomField = <Field extends string, StandardFields extends read
                     typeof fieldName === 'string' &&
                     // `fieldName` should not be an empty string (except in a case of misconfiguration)
                     fieldName &&
+                    // Hidden fields can be ignored when a consumer only needs rendered custom fields.
+                    (!options?.ignoreHiddenFields || field.visibility !== 'hidden') &&
                     // `field` is a custom field if `fieldName` is not in the `standardFields` list
                     !standardFields.includes(fieldName as StandardFields[number])
                 ) {

@@ -6,6 +6,7 @@ import { formatAmountWithCurrencyCode } from '@integration-components/core/Local
 import { BentoCard, BentoLoadingIndicator, BentoDivider, useClickOutside } from '@adyen/bento-vue3';
 import type { IBalance } from '@integration-components/types';
 import BalanceItem from './BalanceItem.vue';
+import styles from '../TransactionsOverview/TransactionsOverview.module.scss';
 
 const props = defineProps<{
     balances: readonly Readonly<IBalance>[];
@@ -44,13 +45,12 @@ const { maxWidths, updateMaxWidths } = useMaxWidths();
         :key="availableBalances.length > 1 ? 'multi' : 'single'"
         :closed="!open"
         v-if="availableBalances.length > 0 || loadingBalances"
-        class="adyen-pe-balances adyen-pe-transactions-overview__summary-card"
         @click="updateToggleState"
         :clickable="availableBalances.length > 1"
         :expandable="availableBalances.length > 1"
     >
         <template #header>
-            <div class="adyen-pe-balances__header adyen-pe-transactions-overview__summary-group">
+            <div :class="[styles.summaryHeader, styles.summaryGroup]">
                 <BentoLoadingIndicator v-if="loadingBalances" />
                 <BalanceItem
                     v-else-if="availableBalances[0]"
@@ -64,12 +64,12 @@ const { maxWidths, updateMaxWidths } = useMaxWidths();
             </div>
         </template>
         <template #content v-if="availableBalances.length > 1">
-            <div class="adyen-pe-transactions-overview__summary-group">
-                <div v-if="loadingBalances" class="adyen-pe-balances__loading">
+            <div :class="styles.summaryGroup">
+                <div v-if="loadingBalances">
                     <BentoLoadingIndicator />
                 </div>
                 <BentoDivider />
-                <div class="adyen-pe-balances__expanded-list">
+                <div :class="styles.expandedList">
                     <BalanceItem
                         v-for="balance in availableBalances.slice(1)"
                         :key="balance.currency"

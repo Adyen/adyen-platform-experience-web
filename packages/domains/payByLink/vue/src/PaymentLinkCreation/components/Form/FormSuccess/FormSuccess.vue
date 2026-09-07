@@ -3,8 +3,7 @@ import { onBeforeUnmount, ref } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
-import { PAYMENT_LINK_CREATION_CLASS_NAMES } from '../../../../../../domain/src';
-import './FormSuccess.scss';
+import styles from './FormSuccess.module.scss';
 
 const props = defineProps<{
     paymentLinkUrl: string;
@@ -12,7 +11,6 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const CLASS_NAMES = PAYMENT_LINK_CREATION_CLASS_NAMES;
 
 const copied = ref(false);
 let copiedTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -38,17 +36,17 @@ async function onCopy() {
 </script>
 
 <template>
-    <section :class="CLASS_NAMES.success">
-        <div :class="CLASS_NAMES.successContent">
-            <CheckmarkCircleFillIcon :class="CLASS_NAMES.successIcon" />
-            <BentoTypography variant="title" medium :class="CLASS_NAMES.successTitle">
+    <section :class="styles.root">
+        <div :class="styles.content">
+            <CheckmarkCircleFillIcon :class="styles.icon" />
+            <BentoTypography variant="title" medium :class="styles.title">
                 {{ i18n.get('payByLink.creation.success.title') }}
             </BentoTypography>
-            <BentoTypography variant="body" :class="CLASS_NAMES.successDescription">
+            <BentoTypography variant="body" :class="styles.description">
                 {{ i18n.get('payByLink.creation.success.description') }}
             </BentoTypography>
         </div>
-        <div :class="CLASS_NAMES.successActions">
+        <div :class="styles.actions">
             <BentoButton variant="secondary" @click="props.onShowDetails?.()">
                 {{ i18n.get('payByLink.creation.success.showDetails') }}
             </BentoButton>

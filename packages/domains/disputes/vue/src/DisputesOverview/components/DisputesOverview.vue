@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onUnmounted } from 'vue';
 import { BentoCard, BentoTab, BentoTabs, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
@@ -10,9 +10,9 @@ import DisputesFilters from './DisputesFilters.vue';
 import DisputesTable from './DisputesTable.vue';
 import DisputeManagementModal from './DisputeManagementModal.vue';
 import { useDisputesList } from '../composables/useDisputesList';
-import { BASE_CLASS, BASE_XS_CLASS, DEFAULT_DISPUTE_STATUS_GROUP, TABS_CONTAINER_CLASS } from '../constants';
+import { DEFAULT_DISPUTE_STATUS_GROUP } from '../constants';
 import type { DisputesOverviewProps } from '../types';
-import '../styles/index.scss';
+import styles from './DisputesOverview.module.scss';
 
 const props = defineProps<
     DisputesOverviewProps & {
@@ -27,6 +27,11 @@ const isMobile = useResponsiveContainer(containerQueries.down.xs);
 const DISPUTE_STATUS_GROUP_VALUES = Object.keys(DISPUTE_STATUS_GROUPS) as IDisputeStatusGroup[];
 
 const statusGroup = ref<IDisputeStatusGroup>(DEFAULT_DISPUTE_STATUS_GROUP);
+const fetchStatusGroup = ref<IDisputeStatusGroup>(statusGroup.value);
+const statusGroupFetchPending = ref(false);
+
+let statusGroupDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+
 const refreshToken = ref(0);
 const selectedDisputeId = ref<string | undefined>(undefined);
 const filtersInitialized = ref(false);
@@ -62,19 +67,34 @@ const statusGroupItems = computed(() =>
 const activeStatusGroupIndex = computed(() => DISPUTE_STATUS_GROUP_VALUES.indexOf(statusGroup.value));
 const statusGroupAriaLabel = computed(() => i18n.get('disputes.overview.common.filters.types.statusGroup'));
 
+function updateStatusGroup(statusGroupToFetch: IDisputeStatusGroup) {
+    if (statusGroupDebounceTimer) {
+        clearTimeout(statusGroupDebounceTimer);
+    }
+
+    statusGroup.value = statusGroupToFetch;
+    statusGroupFetchPending.value = true;
+
+    statusGroupDebounceTimer = setTimeout(() => {
+        fetchStatusGroup.value = statusGroupToFetch;
+        statusGroupFetchPending.value = false;
+        statusGroupDebounceTimer = undefined;
+    }, 500);
+}
+
 function onStatusGroupChange(index: number) {
-    statusGroup.value = DISPUTE_STATUS_GROUP_VALUES[index] ?? DEFAULT_DISPUTE_STATUS_GROUP;
+    updateStatusGroup(DISPUTE_STATUS_GROUP_VALUES[index] ?? DEFAULT_DISPUTE_STATUS_GROUP);
 }
 
 const activeBalanceAccount = computed(() => {
     const id = filterParams.value.balanceAccountId;
-    return props.balanceAccounts?.find(account => account.id === id);
+    return props.balanceAccounts?.find(account => account.id === id) ?? props.balanceAccounts?.[0];
 });
 
 const disputesListResult = useDisputesList(() => ({
-    fetchEnabled: filtersInitialized.value,
+    fetchEnabled: filtersInitialized.value && !statusGroupFetchPending.value,
     balanceAccountId: filterParams.value.balanceAccountId,
-    statusGroup: statusGroup.value,
+    statusGroup: fetchStatusGroup.value,
     schemeCodes: filterParams.value.schemeCodes,
     reasonCategories: filterParams.value.reasonCategories,
     createdSince: filterParams.value.createdSince,
@@ -86,7 +106,12 @@ const disputesListResult = useDisputesList(() => ({
 }));
 
 const isLoading = computed(
-    () => disputesListResult.fetching.value || props.isLoadingBalanceAccount || !props.balanceAccounts || !filtersInitialized.value
+    () =>
+        statusGroupFetchPending.value ||
+        disputesListResult.fetching.value ||
+        props.isLoadingBalanceAccount ||
+        !props.balanceAccounts ||
+        !filtersInitialized.value
 );
 
 const disputesError = computed(() => disputesListResult.error.value as Error | undefined);
@@ -103,7 +128,7 @@ function onRowClick(dispute: IDisputeListItem) {
 
 function refreshDisputesList(gotoStatusGroup?: IDisputeStatusGroup) {
     if (gotoStatusGroup && DISPUTE_STATUS_GROUP_VALUES.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup.value) {
-        statusGroup.value = gotoStatusGroup;
+        updateStatusGroup(gotoStatusGroup);
     } else {
         refreshToken.value = performance.now();
     }
@@ -112,29 +137,35 @@ function refreshDisputesList(gotoStatusGroup?: IDisputeStatusGroup) {
 function closeModal() {
     selectedDisputeId.value = undefined;
 }
+
+onUnmounted(() => {
+    if (statusGroupDebounceTimer) {
+        clearTimeout(statusGroupDebounceTimer);
+    }
+});
 </script>
 
 <template>
-    <div :class="[BASE_CLASS, { [BASE_XS_CLASS]: isMobile }]">
-        <div :class="`${BASE_CLASS}__header`">
+    <div :class="[styles.root, isMobile ? styles.rootXs : '']">
+        <div :class="styles.header">
             <BentoTypography v-if="!props.hideTitle" el="h2" variant="title" stronger>
                 {{ i18n.get('disputes.overview.common.title') }}
             </BentoTypography>
-            <div v-if="isMobile" role="toolbar" :class="[`${BASE_CLASS}__toolbar`, `${BASE_CLASS}__toolbar--compact`]">
+            <div v-if="isMobile" role="toolbar" :class="[styles.toolbar, styles.toolbarCompact]">
                 <DisputesFilters :compact="true" :balance-accounts="props.balanceAccounts" :status-group="statusGroup" :on-change="onFiltersChange" />
             </div>
         </div>
 
-        <div :class="TABS_CONTAINER_CLASS">
+        <div :class="styles.tabsContainer">
             <BentoTabs :aria-label="statusGroupAriaLabel" :active-tab-index="activeStatusGroupIndex" @update:active-tab-index="onStatusGroupChange">
                 <BentoTab v-for="item in statusGroupItems" :key="item.value" :title="item.label" />
             </BentoTabs>
         </div>
 
-        <BentoCard :class="`${BASE_CLASS}__card`">
+        <BentoCard :class="styles.card">
             <template #content>
-                <div :class="`${BASE_CLASS}__content`">
-                    <div v-if="!isMobile" role="toolbar" :class="`${BASE_CLASS}__toolbar`">
+                <div :class="styles.content">
+                    <div v-if="!isMobile" role="toolbar" :class="styles.toolbar">
                         <DisputesFilters
                             :compact="false"
                             :balance-accounts="props.balanceAccounts"

@@ -6,7 +6,7 @@ import { Core } from '@integration-components/core';
 import '../../shared/styles.scss';
 
 const props = defineProps<{
-    component: new (props: Record<string, unknown> & { core: CoreInstance }) => UIElement<Record<string, unknown>>;
+    component: new (options: Record<string, unknown> & { core: CoreInstance }) => UIElement<Record<string, unknown>>;
     componentProps?: Record<string, any>;
     locale?: SupportedLocales;
     fontFamily?: string;

@@ -3,6 +3,7 @@ import { BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3
 import { useCoreContext } from '@integration-components/core/vue';
 import { parsePaymentMethodType } from '@integration-components/utils';
 import type { IPaymentMethod } from '@integration-components/types';
+import styles from './DisputesTable.module.scss';
 
 const props = defineProps<{
     paymentMethod?: IPaymentMethod;
@@ -18,7 +19,7 @@ function getPaymentMethodLabel(paymentMethod: IPaymentMethod): string {
 </script>
 
 <template>
-    <div class="adyen-pe-disputes-table__payment-method">
+    <div :class="styles.paymentMethod">
         <template v-if="props.paymentMethod">
             <BentoPaymentMethod :type="props.paymentMethod.type" />
             <BentoTypography variant="body" :stronger="props.stronger">

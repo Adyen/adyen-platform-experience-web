@@ -4,9 +4,8 @@ import { useCoreContext } from '@integration-components/core/vue';
 import { BentoTypography, BentoSegmentedControl, BentoCard } from '@adyen/bento-vue3';
 import type { BentoSegmentedControlItem } from '@adyen/bento-vue3';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
-import { BASE_CLASS } from '../../constants';
 import type { IBalanceAccountBase } from '../../types';
-import './TransactionsOverview.scss';
+import styles from './TransactionsOverview.module.scss';
 
 defineProps<{
     hideTitle?: boolean;
@@ -21,8 +20,8 @@ const bentoViewTabs = computed<BentoSegmentedControlItem[]>(() => viewTabs.value
 </script>
 
 <template>
-    <div :class="BASE_CLASS">
-        <div class="adyen-pe-transactions-overview-header">
+    <div>
+        <div :class="styles.header">
             <BentoTypography v-if="!hideTitle" variant="title">{{ i18n.get('transactions.overview.title') }}</BentoTypography>
             <!-- Empty div for space between -->
             <div v-else />

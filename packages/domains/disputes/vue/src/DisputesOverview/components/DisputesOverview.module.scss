@@ -1,0 +1,79 @@
+@use '@integration-components/style' as style;
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+    min-width: 0;
+}
+
+.header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    min-width: 0;
+}
+
+.tabsContainer {
+    display: flex;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.toolbar {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-040);
+    min-width: 0;
+}
+
+.card {
+    margin-top: style.token(spacer-030);
+    min-width: 0;
+}
+
+.card :global(.b-card__content) {
+    padding-top: style.token(spacer-060);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+    min-width: 0;
+}
+
+.rootXs {
+    gap: style.token(spacer-090);
+}
+
+.rootXs .toolbarCompact {
+    flex-shrink: 0;
+    margin-inline-start: auto;
+    width: calc(#{style.token(spacer-140)} + #{style.token(spacer-110)});
+
+    :global(.b-filter-bar-button__counter),
+    :global(.b-filter-bar__clear-all) {
+        display: none;
+    }
+}
+
+.rootXs .tabsContainer {
+    width: 100%;
+}
+
+.rootXs .card:global(.b-card) {
+    border: 0;
+    margin-top: 0;
+
+    :global(.b-card__body),
+    :global(.b-card__content) {
+        margin: 0;
+        padding: 0;
+    }
+
+    .content {
+        gap: 0;
+    }
+}

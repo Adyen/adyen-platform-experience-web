@@ -1,38 +1,20 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { useCoreContext } from '@integration-components/core/preact';
-import localPollingConfig from '../../../../../../domain/src/config/pollingConfig.json';
+import { DEFAULT_POLLING_CONFIG, getPollingConfig as getDomainPollingConfig } from '@integration-components/capital/domain';
 
-// The following structure enables us to have polling with exponential backoff intervals. If the `backoffMultiplier` is 1, the polling will happen on fixed intervals.
-export interface MissingActionsPollingConfig {
-    initialIntervalMs: number;
-    backoffMultiplier: number;
-    maxDurationMs: number;
-}
-
-export interface PollingConfig {
-    missingActions: MissingActionsPollingConfig;
-}
+export type { MissingActionsPollingConfig, PollingConfig } from '@integration-components/capital/domain';
 
 export const usePollingConfig = () => {
     const { getCdnConfig } = useCoreContext();
-    const localConfig = localPollingConfig as unknown as PollingConfig;
-    const [pollingConfig, setPollingConfig] = useState<PollingConfig>(localConfig);
+    const [pollingConfig, setPollingConfig] = useState(DEFAULT_POLLING_CONFIG);
 
     const getPollingConfig = useCallback(async () => {
-        const config = await getCdnConfig?.<PollingConfig>({
-            subFolder: 'capital',
-            name: 'pollingConfig',
-            fallback: localConfig,
-        });
-        setPollingConfig(config ?? localConfig);
-    }, [getCdnConfig, localConfig]);
+        setPollingConfig(await getDomainPollingConfig(getCdnConfig));
+    }, [getCdnConfig]);
 
     useEffect(() => {
         void getPollingConfig();
     }, [getPollingConfig]);
 
-    return {
-        pollingConfig,
-        getPollingConfig,
-    };
+    return { pollingConfig, getPollingConfig };
 };

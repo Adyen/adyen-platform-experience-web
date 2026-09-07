@@ -1,0 +1,53 @@
+@use '@integration-components/style' as style;
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+}
+
+.rootXs {
+    gap: style.token(spacer-080);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tabsContainer {
+    display: flex;
+}
+
+.actionsContainer {
+    display: flex;
+    flex-direction: row;
+    gap: style.token(spacer-040);
+}
+
+.settingsButton:global(.b-button) {
+    padding: style.token(spacer-050);
+}
+
+.filtersContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: style.token(spacer-040);
+}
+
+.actionButtonXs {
+    --icon-size: 16px;
+
+    font-size: var(--icon-size);
+    padding: 0;
+    width: calc(#{style.token(spacer-060)} * 3);
+}
+
+.filtersAlertContainer {
+    align-items: center;
+    display: flex;
+    max-width: 500px;
+    width: 100%;
+}

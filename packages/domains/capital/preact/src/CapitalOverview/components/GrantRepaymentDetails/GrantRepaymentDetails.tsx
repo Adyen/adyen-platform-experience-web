@@ -10,6 +10,7 @@ import { GrantAdjustmentDetails } from '../GrantAdjustmentDetails/GrantAdjustmen
 import './GrantRepaymentDetails.scss';
 import { Divider } from '@integration-components/ui-components-preact/Divider/Divider';
 import { Translation } from '@integration-components/ui-components-preact/Translation';
+import { getBankAccount, getTransferInstrumentIds } from '@integration-components/capital/domain';
 
 const BASE_CLASS = 'adyen-pe-grant-repayment-details';
 
@@ -24,16 +25,11 @@ const CLASS_NAMES = {
 
 export const GrantRepaymentDetails: FunctionalComponent<GrantAdjustmentDetailsProps> = ({ grant, onDetailsClose }) => {
     const { i18n } = useCoreContext();
-
     const repaymentAccountDetailsLabelElemId = `list-${useUniqueId()}`;
     const repaymentInstructionsLabelElemId = `list-${useUniqueId()}`;
     const transferInstrumentsLabelElemId = `list-${useUniqueId()}`;
-
-    const bankAccount = useMemo(() => {
-        // There can be more than one unscheduled repayment account, however, we are only showing the first one.
-        // If there be any need to show the rest of them in the future, some updates will be required.
-        return grant.unscheduledRepaymentAccounts?.[0];
-    }, [grant.unscheduledRepaymentAccounts]);
+    const bankAccount = useMemo(() => getBankAccount(grant), [grant]);
+    const transferInstrumentIds = useMemo(() => getTransferInstrumentIds(grant), [grant]);
 
     return bankAccount ? (
         <GrantAdjustmentDetails
@@ -49,7 +45,7 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantAdjustmentDetailsPr
                 <AccountDetails bankAccount={bankAccount} aria-labelledby={repaymentAccountDetailsLabelElemId} />
             </div>
             <div className={CLASS_NAMES.notice}>
-                {!!grant.transferInstruments?.length && (
+                {!!transferInstrumentIds.length && (
                     <>
                         <div>
                             <Typography id={transferInstrumentsLabelElemId} el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
@@ -57,10 +53,10 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantAdjustmentDetailsPr
                             </Typography>
 
                             <ul className={CLASS_NAMES.transferInstrumentList} aria-labelledby={transferInstrumentsLabelElemId}>
-                                {grant.transferInstruments?.map(({ accountIdentifier }) => (
-                                    <li key={accountIdentifier} className={CLASS_NAMES.transferInstrumentItem}>
+                                {transferInstrumentIds.map(id => (
+                                    <li key={id} className={CLASS_NAMES.transferInstrumentItem}>
                                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION}>
-                                            {accountIdentifier}
+                                            {id}
                                         </Typography>
                                     </li>
                                 ))}

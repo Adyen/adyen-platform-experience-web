@@ -1,18 +1,18 @@
 import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
+import { getEnhancedCapitalState, sharedCapitalOfferAnalyticsEventProperties } from '@integration-components/capital/domain';
 import { ExternalUIComponentProps, IGrantOfferResponseDTO } from '@integration-components/types';
 import { useConfigContext } from '@integration-components/core/preact';
 import { useFetch } from '@integration-components/hooks-preact';
 import { useLandedPageEvent } from '@integration-components/hooks-preact/useEventDispatcher/useLandedPageEvent';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { CapitalOfferProps } from '../../types';
-import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
-import { CAPITAL_OFFER_CLASS_NAMES, sharedCapitalOfferAnalyticsEventProperties } from './constants';
+import { CapitalErrorMessageDisplay } from '../../../internal/CapitalErrorMessageDisplay';
+import { CAPITAL_OFFER_CLASS_NAMES } from './constants';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 import { CapitalOfferSelection } from '../CapitalOfferSelection/CapitalOfferSelection';
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
 import './CapitalOffer.scss';
-import { getEnhancedCapitalState } from '../../../utils/capital/getCapitalState';
 import { useSupportedRegions } from '../../../utils/capital/useSupportedRegions';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';

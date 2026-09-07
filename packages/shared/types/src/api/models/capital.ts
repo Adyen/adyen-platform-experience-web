@@ -6,6 +6,7 @@ import { components as onboardingConfigurationComponents } from '../resources/On
 
 export type ICapitalState = Schema<capitalStateComponents, 'CapitalStateDTO'>;
 export type IDynamicOffersConfig = Schema<capitalStateComponents, 'DynamicOffersResponseV2DTO'>;
+export type IGrantsResponseDTO = Schema<capitalGrantsComponents, 'GrantsResponseDTO'>;
 export type IGrant = Schema<capitalGrantsComponents, 'GrantResponseDTO'>;
 export type INLCapitalFundsCollection = Schema<capitalGrantsComponents, 'NLCapitalFundsCollection'>;
 export type IUSCapitalFundsCollection = Schema<capitalGrantsComponents, 'USCapitalFundsCollection'>;

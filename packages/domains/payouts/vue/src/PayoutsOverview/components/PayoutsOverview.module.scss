@@ -1,0 +1,24 @@
+@use '@integration-components/style' as style;
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-020);
+}
+
+.description {
+    margin-bottom: style.token(spacer-040);
+    color: style.token(color-label-secondary);
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: style.token(spacer-040);
+}

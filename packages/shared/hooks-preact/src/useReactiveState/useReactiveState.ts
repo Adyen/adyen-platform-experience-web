@@ -1,7 +1,18 @@
 import { useEffect, useMemo, useReducer, useRef } from 'preact/hooks';
-import { EMPTY_OBJECT } from '@integration-components/utils';
+import { EMPTY_OBJECT, hasOwnProperty } from '@integration-components/utils';
 import useMounted from '../useMounted';
 import { ReactiveStateRecord, ReactiveStateUpdateRequest, ReactiveStateUpdateRequestWithField, UseReactiveStateRecord } from './types';
+
+const areParamsEqual = <Value, Param extends string>(first: ReactiveStateRecord<Value, Param>, second: ReactiveStateRecord<Value, Param>) => {
+    const firstKeys = Object.keys(first) as Param[];
+    const secondKeys = Object.keys(second) as Param[];
+
+    return (
+        // prettier-ignore
+        firstKeys.length === secondKeys.length &&
+        firstKeys.every(key => hasOwnProperty(second, key) && first[key] === second[key])
+    );
+};
 
 const useReactiveState = <Value, Param extends string>(
     params: ReactiveStateRecord<Value, Param> = EMPTY_OBJECT as ReactiveStateRecord<Value, Param>,
@@ -12,6 +23,8 @@ const useReactiveState = <Value, Param extends string>(
     const $defaultStateRef = useRef(initialDefaultState);
     const $stateParamsRef = useRef(new Set(Object.keys(initialDefaultState) as Param[]));
     const $changedParamsRef = useRef(new Set<Param>());
+    const $paramsRef = useRef(params);
+    const $initialStateSameAsDefaultRef = useRef(initialStateSameAsDefault);
     const $mounted = useMounted();
 
     const [state, dispatch] = useReducer((state, stateUpdateRequest: ReactiveStateUpdateRequest<Value, Param>) => {
@@ -73,6 +86,10 @@ const useReactiveState = <Value, Param extends string>(
     const defaultState = $defaultStateRef.current;
 
     useEffect(() => {
+        if (areParamsEqual($paramsRef.current, params) && $initialStateSameAsDefaultRef.current === initialStateSameAsDefault) return;
+
+        $paramsRef.current = params;
+        $initialStateSameAsDefaultRef.current = initialStateSameAsDefault;
         $defaultStateRef.current = Object.freeze({ ...params }) as ReactiveStateRecord<Value, Param>;
         $stateParamsRef.current = new Set(Object.keys($defaultStateRef.current) as Param[]);
         $hasDefaultStateRef.current = initialStateSameAsDefault;

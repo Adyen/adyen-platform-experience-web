@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
-import { expectAnalyticsEvents, getClipboardContent, goToStory } from '@integration-components/testing/playwright/utils';
+import { expectAnalyticsEvents, getClipboardContent, getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
 import { sharedAnalyticsEventProperties, sharedCopyButtonAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionDetails';
 
 const STORY_ID = 'mocked-transactions-transaction-details--default';
@@ -10,15 +10,11 @@ test.describe('Default', () => {
         await expect(page.getByText('Payment', { exact: true })).toBeVisible();
         await expect(page.getByText('Partially refunded', { exact: true })).toBeVisible();
 
-        // [TODO]: Address amount formatting discrepancy (use currency code instead of symbol)
         // Using first here to prevent clashes with other amounts displayed on page
-        // await expect(page.getByText('607.50 EUR', { exact: true }).first()).toBeVisible();
-        await expect(page.getByText('€607.50', { exact: true }).first()).toBeVisible();
+        await expect(page.getByText('607.50 EUR', { exact: true }).first()).toBeVisible();
         await expect(page.getByText('•••• •••• •••• 1945', { exact: true })).toBeVisible();
 
-        // [TODO]: Address wrong timezone used for date formatting (use balance account timezone)
-        // await expect(page.getByText('Monday, August 29, 2022 at 09:47 AM GMT-3', { exact: true })).toBeVisible();
-        await expect(page.getByText('Monday, August 29, 2022 at 12:47 PM GMT+0', { exact: true })).toBeVisible();
+        await expect(page.getByText('Monday, August 29, 2022 at 09:47 AM GMT-3', { exact: true })).toBeVisible();
     };
 
     const expectBeforePaymentRefundDetailsRendering = async (page: Page) => {
@@ -59,6 +55,7 @@ test.describe('Default', () => {
 
     test.describe('render', () => {
         test('should render payment transaction details', async ({ page }) => {
+            await expect(page.getByText('Transaction details', { exact: true })).toHaveCount(1);
             await expectSamePaymentStatusBoxRendering(page);
             await expectSamePaymentDetailsRendering(page);
             await expectBeforePaymentRefundDetailsRendering(page);
@@ -76,8 +73,7 @@ test.describe('Default', () => {
 
             for (const { name, subSectionName, value } of copyButtons) {
                 await page.getByRole('button', { name, exact: true, disabled: false }).click();
-                // [TODO]: Address missing "Copied" confirmation text for copy actions
-                // await expect(page.getByText('Copied', { exact: true })).toBeVisible();
+                await expect(getComponentRoot(page).getByText('Copied', { exact: true })).toBeAttached();
 
                 await expectAnalyticsEvents(analyticsEvents, [['Clicked button', { ...sharedCopyButtonAnalyticsEventProperties, subSectionName }]]);
 
@@ -199,9 +195,7 @@ test.describe('Default', () => {
 
             // excess amount precision is truncated
             await amountInput.fill('133.7599');
-            // [TODO]: Address missing amount input precision truncation
-            // await expect(amountInput).toHaveValue('133.75');
-            await expect(amountInput).toHaveValue('133.7599');
+            await expect(amountInput).toHaveValue('133.75');
             await expect(page.getByRole('button', { name: 'Refund €133.75', exact: true, disabled: false })).toBeVisible();
 
             // integer amount (within limit)

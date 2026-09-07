@@ -1,8 +1,7 @@
 import PreQualifiedIntro from '../PreQualifiedIntro/PreQualifiedIntro';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
-import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
-import { OnFundsRequestCallback } from '../../../types';
+import { EnhancedCapitalState, OnFundsRequestCallback } from '@integration-components/capital/domain';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 
 type PreQualifiedProps = {
