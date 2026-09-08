@@ -1,0 +1,18 @@
+{
+    "reports.common.types.payout": "Utbetalning",
+    "reports.overview.errors.download": "Något gick fel med nedladdningen",
+    "reports.overview.errors.listEmpty": "Inga rapporter hittades",
+    "reports.overview.errors.listUnavailable": "Det gick inte att läsa in dina rapporter.",
+    "reports.overview.errors.retryDownload": "Försök igen senare.",
+    "reports.overview.errors.tooManyDownloads": "Det gick inte att ladda ner alla filer. Försök igen senare.",
+    "reports.overview.errors.unavailable": "Det gick inte att läsa in rapportöversikten.",
+    "reports.overview.filters.label": "Rapportfilter",
+    "reports.overview.generateInfo": "Rapporter genereras varje dag vid midnatt, UTC-tid.",
+    "reports.overview.list.controls.downloadReport.label": "Ladda ner rapport",
+    "reports.overview.list.fields.createdAt": "Datum",
+    "reports.overview.list.fields.reportFile": "Fil",
+    "reports.overview.list.fields.reportType": "Rapport",
+    "reports.overview.pagination.controls.limitSelect.label": "Rapporter per sida",
+    "reports.overview.pagination.label": "Rapportpaginering",
+    "reports.overview.title": "Rapporter"
+}

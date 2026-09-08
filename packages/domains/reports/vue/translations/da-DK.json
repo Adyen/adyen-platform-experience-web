@@ -1,0 +1,18 @@
+{
+    "reports.common.types.payout": "Udbetaling",
+    "reports.overview.errors.download": "Noget gik galt under download",
+    "reports.overview.errors.listEmpty": "Ingen rapporter fundet",
+    "reports.overview.errors.listUnavailable": "Vi kunne ikke indlæse dine rapporter.",
+    "reports.overview.errors.retryDownload": "Prøv igen senere.",
+    "reports.overview.errors.tooManyDownloads": "Vi kunne ikke downloade alle filerne. Prøv igen senere.",
+    "reports.overview.errors.unavailable": "Vi kunne ikke indlæse oversigten over rapporter.",
+    "reports.overview.filters.label": "Rapportfiltre",
+    "reports.overview.generateInfo": "Rapporter genereres hver dag ved midnat, UTC-tid.",
+    "reports.overview.list.controls.downloadReport.label": "Download rapport",
+    "reports.overview.list.fields.createdAt": "Dato",
+    "reports.overview.list.fields.reportFile": "Fil",
+    "reports.overview.list.fields.reportType": "Rapport",
+    "reports.overview.pagination.controls.limitSelect.label": "Rapporter pr. side",
+    "reports.overview.pagination.label": "Rapportpaginering",
+    "reports.overview.title": "Rapporter"
+}

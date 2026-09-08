@@ -1,6 +1,8 @@
 import Localization from './Localization';
 import { describe, expect, test, vi } from 'vitest';
 import { es_ES, type TranslationKey } from '../translations';
+import sdkGermanTranslations from '../../../../sdk/translations/de-DE.json' with { type: 'json' };
+import sdkEnglishTranslations from '../../../../sdk/translations/en-US.json' with { type: 'json' };
 
 describe('Localization', () => {
     const translationKey = 'abc' as TranslationKey;
@@ -184,6 +186,27 @@ describe('Localization', () => {
 
                 consoleWarnSpy.mockRestore();
             });
+        });
+    });
+
+    describe('SDK translation sources', () => {
+        test('loads a V2 locale catalog and falls back to its English catalog', async () => {
+            const localization = new Localization('de-DE', undefined, '', '', {
+                defaultTranslations: sdkEnglishTranslations,
+                localeTranslations: {
+                    'de-DE': Promise.resolve(sdkGermanTranslations),
+                    'en-US': Promise.resolve(sdkEnglishTranslations),
+                },
+            });
+
+            await localization.ready;
+
+            expect(localization.get('transactions.errors.updateFilters' as TranslationKey)).toBe(
+                sdkGermanTranslations['transactions.errors.updateFilters']
+            );
+            expect(localization.get('capital.common.errors.unsupportedRegion')).toBe(
+                sdkGermanTranslations['capital.common.errors.unsupportedRegion']
+            );
         });
     });
 });

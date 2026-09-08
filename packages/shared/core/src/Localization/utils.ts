@@ -150,7 +150,8 @@ export const getTranslation = (translations: Record<string, string>, key: string
 export const loadTranslations = async (
     locale: string,
     fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>,
-    customTranslations: CustomTranslations = EMPTY_OBJECT as CustomTranslations
+    customTranslations: CustomTranslations = EMPTY_OBJECT as CustomTranslations,
+    defaultTranslations: Translations = DEFAULT_TRANSLATIONS
 ): Promise<Translations> => {
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
     const localeToLoad = parseLocale(locale, SUPPORTED_LOCALES) || FALLBACK_LOCALE;
@@ -158,7 +159,7 @@ export const loadTranslations = async (
     const loadedLocale = fetchTranslationFromCdnPromise(localeToLoad as SupportedLocales);
 
     return {
-        ...DEFAULT_TRANSLATIONS, // Default en-US translations (in case any other translation file is missing any key)
+        ...defaultTranslations, // Default en-US translations (in case any other translation file is missing any key)
         ...((await loadedLocale) ?? EMPTY_OBJECT), // Merge with our locale file of the locale they are loading
         ...asPlainObject(customTranslations?.[locale]), // Merge with their custom locales if available
     };

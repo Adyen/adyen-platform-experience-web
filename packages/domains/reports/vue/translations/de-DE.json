@@ -1,0 +1,18 @@
+{
+    "reports.common.types.payout": "Auszahlung",
+    "reports.overview.errors.download": "Beim Herunterladen ist ein Fehler aufgetreten",
+    "reports.overview.errors.listEmpty": "Keine Berichte gefunden",
+    "reports.overview.errors.listUnavailable": "Ihre Berichte konnten nicht geladen werden.",
+    "reports.overview.errors.retryDownload": "Bitte versuchen Sie es später erneut.",
+    "reports.overview.errors.tooManyDownloads": "Wir konnten nicht alle Dateien herunterladen. Bitte versuchen Sie es später erneut.",
+    "reports.overview.errors.unavailable": "Die Berichtsübersicht konnte nicht geladen werden.",
+    "reports.overview.filters.label": "Filter für Berichte",
+    "reports.overview.generateInfo": "Die Berichte werden täglich um Mitternacht (UTC-Zeit) generiert.",
+    "reports.overview.list.controls.downloadReport.label": "Bericht herunterladen",
+    "reports.overview.list.fields.createdAt": "Datum",
+    "reports.overview.list.fields.reportFile": "Datei",
+    "reports.overview.list.fields.reportType": "Bericht",
+    "reports.overview.pagination.controls.limitSelect.label": "Berichte pro Seite",
+    "reports.overview.pagination.label": "Berichtspaginierung",
+    "reports.overview.title": "Berichte"
+}

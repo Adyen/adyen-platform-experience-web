@@ -6,15 +6,7 @@ import {
     getLocalesFromTranslationSourcesRecord,
     SUPPORTED_LOCALES,
 } from './constants/localization';
-import type {
-    CustomTranslations,
-    Locale,
-    TranslationKey,
-    TranslationOptions,
-    Translations,
-    TranslationSource,
-    TranslationSourceRecord,
-} from '../translations';
+import type { CustomTranslations, Locale, TranslationKey, TranslationOptions, TranslationSource, TranslationSourceRecord } from '../translations';
 import { en_US } from '../translations';
 import { getLocalisedAmount } from './amount/amount-util';
 import restamper from '@integration-components/utils/datetime/restamper';
@@ -27,6 +19,11 @@ import { SupportedLocales } from './types';
 import { translations_dev_assets } from '../translations/local';
 import localSwapConfig from '../config/translations/swapConfig.json';
 
+export type LocalizationSources = Readonly<{
+    defaultTranslations: Record<string, string>;
+    localeTranslations: Readonly<Record<string, Promise<Record<string, string>> | (() => Promise<Record<string, string>>)>>;
+}>;
+
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;
     #languageCode: string = toTwoLetterCode(this.#locale);
@@ -34,7 +31,8 @@ export default class Localization {
     #supportedLocales: Readonly<Locale[]> = this.#availableLocales;
 
     #customTranslations?: CustomTranslations;
-    #translations: Translations = DEFAULT_TRANSLATIONS;
+    #translations: Record<string, string> = DEFAULT_TRANSLATIONS as Record<string, string>;
+    #defaultTranslations: Record<string, string>;
     #translationsLoader = createTranslationsLoader.call(this);
     readonly #fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>;
 
@@ -50,22 +48,40 @@ export default class Localization {
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
     public preferredTranslations?: Readonly<{ [k: Locale]: TranslationSource }>;
 
-    constructor(locale: string = FALLBACK_LOCALE, availableTranslations?: TranslationSourceRecord[], cdnTranslationsUrl = '', cdnConfigUrl = '') {
+    constructor(
+        locale: string = FALLBACK_LOCALE,
+        availableTranslations?: TranslationSourceRecord[],
+        cdnTranslationsUrl = '',
+        cdnConfigUrl = '',
+        sources?: LocalizationSources
+    ) {
         this.watch(noop);
+        this.#defaultTranslations = sources?.defaultTranslations ?? (DEFAULT_TRANSLATIONS as Record<string, string>);
+        this.#translations = this.#defaultTranslations;
 
         this.#fetchTranslationFromCdnPromise = (locale: string) =>
-            process.env.VITE_LOCAL_ASSETS
-                ? translations_dev_assets[locale]!
-                : httpGet<any>({
-                      loadingContext: cdnTranslationsUrl,
-                      path: `/${locale}.json`,
-                      versionless: true,
-                      skipContentType: true,
-                      errorLevel: 'info',
-                  });
+            sources
+                ? Promise.resolve(
+                      typeof sources.localeTranslations[locale] === 'function'
+                          ? sources.localeTranslations[locale]()
+                          : (sources.localeTranslations[locale] ?? {})
+                  )
+                : process.env.VITE_LOCAL_ASSETS
+                  ? translations_dev_assets[locale]!
+                  : httpGet<any>({
+                        loadingContext: cdnTranslationsUrl,
+                        path: `/${locale}.json`,
+                        versionless: true,
+                        skipContentType: true,
+                        errorLevel: 'info',
+                    });
 
         this.preferredTranslations = Object.freeze(
-            availableTranslations?.reduce((records, curr) => ({ ...records, ...curr }), en_US) ?? { ...en_US }
+            sources
+                ? (Object.fromEntries(
+                      Object.keys(sources.localeTranslations).map(sourceLocale => [sourceLocale, sources.localeTranslations[sourceLocale]!])
+                  ) as { [k: Locale]: TranslationSource })
+                : (availableTranslations?.reduce((records, curr) => ({ ...records, ...curr }), en_US) ?? { ...en_US })
         );
 
         this.#availableLocales = getLocalesFromTranslationSourcesRecord(this.preferredTranslations);
@@ -170,7 +186,11 @@ export default class Localization {
         };
 
         const currentRefresh = (this.#currentRefresh = (async () => {
-            this.#translations = await this.#translationsLoader.load(this.#fetchTranslationFromCdnPromise, customTranslations);
+            this.#translations = await this.#translationsLoader.load(
+                this.#fetchTranslationFromCdnPromise,
+                customTranslations,
+                this.#defaultTranslations
+            );
             this.#locale = this.#translationsLoader.locale;
             this.#supportedLocales = Object.freeze(this.#translationsLoader.supportedLocales);
             this.#customTranslations = customTranslations;
