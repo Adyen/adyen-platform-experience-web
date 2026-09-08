@@ -58,8 +58,8 @@
         "subscribeToSession",
         "waitForI18n"
     ],
-    "esFileCount": 1072,
-    "cssHash": "f916d1b41a3cfa60b3589abf88c50c9047a16fcac14e7055a7a26598e4e3bb22",
+    "esFileCount": 1193,
+    "cssHash": "d31797aa6c51b288b198b6a1ce1a0b4b4a3752260a69168d594959ed75c2b40f",
     "typeFiles": [
         "packages/domains/capital/domain/src/CapitalOffer/constants.d.ts",
         "packages/domains/capital/domain/src/CapitalOffer/index.d.ts",
@@ -196,6 +196,7 @@
         "packages/domains/transactions/vue/src/TransactionsOverview/types.d.ts",
         "packages/domains/transactions/vue/src/index.d.ts",
         "packages/sdk/src/index.d.ts",
+        "packages/sdk/src/translations.d.ts",
         "packages/shared/core/src/AdyenPlatformExperienceError.d.ts",
         "packages/shared/core/src/Assets/Assets.d.ts",
         "packages/shared/core/src/ConfigContext.types.d.ts",
@@ -250,6 +251,8 @@
         "packages/shared/core/src/setupAnalytics.d.ts",
         "packages/shared/core/src/setupConfig.d.ts",
         "packages/shared/core/src/setupCore.d.ts",
+        "packages/shared/core/src/theme/ThemeManager.d.ts",
+        "packages/shared/core/src/theme/styles.d.ts",
         "packages/shared/core/src/translation/factory.d.ts",
         "packages/shared/core/src/translations/index.d.ts",
         "packages/shared/core/src/translations/local.d.ts",
@@ -394,7 +397,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "8925ae47d08d0cb00db6ec74e5fce187b9dcfd75beef60437610f363ada051d4",
+    "typeTreeHash": "d96f7a37e4c284f50b691810b8c002a3e98c26d3d7d49e464c588e16f89d4c59",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",
