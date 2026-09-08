@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { ErrorMessageDisplay } from '@integration-components/composables-vue';
-import type { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
+import type { AdyenPlatformExperienceError } from '@integration-components/core';
+import type { DomainTranslationKey } from '@integration-components/core/vue';
 import { getSettingsErrorMessage } from '../utils/getSettingsErrorMessage';
 
 const props = defineProps<{
     error: AdyenPlatformExperienceError | undefined;
-    errorMessage: TranslationKey;
+    errorMessage: DomainTranslationKey;
     onContactSupport?: () => void;
 }>();
 

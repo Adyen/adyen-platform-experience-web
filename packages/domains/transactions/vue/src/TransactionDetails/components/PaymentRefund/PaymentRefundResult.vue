@@ -17,7 +17,7 @@ const { i18n } = useCoreContext();
 
 const isError = computed(() => props.result === 'error');
 
-const titleKey = computed(() => (isError.value ? 'common.errors.somethingWentWrong' : 'transactions.details.refund.alerts.refundSent'));
+const titleKey = computed(() => (isError.value ? 'transactions.common.errors.somethingWentWrong' : 'transactions.details.refund.alerts.refundSent'));
 const descriptionKey = computed(() =>
     isError.value ? 'transactions.details.refund.alerts.refundFailure' : 'transactions.details.refund.alerts.refundSuccess'
 );

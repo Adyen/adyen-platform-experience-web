@@ -2,10 +2,13 @@ import type { AuthSession } from '../session/AuthSession';
 import type { AssetOptions } from '../Assets/Assets';
 import type { SessionObject, SessionRequest } from '../ConfigContext.types';
 import type { DevEnvironment, onErrorHandler, AnalyticsConfig } from '../types';
-import type { I18n } from './Context/types';
+import type { DomainTranslationKey, I18n } from './Context/types';
+import type { TranslationKey } from '../translations';
 import type { SupportedLocales } from '../Localization/types';
+import type Localization from '../Localization';
 
 export type { DevEnvironment, onErrorHandler, AnalyticsConfig, SessionObject, SessionRequest };
+export type DomainCustomTranslations = Record<string, { [key in TranslationKey | DomainTranslationKey]?: string }>;
 
 export interface CoreOptions {
     environment?: DevEnvironment;
@@ -13,6 +16,7 @@ export interface CoreOptions {
     onSessionCreate: SessionRequest;
     onError?: onErrorHandler;
     analytics?: AnalyticsConfig;
+    translations?: DomainCustomTranslations;
     loadingContext?: string;
     balanceAccountId?: string;
 }
@@ -20,6 +24,7 @@ export interface CoreOptions {
 export interface CoreInstance {
     options: CoreOptions;
     i18n: I18n;
+    localization: Localization;
     loadingContext: string;
     analyticsEnabled: boolean;
     session: AuthSession;

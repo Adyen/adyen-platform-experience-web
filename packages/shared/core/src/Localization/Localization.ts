@@ -17,7 +17,6 @@ import { ALREADY_RESOLVED_PROMISE, createWatchlist, isNull, isNullish, isUndefin
 import { httpGet } from '../Http/http';
 import { SupportedLocales } from './types';
 import { translations_dev_assets } from '../translations/local';
-import localSwapConfig from '../config/translations/swapConfig.json';
 
 export type LocalizationSources = Readonly<{
     defaultTranslations: Record<string, string>;
@@ -41,8 +40,6 @@ export default class Localization {
     #markRefreshAsDone?: () => void;
     #refreshWatchlist = createWatchlist({ timestamp: () => performance.now() });
     #restamp: RestamperWithTimezone = restamper();
-    #keySwapConfig: Record<string, string | string[]> = localSwapConfig;
-    #warnedDeprecatedKeys = new Set<string>();
 
     private watch = this.#refreshWatchlist.subscribe.bind(undefined);
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
@@ -52,29 +49,45 @@ export default class Localization {
         locale: string = FALLBACK_LOCALE,
         availableTranslations?: TranslationSourceRecord[],
         cdnTranslationsUrl = '',
-        cdnConfigUrl = '',
+        _cdnConfigUrl = '',
         sources?: LocalizationSources
     ) {
         this.watch(noop);
         this.#defaultTranslations = sources?.defaultTranslations ?? (DEFAULT_TRANSLATIONS as Record<string, string>);
         this.#translations = this.#defaultTranslations;
 
-        this.#fetchTranslationFromCdnPromise = (locale: string) =>
-            sources
-                ? Promise.resolve(
-                      typeof sources.localeTranslations[locale] === 'function'
-                          ? sources.localeTranslations[locale]()
-                          : (sources.localeTranslations[locale] ?? {})
-                  )
-                : process.env.VITE_LOCAL_ASSETS
-                  ? translations_dev_assets[locale]!
-                  : httpGet<any>({
-                        loadingContext: cdnTranslationsUrl,
-                        path: `/${locale}.json`,
-                        versionless: true,
-                        skipContentType: true,
-                        errorLevel: 'info',
-                    });
+        const getBundledTranslations = (locale: string) => {
+            const source = sources?.localeTranslations[locale];
+            return Promise.resolve(typeof source === 'function' ? source() : (source ?? {}));
+        };
+
+        this.#fetchTranslationFromCdnPromise = (locale: string) => {
+            if (!sources) {
+                return process.env.VITE_LOCAL_ASSETS
+                    ? Promise.resolve(translations_dev_assets[locale]!)
+                    : httpGet<any>({
+                          loadingContext: cdnTranslationsUrl,
+                          path: `/${locale}.json`,
+                          versionless: true,
+                          skipContentType: true,
+                          errorLevel: 'info',
+                      });
+            }
+
+            if (locale === FALLBACK_LOCALE || process.env.VITE_LOCAL_ASSETS) {
+                return getBundledTranslations(locale);
+            }
+
+            return httpGet<any>({
+                loadingContext: cdnTranslationsUrl,
+                path: `/${locale}.json`,
+                versionless: true,
+                skipContentType: true,
+                errorLevel: 'info',
+            })
+                .then(translations => translations ?? getBundledTranslations(locale))
+                .catch(() => getBundledTranslations(locale));
+        };
 
         this.preferredTranslations = Object.freeze(
             sources
@@ -86,27 +99,6 @@ export default class Localization {
 
         this.#availableLocales = getLocalesFromTranslationSourcesRecord(this.preferredTranslations);
         this.locale = locale;
-
-        // Load swap config
-        (async () => {
-            // If no CDN config URL provided, use local fallback
-            if (!cdnConfigUrl || process.env.VITE_LOCAL_ASSETS) {
-                return localSwapConfig;
-            }
-
-            try {
-                return await httpGet<Record<string, string | string[]>>({
-                    loadingContext: cdnConfigUrl,
-                    path: '/translations/swapConfig.json',
-                    versionless: true,
-                    skipContentType: true,
-                    errorLevel: 'error',
-                });
-            } catch (error) {
-                console.warn('Failed to load swapConfig from CDN, using local fallback', error);
-                return localSwapConfig;
-            }
-        })().then(config => (this.#keySwapConfig = config));
     }
 
     get customTranslations(): CustomTranslations {
@@ -213,58 +205,6 @@ export default class Localization {
      * @returns Translated string
      */
     get(key: TranslationKey, options?: TranslationOptions): string {
-        const customTranslations = this.#customTranslations?.[this.#locale];
-        const initialSwapKey = this.#keySwapConfig[key];
-
-        // Check if there's a mapped old key in swapConfig and if user provided custom translation with old key
-        if (customTranslations && initialSwapKey && !Array.isArray(initialSwapKey) && initialSwapKey !== key) {
-            let currentKey: string = key;
-            const keyChain: string[] = [];
-            const visitedKeys = new Set<string>();
-
-            while (true) {
-                // Cycle detected, stop lookup
-                if (visitedKeys.has(currentKey)) break;
-
-                visitedKeys.add(currentKey);
-                keyChain.push(currentKey);
-
-                const nextSwapKey = this.#keySwapConfig[currentKey];
-
-                // Stop if no mapping, or array (composite key)
-                if (!nextSwapKey || Array.isArray(nextSwapKey)) break;
-
-                currentKey = nextSwapKey;
-            }
-
-            // Check translations in order (Newest -> Oldest)
-            for (let i = 0; i < keyChain.length; i++) {
-                const translationKey = keyChain[i]!;
-                const translation = getTranslation(customTranslations, translationKey, options);
-
-                if (!isNull(translation)) {
-                    if (translationKey !== key) {
-                        if (!this.#warnedDeprecatedKeys.has(translationKey)) {
-                            console.warn(
-                                `[Adyen Platform Experience Web] Deprecated translation key detected: "${translationKey}". ` +
-                                    `Please update to use the new key: "${key}". ` +
-                                    `This backward compatibility will be removed in a future version.`
-                            );
-                            this.#warnedDeprecatedKeys.add(translationKey);
-                        }
-
-                        // Path compression (for shorter subsequent lookups)
-                        if (i > 1) {
-                            this.#keySwapConfig[key] = translationKey;
-                        }
-                    }
-
-                    return translation;
-                }
-            }
-        }
-
-        // Get translation normally (this includes custom translations with new key + default translations)
         const translation = getTranslation(this.#translations, key, options);
         return isNull(translation) ? key : translation;
     }

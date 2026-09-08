@@ -1,6 +1,13 @@
 {
     "capital.common.actions.contactSupport": "Kontakt support",
+    "capital.common.actions.contactSupport.labels.reachOut": "Ræk ud efter støtte",
+    "capital.common.actions.dismiss.labels.dismiss": "Afvis",
     "capital.common.actions.goBack": "Gå tilbage",
+    "capital.common.actions.refresh.labels.default": "Opdater",
+    "capital.common.errors.errorCode": "Fejlkoden er %{requestId}",
+    "capital.common.errors.errorCodeSupport": "Kontakt support for at få hjælp, og del fejlkode %{requestId}",
+    "capital.common.errors.retry": "Prøv at opdatere siden, eller kom tilbage senere.",
+    "capital.common.errors.somethingWentWrong": "Noget gik galt.",
     "capital.common.errors.unsupportedRegion": "Virksomhedsfinansiering er endnu ikke tilgængelig i din region, men vi arbejder på at kunne tilbyde dig den bedste løsning snart.",
     "capital.common.errors.unsupportedRegion.title": "Hold dig opdateret!",
     "capital.common.fields.account": "Konto",

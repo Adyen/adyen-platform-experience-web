@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { ErrorMessageDisplay } from '@integration-components/composables-vue';
-import { getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
+import { getPaymentLinkErrorMessageContent } from '../../utils/getPaymentLinkErrorMessageContent';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';
 import PaymentLinkDetailsContent from './PaymentLinkDetailsContent.vue';
 import PaymentLinkExpiration from '../PaymentLinkExpiration/PaymentLinkExpiration.vue';
@@ -29,7 +29,7 @@ const errorInfo = computed(() => {
     const content = getPaymentLinkErrorMessageContent(error.value, 'payByLink.details.errors.unavailable', !!props.onContactSupport);
     return {
         title: content.title,
-        messages: content.message,
+        messages: content.messages,
         refreshComponent: content.refreshComponent,
         requestId: content.requestId,
         onContactSupport: error.value?.errorCode === '500' ? props.onContactSupport : undefined,

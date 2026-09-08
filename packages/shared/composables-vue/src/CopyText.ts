@@ -1,8 +1,7 @@
 import { computed, defineComponent, h, mergeProps, type PropType, type VNodeChild, withDirectives } from 'vue';
 import { BentoButton, BentoTooltipDirective } from '@adyen/bento-vue3';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
-import type { TranslationKey } from '@integration-components/core';
-import { useCoreContext } from '@integration-components/core/vue';
+import { getDomainTranslationKey, useCoreContext, type DomainTranslationKey } from '@integration-components/core/vue';
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import { useCopyText } from './useCopyText';
 import { useLiveAnnouncement } from './useLiveAnnouncement';
@@ -16,7 +15,7 @@ export const CopyText = defineComponent({
     inheritAttrs: false,
 
     props: {
-        copyButtonAriaLabelKey: { type: String as PropType<TranslationKey>, default: undefined },
+        copyButtonAriaLabelKey: { type: String as PropType<DomainTranslationKey>, default: undefined },
         isUnderlineVisible: { type: Boolean, default: false },
         onCopyText: { type: Function as PropType<() => void>, default: undefined },
         showCopyTextTooltip: { type: Boolean, default: true },
@@ -27,17 +26,23 @@ export const CopyText = defineComponent({
     },
 
     setup(props, { attrs, slots }) {
-        const { i18n } = useCoreContext();
+        const { i18n, translationDomain } = useCoreContext();
         const { announce, announcement } = useLiveAnnouncement();
         const { copyText, isCopied, resetCopyState } = useCopyText(
             () => props.textToCopy,
             () => {
-                announce(() => i18n.get('common.actions.copy.labels.done'));
+                announce(() => i18n.get(getDomainTranslationKey(translationDomain, 'common.actions.copy.labels.done')));
                 props.onCopyText?.();
             }
         );
-        const copyButtonLabel = computed(() => i18n.get(props.copyButtonAriaLabelKey ?? 'common.actions.copy.labels.default'));
-        const copyButtonTooltip = computed(() => i18n.get(isCopied.value ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default'));
+        const copyButtonLabel = computed(() =>
+            i18n.get(props.copyButtonAriaLabelKey ?? getDomainTranslationKey(translationDomain, 'common.actions.copy.labels.default'))
+        );
+        const copyButtonTooltip = computed(() =>
+            i18n.get(
+                getDomainTranslationKey(translationDomain, isCopied.value ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default')
+            )
+        );
 
         return () => {
             const visibleText = h(

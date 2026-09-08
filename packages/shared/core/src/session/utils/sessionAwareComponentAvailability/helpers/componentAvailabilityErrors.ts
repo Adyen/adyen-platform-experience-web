@@ -1,7 +1,11 @@
 import { ExternalComponentType } from '@integration-components/types';
 import type { TranslationKey } from '../../../../translations';
 
-const componentAvailabilityErrors = (type: ExternalComponentType | undefined): TranslationKey => {
+function componentAvailabilityErrors<Fallback extends TranslationKey>(
+    type: ExternalComponentType | undefined,
+    fallback: Fallback
+): TranslationKey | Fallback;
+function componentAvailabilityErrors(type: ExternalComponentType | undefined, fallback: TranslationKey): TranslationKey {
     switch (type) {
         case 'transactions':
             return 'transactions.overview.errors.unavailable';
@@ -20,8 +24,8 @@ const componentAvailabilityErrors = (type: ExternalComponentType | undefined): T
         case 'paymentLinksOverview':
             return 'payByLink.overview.errors.unavailable';
         default:
-            return 'common.errors.componentUnavailable';
+            return fallback;
     }
-};
+}
 
 export default componentAvailabilityErrors;

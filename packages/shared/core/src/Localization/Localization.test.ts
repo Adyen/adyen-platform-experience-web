@@ -1,11 +1,16 @@
 import Localization from './Localization';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import { es_ES, type TranslationKey } from '../translations';
 import sdkGermanTranslations from '../../../../sdk/translations/de-DE.json' with { type: 'json' };
 import sdkEnglishTranslations from '../../../../sdk/translations/en-US.json' with { type: 'json' };
 
 describe('Localization', () => {
     const translationKey = 'abc' as TranslationKey;
+
+    afterEach(() => {
+        vi.unstubAllEnvs();
+        vi.unstubAllGlobals();
+    });
 
     describe('constructor', () => {
         test('sets up locale and customTranslations', () => {
@@ -86,124 +91,57 @@ describe('Localization', () => {
                 expect(lang.get(translationKey)).toBe(translationKey);
             });
         });
-
-        describe('backward compatibility with swapConfig', () => {
-            test('returns custom translation when user provides old key that maps to new key', async () => {
-                const lang = new Localization('en-US');
-
-                // User provides translation using the old key "contactSupport"
-                lang.customTranslations = {
-                    'en-US': {
-                        contactSupport: 'Call us now',
-                    } as unknown as Record<TranslationKey, string>,
-                };
-
-                await lang.ready;
-
-                const result = lang.get('capital.common.actions.contactSupport' as TranslationKey);
-                expect(result).toBe('Call us now');
-            });
-
-            test('returns translation normally when new key is used', async () => {
-                const lang = new Localization('en-US');
-
-                // User provides translation using the new key
-                lang.customTranslations = {
-                    'en-US': {
-                        'capital.common.actions.contactSupport': 'Get help now',
-                    },
-                };
-
-                await lang.ready;
-
-                const result = lang.get('capital.common.actions.contactSupport' as TranslationKey);
-                expect(result).toBe('Get help now');
-            });
-
-            test('returns translation normally if custom translation is missing', async () => {
-                const lang = new Localization('en-US');
-                await lang.ready;
-
-                const result = lang.get('capital.common.actions.contactSupport' as TranslationKey);
-                expect(result).toBe('Contact support');
-            });
-
-            test('prioritizes new key custom translation over old key custom translation', async () => {
-                const lang = new Localization('en-US');
-
-                lang.customTranslations = {
-                    'en-US': {
-                        'capital.common.actions.contactSupport': 'New Translation',
-                        contactSupport: 'Old Translation',
-                    } as unknown as Record<TranslationKey, string>,
-                };
-
-                await lang.ready;
-
-                const result = lang.get('capital.common.actions.contactSupport' as TranslationKey);
-                expect(result).toBe('New Translation');
-            });
-
-            test('warns when falling back to a deprecated key', async () => {
-                const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-                const lang = new Localization('en-US');
-
-                lang.customTranslations = {
-                    'en-US': {
-                        contactSupport: 'Call us now',
-                    } as unknown as Record<TranslationKey, string>,
-                };
-
-                await lang.ready;
-
-                lang.get('capital.common.actions.contactSupport' as TranslationKey);
-
-                expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('Deprecated translation key detected: "contactSupport"'));
-
-                consoleWarnSpy.mockRestore();
-            });
-
-            test('does not check swapConfig for 1:1 mappings', async () => {
-                const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-                const lang = new Localization('en-US');
-
-                // "capital.actionNeeded" maps to itself in swapConfig (1:1 mapping)
-                lang.customTranslations = {
-                    'en-US': {
-                        ['capital.actionNeeded' as TranslationKey]: 'Action Required',
-                    },
-                };
-
-                await lang.ready;
-
-                const result = lang.get('capital.actionNeeded' as TranslationKey);
-
-                // Should return the custom translation
-                expect(result).toBe('Action Required');
-
-                // Should not emit deprecation warning for 1:1 mappings
-                expect(consoleWarnSpy).not.toHaveBeenCalled();
-
-                consoleWarnSpy.mockRestore();
-            });
-        });
     });
 
     describe('SDK translation sources', () => {
+        const sources = {
+            defaultTranslations: sdkEnglishTranslations,
+            localeTranslations: {
+                'de-DE': Promise.resolve(sdkGermanTranslations),
+                'en-US': Promise.resolve(sdkEnglishTranslations),
+            },
+        };
+
         test('loads a V2 locale catalog and falls back to its English catalog', async () => {
-            const localization = new Localization('de-DE', undefined, '', '', {
-                defaultTranslations: sdkEnglishTranslations,
-                localeTranslations: {
-                    'de-DE': Promise.resolve(sdkGermanTranslations),
-                    'en-US': Promise.resolve(sdkEnglishTranslations),
-                },
-            });
+            const localization = new Localization('de-DE', undefined, '', '', sources);
 
             await localization.ready;
 
-            expect(localization.get('common.errors.updateFilters' as TranslationKey)).toBe(sdkGermanTranslations['common.errors.updateFilters']);
+            expect(localization.get('transactions.common.errors.updateFilters' as TranslationKey)).toBe(
+                sdkGermanTranslations['transactions.common.errors.updateFilters']
+            );
             expect(localization.get('capital.common.errors.unsupportedRegion')).toBe(
                 sdkGermanTranslations['capital.common.errors.unsupportedRegion']
+            );
+        });
+
+        test('loads SDK locale catalogs from the CDN before bundled catalogs', async () => {
+            vi.stubEnv('VITE_LOCAL_ASSETS', '');
+            const fetch = vi.fn().mockResolvedValue(
+                new Response(JSON.stringify({ 'transactions.common.errors.updateFilters': 'CDN translation' }), {
+                    headers: { 'Content-Type': 'application/json' },
+                })
+            );
+            vi.stubGlobal('fetch', fetch);
+
+            const localization = new Localization('de-DE', undefined, 'https://cdn.example/translations', '', sources);
+
+            await localization.ready;
+
+            expect(String(fetch.mock.calls[0]?.[0])).toBe('https://cdn.example/translations/de-DE.json');
+            expect(localization.get('transactions.common.errors.updateFilters' as TranslationKey)).toBe('CDN translation');
+        });
+
+        test('falls back to bundled SDK locale catalogs when CDN loading fails', async () => {
+            vi.stubEnv('VITE_LOCAL_ASSETS', '');
+            vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('CDN unavailable')));
+
+            const localization = new Localization('de-DE', undefined, 'https://cdn.example/translations', '', sources);
+
+            await localization.ready;
+
+            expect(localization.get('transactions.common.errors.updateFilters' as TranslationKey)).toBe(
+                sdkGermanTranslations['transactions.common.errors.updateFilters']
             );
         });
     });
