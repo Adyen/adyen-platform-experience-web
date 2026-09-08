@@ -27,7 +27,7 @@
         "./*": "./src/*.ts"
     },
     "dependencies": {
-        "@adyen/adyen-shared-web": "0.2.0",
+        "@adyen/adyen-shared-web": "0.3.0",
         "@adyen/bento-design-tokens": "catalog:",
         "@integration-components/assets": "workspace:*",
         "@integration-components/style": "workspace:*",

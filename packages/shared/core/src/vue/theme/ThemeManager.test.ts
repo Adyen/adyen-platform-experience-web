@@ -24,14 +24,14 @@ describe('ThemeManager', () => {
     it('uses the light Bento defaults when the theme is undefined', () => {
         document.documentElement.setAttribute(THEME_MODE_ATTRIBUTE, 'dark');
 
-        manager.apply(undefined);
+        manager.apply();
 
         expect(generator.destroy).toHaveBeenCalledOnce();
         expect(document.documentElement.hasAttribute(THEME_MODE_ATTRIBUTE)).toBe(false);
     });
 
     it('uses the dark Bento defaults without generating brand variables', () => {
-        manager.apply({ mode: 'dark' });
+        manager.apply('dark');
 
         expect(generator.destroy).toHaveBeenCalledOnce();
         expect(generator.create).not.toHaveBeenCalled();
@@ -39,7 +39,7 @@ describe('ThemeManager', () => {
     });
 
     it('generates dark brand variables after selecting the dark Bento defaults', () => {
-        manager.apply({ mode: 'dark', dark: { primary: '#0066ff' } });
+        manager.apply('dark', { dark: { primary: '#0066ff' } });
 
         expect(generator.create).toHaveBeenCalledWith({
             primary: '#0066ff',
@@ -49,8 +49,8 @@ describe('ThemeManager', () => {
     });
 
     it('replaces a dark custom theme with a complete light custom theme', () => {
-        manager.apply({ mode: 'dark', dark: { primary: '#0066ff' } });
-        manager.apply({ light: { background: '#ffffff' } });
+        manager.apply('dark', { dark: { primary: '#0066ff' } });
+        manager.apply('light', { light: { background: '#ffffff' } });
 
         expect(generator.create).toHaveBeenLastCalledWith({
             background: '#ffffff',
@@ -60,8 +60,7 @@ describe('ThemeManager', () => {
     });
 
     it('uses Bento defaults when the selected mode has no overrides', () => {
-        manager.apply({
-            mode: 'dark',
+        manager.apply('dark', {
             light: { primary: '#0066ff' },
         });
 
@@ -76,13 +75,13 @@ describe('ThemeManager', () => {
             throw new Error('Invalid theme');
         });
 
-        expect(() => manager.apply({ light: { primary: 'invalid' } })).toThrow('Invalid theme');
+        expect(() => manager.apply('light', { light: { primary: 'invalid' } })).toThrow('Invalid theme');
         expect(document.documentElement.getAttribute(THEME_MODE_ATTRIBUTE)).toBe('dark');
     });
 });
 
 describe('applyTheme', () => {
     it('does nothing when no document is available', () => {
-        expect(() => applyTheme({ mode: 'dark' }, undefined)).not.toThrow();
+        expect(() => applyTheme('dark', undefined, undefined)).not.toThrow();
     });
 });

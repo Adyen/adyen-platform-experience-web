@@ -5,8 +5,8 @@ import {
     type CoreInstance,
     type SupportedLocales,
     type CoreOptions,
+    type CustomThemes,
     type ThemeMode,
-    type ThemeOptions,
     type ThemeVariables,
     UIElement,
 } from '@integration-components/core/vue';
@@ -32,9 +32,9 @@ const isCoreReady = ref(false);
 let core: CoreInstance | undefined;
 let element: UIElement<Record<string, unknown>> | undefined;
 
-const storyTheme = computed(() => {
+const storyCustomThemes = computed(() => {
     const { coreOptions } = props.componentProps ?? {};
-    return ((coreOptions ?? {}) as Partial<CoreOptions>).theme;
+    return ((coreOptions ?? {}) as Partial<CoreOptions>).customThemes;
 });
 
 const configuredThemeMode = computed<ThemeMode>(() => {
@@ -47,18 +47,25 @@ const componentPropsWithoutCoreOptions = computed(() => {
     return rest;
 });
 
-const getTheme = (): ThemeOptions => {
+const getThemeOptions = (): Pick<CoreOptions, 'themeMode' | 'customThemes'> => {
     const mode = configuredThemeMode.value;
     const variables: ThemeVariables = {
-        ...storyTheme.value?.[mode],
+        ...storyCustomThemes.value?.[mode],
         ...props.themeVariables,
     };
+    const customThemes: CustomThemes = {
+        ...storyCustomThemes.value,
+        ...(Object.keys(variables).length > 0 ? { [mode]: variables } : {}),
+    };
 
-    return Object.keys(variables).length > 0 ? { mode, [mode]: variables } : { mode };
+    return {
+        themeMode: mode,
+        customThemes: Object.keys(customThemes).length > 0 ? customThemes : undefined,
+    };
 };
 
 const applyTheme = async () => {
-    await core?.update({ theme: getTheme() });
+    await core?.update(getThemeOptions());
 };
 
 async function initializeCore() {
@@ -75,7 +82,7 @@ async function initializeCore() {
             locale: props.locale || 'en-US',
             onSessionCreate: (_signal: AbortSignal) => getMySessionToken(props.session),
             ...storyCoreOptions,
-            theme: getTheme(),
+            ...getThemeOptions(),
         });
 
         core = await instance.initialize();
@@ -96,7 +103,7 @@ async function initializeCore() {
 
 onMounted(initializeCore);
 
-watch([configuredThemeMode, storyTheme, () => props.themeVariables], applyTheme, { deep: true });
+watch([configuredThemeMode, storyCustomThemes, () => props.themeVariables], applyTheme, { deep: true });
 
 // prettier-ignore
 watch(

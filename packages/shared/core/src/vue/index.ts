@@ -9,7 +9,7 @@ export type {
     SessionObject,
     SessionRequest,
     ThemeMode,
-    ThemeOptions,
+    CustomThemes,
     ThemeVariables,
 } from './types';
 export type { SupportedLocales } from '../Localization/types';

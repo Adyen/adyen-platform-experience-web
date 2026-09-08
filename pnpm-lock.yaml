@@ -79,7 +79,6 @@ overrides:
   uuid: 11.1.1
   webpack: ^5.106.2
   ws: 8.21.0
-  '@adyen/adyen-shared-web': link:../adyen-shared-web
 
 pnpmfileChecksum: sha256-uqUjxjMT4bvZN8bIa9IwAM3O6WDWkrgK7Nz9UJ/u64Q=
 
@@ -774,8 +773,8 @@ importers:
   packages/shared/core:
     dependencies:
       '@adyen/adyen-shared-web':
-        specifier: link:../../../../adyen-shared-web
-        version: link:../../../../adyen-shared-web
+        specifier: 0.3.0
+        version: 0.3.0
       '@adyen/bento-design-tokens':
         specifier: 2.0.0-rc.5
         version: 2.0.0-rc.5
@@ -988,6 +987,10 @@ packages:
   '@adyen/adyen-document-viewer@1.4.5':
     resolution: {}
     engines: {node: '>=24', pnpm: '>=10.33.0'}
+
+  '@adyen/adyen-shared-web@0.3.0':
+    resolution: {}
+    engines: {node: '>=20', pnpm: '>=10.16.0'}
 
   '@adyen/bento-design-tokens@2.0.0-rc.5':
     resolution: {}
@@ -3593,6 +3596,9 @@ packages:
   chokidar@5.0.0:
     resolution: {}
     engines: {node: '>= 20.19.0'}
+
+  chroma-js@3.2.0:
+    resolution: {}
 
   chrome-trace-event@1.0.4:
     resolution: {}
@@ -6988,6 +6994,11 @@ snapshots:
     transitivePeerDependencies:
       - preact-render-to-string
 
+  '@adyen/adyen-shared-web@0.3.0':
+    dependencies:
+      '@adyen/bento-design-tokens': 2.0.0-rc.5
+      chroma-js: 3.2.0
+
   '@adyen/bento-design-tokens@2.0.0-rc.5': {}
 
   '@adyen/bento-vue3@2.0.0-rc.5(@vue/compiler-sfc@3.5.41)(esbuild@0.28.1)(rollup@4.59.0)(vite@7.3.6(@types/node@24.10.13)(sass@1.102.0)(terser@5.49.1)(tsx@4.23.5)(yaml@2.9.0))(vue-i18n@11.4.8(vue@3.5.40(typescript@5.8.3)))(vue@3.5.40(typescript@5.8.3))(webpack@5.109.2(esbuild@0.28.1)(postcss@8.5.25))(zod@4.2.1)':
@@ -9990,6 +10001,8 @@ snapshots:
   chokidar@5.0.0:
     dependencies:
       readdirp: 5.0.0
+
+  chroma-js@3.2.0: {}
 
   chrome-trace-event@1.0.4: {}
 

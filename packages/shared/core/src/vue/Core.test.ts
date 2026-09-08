@@ -13,8 +13,9 @@ const createCore = () =>
     new Core({
         locale: 'en-US',
         onSessionCreate: vi.fn(),
-        theme: {
-            mode: 'dark',
+        themeMode: 'dark',
+        customThemes: {
+            light: { primary: '#84adff' },
             dark: { primary: '#0066ff' },
         },
     });
@@ -28,8 +29,8 @@ describe('Vue Core theme lifecycle', () => {
         createCore();
 
         expect(applyTheme).toHaveBeenCalledOnce();
-        expect(applyTheme).toHaveBeenCalledWith({
-            mode: 'dark',
+        expect(applyTheme).toHaveBeenCalledWith('dark', {
+            light: { primary: '#84adff' },
             dark: { primary: '#0066ff' },
         });
     });
@@ -41,41 +42,84 @@ describe('Vue Core theme lifecycle', () => {
         });
 
         expect(applyTheme).toHaveBeenCalledOnce();
-        expect(applyTheme).toHaveBeenCalledWith(undefined);
+        expect(applyTheme).toHaveBeenCalledWith(undefined, undefined);
     });
 
-    it('preserves the current theme when an update omits theme', async () => {
+    it('preserves the current theme when an update omits theme options', async () => {
         const core = createCore();
         vi.mocked(applyTheme).mockClear();
 
         await core.update({ locale: 'de-DE' });
 
         expect(applyTheme).not.toHaveBeenCalled();
-        expect(core.options.theme).toEqual({
-            mode: 'dark',
+        expect(core.options.themeMode).toBe('dark');
+        expect(core.options.customThemes).toEqual({
+            light: { primary: '#84adff' },
             dark: { primary: '#0066ff' },
         });
     });
 
-    it('resets to light when an update explicitly sets theme to undefined', async () => {
-        const core = createCore();
+    it('changes theme mode without replacing custom themes', async () => {
+        const customThemes = {
+            light: { primary: '#84adff' },
+            dark: { primary: '#0066ff' },
+        };
+        const core = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            themeMode: 'dark',
+            customThemes,
+        });
         vi.mocked(applyTheme).mockClear();
 
-        await core.update({ theme: undefined });
+        await core.update({ themeMode: 'light' });
 
-        expect(applyTheme).toHaveBeenCalledOnce();
-        expect(applyTheme).toHaveBeenCalledWith(undefined);
-        expect(core.options.theme).toBeUndefined();
+        expect(applyTheme).toHaveBeenCalledWith('light', customThemes);
+        expect(core.options.themeMode).toBe('light');
+        expect(core.options.customThemes).toBe(customThemes);
     });
 
-    it('replaces the complete theme object during an update', async () => {
+    it('changes custom themes without changing theme mode', async () => {
+        const core = createCore();
+        const customThemes = {
+            dark: { background: '#111111' },
+        };
+        vi.mocked(applyTheme).mockClear();
+
+        await core.update({ customThemes });
+
+        expect(applyTheme).toHaveBeenCalledWith('dark', customThemes);
+        expect(core.options.themeMode).toBe('dark');
+        expect(core.options.customThemes).toBe(customThemes);
+    });
+
+    it('clears custom themes without changing theme mode', async () => {
         const core = createCore();
         vi.mocked(applyTheme).mockClear();
 
-        await core.update({ theme: { mode: 'light' } });
+        await core.update({ customThemes: undefined });
 
-        expect(applyTheme).toHaveBeenCalledWith({ mode: 'light' });
-        expect(core.options.theme).toEqual({ mode: 'light' });
+        expect(applyTheme).toHaveBeenCalledWith('dark', undefined);
+        expect(core.options.themeMode).toBe('dark');
+        expect(core.options.customThemes).toBeUndefined();
+    });
+
+    it('resets to light without replacing custom themes when theme mode is cleared', async () => {
+        const core = createCore();
+        vi.mocked(applyTheme).mockClear();
+
+        await core.update({ themeMode: undefined });
+
+        expect(applyTheme).toHaveBeenCalledOnce();
+        expect(applyTheme).toHaveBeenCalledWith(undefined, {
+            light: { primary: '#84adff' },
+            dark: { primary: '#0066ff' },
+        });
+        expect(core.options.themeMode).toBeUndefined();
+        expect(core.options.customThemes).toEqual({
+            light: { primary: '#84adff' },
+            dark: { primary: '#0066ff' },
+        });
     });
 
     it('does not update Core state or components when theme application fails', async () => {
@@ -91,9 +135,10 @@ describe('Vue Core theme lifecycle', () => {
             throw new Error('Invalid theme');
         });
 
-        await expect(core.update({ theme: { light: { primary: 'invalid' } } })).rejects.toThrow('Invalid theme');
-        expect(core.options.theme).toEqual({
-            mode: 'dark',
+        await expect(core.update({ customThemes: { dark: { primary: 'invalid' } } })).rejects.toThrow('Invalid theme');
+        expect(core.options.themeMode).toBe('dark');
+        expect(core.options.customThemes).toEqual({
+            light: { primary: '#84adff' },
             dark: { primary: '#0066ff' },
         });
         expect(component.update).not.toHaveBeenCalled();

@@ -1,4 +1,4 @@
-import type { ThemeOptions, ThemeVariables } from '../types';
+import type { CustomThemes, ThemeMode, ThemeVariables } from '../types';
 import { createThemeStyleGenerator, type ThemeStyleGenerator } from './ThemeGeneratorAdapter';
 
 export const THEME_MODE_ATTRIBUTE = 'data-adyen-pe-theme';
@@ -13,9 +13,8 @@ export class ThemeManager {
         private readonly generator: ThemeStyleGenerator
     ) {}
 
-    public apply(theme: ThemeOptions | undefined): void {
-        const mode = theme?.mode ?? 'light';
-        const variables = theme?.[mode];
+    public apply(mode: ThemeMode = 'light', customThemes?: CustomThemes): void {
+        const variables = customThemes?.[mode];
 
         if (hasVariables(variables)) {
             this.generator.create({
@@ -36,7 +35,11 @@ export class ThemeManager {
 
 const getDefaultDocument = (): Document | undefined => (typeof document === 'undefined' ? undefined : document);
 
-export const applyTheme = (theme: ThemeOptions | undefined, targetDocument: Document | undefined = getDefaultDocument()): void => {
+export const applyTheme = (
+    mode: ThemeMode | undefined,
+    customThemes?: CustomThemes,
+    targetDocument: Document | undefined = getDefaultDocument()
+): void => {
     if (!targetDocument) return;
 
     let manager = themeManagers.get(targetDocument);
@@ -46,5 +49,5 @@ export const applyTheme = (theme: ThemeOptions | undefined, targetDocument: Docu
         themeManagers.set(targetDocument, manager);
     }
 
-    manager.apply(theme);
+    manager.apply(mode, customThemes);
 };
