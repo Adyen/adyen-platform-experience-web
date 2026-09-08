@@ -1,0 +1,18 @@
+{
+    "reports.common.types.payout": "Maksu",
+    "reports.overview.errors.download": "Latauksessa meni jokin pieleen",
+    "reports.overview.errors.listEmpty": "Raportteja ei löytynyt",
+    "reports.overview.errors.listUnavailable": "Raporttiesi lataaminen ei onnistunut.",
+    "reports.overview.errors.retryDownload": "Yritä myöhemmin uudelleen.",
+    "reports.overview.errors.tooManyDownloads": "Kaikkien tiedostojen lataaminen ei onnistunut. Yritä myöhemmin uudelleen.",
+    "reports.overview.errors.unavailable": "Raporttien yleiskatsauksen lataaminen ei onnistunut.",
+    "reports.overview.filters.label": "Raporttisuodattimet",
+    "reports.overview.generateInfo": "Raportit luodaan joka päivä keskiyöllä (UTC-aikaa).",
+    "reports.overview.list.controls.downloadReport.label": "Lataa raportti",
+    "reports.overview.list.fields.createdAt": "Päivämäärä",
+    "reports.overview.list.fields.reportFile": "Tiedosto",
+    "reports.overview.list.fields.reportType": "Raportti",
+    "reports.overview.pagination.controls.limitSelect.label": "Raportteja per sivu",
+    "reports.overview.pagination.label": "Raporttien sivutus",
+    "reports.overview.title": "Raportit"
+}

@@ -1,0 +1,18 @@
+{
+    "reports.common.types.payout": "Liquidação de pagamento",
+    "reports.overview.errors.download": "Ocorreu algum erro com o download",
+    "reports.overview.errors.listEmpty": "Nenhum relatório encontrado",
+    "reports.overview.errors.listUnavailable": "Não foi possível carregar seus relatórios.",
+    "reports.overview.errors.retryDownload": "Tente novamente mais tarde.",
+    "reports.overview.errors.tooManyDownloads": "Não foi possível baixar todos os arquivos. Tente novamente mais tarde.",
+    "reports.overview.errors.unavailable": "Não foi possível carregar a visão geral dos relatórios.",
+    "reports.overview.filters.label": "Filtros de relatórios",
+    "reports.overview.generateInfo": "Os relatórios são gerados todos os dias à meia-noite, horário UTC.",
+    "reports.overview.list.controls.downloadReport.label": "Baixar relatório",
+    "reports.overview.list.fields.createdAt": "Data",
+    "reports.overview.list.fields.reportFile": "Arquivo",
+    "reports.overview.list.fields.reportType": "Relatório",
+    "reports.overview.pagination.controls.limitSelect.label": "Relatórios por página",
+    "reports.overview.pagination.label": "Paginação de relatórios",
+    "reports.overview.title": "Relatórios"
+}
