@@ -1,25 +1,22 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import {
-    adjustSelectedTerm,
-    getAvailableTerms,
-    getDefaultAmountValue,
-    getDefaultTerm,
     getEstimatedTerms,
-    getIsEarlyRenewal,
     getOfferForTerm,
     getOffersByTerm,
-    getPercentageOfRange,
-    getRelativeToDefault,
     sharedCapitalOfferAnalyticsEventProperties,
     type EnhancedCapitalState,
+    getDefaultAmountValue,
+    getDefaultTerm,
+    getAvailableTerms,
+    adjustSelectedTerm,
 } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { useOffers } from '../../composables/useOffers';
 import { useCreateOffer } from '../../composables/useCreateOffer';
 import type { IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
 import { BentoButtonActions, type BentoButtonActionsList } from '@adyen/bento-vue3';
-import AmountSlider from '../AmountSlider/AmountSlider.vue';
+import AmountSelector from '../AmountSelector/AmountSelector.vue';
 import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
 import OfferSelectionDetails from '../OfferSelectionDetails.vue';
 import RenewalHighlights from '../RenewalHighlights.vue';
@@ -29,20 +26,20 @@ import styles from './OfferSelection.module.scss';
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
     dynamicOfferConfig: IDynamicOffersConfig;
-    selectedAmount: number | undefined;
-    selectedTerm: number | undefined;
+    createdOffer: IGrantOfferResponseDTO | undefined;
     onContactSupport?: () => void;
-    onOfferDismiss?: () => void;
-    onOfferSelect: (offer: IGrantOfferResponseDTO) => void;
-    onSelectedAmountChange: (amount: number) => void;
-    onSelectedTermChange: (term: number) => void;
+    onDismiss?: () => void;
+    onOfferCreate: (offer: IGrantOfferResponseDTO) => void;
 }>();
 
 const { i18n } = useCoreContext();
 const userEvents = useEventDispatcherContext();
-const isEarlyRenewal = computed(() => getIsEarlyRenewal(props.capitalState));
 const renewableGrant = computed(() => props.capitalState.renewableGrants?.[0]);
-const hasEmittedInitialSliderEvent = ref(false);
+const isEarlyRenewal = computed(() => !!renewableGrant.value);
+const estimatedTerms = computed(() => getEstimatedTerms(props.dynamicOfferConfig));
+const hasSingleTerm = computed(() => estimatedTerms.value.length === 1);
+
+const amountValue = ref<number>(props.createdOffer?.grantAmount.value ?? getDefaultAmountValue(props.dynamicOfferConfig));
 const isAmountChanging = ref(false);
 const {
     cancelRequest,
@@ -53,69 +50,33 @@ const {
     requestOffers,
 } = useOffers(
     () => props.dynamicOfferConfig,
-    () => props.selectedAmount
+    () => amountValue.value
 );
-const { error: createOfferError, isLoading: isCreateOfferLoading, createOffer } = useCreateOffer();
-
-// Initialize selectedAmount with default value
-watch(
-    () => props.dynamicOfferConfig,
-    config => {
-        if (props.selectedAmount === undefined) {
-            props.onSelectedAmountChange(getDefaultAmountValue(config));
-        }
-    },
-    { immediate: true }
-);
-
-const allTerms = computed(() => getEstimatedTerms(props.dynamicOfferConfig));
-const hasSingleTerm = computed(() => allTerms.value.length === 1);
+const areAmountAndOffersUpdating = computed(() => isAmountChanging.value || areOffersLoading.value || isOffersRequestPending.value);
 const hasNoOffers = computed(() => offers.value?.offers.length === 0);
 const offersByTerm = computed(() => getOffersByTerm(offers.value?.offers ?? []));
 const availableTerms = computed(() => getAvailableTerms(offersByTerm.value));
-const selectedOffer = computed(() => (props.selectedTerm === undefined ? undefined : getOfferForTerm(offersByTerm.value, props.selectedTerm)));
-const areOffersUpdating = computed(() => isAmountChanging.value || areOffersLoading.value || isOffersRequestPending.value);
-const isReviewDisabled = computed(() => !selectedOffer.value || areOffersUpdating.value || isCreateOfferLoading.value);
+const term = ref<number | undefined>(props.createdOffer?.expectedRepaymentPeriodDays);
+const selectedOffer = computed(() => (term.value === undefined ? undefined : getOfferForTerm(offersByTerm.value, term.value)));
+const { error: createOfferError, isLoading: isCreateOfferLoading, createOffer } = useCreateOffer();
+const isReviewDisabled = computed(() => !selectedOffer.value || areAmountAndOffersUpdating.value || isCreateOfferLoading.value);
 
+// Initializes the selected term and adjusts it when it becomes unavailable
 watch(
-    [availableTerms, () => props.selectedTerm],
+    [() => availableTerms.value, () => term.value],
     ([terms, selectedTerm]) => {
         if (!terms.length) return;
 
-        const nextTerm =
-            selectedTerm === undefined ? getDefaultTerm(terms) : terms.includes(selectedTerm) ? undefined : adjustSelectedTerm(terms, selectedTerm);
+        let nextTerm: number | undefined;
+
+        if (selectedTerm === undefined) {
+            nextTerm = getDefaultTerm(terms);
+        } else {
+            nextTerm = terms.includes(selectedTerm) ? undefined : adjustSelectedTerm(terms, selectedTerm);
+        }
 
         if (nextTerm !== undefined && nextTerm !== selectedTerm) {
-            props.onSelectedTermChange(nextTerm);
-        }
-    },
-    { immediate: true }
-);
-
-const emitAmountValueChangeEvent = (amountValue: number) => {
-    const config = props.dynamicOfferConfig;
-
-    userEvents.addEvent?.('Changed capital offer slider', {
-        ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing offer',
-        label: 'Slider changed',
-        currency: config.minAmount.currency,
-        value: amountValue,
-        valuePercentage: getPercentageOfRange(amountValue, config.minAmount.value, config.maxAmount.value),
-        min: config.minAmount.value,
-        max: config.maxAmount.value,
-        relativeToDefault: getRelativeToDefault(amountValue, getDefaultAmountValue(config)),
-        isEarlyRenewal: isEarlyRenewal.value,
-    });
-};
-
-// Emit initial slider-changed event only once
-watch(
-    [() => props.dynamicOfferConfig, () => props.selectedAmount],
-    ([config, amount]) => {
-        if (!hasEmittedInitialSliderEvent.value && config && amount !== undefined) {
-            hasEmittedInitialSliderEvent.value = true;
-            emitAmountValueChangeEvent(amount);
+            term.value = nextTerm;
         }
     },
     { immediate: true }
@@ -124,40 +85,21 @@ watch(
 const handleAmountValueChange = (amount: number) => {
     cancelRequest();
     isAmountChanging.value = true;
-    props.onSelectedAmountChange(amount);
+    amountValue.value = amount;
 };
 
-const handleSliderRelease = (amount: number) => {
+const handleAmountValueChangeCommitted = (amount: number) => {
     requestOffers(amount);
     isAmountChanging.value = false;
-    emitAmountValueChangeEvent(amount);
-};
-
-const handleTermSelect = (term: number) => {
-    const selectedRate = offersByTerm.value[term]?.repaymentRate;
-
-    props.onSelectedTermChange(term);
-    userEvents.addEvent?.('Selected repayment term', {
-        ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing offer',
-        allTerms: allTerms.value,
-        availableTerms: availableTerms.value,
-        selectedTerm: term,
-        relativeToDefault: getRelativeToDefault(term, 180),
-        availableRates: availableTerms.value.map(availableTerm => offersByTerm.value[availableTerm]?.repaymentRate),
-        selectedRate,
-        isEarlyRenewal: isEarlyRenewal.value,
-    });
 };
 
 const handleReview = async () => {
-    const offer = selectedOffer.value;
-    if (!offer) return;
+    if (!selectedOffer.value) return;
 
     try {
-        const createdOffer = await createOffer(offer);
+        const createdOffer = await createOffer(selectedOffer.value);
         if (createdOffer) {
-            props.onOfferSelect(createdOffer);
+            props.onOfferCreate(createdOffer);
         }
     } finally {
         userEvents.addEvent?.('Clicked button', {
@@ -169,22 +111,24 @@ const handleReview = async () => {
     }
 };
 
-const actions = computed<BentoButtonActionsList>(() => [
-    {
-        title: i18n.get('capital.offer.selection.actions.reviewOffer'),
-        disabled: isReviewDisabled.value,
-        state: isCreateOfferLoading.value ? 'loading' : 'start',
-        event: handleReview,
-    },
-    ...(props.onOfferDismiss
-        ? [
-              {
-                  title: i18n.get('capital.common.actions.goBack'),
-                  event: props.onOfferDismiss,
-              },
-          ]
-        : []),
-]);
+const actions = computed<BentoButtonActionsList>(() => {
+    return [
+        {
+            title: i18n.get('capital.offer.selection.actions.reviewOffer'),
+            disabled: isReviewDisabled.value,
+            state: isCreateOfferLoading.value ? 'loading' : 'start',
+            event: handleReview,
+        },
+        ...(props.onDismiss
+            ? [
+                  {
+                      title: i18n.get('capital.common.actions.goBack'),
+                      event: props.onDismiss,
+                  },
+              ]
+            : []),
+    ];
+});
 </script>
 
 <template>
@@ -193,31 +137,36 @@ const actions = computed<BentoButtonActionsList>(() => [
             v-if="offersError || hasNoOffers || createOfferError"
             :empty-grant-offer="hasNoOffers"
             :error="createOfferError ?? offersError"
-            :on-back="props.onOfferDismiss"
+            :on-back="props.onDismiss"
             :on-contact-support="props.onContactSupport"
         />
-        <template v-else-if="props.selectedAmount">
-            <AmountSlider
+        <template v-else-if="amountValue">
+            <AmountSelector
+                :amount-value="amountValue"
                 :dynamic-offer-config="dynamicOfferConfig"
-                :value="props.selectedAmount"
-                :on-release="handleSliderRelease"
-                :on-value-change="handleAmountValueChange"
+                :is-early-renewal="isEarlyRenewal"
+                :on-amount-value-change="handleAmountValueChange"
+                :on-amount-value-change-committed="handleAmountValueChangeCommitted"
             />
             <RenewalHighlights
                 v-if="renewableGrant"
-                :new-grant-amount-value="props.selectedAmount"
+                :new-grant-amount-value="amountValue"
                 :remaining-grant-amount="renewableGrant.remainingGrantAmount"
             />
             <TermSelector
-                v-if="allTerms.length > 1 && props.selectedTerm"
-                :estimated-terms="allTerms"
-                :available-terms="availableTerms"
-                :are-available-terms-loading="areOffersUpdating"
+                v-if="estimatedTerms.length > 1"
+                :are-available-terms-loading="areAmountAndOffersUpdating"
+                :estimated-terms="estimatedTerms"
+                :is-early-renewal="isEarlyRenewal"
                 :offers-by-term="offersByTerm"
-                :selected-term="props.selectedTerm"
-                @select="handleTermSelect"
+                :term="term"
+                @term-change="value => (term = value)"
             />
-            <OfferSelectionDetails v-if="selectedOffer && !areOffersUpdating" :offer="selectedOffer" :has-expected-repayment-period="hasSingleTerm" />
+            <OfferSelectionDetails
+                v-if="selectedOffer && !areAmountAndOffersUpdating"
+                :has-expected-repayment-period="hasSingleTerm"
+                :offer="selectedOffer"
+            />
             <BentoButtonActions :actions="actions" />
         </template>
     </div>
