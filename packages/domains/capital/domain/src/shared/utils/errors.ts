@@ -8,8 +8,9 @@ export type CapitalErrorMessage = {
     translationValues?: { [key in TranslationKey]?: string };
 };
 
-export type CapitalErrorMessageInfo = Omit<CapitalErrorMessage, 'message' | 'translationValues'> & {
-    messages: TranslationKey[];
+export type CapitalErrorMessageInfo<Key extends string = TranslationKey> = Omit<CapitalErrorMessage, 'title' | 'message' | 'translationValues'> & {
+    title: Key;
+    messages: Key[];
     requestId?: string;
 };
 
@@ -86,12 +87,13 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
     }
 };
 
-export const getCapitalErrorMessageInfo = (
+export const getCapitalErrorMessageInfo = <Key extends string = TranslationKey>(
     error: AdyenPlatformExperienceError | undefined,
-    onContactSupport?: () => void
-): CapitalErrorMessageInfo => {
-    const { message, translationValues, ...rest } = getCapitalErrorMessage(error, onContactSupport);
-    const messages = Array.isArray(message) ? message : [message];
+    onContactSupport?: () => void,
+    mapTranslationKey: (key: TranslationKey) => Key = key => key as Key
+): CapitalErrorMessageInfo<Key> => {
+    const { title, message, translationValues, ...rest } = getCapitalErrorMessage(error, onContactSupport);
+    const messages = (Array.isArray(message) ? message : [message]).map(mapTranslationKey);
     const requestId = translationValues && Object.values(translationValues)[0];
-    return { ...rest, messages, requestId };
+    return { ...rest, title: mapTranslationKey(title), messages, requestId };
 };

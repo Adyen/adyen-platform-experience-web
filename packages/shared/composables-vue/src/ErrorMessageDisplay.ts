@@ -1,7 +1,7 @@
 import { defineComponent, computed, h, type PropType, type VNode } from 'vue';
 import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import type { TranslationKey } from '@integration-components/core';
+import { getV2TranslationKey, type V2TranslationKey } from '@integration-components/core/vue';
 import { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from './getErrorMessage';
 import styles from './ErrorMessageDisplay.module.scss';
 
@@ -12,12 +12,12 @@ export const ErrorMessageDisplay = defineComponent({
 
     props: {
         error: { type: Object as PropType<ErrorWithCode | undefined>, default: undefined },
-        errorMessage: { type: String as PropType<TranslationKey>, default: undefined },
-        notFoundMessage: { type: String as PropType<TranslationKey>, default: undefined },
+        errorMessage: { type: String as PropType<V2TranslationKey>, default: undefined },
+        notFoundMessage: { type: String as PropType<V2TranslationKey>, default: undefined },
         errorInfo: { type: Object as PropType<ErrorMessageInfo>, default: undefined },
         onContactSupport: { type: Function as PropType<() => void>, default: undefined },
         onDismiss: { type: Function as PropType<() => void>, default: undefined },
-        dismissLabel: { type: String as PropType<TranslationKey>, default: undefined },
+        dismissLabel: { type: String as PropType<V2TranslationKey>, default: undefined },
         onRefresh: { type: Function as PropType<() => void>, default: undefined },
         withImage: { type: Boolean, default: false },
         outlined: { type: Boolean, default: true },
@@ -31,12 +31,18 @@ export const ErrorMessageDisplay = defineComponent({
     },
 
     setup(props) {
-        const { i18n, refreshComponent: refreshCurrentComponent, getImageAsset } = useCoreContext();
+        const { i18n, refreshComponent: refreshCurrentComponent, getImageAsset, translationDomain } = useCoreContext();
 
         const errorInfo = computed(
             () =>
                 props.errorInfo ??
-                getErrorMessage(props.error, props.errorMessage ?? 'common.errors.unexpected', props.onContactSupport, props.notFoundMessage)
+                getErrorMessage(
+                    props.error,
+                    props.errorMessage ?? getV2TranslationKey(translationDomain, 'common.errors.unexpected'),
+                    translationDomain,
+                    props.onContactSupport,
+                    props.notFoundMessage
+                )
         );
 
         const rootClass = computed(() => [
@@ -89,14 +95,14 @@ export const ErrorMessageDisplay = defineComponent({
             if (onContactSupport) {
                 buttons.push(
                     h(BentoButton, { type: 'button', variant: 'primary', onClick: () => onContactSupport() }, () =>
-                        i18n.get(contactSupportLabel ?? 'common.actions.contactSupport.labels.reachOut')
+                        i18n.get(contactSupportLabel ?? getV2TranslationKey(translationDomain, 'common.actions.contactSupport.labels.reachOut'))
                     )
                 );
             } else if (refreshComponent) {
                 const refresh = props.onRefresh ?? refreshCurrentComponent;
                 buttons.push(
                     h(BentoButton, { type: 'button', variant: 'primary', onClick: () => refresh?.() }, () =>
-                        i18n.get('common.actions.refresh.labels.default')
+                        i18n.get(getV2TranslationKey(translationDomain, 'common.actions.refresh.labels.default'))
                     )
                 );
             }

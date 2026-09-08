@@ -201,8 +201,8 @@ describe('Localization', () => {
 
             await localization.ready;
 
-            expect(localization.get('transactions.errors.updateFilters' as TranslationKey)).toBe(
-                sdkGermanTranslations['transactions.errors.updateFilters']
+            expect(localization.get('transactions.common.errors.updateFilters' as TranslationKey)).toBe(
+                sdkGermanTranslations['transactions.common.errors.updateFilters']
             );
             expect(localization.get('capital.common.errors.unsupportedRegion')).toBe(
                 sdkGermanTranslations['capital.common.errors.unsupportedRegion']

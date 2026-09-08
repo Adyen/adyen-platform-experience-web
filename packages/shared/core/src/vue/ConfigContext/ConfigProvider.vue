@@ -2,20 +2,22 @@
 import { computed, provide } from 'vue';
 import { CONFIG_CONTEXT_KEY } from './constants';
 import { useConfigController } from './useConfigController';
+import { getV2TranslationKey } from '../Context/types';
 import componentAvailabilityErrors from '../../session/utils/sessionAwareComponentAvailability/helpers/componentAvailabilityErrors';
 import ErrorMessageDisplay from '../components/ErrorMessageDisplay/ErrorMessageDisplay.vue';
-import type { TranslationKey } from '../../translations';
 import type { ConfigProviderProps } from './types';
 import './Spinner.scss';
 
 const props = defineProps<ConfigProviderProps>();
-const errorTitle: TranslationKey = 'common.errors.somethingWentWrong';
+const errorTitle = getV2TranslationKey(props.translationDomain, 'common.errors.somethingWentWrong');
+const errorContactSupport = getV2TranslationKey(props.translationDomain, 'common.errors.contactSupport');
+const errorComponentUnavailable = getV2TranslationKey(props.translationDomain, 'common.errors.componentUnavailable');
 
-const errorMessages = computed<TranslationKey[]>(() => {
+const errorMessages = computed(() => {
     // prettier-ignore
     return props.type
-        ? [componentAvailabilityErrors(props.type), 'common.errors.contactSupport']
-        : ['common.errors.contactSupport'];
+        ? [componentAvailabilityErrors(props.type, errorComponentUnavailable), errorContactSupport]
+        : [errorContactSupport];
 });
 
 const { configContextValue, hasPermission } = useConfigController({

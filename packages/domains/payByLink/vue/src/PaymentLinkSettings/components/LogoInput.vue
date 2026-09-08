@@ -46,13 +46,13 @@ function onChange(files?: FileList) {
 
     //TODO: This is old custom error handling clean onces the error handling of bento has been confirmed
     // if (!(THEME_FORM_ALLOWED_FILE_TYPES as readonly string[]).includes(file.type)) {
-    //     errorMessage.value = i18n.get('common.inputs.file.errors.disallowedType');
+    //     errorMessage.value = i18n.get('payByLink.common.inputs.file.errors.disallowedType');
     //     modelValue.value = undefined;
     //     return;
     // }
     //
     // if (file.size > THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE) {
-    //     errorMessage.value = i18n.get('common.inputs.file.errors.tooLarge');
+    //     errorMessage.value = i18n.get('payByLink.common.inputs.file.errors.tooLarge');
     //     modelValue.value = undefined;
     //     return;
     // }
@@ -66,7 +66,7 @@ function onChange(files?: FileList) {
     //         return;
     //     }
     // } catch {
-    //     errorMessage.value = i18n.get('common.inputs.file.errors.default');
+    //     errorMessage.value = i18n.get('payByLink.common.inputs.file.errors.default');
     //     modelValue.value = undefined;
     //     return;
     // }

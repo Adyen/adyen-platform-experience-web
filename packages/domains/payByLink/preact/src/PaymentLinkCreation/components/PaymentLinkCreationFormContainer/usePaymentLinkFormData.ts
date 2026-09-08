@@ -120,8 +120,8 @@ export const usePaymentLinkFormData = ({ storeIds, defaultValues, visibilityConf
     // Form steps configuration
     const formSteps = useMemo(() => {
         const skipStoreStep = storesSelectorItems.length === 1 && termsAndConditionsProvisioned;
-        return getFormSteps({ i18n, getFieldConfig, visibilityConfig }).filter(step => !(step.id === 'store' && skipStoreStep));
-    }, [getFieldConfig, i18n, storesSelectorItems, termsAndConditionsProvisioned, visibilityConfig]);
+        return getFormSteps({ getFieldConfig, visibilityConfig }).filter(step => !(step.id === 'store' && skipStoreStep));
+    }, [getFieldConfig, storesSelectorItems, termsAndConditionsProvisioned, visibilityConfig]);
 
     const stepperItems = useMemo(() => {
         return formSteps.map(step => ({

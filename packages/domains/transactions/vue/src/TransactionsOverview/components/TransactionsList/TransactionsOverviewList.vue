@@ -94,7 +94,7 @@ onMounted(() => {
                 <template #default>{{ i18n.get('transactions.overview.totals.error') }}</template>
                 <template #actions>
                     <BentoButton variant="tertiary" :disabled="!transactionsTotalsResult.canRefresh.value" @click="transactionsTotalsResult.refresh">
-                        {{ i18n.get('common.actions.refresh.labels.default') }}
+                        {{ i18n.get('transactions.common.actions.refresh.labels.default') }}
                     </BentoButton>
                 </template>
             </BentoAlert>
@@ -105,7 +105,7 @@ onMounted(() => {
                 <template #default>{{ i18n.get('transactions.overview.balances.error') }}</template>
                 <template #actions>
                     <BentoButton variant="tertiary" :disabled="!accountBalancesResult.canRefresh.value" @click="accountBalancesResult.refresh">
-                        {{ i18n.get('common.actions.refresh.labels.default') }}
+                        {{ i18n.get('transactions.common.actions.refresh.labels.default') }}
                     </BentoButton>
                 </template>
             </BentoAlert>

@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { ErrorMessageDisplay, type ErrorMessageInfo } from '@integration-components/composables-vue';
 import { AdyenPlatformExperienceError, AdyenErrorResponse, ErrorTypes } from '@integration-components/core';
 import { getCapitalErrorMessageInfo } from '@integration-components/capital/domain';
-import { useCoreContext } from '@integration-components/core/vue';
+import { getV2TranslationKey, useCoreContext } from '@integration-components/core/vue';
 
 const props = defineProps<{
     emptyGrantOffer?: boolean;
@@ -25,7 +25,11 @@ const capitalError = computed(() => {
     return props.error as AdyenPlatformExperienceError | undefined;
 });
 
-const errorInfo = computed<ErrorMessageInfo>(() => getCapitalErrorMessageInfo(capitalError.value, props.onContactSupport));
+const errorInfo = computed<ErrorMessageInfo>(() =>
+    getCapitalErrorMessageInfo(capitalError.value, props.onContactSupport, key =>
+        key.startsWith('common.') ? getV2TranslationKey('capital', key) : key
+    )
+);
 const imageDesktop = computed(() => (props.emptyGrantOffer ? getImageAsset?.({ name: 'no-results-found' }) : undefined));
 const imageMobile = computed(() => (props.emptyGrantOffer ? getImageAsset?.({ name: 'no-results-found', subFolder: 'images/small' }) : undefined));
 </script>

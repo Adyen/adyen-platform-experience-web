@@ -34,7 +34,7 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
         <div v-if="hasError">
             <p>{{ i18n.get('payouts.overview.errors.unavailable') }}</p>
             <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
+                {{ i18n.get('payouts.common.actions.contactSupport.labels.default') }}
             </BentoButton>
         </div>
 

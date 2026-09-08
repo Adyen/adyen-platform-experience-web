@@ -1,10 +1,10 @@
-import type { TranslationKey } from '@integration-components/core';
+import type { V2TranslationKey } from '@integration-components/core/vue';
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '@integration-components/payByLink/domain';
 import { getPaymentLinksErrorMetadata } from './error';
 
 export type PaymentLinksErrorContent = {
-    title: TranslationKey;
-    messages: TranslationKey[];
+    title: V2TranslationKey;
+    messages: V2TranslationKey[];
     requestId?: string;
     imageName?: 'no-results-found' | 'wrong-environment';
     onContactSupport?: () => void;
@@ -13,15 +13,17 @@ export type PaymentLinksErrorContent = {
 
 export const getPaymentLinksErrorMessage = (
     error: Error | undefined,
-    errorMessage: TranslationKey,
+    errorMessage: V2TranslationKey,
     onContactSupport?: () => void
 ): PaymentLinksErrorContent | undefined => {
     if (!error) return undefined;
 
     const { errorCode, requestId, invalidFields } = getPaymentLinksErrorMetadata(error);
-    const secondaryErrorMessage: TranslationKey = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
+    const secondaryErrorMessage: V2TranslationKey = onContactSupport
+        ? 'payByLink.common.errors.errorCode'
+        : 'payByLink.common.errors.errorCodeSupport';
     const sharedContent = {
-        title: 'common.errors.somethingWentWrong' as const,
+        title: 'payByLink.common.errors.somethingWentWrong' as const,
         requestId,
         imageName: 'wrong-environment' as const,
     };
@@ -30,13 +32,13 @@ export const getPaymentLinksErrorMessage = (
         case ACCOUNT_MISCONFIGURATION:
             return {
                 ...sharedContent,
-                messages: ['payByLink.common.errors.accountConfiguration', 'common.errors.contactSupport'],
+                messages: ['payByLink.common.errors.accountConfiguration', 'payByLink.common.errors.contactSupport'],
                 onContactSupport,
             };
         case WRONG_STORE_IDS:
             return {
                 ...sharedContent,
-                messages: ['payByLink.common.errors.storeID', 'common.errors.contactSupport'],
+                messages: ['payByLink.common.errors.storeID', 'payByLink.common.errors.contactSupport'],
                 onContactSupport,
             };
         case '29_001':
@@ -49,7 +51,7 @@ export const getPaymentLinksErrorMessage = (
             }
             return {
                 ...sharedContent,
-                messages: ['payByLink.overview.errors.couldNotLoadLinks', 'common.errors.retry'],
+                messages: ['payByLink.overview.errors.couldNotLoadLinks', 'payByLink.common.errors.retry'],
                 onContactSupport,
             };
         case '00_500':

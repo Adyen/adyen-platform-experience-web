@@ -1,7 +1,7 @@
 import { computed, defineComponent, h, ref, type Component, type PropType, type VNode } from 'vue';
 import { BentoEmptyState } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import type { TranslationKey } from '@integration-components/core';
+import { getV2TranslationKey, type V2TranslationKey } from '@integration-components/core/vue';
 import { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from './getErrorMessage';
 import { useLiveAnnouncement } from './useLiveAnnouncement';
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
@@ -11,8 +11,8 @@ export const DataOverviewError = defineComponent({
 
     props: {
         error: { type: Object as PropType<ErrorWithCode | undefined>, default: undefined },
-        errorMessage: { type: String as PropType<TranslationKey>, default: undefined },
-        notFoundMessage: { type: String as PropType<TranslationKey>, default: undefined },
+        errorMessage: { type: String as PropType<V2TranslationKey>, default: undefined },
+        notFoundMessage: { type: String as PropType<V2TranslationKey>, default: undefined },
         errorInfo: { type: Object as PropType<ErrorMessageInfo>, default: undefined },
         onContactSupport: { type: Function as PropType<() => void>, default: undefined },
         variant: { type: String as PropType<'embedded' | 'condensed'>, default: 'embedded' },
@@ -22,14 +22,20 @@ export const DataOverviewError = defineComponent({
     },
 
     setup(props) {
-        const { i18n, refreshComponent: refreshCurrentComponent } = useCoreContext();
+        const { i18n, refreshComponent: refreshCurrentComponent, translationDomain } = useCoreContext();
         const { announce, announcement } = useLiveAnnouncement();
         const isErrorCodeCopied = ref(false);
 
         const errorInfo = computed(
             () =>
                 props.errorInfo ??
-                getErrorMessage(props.error, props.errorMessage ?? 'common.errors.unexpected', props.onContactSupport, props.notFoundMessage)
+                getErrorMessage(
+                    props.error,
+                    props.errorMessage ?? getV2TranslationKey(translationDomain, 'common.errors.unexpected'),
+                    translationDomain,
+                    props.onContactSupport,
+                    props.notFoundMessage
+                )
         );
 
         const title = computed(() => (errorInfo.value.title ? i18n.get(errorInfo.value.title) : undefined));
@@ -62,7 +68,7 @@ export const DataOverviewError = defineComponent({
 
             if (onContactSupport) {
                 return {
-                    title: i18n.get(contactSupportLabel ?? 'common.actions.contactSupport.labels.reachOut'),
+                    title: i18n.get(contactSupportLabel ?? getV2TranslationKey(translationDomain, 'common.actions.contactSupport.labels.reachOut')),
                     event: onContactSupport,
                     variant: 'primary' as const,
                 };
@@ -70,7 +76,7 @@ export const DataOverviewError = defineComponent({
 
             if (refreshComponent) {
                 return {
-                    title: i18n.get('common.actions.refresh.labels.default'),
+                    title: i18n.get(getV2TranslationKey(translationDomain, 'common.actions.refresh.labels.default')),
                     event: () => refreshCurrentComponent?.(),
                     icon: props.refreshIcon,
                     variant: 'primary' as const,
@@ -79,11 +85,13 @@ export const DataOverviewError = defineComponent({
 
             if (requestId && typeof navigator !== 'undefined' && navigator.clipboard) {
                 return {
-                    title: i18n.get(isErrorCodeCopied.value ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.errorCode'),
+                    title: i18n.get(
+                        getV2TranslationKey(translationDomain, isErrorCodeCopied.value ? 'actions.copy.labels.done' : 'actions.copy.labels.errorCode')
+                    ),
                     event: async () => {
                         await navigator.clipboard.writeText(requestId);
                         isErrorCodeCopied.value = true;
-                        announce(() => i18n.get('common.actions.copy.labels.done'));
+                        announce(() => i18n.get(getV2TranslationKey(translationDomain, 'common.actions.copy.labels.done')));
                     },
                     icon: props.copyIcon,
                     variant: 'secondary' as const,

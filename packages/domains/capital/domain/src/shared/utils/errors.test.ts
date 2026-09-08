@@ -86,12 +86,18 @@ describe('getCapitalErrorMessageInfo', () => {
         });
     });
 
-    test('extracts the request ID', () => {
-        expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('30_016'))).toMatchObject({ requestId: 'request-id' });
+    test('maps translation keys for another runtime', () => {
+        const mapTranslationKey = (key: string) => `another-runtime.${key}`;
+
+        expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('30_016'), vi.fn(), mapTranslationKey)).toMatchObject({
+            title: 'another-runtime.common.errors.somethingWentWrong',
+            messages: ['another-runtime.capital.offer.common.errors.unavailable', 'another-runtime.common.errors.errorCode'],
+        });
     });
 
-    test('preserves the rest of the error message fields', () => {
+    test('extracts the request ID and preserves the error metadata', () => {
         const onContactSupport = vi.fn();
+
         expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('30_016'), onContactSupport)).toEqual({
             title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
             messages: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'common.errors.errorCode'],

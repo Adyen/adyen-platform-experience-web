@@ -1,4 +1,4 @@
-import type { Localization, TranslationKey } from '@integration-components/core';
+import type { TranslationKey } from '@integration-components/core';
 import type { IPaymentLinkConfiguration, IPaymentLinkConfigurationElement } from '@integration-components/types';
 import type { PaymentLinkFieldName, PaymentLinkFieldsVisibilityConfig, PaymentLinkFieldVisibility } from './types';
 
@@ -20,7 +20,6 @@ export interface FormStepConfig {
 }
 
 interface GetFormStepsParams {
-    i18n: Localization['i18n'];
     getFieldConfig: (field: keyof IPaymentLinkConfiguration) => IPaymentLinkConfigurationElement | undefined;
     visibilityConfig?: PaymentLinkFieldsVisibilityConfig;
 }

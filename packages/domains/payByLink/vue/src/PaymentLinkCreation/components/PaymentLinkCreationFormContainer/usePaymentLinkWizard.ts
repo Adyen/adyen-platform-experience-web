@@ -1,5 +1,5 @@
 import { computed, ref, watch, type ComputedRef } from 'vue';
-import type { Localization } from '@integration-components/core';
+import type { I18n } from '@integration-components/core/vue';
 import type { DeepPartial } from '@integration-components/types';
 import {
     buildApiPayload,
@@ -12,7 +12,7 @@ import {
 import { type FieldRuntimeConfig } from '../../composables/wizardContext';
 
 interface UsePaymentLinkWizardParams {
-    i18n: Localization['i18n'];
+    i18n: I18n;
     steps: ComputedRef<ReadonlyArray<FormStepConfig>>;
     defaults?: () => DeepPartial<PaymentLinkCreationFormValues> | undefined;
 }
@@ -22,6 +22,11 @@ export function usePaymentLinkWizard({ i18n, steps, defaults }: UsePaymentLinkWi
     const errors = ref<Record<string, string>>({});
     const displayValues = ref<Record<string, string>>({});
     const currentIndex = ref(0);
+    const validationMessages = {
+        fieldRequired: i18n.get('payByLink.creation.errors.fieldRequired'),
+        minLength: (minLength: number) => i18n.get('payByLink.creation.errors.minLength', { values: { minLength } }),
+        maxLength: (maxLength: number) => i18n.get('payByLink.creation.errors.maxLength', { values: { maxLength } }),
+    };
 
     const fieldConfig = computed<Record<string, FieldRuntimeConfig>>(() => {
         const map: Record<string, FieldRuntimeConfig> = {};
@@ -95,7 +100,7 @@ export function usePaymentLinkWizard({ i18n, steps, defaults }: UsePaymentLinkWi
     const validateStep = (index = currentIndex.value): boolean => {
         const step = steps.value[index];
         if (!step) return true;
-        const schema = buildStepSchema(step, i18n);
+        const schema = buildStepSchema(step, i18n, validationMessages);
         const result = schema.safeParse(values.value);
 
         const next = { ...errors.value };
@@ -121,7 +126,7 @@ export function usePaymentLinkWizard({ i18n, steps, defaults }: UsePaymentLinkWi
         const step = steps.value.find(({ fields }) => fields.some(field => field.fieldName === name));
         if (!step) return true;
 
-        const result = buildStepSchema(step, i18n).safeParse(values.value);
+        const result = buildStepSchema(step, i18n, validationMessages).safeParse(values.value);
         const issue = result.success ? undefined : result.error.issues.find(({ path }) => path.join('.') === name);
         const telephoneNumberError = name === 'telephoneNumber' ? getTelephoneNumberError(step) : undefined;
         const next = { ...errors.value };

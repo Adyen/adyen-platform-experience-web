@@ -26,6 +26,6 @@ function getPaymentMethodLabel(paymentMethod: IPaymentMethod): string {
                 {{ getPaymentMethodLabel(props.paymentMethod) }}
             </BentoTypography>
         </template>
-        <BentoTag v-else variant="grey" :label="i18n.get('common.tags.noData')" />
+        <BentoTag v-else variant="grey" :label="i18n.get('disputes.common.tags.noData')" />
     </div>
 </template>

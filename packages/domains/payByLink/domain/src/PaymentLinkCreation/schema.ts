@@ -6,7 +6,12 @@ import type { FormFieldConfig, FormStepConfig } from './formSteps';
 import type { PaymentLinkFieldName } from './types';
 import { FLEXIBLE_VALIDITY_ID, MAX_VALIDITY_DAYS, PAYMENT_LINK_CREATION_FIELD_LENGTHS } from './constants';
 
-type I18n = Localization['i18n'];
+type I18n = Pick<Localization['i18n'], 'get'>;
+export type ValidationMessages = {
+    fieldRequired: string;
+    minLength: (minLength: number) => string;
+    maxLength: (maxLength: number) => string;
+};
 
 type FlatValues = Record<string, unknown>;
 
@@ -34,7 +39,13 @@ const DELIVERY_ADDRESS_FIELDS: PaymentLinkFieldName[] = [
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const validateAmount = (data: FlatValues, fields: FormFieldConfig[], i18n: I18n, ctx: z.RefinementCtx) => {
+const getDefaultValidationMessages = (i18n: I18n): ValidationMessages => ({
+    fieldRequired: i18n.get('common.errors.fieldRequired'),
+    minLength: minLength => i18n.get('common.errors.minLength', { values: { minLength } }),
+    maxLength: maxLength => i18n.get('common.errors.maxLength', { values: { maxLength } }),
+});
+
+const validateAmount = (data: FlatValues, fields: FormFieldConfig[], i18n: I18n, validationMessages: ValidationMessages, ctx: z.RefinementCtx) => {
     const valueField = fields.find(f => f.fieldName === 'amount.value');
     if (!valueField?.visible) return;
     const currencyVisible = fields.some(f => f.fieldName === 'amount.currency' && f.visible);
@@ -50,7 +61,7 @@ const validateAmount = (data: FlatValues, fields: FormFieldConfig[], i18n: I18n,
         return;
     }
     if (valueField.required && (isEmpty(rawValue) || numericValue === 0)) {
-        addRequiredIssue(ctx, 'amount.value', i18n.get('common.errors.fieldRequired'));
+        addRequiredIssue(ctx, 'amount.value', validationMessages.fieldRequired);
     }
 };
 
@@ -99,6 +110,7 @@ const validateAddressSection = (
     fields: FormFieldConfig[],
     sectionFields: PaymentLinkFieldName[],
     i18n: I18n,
+    validationMessages: ValidationMessages,
     ctx: z.RefinementCtx
 ) => {
     const visibleSectionFields = sectionFields.filter(name => fields.some(f => f.fieldName === name && f.visible));
@@ -110,7 +122,7 @@ const validateAddressSection = (
     if (!sectionRequired && !anyFilled) return;
 
     visibleSectionFields.forEach(name => {
-        if (isEmpty(data[name])) addRequiredIssue(ctx, name, i18n.get('common.errors.fieldRequired'));
+        if (isEmpty(data[name])) addRequiredIssue(ctx, name, validationMessages.fieldRequired);
     });
 };
 
@@ -141,7 +153,7 @@ const SPECIAL_FIELDS: PaymentLinkFieldName[] = [
     ...DELIVERY_ADDRESS_FIELDS,
 ];
 
-const validateSimpleField = (data: FlatValues, field: FormFieldConfig, i18n: I18n, ctx: z.RefinementCtx) => {
+const validateSimpleField = (data: FlatValues, field: FormFieldConfig, i18n: I18n, validationMessages: ValidationMessages, ctx: z.RefinementCtx) => {
     if (!field.visible || SPECIAL_FIELDS.includes(field.fieldName)) return;
     const value = data[field.fieldName];
 
@@ -151,7 +163,7 @@ const validateSimpleField = (data: FlatValues, field: FormFieldConfig, i18n: I18
     }
 
     if (field.required && isEmpty(value)) {
-        addRequiredIssue(ctx, field.fieldName, i18n.get('common.errors.fieldRequired'));
+        addRequiredIssue(ctx, field.fieldName, validationMessages.fieldRequired);
         return;
     }
 
@@ -162,17 +174,17 @@ const validateSimpleField = (data: FlatValues, field: FormFieldConfig, i18n: I18
 
     const minLength = MIN_LENGTHS[field.fieldName];
     if (minLength && !isEmpty(value) && typeof value === 'string' && value.length < minLength) {
-        addRequiredIssue(ctx, field.fieldName, i18n.get('common.errors.minLength', { values: { minLength } }));
+        addRequiredIssue(ctx, field.fieldName, validationMessages.minLength(minLength));
         return;
     }
 
     const maxLength = MAX_LENGTHS[field.fieldName];
     if (maxLength && typeof value === 'string' && value.length > maxLength) {
-        addRequiredIssue(ctx, field.fieldName, i18n.get('common.errors.maxLength', { values: { maxLength } }));
+        addRequiredIssue(ctx, field.fieldName, validationMessages.maxLength(maxLength));
     }
 };
 
-export const buildStepSchema = (step: FormStepConfig, i18n: I18n): ZodType => {
+export const buildStepSchema = (step: FormStepConfig, i18n: I18n, validationMessages = getDefaultValidationMessages(i18n)): ZodType => {
     const visibleFields = step.fields.filter(field => field.visible);
     const shape: Record<string, ZodType> = {};
     visibleFields.forEach(field => {
@@ -180,10 +192,10 @@ export const buildStepSchema = (step: FormStepConfig, i18n: I18n): ZodType => {
     });
 
     return z.object(shape).superRefine((data: FlatValues, ctx) => {
-        step.fields.forEach(field => validateSimpleField(data, field, i18n, ctx));
-        validateAmount(data, step.fields, i18n, ctx);
+        step.fields.forEach(field => validateSimpleField(data, field, i18n, validationMessages, ctx));
+        validateAmount(data, step.fields, i18n, validationMessages, ctx);
         validateValidity(data, step.fields, i18n, ctx);
-        validateAddressSection(data, step.fields, BILLING_ADDRESS_FIELDS, i18n, ctx);
-        validateAddressSection(data, step.fields, DELIVERY_ADDRESS_FIELDS, i18n, ctx);
+        validateAddressSection(data, step.fields, BILLING_ADDRESS_FIELDS, i18n, validationMessages, ctx);
+        validateAddressSection(data, step.fields, DELIVERY_ADDRESS_FIELDS, i18n, validationMessages, ctx);
     });
 };

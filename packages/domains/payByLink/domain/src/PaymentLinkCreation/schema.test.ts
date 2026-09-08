@@ -29,14 +29,18 @@ const buildStep = (fields: FormFieldConfig[]): FormStepConfig => ({
 describe('buildStepSchema - merchantReference min length', () => {
     test('fails validation when reference is shorter than the minimum length', () => {
         const step = buildStep([buildField({ required: true })]);
-        const schema = buildStepSchema(step, i18n);
+        const schema = buildStepSchema(step, i18n, {
+            fieldRequired: 'payByLink.common.errors.fieldRequired',
+            minLength: minLength => `payByLink.common.errors.minLength:{"minLength":${minLength}}`,
+            maxLength: maxLength => `payByLink.common.errors.maxLength:{"maxLength":${maxLength}}`,
+        });
 
         const result = schema.safeParse({ reference: 'ab' });
 
         expect(result.success).toBe(false);
         if (!result.success) {
             const issue = result.error.issues.find(i => i.path.join('.') === 'reference');
-            expect(issue?.message).toBe('common.errors.minLength:{"minLength":3}');
+            expect(issue?.message).toBe('payByLink.common.errors.minLength:{"minLength":3}');
         }
     });
 
@@ -66,7 +70,6 @@ describe('buildStepSchema - link validity presets', () => {
             options: [{ durationUnit: 'day', quantity: 90, type: 'fixed' }],
         } satisfies IPaymentLinkConfigurationElement;
         const paymentStep = getFormSteps({
-            i18n,
             getFieldConfig: field => (field === 'linkValidity' ? linkValidity : undefined),
         }).find(step => step.id === 'payment');
 

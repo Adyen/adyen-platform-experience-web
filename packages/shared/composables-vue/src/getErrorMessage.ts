@@ -1,33 +1,36 @@
-import type { TranslationKey } from '@integration-components/core';
+import { getV2TranslationKey, type V2TranslationDomain, type V2TranslationKey } from '@integration-components/core/vue';
 
 export type ErrorWithCode = Error & { errorCode?: string; requestId?: string };
 
 export type ErrorMessageInfo = {
-    title?: TranslationKey;
-    messages: TranslationKey[];
+    title?: V2TranslationKey;
+    messages: V2TranslationKey[];
     refreshComponent?: boolean;
     onContactSupport?: () => void;
-    contactSupportLabel?: TranslationKey;
+    contactSupportLabel?: V2TranslationKey;
     requestId?: string;
-};
-
-const UNEXPECTED_ERROR: ErrorMessageInfo = {
-    title: 'common.errors.unexpected',
-    messages: ['common.errors.contactSupport'],
 };
 
 const getCommonErrorMessage = (
     errorCode: string | undefined,
-    notFoundMessage: TranslationKey,
+    notFoundMessage: V2TranslationKey,
+    domain: V2TranslationDomain,
     onContactSupport?: () => void
 ): ErrorMessageInfo | null => {
     switch (errorCode) {
         case '29_001':
-            return { title: 'common.errors.requestInvalid', messages: ['common.errors.contactSupport'], onContactSupport };
+            return {
+                title: getV2TranslationKey(domain, 'common.errors.requestInvalid'),
+                messages: [getV2TranslationKey(domain, 'common.errors.contactSupport')],
+                onContactSupport,
+            };
         case '30_112':
-            return { title: 'common.errors.notFound', messages: [notFoundMessage], onContactSupport };
+            return { title: getV2TranslationKey(domain, 'common.errors.notFound'), messages: [notFoundMessage], onContactSupport };
         case '00_403':
-            return UNEXPECTED_ERROR;
+            return {
+                title: getV2TranslationKey(domain, 'common.errors.unexpected'),
+                messages: [getV2TranslationKey(domain, 'common.errors.contactSupport')],
+            };
         default:
             return null;
     }
@@ -35,33 +38,42 @@ const getCommonErrorMessage = (
 
 export const getErrorMessage = (
     error: ErrorWithCode | undefined,
-    errorMessage: TranslationKey,
+    errorMessage: V2TranslationKey,
+    domain: V2TranslationDomain,
     onContactSupport?: () => void,
-    notFoundMessage: TranslationKey = errorMessage
+    notFoundMessage: V2TranslationKey = errorMessage
 ): ErrorMessageInfo => {
-    if (!error) return UNEXPECTED_ERROR;
+    if (!error)
+        return {
+            title: getV2TranslationKey(domain, 'common.errors.unexpected'),
+            messages: [getV2TranslationKey(domain, 'common.errors.contactSupport')],
+        };
 
-    const commonError = getCommonErrorMessage(error.errorCode, notFoundMessage, onContactSupport);
+    const commonError = getCommonErrorMessage(error.errorCode, notFoundMessage, domain, onContactSupport);
     if (commonError) return commonError;
 
     switch (error.errorCode) {
         case undefined:
             return {
-                title: 'common.errors.somethingWentWrong',
-                messages: [errorMessage, 'common.errors.retry'],
+                title: getV2TranslationKey(domain, 'common.errors.somethingWentWrong'),
+                messages: [errorMessage, getV2TranslationKey(domain, 'common.errors.retry')],
                 refreshComponent: true,
             };
         case '00_500': {
-            const secondaryErrorMessage: TranslationKey = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
+            const errorMessageKey = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
+            const secondaryErrorMessage = getV2TranslationKey(domain, errorMessageKey);
             return {
-                title: 'common.errors.somethingWentWrong',
+                title: getV2TranslationKey(domain, 'common.errors.somethingWentWrong'),
                 messages: [errorMessage, secondaryErrorMessage],
                 onContactSupport,
                 requestId: error.requestId,
             };
         }
         default:
-            return UNEXPECTED_ERROR;
+            return {
+                title: getV2TranslationKey(domain, 'common.errors.unexpected'),
+                messages: [getV2TranslationKey(domain, 'common.errors.contactSupport')],
+            };
     }
 };
 

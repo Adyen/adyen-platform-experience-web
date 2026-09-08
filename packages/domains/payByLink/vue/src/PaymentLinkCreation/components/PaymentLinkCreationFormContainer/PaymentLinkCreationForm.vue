@@ -198,19 +198,19 @@ async function handleSubmit() {
                     />
 
                     <BentoAlert v-if="showConfigurationError" :class="styles.errorAlert" type="critical" role="alert">
-                        {{ i18n.get('common.errors.somethingWentWrong') }}
+                        {{ i18n.get('payByLink.common.errors.somethingWentWrong') }}
                         <template #description>
                             <span>{{ i18n.get('payByLink.creation.errors.unavailable') }}</span>
-                            <span>{{ i18n.get('common.errors.retry') }}</span>
+                            <span>{{ i18n.get('payByLink.common.errors.retry') }}</span>
                         </template>
                     </BentoAlert>
 
                     <BentoAlert v-if="accountIsMisconfigured" :class="styles.warningAlert" type="warning" role="alert">
                         {{ i18n.get('payByLink.common.errors.accountConfiguration') }}
                         <template #description>
-                            <span>{{ i18n.get('common.errors.contactSupport') }}</span>
+                            <span>{{ i18n.get('payByLink.common.errors.contactSupport') }}</span>
                             <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                                {{ i18n.get('common.actions.contactSupport.labels.reachOut') }}
+                                {{ i18n.get('payByLink.common.actions.contactSupport.labels.reachOut') }}
                             </BentoButton>
                         </template>
                     </BentoAlert>
@@ -222,7 +222,7 @@ async function handleSubmit() {
                                 <li v-for="(message, index) in mappedInvalidFields" :key="index">{{ message }}</li>
                             </ul>
                             <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                                {{ i18n.get('common.actions.contactSupport.labels.reachOut') }}
+                                {{ i18n.get('payByLink.common.actions.contactSupport.labels.reachOut') }}
                             </BentoButton>
                         </template>
                     </BentoAlert>

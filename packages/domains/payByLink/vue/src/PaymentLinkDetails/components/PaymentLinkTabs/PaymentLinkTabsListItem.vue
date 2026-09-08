@@ -28,7 +28,7 @@ function onCopy() {
                 {{ props.item.value }}
             </BentoLink>
             <BentoTypography v-else variant="body">{{ props.item.value }}</BentoTypography>
-            <BentoButton variant="tertiary" :aria-label="i18n.get('common.actions.copy.labels.default')" @click="onCopy">
+            <BentoButton variant="tertiary" :aria-label="i18n.get('payByLink.common.actions.copy.labels.default')" @click="onCopy">
                 <CopyIcon />
             </BentoButton>
         </div>
