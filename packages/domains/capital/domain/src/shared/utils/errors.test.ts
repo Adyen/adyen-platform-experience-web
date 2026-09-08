@@ -49,8 +49,8 @@ describe('getCapitalErrorMessage', () => {
 
         expect(getCapitalErrorMessage(createAdyenPlatformExperienceError(errorCode), onContactSupport)).toEqual({
             title,
-            message: [firstMessage, 'common.errors.errorCode'],
-            translationValues: { 'common.errors.errorCode': 'request-id' },
+            message: [firstMessage, 'capital.common.errors.errorCode'],
+            translationValues: { 'capital.common.errors.errorCode': 'request-id' },
             onContactSupport,
         });
     });
@@ -58,8 +58,8 @@ describe('getCapitalErrorMessage', () => {
     test('uses a different message when no contact callback is available', () => {
         expect(getCapitalErrorMessage(createAdyenPlatformExperienceError('30_016'))).toEqual({
             title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
-            message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'common.errors.errorCodeSupport'],
-            translationValues: { 'common.errors.errorCodeSupport': 'request-id' },
+            message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'capital.common.errors.errorCodeSupport'],
+            translationValues: { 'capital.common.errors.errorCodeSupport': 'request-id' },
             onContactSupport: undefined,
         });
     });
@@ -67,7 +67,7 @@ describe('getCapitalErrorMessage', () => {
     test('omits translation values when a capital error has no request ID', () => {
         expect(getCapitalErrorMessage(createAdyenPlatformExperienceError('30_011', ''))).toEqual({
             title: 'capital.offer.common.errors.accountInactive',
-            message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'common.errors.errorCodeSupport'],
+            message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'capital.common.errors.errorCodeSupport'],
             translationValues: undefined,
             onContactSupport: undefined,
         });
@@ -82,19 +82,23 @@ describe('getCapitalErrorMessageInfo', () => {
             messages: ['capital.offer.common.noOfferDescription'],
         });
         expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('30_016'), onContactSupport)).toMatchObject({
-            messages: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'common.errors.errorCode'],
+            messages: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'capital.common.errors.errorCode'],
         });
     });
 
-    test('extracts the request ID', () => {
-        expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('30_016'))).toMatchObject({ requestId: 'request-id' });
+    test('maps common translation keys to the capital namespace', () => {
+        expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('30_016'), vi.fn())).toMatchObject({
+            title: 'capital.common.errors.somethingWentWrong',
+            messages: ['capital.offer.common.errors.unavailable', 'capital.common.errors.errorCode'],
+        });
     });
 
-    test('preserves the rest of the error message fields', () => {
+    test('extracts the request ID and preserves the error metadata', () => {
         const onContactSupport = vi.fn();
+
         expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('30_016'), onContactSupport)).toEqual({
-            title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
-            messages: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'common.errors.errorCode'],
+            title: 'capital.common.errors.somethingWentWrong',
+            messages: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'capital.common.errors.errorCode'],
             requestId: 'request-id',
             onContactSupport,
         });

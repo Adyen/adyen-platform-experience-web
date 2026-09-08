@@ -12,6 +12,7 @@ const ready = ref(false);
 
 const coreContextValue = computed<CoreContextValue>(() => ({
     i18n: props.i18n ?? new Localization().i18n,
+    translationDomain: props.translationDomain,
     commonProps: props.commonProps || {},
     loadingContext: props.loadingContext ?? '',
     refreshComponent: props.refreshComponent,
