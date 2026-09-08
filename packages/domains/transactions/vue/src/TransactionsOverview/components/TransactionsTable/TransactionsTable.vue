@@ -7,6 +7,7 @@ import {
     containerQueries,
     CustomDataCell,
     DataOverviewError,
+    useTableColumns,
 } from '@integration-components/composables-vue';
 import {
     BentoDataGrid,
@@ -50,11 +51,9 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const { dateFormat } = useTimezoneAwareDateFormatting(props.activeBalanceAccount?.timeZone);
+const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceAccount?.timeZone);
 
 const isMobile = useResponsiveContainer(containerQueries.down.sm);
-
-const STANDARD_FIELDS = new Set<string>(TRANSACTION_FIELDS);
 
 const FIELDS_KEYS: Record<string, string> = {
     createdAt: 'transactions.overview.list.fields.createdAt',
@@ -65,22 +64,37 @@ const FIELDS_KEYS: Record<string, string> = {
     transactionType: 'transactions.overview.list.fields.transactionType',
 };
 
-const customFieldKeys = computed<string[]>(() =>
-    (props.customColumns ?? [])
-        .filter(c => !!c && c.visibility !== 'hidden')
-        .map(c => (typeof c?.key === 'string' ? c.key.trim() : ''))
-        .filter((k): k is string => !!k && !STANDARD_FIELDS.has(k))
-);
+function amountLabel(field: 'netAmount' | 'grossAmount', defaultLabel: string): string {
+    const currency = props.availableCurrencies?.[0];
+    const currencyCode = currency ? getCurrencyCode(currency) : undefined;
+    return props.hasMultipleCurrencies || !currencyCode ? defaultLabel : `${defaultLabel} (${currencyCode})`;
+}
+
+const { columns: desktopColumns, customFieldKeys } = useTableColumns({
+    fields: TRANSACTION_FIELDS,
+    customColumns: () => props.customColumns,
+    fieldsKeys: FIELDS_KEYS,
+    columnConfig: () => ({
+        createdAt: { flex: 1, minWidth: 140, overflow: BentoColumnOverflow.WRAP },
+        paymentMethod: { flex: 1.2, minWidth: 150 },
+        transactionType: { flex: 1, minWidth: 130 },
+        currency: { flex: 0.7, minWidth: 90, visible: props.hasMultipleCurrencies },
+        netAmount: { flex: 1, minWidth: 120, numeric: true },
+        grossAmount: { flex: 1, minWidth: 120, numeric: true },
+    }),
+    customColumnDefaults: () => ({ flex: 1, minWidth: 120 }),
+    resolveStandardColumnLabel: (field, defaultLabel) =>
+        field === 'netAmount' || field === 'grossAmount' ? amountLabel(field, defaultLabel) : defaultLabel,
+    resolveCustomColumnLabel: key => {
+        const labelKey = `transactions.overview.list.fields.${key}`;
+        return i18n.has(labelKey as any) ? i18n.get(labelKey as any) : i18n.get(key as any);
+    },
+});
 
 const isLoading = computed(() => props.loading);
 
 const columns = computed<BentoColumn[]>(() => {
-    const currency0 = props.availableCurrencies?.[0];
-    const currencyCode = currency0 ? getCurrencyCode(currency0) : undefined;
-
-    const grossAmountLabel = props.hasMultipleCurrencies
-        ? i18n.get(FIELDS_KEYS.grossAmount as any)
-        : `${i18n.get(FIELDS_KEYS.grossAmount as any)}${currencyCode ? ` (${currencyCode})` : ''}`;
+    const grossAmountLabel = amountLabel('grossAmount', i18n.get(FIELDS_KEYS.grossAmount as any));
 
     if (isMobile.value) {
         return [
@@ -89,39 +103,7 @@ const columns = computed<BentoColumn[]>(() => {
         ];
     }
 
-    const cols: BentoColumn[] = [
-        { field: 'createdAt', label: i18n.get(FIELDS_KEYS.createdAt as any), flex: 1, minWidth: 140, overflow: BentoColumnOverflow.WRAP },
-        { field: 'paymentMethod', label: i18n.get(FIELDS_KEYS.paymentMethod as any), flex: 1.2, minWidth: 150 },
-        { field: 'transactionType', label: i18n.get(FIELDS_KEYS.transactionType as any), flex: 1, minWidth: 130 },
-        {
-            field: 'currency',
-            label: i18n.get(FIELDS_KEYS.currency as any),
-            flex: 0.7,
-            minWidth: 90,
-        },
-        {
-            field: 'netAmount',
-            label: props.hasMultipleCurrencies
-                ? i18n.get(FIELDS_KEYS.netAmount as any)
-                : `${i18n.get(FIELDS_KEYS.netAmount as any)}${currencyCode ? ` (${currencyCode})` : ''}`,
-            flex: 1,
-            minWidth: 120,
-            numeric: true,
-        },
-        { field: 'grossAmount', label: grossAmountLabel, flex: 1, minWidth: 120, numeric: true },
-    ];
-
-    for (const key of customFieldKeys.value) {
-        const labelKey = `transactions.overview.list.fields.${key}`;
-        cols.push({
-            field: key,
-            label: i18n.has(labelKey as any) ? i18n.get(labelKey as any) : i18n.get(key as any),
-            flex: 1,
-            minWidth: 120,
-        });
-    }
-
-    return cols;
+    return desktopColumns.value;
 });
 
 const gridData = computed<BentoDatagridDataItem[]>(() => {

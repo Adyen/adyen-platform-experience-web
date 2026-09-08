@@ -1,5 +1,5 @@
 const bemPattern = '^.[adyen|fp]*(?:-[a-zA-Z0-9]+)*(?:__[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:--[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:\\[.+\\])?$';
-const cssModulePattern = '^(?:[a-z][a-zA-Z0-9]*|b-[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*(?:__[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:--[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?)$';
+const cssModulePattern = '^(?:b-[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*|[a-z][a-zA-Z0-9]*)(?:__[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:--[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?$';
 
 module.exports = {
     extends: ['stylelint-config-recommended', 'stylelint-config-sass-guidelines'],

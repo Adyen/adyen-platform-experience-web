@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { BentoButton, BentoButtonActions, BentoCard, BentoLoadingIndicator, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
+import { BentoButtonActions, BentoCard, BentoLoadingIndicator, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { ErrorMessageDisplay } from '@integration-components/composables-vue';
 import {
@@ -18,8 +18,8 @@ import DisputeDataProperties from './DisputeDataProperties.vue';
 import DisputeIssuerComments from './DisputeIssuerComments.vue';
 import DisputeStatusTag from './DisputeStatusTag.vue';
 import type { DisputeDataAlertMode, DisputeManagementProps } from '../types';
-import styles from './DisputeData.module.scss';
 import flowStyles from './DisputeFlow.module.scss';
+import styles from './DisputeData.module.scss';
 
 const props = defineProps<{
     disputeId: string;
@@ -163,6 +163,14 @@ const actionButtons = computed(() => {
             variant: 'secondary',
         });
     }
+    for (const button of extraButtons.value) {
+        buttons.push({
+            title: String(button.value),
+            event: button.config?.action,
+            variant: 'secondary',
+            class: button.config?.className,
+        });
+    }
     return buttons;
 });
 
@@ -235,17 +243,8 @@ const paymentMethodDetail = computed(() =>
                 :extra-fields="extraFields"
             />
 
-            <div v-if="actionButtons.length || extraButtons.length" :class="flowStyles.actionBar">
-                <BentoButtonActions v-if="actionButtons.length" :actions="actionButtons" />
-                <BentoButton
-                    v-for="button in extraButtons"
-                    :key="String(button.value)"
-                    variant="secondary"
-                    :class="button.config?.className"
-                    @click="button.config?.action"
-                >
-                    {{ button.value }}
-                </BentoButton>
+            <div v-if="actionButtons.length" :class="flowStyles.actionBar">
+                <BentoButtonActions :actions="actionButtons" />
             </div>
         </template>
     </div>

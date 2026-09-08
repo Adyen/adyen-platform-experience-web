@@ -198,6 +198,7 @@ module.exports = [
             'react-hooks/rules-of-hooks': 'off',
             'react-hooks/exhaustive-deps': 'off',
             'react-hooks/purity': 'off',
+            'react-hooks/immutability': 'off',
         },
     },
 
@@ -266,7 +267,7 @@ module.exports = [
 
     // Dev-only files inside workspace packages resolve devDependencies from workspace root
     {
-        files: ['packages/**/vite.config.ts', 'packages/**/*.test.{ts,tsx}', 'packages/**/{__testing__,testing}/**/*.{ts,tsx}'],
+        files: ['packages/**/vite.config.ts', 'packages/**/*.test.{ts,tsx}', 'packages/**/{__testing__,testing,stories}/**/*.{ts,tsx}'],
         rules: {
             'import-x/no-extraneous-dependencies': [
                 'error',

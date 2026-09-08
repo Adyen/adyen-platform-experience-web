@@ -8,10 +8,11 @@ import LanguageField from './fields/LanguageField.vue';
 import AddressSection from './fields/AddressSection.vue';
 import { useWizard } from '../../../composables/wizardContext';
 import { useAddressSections } from './useAddressSections';
-import { PAYMENT_LINK_CREATION_CLASS_NAMES, PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../domain/src';
+import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../domain/src';
 import type { PaymentLinkFieldName } from '../../../../../../domain/src';
 import type { IPaymentLinkCountry } from '@integration-components/types';
-import './CustomerDetailsForm.scss';
+import layoutStyles from '../FormLayout.module.scss';
+import styles from './CustomerDetailsForm.module.scss';
 
 const props = defineProps<{
     isSameAddress: boolean;
@@ -25,7 +26,6 @@ const emit = defineEmits<{ 'update:isSameAddress': [value: boolean] }>();
 
 const wizard = useWizard();
 const { i18n } = wizard;
-const CLASS_NAMES = PAYMENT_LINK_CREATION_CLASS_NAMES;
 const { showBillingFirst, isSameAddressCopyEnabled, billingState, deliveryState } = useAddressSections();
 
 const isNameVisible = computed(() => wizard.getFieldConfig('shopperName.firstName').visible || wizard.getFieldConfig('shopperName.lastName').visible);
@@ -83,13 +83,13 @@ function onCheckboxUpdate(value: boolean | string | string[]) {
 </script>
 
 <template>
-    <div :class="CLASS_NAMES.fieldsContainer">
+    <div :class="layoutStyles.fieldsContainer">
         <TextField
             name="shopperReference"
             :label="i18n.get('payByLink.creation.fields.shopperReference.label')"
             :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperReference.max"
         />
-        <div v-if="isNameVisible" :class="CLASS_NAMES.shopperNameContainer">
+        <div v-if="isNameVisible" :class="styles.shopperNameContainer">
             <TextField
                 name="shopperName.firstName"
                 :label="i18n.get('payByLink.creation.fields.shopperName.label')"
@@ -125,7 +125,7 @@ function onCheckboxUpdate(value: boolean | string | string[]) {
                 copy-to-prefix="billingAddress"
             />
             <div v-if="isSameAddressCopyEnabled">
-                <BentoCheckbox :class="CLASS_NAMES.sameAddressCheckbox" :model-value="props.isSameAddress" @update:model-value="onCheckboxUpdate">
+                <BentoCheckbox :class="styles.sameAddressCheckbox" :model-value="props.isSameAddress" @update:model-value="onCheckboxUpdate">
                     {{ i18n.get('payByLink.creation.fields.shippingAndBillingSameAddress.label') }}
                 </BentoCheckbox>
             </div>
@@ -150,7 +150,7 @@ function onCheckboxUpdate(value: boolean | string | string[]) {
                 copy-to-prefix="deliveryAddress"
             />
             <div v-if="isSameAddressCopyEnabled">
-                <BentoCheckbox :class="CLASS_NAMES.sameAddressCheckbox" :model-value="props.isSameAddress" @update:model-value="onCheckboxUpdate">
+                <BentoCheckbox :class="styles.sameAddressCheckbox" :model-value="props.isSameAddress" @update:model-value="onCheckboxUpdate">
                     {{ i18n.get('payByLink.creation.fields.shippingAndBillingSameAddress.label') }}
                 </BentoCheckbox>
             </div>

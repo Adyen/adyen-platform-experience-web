@@ -5,6 +5,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { useSettingsPermission } from '../composables/useSettingsPermission';
 import { MenuItem } from '../constants';
+import styles from './SettingsActionButtons.module.scss';
 
 const props = defineProps<{
     navigateBack?: () => void;
@@ -45,7 +46,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 </script>
 
 <template>
-    <div class="adyen-pe-payment-link-settings__cta-container">
+    <div :class="styles.root">
         <BentoButtonActions layout="buttons-end" :actions="actionButtons" />
     </div>
 </template>

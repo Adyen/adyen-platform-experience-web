@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext, useCoreContext } from '@integration-components/core/preact';
 import { useFetch, containerQueries, useResponsiveContainer, useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
 import { IDisputeDetail } from '@integration-components/types/api/models/disputes';
@@ -16,7 +16,7 @@ import { Translation } from '@integration-components/ui-components-preact/Transl
 import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { DisputeDetailsCustomization, DisputeManagementProps } from '../../types';
-import { getDisputeType, isDisputeActionNeeded } from '@integration-components/disputes/domain';
+import { DISPUTE_DETAILS_RESERVED_FIELDS_SET, getDisputeType, isDisputeActionNeeded } from '@integration-components/disputes/domain';
 import { DisputeIssuerComments } from './DisputeIssuerComments';
 import DisputeDataProperties from './DisputeDataProperties';
 import {
@@ -42,13 +42,14 @@ import { TypographyElement, TypographyVariant } from '@integration-components/ui
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
 import { getDisputesErrorMessage } from '../../utils/getDisputesErrorMessage';
-import type { CustomButtonObject } from '@integration-components/types';
+import type { CustomButtonObject, CustomDataRetrieved } from '@integration-components/types';
 
 type DisputeDataAlertMode = 'contactSupport' | 'autoDefended' | 'notDefended' | 'notDefendable';
 
-const _isButtonType = (item: any): item is CustomButtonObject => {
-    return !!item && typeof item === 'object' && item.type === 'button';
+const isButtonType = (item: CustomDataRetrieved[string]): item is CustomButtonObject => {
+    return !!item && typeof item === 'object' && 'type' in item && item.type === 'button';
 };
+
 const DisputeDataAlert = ({
     alertMode,
     dispute,
@@ -209,22 +210,42 @@ export const DisputeData = ({
         setFlowState('defendReasonSelectionView');
     }, [setFlowState]);
 
-    const [extraButtons, setExtraButtons] = useState<CustomButtonObject[]>([]);
-
-    const getCustomButtons = useCallback(async () => {
-        const customData = data && (await dataCustomization?.details?.onDataRetrieve?.(data));
-        if (customData) {
-            return setExtraButtons(
-                Object.values(customData).filter(config => {
-                    return _isButtonType(config);
-                }) as CustomButtonObject[]
-            );
-        }
-    }, [data, dataCustomization?.details]);
+    const [retrievedCustomData, setRetrievedCustomData] = useState<CustomDataRetrieved>();
+    const customDataRequestIdRef = useRef(0);
 
     useEffect(() => {
-        void getCustomButtons();
-    }, [getCustomButtons]);
+        const requestId = ++customDataRequestIdRef.current;
+        const onDataRetrieve = dataCustomization?.details?.onDataRetrieve;
+
+        if (!data || !isFunction(onDataRetrieve)) {
+            setRetrievedCustomData(undefined);
+            return;
+        }
+
+        onDataRetrieve(data)
+            .then(retrieved => {
+                if (requestId === customDataRequestIdRef.current) {
+                    setRetrievedCustomData(retrieved);
+                }
+            })
+            .catch(() => {
+                if (requestId === customDataRequestIdRef.current) {
+                    setRetrievedCustomData(undefined);
+                }
+            });
+    }, [data, dataCustomization?.details]);
+
+    const extraFields = useMemo(
+        () =>
+            (dataCustomization?.details?.fields ?? []).reduce<CustomDataRetrieved>((fields, field) => {
+                const key = typeof field?.key === 'string' ? field.key : '';
+                if (!key || DISPUTE_DETAILS_RESERVED_FIELDS_SET.has(key as never) || field.visibility === 'hidden') return fields;
+
+                const value = retrievedCustomData?.[key];
+                return value === undefined ? fields : { ...fields, [key]: value };
+            }, {}),
+        [dataCustomization?.details?.fields, retrievedCustomData]
+    );
 
     const defendButtonLabel = useMemo(() => {
         return storedDispute?.dispute.type === 'REQUEST_FOR_INFORMATION'
@@ -254,8 +275,10 @@ export const DisputeData = ({
             });
         }
 
-        if (extraButtons && extraButtons.length) {
-            extraButtons.forEach((config: CustomButtonObject) => {
+        const extraButtons = Object.values(extraFields ?? {}).filter(isButtonType);
+
+        if (extraButtons.length) {
+            extraButtons.forEach(config => {
                 ctaButtons.push({
                     title: config?.value,
                     event: config?.config?.action,
@@ -265,7 +288,7 @@ export const DisputeData = ({
             });
         }
         return ctaButtons;
-    }, [isDefendable, defendButtonLabel, onDefendClick, isAcceptable, showContactSupport, onContactSupport, extraButtons, i18n, onAcceptClick]);
+    }, [isDefendable, defendButtonLabel, onDefendClick, isAcceptable, showContactSupport, onContactSupport, extraFields, i18n, onAcceptClick]);
 
     const actionNeeded = useMemo(() => !!dispute && isDisputeActionNeeded(dispute.dispute), [dispute]);
 
@@ -367,7 +390,12 @@ export const DisputeData = ({
                         />
                     )}
 
-                    <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} defenseReasonConfig={defenseReasonConfig} />
+                    <DisputeDataProperties
+                        dispute={dispute}
+                        dataCustomization={dataCustomization}
+                        defenseReasonConfig={defenseReasonConfig}
+                        extraFields={extraFields}
+                    />
 
                     {actionButtons.length > 0 ? (
                         <div className={DISPUTE_DATA_ACTION_BAR}>

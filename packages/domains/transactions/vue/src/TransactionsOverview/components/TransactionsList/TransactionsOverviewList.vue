@@ -103,6 +103,11 @@ onMounted(() => {
         <div ref="balancesSectionEl" :class="[styles.summarySection, styles.summarySectionBalances]">
             <BentoAlert v-if="balancesError" type="warning">
                 <template #default>{{ i18n.get('transactions.overview.balances.error') }}</template>
+                <template #actions>
+                    <BentoButton variant="tertiary" :disabled="!accountBalancesResult.canRefresh.value" @click="accountBalancesResult.refresh">
+                        {{ i18n.get('common.actions.refresh.labels.default') }}
+                    </BentoButton>
+                </template>
             </BentoAlert>
             <Balances v-else :balances="sortedBalances" :loading-balances="loadingBalances" />
         </div>

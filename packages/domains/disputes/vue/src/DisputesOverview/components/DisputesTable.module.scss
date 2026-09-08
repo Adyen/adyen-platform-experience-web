@@ -3,12 +3,12 @@
 .root {
     position: relative;
 
-    :global(.b-data-grid-cell) {
-        padding-block: style.token(spacer-050);
+    :global(.b-data-grid-columns__column) {
+        min-height: calc(#{style.token(spacer-100)} + #{style.token(spacer-020)});
     }
 
-    :global(.b-data-grid-columns__column) {
-        min-height: calc(style.token(spacer-100) + style.token(spacer-020));
+    :global(.b-list-item__chevron) {
+        display: none;
     }
 }
 

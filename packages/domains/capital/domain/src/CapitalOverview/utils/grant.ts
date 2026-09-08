@@ -25,9 +25,8 @@ export type EnhancedGrant = Omit<IGrant, 'maximumRepaymentPeriodDays'> & {
 };
 
 const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
-    const today = new Date();
     const endDate = new Date();
-    endDate.setDate(today.getDate() + repaymentPeriodLeft);
+    endDate.setDate(endDate.getDate() + repaymentPeriodLeft);
     return endDate;
 };
 

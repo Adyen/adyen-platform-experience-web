@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { BentoButton, BentoButtonActions, BentoCard, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import PlusIcon from '@adyen/ui-assets-icons-16/vue/plus';
 import BinIcon from '@adyen/ui-assets-icons-16/vue/bin';
@@ -102,6 +102,36 @@ function updateOptionalSelection(documentType: string, index: number) {
         currentIndex === index ? documentType : document
     );
 }
+
+function getOnlyAvailableDocumentType(documents: SelectDropdownItem[]) {
+    const availableDocuments = documents.filter(document => document.disabled !== true);
+    return availableDocuments.length === 1 ? availableDocuments[0]?.id : undefined;
+}
+
+watch(
+    [oneOrMoreDocuments, oneOrMoreSelectedDocument],
+    ([documents, selectedDocument]) => {
+        const documentType = getOnlyAvailableDocumentType(documents);
+
+        if (documentType && !selectedDocument) {
+            updateOneOrMoreSelection(documentType);
+        }
+    },
+    { immediate: true }
+);
+
+watch(
+    [availableOptionalDocuments, optionalSelectedDocuments],
+    ([documents, selectedDocuments]) => {
+        const documentType = getOnlyAvailableDocumentType(documents);
+        const emptyDocumentIndex = selectedDocuments.indexOf(undefined);
+
+        if (documentType && emptyDocumentIndex !== -1) {
+            updateOptionalSelection(documentType, emptyDocumentIndex);
+        }
+    },
+    { immediate: true }
+);
 
 function addEmptyOptionalDocument() {
     if (!canAddOptionalDocument.value) return;

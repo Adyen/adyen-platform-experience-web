@@ -1,23 +1,35 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { BentoAlert, BentoButton, BentoLink, BentoStructuredList, BentoStructuredListItem, BentoTag, BentoTypography } from '@adyen/bento-vue3';
+import {
+    BentoAlert,
+    BentoButton,
+    BentoLink,
+    BentoStructuredList,
+    BentoStructuredListItem,
+    BentoTag,
+    BentoTooltipDirective as vBentoTooltip,
+    BentoTypography,
+} from '@adyen/bento-vue3';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
+import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
+import { useLiveAnnouncement } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import {
+    DISPUTE_DETAILS_FIELDS_REMAPS,
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
     getDefenseDocumentContent,
     getDefenseReasonContent,
     getDisputeReason,
     isDisputeActionNeeded,
-    type DisputeDetailsFields,
     type DisputeDetailsCustomization,
     type TranslationConfigItem,
 } from '@integration-components/disputes/domain';
-import { DATE_FORMAT_DISPUTE_DETAILS, isFunction } from '@integration-components/utils';
+import { DATE_FORMAT_DISPUTE_DETAILS, isFunction, normalizeCustomFields } from '@integration-components/utils';
 import type { IDisputeDetail, IDisputeStatus } from '@integration-components/types/api/models/disputes';
 import { useDisputeFlow } from '../composables/useDisputeFlow';
+import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import styles from './DisputeData.module.scss';
 
 type CustomDataValue = {
@@ -39,16 +51,6 @@ type DetailItem =
     | { id: string; label: TranslationKey; kind: 'evidence'; value: string[] };
 
 const DISPUTE_STATUSES_WITH_ACCEPTED_DATE: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
-const RESERVED_FIELD_MAPPING = {
-    openedOn: 'createdAt',
-    respondBy: 'dueDate',
-    expiredOn: 'dueDate',
-    disputeId: 'id',
-    account: 'balanceAccount',
-    defenseReason: 'latestDefense',
-    defendedOn: 'latestDefense',
-    disputeEvidence: 'latestDefense',
-} satisfies Partial<Record<string, DisputeDetailsFields>>;
 
 const props = defineProps<{
     dispute: IDisputeDetail;
@@ -60,16 +62,22 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const config = useConfigContext();
 const { defenseDocumentConfig } = useDisputeFlow();
-const { dateFormat } = useTimezoneAwareDateFormatting(props.dispute.payment.balanceAccount?.timeZone);
+const { dateFormat } = useTimezoneAwareDateFormatting(() => props.dispute.payment.balanceAccount?.timeZone);
+const { announce, announcement } = useLiveAnnouncement();
 const downloadErrors = ref<Set<string>>(new Set());
+const copiedItemId = ref<string>();
 
 const hiddenFields = computed(
-    () => new Set((props.dataCustomization?.details?.fields ?? []).filter(field => field.visibility === 'hidden').map(field => String(field.key)))
+    () =>
+        new Set(
+            normalizeCustomFields(props.dataCustomization?.details?.fields, DISPUTE_DETAILS_FIELDS_REMAPS)
+                ?.filter(field => field.visibility === 'hidden')
+                .map(field => String(field.key))
+        )
 );
 
 function isVisible(id: string) {
-    const mappedId = RESERVED_FIELD_MAPPING[id] ?? id;
-    return !hiddenFields.value.has(mappedId);
+    return !hiddenFields.value.has(id);
 }
 
 function isCustomDataObject(value: unknown): value is CustomDataValue {
@@ -209,6 +217,21 @@ function getCopyValue(item: DetailItem) {
     return ['disputeId', 'paymentPspReference', 'paymentMerchantReference'].includes(item.id) && item.kind === 'text' ? item.value : undefined;
 }
 
+function onCopyText(text: string, itemId: string) {
+    navigator.clipboard?.writeText(text);
+    copiedItemId.value = itemId;
+    announce(() => i18n.get('common.actions.copy.labels.done'));
+}
+
+function getCopyTooltip(itemId: string) {
+    const key = copiedItemId.value === itemId ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default';
+    return i18n.get(key);
+}
+
+function resetCopiedItem() {
+    copiedItemId.value = undefined;
+}
+
 async function downloadEvidence(documentType: string) {
     const downloadDefenseDocument = config.endpoints?.downloadDefenseDocument;
     if (!isFunction(downloadDefenseDocument)) return;
@@ -240,8 +263,23 @@ async function downloadEvidence(documentType: string) {
 
 <template>
     <BentoStructuredList :class="styles.list">
-        <BentoStructuredListItem v-for="item in items" :key="item.id" :copy="getCopyValue(item)" :label="i18n.get(item.label)">
-            <time v-if="item.kind === 'date'" :datetime="item.value">
+        <BentoStructuredListItem v-for="item in items" :key="item.id" :label="i18n.get(item.label)">
+            <div v-if="getCopyValue(item)" :class="styles.copyableValue">
+                <BentoTypography variant="body">
+                    {{ getCopyValue(item) }}
+                </BentoTypography>
+                <BentoButton
+                    variant="tertiary"
+                    v-bento-tooltip="getCopyTooltip(item.id)"
+                    :aria-label="i18n.get('common.actions.copy.labels.default')"
+                    @click="onCopyText(getCopyValue(item)!, item.id)"
+                    @blur="resetCopiedItem"
+                    @mouseleave="resetCopiedItem"
+                >
+                    <CopyIcon />
+                </BentoButton>
+            </div>
+            <time v-else-if="item.kind === 'date'" :datetime="item.value">
                 <BentoTypography variant="body">{{ formatDate(item.value) }}</BentoTypography>
             </time>
             <div v-else-if="item.kind === 'evidence'" :class="styles.listEvidence">
@@ -288,4 +326,5 @@ async function downloadEvidence(documentType: string) {
             </BentoTypography>
         </BentoStructuredListItem>
     </BentoStructuredList>
+    <span :class="accessibilityStyles.visuallyHidden" aria-atomic="true" aria-live="polite">{{ announcement }}</span>
 </template>

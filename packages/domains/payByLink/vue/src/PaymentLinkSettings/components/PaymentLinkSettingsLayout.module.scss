@@ -1,0 +1,30 @@
+@use '@integration-components/style';
+
+.contentHeader {
+    margin-bottom: style.token(spacer-080);
+}
+
+.contentItem {
+    display: flex;
+    flex: 2 1 0;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+    justify-content: space-between;
+    width: 100%;
+}
+
+.contentItemMobile {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+    justify-content: space-between;
+    width: 100%;
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-040);
+    margin-bottom: style.token(spacer-080);
+    width: 100%;
+}

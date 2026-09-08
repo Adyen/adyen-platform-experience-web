@@ -35,20 +35,22 @@ export const getEnhancedCapitalState = (
     requestedGrant?: IGrant
 ): EnhancedCapitalState | undefined => {
     if (!state) return undefined;
-    const activeOrPendingGrants = requestedGrant ? [requestedGrant, ...state.activeOrPendingGrants] : state.activeOrPendingGrants;
+
+    const stateActiveOrPendingGrants = state?.activeOrPendingGrants ?? [];
+    const activeOrPendingGrants = requestedGrant ? [requestedGrant, ...stateActiveOrPendingGrants] : stateActiveOrPendingGrants;
     const dynamicOffer = state.dynamicOffer;
     const region = state.legalEntity?.region;
 
     const isRegionSupported = !!region && supportedRegions.includes(region);
-    const hasGrants = !!(activeOrPendingGrants?.length || state.hasClosedGrants);
-    const renewsGrantIds = new Set(activeOrPendingGrants?.map(grant => grant.renewsGrantId).filter((id): id is string => !!id));
+    const hasGrants = !!(activeOrPendingGrants.length || state.hasClosedGrants);
+    const renewsGrantIds = new Set(activeOrPendingGrants.map(grant => grant.renewsGrantId).filter((id): id is string => !!id));
 
     const renewableGrants =
-        dynamicOffer && activeOrPendingGrants?.length
+        dynamicOffer && activeOrPendingGrants.length
             ? activeOrPendingGrants.filter(grant => isGrantRenewable(grant, dynamicOffer, renewsGrantIds))
             : [];
 
-    const isOfferValid = !!dynamicOffer && (!activeOrPendingGrants?.length || !!renewableGrants.length);
+    const isOfferValid = !!dynamicOffer && (!activeOrPendingGrants.length || !!renewableGrants.length);
 
     return {
         dynamicOffer: isOfferValid ? dynamicOffer : undefined,

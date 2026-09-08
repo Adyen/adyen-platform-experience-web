@@ -9,7 +9,12 @@
 
 .filters {
     display: flex;
+    flex-wrap: wrap;
     gap: style.token(spacer-030);
+
+    :global(.b-tag) {
+        white-space: nowrap;
+    }
 }
 
 .columns {

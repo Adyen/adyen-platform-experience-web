@@ -27,6 +27,7 @@ describe('normalizeAmountInput', () => {
         expect(normalizeAmountInput('123.456', 'en-US', 'EUR')).toEqual({
             displayValue: '123.45',
             amount: 12345,
+            localeDecimalSeparator: '.',
         });
     });
 
@@ -34,6 +35,7 @@ describe('normalizeAmountInput', () => {
         expect(normalizeAmountInput('100.01', 'en-US', 'EUR', 100)).toEqual({
             displayValue: '100.00',
             amount: 10000,
+            localeDecimalSeparator: '.',
         });
     });
 
@@ -41,6 +43,7 @@ describe('normalizeAmountInput', () => {
         expect(normalizeAmountInput('100,01', 'de-DE', 'EUR', 100)).toEqual({
             displayValue: '100,00',
             amount: 10000,
+            localeDecimalSeparator: ',',
         });
     });
 });

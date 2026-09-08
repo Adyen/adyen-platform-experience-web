@@ -32,7 +32,7 @@
 
 .summarySection {
     @include breakpoints.adyen-pe-screen-md-and-up {
-        max-width: calc(50% - style.token(spacer-060) / 2);
+        max-width: calc(50% - #{style.token(spacer-060)} / 2);
         position: absolute;
         z-index: 4;
         min-width: 350px;

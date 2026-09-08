@@ -143,7 +143,7 @@ describe('createConfigController', () => {
         disconnect();
     });
 
-    test('should reset permission while a recheck after session refresh is pending', async () => {
+    test('should preserve permission while a recheck after session refresh is pending', async () => {
         const { context, emit, session } = createSessionStub();
         const resolvePermissionChecks: Array<(value: boolean) => void> = [];
         const checkPermission = vi.fn(
@@ -165,7 +165,7 @@ describe('createConfigController', () => {
         context.refreshing = false;
         emit(context);
 
-        expect(controller.getSnapshot().hasPermission).toBeUndefined();
+        expect(controller.getSnapshot().hasPermission).toBe(true);
 
         disconnect();
     });

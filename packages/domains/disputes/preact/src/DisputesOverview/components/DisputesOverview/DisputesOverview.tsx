@@ -25,6 +25,7 @@ import { DISPUTE_PAYMENT_SCHEMES, DISPUTE_REASON_CATEGORIES, DISPUTE_STATUS_GROU
 import { useCursorPaginatedRecords } from '@integration-components/ui-components-preact/Pagination/hooks';
 import { Header } from '@integration-components/ui-components-preact/Header';
 import { CustomDataRetrieved, ExternalUIComponentProps, FilterParam } from '@integration-components/types';
+import type { ReactiveStateRecord } from '@integration-components/hooks-preact/useReactiveState/types';
 import { DisputeOverviewComponentProps } from '../../types';
 import { DisputesTable, FIELDS } from '../DisputesTable/DisputesTable';
 import { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
@@ -143,7 +144,14 @@ export const DisputesOverview = ({
     const modalOptions = useMemo(() => ({ dispute: disputeDetails }), [disputeDetails]);
 
     const getDisputes = useCallback(
-        async ({ [LAST_REFRESH_TIMESTAMP_PARAM]: _, ...pageRequestParams }: DisputesPageRequestParams, signal?: AbortSignal) => {
+        async (
+            {
+                [FilterParam.BALANCE_ACCOUNT]: _balanceAccount,
+                [LAST_REFRESH_TIMESTAMP_PARAM]: _lastRefreshTimestamp,
+                ...pageRequestParams
+            }: DisputesPageRequestParams,
+            signal?: AbortSignal
+        ) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
 
             return getDisputesCall!(requestOptions, {
@@ -166,12 +174,19 @@ export const DisputesOverview = ({
 
     // FILTERS
     const filterBarState = useFilterBarState();
-    const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
+
+    const _onFiltersChanged = useMemo(() => {
+        return isFunction(onFiltersChanged)
+            ? (filters: ReactiveStateRecord<string, FilterParam>) =>
+                  onFiltersChanged(filters as unknown as Parameters<NonNullable<typeof onFiltersChanged>>[0])
+            : void 0;
+    }, [onFiltersChanged]);
 
     const defaultFilters = Object.assign(defaultParams.current.defaultFilterParams, {
         [DISPUTE_REASONS_FILTER_PARAM]: undefined,
         [DISPUTE_SCHEMES_FILTER_PARAM]: undefined,
+        // eslint-disable-next-line react-hooks/purity -- The timestamp is a request cache-buster, not rendered output.
         [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now(),
         statusGroup: DEFAULT_DISPUTE_STATUS_GROUP,
     });
@@ -187,6 +202,14 @@ export const DisputesOverview = ({
             preferredLimitOptions,
             enabled: !!activeBalanceAccount?.id && !!getDisputesCall,
         });
+
+    const updateBalanceAccount = useCallback(
+        (event: Parameters<typeof onBalanceAccountSelection>[0]) => {
+            onBalanceAccountSelection(event);
+            updateFilters({ [FilterParam.BALANCE_ACCOUNT]: event.target?.value });
+        },
+        [onBalanceAccountSelection, updateFilters]
+    );
 
     const cachedDisputeReasonsFilter = useRef<string | undefined>(undefined);
 
@@ -276,6 +299,14 @@ export const DisputesOverview = ({
         [updateFilters]
     );
 
+    useEffect(() => {
+        return () => {
+            if (debounceTimeoutIdRef.current) {
+                clearTimeout(debounceTimeoutIdRef.current);
+            }
+        };
+    }, []);
+
     const refreshDisputesList = useCallback(
         (gotoStatusGroup?: IDisputeStatusGroup) => {
             if (gotoStatusGroup && DISPUTE_STATUS_GROUPS_VALUES.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup) {
@@ -299,6 +330,7 @@ export const DisputesOverview = ({
         refreshNowTimestamp();
 
         if ((filters['statusGroup' as FilterParam]! as IDisputeStatusGroup) !== 'FRAUD_ALERTS') {
+            // eslint-disable-next-line react-hooks/immutability -- The ref retains the last non-fraud filter without triggering another render.
             cachedDisputeReasonsFilter.current = filters[DISPUTE_REASONS_FILTER_PARAM as FilterParam];
         }
     }, [filters, refreshNowTimestamp]);
@@ -332,7 +364,7 @@ export const DisputesOverview = ({
                         <BalanceAccountSelector
                             activeBalanceAccount={activeBalanceAccount}
                             balanceAccountSelectionOptions={balanceAccountSelectionOptions}
-                            onBalanceAccountSelection={onBalanceAccountSelection}
+                            onBalanceAccountSelection={updateBalanceAccount}
                         />
                         <DateFilter
                             canResetFilters={canResetFilters}

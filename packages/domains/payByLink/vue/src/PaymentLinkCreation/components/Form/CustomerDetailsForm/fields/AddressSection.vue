@@ -4,10 +4,10 @@ import { BentoInputField, BentoTypography } from '@adyen/bento-vue3';
 import FieldWrapper from '../../../fields/FieldWrapper.vue';
 import CountryField from './CountryField.vue';
 import { useWizard } from '../../../../composables/wizardContext';
-import { PAYMENT_LINK_CREATION_CLASS_NAMES, PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../../domain/src';
+import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../../domain/src';
 import type { PaymentLinkFieldName } from '../../../../../../../domain/src';
 import type { TranslationKey } from '@integration-components/core';
-import './AddressSection.scss';
+import styles from './AddressSection.module.scss';
 
 type AddressPrefix = 'billingAddress' | 'deliveryAddress';
 
@@ -23,16 +23,15 @@ const props = defineProps<{
 
 const wizard = useWizard();
 const { i18n } = wizard;
-const CLASS_NAMES = PAYMENT_LINK_CREATION_CLASS_NAMES;
 
 const lengths = computed(() => PAYMENT_LINK_CREATION_FIELD_LENGTHS[props.prefix]);
 
 const STREET_ROW_FIELDS = ['street', 'houseNumberOrName'] as const;
 const CITY_ROW_FIELDS = ['city', 'postalCode'] as const;
 
-const STREET_ROW_FIELD_CLASSES: Record<(typeof STREET_ROW_FIELDS)[number], string> = {
-    street: CLASS_NAMES.addressFieldLarge,
-    houseNumberOrName: CLASS_NAMES.addressFieldSmall,
+const STREET_ROW_FIELD_CLASSES: Record<(typeof STREET_ROW_FIELDS)[number], string | undefined> = {
+    street: styles.fieldLarge,
+    houseNumberOrName: styles.fieldSmall,
 };
 
 function fieldName(field: string): PaymentLinkFieldName {
@@ -73,14 +72,14 @@ function onInput(field: string, value: string | number) {
 </script>
 
 <template>
-    <div :class="CLASS_NAMES.addressContainer">
-        <div :class="CLASS_NAMES.addressTitleContainer">
+    <div :class="styles.root">
+        <div :class="styles.titleContainer">
             <BentoTypography variant="title" stronger>{{ props.title }}</BentoTypography>
-            <BentoTypography v-if="props.isOptional" variant="body" :class="CLASS_NAMES.addressOptionalLabel">
+            <BentoTypography v-if="props.isOptional" variant="body" :class="styles.optionalLabel">
                 {{ `(${i18n.get('payByLink.common.fields.optional.label')})` }}
             </BentoTypography>
         </div>
-        <div :class="CLASS_NAMES.addressRow">
+        <div :class="styles.row">
             <template v-for="field in STREET_ROW_FIELDS" :key="field">
                 <FieldWrapper
                     v-if="getConfig(field).visible"
@@ -100,7 +99,7 @@ function onInput(field: string, value: string | number) {
                 </FieldWrapper>
             </template>
         </div>
-        <div :class="CLASS_NAMES.addressRow">
+        <div :class="styles.row">
             <CountryField
                 :name="fieldName('country')"
                 :label="getLabel('country')"

@@ -6,7 +6,6 @@ import FieldWrapper from '../../../fields/FieldWrapper.vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useWizard } from '../../../../composables/wizardContext';
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../../domain/src';
-import './ShopperPhoneField.scss';
 
 const wizard = useWizard();
 const { i18n, getCdnDataset } = useCoreContext();
@@ -118,7 +117,6 @@ function onNumberInput(value: string | number) {
 <template>
     <FieldWrapper v-if="config.visible && !shouldHide" name="telephoneNumber" :error="error">
         <BentoInputField
-            class="adyen-pe-payment-link-creation-form__phone-number"
             variant="dropdown"
             :label="i18n.get('payByLink.creation.fields.shopperPhone.label')"
             :optional="!config.required"

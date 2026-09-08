@@ -1,0 +1,27 @@
+@use '@integration-components/style' as style;
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-040);
+}
+
+.sectionTitle {
+    color: style.token(color-label-primary);
+}
+
+.tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: style.token(spacer-020);
+}
+
+.alert {
+    margin-top: style.token(spacer-040);
+}

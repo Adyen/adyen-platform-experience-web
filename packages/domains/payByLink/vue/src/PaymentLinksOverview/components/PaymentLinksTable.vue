@@ -12,10 +12,10 @@ import {
     DATE_FORMAT_PAYMENT_LINKS_OVERVIEW_EXPIRATION_DATE,
     DATE_FORMAT_RESPONSE_DEADLINE,
 } from '@integration-components/utils';
-import { TABLE_CLASS } from '../constants';
 import { usePaymentLinkLabels } from '../composables/usePaymentLinkLabels';
 import type { IPaymentLinkItem, IPaymentLinkStatus } from '@integration-components/types';
 import { getPaymentLinksErrorMessage } from '../utils/getPaymentLinksErrorMessage';
+import styles from './PaymentLinksTable.module.scss';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -154,7 +154,7 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
 </script>
 
 <template>
-    <div :class="TABLE_CLASS">
+    <div>
         <DataOverviewError
             v-if="props.error"
             :error="props.error"
@@ -181,12 +181,12 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             @items-page="handleItemsPage"
         >
             <template #item-paymentLinkId="{ item }">
-                <div v-if="isMobile" class="adyen-pe-payment-link-table__mobile-cell">
+                <div v-if="isMobile" :class="styles.mobileCell">
                     <BentoTypography variant="body" stronger>
                         {{ item.paymentLinkId }}
                     </BentoTypography>
                     <time :datetime="item.expirationDate">
-                        <BentoTypography variant="caption" class="adyen-pe-payment-link-table__mobile-expire-date-cell">
+                        <BentoTypography variant="caption" :class="styles.mobileExpireDateCell">
                             {{
                                 i18n.get('payByLink.overview.common.actionNeeded.expiresAt', {
                                     values: { date: dateFormat(item.expirationDate, DATE_FORMAT_PAYMENT_LINKS_OVERVIEW_EXPIRATION_DATE) },
@@ -205,7 +205,7 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             </template>
 
             <template #item-amount="{ item }">
-                <div v-if="isMobile" class="adyen-pe-payment-link-table__mobile-cell adyen-pe-payment-link-table__mobile-amount-cell">
+                <div v-if="isMobile" :class="[styles.mobileCell, styles.mobileAmountCell]">
                     <BentoTypography variant="body" stronger>
                         {{ formatAmount(item.amount) }}
                     </BentoTypography>

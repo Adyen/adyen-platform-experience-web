@@ -25,6 +25,14 @@ test.describe('Disputes Overview - Data customization', () => {
         await expect(grid.getByRole('columnheader', { name: 'Reason', exact: true })).toBeHidden();
     });
 
+    test('should retain the mobile table layout without custom columns', async ({ page }) => {
+        await page.setViewportSize({ width: 479, height: 800 });
+
+        const grid = page.getByRole('grid');
+        await expect(grid.getByRole('columnheader', { name: 'Summary', exact: true })).toHaveCount(0);
+        await expect(grid.getByRole('columnheader', { name: 'Action', exact: true })).toHaveCount(0);
+    });
+
     test('should render the content of each custom cell', async ({ page }) => {
         const grid = page.getByRole('grid');
 

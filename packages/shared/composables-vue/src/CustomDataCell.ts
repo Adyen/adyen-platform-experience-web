@@ -1,7 +1,7 @@
 import { defineComponent, h, type PropType } from 'vue';
 import { BentoButton, BentoLink } from '@adyen/bento-vue3';
 import { isCustomDataObject } from './useCustomDataCells';
-import './CustomDataCell.scss';
+import styles from './CustomDataCell.module.scss';
 
 export const CustomDataCell = defineComponent({
     name: 'CustomDataCell',
@@ -20,7 +20,7 @@ export const CustomDataCell = defineComponent({
 
             if (data.type === 'icon' && data.config?.src) {
                 const alt = data.config.alt != null ? data.config.alt : data.value;
-                return h('div', { class: ['adyen-pe-data-grid__icon-cell', data.config.className] }, [
+                return h('div', { class: [styles.root, data.config.className] }, [
                     h('img', { src: data.config.src, alt }),
                     String(data.value).trim() ? h('span', {}, String(data.value)) : null,
                 ]);

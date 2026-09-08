@@ -1,0 +1,14 @@
+@use '@integration-components/style' as style;
+
+.custom {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: style.token(spacer-040);
+    align-items: end;
+}
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-040);
+}

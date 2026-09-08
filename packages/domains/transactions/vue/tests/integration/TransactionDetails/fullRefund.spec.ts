@@ -10,9 +10,7 @@ test.describe('Full refund', () => {
         await expect(page.getByText('Refund', { exact: true })).toBeVisible();
         await expect(page.getByText('Full', { exact: true })).toBeVisible();
 
-        // [TODO]: Address amount formatting discrepancy (use currency code instead of symbol)
-        // await expect(page.getByText('- 607.50 EUR', { exact: true })).toBeVisible();
-        await expect(page.getByText('- €607.50', { exact: true })).toBeVisible();
+        await expect(page.getByText('- 607.50 EUR', { exact: true })).toBeVisible();
 
         await expect(page.getByText('Account', { exact: true })).toBeVisible();
         await expect(page.getByText('S. Hopper - Main Account', { exact: true })).toBeVisible();
@@ -58,9 +56,7 @@ test.describe('Full refund', () => {
         await expect(page.getByText('Payment', { exact: true })).toBeVisible();
         await expect(page.getByText('Fully refunded', { exact: true })).toBeVisible();
 
-        // [TODO]: Address amount formatting discrepancy (use currency code instead of symbol)
-        // await expect(page.getByText('607.50 EUR', { exact: true })).toBeVisible();
-        await expect(page.getByText('€607.50', { exact: true })).toBeVisible();
+        await expect(page.getByText('607.50 EUR', { exact: true })).toBeVisible();
 
         await expect(page.getByText('Account', { exact: true })).toBeVisible();
         await expect(page.getByText('S. Hopper - Main Account', { exact: true })).toBeVisible();

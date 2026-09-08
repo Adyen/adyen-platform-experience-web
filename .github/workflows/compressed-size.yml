@@ -2,40 +2,23 @@ name: Compressed Size
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
     branches:
       - main
       - develop
+      - version/v1.x
       - group/*
 
 jobs:
-  is-pr-approved:
-    permissions:
-      contents: read
-      pull-requests: read
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-
-      - id: check-approval
-        run: gh pr status --json reviews -q '.currentBranch.reviews' | jq '.[]' | jq '.state' | grep APPROVED
-        env:
-          GH_TOKEN: ${{ github.token }}
-        continue-on-error: true
-
-      - run: echo ${{ steps.check-approval.outcome == 'success' }}
-    outputs:
-      approved: ${{ steps.check-approval.outcome == 'success' }}
   build:
-    needs: is-pr-approved
-    if: needs.is-pr-approved.outputs.approved == 'true'
     permissions:
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v3
@@ -45,7 +28,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 24.9.0
+          node-version: 24.18.0
           cache: 'pnpm'
 
       - name: Configure npm registry auth

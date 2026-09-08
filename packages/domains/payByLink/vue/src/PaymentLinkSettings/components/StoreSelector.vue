@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { BentoDropdown } from '@adyen/bento-vue3';
 import type { StoreItem } from '../types';
+import styles from './StoreSelector.module.scss';
 
 const props = defineProps<{
     stores?: StoreItem[];
@@ -26,7 +27,7 @@ function onUpdate(value: string | number | { value?: string | number } | Array<s
 <template>
     <BentoDropdown
         v-if="stores && stores.length > 1"
-        class="adyen-pe-payment-link-settings__store-selector"
+        :class="styles.root"
         :items="dropdownItems"
         :model-value="selectedStoreId ?? ''"
         @update:model-value="onUpdate"

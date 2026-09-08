@@ -14,8 +14,8 @@ const getDefaultFilters = (balanceAccountId?: string): TransactionsFilters => ({
     categories: [],
     statuses: ['Booked'],
     currencies: [],
-    createdSince: new Date(quickSelectDateRanges.last30Days.startDate).toISOString(),
-    createdUntil: new Date(quickSelectDateRanges.last30Days.endDate).toISOString(),
+    createdSince: new Date(quickSelectDateRanges.last180Days.startDate).toISOString(),
+    createdUntil: new Date(quickSelectDateRanges.last180Days.endDate).toISOString(),
     paymentPspReference: undefined,
 });
 
@@ -71,7 +71,7 @@ export function useTransactionsOverviewState(componentProps: () => TransactionsO
 
     const transactionsListResult = useTransactionsList(() => ({
         filters: filters.value,
-        fetchEnabled: hasActiveBalanceAccount.value,
+        fetchEnabled: isTransactionsView.value && hasActiveBalanceAccount.value,
         allowLimitSelection: componentProps().allowLimitSelection,
         preferredLimit: componentProps().preferredLimit,
         dataCustomization: componentProps().dataCustomization,

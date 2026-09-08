@@ -60,7 +60,7 @@ export const useTableColumns = <T extends string, C extends string>({
                 columnMap.set(current.key, {
                     ...existing,
                     ...current,
-                    visible: current.visibility !== 'hidden',
+                    visible: current.visibility === undefined ? existing.visible : current.visibility !== 'hidden',
                     position: current.align || existing.position,
                 });
             } else {

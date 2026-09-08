@@ -5,3 +5,6 @@ export * from './types';
 export { default as EventDispatcherProvider } from './eventDispatcher/EventDispatcherProvider.vue';
 export { useEventDispatcherContext } from './eventDispatcher/useEventDispatcherContext';
 export type { EventDispatcherProviderProps } from './eventDispatcher/types';
+
+export { default as ModalContextProvider } from './modal/ModalContextProvider.vue';
+export { useModalContext } from './modal/useModalContext';

@@ -13,6 +13,12 @@
     }
 }
 
+.copyableValue {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-070);
+}
+
 .refundStatusesContainer {
     display: flex;
     flex-direction: column;

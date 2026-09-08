@@ -2,14 +2,11 @@
 
 .root {
     position: relative;
-}
 
-.alert {
-    border: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 100;
+    :global(.b-toast) {
+        bottom: auto;
+        top: var(--b-toast-spacing-outer);
+    }
 }
 
 .dateReportType {
@@ -20,4 +17,8 @@
 
 .date {
     opacity: 0.7;
+}
+
+.downloadErrorIcon {
+    color: style.token(color-background-warning-strong);
 }

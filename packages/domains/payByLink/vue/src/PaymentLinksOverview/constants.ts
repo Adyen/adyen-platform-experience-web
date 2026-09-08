@@ -9,8 +9,5 @@ export {
     PAYMENT_LINKS_TABLE_FIELDS,
 } from '../../../domain/src';
 
-export const BASE_CLASS = 'adyen-pe-payment-links-overview';
-export const TABLE_CLASS = 'adyen-pe-payment-link-table';
-
 export const DEFAULT_PAGE_LIMIT = 10;
 export const LIMIT_OPTIONS = [10, 20];

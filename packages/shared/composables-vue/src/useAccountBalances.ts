@@ -1,4 +1,4 @@
-import { ref, computed, watch, onUnmounted } from 'vue';
+import { ref, computed, watch, onScopeDispose } from 'vue';
 import { isFunction } from '@integration-components/utils';
 import type { IBalance } from '@integration-components/types';
 import { useConfigContext } from '@integration-components/core/vue';
@@ -18,6 +18,7 @@ export function useAccountBalances(balanceAccountId: () => string | undefined) {
 
     const getBalances = computed(() => config.endpoints.getBalances);
     const isAvailable = computed(() => isFunction(getBalances.value));
+    const canRefresh = computed(() => !isFetching.value && isAvailable.value && !!balanceAccountId());
 
     async function fetchBalances(id: string) {
         const fn = getBalances.value;
@@ -64,13 +65,22 @@ export function useAccountBalances(balanceAccountId: () => string | undefined) {
         { immediate: true }
     );
 
-    onUnmounted(() => abortController?.abort());
+    onScopeDispose(() => abortController?.abort());
+
+    function refresh() {
+        const id = balanceAccountId();
+        if (canRefresh.value && id) {
+            fetchBalances(id);
+        }
+    }
 
     return {
         balances,
         error,
         isFetching,
         isAvailable,
+        canRefresh,
+        refresh,
     } as const;
 }
 
