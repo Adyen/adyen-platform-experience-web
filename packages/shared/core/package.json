@@ -32,10 +32,14 @@
         "vitest": "catalog:"
     },
     "peerDependencies": {
+        "@adyen/bento-vue3": "catalog:",
         "vue": "catalog:",
         "vue-i18n": "^11"
     },
     "peerDependenciesMeta": {
+        "@adyen/bento-vue3": {
+            "optional": true
+        },
         "vue": {
             "optional": true
         },

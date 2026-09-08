@@ -3,13 +3,14 @@
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createApp, type Component, type VNode } from 'vue';
+import { createI18n } from 'vue-i18n';
 import { UIElement } from './UIElement';
 import type { CoreOptions } from './types';
 import deDE from '../../../../sdk/translations/de-DE.json' with { type: 'json' };
+import { SDK_BENTO_TRANSLATION_SOURCES, SDK_TRANSLATION_SOURCES } from '../../../../sdk/src/translations';
 import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
 import type { DomainTranslationBinding } from './Context/types';
 import Localization from '../Localization';
-import { SDK_TRANSLATION_SOURCES } from '../../../../sdk/src/translations';
 import Core from '../Core';
 
 vi.mock('./UIElementProvider.vue', () => ({
@@ -22,11 +23,12 @@ vi.mock('vue', async () => {
 });
 
 vi.mock('vue-i18n', () => ({
-    createI18n: vi.fn(() => ({ global: { locale: { value: 'en-US' } } })),
+    createI18n: vi.fn(() => ({ global: { locale: { value: 'en-US' }, setLocaleMessage: vi.fn() } })),
 }));
 
 const getComponentSubtree = (view: VNode) => (view.children as { default: () => VNode }).default();
 const createLocalization = (locale = 'en-US') => new Localization(locale, undefined, '', '', SDK_TRANSLATION_SOURCES);
+const createBentoLocalization = (locale = 'en-US') => new Localization(locale, undefined, '', '', SDK_BENTO_TRANSLATION_SOURCES);
 
 describe('UIElement', () => {
     const app = {
@@ -53,6 +55,7 @@ describe('UIElement', () => {
         const core = {
             options: { locale: 'en-US' },
             localization: createLocalization(),
+            bentoLocalization: createBentoLocalization(),
             registerComponent: vi.fn(),
             remove: vi.fn(),
             update: vi.fn(),
@@ -82,6 +85,7 @@ describe('UIElement', () => {
         const core = {
             options: { locale: 'en-US' },
             localization: createLocalization(),
+            bentoLocalization: createBentoLocalization(),
             registerComponent: vi.fn(),
             remove: vi.fn(),
             update: vi.fn(),
@@ -117,6 +121,7 @@ describe('UIElement', () => {
         const core = {
             options: { locale: 'en-US' },
             localization: createLocalization(),
+            bentoLocalization: createBentoLocalization(),
             registerComponent: vi.fn(),
             remove: vi.fn(),
             update: vi.fn(),
@@ -148,6 +153,7 @@ describe('UIElement', () => {
         const core = {
             options: { locale: 'en-US' },
             localization: createLocalization(),
+            bentoLocalization: createBentoLocalization(),
             registerComponent: vi.fn(),
             remove: vi.fn(),
             update: vi.fn(),
@@ -195,5 +201,19 @@ describe('UIElement', () => {
 
         await i18n.ready;
         expect(i18n.get('transactions.common.errors.updateFilters')).toBe(deDE['transactions.common.errors.updateFilters']);
+    });
+
+    test('updates the Bento Vue I18n locale after its locale messages load', async () => {
+        const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core, locale: 'en-US' }, 'transactions');
+
+        element.mount(document.createElement('div'));
+
+        await core.update({ locale: 'de-DE' });
+
+        await vi.waitFor(() => {
+            expect(vi.mocked(createI18n).mock.results[0]?.value.global.locale.value).toBe('de-DE');
+        });
     });
 });

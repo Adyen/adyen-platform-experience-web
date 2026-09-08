@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@adyen/bento-vue3':
-      specifier: 1.107.0
-      version: 1.107.0
+      specifier: 1.106.1-rc.1
+      version: 1.106.1-rc.1
     '@adyen/ui-assets-icons-16':
       specifier: 7.9.3
       version: 7.9.3
@@ -291,7 +291,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 1.106.1-rc.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/kyc-components':
         specifier: '>=4.0.0-compact.9 <4.0.0'
         version: 4.0.0-compact.9(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))
@@ -349,7 +349,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 1.106.1-rc.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -398,7 +398,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 1.106.1-rc.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -456,7 +456,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 1.106.1-rc.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -508,7 +508,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 1.106.1-rc.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -551,7 +551,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 1.106.1-rc.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -624,7 +624,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 1.106.1-rc.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -650,6 +650,9 @@ importers:
 
   packages/shared/core:
     dependencies:
+      '@adyen/bento-vue3':
+        specifier: 'catalog:'
+        version: 1.106.1-rc.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@integration-components/assets':
         specifier: workspace:*
         version: link:../assets
@@ -779,13 +782,13 @@ packages:
   '@adyen/adyen-document-viewer@1.4.2':
     resolution: {}
 
-  '@adyen/bento-design-tokens@1.107.0':
+  '@adyen/bento-design-tokens@1.106.1-rc.1':
     resolution: {}
 
   '@adyen/bento-design-tokens@1.43.0':
     resolution: {}
 
-  '@adyen/bento-vue3@1.107.0':
+  '@adyen/bento-vue3@1.106.1-rc.1':
     resolution: {}
     peerDependencies:
       vue: ^3.2.47
@@ -1382,10 +1385,6 @@ packages:
     engines: {node: '>=6.9.0'}
 
   '@babel/traverse@7.29.0':
-    resolution: {}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/types@7.28.5':
     resolution: {}
     engines: {node: '>=6.9.0'}
 
@@ -6140,13 +6139,13 @@ snapshots:
     optionalDependencies:
       '@rollup/rollup-darwin-x64': 4.59.0
 
-  '@adyen/bento-design-tokens@1.107.0': {}
+  '@adyen/bento-design-tokens@1.106.1-rc.1': {}
 
   '@adyen/bento-design-tokens@1.43.0': {}
 
-  '@adyen/bento-vue3@1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)':
+  '@adyen/bento-vue3@1.106.1-rc.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)':
     dependencies:
-      '@adyen/bento-design-tokens': 1.107.0
+      '@adyen/bento-design-tokens': 1.106.1-rc.1
       '@floating-ui/core': 1.6.8
       '@floating-ui/vue': 1.0.7(vue@3.5.31(typescript@5.8.3))
       '@types/mdast': 3.0.15
@@ -6272,7 +6271,7 @@ snapshots:
 
   '@babel/helper-annotate-as-pure@7.27.3':
     dependencies:
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.7
 
   '@babel/helper-compilation-targets@7.28.6':
     dependencies:
@@ -6958,11 +6957,6 @@ snapshots:
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
-
-  '@babel/types@7.28.5':
-    dependencies:
-      '@babel/helper-string-parser': 7.27.1
-      '@babel/helper-validator-identifier': 7.28.5
 
   '@babel/types@7.29.0':
     dependencies:
