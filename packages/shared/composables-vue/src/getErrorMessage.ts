@@ -1,4 +1,4 @@
-import { getDomainTranslationKey, type DomainTranslationKey, type TranslationDomain } from '@integration-components/core/vue';
+import { getDomainTranslationKey, type DomainTranslationKey, type TranslationDomain } from '@integration-components/core/translations';
 
 export type ErrorWithCode = Error & { errorCode?: string; requestId?: string };
 

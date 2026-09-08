@@ -3,13 +3,14 @@
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createApp, type Component, type VNode } from 'vue';
+import { createI18n } from 'vue-i18n';
 import { UIElement } from './UIElement';
 import type { CoreOptions } from './types';
 import deDE from '../../../../sdk/translations/de-DE.json' with { type: 'json' };
+import { SDK_BENTO_TRANSLATION_SOURCES, SDK_TRANSLATION_SOURCES } from '../../../../sdk/src/translations';
 import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
 import type { DomainTranslationBinding } from './Context/types';
 import Localization from '../Localization';
-import { SDK_TRANSLATION_SOURCES } from '../../../../sdk/src/translations';
 import Core from '../Core';
 import type { ExternalComponentType } from '@integration-components/types';
 
@@ -23,11 +24,32 @@ vi.mock('vue', async () => {
 });
 
 vi.mock('vue-i18n', () => ({
-    createI18n: vi.fn(() => ({ global: { locale: { value: 'en-US' } } })),
+    createI18n: vi.fn(() => ({ global: { locale: { value: 'en-US' }, setLocaleMessage: vi.fn() } })),
 }));
 
 const getComponentSubtree = (view: VNode) => (view.children as { default: () => VNode }).default();
 const createLocalization = (locale = 'en-US') => new Localization(locale, '', SDK_TRANSLATION_SOURCES);
+const createBentoLocalization = (locale = 'en-US') => new Localization(locale, '', SDK_BENTO_TRANSLATION_SOURCES);
+
+// A Core-like fixture whose domain translations lack the component-specific keys routed by BENTO_COMPONENT_DOMAIN_OVERRIDES,
+// so applying Bento domain overrides during the background translation sync throws.
+const createCoreWithMissingDomainTranslation = (options: Record<string, unknown>) => ({
+    options,
+    localization: {
+        ready: Promise.resolve(),
+        locale: 'en-US',
+        i18n: { getTranslationFamily: () => ({ base: null, zero: null, one: null, plural: null, unsupportedExactCounts: [] }) },
+    },
+    bentoLocalization: {
+        ready: Promise.resolve(),
+        locale: 'en-US',
+        has: () => false,
+        getTemplate: () => null,
+    },
+    registerComponent: vi.fn(),
+    remove: vi.fn(),
+    update: vi.fn(),
+});
 
 describe('UIElement', () => {
     const app = {
@@ -54,6 +76,7 @@ describe('UIElement', () => {
         const core = {
             options: { locale: 'en-US' },
             localization: createLocalization(),
+            bentoLocalization: createBentoLocalization(),
             registerComponent: vi.fn(),
             remove: vi.fn(),
             update: vi.fn(),
@@ -83,6 +106,7 @@ describe('UIElement', () => {
         const core = {
             options: { locale: 'en-US' },
             localization: createLocalization(),
+            bentoLocalization: createBentoLocalization(),
             registerComponent: vi.fn(),
             remove: vi.fn(),
             update: vi.fn(),
@@ -118,6 +142,7 @@ describe('UIElement', () => {
         const core = {
             options: { locale: 'en-US' },
             localization: createLocalization(),
+            bentoLocalization: createBentoLocalization(),
             registerComponent: vi.fn(),
             remove: vi.fn(),
             update: vi.fn(),
@@ -149,6 +174,7 @@ describe('UIElement', () => {
         const core = {
             options: { locale: 'en-US' },
             localization: createLocalization(),
+            bentoLocalization: createBentoLocalization(),
             registerComponent: vi.fn(),
             remove: vi.fn(),
             update: vi.fn(),
@@ -202,6 +228,7 @@ describe('UIElement', () => {
         const core = {
             options: { locale: 'en-US' },
             localization: createLocalization(),
+            bentoLocalization: createBentoLocalization(),
             registerComponent: vi.fn(),
             registerThemeRoot: vi.fn(),
             unregisterThemeRoot: vi.fn(),
@@ -222,6 +249,7 @@ describe('UIElement', () => {
         const core = {
             options: { locale: 'en-US' },
             localization: createLocalization(),
+            bentoLocalization: createBentoLocalization(),
             registerComponent: vi.fn(),
             registerThemeRoot: vi.fn(() => {
                 throw ownershipError;
@@ -241,6 +269,7 @@ describe('UIElement', () => {
         const core = {
             options: { locale: 'en-US' },
             localization: createLocalization(),
+            bentoLocalization: createBentoLocalization(),
             registerComponent: vi.fn(),
             registerThemeRoot: vi.fn(),
             unregisterThemeRoot: vi.fn(),
@@ -262,6 +291,7 @@ describe('UIElement', () => {
         const core = {
             options: { locale: 'en-US' },
             localization: createLocalization(),
+            bentoLocalization: createBentoLocalization(),
             registerComponent: vi.fn(),
             remove: vi.fn(),
             update: vi.fn(),
@@ -282,6 +312,7 @@ describe('UIElement', () => {
         const core = {
             options: { locale: 'en-US' },
             localization: createLocalization(),
+            bentoLocalization: createBentoLocalization(),
             registerComponent: vi.fn(),
             remove: vi.fn(),
             update: vi.fn(),
@@ -290,5 +321,78 @@ describe('UIElement', () => {
 
         expect(() => element.mount(document.createElement('div'))).toThrow(/No translation domain is registered/);
         expect(app.mount).not.toHaveBeenCalled();
+    });
+
+    test('updates the Bento Vue I18n locale after its locale messages load', async () => {
+        const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core, locale: 'en-US' }, 'transactions');
+
+        element.mount(document.createElement('div'));
+
+        await core.update({ locale: 'de-DE' });
+
+        await vi.waitFor(() => {
+            expect(vi.mocked(createI18n).mock.results[0]?.value.global.locale.value).toBe('de-DE');
+        });
+    });
+
+    test('reports translation sync failures through the Core error handler instead of an unhandled rejection', async () => {
+        const onError = vi.fn();
+        const core = createCoreWithMissingDomainTranslation({ locale: 'en-US', onError });
+
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core }, 'transactions');
+
+        element.mount(document.createElement('div'));
+
+        await vi.waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
+        expect(onError).toHaveBeenCalledWith(
+            expect.objectContaining({ message: expect.stringContaining('[Bento translations] Missing component-specific domain translation') })
+        );
+    });
+
+    test('logs translation sync failures when no Core error handler is configured', async () => {
+        const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const core = createCoreWithMissingDomainTranslation({ locale: 'en-US' });
+
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core }, 'transactions');
+
+        try {
+            element.mount(document.createElement('div'));
+
+            await vi.waitFor(() => expect(consoleError).toHaveBeenCalledTimes(1));
+            expect(consoleError).toHaveBeenCalledWith(
+                expect.objectContaining({ message: expect.stringContaining('[Bento translations] Missing component-specific domain translation') })
+            );
+        } finally {
+            consoleError.mockRestore();
+        }
+    });
+
+    test('logs both the handler error and the original error when the Core error handler itself throws', async () => {
+        const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const onError = vi.fn(() => {
+            throw new Error('handler bug');
+        });
+        const core = createCoreWithMissingDomainTranslation({ locale: 'en-US', onError });
+
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core }, 'transactions');
+
+        try {
+            element.mount(document.createElement('div'));
+
+            await vi.waitFor(() => expect(consoleError).toHaveBeenCalledTimes(2));
+            expect(onError).toHaveBeenCalledTimes(1);
+            expect(consoleError).toHaveBeenNthCalledWith(1, expect.objectContaining({ message: 'handler bug' }));
+            expect(consoleError).toHaveBeenNthCalledWith(
+                2,
+                expect.objectContaining({ message: expect.stringContaining('[Bento translations] Missing component-specific domain translation') })
+            );
+        } finally {
+            consoleError.mockRestore();
+        }
     });
 });

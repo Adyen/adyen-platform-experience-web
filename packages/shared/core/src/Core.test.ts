@@ -27,6 +27,7 @@ describe('Core', () => {
         await core.initialize();
 
         expect(core.i18n.get('transactions.common.errors.updateFilters')).toBe('Try a different search or reset your filters, and we’ll try again.');
+        expect(core.bentoLocalization.getTemplate('bento.alert.close')).toBe('Close');
     });
 
     it('should warn once when initialized server-side in development mode', async () => {

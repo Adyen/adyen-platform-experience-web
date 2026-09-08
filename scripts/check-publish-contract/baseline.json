@@ -58,8 +58,8 @@
         "subscribeToSession",
         "waitForI18n"
     ],
-    "esFileCount": 1193,
-    "cssHash": "d31797aa6c51b288b198b6a1ce1a0b4b4a3752260a69168d594959ed75c2b40f",
+    "esFileCount": 1205,
+    "cssHash": "55d04045893682a8dab9183e5b51bc98a3ccea829c5121c7660a8991a7b67e34",
     "typeFiles": [
         "packages/domains/capital/domain/src/CapitalOffer/constants.d.ts",
         "packages/domains/capital/domain/src/CapitalOffer/index.d.ts",
@@ -272,6 +272,8 @@
         "packages/shared/core/src/vue/Context/types.d.ts",
         "packages/shared/core/src/vue/Context/useCoreContext.d.ts",
         "packages/shared/core/src/vue/UIElement.d.ts",
+        "packages/shared/core/src/vue/bentoTranslationTemplate.d.ts",
+        "packages/shared/core/src/vue/bentoTranslations.d.ts",
         "packages/shared/core/src/vue/index.d.ts",
         "packages/shared/core/src/vue/types.d.ts",
         "packages/shared/lib/src/index.d.ts",
@@ -397,7 +399,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "d96f7a37e4c284f50b691810b8c002a3e98c26d3d7d49e464c588e16f89d4c59",
+    "typeTreeHash": "f58b8174ced12e1ef16dc3212562deb47a1e5e43515e911a1101204e6118c678",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",
