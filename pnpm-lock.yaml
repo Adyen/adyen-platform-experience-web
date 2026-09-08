@@ -658,6 +658,9 @@ importers:
       '@adyen/bento-design-tokens':
         specifier: 2.1.1
         version: 2.1.1
+      '@adyen/bento-vue3':
+        specifier: 'catalog:'
+        version: 2.1.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@integration-components/assets':
         specifier: workspace:*
         version: link:../assets

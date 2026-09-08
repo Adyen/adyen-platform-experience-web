@@ -1,5 +1,8 @@
 {
-  "translationSourcePaths": ["packages/sdk/translations/en-US.json"],
+  "translationSourcePaths": [
+    "packages/sdk/translations/bento/en-US.json",
+    "packages/sdk/translations/en-US.json"
+  ],
   "locales": [
     "da-DK",
     "de-DE",
