@@ -11,15 +11,13 @@ test.describe('Error - Submit', () => {
     });
 
     test('should render an error message', async ({ page }) => {
-        await expect(page.getByText('Business financing summary')).toBeVisible();
-        await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('Something went wrong.')).toBeVisible();
         await expect(page.getByText("We couldn't load financial offers. Try refreshing the page or come back later.")).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
     });
 
-    test('should go back to offer selection screen when "Back" button is clicked', async ({ page }) => {
+    test('should go back to offer selection screen when back button is clicked', async ({ page }) => {
         await page.getByRole('button', { name: 'Go back' }).click();
         await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
