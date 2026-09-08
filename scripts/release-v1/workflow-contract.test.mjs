@@ -117,6 +117,14 @@ test('V1 GitHub releases cannot become the latest repository release', () => {
     assert.match(releaseCreation, /--latest=false/);
 });
 
+test('V1 GitHub releases expose exactly one deployable CDN archive', () => {
+    const workflow = readRepositoryFile('.github/workflows/release-v1.yml');
+    const immutableArtifactUpload = workflow.match(/- name: Upload immutable release artifacts[\s\S]*?retention-days: 7/)?.[0] ?? '';
+    const deployableArchives = [...immutableArtifactUpload.matchAll(/^\s+(platform-components.*\.tar\.gz)\s*$/gm)].map(([, name]) => name);
+
+    assert.deepEqual(deployableArchives, ['platform-components_cdn_${{ steps.release.outputs.version }}.tar.gz']);
+});
+
 test('V1 and mainline npm publishes use one trusted top-level workflow', () => {
     const trustedPublisher = readRepositoryFile('.github/workflows/tag-and-release.yml');
     const v1Release = readRepositoryFile('.github/workflows/release-v1.yml');

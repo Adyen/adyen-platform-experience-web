@@ -74,10 +74,10 @@ jobs:
                   mkdir release-artifacts
                   gh release download "v${VERSION}" \
                     --repo "${{ github.repository }}" \
-                    --pattern "platform-components-v1_cdn_${VERSION}.tar.gz" \
+                    --pattern "v1-rollback-assets_${VERSION}.tar.gz" \
                     --pattern SHA256SUMS \
                     --dir release-artifacts
-                  grep "platform-components-v1_cdn_${VERSION}.tar.gz" release-artifacts/SHA256SUMS \
+                  grep "v1-rollback-assets_${VERSION}.tar.gz" release-artifacts/SHA256SUMS \
                     | (cd release-artifacts && shasum -a 256 -c -)
 
             - name: Restore V1 CDN asset
@@ -120,7 +120,7 @@ jobs:
                   }
                   trap restore ERR
 
-                  cp "release-artifacts/platform-components-v1_cdn_${VERSION}.tar.gz" \
+                  cp "release-artifacts/v1-rollback-assets_${VERSION}.tar.gz" \
                     "release-artifacts/${ASSET_NAME}"
                   gh release upload "$CDN_TAG" "release-artifacts/${ASSET_NAME}" \
                     --repo "${{ github.repository }}" \
