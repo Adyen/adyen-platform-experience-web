@@ -18,7 +18,6 @@ import type { StoreData, PaymentLinksOverviewModalType } from '../../../../domai
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../../../../domain/src';
 import type { PaymentLinksOverviewExternalProps } from '../types';
 import { createPaymentLinksError } from '../utils/error';
-import { listFrom } from '@integration-components/utils';
 import styles from './PaymentLinksOverview.module.scss';
 
 const props = defineProps<{
@@ -86,7 +85,7 @@ function onFiltersChange(value: PaymentLinksFiltersValue) {
 }
 
 const hasMultipleStores = computed(() => !!props.stores && props.stores.length > 1);
-const fetchEnabled = computed(() => !!props.allStores?.length);
+const fetchEnabled = computed(() => !!props.stores?.length);
 
 const paymentLinksListResult = usePaymentLinksList(() => ({
     fetchEnabled: fetchEnabled.value && !statusGroupFetchPending.value,
@@ -103,7 +102,6 @@ const paymentLinksListResult = usePaymentLinksList(() => ({
     preferredLimit: props.preferredLimit,
     onFiltersChanged: props.onFiltersChanged,
     lastRefreshTimestamp: lastRefreshTimestamp.value,
-    _storeIds: String(listFrom(props.storeIds) ?? ''),
 }));
 
 const showFiltersAlert = computed(() => !!props.storeError || !!props.filterOptionsError);

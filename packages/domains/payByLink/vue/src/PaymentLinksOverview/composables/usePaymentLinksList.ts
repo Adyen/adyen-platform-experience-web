@@ -23,10 +23,17 @@ interface UsePaymentLinksListProps {
     preferredLimit?: number;
     onFiltersChanged?: PaymentLinksOverviewExternalProps['onFiltersChanged'];
     lastRefreshTimestamp: number;
-    _storeIds: string;
 }
 
 const compareStrings = (first: string, second: string) => first.localeCompare(second);
+
+const getEffectiveStoreIds = (filterStoreIds: string[], propStoreIds?: StoreIds) => {
+    if (propStoreIds === undefined) return filterStoreIds;
+
+    const scopedStoreIds = listFrom(propStoreIds);
+    const selectedStoreIds = filterStoreIds.filter(storeId => scopedStoreIds.includes(storeId));
+    return selectedStoreIds.length ? selectedStoreIds : scopedStoreIds;
+};
 
 export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
     const config = useConfigContext();
@@ -81,20 +88,18 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
                 createdSince,
                 createdUntil,
                 lastRefreshTimestamp,
-                _storeIds,
             } = props();
 
             return JSON.stringify({
                 statusGroup,
                 statuses: [...statuses].sort(compareStrings),
                 linkTypes: [...linkTypes].sort(compareStrings),
-                storeIds: (filterStoreIds.length ? filterStoreIds : (listFrom(propStoreIds) ?? [])).slice().sort(compareStrings),
+                storeIds: (getEffectiveStoreIds(filterStoreIds, propStoreIds) ?? []).slice().sort(compareStrings),
                 merchantReference,
                 paymentLinkId,
                 createdSince,
                 createdUntil,
                 lastRefreshTimestamp,
-                _storeIds,
             });
         },
         fetchPage: async ({ cursor, limit, signal }) => {
@@ -103,7 +108,7 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
 
             const { statusGroup, statuses, linkTypes, filterStoreIds, propStoreIds, merchantReference, paymentLinkId, createdSince, createdUntil } =
                 props();
-            const effectiveStoreIds = filterStoreIds.length ? filterStoreIds : listFrom(propStoreIds);
+            const effectiveStoreIds = getEffectiveStoreIds(filterStoreIds, propStoreIds);
 
             const query: NonNullable<Parameters<NonNullable<typeof config.endpoints.getPaymentLinks>>[1]>['query'] = {
                 limit,

@@ -57,6 +57,19 @@ const { selectedValues: selectedLinkTypes, setSelectedValues: setSelectedLinkTyp
 const selectedMerchantReference = ref<string | undefined>(undefined);
 const selectedPaymentLinkId = ref<string | undefined>(undefined);
 
+watch(
+    () => props.stores?.flatMap(store => (store.id ? [store.id] : [])),
+    storeIds => {
+        if (!storeIds) return;
+
+        const availableStoreIds = new Set(storeIds);
+        const validSelectedStoreIds = storeIds.length > 1 ? selectedStoreIds.value.filter(storeId => availableStoreIds.has(storeId)) : [];
+        if (validSelectedStoreIds.length !== selectedStoreIds.value.length) {
+            setSelectedStoreIds(validSelectedStoreIds);
+        }
+    }
+);
+
 // Reset the status filter selection whenever the active status group tab changes,
 // mirroring the Preact behavior of dropping the stale status selection on tab switch.
 watch(

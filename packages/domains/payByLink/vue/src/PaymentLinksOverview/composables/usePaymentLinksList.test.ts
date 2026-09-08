@@ -12,7 +12,7 @@ vi.mock('@integration-components/core/vue', () => ({
     }),
 }));
 
-test('resets pagination when external store IDs change with a store filter applied', async () => {
+test('uses the updated external store IDs and resets pagination when the selected store is no longer available', async () => {
     getPaymentLinks.mockReset();
     getPaymentLinks.mockResolvedValue({
         data: [],
@@ -27,8 +27,7 @@ test('resets pagination when external store IDs change with a store filter appli
         statuses: [],
         linkTypes: [],
         filterStoreIds: ['STORE_NY_001'],
-        propStoreIds: ['STORE_NY_001'],
-        _storeIds: 'STORE_NY_001',
+        propStoreIds: ['STORE_NY_001', 'STORE_LON_001'],
         createdSince: '2024-01-01T00:00:00.000Z',
         createdUntil: '2024-01-31T23:59:59.999Z',
         lastRefreshTimestamp: 0,
@@ -38,13 +37,13 @@ test('resets pagination when external store IDs change with a store filter appli
 
     await vi.waitFor(() => expect(getPaymentLinks).toHaveBeenCalledTimes(1));
     await vi.waitFor(() => expect(paymentLinks.hasNext.value).toBe(true));
+    expect(getPaymentLinks.mock.calls[0]?.[1]?.query?.storeIds).toEqual(['STORE_NY_001']);
 
     paymentLinks.goToNextPage();
     await vi.waitFor(() => expect(getPaymentLinks).toHaveBeenCalledTimes(2));
 
     props.value = {
         ...props.value,
-        _storeIds: 'STORE_LON_001',
         propStoreIds: ['STORE_LON_001'],
     };
 
@@ -54,7 +53,7 @@ test('resets pagination when external store IDs change with a store filter appli
         expect.anything(),
         expect.objectContaining({
             query: expect.objectContaining({
-                storeIds: ['STORE_NY_001'],
+                storeIds: ['STORE_LON_001'],
             }),
         })
     );
@@ -84,7 +83,6 @@ test('does not report filter changes when paginating', async () => {
             createdSince: '2024-01-01T00:00:00.000Z',
             createdUntil: '2024-01-31T23:59:59.999Z',
             lastRefreshTimestamp: 0,
-            _storeIds: '',
             onFiltersChanged,
         }))
     )!;
@@ -118,7 +116,6 @@ test('reports filter changes even when the request fails', async () => {
             createdSince: '2024-01-01T00:00:00.000Z',
             createdUntil: '2024-01-31T23:59:59.999Z',
             lastRefreshTimestamp: 0,
-            _storeIds: '',
             onFiltersChanged,
         }))
     );
