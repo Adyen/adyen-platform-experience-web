@@ -189,6 +189,61 @@ describe('Localization', () => {
         });
     });
 
+    describe('getTranslationFamily', () => {
+        test('indexes exact counts and refreshes the index when the locale changes', async () => {
+            const localization = new Localization('de-DE', undefined, '', '', {
+                defaultTranslations: {
+                    items: 'Items',
+                    items__0: 'No items',
+                    items__1: 'One item',
+                    items__plural: '%{count} items',
+                },
+                localeTranslations: {
+                    'de-DE': Promise.resolve({
+                        items__2: 'Zwei Artikel',
+                        items__3: 'Drei Artikel',
+                        items__other: 'Other items',
+                    }),
+                    'en-US': Promise.resolve({}),
+                },
+            });
+
+            await localization.ready;
+
+            const germanFamily = localization.getTranslationFamily('items');
+
+            expect(germanFamily).toEqual({
+                base: 'Items',
+                zero: 'No items',
+                one: 'One item',
+                plural: '%{count} items',
+                unsupportedExactCounts: [2, 3],
+            });
+
+            germanFamily.unsupportedExactCounts.push(99);
+            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([2, 3]);
+
+            localization.locale = 'en-US';
+            await localization.ready;
+
+            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([]);
+
+            localization.customTranslations = {
+                'en-US': {
+                    ['items__4' as TranslationKey]: 'Four items',
+                },
+            };
+            await localization.ready;
+
+            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([4]);
+
+            localization.customTranslations = undefined;
+            await localization.ready;
+
+            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([]);
+        });
+    });
+
     describe('SDK translation sources', () => {
         test('loads a V2 locale catalog and falls back to its English catalog', async () => {
             const localization = new Localization('de-DE', undefined, '', '', {

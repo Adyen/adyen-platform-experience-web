@@ -24,6 +24,14 @@ export type LocalizationSources = Readonly<{
     localeTranslations: Readonly<Record<string, Promise<Record<string, string>> | (() => Promise<Record<string, string>>)>>;
 }>;
 
+export type TranslationFamily = Readonly<{
+    base: string | null;
+    zero: string | null;
+    one: string | null;
+    plural: string | null;
+    unsupportedExactCounts: number[];
+}>;
+
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;
     #languageCode: string = toTwoLetterCode(this.#locale);
@@ -33,6 +41,7 @@ export default class Localization {
     #customTranslations?: CustomTranslations;
     #translations: Record<string, string> = DEFAULT_TRANSLATIONS as Record<string, string>;
     #defaultTranslations: Record<string, string>;
+    #translationFamilyExactCounts = new Map<string, readonly number[]>();
     #translationsLoader = createTranslationsLoader.call(this);
     readonly #fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>;
 
@@ -58,6 +67,7 @@ export default class Localization {
         this.watch(noop);
         this.#defaultTranslations = sources?.defaultTranslations ?? (DEFAULT_TRANSLATIONS as Record<string, string>);
         this.#translations = this.#defaultTranslations;
+        this.#translationFamilyExactCounts = this.#getTranslationFamilyExactCounts(this.#translations);
 
         this.#fetchTranslationFromCdnPromise = (locale: string) =>
             sources
@@ -191,6 +201,7 @@ export default class Localization {
                 customTranslations,
                 this.#defaultTranslations
             );
+            this.#translationFamilyExactCounts = this.#getTranslationFamilyExactCounts(this.#translations);
             this.#locale = this.#translationsLoader.locale;
             this.#supportedLocales = Object.freeze(this.#translationsLoader.supportedLocales);
             this.#customTranslations = customTranslations;
@@ -204,6 +215,29 @@ export default class Localization {
             // throw reason;
             console.error(reason);
         });
+    }
+
+    #getTranslationFamilyExactCounts(translations: Record<string, string>): Map<string, readonly number[]> {
+        const exactCounts = new Map<string, number[]>();
+
+        for (const translationKey of Object.keys(translations)) {
+            const separatorIndex = translationKey.lastIndexOf('__');
+            if (separatorIndex < 0) continue;
+
+            const count = Number(translationKey.slice(separatorIndex + 2));
+            if (!Number.isInteger(count) || count <= 1) continue;
+
+            const key = translationKey.slice(0, separatorIndex);
+            const counts = exactCounts.get(key);
+
+            if (counts) {
+                counts.push(count);
+            } else {
+                exactCounts.set(key, [count]);
+            }
+        }
+
+        return exactCounts;
     }
 
     /**
@@ -267,6 +301,30 @@ export default class Localization {
         // Get translation normally (this includes custom translations with new key + default translations)
         const translation = getTranslation(this.#translations, key, options);
         return isNull(translation) ? key : translation;
+    }
+
+    /**
+     * Returns the untranslated template for a key in the current locale.
+     * This is intended for consumers that need to compile the SDK placeholder
+     * syntax for another localization runtime.
+     */
+    getTemplate(key: string): string | null {
+        return this.#translations[key] ?? null;
+    }
+
+    /**
+     * Returns the raw count-based templates for a key in the current locale.
+     * Bento can represent the zero, one, and greater-than-one forms, but not
+     * arbitrary exact counts above one.
+     */
+    getTranslationFamily(key: string): TranslationFamily {
+        return {
+            base: this.getTemplate(key),
+            zero: this.getTemplate(`${key}__0`),
+            one: this.getTemplate(`${key}__1`),
+            plural: this.getTemplate(`${key}__plural`),
+            unsupportedExactCounts: [...(this.#translationFamilyExactCounts.get(key) ?? [])],
+        };
     }
 
     /**

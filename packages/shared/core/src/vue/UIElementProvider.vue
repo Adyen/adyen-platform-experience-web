@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { inject, provide, ref } from 'vue';
+import { useBentoTranslationOverrides } from '@adyen/bento-vue3';
 import type { CoreInstance } from './types';
 import CoreProvider from './Context/CoreProvider.vue';
 import ConfigProvider from './ConfigContext/ConfigProvider.vue';
@@ -10,6 +11,7 @@ import './UIElement.scss';
 
 interface Props {
     core: CoreInstance;
+    bentoOverrides: Record<string, string>;
     componentName: ExternalComponentType;
     customClassNames?: string;
     refreshComponent: () => void;
@@ -22,6 +24,7 @@ const domainTranslations = inject(DOMAIN_TRANSLATION_BINDING_KEY);
 if (!domainTranslations) throw new Error('[UIElementProvider] Domain translations must be configured before mounting.');
 
 provide(COMPONENT_REF_KEY, componentRef);
+useBentoTranslationOverrides(props.bentoOverrides);
 </script>
 
 <template>

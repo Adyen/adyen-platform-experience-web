@@ -2,7 +2,7 @@ import type { Locator, Page } from '@playwright/test';
 import type { DatePickerOptions, DateStruct, TodayRangeOptions } from './AbstractDatePicker';
 import AbstractDatePicker from './AbstractDatePicker';
 
-const defaultPresetButtonLocatorOptions = { name: 'Custom range', exact: true, disabled: false };
+const defaultPresetButtonLocatorOptions = { name: 'Custom', exact: true, disabled: false };
 
 export default class BentoDatePicker extends AbstractDatePicker {
     constructor(scope: Page | Locator, options: Omit<DatePickerOptions, 'dynamicCustomPreset'>) {
@@ -17,9 +17,9 @@ export default class BentoDatePicker extends AbstractDatePicker {
         this._presetButton = this._dialog.getByRole('combobox', defaultPresetButtonLocatorOptions);
         this._presetButtonCollapsed = this._dialog.getByRole('combobox', { ...defaultPresetButtonLocatorOptions, expanded: false });
         this._presetButtonExpanded = this._dialog.getByRole('combobox', { ...defaultPresetButtonLocatorOptions, expanded: true });
-        this._presetDialog = this._dialog.getByRole('listbox', { name: 'Custom range', exact: true });
+        this._presetDialog = this._dialog.getByRole('listbox', { name: 'Custom', exact: true });
 
-        this._presetCustom = this._presetDialog.getByRole('option', { name: /^Custom range/, disabled: false });
+        this._presetCustom = this._presetDialog.getByRole('option', { name: /^Custom/, disabled: false });
         this._presetSelected = this._presetDialog.getByRole('option', { disabled: false, selected: true });
         this._presetUnselected = this._presetDialog.getByRole('option', { disabled: false, selected: false });
     }

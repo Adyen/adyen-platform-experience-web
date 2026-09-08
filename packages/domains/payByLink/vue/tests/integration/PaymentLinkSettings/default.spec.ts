@@ -9,6 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const fullSizeIcon = path.resolve(__dirname, '../../../../fixtures/files/theme-logo.jpg');
 const fullWidthIcon = path.resolve(__dirname, '../../../../fixtures/files/theme-logo-full-width.jpg');
+const invalidDimensionsMessage = 'File dimensions not met with the requirements';
 
 test.describe('Default', () => {
     test.beforeEach(async ({ page }) => {
@@ -64,7 +65,7 @@ test.describe('Default', () => {
         const fullSizeUpload = page.locator('input[type="file"]').first();
         await fullSizeUpload.setInputFiles(fullWidthIcon);
 
-        const fullSizeValidationDimensionError = page.getByText('Image dimensions exceed limits');
+        const fullSizeValidationDimensionError = page.getByText(invalidDimensionsMessage);
         await expect(fullSizeValidationDimensionError).toBeVisible();
         const fullSizeValidationMaxImageError = page.getByText('Max image dimensions: 200 × 200px');
         await expect(fullSizeValidationMaxImageError).toBeVisible();
@@ -73,7 +74,7 @@ test.describe('Default', () => {
 
         const fullWidthUpload = page.locator('input[type="file"]').nth(1);
         await fullWidthUpload.setInputFiles(fullSizeIcon);
-        const fullWidthValidationError = page.getByText('Image dimensions exceed limits');
+        const fullWidthValidationError = page.getByText(invalidDimensionsMessage);
         await expect(fullWidthValidationError).toBeVisible();
         const fullWidthMaxImageError = page.getByText('Max image dimensions: 300 × 30px');
         await expect(fullWidthMaxImageError).toBeVisible();

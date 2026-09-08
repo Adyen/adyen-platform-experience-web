@@ -22,13 +22,15 @@ describe('localization config', async () => {
     const configDirectory = path.dirname(i18nConfigPath);
 
     it('should have the correct translation source paths', () => {
-        const translationSourceFiles = ['packages/shared/assets/src/translations/en-US.json', 'packages/sdk/translations/en-US.json'].map(
-            sourcePath => {
-                const sourceFile = path.resolve(configDirectory, sourcePath);
-                const relativeTranslationsDir = path.relative(path.dirname(i18nConfigPath), path.dirname(sourceFile));
-                return `${relativeTranslationsDir}/${englishLocale}.json`;
-            }
-        );
+        const translationSourceFiles = [
+            'packages/shared/assets/src/translations/en-US.json',
+            'packages/sdk/translations/bento/en-US.json',
+            'packages/sdk/translations/en-US.json',
+        ].map(sourcePath => {
+            const sourceFile = path.resolve(configDirectory, sourcePath);
+            const relativeTranslationsDir = path.relative(path.dirname(i18nConfigPath), path.dirname(sourceFile));
+            return `${relativeTranslationsDir}/${englishLocale}.json`;
+        });
 
         expect([...i18n.translationSourcePaths].sort()).toStrictEqual(translationSourceFiles.sort());
     });

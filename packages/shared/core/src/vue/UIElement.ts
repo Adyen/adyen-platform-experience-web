@@ -6,8 +6,9 @@ import UIElementProvider from './UIElementProvider.vue';
 import Localization from '../Localization';
 import type { CustomTranslations } from '../translations';
 import type { DomainTranslationBinding, V2TranslationDomain } from './Context/types';
+import { applyBentoDomainOverrides, getBentoLocaleMessages } from './bentoTranslations';
 import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
-import { SDK_TRANSLATION_SOURCES } from '../../../../sdk/src/translations';
+import { SDK_BENTO_TRANSLATION_SOURCES, SDK_TRANSLATION_SOURCES } from '../../../../sdk/src/translations';
 
 const getTranslationDomain = (componentName: ExternalComponentType): V2TranslationDomain => {
     switch (componentName) {
@@ -64,6 +65,8 @@ export class UIElement<Props extends Record<string, any>> {
     protected _props: Omit<Props, 'core'>;
     protected _target: Element | null = null;
     protected _localization: Localization | null = null;
+    protected _bentoLocalization: Localization | null = null;
+    protected _bentoOverrides: Record<string, string> | null = null;
     protected _customTranslations: CustomTranslations | undefined;
     protected _vueI18n: VueI18n<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>, string, false> | null = null;
     protected _translationDomain: V2TranslationDomain | null = null;
@@ -129,7 +132,13 @@ export class UIElement<Props extends Record<string, any>> {
         this._localization = localization;
         this._customTranslations = customTranslations;
 
+        const bentoLocalization = new Localization(core.options.locale, undefined, '', '', SDK_BENTO_TRANSLATION_SOURCES);
+        this._bentoLocalization = bentoLocalization;
+
+        const bentoOverrides = reactive<Record<string, string>>({});
         const translationDomain = getTranslationDomain(componentName);
+
+        this._bentoOverrides = bentoOverrides;
         this._translationDomain = translationDomain;
 
         const { refresh, refreshCount } = createRefreshContext();
@@ -141,6 +150,7 @@ export class UIElement<Props extends Record<string, any>> {
                     UIElementProvider,
                     {
                         core,
+                        bentoOverrides,
                         componentName,
                         customClassNames,
                         refreshComponent: refresh,
@@ -163,7 +173,7 @@ export class UIElement<Props extends Record<string, any>> {
             messages: { [locale]: {}, 'en-US': {} },
         });
 
-        void Promise.all([localization.ready]).then(() => {
+        void Promise.all([localization.ready, bentoLocalization.ready]).then(() => {
             this.#syncTranslations();
         });
 
@@ -177,7 +187,7 @@ export class UIElement<Props extends Record<string, any>> {
         const { core: _, ...componentProps } = props;
         Object.assign(this._props as Record<string, unknown>, componentProps);
 
-        if (!this._localization || !this._vueI18n) return this;
+        if (!this._localization || !this._bentoLocalization || !this._vueI18n) return this;
 
         const locale = this.core.options.locale;
         const customTranslations = this.core.options.translations as CustomTranslations;
@@ -185,12 +195,18 @@ export class UIElement<Props extends Record<string, any>> {
         const customTranslationsChanged = this._customTranslations !== customTranslations;
 
         if (localeChanged || customTranslationsChanged) {
-            if (localeChanged) this._localization.locale = locale;
-            if (customTranslationsChanged) this._localization.customTranslations = customTranslations;
+            if (localeChanged) {
+                this._localization.locale = locale;
+                this._bentoLocalization.locale = this.core.options.locale;
+            }
+
+            if (customTranslationsChanged) {
+                this._localization.customTranslations = customTranslations;
+            }
 
             this._customTranslations = customTranslations;
             this._vueI18n.global.locale.value = this._localization.locale;
-            void Promise.all([this._localization.ready]).then(() => this.#syncTranslations());
+            void Promise.all([this._localization.ready, this._bentoLocalization.ready]).then(() => this.#syncTranslations());
         }
 
         return this;
@@ -201,6 +217,8 @@ export class UIElement<Props extends Record<string, any>> {
         this._app = null;
         this._target = null;
         this._localization = null;
+        this._bentoLocalization = null;
+        this._bentoOverrides = null;
         this._customTranslations = undefined;
         this._vueI18n = null;
         this._translationDomain = null;
@@ -215,7 +233,16 @@ export class UIElement<Props extends Record<string, any>> {
     }
 
     #syncTranslations(): void {
-        if (!this._localization || !this._vueI18n || !this._translationDomain) return;
+        if (!this._localization || !this._bentoLocalization || !this._vueI18n || !this._bentoOverrides || !this._translationDomain) return;
+
+        const bentoTranslations = getBentoLocaleMessages(
+            key => this._bentoLocalization!.getTemplate(key),
+            key => this._bentoLocalization!.has(key)
+        );
+
+        this._vueI18n.global.locale.value = this._bentoLocalization.locale;
+        this._vueI18n.global.setLocaleMessage(this._bentoLocalization.locale, bentoTranslations);
+        applyBentoDomainOverrides(this._bentoOverrides, this._localization.i18n, bentoTranslations, this._translationDomain, this._componentName);
         this._refreshTranslations?.();
     }
 }

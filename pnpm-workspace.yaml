@@ -7,7 +7,7 @@ packages:
 # forces every resolution in the tree (including transitive deps like
 # @adyen/kyc-components that declare a different exact version) to converge.
 catalog:
-  '@adyen/bento-vue3': 1.107.0
+  '@adyen/bento-vue3': 1.106.1-rc.1
   '@adyen/ui-assets-icons-16': 7.9.3
   '@adyen/ui-assets-icons-40': 4.9.2
   "@playwright/test": ^1.61.0
