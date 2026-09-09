@@ -76,7 +76,9 @@
     "test:integration:vue": "pnpm run test:integration",
     "test:integration:ui": "pnpm run test:integration --ui",
     "test:release": "node --test scripts/release-v1/*.test.mjs scripts/npm-publish/*.test.mjs",
+    "translations:check": "node scripts/process-translations/sync-sdk-catalogs.mjs --check",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
+    "translations:sync": "node scripts/process-translations/sync-sdk-catalogs.mjs",
     "types:check": "nx run-many --target=types:check",
     "types:watch": "concurrently --kill-others-on-fail 'nx run-many --target=types:watch' 'tsc --project tsconfig-build.json --watch'",
     "version": "./scripts/bump-version.sh"
