@@ -1,77 +1,29 @@
-# src/core/ — Core Runtime
+# Core runtime
 
-## Package Identity
+## Package identity
 
-Core runtime powering all external components. Manages session authentication,
-configuration context, localization (i18n), analytics, and HTTP communication.
-
-## Directory Layout
-
-| Directory                | Purpose                                                             |
-| ------------------------ | ------------------------------------------------------------------- |
-| `ConfigContext/`         | Session provider, auth session management, endpoint resolution      |
-| `ConfigContext/session/` | `AuthSession` class — token refresh, session lifecycle              |
-| `Context/`               | Preact context providers: `CoreProvider`, `EventDispatcherProvider` |
-| `Localization/`          | i18n system: locale loading, translation resolution, formatting     |
-| `Analytics/`             | Analytics event tracking, user events, custom translation payloads  |
-| `Http/`                  | HTTP client utilities, error types, request handling                |
-| `Errors/`                | Error classes and error handling utilities                          |
-
-## Key Files
-
-- **`core.ts`** — `Core` class: main entry point, manages components, localization, session
-- **`types.ts`** — `CoreOptions`, `onErrorHandler`, core configuration types
-- **`utils.ts`** — Environment resolution (`resolveEnvironment`), CDN config helpers
-- **`constants.ts`** — Shared core constants
+`packages/shared/core/src` owns session authentication, configuration, localization, analytics, HTTP communication, assets, and component registration.
 
 ## Architecture
 
-### Core Class (`core.ts`)
+- `Core.ts` is the framework-neutral runtime source of truth.
+- `session/` owns token refresh and session lifecycle.
+- `Localization/` owns translations and formatting.
+- `vue/` owns the provider stack and imperative `UIElement` lifecycle.
 
-The `Core` class is instantiated by the `AdyenPlatformExperience()` factory in `src/index.ts`.
-It manages:
+Each public element extends `UIElement`, which mounts a Vue component through `UIElementProvider`. The provider installs core, configuration, and event-dispatcher state.
 
-- **Component registry**: `registerComponent()`, `remove()`, `update()`
-- **Localization**: `Localization` instance with i18n, locale, custom translations
-- **Session**: `AuthSession` for API authentication
-- **Assets**: CDN image/dataset/config resolution
+Use `useCoreContext()` and `useConfigContext()` from `@integration-components/core/vue` inside Vue components. Do not pass shared runtime state between sibling components manually.
 
-### Provider Stack
+## Session flow
 
-`UIElement.render()` wraps every external component in:
+1. The consumer supplies `onSessionCreate`.
+2. `AuthSession` manages the token lifecycle.
+3. `ConfigProvider` exposes the session and resolved endpoints.
+4. Domain components consume those typed endpoints through the Vue context.
 
-```
-ConfigProvider(session, type)
-  → CoreProvider(i18n, assets, errorHandler)
-    → EventDispatcherProvider(componentName)
-      → component content
-```
+## Common checks
 
-Access providers via hooks:
-
-- `useCoreContext()` — i18n, assets, loading context, error handler
-- `useConfigContext()` — session, endpoints, extra config
-
-### Session Flow
-
-1. Consumer calls `onSessionCreate` callback to get a session token
-2. `AuthSession` manages token lifecycle, refresh, and error handling
-3. `ConfigProvider` exposes session context + resolved API endpoints to components
-4. Endpoints are typed and consumer code accesses them through `useConfigContext().endpoints`
-
-See `src/types/api/endpoints.ts` for the typed endpoint list.
-
-## Common Gotchas
-
-- **Environment resolution**: `resolveEnvironment()` in `utils.ts` maps environment strings to API/CDN URLs
-- **Session errors**: Set `session.errorHandler` for external error reporting
-- **Loading context**: Override API base URL via `loadingContext` option or `VITE_APP_LOADING_CONTEXT` env var
-- **CDN vs local assets**: Controlled by `VITE_LOCAL_ASSETS` — in dev/test, assets load from local `/assets`
-
-## JIT Find Commands
-
-```bash
-rg -n "useCoreContext\|useConfigContext" src/                  # Context usage
-fd "AuthSession.ts" src/core/ConfigContext/session/            # Runtime session wrapper
-fd "SetupContext.ts" src/core/ConfigContext/session/           # Runtime endpoint resolution
-```
+- Preserve session error handling when changing request flow.
+- Resolve assets through Core rather than hardcoding CDN paths.
+- Keep framework-neutral behavior outside `src/vue`.

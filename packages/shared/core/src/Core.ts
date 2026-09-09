@@ -9,8 +9,7 @@ import type { CoreOptions, onErrorHandler, ResolvedEnvironment } from './types';
 import type { TranslationSourceRecord } from './translations';
 
 /**
- * Minimal contract that framework-specific element classes (Preact BaseElement,
- * Vue UIElement, ...) must satisfy so Core can manage them uniformly.
+ * Minimal contract that UI element classes must satisfy so Core can manage them uniformly.
  */
 export interface ManagedElement {
     readonly _id: string;
@@ -29,8 +28,7 @@ export const AVAILABLE_TRANSLATIONS_DEPRECATION_WARNING =
  * environment, session wiring, the shared `Localization` instance, asset getters, CDN
  * helpers, the component registry, and the generic `initialize()` / `update()` lifecycle.
  *
- * Framework-specific rendering / mounting / unmounting lives in the element classes
- * (Preact `BaseElement`, Vue `UIElement`, ...), not here.
+ * Rendering, mounting, and unmounting live in the Vue UIElement classes, not here.
  */
 
 export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends object = Record<never, never>> {

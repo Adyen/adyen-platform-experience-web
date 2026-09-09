@@ -5,7 +5,7 @@ import type { StoreData, StoreIds } from '../../../../domain/src';
 import { toError } from '../utils/error';
 
 /**
- * Vue composable counterpart of the Preact `useStores` hook. Fetches the merchant's Pay by Link
+ * Fetches the merchant's Pay by Link
  * stores once, then derives the `storeIds`-filtered subset alongside the unfiltered full list.
  */
 export function useStores(storeIds?: () => StoreIds | undefined) {

@@ -2,8 +2,8 @@
 
 ## Project Snapshot
 
-Single-package **Preact** component library (`@adyen/adyen-platform-experience-web`) published to npm.
-Stack: Preact + TypeScript (strict) + Vite + SCSS (BEM) + Storybook.
+Multi-package **Vue 3** component SDK (`@adyen/adyen-platform-experience-web`) published to npm.
+Stack: Vue 3 + TypeScript (strict) + Vite + SCSS (BEM) + Storybook.
 All agent documentation lives under `.agents/` — check the JIT Index below for the right file.
 
 ## Root Setup Commands
@@ -30,7 +30,7 @@ pnpm run format             # Prettier format src/
 - **Branches**: `bug/` prefix for fixes, `feature/` for new functionality
 - **PRs**: Fork → branch from `develop` → PR with description → all CI checks must pass
 - **a11y**: ESLint `jsx-a11y` rules enforced — ARIA attributes, keyboard nav, semantic HTML required
-- **Imports**: Preact only (`preact`, `preact/hooks`, `preact/compat`) — never import from `react`
+- **Imports**: Vue only (`vue` and `.vue` single-file components) — never import from React-family frameworks
 - **Data flow**: Data flows **down** via props; events flow **up** via callbacks. Shared runtime (i18n, loading context, CDN config) is accessed through `useCoreContext()`, never passed as props between siblings.
 
 ## Security & Secrets

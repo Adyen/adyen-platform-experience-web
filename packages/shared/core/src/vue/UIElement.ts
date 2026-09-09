@@ -11,8 +11,7 @@ export const createRefreshContext = () => {
 };
 
 /**
- * Base class that mirrors the Preact BaseElement/UIElement mount/update/unmount lifecycle
- * for Vue components. Consumers instantiate a subclass with a set of props, call mount(target)
+ * Base class for the Vue component mount/update/unmount lifecycle. Consumers instantiate a subclass with a set of props, call mount(target)
  * to render, update(props) to patch reactively, and unmount() to tear down.
  *
  * The mounted component is automatically wrapped in the standard provider stack

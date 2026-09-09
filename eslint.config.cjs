@@ -6,10 +6,7 @@ const js = require('@eslint/js');
 const globals = require('globals');
 const tsParser = require('@typescript-eslint/parser');
 const tsPlugin = require('@typescript-eslint/eslint-plugin');
-const react = require('eslint-plugin-react');
-const reactHooks = require('eslint-plugin-react-hooks');
 const importX = require('eslint-plugin-import-x');
-const a11y = require('eslint-plugin-jsx-a11y');
 const testingLib = require('eslint-plugin-testing-library');
 const vue = require('eslint-plugin-vue');
 const vueParser = require('vue-eslint-parser');
@@ -51,18 +48,6 @@ module.exports = [
     tsPlugin.configs['flat/eslint-recommended'],
     ...tsPlugin.configs['flat/recommended'],
 
-    // React recommended + jsx-runtime (no need for manual import in JSX)
-    react.configs.flat.recommended,
-    react.configs.flat['jsx-runtime'],
-
-    // React hooks recommended
-    {
-        plugins: {
-            'react-hooks': reactHooks,
-        },
-        rules: reactHooks.configs.recommended.rules,
-    },
-
     // Main project config
     {
         languageOptions: {
@@ -75,16 +60,10 @@ module.exports = [
             globals: Object.fromEntries(Object.entries({ ...globals.browser, ...globals.node, ...globals.es2020 }).map(([k, v]) => [k.trim(), v])),
         },
         plugins: {
-            react,
             '@typescript-eslint': tsPlugin,
             'import-x': importX,
-            'jsx-a11y': a11y,
-            'react-hooks': reactHooks,
         },
         settings: {
-            react: {
-                version: '17.0',
-            },
             'import-x/resolver': {
                 node: {
                     extensions: ['.js', '.jsx', '.ts', '.tsx'],
@@ -125,7 +104,7 @@ module.exports = [
                         'packages/**/vite.config.ts',
                         '**/*.test.{ts,tsx}',
                         '{src,packages}/**/{__testing__,testing}/**/*.{ts,tsx}',
-                        'packages/domains/*/{domain,preact,vue}/tests/**/*.{ts,tsx}',
+                        'packages/domains/*/{domain,vue}/tests/**/*.{ts,tsx}',
                         'packages/domains/*/**/stories/**/*.{ts,tsx}',
                         'packages/domains/*/{fixtures,mocks}/**/*.{ts,tsx}',
                         'src/**/*.{ts,tsx}',
@@ -165,39 +144,6 @@ module.exports = [
             '@typescript-eslint/no-empty-function': ['error', { allow: ['arrowFunctions'] }],
             '@typescript-eslint/ban-types': 'off',
 
-            // React Rules
-            'react/prop-types': 'off',
-            'react/display-name': 'off',
-            'react/jsx-no-literals': 'error',
-            'react-hooks/exhaustive-deps': 'error',
-
-            // a11y
-            'jsx-a11y/alt-text': 'error',
-            'jsx-a11y/aria-role': 'error',
-            'jsx-a11y/aria-props': 'error',
-            'jsx-a11y/aria-unsupported-elements': 'error',
-            'jsx-a11y/role-has-required-aria-props': 'error',
-            'jsx-a11y/role-supports-aria-props': 'error',
-            'jsx-a11y/tabindex-no-positive': 'error',
-            'jsx-a11y/no-redundant-roles': 'error',
-            'jsx-a11y/anchor-has-content': 'error',
-            'jsx-a11y/anchor-is-valid': 'error',
-            'jsx-a11y/img-redundant-alt': 'error',
-            'jsx-a11y/interactive-supports-focus': 'error',
-            'jsx-a11y/autocomplete-valid': 'error',
-            'jsx-a11y/no-static-element-interactions': 'error',
-            'jsx-a11y/no-noninteractive-tabindex': 'error',
-            'jsx-a11y/mouse-events-have-key-events': 'error',
-        },
-    },
-
-    // Vue Composition API files written as plain .ts (not .vue SFCs)
-    {
-        files: ['**/{vue,composables-vue}/src/**/*.{ts,tsx}'],
-        rules: {
-            'react-hooks/rules-of-hooks': 'off',
-            'react-hooks/exhaustive-deps': 'off',
-            'react-hooks/purity': 'off',
         },
     },
 
@@ -219,12 +165,6 @@ module.exports = [
             'vue/max-attributes-per-line': 'off',
             'vue/multi-word-component-names': 'off',
             'vue/require-default-prop': 'off',
-            'react/jsx-no-literals': 'off',
-            'react/display-name': 'off',
-            'react/prop-types': 'off',
-            'react/no-unknown-property': 'off',
-            'react-hooks/rules-of-hooks': 'off',
-            'react-hooks/exhaustive-deps': 'off',
         },
     },
 
@@ -238,7 +178,7 @@ module.exports = [
 
     // testing-library rules for test files
     {
-        ...testingLib.configs['flat/react'],
+        ...testingLib.configs['flat/vue'],
         files: ['**/tests/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
     },
     {
@@ -276,15 +216,6 @@ module.exports = [
                     packageDir: workspacePackageDirs,
                 },
             ],
-        },
-    },
-
-    // Playwright fixtures: disable react-hooks rules
-    {
-        files: ['packages/shared/testing/src/playwright/**/*.ts', 'packages/**/tests/**/*.ts'],
-        rules: {
-            'react-hooks/rules-of-hooks': 'off',
-            'react-hooks/exhaustive-deps': 'off',
         },
     },
 

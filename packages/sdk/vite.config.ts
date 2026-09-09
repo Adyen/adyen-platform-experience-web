@@ -2,7 +2,6 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import svgr from 'vite-plugin-svgr';
 import { getBuildEnvDefines } from '../../config/defines/build-env';
 import rootPkgJson from '../../package.json';
 
@@ -116,11 +115,6 @@ export default defineConfig(({ mode }) => ({
                 }
             },
         },
-        svgr({
-            svgrOptions: { jsxRuntime: 'automatic', exportType: 'default' },
-            esbuildOptions: { jsx: 'automatic' },
-            include: '**/*.svg?component',
-        }),
         vue({
             template: {
                 compilerOptions: {

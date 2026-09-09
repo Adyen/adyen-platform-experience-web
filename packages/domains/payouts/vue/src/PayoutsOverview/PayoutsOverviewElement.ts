@@ -4,7 +4,7 @@ import type { ExternalComponentType } from '@integration-components/types';
 import type { PayoutsOverviewExternalProps } from './types';
 
 /**
- * Imperative wrapper for PayoutsOverview, mirroring the Preact BaseElement.mount() pattern.
+ * Imperative wrapper for mounting PayoutsOverview.
  *
  * Usage:
  *   const core = await new Core({ ... }).initialize();
