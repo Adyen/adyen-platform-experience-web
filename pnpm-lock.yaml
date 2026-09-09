@@ -457,12 +457,6 @@ importers:
       '@integration-components/core':
         specifier: workspace:*
         version: link:../../shared/core
-      '@integration-components/hooks-preact':
-        specifier: workspace:*
-        version: link:../../shared/hooks-preact
-      '@integration-components/sdk-internal':
-        specifier: workspace:*
-        version: link:../../shared/lib
       '@integration-components/style':
         specifier: workspace:*
         version: link:../../shared/style
@@ -472,18 +466,12 @@ importers:
       '@integration-components/types':
         specifier: workspace:*
         version: link:../../shared/types
-      '@integration-components/ui-components-preact':
-        specifier: workspace:*
-        version: link:../../shared/ui-components-preact
       '@integration-components/utils':
         specifier: workspace:*
         version: link:../../shared/utils
       classnames:
         specifier: 'catalog:'
         version: 2.5.1
-      preact:
-        specifier: ^10.29.1
-        version: 10.29.1
       vue:
         specifier: 'catalog:'
         version: 3.5.31(typescript@5.8.3)
@@ -494,9 +482,6 @@ importers:
       '@playwright/test':
         specifier: 'catalog:'
         version: 1.61.0
-      '@storybook/preact':
-        specifier: 'catalog:'
-        version: 10.2.12(preact@10.29.1)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@storybook/vue3':
         specifier: 'catalog:'
         version: 10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.8.3))
@@ -628,12 +613,6 @@ importers:
       '@integration-components/core':
         specifier: workspace:*
         version: link:../../shared/core
-      '@integration-components/hooks-preact':
-        specifier: workspace:*
-        version: link:../../shared/hooks-preact
-      '@integration-components/sdk-internal':
-        specifier: workspace:*
-        version: link:../../shared/lib
       '@integration-components/style':
         specifier: workspace:*
         version: link:../../shared/style
@@ -643,31 +622,19 @@ importers:
       '@integration-components/types':
         specifier: workspace:*
         version: link:../../shared/types
-      '@integration-components/ui-components-preact':
-        specifier: workspace:*
-        version: link:../../shared/ui-components-preact
       '@integration-components/utils':
         specifier: workspace:*
         version: link:../../shared/utils
       classnames:
         specifier: 'catalog:'
         version: 2.5.1
-      preact:
-        specifier: ^10.29.1
-        version: 10.29.1
     devDependencies:
       '@playwright/test':
         specifier: 'catalog:'
         version: 1.61.0
-      '@storybook/preact':
-        specifier: 'catalog:'
-        version: 10.2.12(preact@10.29.1)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@storybook/vue3':
         specifier: 'catalog:'
         version: 10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.8.3))
-      '@testing-library/preact':
-        specifier: 'catalog:'
-        version: 3.2.3(preact@10.29.1)
       dotenv:
         specifier: 'catalog:'
         version: 17.2.3
