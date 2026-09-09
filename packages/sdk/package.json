@@ -18,7 +18,6 @@
         "@vitejs/plugin-vue": "^6.0.5",
         "tsc-alias": "^1.8.17",
         "vite": "catalog:",
-        "vite-plugin-svgr": "^4.5.0",
         "vue": "catalog:"
     }
 }

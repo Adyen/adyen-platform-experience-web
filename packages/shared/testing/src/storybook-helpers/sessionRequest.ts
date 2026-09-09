@@ -10,7 +10,7 @@ interface SessionResponse {
 
 /**
  * Requests a session token from the local dev backend (via the proxy set up in .storybook/main.ts).
- * Mirrors the Preact Container helper; used by the Vue storybook Container to bootstrap Core.
+ * Used by the Vue Storybook container to bootstrap Core.
  */
 export const getMySessionToken = async (session?: SessionOptions): Promise<SessionResponse> => {
     const url = process.env.VITE_APP_URL;

@@ -5,25 +5,11 @@
     "sourceRoot": "packages/tools/storybook/src",
     "tags": ["type:tool", "scope:storybook"],
     "targets": {
-        "storybook:preact": {
-            "executor": "nx:run-script",
-            "options": {
-                "script": "storybook:preact"
-            }
-        },
         "storybook:vue": {
             "executor": "nx:run-script",
             "options": {
                 "script": "storybook:vue"
             }
-        },
-        "storybook:build:preact": {
-            "executor": "nx:run-script",
-            "options": {
-                "script": "storybook:build:preact"
-            },
-            "outputs": ["{projectRoot}/storybook-static"],
-            "cache": true
         },
         "storybook:build:vue": {
             "executor": "nx:run-script",
@@ -32,13 +18,6 @@
             },
             "outputs": ["{projectRoot}/storybook-static"],
             "cache": true
-        },
-        "storybook:static:preact": {
-            "executor": "nx:run-script",
-            "options": {
-                "script": "storybook:static:preact"
-            },
-            "outputs": ["{projectRoot}/storybook-static"]
         },
         "storybook:static:vue": {
             "executor": "nx:run-script",

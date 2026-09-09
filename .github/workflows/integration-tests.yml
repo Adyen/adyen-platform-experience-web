@@ -34,26 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: framework-matrix
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BASE_REF: ${{ github.event.pull_request.base.ref }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          if [[ "$BASE_REF" == "version/v1.x" ]]; then
-            echo 'frameworks=["preact"]' >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          PACKAGE_JSON=$(
-            gh api "repos/${{ github.repository }}/contents/package.json?ref=${HEAD_SHA}" \
-              --jq '.content' \
-              | base64 --decode
-          )
-          if jq -e '.scripts["storybook:build:preact"]' <<< "$PACKAGE_JSON" >/dev/null; then
-            echo 'frameworks=["preact","vue"]' >> "$GITHUB_OUTPUT"
-          else
-            echo 'frameworks=["vue"]' >> "$GITHUB_OUTPUT"
-          fi
+        run: echo 'frameworks=["vue"]' >> "$GITHUB_OUTPUT"
 
       - id: approval-status
         run: |

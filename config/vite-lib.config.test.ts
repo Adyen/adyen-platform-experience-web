@@ -2,7 +2,7 @@
  * @vitest-environment node
  */
 import { expect, test } from 'vitest';
-import { getPreactViteLibConfig } from './preact-vite-lib.config';
+import { getViteLibConfig } from './vite-lib.config';
 
 const expectedBuildEnvDefineKeys = [
     'process.env.SESSION_ACCOUNT_HOLDER',
@@ -23,8 +23,8 @@ const expectedBuildEnvDefineKeys = [
     'process.env.SDK_VERSION',
 ].sort();
 
-test('getPreactViteLibConfig injects build environment defines', async () => {
-    const configExport = getPreactViteLibConfig({
+test('getViteLibConfig injects build environment defines', async () => {
+    const configExport = getViteLibConfig({
         projectRoot: import.meta.dirname,
         entry: 'index.ts',
     });
