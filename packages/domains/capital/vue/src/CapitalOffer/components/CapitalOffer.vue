@@ -58,22 +58,25 @@ const handleSummaryBack = () => {
             :empty-grant-offer="!dynamicOfferConfig"
             :unsupported-region="!capitalState.isRegionSupported"
         />
-        <OfferSelection
-            v-else-if="!isOfferReviewVisible"
-            :capital-state="capitalState"
-            :created-offer="createdOffer"
-            :dynamic-offer-config="dynamicOfferConfig"
-            :on-contact-support="props.onContactSupport"
-            :on-dismiss="props.onOfferDismiss"
-            :on-offer-create="handleOfferSelect"
-        />
-        <OfferSummary
-            v-else-if="isOfferReviewVisible && createdOffer"
-            :capital-state="capitalState"
-            :offer="createdOffer"
-            :on-back="handleSummaryBack"
-            :on-contact-support="props.onContactSupport"
-            :on-funds-request="props.onFundsRequest"
-        />
+        <template v-else>
+            <OfferSelection
+                v-show="!isOfferReviewVisible"
+                :capital-state="capitalState"
+                :created-offer="createdOffer"
+                :dynamic-offer-config="dynamicOfferConfig"
+                :on-contact-support="props.onContactSupport"
+                :on-dismiss="props.onOfferDismiss"
+                :on-offer-create="handleOfferSelect"
+            />
+            <OfferSummary
+                v-if="createdOffer"
+                v-show="isOfferReviewVisible"
+                :capital-state="capitalState"
+                :offer="createdOffer"
+                :on-back="handleSummaryBack"
+                :on-contact-support="props.onContactSupport"
+                :on-funds-request="props.onFundsRequest"
+            />
+        </template>
     </template>
 </template>

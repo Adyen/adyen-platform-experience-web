@@ -132,7 +132,7 @@ const actions = computed<BentoButtonActionsList>(() => {
 </script>
 
 <template>
-    <div :class="styles.root">
+    <div :class="styles.root" data-testid="capital-offer-selection">
         <CapitalError
             v-if="offersError || hasNoOffers || createOfferError"
             :empty-grant-offer="hasNoOffers"

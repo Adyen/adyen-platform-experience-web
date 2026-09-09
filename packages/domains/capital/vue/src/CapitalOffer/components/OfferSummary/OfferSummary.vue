@@ -86,7 +86,7 @@ const actions = computed<BentoButtonActionsList>(() => [
 </script>
 
 <template>
-    <div :class="styles.root">
+    <div :class="styles.root" data-testid="capital-offer-summary">
         <CapitalError
             v-if="requestFundsError && !balanceAccountError"
             :error="requestFundsError"
