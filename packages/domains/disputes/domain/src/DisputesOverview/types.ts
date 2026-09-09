@@ -13,6 +13,10 @@ export type DisputesOverviewFilters = {
     schemeCodes?: string;
     createdSince?: string;
     createdUntil?: string;
+    /** @deprecated This field is not emitted. Use statusGroup instead. */
+    disputeType?: string;
+    /** @deprecated This field is not emitted. Use statusGroup instead. */
+    statuses?: string;
 };
 
 export interface DisputesOverviewProps extends UIElementProps {
