@@ -22,7 +22,7 @@ catalog:
   storybook: 10.2.12
   typescript: 5.8.3
   vite: ^7.3.5
-  vitest: 4.1.0
+  vitest: 4.1.11
   vue: ^3.5.13
   webpack: ^5.106.2
 
