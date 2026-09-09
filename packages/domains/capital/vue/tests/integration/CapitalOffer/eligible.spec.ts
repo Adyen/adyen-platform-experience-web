@@ -64,9 +64,9 @@ test.describe('Eligible', () => {
 
     test('should update offer details when slider value is changed', async ({ page, analyticsEvents }) => {
         const slider = page.getByRole('slider');
+
         await slider.focus();
         await page.keyboard.press('Home');
-
         await expectAnalyticsEvents(analyticsEvents, [
             [
                 'Changed capital offer slider',
@@ -82,7 +82,6 @@ test.describe('Eligible', () => {
                 },
             ],
         ]);
-
         await expect(page.getByRole('status')).toHaveText('€1,000');
         await expect(page.getByText('€110.00')).toBeVisible();
         await expect(page.getByText('€1,110.00')).toBeVisible();
@@ -90,26 +89,21 @@ test.describe('Eligible', () => {
 
     test('should update terms when slider value is changed', async ({ page }) => {
         const slider = page.getByRole('slider');
+
         await slider.focus();
         await page.keyboard.press('Home');
-
-        await expect(page.getByRole('radio', { name: /3 months/ })).toBeVisible();
-        await expect(page.getByRole('radio', { name: /6 months/ })).toBeVisible();
-        await expect(page.getByRole('radio', { name: /12 months/ })).toBeVisible();
-        await expect(page.getByRole('radio', { name: /12 months/ })).toHaveAttribute('aria-disabled', 'true');
-
+        await expect(page.getByRole('radio', { name: '3 months' })).toBeEnabled();
+        await expect(page.getByRole('radio', { name: '6 months' })).toBeEnabled();
+        await expect(page.getByRole('radio', { name: '12 months' })).toBeDisabled();
         await slider.focus();
         await page.keyboard.press('End');
-
-        await expect(page.getByRole('radio', { name: /3 months/ })).toBeVisible();
-        await expect(page.getByRole('radio', { name: /3 months/ })).toHaveAttribute('aria-disabled', 'true');
-        await expect(page.getByRole('radio', { name: /6 months/ })).toBeVisible();
-        await expect(page.getByRole('radio', { name: /12 months/ })).toBeVisible();
+        await expect(page.getByRole('radio', { name: '3 months' })).toBeDisabled();
+        await expect(page.getByRole('radio', { name: '6 months' })).toBeEnabled();
+        await expect(page.getByRole('radio', { name: '12 months' })).toBeEnabled();
     });
 
     test('should update offer details when term selector value is changed', async ({ page, analyticsEvents }) => {
-        await page.getByRole('radio', { name: '3 months 8% daily rate' }).click();
-
+        await page.getByText('3 months', { exact: true }).click();
         await expectAnalyticsEvents(analyticsEvents, [
             [
                 'Selected repayment term',
@@ -124,7 +118,6 @@ test.describe('Eligible', () => {
                 },
             ],
         ]);
-
         await expect(page.getByText('€1,040.00')).toBeVisible();
         await expect(page.getByText('€14,040.00')).toBeVisible();
         await expect(page.getByText('8%', { exact: true })).toBeVisible();
@@ -138,46 +131,49 @@ test.describe('Eligible', () => {
 
     test('should show the last selected amount and term when navigating back to offer selection screen', async ({ page }) => {
         const slider = page.getByRole('slider');
+
         await slider.focus();
         await page.keyboard.press('Home');
-        await page.getByRole('radio', { name: '3 months 8% daily rate' }).click();
+        await page.getByText('3 months', { exact: true }).click();
         await page.getByRole('button', { name: 'Review request' }).click();
         await page.getByRole('button', { name: 'Go back' }).click();
-
         await expect(page.getByRole('status')).toHaveText('€1,000');
-        await expect(page.getByRole('radio', { name: /3 months/ })).toBeVisible();
-        await expect(page.getByRole('radio', { name: /3 months/ })).toHaveAttribute('aria-checked', 'true');
+        await expect(page.getByRole('radio', { name: '3 months' })).toBeChecked();
     });
 
     test('should render offer summary screen', async ({ page, analyticsEvents }) => {
         await goToOfferSummary(page, analyticsEvents);
+        const offerSummary = page.getByTestId('capital-offer-summary');
+
         await expect(page.getByText('Business financing summary')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
-        await expect(page.getByText('Financing', { exact: true })).toBeVisible();
-        await expect(page.getByText('€13,000', { exact: true })).toBeVisible();
-        await expect(page.getByText('Fees')).toBeVisible();
-        await expect(page.getByText('€1,430')).toBeVisible();
-        await expect(page.getByText('Total repayment amount')).toBeVisible();
-        await expect(page.getByText('€14,430', { exact: true })).toBeVisible();
-        await expect(page.getByText('Financing terms')).toBeVisible();
-        await expect(page.getByText('Daily repayment rate')).toBeVisible();
-        await expect(page.getByText('11%')).toBeVisible();
-        await expect(page.getByText('30-day repayment minimum')).toBeVisible();
-        await expect(page.getByText('€2,405.00', { exact: true })).toBeVisible();
-        await expect(page.getByText('Expected repayment period')).toBeVisible();
-        await expect(page.getByText('6 months')).toBeVisible();
-        await expect(page.getByText('Maximum repayment date')).toBeVisible();
-        await expect(page.getByText('Sep 28, 2025')).toBeVisible();
-        await expect(page.getByText('Account', { exact: true })).toBeVisible();
-        await expect(page.getByText('Primary account')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Submit request (€13,000)' })).toBeVisible();
+        await expect(offerSummary.getByText('Financing', { exact: true })).toBeVisible();
+        await expect(offerSummary.getByText('€13,000', { exact: true })).toBeVisible();
+        await expect(offerSummary.getByText('Fees')).toBeVisible();
+        await expect(offerSummary.getByText('€1,430')).toBeVisible();
+        await expect(offerSummary.getByText('Total repayment amount')).toBeVisible();
+        await expect(offerSummary.getByText('€14,430', { exact: true })).toBeVisible();
+        await expect(offerSummary.getByText('Financing terms')).toBeVisible();
+        await expect(offerSummary.getByText('Daily repayment rate')).toBeVisible();
+        await expect(offerSummary.getByText('11%')).toBeVisible();
+        await expect(offerSummary.getByText('30-day repayment minimum')).toBeVisible();
+        await expect(offerSummary.getByText('€2,405.00', { exact: true })).toBeVisible();
+        await expect(offerSummary.getByText('Expected repayment period')).toBeVisible();
+        await expect(offerSummary.getByText('6 months')).toBeVisible();
+        await expect(offerSummary.getByText('Maximum repayment date')).toBeVisible();
+        await expect(offerSummary.getByText('Sep 28, 2025')).toBeVisible();
+        await expect(offerSummary.getByText('Account', { exact: true })).toBeVisible();
+        await expect(offerSummary.getByText('Primary account')).toBeVisible();
+        await expect(offerSummary.getByRole('button', { name: 'Go back' })).toBeVisible();
+        await expect(offerSummary.getByRole('button', { name: 'Submit request (€13,000)' })).toBeVisible();
     });
 
-    test('should show a tooltip when "30-day repayment minimum" label is hovered', async ({ page, analyticsEvents }) => {
+    test('should show a tooltip when repayment period info icon is hovered', async ({ page, analyticsEvents }) => {
+        const tooltipText = 'Minimum repayment every 30 days to repay the financing on time';
+        const tooltip = page.getByTestId('focus-trap').getByText(tooltipText);
+
         await goToOfferSummary(page, analyticsEvents);
-        await page.getByText('30-day repayment minimum').hover();
-        const tooltip = page.getByText('Minimum repayment every 30 days to repay the financing on time');
+        await page.getByLabel(tooltipText).hover();
         await tooltip.waitFor();
         await expect(tooltip).toBeVisible();
     });
@@ -185,46 +181,40 @@ test.describe('Eligible', () => {
     test('should go back to offer selection screen when back button in offer summary screen is clicked', async ({ page, analyticsEvents }) => {
         await goToOfferSummary(page, analyticsEvents);
         await page.getByRole('button', { name: 'Go back' }).click();
-
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Back to slider view' }],
         ]);
-
         await expect(page.getByText('Business financing request')).toBeVisible();
     });
 
     test('should disable request submit button after funds request call succeeds', async ({ page, analyticsEvents }) => {
         await goToOfferSummary(page, analyticsEvents);
-        const requestFundsButton = page.getByRole('button', { name: 'Submit request (€13,000)' });
-        await requestFundsButton.click();
+        const requestFundsButton = page.getByTestId('capital-offer-summary').getByRole('button', { name: 'Submit request (€13,000)' });
 
+        await requestFundsButton.click();
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
         ]);
-
         await expect(requestFundsButton).toBeDisabled();
     });
 });
 
-test.describe('onOfferDismiss argument', () => {
-    test('should render back button when argument is set', async ({ page, analyticsEvents }) => {
+test.describe('onOfferDismiss prop', () => {
+    test('should render back button when prop is set', async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID, args: { onOfferDismiss: 'Enabled' } });
         await expectPageLoadAnalyticsEvents(analyticsEvents);
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 });
 
-test.describe('onOfferSelect argument', () => {
-    test('should not go to offer summary screen when argument is set', async ({ page, analyticsEvents }) => {
+test.describe('onOfferSelect prop', () => {
+    test('should not go to offer summary screen when prop is set', async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID, args: { onOfferSelect: 'Enabled' } });
         await expectPageLoadAnalyticsEvents(analyticsEvents);
-
         await page.getByRole('button', { name: 'Review request' }).click();
-
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review offer' }],
         ]);
-
         await expect(page.getByText('Business financing summary')).toBeHidden();
     });
 });

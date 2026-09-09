@@ -1,29 +1,75 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { useUniqueId } from '@integration-components/composables-vue';
 import type { IDynamicOffersConfig } from '@integration-components/types';
 import Slider from '../Slider/Slider.vue';
-import styles from './AmountSlider.module.scss';
+import styles from './AmountSelector.module.scss';
+import {
+    getDefaultAmountValue,
+    getPercentageOfRange,
+    getRelativeToDefault,
+    sharedCapitalOfferAnalyticsEventProperties,
+} from '@integration-components/capital/domain';
 
 const props = defineProps<{
     dynamicOfferConfig: IDynamicOffersConfig;
-    value: number;
-    onRelease?: (value: number) => void;
-    onValueChange?: (value: number) => void;
+    isEarlyRenewal: boolean;
+    amountValue: number;
+    onAmountValueChange: (value: number) => void;
+    onAmountValueChangeCommitted: (value: number) => void;
 }>();
 
 const { i18n } = useCoreContext();
+const userEvents = useEventDispatcherContext();
+const hasEmittedInitialChangeEvent = ref(false);
 const elementBaseId = useUniqueId();
 const labelId = `${elementBaseId}-label`;
 const sliderId = `${elementBaseId}-slider`;
 const currency = computed(() => props.dynamicOfferConfig.minAmount.currency);
-const formattedAmount = computed(() => i18n.amount(props.value, currency.value, { maximumFractionDigits: 0 }));
+const formattedAmount = computed(() => i18n.amount(props.amountValue, currency.value, { maximumFractionDigits: 0 }));
 
 const getValue = (event: Event) => Number((event.target as HTMLInputElement).value);
-const handleValueChange = (event: Event) => props.onValueChange?.(getValue(event));
-const handleRelease = (event: Event) => props.onRelease?.(getValue(event));
+
+const emitChangeEvent = (amountValue: number) => {
+    const config = props.dynamicOfferConfig;
+
+    userEvents.addEvent?.('Changed capital offer slider', {
+        ...sharedCapitalOfferAnalyticsEventProperties,
+        subCategory: 'Business financing offer',
+        label: 'Slider changed',
+        currency: config.minAmount.currency,
+        value: amountValue,
+        valuePercentage: getPercentageOfRange(amountValue, config.minAmount.value, config.maxAmount.value),
+        min: config.minAmount.value,
+        max: config.maxAmount.value,
+        relativeToDefault: getRelativeToDefault(amountValue, getDefaultAmountValue(config)),
+        isEarlyRenewal: props.isEarlyRenewal,
+    });
+};
+
+// Emit initial amount change event
+watch(
+    [() => props.dynamicOfferConfig, () => props.amountValue],
+    ([dynamicOfferConfig, amountValue]) => {
+        if (!hasEmittedInitialChangeEvent.value && dynamicOfferConfig && amountValue !== undefined) {
+            hasEmittedInitialChangeEvent.value = true;
+            emitChangeEvent(amountValue);
+        }
+    },
+    { immediate: true }
+);
+
+const handleChange = (event: Event) => {
+    const value = getValue(event);
+    props.onAmountValueChangeCommitted?.(value);
+    emitChangeEvent(value);
+};
+
+const handleInput = (event: Event) => {
+    props.onAmountValueChange?.(getValue(event));
+};
 </script>
 
 <template>
@@ -33,7 +79,7 @@ const handleRelease = (event: Event) => props.onRelease?.(getValue(event));
                 {{ i18n.get('capital.offer.selection.slider.a11y.label') }}
             </BentoTypography>
         </label>
-        <output :aria-labelledby="labelId" :for="sliderId" :class="styles.value" aria-live="polite">
+        <output :aria-labelledby="labelId" :for="sliderId" aria-live="polite">
             <BentoTypography variant="title" large>
                 {{ formattedAmount }}
             </BentoTypography>
@@ -44,9 +90,9 @@ const handleRelease = (event: Event) => props.onRelease?.(getValue(event));
             :max="props.dynamicOfferConfig.maxAmount.value"
             :min="props.dynamicOfferConfig.minAmount.value"
             :step="props.dynamicOfferConfig.step"
-            :value="value"
-            @input="handleValueChange"
-            @change="handleRelease"
+            :value="amountValue"
+            @change="handleChange"
+            @input="handleInput"
         />
         <div :class="styles.rangeLabels" aria-hidden="true">
             <div :class="styles.rangeLabel">
