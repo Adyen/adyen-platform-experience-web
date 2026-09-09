@@ -21,7 +21,6 @@
         "./translations": "./src/translations/index.ts",
         "./translations/local": "./src/translations/local.ts",
         "./vue": "./src/vue/index.ts",
-        "./preact": "./src/preact/index.ts",
         "./*": "./src/*.ts"
     },
     "dependencies": {
@@ -34,7 +33,6 @@
         "vitest": "catalog:"
     },
     "peerDependencies": {
-        "preact": "catalog:",
         "vue": "catalog:",
         "vue-i18n": "^11"
     },

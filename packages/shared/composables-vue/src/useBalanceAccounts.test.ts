@@ -1,6 +1,7 @@
-import { effectScope, ref } from 'vue';
+import { effectScope, reactive, ref } from 'vue';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useConfigContext } from '@integration-components/core/vue';
+import { createDeferred } from '@integration-components/utils';
 import { useBalanceAccounts } from './useBalanceAccounts';
 
 vi.mock('@integration-components/core/vue', () => ({
@@ -92,6 +93,32 @@ describe('useBalanceAccounts', () => {
         scope.stop();
     });
 
+    test('does not fetch when the endpoint is unavailable', () => {
+        mockUseConfigContext.mockReturnValue({
+            endpoints: {},
+        } as unknown as ReturnType<typeof useConfigContext>);
+        const scope = effectScope();
+        const result = scope.run(() => useBalanceAccounts())!;
+
+        expect(result.isFetching.value).toBe(false);
+        expect(result.balanceAccounts.value).toBeUndefined();
+        expect(result.error.value).toBeUndefined();
+
+        scope.stop();
+    });
+
+    test('treats malformed response data as an empty list', async () => {
+        const getBalanceAccounts = vi.fn().mockResolvedValue({ data: { id: 'not-an-array' } });
+        const { result, scope } = createHook(getBalanceAccounts);
+
+        await vi.waitFor(() => expect(result.isFetching.value).toBe(false));
+
+        expect(result.balanceAccounts.value).toEqual([]);
+        expect(result.isBalanceAccountIdWrong.value).toBe(false);
+
+        scope.stop();
+    });
+
     test('uses cached accounts for subsequent hook instances', async () => {
         const getBalanceAccounts = vi.fn().mockResolvedValue({ data: accounts });
         const first = createHook(getBalanceAccounts);
@@ -106,5 +133,49 @@ describe('useBalanceAccounts', () => {
         expect(getBalanceAccounts).toHaveBeenCalledOnce();
 
         second.scope.stop();
+    });
+
+    test('shares an in-flight request between hook instances', async () => {
+        const request = createDeferred<{ data: typeof accounts }>();
+        const getBalanceAccounts = vi.fn().mockReturnValue(request.promise);
+        const first = createHook(getBalanceAccounts);
+        const second = createHook(getBalanceAccounts);
+
+        await vi.waitFor(() => expect(getBalanceAccounts).toHaveBeenCalledOnce());
+
+        request.resolve({ data: accounts });
+        await vi.waitFor(() => {
+            expect(first.result.balanceAccounts.value).toEqual(accounts);
+            expect(second.result.balanceAccounts.value).toEqual(accounts);
+        });
+
+        first.scope.stop();
+        second.scope.stop();
+    });
+
+    test('ignores a stale response after the endpoint changes', async () => {
+        const firstRequest = createDeferred<{ data: typeof accounts }>();
+        const secondAccounts = [accounts[1]!];
+        const secondRequest = createDeferred<{ data: typeof secondAccounts }>();
+        const firstEndpoint = vi.fn().mockReturnValue(firstRequest.promise);
+        const secondEndpoint = vi.fn().mockReturnValue(secondRequest.promise);
+        const config = reactive({ endpoints: { getBalanceAccounts: firstEndpoint } });
+        mockUseConfigContext.mockReturnValue(config as unknown as ReturnType<typeof useConfigContext>);
+        const scope = effectScope();
+        const result = scope.run(() => useBalanceAccounts())!;
+
+        await vi.waitFor(() => expect(firstEndpoint).toHaveBeenCalledOnce());
+
+        config.endpoints = { getBalanceAccounts: secondEndpoint };
+        await vi.waitFor(() => expect(secondEndpoint).toHaveBeenCalledOnce());
+
+        secondRequest.resolve({ data: secondAccounts });
+        await vi.waitFor(() => expect(result.balanceAccounts.value).toEqual(secondAccounts));
+
+        firstRequest.resolve({ data: accounts });
+        await firstRequest.promise;
+        expect(result.balanceAccounts.value).toEqual(secondAccounts);
+
+        scope.stop();
     });
 });
