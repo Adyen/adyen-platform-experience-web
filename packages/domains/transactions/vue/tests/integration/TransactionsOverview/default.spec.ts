@@ -11,11 +11,25 @@ import {
 import type { Locator, Page } from '@playwright/test';
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
+import { BALANCE_ACCOUNTS } from '@integration-components/testing/fixtures/balanceAccounts';
 import { testBalanceAccountFilter, testDateRangeFilter } from '../../../../fixtures/integration/filters';
 import { sharedTransactionsListAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionsOverview';
 import { goToView } from '../../../../fixtures/integration/utils';
 
 const STORY_ID = 'mocked-transactions-transactions-overview--default';
+
+test('should never request transactions without a selected balance account', async ({ page }) => {
+    const requestedBalanceAccountIds = new Set<string | null>();
+
+    page.on('request', request => {
+        const url = new URL(request.url());
+        if (url.pathname.endsWith('/transactions')) requestedBalanceAccountIds.add(url.searchParams.get('balanceAccountId'));
+    });
+
+    await goToStory(page, { id: STORY_ID });
+    await expect.poll(() => requestedBalanceAccountIds.has(BALANCE_ACCOUNTS[0].id)).toBe(true);
+    expect(requestedBalanceAccountIds).toEqual(new Set([BALANCE_ACCOUNTS[0].id]));
+});
 
 const getExportDialog = (page: Page) => {
     return page.getByRole('dialog').filter({ has: page.getByRole('button', { name: 'Download', exact: true }) });
@@ -541,6 +555,33 @@ test.describe('Filters', () => {
 
     testBalanceAccountFilter({ variant });
     testDateRangeFilter({ variant, now });
+
+    test('should request transactions with all applied filter values', async ({ page, analyticsEvents }) => {
+        const pspReference = 'PSP0000000000056';
+        const waitForTransactionRequest = (predicate: (url: URL) => boolean) =>
+            page.waitForRequest(request => {
+                const url = new URL(request.url());
+                return url.pathname.endsWith('/transactions') && predicate(url);
+            });
+
+        const categoryRequest = waitForTransactionRequest(url => url.searchParams.getAll('categories').includes('Payment'));
+        await selectSingleCategoryFromMultiSelectFilter(page, analyticsEvents, 'Payment');
+        await categoryRequest;
+
+        const currencyRequest = waitForTransactionRequest(url => url.searchParams.getAll('currencies').includes('USD'));
+        await selectSingleCurrencyFromMultiSelectFilter(page, analyticsEvents, 'USD');
+        await currencyRequest;
+
+        const pspReferenceRequest = waitForTransactionRequest(url => url.searchParams.get('paymentPspReference') === pspReference);
+        await setExactPspReference(page, analyticsEvents, pspReference);
+        const requestUrl = new URL((await pspReferenceRequest).url());
+
+        expect(requestUrl.searchParams.get('balanceAccountId')).toBe(BALANCE_ACCOUNTS[0].id);
+        expect(requestUrl.searchParams.getAll('categories')).toEqual(['Payment']);
+        expect(requestUrl.searchParams.getAll('currencies')).toEqual(['USD']);
+        expect(requestUrl.searchParams.getAll('statuses')).toEqual(['Booked']);
+        expect(requestUrl.searchParams.get('cursor')).toBeNull();
+    });
 
     test('should reset pagination when selecting another balance account', async ({ page }) => {
         await expectBalanceAccountPaginationReset({ endpointPath: '/transactions', page, variant });
