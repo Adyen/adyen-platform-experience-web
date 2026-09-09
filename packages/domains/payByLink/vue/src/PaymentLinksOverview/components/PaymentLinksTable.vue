@@ -32,7 +32,7 @@ const props = defineProps<{
     goToNextPage?: () => void;
     goToPreviousPage?: () => void;
     limit?: number;
-    limitOptions?: number[];
+    limitOptions?: readonly number[];
     updateLimit?: (limit: number) => void;
     currentPage?: number;
 }>();

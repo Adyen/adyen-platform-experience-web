@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
-import { BentoTypography } from '@adyen/bento-vue3';
+import { computed, defineAsyncComponent, onMounted } from 'vue';
+import { BentoLoadingIndicator, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
-import AcceptDisputeFlow from './AcceptDisputeFlow.vue';
-import DefendDisputeFlow from './DefendDisputeFlow.vue';
 import DisputeData from './DisputeData.vue';
 import type { DisputeManagementProps } from '../types';
 import styles from './DisputeData.module.scss';
@@ -15,6 +13,17 @@ const { flowState, getDisputesConfig } = useDisputeFlow();
 
 const { withinModal } = useModalContext();
 const shouldHideTitle = computed(() => props.hideTitle || withinModal);
+
+const AcceptDisputeFlow = defineAsyncComponent({
+    loader: () => import('./AcceptDisputeFlow.vue'),
+    loadingComponent: BentoLoadingIndicator,
+    delay: 0,
+});
+const DefendDisputeFlow = defineAsyncComponent({
+    loader: () => import('./DefendDisputeFlow.vue'),
+    loadingComponent: BentoLoadingIndicator,
+    delay: 0,
+});
 
 onMounted(() => getDisputesConfig());
 </script>

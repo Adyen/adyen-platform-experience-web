@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { ModalContextProvider, useCoreContext } from '@integration-components/core/vue';
-import { BentoTypography, BentoModal } from '@adyen/bento-vue3';
+import { useCoreContext } from '@integration-components/core/vue';
+import { BentoTypography } from '@adyen/bento-vue3';
 import { getTimezoneAwareDateRangeQueryParams } from '@integration-components/composables-vue';
 import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
 import PayoutsFilters from './PayoutsFilters.vue';
 import PayoutsTable from './PayoutsTable.vue';
-import PayoutDetailsContainer from '../../PayoutDetails/components/PayoutDetailsContainer.vue';
+import PayoutDetailsModal from './PayoutDetailsModal.vue';
 import { usePayoutsList } from '../composables/usePayoutsList';
 import { EARLIEST_PAYOUT_SINCE_DATE } from '../constants';
 import type { IBalanceAccountBase, PayoutsOverviewExternalProps } from '../types';
@@ -134,27 +134,14 @@ function closeModal() {
             :current-page="payoutsListResult.page.value + 1"
         />
 
-        <ModalContextProvider>
-            <BentoModal
-                :is-open="isModalOpen"
-                size="medium"
-                :is-dismissible="true"
-                :aria-label="i18n.get('payouts.details.title')"
-                @close-modal="closeModal"
-            >
-                <!-- Keep this default slot empty so Bento preserves its header layout without rendering a duplicate title. -->
-                <template #default />
-                <template #content>
-                    <PayoutDetailsContainer
-                        v-if="selectedPayout && activeBalanceAccount"
-                        :id="activeBalanceAccount.id"
-                        :balance-account-description="activeBalanceAccount.description"
-                        :date="selectedPayout.createdAt ?? ''"
-                        :data-customization="props.dataCustomization"
-                        :on-contact-support="props.onContactSupport"
-                    />
-                </template>
-            </BentoModal>
-        </ModalContextProvider>
+        <PayoutDetailsModal
+            v-if="isModalOpen && selectedPayout && activeBalanceAccount"
+            :id="activeBalanceAccount.id"
+            :balance-account-description="activeBalanceAccount.description"
+            :date="selectedPayout.createdAt ?? ''"
+            :data-customization="props.dataCustomization"
+            :on-contact-support="props.onContactSupport"
+            :on-close="closeModal"
+        />
     </div>
 </template>

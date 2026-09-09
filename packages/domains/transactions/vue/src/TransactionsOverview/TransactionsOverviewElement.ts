@@ -1,9 +1,11 @@
-import type { App } from 'vue';
+import type { App, Plugin } from 'vue';
 import BentoVue from '@adyen/bento-vue3';
 import { UIElement } from '@integration-components/core/vue';
 import TransactionsOverviewContainer from './components/TransactionsOverviewContainer/TransactionsOverviewContainer.vue';
 import type { ExternalComponentType } from '@integration-components/types';
 import type { TransactionsOverviewExternalProps } from './types';
+
+type BentoVueOptions = { withToast: boolean; withDesignTokensCSSInjection: boolean };
 
 export class TransactionsOverviewElement extends UIElement<TransactionsOverviewExternalProps> {
     public static readonly type: ExternalComponentType = 'transactions' as const;
@@ -13,7 +15,7 @@ export class TransactionsOverviewElement extends UIElement<TransactionsOverviewE
     }
 
     protected configureApp(app: App): void {
-        app.use(BentoVue, { withToast: true, withDesignTokensCSSInjection: false });
+        app.use(BentoVue as Plugin<[options: BentoVueOptions]>, { withToast: true, withDesignTokensCSSInjection: false });
     }
 }
 

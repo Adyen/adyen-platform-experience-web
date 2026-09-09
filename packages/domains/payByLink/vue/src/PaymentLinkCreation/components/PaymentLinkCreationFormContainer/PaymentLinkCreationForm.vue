@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { computed, provide, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, provide, ref, watch } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { BentoAlert, BentoButton, BentoStep, BentoStepper, BentoTypography } from '@adyen/bento-vue3';
+import { BentoAlert, BentoButton, BentoLoadingIndicator, BentoStep, BentoStepper, BentoTypography } from '@adyen/bento-vue3';
 import type { PaymentLinkCreationProps, PaymentLinkSettingsItem } from '../../../../../domain/src';
 import { usePaymentLinkFormData } from './usePaymentLinkFormData';
 import { usePaymentLinkWizard } from './usePaymentLinkWizard';
 import { useInvalidFields } from './useInvalidFields';
 import { PAYMENT_LINK_WIZARD_KEY } from '../../composables/wizardContext';
-import PaymentLinkSettingsContainer from '../../../PaymentLinkSettings/components/PaymentLinkSettingsContainer.vue';
 import FormStepRenderer from './FormStepRenderer.vue';
 import ArrowRightIcon from '@adyen/ui-assets-icons-16/vue/arrow-right';
 import styles from './PaymentLinkCreationForm.module.scss';
@@ -73,6 +72,11 @@ const submitError = ref<any>(null);
 const isSubmitError = ref(false);
 const selectedStoreNavigationCache = ref('');
 const showTermsAndConditions = ref(false);
+const PaymentLinkSettingsContainer = defineAsyncComponent({
+    loader: () => import('../../../PaymentLinkSettings/components/PaymentLinkSettingsContainer.vue'),
+    loadingComponent: BentoLoadingIndicator,
+    delay: 0,
+});
 
 const currentFormStepId = computed(() => wizard.currentStep.value?.id ?? 'store');
 const showConfigurationError = computed(() => data.displayConfigurationError(currentFormStepId.value));

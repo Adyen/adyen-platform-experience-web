@@ -1,9 +1,11 @@
-import type { App } from 'vue';
+import type { App, Plugin } from 'vue';
 import BentoVue from '@adyen/bento-vue3';
 import { UIElement } from '@integration-components/core/vue';
 import ReportsOverviewContainer from './components/ReportsOverviewContainer.vue';
 import type { ExternalComponentType } from '@integration-components/types';
 import type { ReportsOverviewExternalProps } from './types';
+
+type BentoVueOptions = { withToast: boolean; withDesignTokensCSSInjection: boolean };
 
 /**
  * Imperative wrapper for ReportsOverview, mirroring the Preact BaseElement.mount() pattern.
@@ -23,7 +25,7 @@ export class ReportsOverviewElement extends UIElement<ReportsOverviewExternalPro
     }
 
     protected configureApp(app: App): void {
-        app.use(BentoVue, { withToast: true, withDesignTokensCSSInjection: false });
+        app.use(BentoVue as Plugin<[options: BentoVueOptions]>, { withToast: true, withDesignTokensCSSInjection: false });
     }
 }
 

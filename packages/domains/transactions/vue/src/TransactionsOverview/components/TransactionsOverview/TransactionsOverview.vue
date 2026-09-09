@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { ModalContextProvider, useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import { BentoModal, BentoToast } from '@adyen/bento-vue3';
+import { useEventDispatcherContext } from '@integration-components/core/vue';
+import { BentoToast } from '@adyen/bento-vue3';
 import TransactionsOverviewShell from './TransactionsOverviewShell.vue';
 import TransactionsOverviewList from '../TransactionsList/TransactionsOverviewList.vue';
 import TransactionsOverviewInsights from './TransactionsOverviewInsights.vue';
-import TransactionDetailsContainer from '../../../TransactionDetails/components/TransactionDetailsContainer.vue';
+import TransactionDetailsModal from './TransactionDetailsModal.vue';
 import { useTransactionsOverviewState } from '../../composables/useTransactionsOverviewState';
 import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_DETAILS } from '@integration-components/transactions/domain';
 import type { ITransaction } from '@integration-components/types';
@@ -29,7 +29,6 @@ const props = defineProps<{
     isLoadingBalanceAccount?: boolean;
 }>();
 
-const { i18n } = useCoreContext();
 const userEvents = useEventDispatcherContext();
 
 const state = useTransactionsOverviewState(() => props as any);
@@ -90,27 +89,13 @@ const canExport = computed(() => state.transactionsListResult.records.value.leng
         <TransactionsOverviewInsights v-else />
     </TransactionsOverviewShell>
 
-    <ModalContextProvider>
-        <BentoModal
-            size="medium"
-            :is-open="isModalOpen"
-            :is-dismissible="true"
-            :aria-label="i18n.get('transactions.details.title')"
-            @close-modal="closeModal"
-        >
-            <!-- Keep this default slot empty — needed for no padding -->
-            <template #default />
-            <template #content>
-                <TransactionDetailsContainer
-                    v-if="selectedTransactionId"
-                    :id="selectedTransactionId"
-                    :data-customization="props.dataCustomization"
-                    :on-contact-support="props.onContactSupport"
-                    from-record-selection
-                />
-            </template>
-        </BentoModal>
-    </ModalContextProvider>
+    <TransactionDetailsModal
+        v-if="isModalOpen && selectedTransactionId"
+        :id="selectedTransactionId"
+        :data-customization="props.dataCustomization"
+        :on-contact-support="props.onContactSupport"
+        :on-close="closeModal"
+    />
 
     <BentoToast />
 </template>
