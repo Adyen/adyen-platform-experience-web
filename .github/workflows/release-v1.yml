@@ -170,7 +170,7 @@ jobs:
               run: |
                   ./scripts/upload-assets/package-assets.sh
                   cp platform-components-v1_cdn.tar.gz \
-                    "platform-components-v1_cdn_${{ steps.release.outputs.version }}.tar.gz"
+                    "v1-rollback-assets_${{ steps.release.outputs.version }}.tar.gz"
 
             - name: Create release notes and checksums
               env:
@@ -185,7 +185,7 @@ jobs:
                   shasum -a 256 \
                     "adyen-adyen-platform-experience-web-${VERSION}.tgz" \
                     "platform-components_cdn_${VERSION}.tar.gz" \
-                    "platform-components-v1_cdn_${VERSION}.tar.gz" \
+                    "v1-rollback-assets_${VERSION}.tar.gz" \
                     > SHA256SUMS
 
             - name: Upload immutable release artifacts
@@ -195,7 +195,7 @@ jobs:
                   path: |
                       adyen-adyen-platform-experience-web-${{ steps.release.outputs.version }}.tgz
                       platform-components_cdn_${{ steps.release.outputs.version }}.tar.gz
-                      platform-components-v1_cdn_${{ steps.release.outputs.version }}.tar.gz
+                      v1-rollback-assets_${{ steps.release.outputs.version }}.tar.gz
                       release-notes.md
                       SHA256SUMS
                   retention-days: 7
@@ -312,7 +312,7 @@ jobs:
                   test "$(npm view "@adyen/adyen-platform-experience-web@${NPM_TAG}" version)" = "$VERSION"
 
                   ASSET_NAME=$(jq -r '.cdn.assetName' config/release-v1.json)
-                  VERSIONED_ASSET="release-artifacts/platform-components-v1_cdn_${VERSION}.tar.gz"
+                  VERSIONED_ASSET="release-artifacts/v1-rollback-assets_${VERSION}.tar.gz"
                   BACKUP_DIR="$RUNNER_TEMP/v1-cdn-backup"
                   HAD_PREVIOUS_ASSET=false
                   mkdir -p "$BACKUP_DIR"
