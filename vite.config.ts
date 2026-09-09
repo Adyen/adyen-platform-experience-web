@@ -2,12 +2,15 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
 import { preact } from '@preact/preset-vite';
+import vue from '@vitejs/plugin-vue';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { realApiProxies } from './endpoints/realApiProxies';
 import { getBuildEnvDefines } from './config/defines/build-env';
 import { getEnvironment } from './envs/getEnvs';
 import packageJson from './package.json';
 import svgr from 'vite-plugin-svgr';
+
+const KYC_CUSTOM_ELEMENT_TAGS = ['adyen-business-financing', 'adyen-terms-of-service-management'];
 
 export default defineConfig(({ mode }) => {
     const externalDependencies = Object.keys(packageJson.dependencies);
@@ -111,6 +114,7 @@ export default defineConfig(({ mode }) => {
             include: [
                 'src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'config/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'scripts/check-publish-contract/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/domains/*/{domain,preact,vue}/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
             ],
@@ -139,6 +143,13 @@ export default defineConfig(({ mode }) => {
             },
         },
         plugins: [
+            vue({
+                template: {
+                    compilerOptions: {
+                        isCustomElement: tag => KYC_CUSTOM_ELEMENT_TAGS.includes(tag),
+                    },
+                },
+            }),
             svgr({
                 svgrOptions: { jsxRuntime: 'automatic', exportType: 'default' },
                 esbuildOptions: { jsx: 'automatic' },

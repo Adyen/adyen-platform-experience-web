@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
-import { preact } from '@preact/preset-vite';
+import vue from '@vitejs/plugin-vue';
 import svgr from 'vite-plugin-svgr';
 import { getBuildEnvDefines } from '../../config/defines/build-env';
 import rootPkgJson from '../../package.json';
@@ -16,6 +16,7 @@ const translationsDir = resolve(rootDir, 'packages/shared/core/src/translations'
 const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
 const externalDependencies = Object.keys(rootPkgJson.dependencies);
+const KYC_CUSTOM_ELEMENT_TAGS = ['adyen-business-financing', 'adyen-terms-of-service-management'];
 
 const shouldExcludeAsset = (id: string) => {
     return externalDependencies.includes(id);
@@ -36,21 +37,27 @@ export default defineConfig(({ mode }) => ({
             { find: '@integration-components/sdk-internal', replacement: resolve(rootDir, 'src') },
             { find: '@integration-components/disputes/publish', replacement: resolve(rootDir, 'packages/domains/disputes/publish/src') },
             { find: '@integration-components/disputes/preact', replacement: resolve(rootDir, 'packages/domains/disputes/preact/src') },
+            { find: '@integration-components/disputes/vue', replacement: resolve(rootDir, 'packages/domains/disputes/vue/src') },
             { find: '@integration-components/disputes/domain', replacement: resolve(rootDir, 'packages/domains/disputes/domain/src') },
             { find: '@integration-components/payouts/publish', replacement: resolve(rootDir, 'packages/domains/payouts/publish/src') },
             { find: '@integration-components/payouts/preact', replacement: resolve(rootDir, 'packages/domains/payouts/preact/src') },
+            { find: '@integration-components/payouts/vue', replacement: resolve(rootDir, 'packages/domains/payouts/vue/src') },
             { find: '@integration-components/payouts/domain', replacement: resolve(rootDir, 'packages/domains/payouts/domain/src') },
             { find: '@integration-components/reports/publish', replacement: resolve(rootDir, 'packages/domains/reports/publish/src') },
             { find: '@integration-components/reports/preact', replacement: resolve(rootDir, 'packages/domains/reports/preact/src') },
+            { find: '@integration-components/reports/vue', replacement: resolve(rootDir, 'packages/domains/reports/vue/src') },
             { find: '@integration-components/reports/domain', replacement: resolve(rootDir, 'packages/domains/reports/domain/src') },
             { find: '@integration-components/transactions/publish', replacement: resolve(rootDir, 'packages/domains/transactions/publish/src') },
             { find: '@integration-components/transactions/preact', replacement: resolve(rootDir, 'packages/domains/transactions/preact/src') },
+            { find: '@integration-components/transactions/vue', replacement: resolve(rootDir, 'packages/domains/transactions/vue/src') },
             { find: '@integration-components/transactions/domain', replacement: resolve(rootDir, 'packages/domains/transactions/domain/src') },
             { find: '@integration-components/payByLink/publish', replacement: resolve(rootDir, 'packages/domains/payByLink/publish/src') },
             { find: '@integration-components/payByLink/preact', replacement: resolve(rootDir, 'packages/domains/payByLink/preact/src') },
+            { find: '@integration-components/payByLink/vue', replacement: resolve(rootDir, 'packages/domains/payByLink/vue/src') },
             { find: '@integration-components/payByLink/domain', replacement: resolve(rootDir, 'packages/domains/payByLink/domain/src') },
             { find: '@integration-components/capital/publish', replacement: resolve(rootDir, 'packages/domains/capital/publish/src') },
             { find: '@integration-components/capital/preact', replacement: resolve(rootDir, 'packages/domains/capital/preact/src') },
+            { find: '@integration-components/capital/vue', replacement: resolve(rootDir, 'packages/domains/capital/vue/src') },
             { find: '@integration-components/capital/domain', replacement: resolve(rootDir, 'packages/domains/capital/domain/src') },
         ],
     },
@@ -122,6 +129,12 @@ export default defineConfig(({ mode }) => ({
             esbuildOptions: { jsx: 'automatic' },
             include: '**/*.svg?component',
         }),
-        preact(),
+        vue({
+            template: {
+                compilerOptions: {
+                    isCustomElement: tag => KYC_CUSTOM_ELEMENT_TAGS.includes(tag),
+                },
+            },
+        }),
     ],
 }));

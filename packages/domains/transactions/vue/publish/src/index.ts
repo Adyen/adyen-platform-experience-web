@@ -1,2 +1,1 @@
-export { TransactionDetailsElement } from '../../src';
-export type { TransactionDetailsExternalProps } from '../../src';
+export * from '../../src';

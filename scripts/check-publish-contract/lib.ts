@@ -121,10 +121,10 @@ function getTypeTreeHash(typesDir: string, typeFiles: string[]): string | null {
 
 export function buildSnapshot(root: string): Snapshot {
     const dist = resolve(root, 'dist');
-    const esIndex = resolve(dist, 'es/index.js');
     const cssFile = resolve(dist, 'adyen-platform-experience-web.css');
     const typesDir = resolve(dist, 'types');
     const packageJson = getPackageJsonFields(root);
+    const esIndex = packageJson.module ? resolve(root, packageJson.module) : resolve(dist, 'es/index.js');
     const typeFiles = walkDir(typesDir).filter(filePath => filePath.endsWith('.d.ts'));
 
     return {
