@@ -1,4 +1,4 @@
-import type { CustomThemes, ThemeMode, ThemeVariables } from '../types';
+import type { CustomTheme, ThemeMode, ThemeVariables } from '../types';
 import { ThemeGenerator } from '@adyen/adyen-shared-web';
 
 export const THEME_MODE_ATTRIBUTE = 'data-adyen-pe-theme';
@@ -10,8 +10,8 @@ const hasVariables = (variables: ThemeVariables | undefined): variables is Theme
 export class ThemeManager {
     public constructor(private readonly generator: ThemeStyleGenerator = new ThemeGenerator()) {}
 
-    public apply(mode: ThemeMode = 'light', customThemes?: CustomThemes): void {
-        const variables = customThemes?.[mode];
+    public apply(mode: ThemeMode = 'light', customTheme?: CustomTheme): void {
+        const variables = customTheme?.[mode];
 
         if (hasVariables(variables)) {
             this.generator.create({
@@ -32,8 +32,8 @@ export class ThemeManager {
 
 let themeManager: ThemeManager | undefined;
 
-export const applyTheme = (mode: ThemeMode | undefined, customThemes?: CustomThemes): void => {
+export const applyTheme = (mode: ThemeMode | undefined, customTheme?: CustomTheme): void => {
     if (typeof document === 'undefined') return;
 
-    (themeManager ??= new ThemeManager()).apply(mode, customThemes);
+    (themeManager ??= new ThemeManager()).apply(mode, customTheme);
 };

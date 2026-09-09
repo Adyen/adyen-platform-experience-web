@@ -24,7 +24,7 @@ test.describe('Core theme', () => {
         await updateStoryArgs(page, STORY_ID, {
             coreOptions: {
                 themeMode: 'dark',
-                customThemes: {
+                customTheme: {
                     dark: {
                         background: '#111111',
                         primary: '#0066ff',
@@ -49,7 +49,7 @@ test.describe('Core theme', () => {
         await updateStoryArgs(page, STORY_ID, {
             coreOptions: {
                 themeMode: 'light',
-                customThemes: {
+                customTheme: {
                     light: {
                         background: '#f0f0f0',
                         primary: '#ff0000',
@@ -70,7 +70,7 @@ test.describe('Core theme', () => {
         await updateStoryArgs(page, STORY_ID, {
             coreOptions: {
                 themeMode: undefined,
-                customThemes: undefined,
+                customTheme: undefined,
             },
         });
 

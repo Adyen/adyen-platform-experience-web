@@ -10,15 +10,17 @@ export type { DevEnvironment, onErrorHandler, AnalyticsConfig, SessionObject, Se
 export type ThemeMode = 'dark' | 'light';
 export type ThemeVariables = Omit<ThemeProps, 'dark'>;
 
-export interface CustomThemes {
+export interface CustomTheme {
     light?: ThemeVariables;
     dark?: ThemeVariables;
 }
 
+export type CustomThemes = CustomTheme;
+
 export interface CoreOptions extends BaseCoreOptions {
     balanceAccountId?: string;
     themeMode?: ThemeMode;
-    customThemes?: CustomThemes;
+    customTheme?: CustomTheme;
 }
 
 export interface CoreInstance {

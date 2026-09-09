@@ -8,25 +8,25 @@ export class Core extends BaseCore {
 
     public constructor(options: CoreOptions) {
         super(options);
-        applyTheme(options.themeMode, options.customThemes);
+        applyTheme(options.themeMode, options.customTheme);
     }
 
     public override async update(options: Partial<CoreOptions> = {}): Promise<this> {
         const themeModeChanged = hasOwnProperty(options, 'themeMode');
-        const customThemesChanged = hasOwnProperty(options, 'customThemes');
+        const customThemeChanged = hasOwnProperty(options, 'customTheme');
         const themeChanged =
             (themeModeChanged && options.themeMode !== this.options.themeMode) ||
-            (customThemesChanged && options.customThemes !== this.options.customThemes);
+            (customThemeChanged && options.customTheme !== this.options.customTheme);
 
         if (themeChanged) {
             applyTheme(
                 themeModeChanged ? options.themeMode : this.options.themeMode,
-                customThemesChanged ? options.customThemes : this.options.customThemes
+                customThemeChanged ? options.customTheme : this.options.customTheme
             );
         }
 
-        const hasNonThemeOptions = Object.keys(options).some(option => option !== 'themeMode' && option !== 'customThemes');
-        if ((themeModeChanged || customThemesChanged) && !hasNonThemeOptions) {
+        const hasNonThemeOptions = Object.keys(options).some(option => option !== 'themeMode' && option !== 'customTheme');
+        if ((themeModeChanged || customThemeChanged) && !hasNonThemeOptions) {
             return this.setOptions(options);
         }
 

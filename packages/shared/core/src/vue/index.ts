@@ -9,6 +9,7 @@ export type {
     SessionObject,
     SessionRequest,
     ThemeMode,
+    CustomTheme,
     CustomThemes,
     ThemeVariables,
 } from './types';
