@@ -1,7 +1,8 @@
 @use '@integration-components/style';
 
-.adyen-pe-error-message-display {
+.adyen-pe-core-error-message-display {
     border-radius: style.token(border-radius-m);
+    color: style.token(color-label-primary);
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-060);

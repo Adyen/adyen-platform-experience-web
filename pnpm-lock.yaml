@@ -6,9 +6,12 @@ settings:
 
 catalogs:
   default:
+    '@adyen/bento-design-tokens':
+      specifier: 2.0.0-rc.5
+      version: 2.0.0-rc.5
     '@adyen/bento-vue3':
-      specifier: 1.107.0
-      version: 1.107.0
+      specifier: 2.0.0-rc.5
+      version: 2.0.0-rc.5
     '@adyen/ui-assets-icons-16':
       specifier: 7.9.3
       version: 7.9.3
@@ -55,6 +58,8 @@ catalogs:
 overrides:
   '@babel/core': 7.29.6
   '@babel/plugin-transform-modules-systemjs': 7.29.4
+  '@adyen/bento-design-tokens': 2.0.0-rc.5
+  '@adyen/bento-vue3>vue-router': 5.0.4
   '@types/node': 24.10.13
   axios: 1.18.0
   brace-expansion: 5.0.7
@@ -90,8 +95,8 @@ importers:
         version: 3.41.0
     devDependencies:
       '@adyen/bento-design-tokens':
-        specifier: ^1.7.1
-        version: 1.43.0
+        specifier: 2.0.0-rc.5
+        version: 2.0.0-rc.5
       '@changesets/cli':
         specifier: 3.0.0-next.6
         version: 3.0.0-next.6
@@ -383,7 +388,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 2.0.0-rc.5(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -450,7 +455,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 2.0.0-rc.5(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -526,7 +531,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 2.0.0-rc.5(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -596,7 +601,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 2.0.0-rc.5(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -654,7 +659,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 2.0.0-rc.5(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -748,7 +753,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 2.0.0-rc.5(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@integration-components/core':
         specifier: workspace:*
         version: link:../core
@@ -771,9 +776,18 @@ importers:
 
   packages/shared/core:
     dependencies:
+      '@adyen/adyen-shared-web':
+        specifier: 0.3.0
+        version: 0.3.0
+      '@adyen/bento-design-tokens':
+        specifier: 2.0.0-rc.5
+        version: 2.0.0-rc.5
       '@integration-components/assets':
         specifier: workspace:*
         version: link:../assets
+      '@integration-components/style':
+        specifier: workspace:*
+        version: link:../style
       '@integration-components/types':
         specifier: workspace:*
         version: link:../types
@@ -977,13 +991,14 @@ packages:
   '@adyen/adyen-document-viewer@1.4.2':
     resolution: {}
 
-  '@adyen/bento-design-tokens@1.107.0':
+  '@adyen/adyen-shared-web@0.3.0':
+    resolution: {}
+    engines: {node: '>=20', pnpm: '>=10.16.0'}
+
+  '@adyen/bento-design-tokens@2.0.0-rc.5':
     resolution: {}
 
-  '@adyen/bento-design-tokens@1.43.0':
-    resolution: {}
-
-  '@adyen/bento-vue3@1.107.0':
+  '@adyen/bento-vue3@2.0.0-rc.5':
     resolution: {}
     peerDependencies:
       vue: ^3.2.47
@@ -3511,6 +3526,9 @@ packages:
   chokidar@5.0.0:
     resolution: {}
     engines: {node: '>= 20.19.0'}
+
+  chroma-js@3.2.0:
+    resolution: {}
 
   chrome-trace-event@1.0.4:
     resolution: {}
@@ -6804,13 +6822,16 @@ snapshots:
     optionalDependencies:
       '@rollup/rollup-darwin-x64': 4.59.0
 
-  '@adyen/bento-design-tokens@1.107.0': {}
-
-  '@adyen/bento-design-tokens@1.43.0': {}
-
-  '@adyen/bento-vue3@1.107.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)':
+  '@adyen/adyen-shared-web@0.3.0':
     dependencies:
-      '@adyen/bento-design-tokens': 1.107.0
+      '@adyen/bento-design-tokens': 2.0.0-rc.5
+      chroma-js: 3.2.0
+
+  '@adyen/bento-design-tokens@2.0.0-rc.5': {}
+
+  '@adyen/bento-vue3@2.0.0-rc.5(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)':
+    dependencies:
+      '@adyen/bento-design-tokens': 2.0.0-rc.5
       '@floating-ui/core': 1.6.8
       '@floating-ui/vue': 1.0.7(vue@3.5.31(typescript@5.8.3))
       '@types/mdast': 3.0.15
@@ -9765,6 +9786,8 @@ snapshots:
     dependencies:
       readdirp: 5.0.0
     optional: true
+
+  chroma-js@3.2.0: {}
 
   chrome-trace-event@1.0.4: {}
 

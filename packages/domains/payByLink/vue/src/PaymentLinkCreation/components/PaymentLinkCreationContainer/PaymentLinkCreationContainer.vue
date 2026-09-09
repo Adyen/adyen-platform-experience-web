@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import PaymentLinkCreationForm from '../PaymentLinkCreationFormContainer/PaymentLinkCreationForm.vue';
 import FormSuccess from '../Form/FormSuccess/FormSuccess.vue';
 import type { PaymentLinkCreationFormValues, CreatedPaymentLink, PaymentLinkCreationProps } from '../../../../../domain/src';
-import '@adyen/bento-vue3/styles/bento-light';
 import styles from './PaymentLinkCreationContainer.module.scss';
 
 type PaymentLinkCreationContainerProps = PaymentLinkCreationProps & {

@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue';
 import { getEnvironment } from '../../../../../../envs/getEnvs.ts';
 import { realApiProxies } from '../../../../../../endpoints/realApiProxies.js';
 import { getBaseEnvDefines } from '../../../../../../config/defines/base-env.ts';
+import { rewriteBentoCssVariables } from '../../../../../../config/vite/rewriteBentoCssVariables.ts';
 
 const root = '../../../../../..';
 const rootDir = resolve(import.meta.dirname, root);
@@ -38,6 +39,7 @@ const config: StorybookConfig = {
                     const list = Array.isArray(result) ? result : [result];
                     return list.map(p => ({ ...(p as any), enforce: 'pre' as const }));
                 })(),
+                rewriteBentoCssVariables(),
             ],
             resolve: {
                 alias: {

@@ -81,11 +81,12 @@ watch(
     { immediate: true }
 );
 
-function onTermsAndConditionsURLInput(value: string) {
+function onTermsAndConditionsURLInput(value: string | number) {
+    const url = String(value);
     showInvalidURL.value = false;
-    termsAndConditionsURL.value = value;
-    if (isValidURL(value)) {
-        setPayload({ termsOfServiceUrl: value });
+    termsAndConditionsURL.value = url;
+    if (isValidURL(url)) {
+        setPayload({ termsOfServiceUrl: url });
     }
 }
 
@@ -141,10 +142,10 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
                         :readonly="!!isSaving"
                         :lang="i18n.locale"
                         :label="i18n.get('payByLink.settings.termsAndConditions.urlInput.label')"
-                        :value="termsAndConditionsURL"
+                        :model-value="termsAndConditionsURL"
                         :max-length="2000"
                         :error-message="showInvalidURL ? i18n.get('payByLink.settings.termsAndConditions.error.urlValidation') : undefined"
-                        @input="onTermsAndConditionsURLInput"
+                        @update:model-value="onTermsAndConditionsURLInput"
                     />
                 </div>
                 <BentoAlert v-if="isTermsAndConditionsChanged" type="warning" variant="tip" role="alert" :class="styles.alert">

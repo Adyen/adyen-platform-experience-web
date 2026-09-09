@@ -115,7 +115,7 @@ function onNumberInput(value: string | number) {
 </script>
 
 <template>
-    <FieldWrapper v-if="config.visible && !shouldHide" name="telephoneNumber" :error="error">
+    <FieldWrapper v-if="config.visible && !shouldHide" name="telephoneNumber">
         <BentoInputField
             variant="dropdown"
             :label="i18n.get('payByLink.creation.fields.shopperPhone.label')"
@@ -124,10 +124,10 @@ function onNumberInput(value: string | number) {
             :model-value="phoneNumber"
             :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.telephoneNumber.max"
             :readonly="config.readOnly"
-            :error="!!error"
+            :error-message="error"
             :dropdown="phoneDropdownProps"
             dropdown-position="start"
-            @input="onNumberInput"
+            @update:model-value="onNumberInput"
             @dropdown-input="onPrefixUpdate"
         />
     </FieldWrapper>

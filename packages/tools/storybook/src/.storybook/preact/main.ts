@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { preact } from '@preact/preset-vite';
 import { getEnvironment } from '../../../../../../envs/getEnvs.ts';
 import { getBaseEnvDefines } from '../../../../../../config/defines/base-env.ts';
+import { rewriteBentoCssVariables } from '../../../../../../config/vite/rewriteBentoCssVariables.ts';
 import { realApiProxies } from '../../../../../../endpoints/realApiProxies.js';
 import type { StorybookConfig } from '@storybook/preact-vite';
 
@@ -46,6 +47,7 @@ const config: StorybookConfig = {
                     esbuildOptions: { jsx: 'automatic' },
                     include: '**/*.svg?component',
                 }),
+                rewriteBentoCssVariables(),
             ],
             resolve: {
                 alias: {

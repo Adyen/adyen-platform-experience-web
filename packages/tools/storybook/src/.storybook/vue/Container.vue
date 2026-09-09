@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { type CoreInstance, type SupportedLocales, type CoreOptions, UIElement } from '@integration-components/core/vue';
+import { Core, type CoreInstance, type SupportedLocales, type CoreOptions, UIElement } from '@integration-components/core/vue';
 import { getMySessionToken } from '@integration-components/testing/storybook-helpers';
-import { Core } from '@integration-components/core';
 import '../../shared/styles.scss';
 
 const props = defineProps<{
@@ -20,6 +19,9 @@ const isCoreReady = ref(false);
 
 let core: CoreInstance | undefined;
 let element: UIElement<Record<string, unknown>> | undefined;
+let pendingCoreOptions: Partial<CoreOptions> | undefined;
+
+const storyCoreOptions = computed(() => (props.componentProps?.coreOptions ?? {}) as Partial<CoreOptions>);
 
 const componentPropsWithoutCoreOptions = computed(() => {
     const { coreOptions: _, ...rest } = props.componentProps ?? {};
@@ -32,16 +34,18 @@ async function initializeCore() {
         isCoreReady.value = false;
         error.value = null;
 
-        const { coreOptions } = props.componentProps ?? {};
-
-        const instance = new Core<[], Record<never, never>>({
+        const instance = new Core({
             environment: 'test',
             locale: props.locale || 'en-US',
             onSessionCreate: (_signal: AbortSignal) => getMySessionToken(props.session),
-            ...((coreOptions ?? {}) as Partial<CoreOptions>),
+            ...storyCoreOptions.value,
         });
 
         core = await instance.initialize();
+        if (pendingCoreOptions) {
+            await core.update(pendingCoreOptions);
+            pendingCoreOptions = undefined;
+        }
         isCoreReady.value = true;
 
         // Setting isCoreReady schedules removal of the initializing placeholder.
@@ -58,6 +62,15 @@ async function initializeCore() {
 }
 
 onMounted(initializeCore);
+
+watch(
+    storyCoreOptions,
+    options => {
+        if (core) return core.update(options);
+        pendingCoreOptions = options;
+    },
+    { deep: true }
+);
 
 // prettier-ignore
 watch(

@@ -33,7 +33,7 @@ function onUpdate(value: string | number | { value?: string | number } | Array<u
 </script>
 
 <template>
-    <FieldWrapper v-if="config.visible" :name="props.name" :error="error">
+    <FieldWrapper v-if="config.visible" :name="props.name">
         <BentoDropdown
             :items="dropdownItems"
             :label="props.label"
@@ -42,7 +42,7 @@ function onUpdate(value: string | number | { value?: string | number } | Array<u
             dynamic-filtering
             :optional="!config.required && !props.hideOptionalLabel"
             :readonly="config.readOnly || props.loading"
-            :error="!!error"
+            :error-message="error"
             @update:model-value="onUpdate"
         />
     </FieldWrapper>

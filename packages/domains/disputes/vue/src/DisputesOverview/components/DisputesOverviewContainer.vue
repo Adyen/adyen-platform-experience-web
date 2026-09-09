@@ -5,7 +5,6 @@ import { useCoreContext } from '@integration-components/core/vue';
 import { useBalanceAccounts } from '@integration-components/composables-vue';
 import DisputesOverview from './DisputesOverview.vue';
 import type { DisputesOverviewProps } from '../types';
-import '@adyen/bento-vue3/styles/bento-light';
 
 const props = defineProps<DisputesOverviewProps>();
 
