@@ -51,7 +51,7 @@ sessionAwareTest('/reports/download endpoint should return consistent data', asy
     const reportFilenameDateFragment = new Date(ENV.reportCreationDate).toISOString().split('T')[0]!.replace(/-/g, '_');
     const responseHeaders = reportDownload.headers();
     const responseData = await reportDownload.body();
-    const [csvColumnRow, ...csvDataRows] = responseData.toString().split('\n');
+    const [csvColumnRow, ...csvDataRows] = responseData.toString().split(/\r?\n/);
 
     expect(responseHeaders).toMatchObject({
         'content-disposition': `attachment; filename=balanceaccount_${ENV.reportType}_report_${reportFilenameDateFragment}.csv`,
