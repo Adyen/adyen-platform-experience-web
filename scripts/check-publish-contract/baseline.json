@@ -306,14 +306,6 @@
         "packages/shared/types/src/element.d.ts",
         "packages/shared/types/src/index.d.ts",
         "packages/shared/types/src/select.d.ts",
-        "packages/shared/types/src/uiComponents/button.d.ts",
-        "packages/shared/types/src/uiComponents/buttonActions.d.ts",
-        "packages/shared/types/src/uiComponents/dataGrid.d.ts",
-        "packages/shared/types/src/uiComponents/index.d.ts",
-        "packages/shared/types/src/uiComponents/interaction.d.ts",
-        "packages/shared/types/src/uiComponents/modal.d.ts",
-        "packages/shared/types/src/uiComponents/popover.d.ts",
-        "packages/shared/types/src/uiComponents/timeRange.d.ts",
         "packages/shared/utils/src/abort/constants.d.ts",
         "packages/shared/utils/src/abort/internals.d.ts",
         "packages/shared/utils/src/abort/main.d.ts",
@@ -402,7 +394,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "ca14e25c97cb5d74798ddc5356e4c5d3ddeed9891ee57ad62e17726e1eadbeb5",
+    "typeTreeHash": "cdc6aae7ef1dda0c5d5956f80333f5cacb69e58cd6b3d89fc731e3682c0a3098",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",
