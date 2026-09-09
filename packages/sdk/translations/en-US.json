@@ -1,6 +1,9 @@
 {
     "capital.common.actions.contactSupport": "Contact support",
+    "capital.common.actions.contactSupport.labels.reachOut": "Reach out to support",
+    "capital.common.actions.dismiss.labels.dismiss": "Dismiss",
     "capital.common.actions.goBack": "Go back",
+    "capital.common.actions.refresh.labels.default": "Refresh",
     "capital.common.errors.errorCode": "The error code is %{requestId}",
     "capital.common.errors.errorCodeSupport": "Contact support for help and share error code %{requestId}",
     "capital.common.errors.retry": "Try refreshing the page or come back later.",

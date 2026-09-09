@@ -1,6 +1,9 @@
 {
     "capital.common.actions.contactSupport": "Support kontaktieren",
+    "capital.common.actions.contactSupport.labels.reachOut": "Wenden Sie sich an den Support",
+    "capital.common.actions.dismiss.labels.dismiss": "OK",
     "capital.common.actions.goBack": "Zurück",
+    "capital.common.actions.refresh.labels.default": "Aktualisieren",
     "capital.common.errors.errorCode": "Der Fehlercode lautet %{requestId}",
     "capital.common.errors.errorCodeSupport": "Kontaktieren Sie den Support, um Hilfe zu erhalten, und geben Sie den Fehlercode %{requestId} an.",
     "capital.common.errors.retry": "Versuchen Sie, die Seite zu aktualisieren, oder schauen Sie später noch einmal vorbei.",

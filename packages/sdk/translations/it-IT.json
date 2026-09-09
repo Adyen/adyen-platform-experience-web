@@ -1,6 +1,9 @@
 {
     "capital.common.actions.contactSupport": "Contatta il supporto",
+    "capital.common.actions.contactSupport.labels.reachOut": "Contatta il supporto",
+    "capital.common.actions.dismiss.labels.dismiss": "Ignora",
     "capital.common.actions.goBack": "Torna indietro",
+    "capital.common.actions.refresh.labels.default": "Aggiorna",
     "capital.common.errors.errorCode": "Il codice di errore è %{requestId}",
     "capital.common.errors.errorCodeSupport": "Contatta l'assistenza per un aiuto e condividi il codice di errore %{requestId}",
     "capital.common.errors.retry": "Prova ad aggiornare la pagina o torna più tardi.",

@@ -56,6 +56,10 @@ jobs:
           git fetch --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
           node scripts/process-translations/validate-sdk-instructions.mjs "origin/${BASE_REF}"
 
+      - name: Validate V2 SDK translation catalogs
+        if: steps.skip-check.outcome != 'success'
+        run: node scripts/process-translations/sync-v2-sdk-catalogs.mjs --check
+
       - name: Validate V1 Changesets policy
         if: steps.skip-check.outcome != 'success' && github.event.pull_request.base.ref == 'version/v1.x'
         env:

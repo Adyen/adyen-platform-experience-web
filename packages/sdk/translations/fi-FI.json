@@ -1,6 +1,9 @@
 {
     "capital.common.actions.contactSupport": "Ota yhteyttä asiakaspalveluun",
+    "capital.common.actions.contactSupport.labels.reachOut": "Ota yhteyttä tukeen",
+    "capital.common.actions.dismiss.labels.dismiss": "Hylkää",
     "capital.common.actions.goBack": "Palaa takaisin",
+    "capital.common.actions.refresh.labels.default": "Lataa uudelleen",
     "capital.common.errors.errorCode": "Virhekoodi on %{requestId}",
     "capital.common.errors.errorCodeSupport": "Pyydä apua ottamalla yhteyttä tukeen. Kerro tuelle seuraava virhekoodi: %{requestId}.",
     "capital.common.errors.retry": "Yritä ladata sivu uudelleen tai palata takaisin myöhemmin.",

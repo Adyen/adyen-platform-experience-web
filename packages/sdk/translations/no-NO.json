@@ -1,6 +1,9 @@
 {
     "capital.common.actions.contactSupport": "Kontakt brukerstøtten",
+    "capital.common.actions.contactSupport.labels.reachOut": "Ta kontakt med brukerstøtten",
+    "capital.common.actions.dismiss.labels.dismiss": "Avvis",
     "capital.common.actions.goBack": "Gå tilbake",
+    "capital.common.actions.refresh.labels.default": "Oppdater",
     "capital.common.errors.errorCode": "Feilkoden er %{requestId}",
     "capital.common.errors.errorCodeSupport": "Kontakt brukerstøtten for hjelp og del feilkoden %{requestId}",
     "capital.common.errors.retry": "Prøv å oppdatere siden, eller kom tilbake senere.",

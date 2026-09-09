@@ -79,7 +79,9 @@
     "test:integration:vue": "cross-env STORYBOOK_FRAMEWORK=vue pnpm run test:integration",
     "test:integration:ui": "pnpm run test:integration --ui",
     "test:release": "node --test scripts/release-v1/*.test.mjs scripts/npm-publish/*.test.mjs",
+    "translations:check-v2": "node scripts/process-translations/sync-v2-sdk-catalogs.mjs --check",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
+    "translations:sync-v2": "node scripts/process-translations/sync-v2-sdk-catalogs.mjs",
     "types:check": "nx run-many --target=types:check",
     "types:watch": "concurrently --kill-others-on-fail 'nx run-many --target=types:watch' 'tsc --project tsconfig-build.json --watch'",
     "version": "./scripts/bump-version.sh"

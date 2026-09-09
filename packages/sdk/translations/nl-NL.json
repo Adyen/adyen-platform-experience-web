@@ -1,6 +1,9 @@
 {
     "capital.common.actions.contactSupport": "Neem contact op met support",
+    "capital.common.actions.contactSupport.labels.reachOut": "Neem contact met support",
+    "capital.common.actions.dismiss.labels.dismiss": "Negeren",
     "capital.common.actions.goBack": "Terug",
+    "capital.common.actions.refresh.labels.default": "Vernieuwen",
     "capital.common.errors.errorCode": "De foutcode is %{requestId}",
     "capital.common.errors.errorCodeSupport": "Neem contact op met support voor hulp en vermeld de foutcode %{requestId}",
     "capital.common.errors.retry": "Probeer de pagina te vernieuwen of kom later terug.",
