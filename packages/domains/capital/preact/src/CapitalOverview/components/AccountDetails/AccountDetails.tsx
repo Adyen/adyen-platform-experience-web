@@ -1,17 +1,8 @@
 import cx from 'classnames';
-import { Fragment, h } from 'preact';
+import { h } from 'preact';
 import { useMemo } from 'preact/hooks';
 import { AccountDetail } from './AccountDetail';
-import {
-    CapitalBankAccount,
-    CapitalBankAccountField,
-    getBankAccountFieldCopyButtonTranslationKey,
-    getBankAccountFieldFormattedValue,
-    getBankAccountFields,
-    getBankAccountFieldTextToCopy,
-    getBankAccountFieldTranslationKey,
-    isBankAccountFieldPrimary,
-} from '@integration-components/capital/domain';
+import { CapitalBankAccount, getBankAccountDetails } from '@integration-components/capital/domain';
 
 import './AccountDetails.scss';
 import { AriaAttributes } from 'preact/compat';
@@ -30,27 +21,23 @@ export interface AccountDetailsProps extends Pick<AriaAttributes, 'aria-label' |
 }
 
 export const AccountDetails = ({ bankAccount, className, ...ariaAttributes }: AccountDetailsProps) => {
-    const bankAccountFields = useMemo(() => getBankAccountFields(bankAccount), [bankAccount]);
+    const accountDetails = useMemo(() => getBankAccountDetails(bankAccount), [bankAccount]);
 
     return (
         <dl className={cx(BASE_CLASS, className)} {...ariaAttributes}>
-            {bankAccountFields.map(field => {
-                const fieldValue = bankAccount[field as CapitalBankAccountField];
-                return fieldValue ? (
-                    <Fragment key={field}>
-                        <AccountDetail
-                            className={CLASS_NAMES.detail}
-                            contentClassName={CLASS_NAMES.detailContent}
-                            isPrimary={isBankAccountFieldPrimary(field)}
-                            labelClassName={CLASS_NAMES.detailLabel}
-                            label={getBankAccountFieldTranslationKey(field)}
-                            copyButtonLabel={getBankAccountFieldCopyButtonTranslationKey(field)}
-                            content={getBankAccountFieldFormattedValue(field, fieldValue)!}
-                            textToCopy={getBankAccountFieldTextToCopy(field, fieldValue)}
-                        />
-                    </Fragment>
-                ) : null;
-            })}
+            {accountDetails.map(detail => (
+                <AccountDetail
+                    key={detail.field}
+                    className={CLASS_NAMES.detail}
+                    contentClassName={CLASS_NAMES.detailContent}
+                    isPrimary={detail.isPrimary}
+                    labelClassName={CLASS_NAMES.detailLabel}
+                    label={detail.label}
+                    copyButtonLabel={detail.copyButtonLabel}
+                    content={detail.content}
+                    textToCopy={detail.textToCopy}
+                />
+            ))}
         </dl>
     );
 };

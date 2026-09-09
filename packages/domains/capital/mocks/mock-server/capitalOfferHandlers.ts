@@ -7,6 +7,7 @@ import {
     CAPITAL_STATE_UNSUPPORTED_REGION,
     CAPITAL_STATE_US,
     CAPITAL_STATE_CA,
+    CAPITAL_STATE_SINGLE_TERM,
 } from '../mock-data/capital';
 import { http, HttpResponse } from 'msw';
 import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
@@ -49,6 +50,11 @@ export const capitalOfferHandlers = {
     earlyRenewal: [
         http.get(CAPITAL_ENDPOINTS.capitalState, () => {
             return HttpResponse.json(CAPITAL_STATE_RENEWABLE_GRANT);
+        }),
+    ],
+    singleTerm: [
+        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
+            return HttpResponse.json(CAPITAL_STATE_SINGLE_TERM);
         }),
     ],
     errorOffer: [

@@ -1,0 +1,24 @@
+@use '@integration-components/style';
+
+.root {
+    margin-top: style.token(spacer-040);
+}
+
+.root :global(.b-structured-list) {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-030);
+
+    dd {
+        text-align: right;
+    }
+}
+
+.content {
+    padding-bottom: style.token(spacer-060);
+    padding-top: style.token(spacer-060);
+}
+
+.header {
+    margin-bottom: style.token(spacer-060);
+}
