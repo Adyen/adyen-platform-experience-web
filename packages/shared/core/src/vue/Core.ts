@@ -14,12 +14,20 @@ export class Core extends BaseCore {
     public override async update(options: Partial<CoreOptions> = {}): Promise<this> {
         const themeModeChanged = hasOwnProperty(options, 'themeMode');
         const customThemesChanged = hasOwnProperty(options, 'customThemes');
+        const themeChanged =
+            (themeModeChanged && options.themeMode !== this.options.themeMode) ||
+            (customThemesChanged && options.customThemes !== this.options.customThemes);
 
-        if (themeModeChanged || customThemesChanged) {
+        if (themeChanged) {
             applyTheme(
                 themeModeChanged ? options.themeMode : this.options.themeMode,
                 customThemesChanged ? options.customThemes : this.options.customThemes
             );
+        }
+
+        const hasNonThemeOptions = Object.keys(options).some(option => option !== 'themeMode' && option !== 'customThemes');
+        if ((themeModeChanged || customThemesChanged) && !hasNonThemeOptions) {
+            return this.setOptions(options);
         }
 
         return await super.update(options);

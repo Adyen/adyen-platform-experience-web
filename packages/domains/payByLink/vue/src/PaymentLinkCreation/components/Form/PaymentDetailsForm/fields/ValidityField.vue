@@ -107,7 +107,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                 @update:model-value="onPresetUpdate"
             />
         </FieldWrapper>
-        <FieldWrapper v-if="selection === FLEXIBLE_VALIDITY_ID" name="linkValidity.quantity" :error="error">
+        <FieldWrapper v-if="selection === FLEXIBLE_VALIDITY_ID" name="linkValidity.quantity">
             <div :class="styles.custom">
                 <BentoInputField
                     :label="i18n.get('payByLink.creation.fields.validity.customDuration.label')"
@@ -115,7 +115,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                     :model-value="quantity"
                     :min="1"
                     :readonly="config.readOnly"
-                    :error="!!error"
+                    :error-message="error"
                     @update:model-value="onQuantityInput"
                 />
                 <BentoDropdown
@@ -123,7 +123,6 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                     :placeholder="i18n.get('common.inputs.select.placeholder')"
                     :model-value="unit"
                     :readonly="config.readOnly"
-                    :error="!!error"
                     @update:model-value="onUnitUpdate"
                 />
             </div>

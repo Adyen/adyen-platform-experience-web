@@ -14,7 +14,7 @@ import {
     TransactionsOverviewComponentView,
 } from '@integration-components/testing/msw';
 import { PAY_BY_LINK_ENDPOINTS } from '../endpoints';
-import { IPaymentLinkStatusGroup } from '@integration-components/types';
+import { IPaymentLinkSettingsRequest, IPaymentLinkStatusGroup } from '@integration-components/types';
 import {
     PAY_BY_LINK_FILTERS,
     STORES,
@@ -399,13 +399,13 @@ export const payByLinkMocks = [
 
     // POST /paybylink/settings/{storeId}
     http.post(mockPayByLinkEndpoints.settings, async ({ request }) => {
-        const body = (await request.clone().json()) as Record<string, any>;
+        const body = (await request.clone().json()) as IPaymentLinkSettingsRequest;
         await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
 
-        return HttpResponse.json({ termsOfServiceUrl: body?.termsOfServiceUrl }, { status: 200 });
+        return HttpResponse.json({ termsOfServiceUrl: body.termsOfServiceUrl }, { status: 200 });
     }),
 
     // GET /paybylink/paymentLinks/{paymentLinkId} - Single payment link details (returns full PaymentLinkDetails)

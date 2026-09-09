@@ -10,7 +10,7 @@ test.describe('Payment link creation - Robustness', () => {
         await expect(page.getByTestId('form-field-telephoneNumber').getByRole('textbox')).toHaveValue('');
 
         await page.getByRole('button', { name: 'Continue' }).click();
-        await expect(page.getByTestId('field-error-telephoneNumber')).toHaveText('This field is required');
+        await expect(page.getByTestId('form-field-telephoneNumber').locator('[aria-live="polite"]')).toContainText('This field is required');
     });
 
     test('Should ignore an invalid prefilled delivery date', async ({ page }) => {

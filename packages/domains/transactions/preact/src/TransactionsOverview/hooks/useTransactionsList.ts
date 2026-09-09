@@ -10,10 +10,8 @@ import { useCustomColumnsData } from '@integration-components/hooks-preact';
 import { useConfigContext } from '@integration-components/core/preact';
 import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
 
-export interface UseTransactionsListProps extends Pick<
-    TransactionsOverviewComponentProps,
-    'allowLimitSelection' | 'dataCustomization' | 'onFiltersChanged' | 'preferredLimit'
-> {
+export interface UseTransactionsListProps
+    extends Pick<TransactionsOverviewComponentProps, 'allowLimitSelection' | 'dataCustomization' | 'onFiltersChanged' | 'preferredLimit'> {
     fetchEnabled: boolean;
     filters: Readonly<TransactionsFilters>;
     now: number;

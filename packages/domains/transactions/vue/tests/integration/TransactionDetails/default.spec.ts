@@ -206,7 +206,9 @@ test.describe('Default', () => {
 
         test('should freeze interactions when refund is in progress', async ({ page }) => {
             // [TODO]: Address missing ARIA label association with spinbutton (number input)
-            const amountInput = page.getByRole('spinbutton', {/*name: 'Amount to refund', exact: true,*/});
+            const amountInput = page.getByRole('spinbutton', {
+                /*name: 'Amount to refund', exact: true,*/
+            });
             // [TODO]: Address missing ARIA label association with combobox (refund reason select dropdown)
             const reasonSelect = page.getByRole('combobox', { /*name: 'Reason for refund', exact: true,*/ expanded: false });
             const disabledRefundButton = page.getByRole('button', { name: 'In progress..', exact: true, disabled: true });

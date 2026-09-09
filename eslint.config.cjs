@@ -198,7 +198,6 @@ module.exports = [
             'react-hooks/rules-of-hooks': 'off',
             'react-hooks/exhaustive-deps': 'off',
             'react-hooks/purity': 'off',
-            'react-hooks/immutability': 'off',
         },
     },
 

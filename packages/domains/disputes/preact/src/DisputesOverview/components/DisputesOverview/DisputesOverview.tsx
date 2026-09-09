@@ -186,7 +186,6 @@ export const DisputesOverview = ({
     const defaultFilters = Object.assign(defaultParams.current.defaultFilterParams, {
         [DISPUTE_REASONS_FILTER_PARAM]: undefined,
         [DISPUTE_SCHEMES_FILTER_PARAM]: undefined,
-        // eslint-disable-next-line react-hooks/purity -- The timestamp is a request cache-buster, not rendered output.
         [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now(),
         statusGroup: DEFAULT_DISPUTE_STATUS_GROUP,
     });
@@ -330,7 +329,6 @@ export const DisputesOverview = ({
         refreshNowTimestamp();
 
         if ((filters['statusGroup' as FilterParam]! as IDisputeStatusGroup) !== 'FRAUD_ALERTS') {
-            // eslint-disable-next-line react-hooks/immutability -- The ref retains the last non-fraud filter without triggering another render.
             cachedDisputeReasonsFilter.current = filters[DISPUTE_REASONS_FILTER_PARAM as FilterParam];
         }
     }, [filters, refreshNowTimestamp]);

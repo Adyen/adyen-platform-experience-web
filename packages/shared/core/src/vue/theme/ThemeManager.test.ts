@@ -1,10 +1,11 @@
 /**
  * @vitest-environment jsdom
  */
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { ThemeProps } from '@adyen/adyen-shared-web';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ThemeGenerator, ThemeProps } from '@adyen/adyen-shared-web';
 import { ThemeManager, applyTheme, THEME_MODE_ATTRIBUTE } from './ThemeManager';
-import type { ThemeStyleGenerator } from './ThemeGeneratorAdapter';
+
+type ThemeStyleGenerator = Pick<ThemeGenerator, 'create' | 'destroy'>;
 
 const createGenerator = (): ThemeStyleGenerator => ({
     create: vi.fn(),
@@ -18,7 +19,7 @@ describe('ThemeManager', () => {
     beforeEach(() => {
         document.documentElement.removeAttribute(THEME_MODE_ATTRIBUTE);
         generator = createGenerator();
-        manager = new ThemeManager(document, generator);
+        manager = new ThemeManager(generator);
     });
 
     it('uses the light Bento defaults when the theme is undefined', () => {
@@ -82,6 +83,10 @@ describe('ThemeManager', () => {
 
 describe('applyTheme', () => {
     it('does nothing when no document is available', () => {
-        expect(() => applyTheme('dark', undefined, undefined)).not.toThrow();
+        vi.stubGlobal('document', undefined);
+
+        expect(() => applyTheme('dark')).not.toThrow();
     });
+
+    afterEach(() => vi.unstubAllGlobals());
 });

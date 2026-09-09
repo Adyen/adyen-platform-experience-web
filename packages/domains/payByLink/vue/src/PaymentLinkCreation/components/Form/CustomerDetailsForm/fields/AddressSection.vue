@@ -81,18 +81,13 @@ function onInput(field: string, value: string | number) {
         </div>
         <div :class="styles.row">
             <template v-for="field in STREET_ROW_FIELDS" :key="field">
-                <FieldWrapper
-                    v-if="getConfig(field).visible"
-                    :name="fieldName(field)"
-                    :error="getError(field)"
-                    :class="STREET_ROW_FIELD_CLASSES[field]"
-                >
+                <FieldWrapper v-if="getConfig(field).visible" :name="fieldName(field)" :class="STREET_ROW_FIELD_CLASSES[field]">
                     <BentoInputField
                         :label="getLabel(field)"
                         type="text"
                         :model-value="getValue(field)"
                         :readonly="getConfig(field).readOnly"
-                        :error="!!getError(field)"
+                        :error-message="getError(field)"
                         :maxlength="getMaxLength(field)"
                         @update:model-value="(value: string | number) => onInput(field, value)"
                     />
@@ -110,13 +105,13 @@ function onInput(field: string, value: string | number) {
                 hide-optional-label
             />
             <template v-for="field in CITY_ROW_FIELDS" :key="field">
-                <FieldWrapper v-if="getConfig(field).visible" :name="fieldName(field)" :error="getError(field)">
+                <FieldWrapper v-if="getConfig(field).visible" :name="fieldName(field)">
                     <BentoInputField
                         :label="getLabel(field)"
                         type="text"
                         :model-value="getValue(field)"
                         :readonly="getConfig(field).readOnly"
-                        :error="!!getError(field)"
+                        :error-message="getError(field)"
                         :maxlength="getMaxLength(field)"
                         @update:model-value="(value: string | number) => onInput(field, value)"
                     />

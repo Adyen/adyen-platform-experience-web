@@ -46,7 +46,7 @@ const useReactiveState = <Value, Param extends string>(
             if (updateValue === currentValue) return;
 
             const flagIndex = Math.floor(index / 32);
-            const updateFlag = 1 << (index % 32);
+            const updateFlag = 1 << index % 32;
 
             stateUpdate[key] = updateValue;
             stateUpdateFlags[flagIndex] = (stateUpdateFlags[flagIndex] ?? 0) | updateFlag;

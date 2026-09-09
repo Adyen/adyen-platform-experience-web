@@ -70,13 +70,41 @@ describe('Vue Core theme lifecycle', () => {
             themeMode: 'dark',
             customThemes,
         });
+        const component = {
+            _id: 'component',
+            core,
+            update: vi.fn(),
+            unmount: vi.fn(),
+        };
+        core.registerComponent(component);
         vi.mocked(applyTheme).mockClear();
 
         await core.update({ themeMode: 'light' });
 
         expect(applyTheme).toHaveBeenCalledWith('light', customThemes);
+        expect(component.update).not.toHaveBeenCalled();
         expect(core.options.themeMode).toBe('light');
         expect(core.options.customThemes).toBe(customThemes);
+    });
+
+    it('skips unchanged theme updates', async () => {
+        const core = createCore();
+        const component = {
+            _id: 'component',
+            core,
+            update: vi.fn(),
+            unmount: vi.fn(),
+        };
+        core.registerComponent(component);
+        vi.mocked(applyTheme).mockClear();
+
+        await core.update({
+            themeMode: core.options.themeMode,
+            customThemes: core.options.customThemes,
+        });
+
+        expect(applyTheme).not.toHaveBeenCalled();
+        expect(component.update).not.toHaveBeenCalled();
     });
 
     it('changes custom themes without changing theme mode', async () => {

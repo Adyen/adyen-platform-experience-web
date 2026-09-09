@@ -1,17 +1,14 @@
 import type { CustomThemes, ThemeMode, ThemeVariables } from '../types';
-import { createThemeStyleGenerator, type ThemeStyleGenerator } from './ThemeGeneratorAdapter';
+import { ThemeGenerator } from '@adyen/adyen-shared-web';
 
 export const THEME_MODE_ATTRIBUTE = 'data-adyen-pe-theme';
 
-const themeManagers = new WeakMap<Document, ThemeManager>();
+type ThemeStyleGenerator = Pick<ThemeGenerator, 'create' | 'destroy'>;
 
 const hasVariables = (variables: ThemeVariables | undefined): variables is ThemeVariables => !!variables && Object.keys(variables).length > 0;
 
 export class ThemeManager {
-    public constructor(
-        private readonly targetDocument: Document,
-        private readonly generator: ThemeStyleGenerator
-    ) {}
+    public constructor(private readonly generator: ThemeStyleGenerator = new ThemeGenerator()) {}
 
     public apply(mode: ThemeMode = 'light', customThemes?: CustomThemes): void {
         const variables = customThemes?.[mode];
@@ -26,28 +23,17 @@ export class ThemeManager {
         }
 
         if (mode === 'dark') {
-            this.targetDocument.documentElement.setAttribute(THEME_MODE_ATTRIBUTE, 'dark');
+            document.documentElement.setAttribute(THEME_MODE_ATTRIBUTE, 'dark');
         } else {
-            this.targetDocument.documentElement.removeAttribute(THEME_MODE_ATTRIBUTE);
+            document.documentElement.removeAttribute(THEME_MODE_ATTRIBUTE);
         }
     }
 }
 
-const getDefaultDocument = (): Document | undefined => (typeof document === 'undefined' ? undefined : document);
+let themeManager: ThemeManager | undefined;
 
-export const applyTheme = (
-    mode: ThemeMode | undefined,
-    customThemes?: CustomThemes,
-    targetDocument: Document | undefined = getDefaultDocument()
-): void => {
-    if (!targetDocument) return;
+export const applyTheme = (mode: ThemeMode | undefined, customThemes?: CustomThemes): void => {
+    if (typeof document === 'undefined') return;
 
-    let manager = themeManagers.get(targetDocument);
-
-    if (!manager) {
-        manager = new ThemeManager(targetDocument, createThemeStyleGenerator());
-        themeManagers.set(targetDocument, manager);
-    }
-
-    manager.apply(mode, customThemes);
+    (themeManager ??= new ThemeManager()).apply(mode, customThemes);
 };

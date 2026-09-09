@@ -1,15 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import {
-    Core,
-    type CoreInstance,
-    type SupportedLocales,
-    type CoreOptions,
-    type CustomThemes,
-    type ThemeMode,
-    type ThemeVariables,
-    UIElement,
-} from '@integration-components/core/vue';
+import { Core, type CoreInstance, type SupportedLocales, type CoreOptions, UIElement } from '@integration-components/core/vue';
 import { getMySessionToken } from '@integration-components/testing/storybook-helpers';
 import '../../shared/styles.scss';
 
@@ -18,9 +9,6 @@ const props = defineProps<{
     componentProps?: Record<string, any>;
     locale?: SupportedLocales;
     fontFamily?: string;
-    theme?: ThemeMode;
-    themeDark?: boolean;
-    themeVariables?: ThemeVariables;
     session?: { roles: string[]; accountHolderId?: string };
     compact?: boolean;
 }>();
@@ -31,42 +19,14 @@ const isCoreReady = ref(false);
 
 let core: CoreInstance | undefined;
 let element: UIElement<Record<string, unknown>> | undefined;
+let pendingCoreOptions: Partial<CoreOptions> | undefined;
 
-const storyCustomThemes = computed(() => {
-    const { coreOptions } = props.componentProps ?? {};
-    return ((coreOptions ?? {}) as Partial<CoreOptions>).customThemes;
-});
-
-const configuredThemeMode = computed<ThemeMode>(() => {
-    if (props.themeDark !== undefined) return props.themeDark ? 'dark' : 'light';
-    return props.theme ?? 'light';
-});
+const storyCoreOptions = computed(() => (props.componentProps?.coreOptions ?? {}) as Partial<CoreOptions>);
 
 const componentPropsWithoutCoreOptions = computed(() => {
     const { coreOptions: _, ...rest } = props.componentProps ?? {};
     return rest;
 });
-
-const getThemeOptions = (): Pick<CoreOptions, 'themeMode' | 'customThemes'> => {
-    const mode = configuredThemeMode.value;
-    const variables: ThemeVariables = {
-        ...storyCustomThemes.value?.[mode],
-        ...props.themeVariables,
-    };
-    const customThemes: CustomThemes = {
-        ...storyCustomThemes.value,
-        ...(Object.keys(variables).length > 0 ? { [mode]: variables } : {}),
-    };
-
-    return {
-        themeMode: mode,
-        customThemes: Object.keys(customThemes).length > 0 ? customThemes : undefined,
-    };
-};
-
-const applyTheme = async () => {
-    await core?.update(getThemeOptions());
-};
 
 async function initializeCore() {
     try {
@@ -74,18 +34,18 @@ async function initializeCore() {
         isCoreReady.value = false;
         error.value = null;
 
-        const { coreOptions } = props.componentProps ?? {};
-        const storyCoreOptions = (coreOptions ?? {}) as Partial<CoreOptions>;
-
         const instance = new Core({
             environment: 'test',
             locale: props.locale || 'en-US',
             onSessionCreate: (_signal: AbortSignal) => getMySessionToken(props.session),
-            ...storyCoreOptions,
-            ...getThemeOptions(),
+            ...storyCoreOptions.value,
         });
 
         core = await instance.initialize();
+        if (pendingCoreOptions) {
+            await core.update(pendingCoreOptions);
+            pendingCoreOptions = undefined;
+        }
         isCoreReady.value = true;
 
         // Setting isCoreReady schedules removal of the initializing placeholder.
@@ -103,7 +63,14 @@ async function initializeCore() {
 
 onMounted(initializeCore);
 
-watch([configuredThemeMode, storyCustomThemes, () => props.themeVariables], applyTheme, { deep: true });
+watch(
+    storyCoreOptions,
+    options => {
+        if (core) return core.update(options);
+        pendingCoreOptions = options;
+    },
+    { deep: true }
+);
 
 // prettier-ignore
 watch(

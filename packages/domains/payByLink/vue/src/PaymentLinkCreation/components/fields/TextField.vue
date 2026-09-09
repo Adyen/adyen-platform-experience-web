@@ -24,14 +24,14 @@ function onInput(value: string | number) {
 </script>
 
 <template>
-    <FieldWrapper v-if="config.visible" :name="props.name" :error="error">
+    <FieldWrapper v-if="config.visible" :name="props.name">
         <BentoInputField
             :label="props.label"
             :type="props.type ?? 'text'"
             :model-value="modelValue"
             :readonly="config.readOnly"
             :optional="!config.required"
-            :error="!!error"
+            :error-message="error"
             :maxlength="props.maxlength"
             :description="props.supportText"
             @update:model-value="onInput"
