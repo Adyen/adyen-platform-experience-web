@@ -10,7 +10,7 @@ import {
     landedOnPageAnalyticsEventProperties,
     selectedRepaymentTermAnalyticsEventProperties,
     sliderChangedAnalyticsEventProperties,
-} from '../CapitalOffer/constants/analytics';
+} from '../../../../fixtures/CapitalOffer/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--eligible';
 

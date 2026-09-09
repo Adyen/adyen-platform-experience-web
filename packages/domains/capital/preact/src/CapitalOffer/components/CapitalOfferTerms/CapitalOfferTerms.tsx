@@ -9,9 +9,9 @@ import {
     EnhancedCapitalState,
     getIsEarlyRenewal,
     calculatePercentageFromBasisPoints,
-    getSimplifiedRenewableGrant,
+    getRenewableGrantDetails,
     calculateTimestampAfterDays,
-    SimplifiedGrant,
+    FinancingDetails,
 } from '@integration-components/capital/domain';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
@@ -37,11 +37,11 @@ export const CapitalOfferTerms = ({ capitalState, grantOffer, hasBalanceAccountE
     const formatTermLabel = useFormatTermLabel();
 
     const isEarlyRenewal = useMemo(() => capitalState && getIsEarlyRenewal(capitalState), [capitalState]);
-    const simplifiedRenewableGrant = useMemo(() => capitalState && getSimplifiedRenewableGrant(capitalState), [capitalState]);
+    const renewableGrantDetails = useMemo(() => capitalState && getRenewableGrantDetails(capitalState), [capitalState]);
 
     const getStructuredListItems = useCallback(
-        (grant: SimplifiedGrant) => {
-            const days = grant.maximumRepaymentPeriodDays;
+        (financingDetails: FinancingDetails) => {
+            const days = financingDetails.maximumRepaymentPeriodDays;
             const date = days && calculateTimestampAfterDays(days);
             const maximumRepaymentPeriodDate = date && dateFormat(date, DATE_FORMAT_CAPITAL_OVERVIEW);
 
@@ -50,41 +50,41 @@ export const CapitalOfferTerms = ({ capitalState, grantOffer, hasBalanceAccountE
                     ? [
                           {
                               key: 'capital.common.fields.financing',
-                              value: i18n.amount(grant.grantAmount.value, grant.grantAmount.currency),
+                              value: i18n.amount(financingDetails.grantAmount.value, financingDetails.grantAmount.currency),
                           },
                           {
                               key: 'capital.common.fields.fees',
-                              value: i18n.amount(grant.feesAmount.value, grant.feesAmount.currency),
+                              value: i18n.amount(financingDetails.feesAmount.value, financingDetails.feesAmount.currency),
                           },
                           {
                               key: 'capital.common.fields.totalRepaymentAmount',
-                              value: i18n.amount(grant.totalAmount.value, grant.totalAmount.currency),
+                              value: i18n.amount(financingDetails.totalAmount.value, financingDetails.totalAmount.currency),
                           },
                       ]
                     : []),
                 {
                     key: 'capital.common.fields.dailyRepaymentRate',
                     value: i18n.get('capital.common.values.percentage', {
-                        values: { percentage: calculatePercentageFromBasisPoints(grant.repaymentRate) },
+                        values: { percentage: calculatePercentageFromBasisPoints(financingDetails.repaymentRate) },
                     }),
                 },
-                ...(grant.aprBasisPoints
+                ...(financingDetails.aprBasisPoints
                     ? [
                           {
                               key: 'capital.common.fields.annualPercentageRate' as const,
                               value: i18n.get('capital.common.values.percentage', {
-                                  values: { percentage: calculatePercentageFromBasisPoints(grant.aprBasisPoints) },
+                                  values: { percentage: calculatePercentageFromBasisPoints(financingDetails.aprBasisPoints) },
                               }),
                           },
                       ]
                     : []),
                 {
                     key: 'capital.common.fields.repaymentThreshold',
-                    value: i18n.amount(grant.thresholdAmount.value, grant.thresholdAmount.currency),
+                    value: i18n.amount(financingDetails.thresholdAmount.value, financingDetails.thresholdAmount.currency),
                 },
                 {
                     key: 'capital.common.fields.expectedRepaymentPeriod',
-                    value: formatTermLabel(grant.expectedRepaymentPeriodDays),
+                    value: formatTermLabel(financingDetails.expectedRepaymentPeriodDays),
                 },
                 ...(maximumRepaymentPeriodDate
                     ? [
@@ -168,34 +168,32 @@ export const CapitalOfferTerms = ({ capitalState, grantOffer, hasBalanceAccountE
         [hasBalanceAccountError]
     );
 
-    const renderGrantDetails = useCallback(
-        (grant: SimplifiedGrant) => (
+    const renderFinancingDetails = useCallback(
+        (financingDetails: FinancingDetails) => (
             <StructuredList
                 classNames="adyen-pe-capital-offer-terms__details"
                 renderLabel={renderLabel}
                 renderValue={renderValue}
-                items={getStructuredListItems(grant)}
+                items={getStructuredListItems(financingDetails)}
             />
         ),
         [getStructuredListItems, renderLabel, renderValue]
     );
-
-    const renderNewGrantDetails = useCallback(() => renderGrantDetails(grantOffer), [grantOffer, renderGrantDetails]);
 
     const tabs = useMemo<TabProps<string>[]>(
         () => [
             {
                 id: 'newLoan',
                 label: 'capital.offer.summary.earlyRenewal.tabs.newGrant',
-                content: renderNewGrantDetails(),
+                content: renderFinancingDetails(grantOffer),
             },
             {
                 id: 'currentLoan',
                 label: 'capital.offer.summary.earlyRenewal.tabs.currentGrant',
-                content: simplifiedRenewableGrant && renderGrantDetails(simplifiedRenewableGrant),
+                content: renewableGrantDetails && renderFinancingDetails(renewableGrantDetails),
             },
         ],
-        [simplifiedRenewableGrant, renderGrantDetails, renderNewGrantDetails]
+        [renewableGrantDetails, grantOffer, renderFinancingDetails]
     );
 
     return (
@@ -207,7 +205,7 @@ export const CapitalOfferTerms = ({ capitalState, grantOffer, hasBalanceAccountE
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
                         {i18n.get('capital.common.termsTitle')}
                     </Typography>
-                    {renderNewGrantDetails()}
+                    {renderFinancingDetails(grantOffer)}
                 </>
             )}
         </div>

@@ -1,0 +1,5 @@
+@use '@integration-components/style' as style;
+
+.list {
+    padding-top: style.token(spacer-060);
+}
