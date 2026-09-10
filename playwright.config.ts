@@ -13,7 +13,7 @@ let frameworkTestFiles!: string | RegExp | (string | RegExp)[];
 switch (framework) {
     case 'preact':
     case 'vue':
-        frameworkTestFiles = [`packages/domains/*/${framework}/tests/integration/**/*.spec.ts`];
+        frameworkTestFiles = [`*/${framework}/tests/integration/**/*.spec.ts`];
         break;
     default:
         throw new Error(`Unsupported STORYBOOK_FRAMEWORK "${framework}". Must be "preact" or "vue".`);
@@ -23,7 +23,7 @@ switch (framework) {
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-    testDir: '.',
+    testDir: 'packages/domains',
     timeout: 30 * 1000,
     globalTimeout: 10 * 60 * 1000, // 10 minutes
     expect: {
@@ -67,7 +67,7 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: 'contract',
-            testMatch: ['packages/domains/*/domain/tests/contract/**/*.spec.ts'],
+            testMatch: ['*/domain/tests/contract/**/*.spec.ts'],
             use: {
                 ignoreHTTPSErrors: true,
             },
