@@ -21,8 +21,7 @@ test.describe('Error - Account holder', () => {
 });
 
 test.describe('onContactSupport argument', () => {
-    // TODO: Enable when CapitalOverviewContainer passes onContactSupport to CapitalError.
-    test.fixme('should render "Reach out to support" button when argument is set', async ({ page }) => {
+    test('should render support button when argument is set', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
     });

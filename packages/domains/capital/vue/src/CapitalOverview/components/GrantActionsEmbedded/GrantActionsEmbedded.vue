@@ -34,7 +34,6 @@ const closeTimeouts = new Map<IMissingActionType, ReturnType<typeof setTimeout>>
 const missingActionsMetadata = computed(() => getMissingActionsMetadata(props.missingActions, completedActions.value));
 const areActionsCompleted = computed(() => missingActionsMetadata.value.areActionsCompleted);
 const alertTitles = useActionsAlertTitles(() => props.expirationDate);
-console.log(props.missingActions);
 const alertTitle = computed(() => {
     if (areActionsCompleted.value) {
         return i18n.get('capital.overview.grants.item.alerts.actionsCompleted');

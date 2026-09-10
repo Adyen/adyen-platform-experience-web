@@ -15,9 +15,7 @@ test.describe('Repayment without transfer instruments', () => {
     });
 
     test('should render send repayment button', async ({ page }) => {
-        const sendRepaymentButton = page.getByRole('button', { name: 'Send repayment', exact: true }).first();
-
-        await Promise.all([expect(sendRepaymentButton).toBeVisible(), expect(sendRepaymentButton).toHaveText('Send repayment')]);
+        await expect(page.getByRole('button', { name: 'Send repayment', exact: true }).first()).toHaveText('Send repayment');
     });
 
     test.describe('Send repayment view', () => {
@@ -30,11 +28,10 @@ test.describe('Repayment without transfer instruments', () => {
         });
 
         test('should show repayment details after "Send repayment" button is clicked', async ({ page }) => {
-            const dismissButton = page.getByRole('button', { name: 'Dismiss', exact: true }).first();
             const copyIconButtons = page.getByRole('button', { name: /^Copy (IBAN|account owner)$/ });
 
             await Promise.all([
-                expect(dismissButton).toBeVisible(),
+                expect(page.getByRole('button', { name: 'Dismiss', exact: true }).first()).toBeVisible(),
                 expect(page.getByText('Send repayment')).toBeVisible(),
                 expect(page.getByText('Pay off your loan faster by making one-time payments.')).toBeVisible(),
                 expect(page.getByText('Loan repayment bank account')).toBeVisible(),

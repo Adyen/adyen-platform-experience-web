@@ -23,15 +23,14 @@ test.describe('Grants', () => {
         ]);
     });
 
-    test('should render in-progress grants when "In progress" tab is clicked', async ({ page }) => {
+    test('should render in-progress grants when in-progress tab is clicked', async ({ page }) => {
         await page.getByRole('radio', { name: 'Closed' }).click();
         await page.getByRole('radio', { name: 'In progress' }).click();
 
-        const amountLabel = page.getByTestId('grant-amount-label').first();
         const progressBar = page.getByRole('progressbar').first();
 
         await Promise.all([
-            expect(amountLabel).toHaveText('Remaining'),
+            expect(page.getByTestId('grant-amount-label').first()).toHaveText('Remaining'),
             expect(page.getByText('€8,220.00').first()).toBeVisible(),
             expect(page.getByText('Term ends: May 16, 2025').first()).toBeVisible(),
             expect(progressBar).toHaveAttribute('value', '1200000'),
@@ -80,14 +79,14 @@ test.describe('Grants', () => {
         await expect(page.getByText('Your requested funds were: €20,000.00')).toBeHidden();
     });
 
-    test('should show a tooltip when repayment-threshold info indicator is hovered', async ({ page }) => {
+    test('should show a tooltip when repayment-threshold info icon is hovered', async ({ page }) => {
         await getGrantDetailsToggle(page).click();
         await page.getByLabel('Minimum repayment every 30 days to repay the financing on time').hover();
 
         await expect(page.getByRole('tooltip', { name: 'Minimum repayment every 30 days to repay the financing on time' })).toBeVisible();
     });
 
-    test('should render closed grants when "Closed" tab is clicked', async ({ page }) => {
+    test('should render closed grants when closed tab is clicked', async ({ page }) => {
         await page.getByRole('radio', { name: 'Closed' }).click();
 
         await Promise.all([

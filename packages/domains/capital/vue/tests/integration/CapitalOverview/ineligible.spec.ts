@@ -4,8 +4,7 @@ import { goToStory } from '@integration-components/testing/playwright/utils';
 const STORY_ID = 'mocked-capital-capital-overview--ineligible';
 
 test.describe('Ineligible', () => {
-    // TODO: Enable when the Vue Capital Offer component renders the ineligible state.
-    test.fixme('should render ineligible screen', async ({ page }) => {
+    test('should render ineligible screen', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
         await Promise.all([

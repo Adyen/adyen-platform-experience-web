@@ -1,9 +1,18 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 import { sharedGrantsOverviewAnalyticsEventProperties } from '../../../../fixtures/CapitalOverview/constants/analytics';
-import { goToOfferSelection, goToOfferSummary } from '../../../../fixtures/CapitalOverview/integration/utils';
+import type { Page } from '@playwright/test';
 
 const STORY_ID = 'mocked-capital-capital-overview--early-renewal';
+
+const goToOfferSelection = async (page: Page) => {
+    await page.getByRole('button', { name: 'Request a new loan' }).click();
+};
+
+const goToOfferSummary = async (page: Page) => {
+    await goToOfferSelection(page);
+    await page.getByRole('button', { name: 'Review request' }).click();
+};
 
 test.describe('Early renewal', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
@@ -24,23 +33,19 @@ test.describe('Early renewal', () => {
         ]);
     });
 
-    // TODO: Enable when the Vue Capital Offer component is implemented.
-    test.fixme('should go to offer selection screen with "Back" button when new loan button is clicked', async ({ page }) => {
+    test('should go to offer selection screen with back button when new loan button is clicked', async ({ page }) => {
         await goToOfferSelection(page);
         await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 
-    // TODO: Enable when the Vue Capital Offer component is implemented.
-    test.fixme('should go back to grants screen when "Back" button in offer selection screen is clicked', async ({ page }) => {
+    test('should go back to grants screen when back button in offer selection screen is clicked', async ({ page }) => {
         await goToOfferSelection(page);
         await page.getByRole('button', { name: 'Go back' }).click();
-
         await expect(page.getByText('Business financing', { exact: true })).toBeVisible();
     });
 
-    // TODO: Enable when the Vue Capital Offer component is implemented.
-    test.fixme('should go to grants screen and show a new grant when request submit button in offer summary screen is clicked', async ({ page }) => {
+    test('should go to grants screen and show a new grant when request submit button in offer summary screen is clicked', async ({ page }) => {
         await goToOfferSummary(page);
         await page.getByRole('button', { name: 'Submit request (€18,600)' }).click();
 
@@ -50,15 +55,11 @@ test.describe('Early renewal', () => {
 });
 
 test.describe('onFundsRequest argument', () => {
-    // TODO: Enable when the Vue Capital Offer component is implemented.
-    test.fixme(
-        'should not go to grants screen when argument is set and request submit button in offer summary screen is clicked',
-        async ({ page }) => {
-            await goToStory(page, { id: STORY_ID, args: { onFundsRequest: 'Enabled' } });
-            await goToOfferSummary(page);
-            await page.getByRole('button', { name: 'Submit request (€18,600)' }).click();
+    test('should not go to grants screen when argument is set and request submit button in offer summary screen is clicked', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID, args: { onFundsRequest: 'Enabled' } });
+        await goToOfferSummary(page);
+        await page.getByRole('button', { name: 'Submit request (€18,600)' }).click();
 
-            await expect(page.getByText('Business financing', { exact: true })).toBeHidden();
-        }
-    );
+        await expect(page.getByText('Business financing', { exact: true })).toBeHidden();
+    });
 });

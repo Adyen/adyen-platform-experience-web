@@ -18,8 +18,8 @@ test.describe('Pending', () => {
             expect(page.getByText('Grant ID')).toBeVisible(),
             expect(page.getByTestId('grant-id-copy-text')).toBeVisible(),
             expect(page.getByText('We received your request and we’re working on it now. Check back soon for the next steps.')).toBeVisible(),
-            expect(page.getByRole('progressbar', { name: 'Grant repayment' })).toHaveCount(0),
-            expect(page.getByRole('button', { name: 'Show grant details' })).toHaveCount(0),
+            expect(page.getByRole('progressbar', { name: 'Grant repayment' })).toBeHidden(),
+            expect(page.getByRole('button', { name: 'Show grant details' })).toBeHidden(),
         ]);
     });
 

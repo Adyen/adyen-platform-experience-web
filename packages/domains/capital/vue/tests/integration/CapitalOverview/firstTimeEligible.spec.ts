@@ -1,6 +1,7 @@
-import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { test, expect, type PageAnalyticsEvent } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 import {
+    sharedCapitalOfferSelectionAnalyticsEventProperties,
     sharedCapitalOfferSummaryAnalyticsEventProperties,
     sharedPrequalifiedAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
@@ -9,9 +10,32 @@ import {
     selectedRepaymentTermAnalyticsEventProperties,
     sliderChangedAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOffer/constants/analytics';
-import { goToOfferSelectionAndExpectAnalytics, goToOfferSummaryAndExpectAnalytics } from '../../../../fixtures/CapitalOverview/integration/utils';
+import type { Page } from '@playwright/test';
 
 const STORY_ID = 'mocked-capital-capital-overview--first-time-eligible';
+
+const goToOfferSelectionAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
+    await page.getByRole('button', { name: 'See options' }).click();
+    await expectAnalyticsEvents(
+        analyticsEvents,
+        [
+            ['Clicked button', { ...sharedPrequalifiedAnalyticsEventProperties, label: 'See options' }],
+            ['Landed on page', landedOnPageAnalyticsEventProperties],
+            ['Changed capital offer slider', sliderChangedAnalyticsEventProperties],
+            ['Selected repayment term', selectedRepaymentTermAnalyticsEventProperties],
+        ],
+        { strictOrder: false }
+    );
+};
+
+const goToOfferSummaryAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
+    await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
+    await page.getByRole('button', { name: 'Review request' }).click();
+
+    await expectAnalyticsEvents(analyticsEvents, [
+        ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review offer' }],
+    ]);
+};
 
 test.describe('First-time eligible', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
@@ -28,79 +52,71 @@ test.describe('First-time eligible', () => {
         ]);
     });
 
-    // TODO: Enable when the Vue Capital Offer component is implemented.
-    test.fixme('should go to offer selection screen with "Back" button when "See options" button is clicked', async ({ page, analyticsEvents }) => {
+    test('should go to offer selection screen with back button when options button is clicked', async ({ page, analyticsEvents }) => {
         await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
         await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 
-    // TODO: Enable when the Vue Capital Offer component is implemented.
-    test.fixme(
-        'should go back to prequalified intro screen when "Back" button in offer selection screen is clicked',
-        async ({ page, analyticsEvents }) => {
-            await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
-            await page.getByRole('button', { name: 'Go back' }).click();
+    test('should go back to prequalified intro screen when back button in offer selection screen is clicked', async ({ page, analyticsEvents }) => {
+        await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
+        await page.getByRole('button', { name: 'Go back' }).click();
 
-            await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedPrequalifiedAnalyticsEventProperties]]);
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedPrequalifiedAnalyticsEventProperties]]);
 
-            await expect(page.getByText('Need some extra money?')).toBeVisible();
-        }
-    );
+        await expect(page.getByText('Need some extra money?')).toBeVisible();
+    });
 
-    // TODO: Enable when the Vue Capital Offer component is implemented.
-    test.fixme(
-        'should go to grants screen and show a new grant when request submit button in offer summary screen is clicked',
-        async ({ page, analyticsEvents }) => {
-            await goToOfferSummaryAndExpectAnalytics(page, analyticsEvents);
-            await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
+    test('should go to grants screen and show a new grant when request submit button in offer summary screen is clicked', async ({
+        page,
+        analyticsEvents,
+    }) => {
+        await goToOfferSummaryAndExpectAnalytics(page, analyticsEvents);
+        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
 
-            await expectAnalyticsEvents(analyticsEvents, [
-                ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
-                ['Landed on page', { ...sharedPrequalifiedAnalyticsEventProperties, subCategory: 'Grants overview' }],
-            ]);
+        await expectAnalyticsEvents(analyticsEvents, [
+            ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
+            ['Landed on page', { ...sharedPrequalifiedAnalyticsEventProperties, subCategory: 'Grants overview' }],
+        ]);
 
-            await Promise.all([expect(page.getByText('Business financing')).toBeVisible(), expect(page.getByText('Pending')).toBeVisible()]);
-        }
-    );
+        await Promise.all([expect(page.getByText('Business financing')).toBeVisible(), expect(page.getByText('Pending')).toBeVisible()]);
+    });
 });
 
 test.describe('onFundsRequest argument', () => {
-    // TODO: Enable when the Vue Capital Offer component is implemented.
-    test.fixme(
-        'should not go to grants screen when argument is set and when request submit button in offer summary screen is clicked',
-        async ({ page, analyticsEvents }) => {
-            await goToStory(page, { id: STORY_ID, args: { onFundsRequest: 'Enabled' } });
-            await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedPrequalifiedAnalyticsEventProperties]]);
+    test('should not go to grants screen when argument is set and when request submit button in offer summary screen is clicked', async ({
+        page,
+        analyticsEvents,
+    }) => {
+        await goToStory(page, { id: STORY_ID, args: { onFundsRequest: 'Enabled' } });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedPrequalifiedAnalyticsEventProperties]]);
 
-            await goToOfferSummaryAndExpectAnalytics(page, analyticsEvents);
-            await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
+        await goToOfferSummaryAndExpectAnalytics(page, analyticsEvents);
+        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
 
-            await expectAnalyticsEvents(analyticsEvents, [
-                ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
-            ]);
+        await expectAnalyticsEvents(analyticsEvents, [
+            ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
+        ]);
 
-            await expect(page.getByText('Business financing', { exact: true })).toBeHidden();
-        }
-    );
+        await expect(page.getByText('Business financing', { exact: true })).toBeHidden();
+    });
 });
 
 test.describe('onOfferDismiss argument', () => {
-    // TODO: Enable when the Vue Capital Offer component is implemented.
-    test.fixme(
-        'should not go back to prequalified intro screen when argument is set and when "Back" button in offer selection screen is clicked',
-        async ({ page, analyticsEvents }) => {
-            await goToStory(page, { id: STORY_ID, args: { onOfferDismiss: 'Enabled' } });
-            await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedPrequalifiedAnalyticsEventProperties]]);
+    test('should not go back to prequalified intro screen when argument is set and when "Back" button in offer selection screen is clicked', async ({
+        page,
+        analyticsEvents,
+    }) => {
+        await goToStory(page, { id: STORY_ID, args: { onOfferDismiss: 'Enabled' } });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedPrequalifiedAnalyticsEventProperties]]);
 
-            await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
+        await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
 
-            await page.getByRole('button', { name: 'Go back' }).click();
-            await expectAnalyticsEvents(analyticsEvents, []);
+        await page.getByRole('button', { name: 'Go back' }).click();
+        await expectAnalyticsEvents(analyticsEvents, []);
 
-            await expect(page.getByText('Need some extra money?')).toBeHidden();
-        }
-    );
+        await expect(page.getByText('Need some extra money?')).toBeHidden();
+    });
 });
 
 test.describe('onOfferOptionsRequest argument', () => {
@@ -119,8 +135,7 @@ test.describe('onOfferOptionsRequest argument', () => {
 });
 
 test.describe('skipPreQualifiedIntro argument', () => {
-    // TODO: Enable when the Vue Capital Offer component is implemented.
-    test.fixme('should render offer selection screen without "Back" button when argument is set', async ({ page, analyticsEvents }) => {
+    test('should render offer selection screen without "Back" button when argument is set', async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID, args: { skipPreQualifiedIntro: 'true' } });
         await expectAnalyticsEvents(
             analyticsEvents,
