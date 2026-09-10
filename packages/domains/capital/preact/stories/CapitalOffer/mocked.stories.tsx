@@ -144,6 +144,18 @@ export const EarlyRenewal: ElementStory<typeof CapitalOffer> = {
     },
 };
 
+export const SingleTerm: ElementStory<typeof CapitalOffer> = {
+    name: 'Single term',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.singleTerm,
+        },
+    },
+};
+
 export const ErrorOfferConfig: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Offer config',
     args: {

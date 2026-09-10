@@ -1,7 +1,7 @@
 import { _UIComponentProps, ExternalComponentType } from '@integration-components/types';
 import { UIElement } from '@integration-components/core/preact';
 import { ExternalCapitalState, getExternalCapitalState } from '@integration-components/capital/domain';
-import { CapitalOverviewProps } from './types';
+import { CapitalOverviewProps } from '../../../domain/src/CapitalOverview/types';
 import { CapitalOverview } from './components/CapitalOverview/CapitalOverview';
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {

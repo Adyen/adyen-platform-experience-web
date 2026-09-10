@@ -28,6 +28,7 @@ provide(COMPONENT_REF_KEY, componentRef);
         :get-cdn-dataset="props.core.getCdnDataset"
         :get-image-asset="props.core.getImageAsset"
         :external-error-handler="props.core.options.onError"
+        :environment="props.core.options.environment"
         :refresh-component="props.refreshComponent"
     >
         <ConfigProvider :session="props.core.session" :type="props.componentName">

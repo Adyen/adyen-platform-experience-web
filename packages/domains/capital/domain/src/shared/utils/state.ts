@@ -10,13 +10,12 @@ export type EnhancedCapitalState = {
     renewsGrantIds: ReadonlySet<string>;
 };
 
-export type SimplifiedGrant = Pick<
+export type FinancingDetails = Pick<
     IGrantOfferResponseDTO,
     | 'aprBasisPoints'
     | 'expectedRepaymentPeriodDays'
     | 'feesAmount'
     | 'grantAmount'
-    | 'id'
     | 'maximumRepaymentPeriodDays'
     | 'repaymentRate'
     | 'thresholdAmount'
@@ -69,7 +68,7 @@ export const shouldGetGrants = (serverState: ICapitalState | undefined, isRegion
 
 export const getIsEarlyRenewal = (state: EnhancedCapitalState): boolean => !!state.renewableGrants.length;
 
-export const getSimplifiedRenewableGrant = (state: EnhancedCapitalState): SimplifiedGrant | undefined => {
+export const getRenewableGrantDetails = (state: EnhancedCapitalState): FinancingDetails | undefined => {
     const renewableGrant = state.renewableGrants[0];
     if (!renewableGrant) return undefined;
 
@@ -77,7 +76,6 @@ export const getSimplifiedRenewableGrant = (state: EnhancedCapitalState): Simpli
         expectedRepaymentPeriodDays: renewableGrant.expectedRepaymentPeriodDays,
         feesAmount: renewableGrant.feesAmount,
         grantAmount: renewableGrant.grantAmount,
-        id: renewableGrant.id,
         maximumRepaymentPeriodDays: renewableGrant.maximumRepaymentPeriodDays,
         repaymentRate: renewableGrant.repaymentRate,
         thresholdAmount: renewableGrant.thresholdAmount,
