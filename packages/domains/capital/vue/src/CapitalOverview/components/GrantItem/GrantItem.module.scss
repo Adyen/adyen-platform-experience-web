@@ -1,0 +1,91 @@
+@use '@integration-components/style';
+
+.root {
+    width: 100%;
+}
+
+.root :global(.b-structured-list-item) {
+    display: flex;
+    justify-content: space-between;
+}
+
+.statusContainer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.alert {
+    margin-top: style.token(spacer-080);
+}
+
+.cardContent {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-010);
+}
+
+.detailsToggle {
+    align-self: center;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.grantID {
+    align-items: flex-start;
+    display: flex;
+    margin-top: style.token(spacer-010);
+    width: fit-content;
+}
+
+.grantID :global(.b-button__label) {
+    text-decoration-color: style.token(color-outline-secondary);
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+}
+
+.textSecondary {
+    color: style.token(color-label-secondary);
+}
+
+.progressBar {
+    margin-top: style.token(spacer-040);
+    width: 100%;
+}
+
+.progressBarLegend {
+    margin-top: style.token(spacer-040);
+    width: 100%;
+}
+
+.progressBarLegendLabel {
+    margin-right: style.token(spacer-070);
+
+    &::before {
+        border-radius: 50%;
+        content: '';
+        display: inline-block;
+        height: style.token(spacer-040);
+        margin-right: style.token(spacer-020);
+        width: style.token(spacer-040);
+    }
+
+    &:first-child::before {
+        background-color: style.token(color-decorative-blue);
+    }
+
+    &:last-child::before {
+        background-color: style.token(color-decorative-blue);
+        opacity: 0.2;
+    }
+}
+
+.actionsBar {
+    display: flex;
+    margin-top: style.token(spacer-060);
+}
+
+.mainActionBtn {
+    flex: 1;
+}

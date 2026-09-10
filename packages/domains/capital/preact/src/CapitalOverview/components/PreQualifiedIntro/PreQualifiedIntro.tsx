@@ -1,5 +1,5 @@
 import { useCallback } from 'preact/hooks';
-import { CAPITAL_OVERVIEW_CLASS_NAMES, sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
+import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { useLandedPageEvent } from '@integration-components/hooks-preact/useEventDispatcher/useLandedPageEvent';
 import { IAmount } from '@integration-components/types';
@@ -9,6 +9,7 @@ import { CapitalHeader } from '../../../internal/CapitalHeader';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import './PreQualifiedIntro.scss';
+import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../CapitalOverview/constants';
 
 const sharedAnalyticsEventProperties = {
     ...sharedCapitalOverviewAnalyticsEventProperties,

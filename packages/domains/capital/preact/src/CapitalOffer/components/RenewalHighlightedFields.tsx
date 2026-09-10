@@ -13,7 +13,7 @@ export const RenewalHighlightedFields = ({ newGrantAmount, remainingGrantAmount 
     const { i18n } = useCoreContext();
 
     const highlightedFields = useMemo(() => {
-        const breakdown = getRenewalAmountBreakdown(newGrantAmount, remainingGrantAmount);
+        const breakdown = getRenewalAmountBreakdown(newGrantAmount.value, remainingGrantAmount);
         const amountConfig = { minimumFractionDigits: 0 };
 
         return [
