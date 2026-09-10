@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import PaymentLinkCreationForm from '../PaymentLinkCreationFormContainer/PaymentLinkCreationForm.vue';
+import PaymentLinkDetails from '../../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails.vue';
 import FormSuccess from '../Form/FormSuccess/FormSuccess.vue';
 import type { PaymentLinkCreationFormValues, CreatedPaymentLink, PaymentLinkCreationProps } from '../../../../../domain/src';
 import '@adyen/bento-vue3/styles/bento-light';
@@ -12,7 +13,7 @@ type PaymentLinkCreationContainerProps = PaymentLinkCreationProps & {
 
 const props = defineProps<PaymentLinkCreationContainerProps>();
 
-type CreationState = 'Creation' | 'Success';
+type CreationState = 'Creation' | 'Success' | 'Details';
 
 const state = ref<CreationState>('Creation');
 const paymentLinkUrl = ref('');
@@ -26,7 +27,11 @@ function handleCreated(data: PaymentLinkCreationFormValues & { paymentLink: Crea
 }
 
 function handleShowDetails() {
-    props.onShowDetails?.({ id: paymentLinkId.value, url: paymentLinkUrl.value });
+    if (props.onShowDetails) {
+        props.onShowDetails?.({ id: paymentLinkId.value, url: paymentLinkUrl.value });
+    } else {
+        state.value = 'Details';
+    }
 }
 </script>
 
@@ -42,6 +47,7 @@ function handleShowDetails() {
             :embedded-in-overview="props.embeddedInOverview"
             @payment-link-created="handleCreated"
         />
-        <FormSuccess v-else :payment-link-url="paymentLinkUrl" :on-show-details="handleShowDetails" />
+        <FormSuccess v-if="state === 'Success'" :payment-link-url="paymentLinkUrl" :on-show-details="handleShowDetails" />
+        <PaymentLinkDetails v-if="state === 'Details'" :id="paymentLinkId" :on-contact-support="props.onContactSupport" />
     </div>
 </template>
