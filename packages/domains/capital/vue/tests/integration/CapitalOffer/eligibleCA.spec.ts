@@ -18,12 +18,13 @@ test.describe('Eligible CA', () => {
         await expect(page.getByText('20%')).toBeVisible();
     });
 
-    test('should show a tooltip when APR label is hovered', async ({ page }) => {
+    test('should show a tooltip when APR info icon is hovered', async ({ page }) => {
         const tooltipText =
             'The Annual Percentage Rate (APR) is the cost of borrowing of this loan under Adyen Capital User Terms, expressed as an annual rate.';
+        const tooltip = page.getByTestId('focus-trap').getByText(tooltipText);
+
         await page.getByRole('button', { name: 'Review request' }).click();
         await page.getByLabel(tooltipText).hover();
-        const tooltip = page.getByTestId('focus-trap').getByText(tooltipText);
         await tooltip.waitFor();
         await expect(tooltip).toBeVisible();
     });
