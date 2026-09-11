@@ -137,7 +137,7 @@ pnpm run test:integration
 |-------|------|
 | Source overview & conventions | [source-overview.md](.agents/patterns/source-overview.md) |
 | Component architecture | [component-architecture.md](.agents/patterns/component-architecture.md) |
-| Custom hooks | [hooks.md](.agents/patterns/hooks.md) |
+| Vue composables | [composables.md](.agents/patterns/composables.md) |
 | Core runtime | [core-runtime.md](.agents/patterns/core-runtime.md) |
 | Design tokens (Bento) | [design-tokens.md](.agents/patterns/design-tokens.md) |
 | i18n patterns | [i18n.md](.agents/patterns/i18n.md) |
