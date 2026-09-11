@@ -25,11 +25,11 @@
         "msw": "catalog:"
     },
     "peerDependencies": {
-        "@storybook/preact": "catalog:",
+        "@storybook/vue3": "catalog:",
         "storybook": "catalog:"
     },
     "peerDependenciesMeta": {
-        "@storybook/preact": {
+        "@storybook/vue3": {
             "optional": true
         },
         "storybook": {
@@ -37,7 +37,7 @@
         }
     },
     "devDependencies": {
-        "@storybook/preact": "catalog:",
+        "@storybook/vue3": "catalog:",
         "storybook": "catalog:"
     }
 }

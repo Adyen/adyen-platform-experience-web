@@ -1,4 +1,4 @@
-import { StoryObj } from '@storybook/preact';
+import type { StoryObj } from '@storybook/vue3';
 import { CoreOptions } from '@integration-components/sdk-internal';
 
 type GlobalStoriesProps = {

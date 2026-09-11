@@ -9,7 +9,6 @@ import type { OnDataRetrievedCallback } from '@integration-components/types';
  * without subscribing through ref unwrapping) and recomputes `customRecords`
  * whenever any of `records`, `hasCustomColumn` or `onDataRetrieve` change.
  *
- * The Preact equivalent lives in `packages/shared/hooks-preact/src/useCustomColumnsData.ts`.
  */
 export interface UseCustomColumnsDataOptions<T> {
     records: () => T[] | undefined;
@@ -43,7 +42,6 @@ export function useCustomColumnsData<T>({ records, hasCustomColumn, onDataRetrie
             } catch (error) {
                 if (thisRun !== runId) return;
                 customRecords.value = currentRecords;
-                // eslint-disable-next-line no-console
                 console.error(error);
             } finally {
                 if (thisRun === runId) loadingCustomRecords.value = false;

@@ -12,12 +12,6 @@
     "exports": {
         ".": "./src/index.ts",
         "./package.json": "./package.json",
-        "./preact": "./src/preact/index.ts",
-        "./preact/fixedForwardRef": "./src/preact/fixedForwardRef.ts",
-        "./preact/props": "./src/preact/props.ts",
-        "./preact/className": "./src/preact/className.ts",
-        "./preact/memoComparator/main": "./src/preact/memoComparator/main.ts",
-        "./preact/memoComparator/types": "./src/preact/memoComparator/types.ts",
         "./datetime/restamper": "./src/datetime/restamper/index.ts",
         "./datetime/timeRangeSelection": "./src/datetime/timeRangeSelection.ts",
         "./primitives/async/abortable": "./src/primitives/async/abortable/index.ts",
@@ -28,9 +22,6 @@
         "./primitives/time/clock": "./src/primitives/time/clock/index.ts",
         "./primitives/time/today": "./src/primitives/time/today/index.ts",
         "./*": "./src/*.ts"
-    },
-    "peerDependencies": {
-        "preact": "catalog:"
     },
     "dependencies": {
         "@integration-components/types": "workspace:*",
