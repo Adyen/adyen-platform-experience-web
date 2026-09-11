@@ -12,6 +12,15 @@ export type AccountFieldMetadata = {
     isPrimary: boolean;
 };
 
+export type AccountDetail = {
+    content: string;
+    copyButtonLabel?: TranslationKey;
+    field: string;
+    isPrimary: boolean;
+    label: TranslationKey;
+    textToCopy?: string;
+};
+
 const getHumanReadableIban = (iban: string) => {
     const separator = ' ';
     const ibanWithoutSpaces = iban.replace(/\s+/g, '');
@@ -32,6 +41,35 @@ export const getBankAccountFields = (bankAccount: CapitalBankAccount): string[] 
     const accountFields = Object.keys({ iban, accountNumber, ...accountDetails, region });
     const orderedFields = Array.isArray(order) ? order.filter(field => accountFields.includes(field)) : accountFields;
     return [...new Set(orderedFields)];
+};
+
+export const getBankAccountDetails = (bankAccount: CapitalBankAccount): AccountDetail[] => {
+    const details: AccountDetail[] = [];
+
+    for (const field of getBankAccountFields(bankAccount)) {
+        const value = bankAccount[field as CapitalBankAccountField];
+
+        if (typeof value !== 'string' || !value) {
+            continue;
+        }
+
+        const content = getBankAccountFieldFormattedValue(field, value);
+
+        if (!content) {
+            continue;
+        }
+
+        details.push({
+            content,
+            copyButtonLabel: getBankAccountFieldCopyButtonTranslationKey(field),
+            field,
+            isPrimary: isBankAccountFieldPrimary(field),
+            label: getBankAccountFieldTranslationKey(field),
+            textToCopy: getBankAccountFieldTextToCopy(field, value),
+        });
+    }
+
+    return details;
 };
 
 export const isBankAccountFieldPrimary = (field: string): boolean => {
