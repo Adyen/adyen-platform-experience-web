@@ -258,7 +258,6 @@ export const ErrorOfferConfig: ElementStory<typeof CapitalOverviewElement> = {
     name: 'Error - Offer config',
     args: {
         mockedApi: true,
-        onContactSupport: 'Enabled',
     },
     parameters: {
         msw: {

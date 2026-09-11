@@ -2,8 +2,8 @@
 import { ref } from 'vue';
 import type { EnhancedCapitalState, OnFundsRequestCallback } from '@integration-components/capital/domain';
 import type { IGrant } from '@integration-components/types';
-import GrantsDisplay from '../GrantsDisplay/GrantsDisplay.vue';
-import CapitalOffer from '../../../CapitalOffer/components/CapitalOffer.vue';
+import GrantsDisplay from './GrantsDisplay/GrantsDisplay.vue';
+import CapitalOffer from '../../CapitalOffer/components/CapitalOffer.vue';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;

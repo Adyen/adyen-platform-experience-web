@@ -1,4 +1,3 @@
-import type { Page } from '@playwright/test';
 import { test, expect, type PageAnalyticsEvent } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 import {
@@ -11,10 +10,11 @@ import {
     selectedRepaymentTermAnalyticsEventProperties,
     sliderChangedAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOffer/constants/analytics';
+import type { Page } from '@playwright/test';
 
 const STORY_ID = 'mocked-capital-capital-overview--first-time-eligible';
 
-const goToOfferSelection = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
+const goToOfferSelectionAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await page.getByRole('button', { name: 'See options' }).click();
     await expectAnalyticsEvents(
         analyticsEvents,
@@ -28,8 +28,8 @@ const goToOfferSelection = async (page: Page, analyticsEvents: PageAnalyticsEven
     );
 };
 
-const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
-    await goToOfferSelection(page, analyticsEvents);
+const goToOfferSummaryAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
+    await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
     await page.getByRole('button', { name: 'Review request' }).click();
 
     await expectAnalyticsEvents(analyticsEvents, [
@@ -44,20 +44,22 @@ test.describe('First-time eligible', () => {
     });
 
     test('should render prequalified intro screen', async ({ page }) => {
-        await expect(page.getByText('Need some extra money?')).toBeVisible();
-        await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
-        await expect(page.getByText('You have been pre-qualified for business financing up to €25,000.')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'See options' })).toBeVisible();
+        await Promise.all([
+            expect(page.getByText('Need some extra money?')).toBeVisible(),
+            expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible(),
+            expect(page.getByText('You have been pre-qualified for business financing up to €25,000.')).toBeVisible(),
+            expect(page.getByRole('button', { name: 'See options' })).toBeVisible(),
+        ]);
     });
 
-    test('should go to offer selection screen with "Back" button when "See options" button is clicked', async ({ page, analyticsEvents }) => {
-        await goToOfferSelection(page, analyticsEvents);
+    test('should go to offer selection screen with back button when options button is clicked', async ({ page, analyticsEvents }) => {
+        await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
         await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 
-    test('should go back to prequalified intro screen when "Back" button in offer selection screen is clicked', async ({ page, analyticsEvents }) => {
-        await goToOfferSelection(page, analyticsEvents);
+    test('should go back to prequalified intro screen when back button in offer selection screen is clicked', async ({ page, analyticsEvents }) => {
+        await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
         await page.getByRole('button', { name: 'Go back' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedPrequalifiedAnalyticsEventProperties]]);
@@ -69,7 +71,7 @@ test.describe('First-time eligible', () => {
         page,
         analyticsEvents,
     }) => {
-        await goToOfferSummary(page, analyticsEvents);
+        await goToOfferSummaryAndExpectAnalytics(page, analyticsEvents);
         await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
@@ -77,8 +79,7 @@ test.describe('First-time eligible', () => {
             ['Landed on page', { ...sharedPrequalifiedAnalyticsEventProperties, subCategory: 'Grants overview' }],
         ]);
 
-        await expect(page.getByText('Business financing')).toBeVisible();
-        await expect(page.getByText('Pending')).toBeVisible();
+        await Promise.all([expect(page.getByText('Business financing')).toBeVisible(), expect(page.getByText('Pending')).toBeVisible()]);
     });
 });
 
@@ -90,7 +91,7 @@ test.describe('onFundsRequest argument', () => {
         await goToStory(page, { id: STORY_ID, args: { onFundsRequest: 'Enabled' } });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedPrequalifiedAnalyticsEventProperties]]);
 
-        await goToOfferSummary(page, analyticsEvents);
+        await goToOfferSummaryAndExpectAnalytics(page, analyticsEvents);
         await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
@@ -109,7 +110,7 @@ test.describe('onOfferDismiss argument', () => {
         await goToStory(page, { id: STORY_ID, args: { onOfferDismiss: 'Enabled' } });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedPrequalifiedAnalyticsEventProperties]]);
 
-        await goToOfferSelection(page, analyticsEvents);
+        await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
 
         await page.getByRole('button', { name: 'Go back' }).click();
         await expectAnalyticsEvents(analyticsEvents, []);

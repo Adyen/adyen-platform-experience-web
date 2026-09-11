@@ -39,12 +39,6 @@
     width: fit-content;
 }
 
-.grantID :global(.b-button__label) {
-    text-decoration-color: style.token(color-outline-secondary);
-    text-decoration-line: underline;
-    text-decoration-style: dotted;
-}
-
 .textSecondary {
     color: style.token(color-label-secondary);
 }

@@ -1,6 +1,9 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
-import { sharedGrantsOverviewAnalyticsEventProperties, sharedSendRepaymentButtonAnalyticsEventProperties } from './constants/analytics';
+import {
+    sharedGrantsOverviewAnalyticsEventProperties,
+    sharedSendRepaymentButtonAnalyticsEventProperties,
+} from '../../../../fixtures/CapitalOverview/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--repayment-gb';
 
