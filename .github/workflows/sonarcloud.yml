@@ -1,0 +1,59 @@
+name: SonarCloud
+
+on:
+    push:
+        branches:
+            - develop
+    pull_request:
+        branches:
+            - develop
+        types: [opened, synchronize, reopened]
+
+concurrency:
+    group: sonarcloud-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+jobs:
+    analysis:
+        name: Analyze
+        if: >-
+            github.actor != 'dependabot[bot]' &&
+            (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository)
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Set up environment
+              uses: ./.github/actions/setup-env
+              with:
+                  NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
+
+            - name: Run tests with coverage
+              run: pnpm run test:coverage
+
+            - name: Verify coverage report paths
+              shell: bash
+              run: |
+                  test -s coverage/lcov.info
+                  grep -q '^SF:' coverage/lcov.info
+
+                  while IFS= read -r source_entry; do
+                      source_file="${source_entry#SF:}"
+                      if [[ ! -f "${source_file}" ]]; then
+                          echo "::error file=coverage/lcov.info::Coverage source does not exist: ${source_file}"
+                          exit 1
+                      fi
+                  done < <(grep '^SF:' coverage/lcov.info)
+
+            - name: Run SonarCloud analysis
+              uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602 # v6.0.0
+              env:
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

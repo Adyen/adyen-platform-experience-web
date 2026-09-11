@@ -2,6 +2,7 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
 import { preact } from '@preact/preset-vite';
+import vue from '@vitejs/plugin-vue';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { realApiProxies } from './endpoints/realApiProxies';
 import { getBuildEnvDefines } from './config/defines/build-env';
@@ -119,15 +120,25 @@ export default defineConfig(({ mode }) => {
                 provider: 'v8',
                 all: true,
                 include: [
-                    'components/internal/**/*.{ts,tsx}',
-                    'components/utils/*.{ts,tsx}',
-                    'hooks/**/*.{ts,tsx}',
-                    'packages/shared/core/src/session/SessionContext/**/*.{ts,tsx}',
-                    'packages/shared/utils/src/primitives/**/*.{ts,tsx}',
-                    'utils/**/*.{ts,tsx}',
-                    'core/**/*.{ts,tsx}',
+                    'src/**/*.{ts,tsx}',
+                    'packages/sdk/src/**/*.{ts,tsx}',
+                    'packages/shared/*/src/**/*.{ts,tsx,vue}',
+                    'packages/domains/*/domain/src/**/*.{ts,tsx}',
+                    'packages/domains/*/preact/src/**/*.{ts,tsx}',
+                    'packages/domains/*/vue/src/**/*.{ts,vue}',
                 ],
-                exclude: ['**/index.{ts,tsx}', '**/constants.{ts,tsx}', '**/types.ts', 'node_modules'],
+                exclude: [
+                    '**/*.{test,spec}.{ts,tsx,vue}',
+                    '**/*.stories.{ts,tsx,vue}',
+                    '**/__testing__/**',
+                    '**/testing/**',
+                    '**/index.{ts,tsx}',
+                    '**/constants.{ts,tsx}',
+                    '**/types.{ts,tsx}',
+                    '**/*.d.ts',
+                    'packages/shared/testing/**',
+                    'packages/shared/types/**',
+                ],
                 reporter: ['lcov', 'text', 'json-summary', 'json'],
                 reportsDirectory: resolve(__dirname, 'coverage'),
                 // Uncomment next line once we reach 80% of coverage
@@ -144,6 +155,7 @@ export default defineConfig(({ mode }) => {
                 esbuildOptions: { jsx: 'automatic' },
                 include: '**/*.svg?component',
             }),
+            vue(),
             preact(),
             isAnalyseMode &&
                 visualizer({
