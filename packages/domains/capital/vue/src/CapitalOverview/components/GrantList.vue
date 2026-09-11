@@ -9,10 +9,8 @@ const props = defineProps<{
     capitalState: EnhancedCapitalState;
     grants: IGrant[];
     hideTitle?: boolean;
-    onFundsRequest?: OnFundsRequestCallback;
     onGrantListUpdateRequest: (data: IGrant) => void;
     onContactSupport?: () => void;
-    onOfferDismiss?: (goToPreviousStep: () => void) => void;
 }>();
 
 const isCapitalOfferVisible = ref(false);
@@ -25,20 +23,12 @@ const goToNextStep = () => {
 };
 
 const goBackToList = () => {
-    if (props.onOfferDismiss) {
-        props.onOfferDismiss(goBackToPreviousStep);
-    } else {
-        goBackToPreviousStep();
-    }
+    goBackToPreviousStep();
 };
 
 const handleFundsRequest: OnFundsRequestCallback = (data, renewsGrantId) => {
-    if (props.onFundsRequest) {
-        props.onFundsRequest(data, renewsGrantId);
-    } else {
-        props.onGrantListUpdateRequest({ ...data, renewsGrantId });
-        isCapitalOfferVisible.value = false;
-    }
+    props.onGrantListUpdateRequest({ ...data, renewsGrantId });
+    isCapitalOfferVisible.value = false;
 };
 </script>
 

@@ -206,15 +206,3 @@ test.describe('onOfferDismiss prop', () => {
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 });
-
-test.describe('onOfferSelect prop', () => {
-    test('should not go to offer summary screen when prop is set', async ({ page, analyticsEvents }) => {
-        await goToStory(page, { id: STORY_ID, args: { onOfferSelect: 'Enabled' } });
-        await expectPageLoadAnalyticsEvents(analyticsEvents);
-        await page.getByRole('button', { name: 'Review request' }).click();
-        await expectAnalyticsEvents(analyticsEvents, [
-            ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review offer' }],
-        ]);
-        await expect(page.getByText('Business financing summary')).toBeHidden();
-    });
-});
