@@ -27,8 +27,8 @@ catalog:
   webpack: ^5.106.2
 
 overrides:
-  "@babel/core": "7.29.6"
-  "@babel/plugin-transform-modules-systemjs": "7.29.4"
+  "@babel/core": "7.29.7"
+  "@babel/plugin-transform-modules-systemjs": "7.29.8"
   "@types/node": "24.10.13"
   "axios": "1.18.0"
   "brace-expansion": "5.0.7"
