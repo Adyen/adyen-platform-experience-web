@@ -21,6 +21,7 @@ const getInputElementWithFileList = async (files = FILES) => {
 };
 
 const getDataTransferWithFiles = (files = FILES) => {
+    // TODO: Replace this stub with a DOM drop event to cover complete DataTransfer semantics.
     return { files } as unknown as DataTransfer;
 };
 
