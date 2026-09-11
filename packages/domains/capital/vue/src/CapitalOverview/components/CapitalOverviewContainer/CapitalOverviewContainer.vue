@@ -41,11 +41,7 @@ const state = computed<CapitalOverviewState>(() => {
 });
 
 const handlePreQualifiedFundsRequest: OnFundsRequestCallback = (data, renewsGrantId) => {
-    if (props.onFundsRequest) {
-        props.onFundsRequest(data, renewsGrantId);
-    } else {
-        requestedGrant.value = { ...data, renewsGrantId };
-    }
+    requestedGrant.value = { ...data, renewsGrantId };
 };
 
 const handleGrantListUpdateRequest = (grant: IGrant) => {
@@ -75,9 +71,6 @@ const handleGrantListUpdateRequest = (grant: IGrant) => {
             :capital-state="capitalState"
             :hide-title="props.hideTitle"
             :on-funds-request="handlePreQualifiedFundsRequest"
-            :on-offer-dismiss="props.onOfferDismiss"
-            :on-offer-options-request="props.onOfferOptionsRequest"
-            :skip-pre-qualified-intro="props.skipPreQualifiedIntro"
             :on-contact-support="props.onContactSupport"
         />
         <GrantList
@@ -85,9 +78,7 @@ const handleGrantListUpdateRequest = (grant: IGrant) => {
             :capital-state="capitalState"
             :grants="grants"
             :hide-title="props.hideTitle"
-            :on-funds-request="props.onFundsRequest"
             :on-grant-list-update-request="handleGrantListUpdateRequest"
-            :on-offer-dismiss="props.onOfferDismiss"
             :on-contact-support="props.onContactSupport"
         />
     </div>
