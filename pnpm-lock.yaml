@@ -744,9 +744,9 @@ importers:
         specifier: workspace:*
         version: link:../shared/style
     devDependencies:
-      '@preact/preset-vite':
-        specifier: ^2.10.2
-        version: 2.10.2(@babel/core@7.29.6)(preact@10.29.1)(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
+      '@vitejs/plugin-vue':
+        specifier: ^6.0.5
+        version: 6.0.5(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))(vue@3.5.31(typescript@5.8.3))
       tsc-alias:
         specifier: ^1.8.17
         version: 1.8.17
@@ -756,6 +756,9 @@ importers:
       vite-plugin-svgr:
         specifier: ^4.5.0
         version: 4.5.0(rollup@4.59.0)(typescript@5.8.3)(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.31(typescript@5.8.3)
 
   packages/shared/assets: {}
 
