@@ -30,7 +30,7 @@ pnpm run format             # Prettier format src/
 - **Branches**: `bug/` prefix for fixes, `feature/` for new functionality
 - **PRs**: Fork → branch from `develop` → PR with description → all CI checks must pass
 - **a11y**: ESLint `jsx-a11y` rules enforced — ARIA attributes, keyboard nav, semantic HTML required
-- **Imports**: Vue only (`vue` and `.vue` single-file components) — never import from React-family frameworks
+- **Imports**: Vue only (`vue` and `.vue` single-file components) — do not import from other UI frameworks like React or Preact
 - **Data flow**: Data flows **down** via props; events flow **up** via callbacks. Shared runtime (i18n, loading context, CDN config) is accessed through `useCoreContext()`, never passed as props between siblings.
 
 ## Security & Secrets
