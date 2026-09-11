@@ -32,8 +32,8 @@ export const CopyText = defineComponent({
         const { copyText, isCopied, resetCopyState } = useCopyText(
             () => props.textToCopy,
             () => {
-                props.onCopyText?.();
                 announce(() => i18n.get('common.actions.copy.labels.done'));
+                props.onCopyText?.();
             }
         );
         const copyButtonLabel = computed(() => i18n.get(props.copyButtonAriaLabelKey ?? 'common.actions.copy.labels.default'));
