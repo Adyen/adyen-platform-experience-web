@@ -1,7 +1,7 @@
-import type { Page } from '@playwright/test';
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 import { sharedGrantsOverviewAnalyticsEventProperties } from '../../../../fixtures/CapitalOverview/constants/analytics';
+import type { Page } from '@playwright/test';
 
 const STORY_ID = 'mocked-capital-capital-overview--early-renewal';
 
@@ -21,26 +21,27 @@ test.describe('Early renewal', () => {
     });
 
     test('should render new loan alert in grants screen', async ({ page }) => {
-        await expect(page.getByText('Business financing', { exact: true })).toBeVisible();
-        await expect(page.getByText('You are now eligible to request a new loan up to €25,000')).toBeVisible();
-        await expect(
-            page.getByText(
-                "Part of this new loan amount will be used to repay your current loan's balance, and any outstanding fees on that loan will be waived."
-            )
-        ).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Request a new loan' })).toBeVisible();
+        await Promise.all([
+            expect(page.getByText('Business financing', { exact: true })).toBeVisible(),
+            expect(page.getByText('You are now eligible to request a new loan up to €25,000')).toBeVisible(),
+            expect(
+                page.getByText(
+                    "Part of this new loan amount will be used to repay your current loan's balance, and any outstanding fees on that loan will be waived."
+                )
+            ).toBeVisible(),
+            expect(page.getByRole('button', { name: 'Request a new loan' })).toBeVisible(),
+        ]);
     });
 
-    test('should go to offer selection screen with "Back" button when new loan button is clicked', async ({ page }) => {
+    test('should go to offer selection screen with back button when new loan button is clicked', async ({ page }) => {
         await goToOfferSelection(page);
         await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 
-    test('should go back to grants screen when "Back" button in offer selection screen is clicked', async ({ page }) => {
+    test('should go back to grants screen when back button in offer selection screen is clicked', async ({ page }) => {
         await goToOfferSelection(page);
         await page.getByRole('button', { name: 'Go back' }).click();
-
         await expect(page.getByText('Business financing', { exact: true })).toBeVisible();
     });
 

@@ -1,4 +1,3 @@
-import type { Page } from '@playwright/test';
 import { test, expect, type PageAnalyticsEvent } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 import {
@@ -6,6 +5,7 @@ import {
     sharedCapitalOfferSummaryAnalyticsEventProperties,
     sharedGrantsOverviewAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
+import type { Page } from '@playwright/test';
 import {
     landedOnPageAnalyticsEventProperties,
     selectedRepaymentTermAnalyticsEventProperties,
@@ -14,7 +14,7 @@ import {
 
 const STORY_ID = 'mocked-capital-capital-overview--eligible';
 
-const goToOfferSelection = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
+const goToOfferSelectionAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await page.getByRole('button', { name: 'Request a new loan' }).click();
     await expectAnalyticsEvents(
         analyticsEvents,
@@ -28,8 +28,8 @@ const goToOfferSelection = async (page: Page, analyticsEvents: PageAnalyticsEven
     );
 };
 
-const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
-    await goToOfferSelection(page, analyticsEvents);
+const goToOfferSummaryAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
+    await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
     await page.getByRole('button', { name: 'Review request' }).click();
 
     await expectAnalyticsEvents(analyticsEvents, [
@@ -44,23 +44,23 @@ test.describe('Eligible', () => {
     });
 
     test('should render new loan alert in grants screen', async ({ page }) => {
-        await expect(page.getByText('Business financing', { exact: true })).toBeVisible();
-        await expect(page.getByText('You are now eligible to request a new loan up to €25,000')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Request a new loan' })).toBeVisible();
+        await Promise.all([
+            expect(page.getByText('Business financing', { exact: true })).toBeVisible(),
+            expect(page.getByText('You are now eligible to request a new loan up to €25,000')).toBeVisible(),
+            expect(page.getByRole('button', { name: 'Request a new loan' })).toBeVisible(),
+        ]);
     });
 
-    test('should go to offer selection screen with "Back" button when new loan button is clicked', async ({ page, analyticsEvents }) => {
-        await goToOfferSelection(page, analyticsEvents);
+    test('should go to offer selection screen with back button when new loan button is clicked', async ({ page, analyticsEvents }) => {
+        await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
         await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 
-    test('should go back to grants screen when "Back" button in offer selection screen is clicked', async ({ page, analyticsEvents }) => {
-        await goToOfferSelection(page, analyticsEvents);
+    test('should go back to grants screen when back button in offer selection screen is clicked', async ({ page, analyticsEvents }) => {
+        await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
         await page.getByRole('button', { name: 'Go back' }).click();
-
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
-
         await expect(page.getByText('Business financing', { exact: true })).toBeVisible();
     });
 
@@ -68,7 +68,7 @@ test.describe('Eligible', () => {
         page,
         analyticsEvents,
     }) => {
-        await goToOfferSummary(page, analyticsEvents);
+        await goToOfferSummaryAndExpectAnalytics(page, analyticsEvents);
         await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
@@ -76,9 +76,11 @@ test.describe('Eligible', () => {
             ['Landed on page', { ...sharedGrantsOverviewAnalyticsEventProperties, subCategory: 'Grants overview' }],
         ]);
 
-        await expect(page.getByText('Business financing', { exact: true })).toBeVisible();
-        await expect(page.getByText('In progress')).toBeVisible();
-        await expect(page.getByText('Pending')).toBeVisible();
+        await Promise.all([
+            expect(page.getByText('Business financing', { exact: true })).toBeVisible(),
+            expect(page.getByText('In progress')).toBeVisible(),
+            expect(page.getByText('Pending')).toBeVisible(),
+        ]);
     });
 });
 
@@ -90,7 +92,7 @@ test.describe('onFundsRequest argument', () => {
         await goToStory(page, { id: STORY_ID, args: { onFundsRequest: 'Enabled' } });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
 
-        await goToOfferSummary(page, analyticsEvents);
+        await goToOfferSummaryAndExpectAnalytics(page, analyticsEvents);
         await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [

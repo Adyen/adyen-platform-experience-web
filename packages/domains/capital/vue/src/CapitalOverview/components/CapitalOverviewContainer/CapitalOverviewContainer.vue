@@ -7,7 +7,7 @@ import { useConfigContext } from '@integration-components/core/vue';
 import type { IGrant } from '@integration-components/types';
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import PreQualified from '../PreQualified/PreQualified.vue';
-import GrantList from '../GrantList/GrantList.vue';
+import GrantList from '../GrantList.vue';
 import styles from './CapitalOverviewContainer.module.scss';
 import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
 import { useEnhancedCapitalState } from '../../../shared/composables/useEnhancedCapitalState';

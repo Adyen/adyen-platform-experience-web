@@ -89,7 +89,6 @@ const completeAction = () => {
 const handleActionButtonClick = async (actionType: IMissingActionType) => {
     await loadKycComponent(actionType);
     activeAction.value = actionType;
-
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
         subCategory: 'Missing action',
@@ -98,6 +97,9 @@ const handleActionButtonClick = async (actionType: IMissingActionType) => {
 };
 
 const handleClose = (actionType: IMissingActionType, analyticsProperties: { label: string; subCategory: string }) => {
+    // KYC emits `close` before `complete` after a successful submission.
+    // Deferring the close keeps the element mounted long enough to receive the completion event.
+    queueMicrotask(close);
     const existingTimeout = closeTimeouts.get(actionType);
 
     if (existingTimeout) {
@@ -182,9 +184,14 @@ onUnmounted(() => {
                 <BentoButtonActions layout="buttons-start" :actions="actionButtons" />
             </template>
         </BentoAlert>
-
-        <BentoModal :is-open="!!activeAction" :is-dismissible="false" :header-with-border="false" size="large" @close-modal="close">
-            <span />
+        <BentoModal
+            v-if="!!activeAction"
+            :is-open="!!activeAction"
+            :is-dismissible="false"
+            :header-with-border="false"
+            size="large"
+            @close-modal="close"
+        >
             <template #content>
                 <adyen-business-financing
                     v-if="activeAction === 'AnaCredit'"

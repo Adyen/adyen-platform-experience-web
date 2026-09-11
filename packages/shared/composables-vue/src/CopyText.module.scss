@@ -1,0 +1,65 @@
+@use '@integration-components/style' as style;
+
+.root {
+    align-items: center;
+    display: inline-flex;
+    margin-top: style.token(spacer-010);
+    text-decoration: none;
+
+    &:hover {
+        background-color: inherit;
+        color: inherit;
+        cursor: default;
+    }
+}
+
+.text {
+    color: style.token(color-label-primary);
+}
+
+.label {
+    font-size: style.token(text-caption-font-size);
+    font-weight: style.token(text-caption-font-weight);
+}
+
+.information {
+    display: block;
+    font-size: style.token(text-body-font-size);
+    font-weight: style.token(text-body-font-weight);
+    line-height: style.token(text-body-line-height);
+    max-width: calc(style.token(spacer-100) * 2.5);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.container {
+    align-items: flex-start;
+    display: inline-flex;
+    gap: style.token(spacer-020);
+}
+
+.icon {
+    cursor: pointer;
+    display: flex;
+
+    &:hover {
+        color: style.token(color-label-primary-hover);
+    }
+}
+
+.stronger {
+    font-weight: style.token(text-body-strongest-font-weight);
+}
+
+.underline {
+    text-decoration: underline;
+    text-decoration-color: style.token(color-outline-tertiary);
+    text-decoration-style: dashed;
+    text-decoration-thickness: 1px;
+    text-underline-offset: style.token(spacer-020);
+
+    &:hover {
+        text-decoration-color: style.token(color-outline-tertiary-active);
+    }
+}
