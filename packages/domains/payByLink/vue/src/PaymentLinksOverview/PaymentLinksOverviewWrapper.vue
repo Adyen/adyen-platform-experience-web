@@ -10,7 +10,7 @@ const { refresh, refreshCount } = createRefreshContext();
 </script>
 
 <template>
-    <UIElementProvider :core="props.core" component-name="paymentLinksOverview" :refresh-component="refresh">
+    <UIElementProvider :core="props.core" component-name="paymentLinksOverview" :component-appearance="props.appearance" :refresh-component="refresh">
         <PaymentLinksOverviewContainer
             :key="refreshCount"
             :allow-limit-selection="props.allowLimitSelection"

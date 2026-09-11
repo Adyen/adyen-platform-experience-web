@@ -3,6 +3,7 @@ import type { CustomTranslations as Translations, TranslationSourceRecord } from
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '@integration-components/utils/types';
 import { FALLBACK_LOCALE } from './Localization/constants/localization';
 import { SupportedLocales } from './Localization/types';
+import type { Appearance } from '@integration-components/types';
 
 type CreateLocalesUnionFromAvailableTranslations<T extends TranslationSourceRecord[]> = T extends T
     ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | typeof FALLBACK_LOCALE
@@ -47,6 +48,8 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
      * See {@link https://docs.adyen.com/checkout/components-web/localization-components | Localizing Components}
      */
     translations?: CustomTranslations extends Translations ? CustomTranslations : Translations;
+
+    appearance?: Appearance;
 
     analytics?: AnalyticsConfig;
 

@@ -1,8 +1,7 @@
-import type { CoreInstance } from '@integration-components/core/vue';
+import type { UIElementProps } from '@integration-components/core/vue';
 import type { TransactionDetailsCustomization } from '../../../domain/src';
 
-export interface TransactionDetailsExternalProps {
-    core: CoreInstance;
+export interface TransactionDetailsExternalProps extends UIElementProps {
     id: string;
     dataCustomization?: { details?: TransactionDetailsCustomization };
     onContactSupport?: () => void;
