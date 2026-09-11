@@ -11,12 +11,12 @@ vi.mock('@integration-components/core/vue', () => ({
     useConfigContext: vi.fn(),
 }));
 
-describe('useDownload', () => {
+describe.sequential('useDownload', () => {
     let app: App | undefined;
     let target: HTMLDivElement | undefined;
 
     beforeEach(() => {
-        vi.clearAllMocks();
+        vi.resetAllMocks();
     });
 
     afterEach(() => {
