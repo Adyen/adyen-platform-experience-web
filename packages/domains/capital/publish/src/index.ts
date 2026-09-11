@@ -1,2 +1,1 @@
-export * from '../../preact/publish/src';
-export type * from '../../preact/publish/src';
+export * from '../../vue/publish/src';

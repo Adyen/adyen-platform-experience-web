@@ -6,7 +6,7 @@ const { app } = getEnvironment('development');
 
 const baseUrl = `http://${app.host}:${app.port}`;
 const ciWorkers = Math.max(1, Number.parseInt(process.env.PLAYWRIGHT_WORKERS ?? '', 10) || 2);
-const framework = process.env.STORYBOOK_FRAMEWORK ?? 'preact';
+const framework = process.env.STORYBOOK_FRAMEWORK ?? 'vue';
 
 let frameworkTestFiles!: string | RegExp | (string | RegExp)[];
 
