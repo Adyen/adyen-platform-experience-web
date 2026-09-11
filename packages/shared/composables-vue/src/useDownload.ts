@@ -4,7 +4,7 @@ import { isFunction } from '@integration-components/utils';
 import type { DownloadStreamEndpoint, EndpointDownloadStreamData } from '@integration-components/types/api/endpoints';
 
 /**
- * Vue composable counterpart of the Preact `useDownload` hook.
+ * Downloads a file and exposes reactive request state.
  * Fetches a download endpoint and triggers an optional success callback with the blob data.
  */
 export function useDownload(

@@ -4,7 +4,7 @@ import type { IBalance } from '@integration-components/types';
 import { useConfigContext } from '@integration-components/core/vue';
 
 /**
- * Vue composable counterpart of the Preact `useAccountBalances` hook. Fetches the list of balances
+ * Fetches the list of balances
  * for a given balance account from the `getBalances` endpoint.
  */
 export function useAccountBalances(balanceAccountId: () => string | undefined) {

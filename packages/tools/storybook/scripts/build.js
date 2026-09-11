@@ -11,7 +11,7 @@ const preview = args.includes('--preview');
 const configDir = args.find(a => !a.startsWith('--'));
 
 if (!configDir) {
-    console.error('\nUsage: node scripts/build.js <config-dir> [--preview] (e.g. src/.storybook/preact)\n');
+    console.error('\nUsage: node scripts/build.js <config-dir> [--preview] (e.g. src/.storybook/vue)\n');
     process.exit(1);
 }
 

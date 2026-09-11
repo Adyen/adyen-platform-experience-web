@@ -13,12 +13,11 @@ export type PaymentLinkDetailsComponentProps = PaymentLinkDetailsProps;
 export type PaymentLinkDetailsScreen = 'details' | 'expirationConfirmation' | 'expirationSuccess';
 
 /**
- * Semantic tag variant, decoupled from any particular UI kit's naming (Preact's `TagVariant` enum vs.
- * Bento's `blue`/`green`/`grey`/`orange` strings differ, so each framework maps this to its own tokens).
+ * Semantic tag variant, decoupled from the UI kit's token names.
  */
 export type PaymentLinkStatusTagVariant = 'info' | 'success' | 'neutral' | 'warning';
 
-/** Structurally identical to both ui-components-preact's `TimelineStatus` and Bento's `BentoTimelineItem` status values. */
+/** Structurally identical to Bento's `BentoTimelineItem` status values. */
 export type PaymentLinkActivityStatus = 'green' | 'red' | 'blue' | 'black';
 
 export type ListItemData = {

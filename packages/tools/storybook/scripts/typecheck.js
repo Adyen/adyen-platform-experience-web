@@ -7,7 +7,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const tscBin = resolve(__dirname, '../node_modules/.bin/tsc');
 
 const configs = readdirSync('src/.storybook')
-    .filter(dir => dir === 'vue')
     .map(dir => `src/.storybook/${dir}/tsconfig.json`)
     .filter(existsSync);
 

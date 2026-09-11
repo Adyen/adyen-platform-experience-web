@@ -16,8 +16,6 @@
         "declaration": true,
         "declarationMap": true,
         "stripInternal": true,
-        "jsxImportSource": "preact",
-        "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
             "@integration-components/types": ["packages/shared/types/src/index"],

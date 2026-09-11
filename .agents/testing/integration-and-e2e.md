@@ -80,5 +80,5 @@ Each Storybook story configures its own MSW handlers for the scenario under test
 For unit testing hooks and components, see:
 
 - `.agents/testing/unit-tests/general_testing_guidelines.md`
-- `.agents/testing/unit-tests/hooks_testing_guidelines.md`
+- `.agents/testing/unit-tests/composables_testing_guidelines.md`
 - `.agents/testing/unit-tests/components_testing_guidelines.md`

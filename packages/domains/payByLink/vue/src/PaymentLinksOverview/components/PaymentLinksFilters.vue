@@ -89,7 +89,7 @@ const selectedPaymentLinkId = ref<string | undefined>(undefined);
 const selectedDateRange = ref<BentoDateRangePickerValue>(cloneDateRange(defaultDateRange));
 
 // Reset the status filter selection whenever the active status group tab changes,
-// mirroring the Preact behavior of dropping the stale status selection on tab switch.
+// Drop the stale status selection on tab switch.
 watch(
     () => props.statusGroup,
     () => {

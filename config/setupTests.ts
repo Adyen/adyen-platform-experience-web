@@ -1,10 +1,7 @@
 import matchers from '@testing-library/jest-dom/matchers';
-import { beforeEach, beforeAll, expect, vi } from 'vitest';
-import { cleanup } from '@testing-library/preact';
+import { beforeAll, expect, vi } from 'vitest';
 
 expect.extend(matchers);
-
-beforeEach(cleanup);
 
 /**
  * This is to mock window.matchMedia used in src/hooks/useMediaQuery.ts

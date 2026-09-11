@@ -3,7 +3,7 @@ import { isFunction } from '@integration-components/utils';
 import type { OnDataRetrievedCallback } from '@integration-components/types';
 
 /**
- * Vue composable counterpart of the Preact `useCustomColumnsData` hook.
+ * Resolves reactive custom-column data.
  *
  * Accepts reactive getters (so the composable always reads the latest values
  * without subscribing through ref unwrapping) and recomputes `customRecords`
