@@ -64,7 +64,7 @@ export function useBalanceAccounts(balanceAccountId?: () => string | undefined, 
         [getBalanceAccounts, () => enabled?.()],
         () => {
             runId += 1;
-            if ((enabled?.() ?? true) === false || !isFunction(getBalanceAccounts.value)) {
+            if (enabled?.() === false || !isFunction(getBalanceAccounts.value)) {
                 isFetching.value = false;
                 return;
             }
