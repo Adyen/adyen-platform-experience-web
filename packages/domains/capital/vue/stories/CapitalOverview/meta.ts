@@ -6,10 +6,6 @@ export const CapitalOverviewMeta: Meta<ElementProps<typeof CapitalOverviewElemen
     argTypes: {
         hideTitle: { type: 'boolean' },
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        onFundsRequest: enabledDisabledCallbackRadioControls('onFundsRequest'),
-        onOfferDismiss: enabledDisabledCallbackRadioControls('onOfferDismiss'),
-        onOfferOptionsRequest: enabledDisabledCallbackRadioControls('onOfferOptionsRequest'),
-        skipPreQualifiedIntro: { type: 'boolean' },
     },
     args: {
         component: CapitalOverviewElement,

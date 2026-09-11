@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import type { EnhancedCapitalState, OnFundsRequestCallback } from '@integration-components/capital/domain';
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import PreQualifiedIntro from '../PreQualifiedIntro/PreQualifiedIntro.vue';
@@ -9,38 +9,28 @@ const props = defineProps<{
     capitalState: EnhancedCapitalState;
     hideTitle?: boolean;
     onFundsRequest: OnFundsRequestCallback;
-    onOfferDismiss?: () => void;
-    onOfferOptionsRequest?: () => void;
     onContactSupport?: () => void;
-    skipPreQualifiedIntro?: boolean;
 }>();
 
 type PreQualifiedState = 'noOffer' | 'intro' | 'offer';
 
-const getStateFromProps = (): PreQualifiedState => (!props.capitalState.dynamicOffer ? 'noOffer' : props.skipPreQualifiedIntro ? 'offer' : 'intro');
+const getStateFromProps = (): PreQualifiedState => (!props.capitalState.dynamicOffer ? 'noOffer' : 'intro');
 
 const state = ref<PreQualifiedState>(getStateFromProps());
 
-watch([() => props.capitalState.dynamicOffer, () => props.skipPreQualifiedIntro], () => {
-    state.value = getStateFromProps();
-});
+watch(
+    () => props.capitalState.dynamicOffer,
+    () => {
+        state.value = getStateFromProps();
+    }
+);
 
 const handleOfferOptionsRequest = () => {
-    if (props.onOfferOptionsRequest) {
-        props.onOfferOptionsRequest();
-    } else {
-        state.value = 'offer';
-    }
+    state.value = 'offer';
 };
 
-const isOfferDismissButtonVisible = computed(() => !props.skipPreQualifiedIntro || !!props.onOfferDismiss);
-
 const handleOfferDismiss = () => {
-    if (props.onOfferDismiss) {
-        props.onOfferDismiss();
-    } else {
-        state.value = 'intro';
-    }
+    state.value = 'intro';
 };
 </script>
 
@@ -51,7 +41,7 @@ const handleOfferDismiss = () => {
             :hide-title="state === 'noOffer' ? true : props.hideTitle"
             :on-funds-request="props.onFundsRequest"
             :external-capital-state="props.capitalState"
-            :on-offer-dismiss="isOfferDismissButtonVisible && state === 'offer' ? handleOfferDismiss : undefined"
+            :on-offer-dismiss="handleOfferDismiss"
             :on-contact-support="props.onContactSupport"
         />
     </div>
