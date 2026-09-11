@@ -8,7 +8,7 @@ packages:
 # @adyen/kyc-components that declare a different exact version) to converge.
 catalog:
   '@adyen/bento-vue3': 1.107.0
-  '@adyen/ui-assets-icons-16': 7.9.3
+  '@adyen/ui-assets-icons-16': 7.9.7
   '@adyen/ui-assets-icons-40': 4.9.2
   "@playwright/test": ^1.61.0
   "@storybook/preact": 10.2.12
