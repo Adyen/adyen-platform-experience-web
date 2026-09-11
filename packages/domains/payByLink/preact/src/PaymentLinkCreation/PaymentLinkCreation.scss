@@ -1,8 +1,0 @@
-@use '@integration-components/style/variable-generator' as style;
-@use '@integration-components/style/breakpoints' as *;
-
-.adyen-pe-payment-link-creation {
-    @include adyen-pe-screen-sm-and-down {
-        height: 100%;
-    }
-}
