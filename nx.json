@@ -50,13 +50,15 @@
             "options": {
                 "buildTargetName": "build",
                 "serveTargetName": "dev"
-            }
+            },
+            "exclude": ["packages/integration-demo/**"]
         },
         {
             "plugin": "@nx/vitest",
             "options": {
                 "testTargetName": "unit"
-            }
+            },
+            "exclude": ["packages/integration-demo/**"]
         }
     ],
     "neverConnectToCloud": true,
