@@ -163,21 +163,3 @@ export const loadTranslations = async (
         ...asPlainObject(customTranslations?.[locale]), // Merge with their custom locales if available
     };
 };
-
-/**
- * Injects JSX elements in a middle of a translation and returns a JSX array
- * The input string should use %# as the token to know where to insert the component
- * @param translation - Translation string
- * @param renderFunctions - An array function that renders JSX elements
- */
-export const interpolateElement = <Element = unknown>(translation: string, renderFunctions: Array<(translation: string) => Element>) => {
-    // splits by regex group, it guarantees that it only splits with 2 tokens (%#)
-    const matches = translation.split(/%#(.*?)%#/gm);
-    // the map will create an array of JSX / string elements, this syntax in accepted in JSX/react to render elements
-    return matches.map((term, index) => {
-        // math to get the index of the renderFunction that should be used
-        // since we split on tokens, that means the index of the render function is half of the index of the string
-        const indexInFunctionArray = Math.floor(index / 2);
-        return index % 2 === 0 ? term : renderFunctions[indexInFunctionArray]?.(term);
-    });
-};
