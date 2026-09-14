@@ -10,6 +10,10 @@ import { rewriteBentoCssVariables } from '../../../../../../config/vite/rewriteB
 const root = '../../../../../..';
 const rootDir = resolve(import.meta.dirname, root);
 
+const KYC_CUSTOM_ELEMENT_TAGS = ['adyen-business-financing', 'adyen-terms-of-service-management'];
+
+const isCustomElement = (tag: string) => KYC_CUSTOM_ELEMENT_TAGS.includes(tag);
+
 const config: StorybookConfig = {
     stories: [`${root}/packages/domains/*/vue/stories/**/*.stories.*`],
     staticDirs: [
@@ -35,7 +39,13 @@ const config: StorybookConfig = {
             // end tag".
             plugins: [
                 ...(() => {
-                    const result = vue();
+                    const result = vue({
+                        template: {
+                            compilerOptions: {
+                                isCustomElement: isCustomElement,
+                            },
+                        },
+                    });
                     const list = Array.isArray(result) ? result : [result];
                     return list.map(p => ({ ...(p as any), enforce: 'pre' as const }));
                 })(),

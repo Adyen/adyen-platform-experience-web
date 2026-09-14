@@ -6,7 +6,7 @@ import type { ExternalComponentType } from '@integration-components/types';
 import type { ReportsOverviewExternalProps } from './types';
 
 /**
- * Imperative wrapper for ReportsOverview, mirroring the Preact BaseElement.mount() pattern.
+ * Imperative wrapper for mounting ReportsOverview.
  *
  * Usage:
  *   const core = await new Core({ ... }).initialize();

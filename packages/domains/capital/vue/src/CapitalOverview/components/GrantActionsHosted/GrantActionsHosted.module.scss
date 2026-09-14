@@ -1,0 +1,12 @@
+@use '@integration-components/style';
+
+.button {
+    margin-top: style.token(spacer-030);
+}
+
+.actionsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-020);
+    padding-left: style.token(spacer-070);
+}

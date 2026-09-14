@@ -1,0 +1,10 @@
+@use '@integration-components/style' as style;
+
+.creditorInfo {
+    white-space: pre-line;
+}
+
+.notice {
+    color: style.token(color-label-secondary);
+    white-space: pre-line;
+}

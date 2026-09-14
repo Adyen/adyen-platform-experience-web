@@ -6,7 +6,7 @@ import FieldWrapper from '../../../fields/FieldWrapper.vue';
 import { useWizard } from '../../../../composables/wizardContext';
 import { MAX_AMOUNT } from '../../../../../../../domain/src';
 import { useCoreContext } from '@integration-components/core/vue';
-import { formatAmount, normalizeAmountInput } from '@integration-components/core/Localization/amount/amount-util';
+import { formatAmount, getCurrencyExponent } from '@integration-components/core/Localization/amount/amount-util';
 import styles from './AmountField.module.scss';
 
 const props = defineProps<{
@@ -23,7 +23,7 @@ const error = computed(() => wizard.getError('amount.value'));
 const storedAmountValue = computed(() => (wizard.values.value['amount.value'] as string | number | undefined) ?? '');
 const currencyValue = computed(() => (wizard.values.value['amount.currency'] as string | undefined) ?? '');
 const displayValue = ref('');
-const amountInput = ref<{ $el: HTMLElement } | null>(null);
+const amountInput = ref<InstanceType<typeof BentoInputField> | null>(null);
 let amountUpdatedFromInput = false;
 
 const currencyItems = computed(() => (props.currencyOptions ?? []).map(code => ({ label: code, value: code })));
@@ -62,13 +62,51 @@ watch(
     { immediate: true }
 );
 
-function onAmountInput(value: string | number) {
-    const normalizedAmount = normalizeAmountInput(value, i18n.locale, currencyValue.value, MAX_AMOUNT);
-    const input = amountInput.value?.$el.querySelector('input');
-    if (input instanceof HTMLInputElement) input.value = normalizedAmount.displayValue;
-    displayValue.value = normalizedAmount.displayValue;
+const computedNumberAmount = (value: string) => {
+    const decimalSeparator = (1.1).toLocaleString(i18n.locale).match(/\d(.*?)\d/)?.[1] || '.';
+    const normalizedValue = decimalSeparator === '.' ? value : value.replace(decimalSeparator, '.');
+    const exponent = getCurrencyExponent(currencyValue.value);
+    return Math.trunc(+`${parseFloat(normalizedValue)}e${exponent}`) || 0;
+};
+
+function onAmountInput(rawValue: string) {
+    let value = rawValue;
+    // Get the decimal separator based on the user's locale
+    const decimalSeparator = (1.1).toLocaleString(i18n.locale).match(/\d(.*?)\d/)?.[1] || '.';
+    // Split the input value at the decimal separator
+    const parts = value.split(decimalSeparator);
+
+    if (parts.length === 2) {
+        const exponent = getCurrencyExponent(currencyValue.value);
+
+        const integerPart = parts[0]!;
+        let decimalPart = parts[1]!;
+
+        if (decimalPart.length >= exponent) {
+            decimalPart = decimalPart.substring(0, exponent);
+            value = integerPart + decimalSeparator + decimalPart;
+        }
+    }
+
+    if (typeof MAX_AMOUNT === 'number') {
+        const normalizedValue = decimalSeparator === '.' ? value : value.replace(decimalSeparator, '.');
+        const parsed = parseFloat(normalizedValue);
+
+        if (Number.isFinite(parsed) && parsed > MAX_AMOUNT) {
+            const exponent = getCurrencyExponent(currencyValue.value);
+            const fixed = MAX_AMOUNT.toFixed(exponent);
+            value = decimalSeparator === '.' ? fixed : fixed.replace('.', decimalSeparator);
+        }
+    }
+
+    if (value !== rawValue) {
+        const inputElement = amountInput.value?.inputFieldElement;
+        if (inputElement) inputElement.value = value;
+    }
+
+    displayValue.value = value;
     amountUpdatedFromInput = true;
-    wizard.setValue('amount.value', normalizedAmount.amount);
+    wizard.setValue('amount.value', computedNumberAmount(value));
 }
 
 function onDropdownInput(value: string | number | { value?: string | number } | Array<unknown> | undefined) {
@@ -87,6 +125,7 @@ function onDropdownInput(value: string | number | { value?: string | number } | 
             :variant="variant"
             :label="props.label"
             type="number"
+            inputmode="decimal"
             :model-value="displayValue"
             :lang="i18n.locale"
             :min="0"

@@ -72,7 +72,7 @@ This skill is manual-only.
 1. Inspect the changed files and identify the smallest safe simplification scope.
 2. Read surrounding code and any relevant `.agents/patterns/*` guidance before editing.
 3. Apply minimal refactors that improve clarity and consistency.
-4. Re-check for project rules: Preact-only imports, i18n usage, strict typing, internal component reuse, and design-token styling.
+4. Re-check for project rules: Vue-only imports, i18n usage, strict typing, internal component reuse, and design-token styling.
 5. Verify that tests still express the intended behavior, especially for bug fixes.
 6. Summarize only the meaningful simplifications that affect understanding.
 

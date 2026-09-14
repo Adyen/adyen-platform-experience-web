@@ -11,7 +11,7 @@ import {
     CAPITAL_STATE_UNSUPPORTED_REGION,
     CAPITAL_STATE_PENDING_GRANT,
 } from '../../../../mocks/mock-data/capital';
-import { getEnhancedCapitalState, getIsEarlyRenewal, shouldGetGrants, getSimplifiedRenewableGrant } from './state';
+import { getEnhancedCapitalState, getIsEarlyRenewal, shouldGetGrants, getRenewableGrantDetails } from './state';
 
 describe('getEnhancedCapitalState', () => {
     test('returns undefined when no capital state is available', () => {
@@ -127,14 +127,13 @@ describe('getIsEarlyRenewal', () => {
     });
 });
 
-describe('getSimplifiedRenewableGrant', () => {
-    test('returns a renewable grant with enough fields to create a new offer', () => {
+describe('getRenewableGrantDetails', () => {
+    test('returns a renewable grant with reduced fields', () => {
         const state = getEnhancedCapitalState(CAPITAL_STATE_RENEWABLE_GRANT, localSupportedRegions)!;
-        expect(getSimplifiedRenewableGrant(state)).toEqual({
+        expect(getRenewableGrantDetails(state)).toEqual({
             expectedRepaymentPeriodDays: 360,
             feesAmount: ACTIVE_GRANT.feesAmount,
             grantAmount: ACTIVE_GRANT.grantAmount,
-            id: ACTIVE_GRANT.id,
             maximumRepaymentPeriodDays: 450,
             repaymentRate: 1500,
             thresholdAmount: ACTIVE_GRANT.thresholdAmount,
@@ -143,6 +142,6 @@ describe('getSimplifiedRenewableGrant', () => {
     });
 
     test('returns undefined when there is no renewable grant', () => {
-        expect(getSimplifiedRenewableGrant(getEnhancedCapitalState(CAPITAL_STATE_FIRST_OFFER, localSupportedRegions)!)).toBeUndefined();
+        expect(getRenewableGrantDetails(getEnhancedCapitalState(CAPITAL_STATE_FIRST_OFFER, localSupportedRegions)!)).toBeUndefined();
     });
 });

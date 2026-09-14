@@ -1,0 +1,30 @@
+@use '@integration-components/style' as style;
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+}
+
+.newGrantBanner {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+}
+
+.newGrantBanner :global(.b-alert__content) {
+    width: 100%;
+}
+
+.offerButton {
+    width: 100%;
+}
+
+.items {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
