@@ -4,8 +4,8 @@ packages:
 
 # Single source of truth for shared dependency versions across the workspace.
 catalog:
-  '@adyen/bento-design-tokens': 2.1.0
-  '@adyen/bento-vue3': 2.1.0
+  '@adyen/bento-design-tokens': 2.1.1
+  '@adyen/bento-vue3': 2.1.1
   '@adyen/ui-assets-icons-16': 7.9.3
   '@adyen/ui-assets-icons-40': 4.9.2
   "@playwright/test": ^1.61.0
