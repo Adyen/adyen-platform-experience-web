@@ -135,7 +135,7 @@ test.describe('Payment link creation - Link creation validation', () => {
         await amountField.fill('3000');
         await page.getByRole('button', { name: 'Continue' }).click();
 
-        await expect(page.getByTestId('field-error-amount.value')).toHaveText('Please select a currency');
+        await expect(getFieldError(page, 'amount.value')).toContainText('Please select a currency');
         await expect(amountField).toHaveValue('3000');
     });
 
