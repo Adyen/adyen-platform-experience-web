@@ -18,15 +18,13 @@ import { useCoreContext, useEventDispatcherContext } from '@integration-componen
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '@integration-components/utils';
 import type { IGrant } from '@integration-components/types';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
-import GrantActions from '../GrantActions/GrantActions.vue';
+import Actions from '../Actions/Actions.vue';
 import GrantDetails from '../GrantDetails/GrantDetails.vue';
 import styles from './GrantItem.module.scss';
-
-type GrantAdjustmentDetail = 'revocation' | 'unscheduledRepayment';
+import RepaymentModal from '../RepaymentDetails/RepaymentModal.vue';
 
 const props = defineProps<{
     grant: IGrant;
-    showDetails?: (detail?: GrantAdjustmentDetail) => void;
 }>();
 
 const { i18n } = useCoreContext();
@@ -71,18 +69,6 @@ const getStatusTagVariant = (statusVariant: GrantStatusVariant): BentoTagVariant
     }
 };
 
-const sendRepayment = () => {
-    try {
-        props.showDetails?.('unscheduledRepayment');
-    } finally {
-        userEvents.addEvent?.('Clicked button', {
-            ...sharedCapitalOverviewAnalyticsEventProperties,
-            subCategory: 'Grant active',
-            label: 'Send repayment',
-        });
-    }
-};
-
 const handleActionsComplete = () => {
     areActionsLocallyCompleted.value = true;
 };
@@ -91,6 +77,21 @@ const toggleGrantDetails = () => {
     if (grantConfig.value.hasDetails) {
         isGrantDetailsOpen.value = !isGrantDetailsOpen.value;
     }
+};
+
+const isRepaymentModalOpen = ref(false);
+
+const openRepaymentDetails = () => {
+    isRepaymentModalOpen.value = true;
+    userEvents.addEvent?.('Clicked button', {
+        ...sharedCapitalOverviewAnalyticsEventProperties,
+        subCategory: 'Grant active',
+        label: 'Send repayment',
+    });
+};
+
+const closeRepaymentModal = () => {
+    isRepaymentModalOpen.value = false;
 };
 </script>
 
@@ -164,7 +165,7 @@ const toggleGrantDetails = () => {
                     </div>
 
                     <div v-if="grantConfig.hasUnscheduledRepaymentDetails" :class="styles.actionsBar">
-                        <BentoButton :class="styles.mainActionBtn" variant="secondary" @click.stop="sendRepayment">
+                        <BentoButton :class="styles.mainActionBtn" variant="secondary" @click.stop="openRepaymentDetails">
                             {{ i18n.get('capital.overview.grants.item.actions.sendRepayment') }}
                         </BentoButton>
                     </div>
@@ -185,7 +186,7 @@ const toggleGrantDetails = () => {
         </BentoCard>
 
         <template v-if="grantConfig.hasAlerts">
-            <GrantActions
+            <Actions
                 v-if="props.grant.missingActions?.length"
                 :class-name="styles.alert"
                 :grant-id="props.grant.id"
@@ -198,4 +199,5 @@ const toggleGrantDetails = () => {
             </BentoAlert>
         </template>
     </div>
+    <RepaymentModal :grant="grant" :is-open="isRepaymentModalOpen" :on-close="closeRepaymentModal" />
 </template>
