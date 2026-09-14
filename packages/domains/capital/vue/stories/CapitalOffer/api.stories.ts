@@ -1,11 +1,11 @@
 import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT, SessionControls } from '@integration-components/testing/storybook-helpers';
 import type { Meta } from '@storybook/vue3';
-import { CapitalOverviewElement } from '../../src/CapitalOverview';
-import { capitalOverviewMeta } from './meta';
+import { CapitalOfferElement } from '../../src';
+import { capitalOfferMeta } from './meta';
 
-const meta: Meta<ElementProps<typeof CapitalOverviewElement>> = { ...capitalOverviewMeta, title: 'API-connected/Capital/Capital Overview' };
+const meta: Meta<ElementProps<typeof CapitalOfferElement>> = { ...capitalOfferMeta, title: 'API-connected/Capital/Capital Offer' };
 
-export const Default: ElementStory<typeof CapitalOverviewElement, SessionControls> = {
+export const Default: ElementStory<typeof CapitalOfferElement, SessionControls> = {
     name: 'Default',
     argTypes: {
         session: { control: 'object' },

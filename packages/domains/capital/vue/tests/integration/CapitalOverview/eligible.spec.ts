@@ -3,7 +3,7 @@ import { expectAnalyticsEvents, goToStory } from '@integration-components/testin
 import {
     sharedCapitalOfferSelectionAnalyticsEventProperties,
     sharedCapitalOfferSummaryAnalyticsEventProperties,
-    sharedGrantsOverviewAnalyticsEventProperties,
+    sharedCapitalOverviewAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
 import type { Page } from '@playwright/test';
 import {
@@ -14,12 +14,14 @@ import {
 
 const STORY_ID = 'mocked-capital-capital-overview--eligible';
 
-const goToOfferSelectionAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
+const getOfferModal = (page: Page) => page.getByRole('dialog');
+
+const openOfferAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await page.getByRole('button', { name: 'Request a new loan' }).click();
     await expectAnalyticsEvents(
         analyticsEvents,
         [
-            ['Clicked button', { ...sharedGrantsOverviewAnalyticsEventProperties, label: 'Request a new loan' }],
+            ['Clicked button', { ...sharedCapitalOverviewAnalyticsEventProperties, label: 'Open offer' }],
             ['Landed on page', landedOnPageAnalyticsEventProperties],
             ['Changed capital offer slider', sliderChangedAnalyticsEventProperties],
             ['Selected repayment term', selectedRepaymentTermAnalyticsEventProperties],
@@ -29,8 +31,8 @@ const goToOfferSelectionAndExpectAnalytics = async (page: Page, analyticsEvents:
 };
 
 const goToOfferSummaryAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
-    await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
-    await page.getByRole('button', { name: 'Review request' }).click();
+    await openOfferAndExpectAnalytics(page, analyticsEvents);
+    await getOfferModal(page).getByRole('button', { name: 'Review request' }).click();
 
     await expectAnalyticsEvents(analyticsEvents, [
         ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review offer' }],
@@ -40,7 +42,16 @@ const goToOfferSummaryAndExpectAnalytics = async (page: Page, analyticsEvents: P
 test.describe('Eligible', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
+        await expectAnalyticsEvents(analyticsEvents, [
+            [
+                'Landed on page',
+                {
+                    ...sharedCapitalOverviewAnalyticsEventProperties,
+                    hasGrants: true,
+                    hasOffer: true,
+                },
+            ],
+        ]);
     });
 
     test('should render new loan alert in grants screen', async ({ page }) => {
@@ -51,35 +62,40 @@ test.describe('Eligible', () => {
         ]);
     });
 
-    test('should go to offer selection screen with back button when new loan button is clicked', async ({ page, analyticsEvents }) => {
-        await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
-        await expect(page.getByText('Business financing request')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
+    test('should open offer in a modal when new loan button is clicked', async ({ page, analyticsEvents }) => {
+        await openOfferAndExpectAnalytics(page, analyticsEvents);
+
+        const offerModal = getOfferModal(page);
+
+        await expect(offerModal).toBeVisible();
+        await expect(offerModal.getByText('Business financing request')).toBeVisible();
     });
 
-    test('should go back to grants screen when back button in offer selection screen is clicked', async ({ page, analyticsEvents }) => {
-        await goToOfferSelectionAndExpectAnalytics(page, analyticsEvents);
-        await page.getByRole('button', { name: 'Go back' }).click();
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
-        await expect(page.getByText('Business financing', { exact: true })).toBeVisible();
+    test('should close offer modal and track dismissal when close button is clicked', async ({ page, analyticsEvents }) => {
+        await openOfferAndExpectAnalytics(page, analyticsEvents);
+        await getOfferModal(page).getByRole('button', { name: 'Close', exact: true }).click();
+
+        await expectAnalyticsEvents(analyticsEvents, [
+            ['Clicked button', { ...sharedCapitalOverviewAnalyticsEventProperties, label: 'Dismiss offer' }],
+        ]);
+
+        await expect(getOfferModal(page)).toBeHidden();
     });
 
-    test('should go to grants screen and show a new grant when request submit button in offer summary screen is clicked', async ({
+    test('should close offer modal without tracking dismissal when request submit button in offer summary screen is clicked', async ({
         page,
         analyticsEvents,
     }) => {
         await goToOfferSummaryAndExpectAnalytics(page, analyticsEvents);
-        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
+        await getOfferModal(page).getByRole('button', { name: 'Submit request (€13,000)' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
-            ['Landed on page', { ...sharedGrantsOverviewAnalyticsEventProperties, subCategory: 'Grants overview' }],
         ]);
 
-        await Promise.all([
-            expect(page.getByText('Business financing', { exact: true })).toBeVisible(),
-            expect(page.getByText('In progress')).toBeVisible(),
-            expect(page.getByText('Pending')).toBeVisible(),
-        ]);
+        await expect(getOfferModal(page)).toBeHidden();
+        await expect(page.getByRole('button', { name: 'Request a new loan' })).toBeHidden();
+        await expect(page.getByText('In progress')).toBeVisible();
+        await expect(page.getByText('Pending')).toBeVisible();
     });
 });

@@ -5,12 +5,10 @@ import { getBankAccount, getTransferInstrumentIds } from '@integration-component
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IGrant } from '@integration-components/types';
 import AccountDetails from '../AccountDetails/AccountDetails.vue';
-import GrantAdjustmentDetails from '../GrantAdjustmentDetails/GrantAdjustmentDetails.vue';
-import styles from './GrantRepaymentDetails.module.scss';
+import styles from './RepaymentDetails.module.scss';
 
 const props = defineProps<{
     grant: IGrant;
-    onDetailsClose: () => void;
 }>();
 
 const { i18n } = useCoreContext();
@@ -26,13 +24,10 @@ const addingBeneficiaryInstruction = computed(() =>
 </script>
 
 <template>
-    <GrantAdjustmentDetails
-        v-if="bankAccount"
-        :class="styles.root"
-        header-title-key="capital.overview.repayment.title"
-        header-subtitle-key="capital.overview.repayment.subtitle"
-        :on-details-close="props.onDetailsClose"
-    >
+    <div v-if="bankAccount" :class="styles.root">
+        <BentoTypography>
+            {{ i18n.get('capital.overview.repayment.subtitle') }}
+        </BentoTypography>
         <div :class="styles.repaymentAccount">
             <BentoTypography variant="body" stronger>
                 {{ i18n.get('capital.overview.repayment.accountDetails.title') }}
@@ -85,5 +80,5 @@ const addingBeneficiaryInstruction = computed(() =>
                 {{ i18n.get('capital.overview.repayment.instructions.verifiedAccount') }}
             </BentoTypography>
         </div>
-    </GrantAdjustmentDetails>
+    </div>
 </template>
