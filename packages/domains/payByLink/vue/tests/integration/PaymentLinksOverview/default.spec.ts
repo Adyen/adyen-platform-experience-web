@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect, type Request } from '@playwright/test';
+import { expectPaginationReset, goToStory, updateStoryArgs } from '@integration-components/testing/playwright/utils';
 import { applyTextFilter, goToTab, openCreatePaymentLinkModal, openSettingsModal } from '../../../../fixtures/integration/utils';
 import { DEFAULT_STORY_ID, INVALID_PAYMENT_LINK_ID, MERCHANT_REFERENCE, PAYMENT_LINK_ID } from '../../../../fixtures/constants/PaymentLinksOverview';
 
@@ -184,6 +184,34 @@ test.describe('Payment Links Overview', () => {
             const rows = grid.getByRole('rowgroup').nth(1).getByRole('row');
             await expect(rows).toHaveCount(1);
             await expect(rows.first().getByText(PAYMENT_LINK_ID)).toBeVisible();
+        });
+
+        test('should reset pagination without sending private store state', async ({ page }) => {
+            const storeId = 'STORE_NY_001';
+            const paymentLinkRequests: URL[] = [];
+            const collectPaymentLinkRequests = (request: Request) => {
+                const url = new URL(request.url());
+                if (url.pathname.endsWith('/paymentLinks')) paymentLinkRequests.push(url);
+            };
+            page.on('request', collectPaymentLinkRequests);
+
+            try {
+                await expectPaginationReset({
+                    endpointPath: '/paymentLinks',
+                    isFilterRequest: (request, expectedStoreId) => new URL(request.url()).searchParams.get('storeIds') === expectedStoreId,
+                    page,
+                    triggerFilterChange: async () => {
+                        await updateStoryArgs(page, DEFAULT_STORY_ID, { storeIds: storeId });
+                        return storeId;
+                    },
+                });
+            } finally {
+                page.off('request', collectPaymentLinkRequests);
+            }
+
+            const storeRequests = paymentLinkRequests.filter(url => url.searchParams.get('storeIds') === storeId);
+            expect(storeRequests.length).toBeGreaterThan(0);
+            storeRequests.forEach(url => expect(url.searchParams.has('_storeIds')).toBe(false));
         });
     });
 });
