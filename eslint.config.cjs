@@ -55,7 +55,6 @@ module.exports = [
             parserOptions: {
                 ecmaVersion: 2020,
                 sourceType: 'module',
-                ecmaFeatures: { jsx: true },
             },
             globals: Object.fromEntries(Object.entries({ ...globals.browser, ...globals.node, ...globals.es2020 }).map(([k, v]) => [k.trim(), v])),
         },
@@ -66,7 +65,7 @@ module.exports = [
         settings: {
             'import-x/resolver': {
                 node: {
-                    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+                    extensions: ['.js', '.ts'],
                 },
                 typescript: {
                     project: './tsconfig.json',
@@ -86,9 +85,7 @@ module.exports = [
                 'ignorePackages',
                 {
                     js: 'never',
-                    jsx: 'never',
                     ts: 'never',
-                    tsx: 'never',
                 },
             ],
             'import-x/no-extraneous-dependencies': [
@@ -102,12 +99,12 @@ module.exports = [
                         'envs/**/*.ts',
                         'mocks/**/*.ts',
                         'packages/**/vite.config.ts',
-                        '**/*.test.{ts,tsx}',
-                        '{src,packages}/**/{__testing__,testing}/**/*.{ts,tsx}',
-                        'packages/domains/*/{domain,vue}/tests/**/*.{ts,tsx}',
-                        'packages/domains/*/**/stories/**/*.{ts,tsx}',
-                        'packages/domains/*/{fixtures,mocks}/**/*.{ts,tsx}',
-                        'src/**/*.{ts,tsx}',
+                        '**/*.test.ts',
+                        '{src,packages}/**/{__testing__,testing}/**/*.ts',
+                        'packages/domains/*/{domain,vue}/tests/**/*.ts',
+                        'packages/domains/*/**/stories/**/*.ts',
+                        'packages/domains/*/{fixtures,mocks}/**/*.ts',
+                        'src/**/*.ts',
                     ],
                     includeTypes: false,
                 },
@@ -168,9 +165,9 @@ module.exports = [
         },
     },
 
-    // Explicit member accessibility for TS/TSX files
+    // Explicit member accessibility for TypeScript files
     {
-        files: ['**/*.{ts,tsx}'],
+        files: ['**/*.ts'],
         rules: {
             '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'off', overrides: { properties: 'explicit' } }],
         },
@@ -179,10 +176,10 @@ module.exports = [
     // testing-library rules for test files
     {
         ...testingLib.configs['flat/vue'],
-        files: ['**/tests/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+        files: ['**/tests/**/*.{js,ts}', '**/?(*.)+(spec|test).{js,ts}'],
     },
     {
-        files: ['**/tests/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+        files: ['**/tests/**/*.{js,ts}', '**/?(*.)+(spec|test).{js,ts}'],
         rules: {
             'testing-library/render-result-naming-convention': 'warn',
             'testing-library/no-wait-for-multiple-assertions': 'warn',
@@ -197,7 +194,7 @@ module.exports = [
         },
     },
     {
-        files: ['**/tests/**/*.[jt]s?(x)'],
+        files: ['**/tests/**/*.{js,ts}'],
         plugins: { 'testing-library': testingLib },
         rules: {
             'testing-library/prefer-screen-queries': 'off',
@@ -206,7 +203,7 @@ module.exports = [
 
     // Dev-only files inside workspace packages resolve devDependencies from workspace root
     {
-        files: ['packages/**/vite.config.ts', 'packages/**/*.test.{ts,tsx}', 'packages/**/{__testing__,testing,stories}/**/*.{ts,tsx}'],
+        files: ['packages/**/vite.config.ts', 'packages/**/*.test.ts', 'packages/**/{__testing__,testing,stories}/**/*.ts'],
         rules: {
             'import-x/no-extraneous-dependencies': [
                 'error',
@@ -221,11 +218,11 @@ module.exports = [
 
     // packages/shared/testing/src: explicit packageDir for import-x
     {
-        files: ['packages/shared/testing/src/**/*.{ts,tsx}'],
+        files: ['packages/shared/testing/src/**/*.ts'],
         rules: {
             'import-x/no-extraneous-dependencies': [
                 'error',
-                { devDependencies: ['**/storybook-helpers/**/*.{ts,tsx}'], packageDir: ['packages/shared/testing'] },
+                { devDependencies: ['**/storybook-helpers/**/*.ts'], packageDir: ['packages/shared/testing'] },
             ],
         },
     },

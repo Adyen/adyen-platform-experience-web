@@ -23,13 +23,13 @@ pnpm run format             # Prettier format src/
 
 - **TypeScript strict** with `noUncheckedIndexedAccess` — all index access returns `T | undefined`
 - **Prettier**: 4-space indent, single quotes, 150 char print width, trailing commas `es5`
-- **ESLint**: `react/jsx-no-literals` enforced — never inline raw string literals in JSX
+- **ESLint**: TypeScript and Vue recommended rules are enforced
 - **Stylelint**: SCSS only, extends `stylelint-config-sass-guidelines`
 - **CSS classes**: `adyen-pe-` prefix, BEM-like (`block__element--modifier`), defined in `constants.ts` files
 - **Commits**: `type(scope): subject` — Conventional Commits with required scope
 - **Branches**: `bug/` prefix for fixes, `feature/` for new functionality
 - **PRs**: Fork → branch from `develop` → PR with description → all CI checks must pass
-- **a11y**: ESLint `jsx-a11y` rules enforced — ARIA attributes, keyboard nav, semantic HTML required
+- **a11y**: ARIA attributes, keyboard navigation, and semantic HTML are required
 - **Imports**: Vue only (`vue` and `.vue` single-file components) — do not import from other UI frameworks like React or Preact
 - **Data flow**: Data flows **down** via props; events flow **up** via callbacks. Shared runtime (i18n, loading context, CDN config) is accessed through `useCoreContext()`, never passed as props between siblings.
 
