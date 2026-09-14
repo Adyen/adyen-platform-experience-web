@@ -1,10 +1,8 @@
 // Framework-agnostic constants shared by every ReportsOverview render layer
 // Each layer's local `constants.ts` re-exports from here.
 //
-// Pagination defaults (DEFAULT_PAGE_LIMIT / LIMIT_OPTIONS) are intentionally
-// not hoisted: preact pulls them from the shared internal Pagination
-// constants while vue uses a wider set ([5, 10, 20, 50]) — confirm the
-// intended product behaviour before unifying.
+// Pagination defaults (DEFAULT_PAGE_LIMIT / LIMIT_OPTIONS) remain owned by
+// the Vue render layer because they are presentation concerns.
 
 export const REPORTS_OVERVIEW_CLASS_NAMES = {
     base: 'adyen-pe-reports-overview',
