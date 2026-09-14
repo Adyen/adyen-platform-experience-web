@@ -24,7 +24,6 @@
         "./*": "./src/*.ts"
     },
     "dependencies": {
-        "@integration-components/types": "workspace:*",
-        "classnames": "catalog:"
+        "@integration-components/types": "workspace:*"
     }
 }
