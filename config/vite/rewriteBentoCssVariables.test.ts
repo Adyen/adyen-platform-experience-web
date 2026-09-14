@@ -116,4 +116,27 @@ describe('rewriteBentoCssVariables', () => {
         expect(bundle['index.js']).toBe(chunk);
         expect(chunk.code).toBe('const variable = "--b-color";');
     });
+
+    test('rewrites .b-dark-theme selector in CSS assets', () => {
+        const bundle = bundleWithAsset('assets/library.css', '.b-dark-theme{color:red}.b-dark-theme .item{background:blue}');
+
+        runGenerateBundle(bundle);
+
+        expect(getAsset(bundle, 'assets/library.css').source).toBe(
+            "[data-adyen-pe-theme='dark']{color:red}[data-adyen-pe-theme='dark'] .item{background:blue}"
+        );
+    });
+
+    test('avoids accidental replacements when substrings appear inside other names', () => {
+        const bundle = bundleWithAsset(
+            'assets/library.css',
+            ':root{--my--b-color:blue;--b-color:red}.b-dark-theme-container{color:green}.b-dark-theme{color:black}'
+        );
+
+        runGenerateBundle(bundle);
+
+        expect(getAsset(bundle, 'assets/library.css').source).toBe(
+            ":root{--my--b-color:blue;--adyen-sdk-color:red}.b-dark-theme-container{color:green}[data-adyen-pe-theme='dark']{color:black}"
+        );
+    });
 });
