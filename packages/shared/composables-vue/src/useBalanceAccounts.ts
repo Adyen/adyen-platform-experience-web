@@ -7,9 +7,9 @@ const cache = new WeakMap<(...args: any[]) => any, IBalanceAccountBase[]>();
 const pendingRequests = new WeakMap<(...args: any[]) => any, Promise<IBalanceAccountBase[]>>();
 
 /**
- * Vue composable counterpart of the Preact `useBalanceAccounts` hook. Fetches the list of balance
+ * Fetches the list of balance
  * accounts once per endpoint (cached by endpoint callable reference), optionally filtering by a
- * target balanceAccountId. Returns reactive refs mirroring the Preact hook's shape.
+ * target balanceAccountId. Returns reactive refs for the request state.
  */
 export function useBalanceAccounts(balanceAccountId?: () => string | undefined, enabled?: () => boolean | undefined) {
     const config = useConfigContext();

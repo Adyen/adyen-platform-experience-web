@@ -84,7 +84,7 @@ function onRowClick(payout: IPayout) {
 
     // Notify the consumer first so they can intercept and decide whether to
     // call `showModal` themselves. If no consumer callback is provided we open
-    // the modal directly (mirrors the Preact `useModalDetails.callback` flow).
+    // the modal directly.
     if (props.onRecordSelection) {
         props.onRecordSelection({
             balanceAccountId,

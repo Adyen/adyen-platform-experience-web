@@ -1,10 +1,8 @@
 import { resolve } from 'node:path';
-import { preact } from '@preact/preset-vite';
 import { defineConfig, mergeConfig, type UserConfig } from 'vite';
 import { getBuildEnvDefines } from './defines/build-env';
-import svgr from 'vite-plugin-svgr';
 
-interface PreactViteLibOptions {
+interface ViteLibOptions {
     projectRoot: string;
     entry: string;
     preserveModulesRoot?: string;
@@ -13,14 +11,14 @@ interface PreactViteLibOptions {
     overrides?: UserConfig;
 }
 
-export function getPreactViteLibConfig({
+export function getViteLibConfig({
     projectRoot,
     entry,
     preserveModulesRoot = 'src',
     external = [],
     scssLoadPaths = [],
     overrides = {},
-}: PreactViteLibOptions) {
+}: ViteLibOptions) {
     const entryPath = resolve(projectRoot, entry);
     const outDir = resolve(projectRoot, 'dist');
     const scss = {
@@ -59,14 +57,6 @@ export function getPreactViteLibConfig({
         json: {
             stringify: true,
         },
-        plugins: [
-            svgr({
-                svgrOptions: { jsxRuntime: 'automatic', exportType: 'default' },
-                esbuildOptions: { jsx: 'automatic' },
-                include: '**/*.svg?component',
-            }),
-            preact(),
-        ],
     } as const;
 
     return defineConfig(({ mode }) => mergeConfig(baseConfig, { ...overrides, define: getBuildEnvDefines(mode) }) as UserConfig);

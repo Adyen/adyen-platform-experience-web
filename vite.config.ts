@@ -1,14 +1,12 @@
 // eslint-disable import/no-extraneous-dependencies
 import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
-import { preact } from '@preact/preset-vite';
 import vue from '@vitejs/plugin-vue';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { realApiProxies } from './endpoints/realApiProxies';
 import { getBuildEnvDefines } from './config/defines/build-env';
 import { getEnvironment } from './envs/getEnvs';
 import packageJson from './package.json';
-import svgr from 'vite-plugin-svgr';
 
 const KYC_CUSTOM_ELEMENT_TAGS = ['adyen-business-financing', 'adyen-terms-of-service-management'];
 
@@ -115,7 +113,7 @@ export default defineConfig(({ mode }) => {
                 'src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'config/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'scripts/check-publish-contract/**/*.{test,spec}.?(c|m)[jt]s?(x)',
-                'packages/domains/*/{domain,preact,vue}/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/domains/*/{domain,vue}/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
             ],
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],
@@ -123,15 +121,12 @@ export default defineConfig(({ mode }) => {
                 provider: 'v8',
                 all: true,
                 include: [
-                    'components/internal/**/*.{ts,tsx}',
-                    'components/utils/*.{ts,tsx}',
-                    'hooks/**/*.{ts,tsx}',
-                    'packages/shared/core/src/session/SessionContext/**/*.{ts,tsx}',
-                    'packages/shared/utils/src/primitives/**/*.{ts,tsx}',
-                    'utils/**/*.{ts,tsx}',
-                    'core/**/*.{ts,tsx}',
+                    'src/**/*.ts',
+                    'packages/sdk/src/**/*.ts',
+                    'packages/domains/*/{domain,vue}/src/**/*.{ts,vue}',
+                    'packages/shared/{composables-vue,core,utils}/src/**/*.{ts,vue}',
                 ],
-                exclude: ['**/index.{ts,tsx}', '**/constants.{ts,tsx}', '**/types.ts', 'node_modules'],
+                exclude: ['**/index.ts', '**/constants.ts', '**/types.ts', '**/*.d.ts', '**/*.{test,spec}.ts', '**/__testing__/**', 'node_modules'],
                 reporter: ['lcov', 'text', 'json-summary', 'json'],
                 reportsDirectory: resolve(__dirname, 'coverage'),
                 // Uncomment next line once we reach 80% of coverage
@@ -150,12 +145,6 @@ export default defineConfig(({ mode }) => {
                     },
                 },
             }),
-            svgr({
-                svgrOptions: { jsxRuntime: 'automatic', exportType: 'default' },
-                esbuildOptions: { jsx: 'automatic' },
-                include: '**/*.svg?component',
-            }),
-            preact(),
             isAnalyseMode &&
                 visualizer({
                     title: 'Adyen Platform bundle visualizer',
