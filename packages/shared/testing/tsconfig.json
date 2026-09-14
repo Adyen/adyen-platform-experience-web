@@ -5,5 +5,5 @@
         "types": ["node"]
     },
     "files": ["../../../declarations/scss.d.ts", "../../../declarations/vite-env.d.ts"],
-    "include": ["src/**/*.ts", "src/**/*.tsx"]
+    "include": ["src/**/*.ts"]
 }

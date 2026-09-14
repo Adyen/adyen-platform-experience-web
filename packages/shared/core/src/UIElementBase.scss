@@ -16,14 +16,9 @@
     --adyen-sdk-text-title-font-family: #{' '};
     --adyen-sdk-text-title-m-font-family: #{' '};
     --adyen-sdk-text-title-l-font-family: #{' '};
+    box-sizing: border-box;
     container-type: inline-size;
     width: 100%;
-}
-
-.adyen-pe-component,
-.adyen-pe-popover,
-.adyen-pe-tooltip {
-    box-sizing: border-box;
 
     *,
     *::before,

@@ -21,8 +21,7 @@
         "@integration-components/style": "workspace:*",
         "@integration-components/testing": "workspace:*",
         "@integration-components/types": "workspace:*",
-        "@integration-components/utils": "workspace:*",
-        "classnames": "catalog:"
+        "@integration-components/utils": "workspace:*"
     },
     "peerDependencies": {
         "vue": "catalog:"

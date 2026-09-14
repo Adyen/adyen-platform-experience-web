@@ -11,7 +11,6 @@
         "./fixtures/**/*.ts",
         "./mocks/**/*.ts",
         "./publish/src/**/*.ts",
-        "./publish/src/**/*.tsx",
         "./vue/publish/src/**/*.ts",
         "./vue/src/**/*.ts",
         "./vue/src/**/*.vue",

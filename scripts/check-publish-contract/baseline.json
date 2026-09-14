@@ -58,8 +58,8 @@
         "subscribeToSession",
         "waitForI18n"
     ],
-    "esFileCount": 1069,
-    "cssHash": "6a961206505940b2017f84b3f67ea9ac110590737fbc4a53e680ae70fd7cf648",
+    "esFileCount": 1072,
+    "cssHash": "f916d1b41a3cfa60b3589abf88c50c9047a16fcac14e7055a7a26598e4e3bb22",
     "typeFiles": [
         "packages/domains/capital/domain/src/CapitalOffer/constants.d.ts",
         "packages/domains/capital/domain/src/CapitalOffer/index.d.ts",
@@ -394,7 +394,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "80ba77223be06436cc6be1f3451e3c681ed35b989b6876784b342e48cf7312d7",
+    "typeTreeHash": "8925ae47d08d0cb00db6ec74e5fce187b9dcfd75beef60437610f363ada051d4",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",

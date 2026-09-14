@@ -53,7 +53,7 @@
     "build:analyse": "nx run @adyen/adyen-platform-experience-web:build:analyse",
     "build:publish": "pnpm run build && pnpm pack",
     "changeset": "changeset",
-    "format": "prettier --write '{src,packages}/**/*.{ts,tsx,js,css,scss,html,vue}'",
+    "format": "prettier --write '{src,packages}/**/*.{ts,js,css,scss,html,vue}'",
     "check-publish-contract": "pnpm run build && tsx scripts/check-publish-contract/check.ts",
     "check-publish-contract:update": "pnpm run build && tsx scripts/check-publish-contract/check.ts --update",
     "lint": "nx run @adyen/adyen-platform-experience-web:lint",

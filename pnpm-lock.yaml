@@ -24,9 +24,6 @@ catalogs:
     '@vitest/coverage-v8':
       specifier: 4.0.10
       version: 4.0.10
-    classnames:
-      specifier: ^2.5.1
-      version: 2.5.1
     dotenv:
       specifier: ^17.2.3
       version: 17.2.3
@@ -324,9 +321,6 @@ importers:
       '@integration-components/utils':
         specifier: workspace:*
         version: link:../../shared/utils
-      classnames:
-        specifier: 'catalog:'
-        version: 2.5.1
       vue:
         specifier: 'catalog:'
         version: 3.5.31(typescript@5.8.3)
@@ -382,9 +376,6 @@ importers:
       '@integration-components/utils':
         specifier: workspace:*
         version: link:../../shared/utils
-      classnames:
-        specifier: 'catalog:'
-        version: 2.5.1
       vue:
         specifier: 'catalog:'
         version: 3.5.31(typescript@5.8.3)
@@ -437,9 +428,6 @@ importers:
       '@integration-components/utils':
         specifier: workspace:*
         version: link:../../shared/utils
-      classnames:
-        specifier: 'catalog:'
-        version: 2.5.1
       vue:
         specifier: 'catalog:'
         version: 3.5.31(typescript@5.8.3)
@@ -492,9 +480,6 @@ importers:
       '@integration-components/utils':
         specifier: workspace:*
         version: link:../../shared/utils
-      classnames:
-        specifier: 'catalog:'
-        version: 2.5.1
       vue:
         specifier: 'catalog:'
         version: 3.5.31(typescript@5.8.3)
@@ -593,9 +578,6 @@ importers:
       '@integration-components/utils':
         specifier: workspace:*
         version: link:../../shared/utils
-      classnames:
-        specifier: 'catalog:'
-        version: 2.5.1
     devDependencies:
       '@playwright/test':
         specifier: 'catalog:'
@@ -688,9 +670,6 @@ importers:
       '@integration-components/utils':
         specifier: workspace:*
         version: link:../utils
-      classnames:
-        specifier: 'catalog:'
-        version: 2.5.1
       vue:
         specifier: 'catalog:'
         version: 3.5.31(typescript@5.8.3)
@@ -747,9 +726,6 @@ importers:
       '@integration-components/types':
         specifier: workspace:*
         version: link:../types
-      classnames:
-        specifier: 'catalog:'
-        version: 2.5.1
 
   packages/tools/storybook:
     dependencies:

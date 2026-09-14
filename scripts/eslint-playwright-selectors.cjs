@@ -4,8 +4,8 @@ const noFrameworkCoupledPlaywrightSelectors = require('./eslint-rules/no-framewo
 const PLAYWRIGHT_SELECTOR_GUARD_PLUGIN = 'playwright-selector-guard';
 const NO_FRAMEWORK_COUPLED_SELECTORS_RULE = 'no-framework-coupled-playwright-selectors';
 const GUARDED_FILE_GLOBS = [
-    'packages/domains/**/tests/**/*.{spec,test}.{ts,tsx}',
-    'packages/shared/testing/**/*.{ts,tsx}',
+    'packages/domains/**/tests/**/*.{spec,test}.ts',
+    'packages/shared/testing/**/*.ts',
 ];
 const selectorGuardPlugin = {
     rules: {
@@ -20,11 +20,6 @@ module.exports = [
             parser: tsParser,
             ecmaVersion: 2020,
             sourceType: 'module',
-            parserOptions: {
-                ecmaFeatures: {
-                    jsx: true,
-                },
-            },
         },
         plugins: {
             [PLAYWRIGHT_SELECTOR_GUARD_PLUGIN]: selectorGuardPlugin,

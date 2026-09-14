@@ -23,7 +23,6 @@
         "@integration-components/testing": "workspace:*",
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*",
-        "classnames": "catalog:",
         "zod": "4.2.1"
     },
     "peerDependencies": {
