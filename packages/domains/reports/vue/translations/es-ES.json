@@ -1,0 +1,18 @@
+{
+    "reports.common.types.payout": "Pago",
+    "reports.overview.errors.download": "Se ha producido un error con la descarga",
+    "reports.overview.errors.listEmpty": "No se ha encontrado ningún informe",
+    "reports.overview.errors.listUnavailable": "No hemos podido cargar tus informes.",
+    "reports.overview.errors.retryDownload": "Vuelve a intentarlo más tarde.",
+    "reports.overview.errors.tooManyDownloads": "No hemos podido descargar todos los archivos. Vuelve a intentarlo más tarde.",
+    "reports.overview.errors.unavailable": "No hemos podido cargar el listado de informes.",
+    "reports.overview.filters.label": "Filtros de los informes",
+    "reports.overview.generateInfo": "Los informes se generan cada día a medianoche, hora UTC.",
+    "reports.overview.list.controls.downloadReport.label": "Descargar informe",
+    "reports.overview.list.fields.createdAt": "Fecha",
+    "reports.overview.list.fields.reportFile": "Archivo",
+    "reports.overview.list.fields.reportType": "Informe",
+    "reports.overview.pagination.controls.limitSelect.label": "Informes por página",
+    "reports.overview.pagination.label": "Paginación de los informes",
+    "reports.overview.title": "Informes"
+}

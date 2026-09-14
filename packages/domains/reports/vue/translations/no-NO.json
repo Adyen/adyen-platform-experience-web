@@ -1,0 +1,18 @@
+{
+    "reports.common.types.payout": "Utbetaling",
+    "reports.overview.errors.download": "Noe gikk galt med nedlastingen",
+    "reports.overview.errors.listEmpty": "Ingen rapporter funnet",
+    "reports.overview.errors.listUnavailable": "Vi kunne ikke laste inn rapportene dine.",
+    "reports.overview.errors.retryDownload": "Prøv igjen senere.",
+    "reports.overview.errors.tooManyDownloads": "Vi kunne ikke laste ned alle filene. Prøv igjen senere.",
+    "reports.overview.errors.unavailable": "Vi kunne ikke laste inn oversikten over rapporter.",
+    "reports.overview.filters.label": "Rapportfiltre",
+    "reports.overview.generateInfo": "Rapporter genereres hver dag ved midnatt, UTC-tid.",
+    "reports.overview.list.controls.downloadReport.label": "Last ned rapport",
+    "reports.overview.list.fields.createdAt": "Dato",
+    "reports.overview.list.fields.reportFile": "Fil",
+    "reports.overview.list.fields.reportType": "Rapport",
+    "reports.overview.pagination.controls.limitSelect.label": "Rapporter per side",
+    "reports.overview.pagination.label": "Sidenummerering av rapporter",
+    "reports.overview.title": "Rapporter"
+}

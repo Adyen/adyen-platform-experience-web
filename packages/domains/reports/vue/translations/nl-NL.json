@@ -1,0 +1,18 @@
+{
+    "reports.common.types.payout": "Uitbetaling",
+    "reports.overview.errors.download": "Er is iets misgegaan tijdens het downloaden",
+    "reports.overview.errors.listEmpty": "Geen rapporten gevonden",
+    "reports.overview.errors.listUnavailable": "We konden je rapporten niet laden.",
+    "reports.overview.errors.retryDownload": "Probeer het later opnieuw.",
+    "reports.overview.errors.tooManyDownloads": "We konden niet alle bestanden downloaden. Probeer het later opnieuw.",
+    "reports.overview.errors.unavailable": "We konden het rapportoverzicht niet laden.",
+    "reports.overview.filters.label": "Filters voor rapporten",
+    "reports.overview.generateInfo": "Rapporten worden elke dag om middernacht, UTC-tijd, gegenereerd.",
+    "reports.overview.list.controls.downloadReport.label": "Rapport downloaden",
+    "reports.overview.list.fields.createdAt": "Datum",
+    "reports.overview.list.fields.reportFile": "Bestand",
+    "reports.overview.list.fields.reportType": "Rapport",
+    "reports.overview.pagination.controls.limitSelect.label": "Rapporten per pagina",
+    "reports.overview.pagination.label": "Paginering van rapporten",
+    "reports.overview.title": "Rapporten"
+}
