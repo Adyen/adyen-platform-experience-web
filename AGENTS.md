@@ -2,8 +2,8 @@
 
 ## Project Snapshot
 
-Single-package **Preact** component library (`@adyen/adyen-platform-experience-web`) published to npm.
-Stack: Preact + TypeScript (strict) + Vite + SCSS (BEM) + Storybook.
+Multi-package **Vue 3** component SDK (`@adyen/adyen-platform-experience-web`) published to npm.
+Stack: Vue 3 + TypeScript (strict) + Vite + SCSS (BEM) + Storybook.
 All agent documentation lives under `.agents/` — check the JIT Index below for the right file.
 
 ## Root Setup Commands
@@ -30,7 +30,7 @@ pnpm run format             # Prettier format src/
 - **Branches**: `bug/` prefix for fixes, `feature/` for new functionality
 - **PRs**: Fork → branch from `develop` → PR with description → all CI checks must pass
 - **a11y**: ESLint `jsx-a11y` rules enforced — ARIA attributes, keyboard nav, semantic HTML required
-- **Imports**: Preact only (`preact`, `preact/hooks`, `preact/compat`) — never import from `react`
+- **Imports**: Vue only (`vue` and `.vue` single-file components) — do not import from other UI frameworks like React or Preact
 - **Data flow**: Data flows **down** via props; events flow **up** via callbacks. Shared runtime (i18n, loading context, CDN config) is accessed through `useCoreContext()`, never passed as props between siblings.
 
 ## Security & Secrets
@@ -137,7 +137,7 @@ pnpm run test:integration
 |-------|------|
 | Source overview & conventions | [source-overview.md](.agents/patterns/source-overview.md) |
 | Component architecture | [component-architecture.md](.agents/patterns/component-architecture.md) |
-| Custom hooks | [hooks.md](.agents/patterns/hooks.md) |
+| Vue composables | [composables.md](.agents/patterns/composables.md) |
 | Core runtime | [core-runtime.md](.agents/patterns/core-runtime.md) |
 | Design tokens (Bento) | [design-tokens.md](.agents/patterns/design-tokens.md) |
 | i18n patterns | [i18n.md](.agents/patterns/i18n.md) |

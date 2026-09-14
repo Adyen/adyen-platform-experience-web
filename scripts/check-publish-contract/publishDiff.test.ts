@@ -5,7 +5,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { expect, test } from 'vitest';
-import { diff, extractExportsFromContent, getMissingPackageEntrypoints, type Snapshot } from './lib';
+import { buildSnapshot, diff, extractExportsFromContent, getMissingPackageEntrypoints, type Snapshot } from './lib';
 
 test('extractExportsFromContent ignores import aliases', () => {
     const content = ['import { Foo as F, Bar as B } from "./foo.js";', 'export { F as Foo, B as Bar };'].join('\n');
@@ -37,6 +37,26 @@ test('getMissingPackageEntrypoints reports missing declared entrypoints', () => 
             { field: 'style', path: './dist/style.css' },
             { field: 'exports["./styles"]', path: './dist/styles.css' },
         ]);
+    } finally {
+        rmSync(tempRoot, { recursive: true, force: true });
+    }
+});
+
+test('buildSnapshot reads exports from the package module entrypoint', () => {
+    const tempRoot = mkdtempSync(join(tmpdir(), 'publish-diff-'));
+
+    try {
+        mkdirSync(resolve(tempRoot, 'dist/es/public'), { recursive: true });
+        writeFileSync(resolve(tempRoot, 'dist/es/index.js'), 'export { LegacyExport };');
+        writeFileSync(resolve(tempRoot, 'dist/es/public/index.js'), 'export { PublicExport };');
+        writeFileSync(
+            resolve(tempRoot, 'package.json'),
+            JSON.stringify({
+                module: './dist/es/public/index.js',
+            })
+        );
+
+        expect(buildSnapshot(tempRoot).jsExports).toEqual(['PublicExport']);
     } finally {
         rmSync(tempRoot, { recursive: true, force: true });
     }

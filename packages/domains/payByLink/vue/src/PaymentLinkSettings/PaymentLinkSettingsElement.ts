@@ -4,7 +4,7 @@ import PaymentLinkSettingsContainer from './components/PaymentLinkSettingsContai
 import type { PaymentLinkSettingsExternalProps } from './types';
 
 /**
- * Imperative wrapper for PaymentLinkSettings, mirroring the Preact BaseElement.mount() pattern.
+ * Imperative wrapper for mounting PaymentLinkSettings.
  *
  * Usage:
  *   const core = await new Core({ ... }).initialize();

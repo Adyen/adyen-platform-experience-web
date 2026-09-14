@@ -1,4 +1,3 @@
-import type { AnchorHTMLAttributes } from 'preact/compat';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { CustomColumn } from './dataGrid';
 
@@ -22,7 +21,7 @@ export interface CustomTextObject extends BaseCustomObject {
 
 export interface CustomLinkObject extends BaseCustomObject {
     type: 'link';
-    config: BaseDetails & { href: string; target?: AnchorHTMLAttributes<any>['target'] };
+    config: BaseDetails & { href: string; target?: HTMLAnchorElement['target'] };
 }
 
 export interface CustomButtonObject extends BaseCustomObject {
