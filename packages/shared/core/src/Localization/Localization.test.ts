@@ -1,13 +1,13 @@
 import Localization from './Localization';
 import { describe, expect, test, vi } from 'vitest';
-import { es_ES, type TranslationKey } from '../translations';
+import type { TranslationKey } from '../translations';
 
 describe('Localization', () => {
     const translationKey = 'abc' as TranslationKey;
 
     describe('constructor', () => {
         test('sets up locale and customTranslations', () => {
-            const lang = new Localization('es-ES', [es_ES]);
+            const lang = new Localization('es-ES');
 
             lang.customTranslations = {
                 'es-ES': { [translationKey]: 'es' },
@@ -20,7 +20,7 @@ describe('Localization', () => {
         });
 
         test('sets up locale without country code and customTranslations without countryCode', () => {
-            const lang = new Localization('es', [es_ES]);
+            const lang = new Localization('es');
 
             lang.customTranslations = {
                 es: { [translationKey]: 'es' },
