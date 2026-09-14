@@ -2,7 +2,7 @@ import type { IDynamicOffersConfig } from '@integration-components/types';
 import type { EnhancedCapitalState } from '../../shared';
 
 export const getDynamicOfferConfig = (state: EnhancedCapitalState): IDynamicOffersConfig | undefined => {
-    const config = state.dynamicOffer;
+    const config = state.dynamicOfferConfig;
     const minRenewalAmount = state.renewableGrants[0]?.renewal?.minimumRenewalAmount;
     if (!config || minRenewalAmount?.value === undefined) return config;
 

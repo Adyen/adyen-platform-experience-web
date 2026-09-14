@@ -6,7 +6,7 @@ import type { IMissingAction } from '@integration-components/types';
 import { GRANT_ACTION_CONFIGS } from '../../../../../domain/src/CapitalOverview/constants';
 import { useActionsAlertTitles } from '../../composables/useActionsAlertTitles';
 import { useHostedAction } from '../../composables/useHostedAction';
-import styles from './GrantActionsHosted.module.scss';
+import styles from './HostedActions.module.scss';
 
 const props = defineProps<{
     className?: string;
