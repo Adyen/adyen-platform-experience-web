@@ -28,12 +28,10 @@ export default defineConfig(({ mode }) => ({
         alias: [
             { find: /^@integration-components\/style\/(.+)$/, replacement: `${styleDir}/$1` },
             { find: /^@integration-components\/style$/, replacement: resolve(styleDir, 'index.scss') },
-            { find: '@integration-components/hooks-preact', replacement: resolve(rootDir, 'packages/shared/hooks-preact/src') },
             { find: '@integration-components/assets', replacement: resolve(rootDir, 'packages/shared/assets/src') },
             { find: '@integration-components/core', replacement: resolve(rootDir, 'packages/shared/core/src') },
             { find: '@integration-components/types', replacement: resolve(rootDir, 'packages/shared/types/src') },
             { find: '@integration-components/utils', replacement: resolve(rootDir, 'packages/shared/utils/src') },
-            { find: '@integration-components/ui-components-preact', replacement: resolve(rootDir, 'packages/shared/ui-components-preact/src') },
             { find: '@integration-components/sdk-internal', replacement: resolve(rootDir, 'src') },
             { find: '@integration-components/disputes/publish', replacement: resolve(rootDir, 'packages/domains/disputes/publish/src') },
             { find: '@integration-components/disputes/vue', replacement: resolve(rootDir, 'packages/domains/disputes/vue/src') },
