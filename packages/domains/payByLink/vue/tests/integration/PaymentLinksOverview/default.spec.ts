@@ -142,8 +142,8 @@ test.describe('Payment Links Overview', () => {
 
             const grid = page.getByRole('grid');
             const rows = grid.getByRole('rowgroup').nth(1).getByRole('row');
+            await expect.poll(async () => rows.count()).toBeGreaterThan(0);
             const rowCount = await rows.count();
-            expect(rowCount).toBeGreaterThan(0);
 
             for (let i = 0; i < rowCount; i++) {
                 await expect(rows.nth(i).getByText('Single use', { exact: true })).toBeVisible();
@@ -160,8 +160,8 @@ test.describe('Payment Links Overview', () => {
 
             const grid = page.getByRole('grid');
             const rows = grid.getByRole('rowgroup').nth(1).getByRole('row');
+            await expect.poll(async () => rows.count()).toBeGreaterThan(0);
             const rowCount = await rows.count();
-            expect(rowCount).toBeGreaterThan(0);
 
             for (let i = 0; i < rowCount; i++) {
                 await expect(rows.nth(i).getByText('Payment pending', { exact: true })).toBeVisible();
@@ -189,16 +189,21 @@ test.describe('Payment Links Overview', () => {
         test('should reset pagination without sending private store state', async ({ page }) => {
             const storeId = 'STORE_NY_001';
             const paymentLinkRequests: URL[] = [];
+
             const collectPaymentLinkRequests = (request: Request) => {
                 const url = new URL(request.url());
                 if (url.pathname.endsWith('/paymentLinks')) paymentLinkRequests.push(url);
             };
+
             page.on('request', collectPaymentLinkRequests);
 
             try {
                 await expectPaginationReset({
                     endpointPath: '/paymentLinks',
-                    isFilterRequest: (request, expectedStoreId) => new URL(request.url()).searchParams.get('storeIds') === expectedStoreId,
+                    isFilterRequest: (request, expectedStoreId) => {
+                        const url = new URL(request.url());
+                        return url.searchParams.get('storeIds') === expectedStoreId && !url.searchParams.has('_storeIds');
+                    },
                     page,
                     triggerFilterChange: async () => {
                         await updateStoryArgs(page, DEFAULT_STORY_ID, { storeIds: storeId });
@@ -211,7 +216,10 @@ test.describe('Payment Links Overview', () => {
 
             const storeRequests = paymentLinkRequests.filter(url => url.searchParams.get('storeIds') === storeId);
             expect(storeRequests.length).toBeGreaterThan(0);
-            storeRequests.forEach(url => expect(url.searchParams.has('_storeIds')).toBe(false));
+
+            storeRequests.forEach(url => {
+                expect(url.searchParams.has('_storeIds')).toBe(false);
+            });
         });
     });
 });
