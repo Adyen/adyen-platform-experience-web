@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { Core, type CoreInstance, type SupportedLocales, type CoreOptions, UIElement } from '@integration-components/core/vue';
+import {
+    Core,
+    type CoreInstance,
+    type SupportedLocales,
+    type CoreOptions,
+    type CustomTheme,
+    type ThemeMode,
+    type ThemeVariables,
+    UIElement,
+} from '@integration-components/core/vue';
 import { getMySessionToken } from '@integration-components/testing/storybook-helpers';
 import '../../shared/styles.scss';
 
@@ -9,6 +18,9 @@ const props = defineProps<{
     componentProps?: Record<string, any>;
     locale?: SupportedLocales;
     fontFamily?: string;
+    theme?: ThemeMode | 'story';
+    themeDark?: boolean;
+    themeVariables?: ThemeVariables;
     session?: { roles: string[]; accountHolderId?: string };
     compact?: boolean;
 }>();
@@ -23,10 +35,33 @@ let pendingCoreOptions: Partial<CoreOptions> | undefined;
 
 const storyCoreOptions = computed(() => (props.componentProps?.coreOptions ?? {}) as Partial<CoreOptions>);
 
+const configuredThemeMode = computed<ThemeMode>(() => {
+    if (props.theme && props.theme !== 'story') return props.theme;
+    if (props.themeDark !== undefined) return props.themeDark ? 'dark' : 'light';
+    return storyCoreOptions.value.themeMode ?? 'light';
+});
+
 const componentPropsWithoutCoreOptions = computed(() => {
     const { coreOptions: _, ...rest } = props.componentProps ?? {};
     return rest;
 });
+
+const getThemeOptions = (): Pick<CoreOptions, 'themeMode' | 'customTheme'> => {
+    const mode = configuredThemeMode.value;
+    const variables: ThemeVariables = {
+        ...storyCoreOptions.value.customTheme?.[mode],
+        ...props.themeVariables,
+    };
+    const customTheme: CustomTheme = {
+        ...storyCoreOptions.value.customTheme,
+        ...(Object.keys(variables).length > 0 ? { [mode]: variables } : {}),
+    };
+
+    return {
+        themeMode: mode,
+        customTheme: Object.keys(customTheme).length > 0 ? customTheme : undefined,
+    };
+};
 
 async function initializeCore() {
     try {
@@ -39,6 +74,7 @@ async function initializeCore() {
             locale: props.locale || 'en-US',
             onSessionCreate: (_signal: AbortSignal) => getMySessionToken(props.session),
             ...storyCoreOptions.value,
+            ...getThemeOptions(),
         });
 
         core = await instance.initialize();
@@ -64,10 +100,14 @@ async function initializeCore() {
 onMounted(initializeCore);
 
 watch(
-    storyCoreOptions,
+    [storyCoreOptions, configuredThemeMode, () => props.themeVariables],
     options => {
-        if (core) return core.update(options);
-        pendingCoreOptions = options;
+        const nextOptions = {
+            ...options[0],
+            ...getThemeOptions(),
+        };
+        if (core) return core.update(nextOptions);
+        pendingCoreOptions = nextOptions;
     },
     { deep: true }
 );
