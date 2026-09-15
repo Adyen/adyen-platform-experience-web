@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, provide } from 'vue';
-import type { CoreInstance } from './types';
+import { computed, provide, ref } from 'vue';
+import type { Appearance, CoreInstance } from './types';
 import CoreProvider from './Context/CoreProvider.vue';
+import { resolveAppearance } from './customization';
 import ConfigProvider from './ConfigContext/ConfigProvider.vue';
 import EventDispatcherProvider from './Context/eventDispatcher/EventDispatcherProvider.vue';
 import type { ExternalComponentType } from '@integration-components/types';
@@ -11,18 +12,22 @@ import './UIElement.scss';
 interface Props {
     core: CoreInstance;
     componentName: ExternalComponentType;
+    componentAppearance?: Appearance;
     customClassNames?: string;
+    globalAppearance?: Appearance;
     refreshComponent: () => void;
 }
 
 const props = defineProps<Props>();
 const componentRef = ref<HTMLDivElement | null>(null);
+const appearance = computed(() => resolveAppearance(props.globalAppearance ?? props.core.options.appearance, props.componentAppearance));
 provide(COMPONENT_REF_KEY, componentRef);
 </script>
 
 <template>
     <CoreProvider
         :i18n="props.core.i18n"
+        :appearance="appearance"
         :loading-context="props.core.loadingContext"
         :get-cdn-config="props.core.getCdnConfig"
         :get-cdn-dataset="props.core.getCdnDataset"

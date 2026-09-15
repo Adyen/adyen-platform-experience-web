@@ -4,7 +4,7 @@ import { BentoTypography, BentoTabs, BentoTab, BentoButton, BentoAlert, BentoMod
 import PlusIcon from '@adyen/ui-assets-icons-16/vue/plus';
 import SettingsIcon from '@adyen/ui-assets-icons-16/vue/settings';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
+import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
 import PaymentLinksFilters from './PaymentLinksFilters.vue';
 import PaymentLinksTable from './PaymentLinksTable.vue';
 import PaymentLinkCreation from '../../PaymentLinkCreation/components/PaymentLinkCreationContainer/PaymentLinkCreationContainer.vue';
@@ -40,6 +40,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 const config = useConfigContext();
 
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
@@ -190,7 +191,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
 <template>
     <div :class="[styles.root, { [styles.rootXs]: isMobile }]">
         <div :class="styles.header">
-            <BentoTypography v-if="!props.hideTitle" variant="title">
+            <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title">
                 {{ i18n.get('payByLink.overview.title') }}
             </BentoTypography>
             <div v-else />

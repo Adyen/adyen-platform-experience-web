@@ -1,4 +1,4 @@
-import type { CoreInstance } from '@integration-components/core/vue';
+import type { UIElementProps } from '@integration-components/core/vue';
 import type { IBalanceAccountBase } from '@integration-components/types';
 import type { DisputeDetailsCustomization, DisputesListCustomization, DisputesOverviewFilters } from '@integration-components/disputes/domain';
 
@@ -6,8 +6,7 @@ export type DisputeStatusGroup = 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_C
 
 export type { DisputesListCustomization };
 
-export interface DisputesOverviewExternalProps {
-    core: CoreInstance;
+export interface DisputesOverviewExternalProps extends UIElementProps {
     allowLimitSelection?: boolean;
     balanceAccountId?: string;
     preferredLimit?: 10 | 20;
@@ -22,6 +21,6 @@ export interface DisputesOverviewExternalProps {
     };
 }
 
-export type DisputesOverviewProps = Omit<DisputesOverviewExternalProps, 'core'>;
+export type DisputesOverviewProps = Omit<DisputesOverviewExternalProps, 'core' | 'customization'>;
 
 export type { IBalanceAccountBase };

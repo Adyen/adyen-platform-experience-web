@@ -3,6 +3,7 @@
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createApp, type Component, type VNode } from 'vue';
+import { Core } from '../Core';
 import { UIElement } from './UIElement';
 
 vi.mock('./UIElementProvider.vue', () => ({
@@ -99,5 +100,41 @@ describe('UIElement', () => {
 
         expect(view.key).toBe(initialProviderKey);
         expect(getComponentSubtree(view).key).not.toBe(initialComponentKey);
+    });
+
+    test('reacts to global appearance updates from Core.update', async () => {
+        const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core }, 'transactions');
+
+        element.mount(document.createElement('div'));
+
+        const renderElement = rootComponent.setup();
+        expect(renderElement().props?.globalAppearance).toBeUndefined();
+
+        await core.update({ appearance: { illustrations: 'hidden' } });
+
+        const view = renderElement();
+        expect(view.props?.globalAppearance).toEqual({ illustrations: 'hidden' });
+        expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
+    });
+
+    test('preserves component appearance when global appearance updates', async () => {
+        const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
+        const appearance = { illustrations: 'hidden' as const };
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core, appearance }, 'transactions');
+
+        element.mount(document.createElement('div'));
+
+        const renderElement = rootComponent.setup();
+        expect(renderElement().props?.componentAppearance).toEqual(appearance);
+
+        await core.update({ appearance: { illustrations: 'visible' } });
+
+        const view = renderElement();
+        expect(view.props?.componentAppearance).toEqual(appearance);
+        expect(view.props?.globalAppearance).toEqual({ illustrations: 'visible' });
+        expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
     });
 });

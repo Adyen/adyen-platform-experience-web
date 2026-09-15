@@ -1,6 +1,7 @@
 import type { Ref } from 'vue';
 import type Localization from '../../Localization';
 import type { DevEnvironment } from '../../types';
+import type { Appearance } from '@integration-components/types';
 
 export type I18n = Localization['i18n'];
 
@@ -18,6 +19,7 @@ export type OnErrorHandler = (error: Error) => void;
 
 export interface CoreProviderProps {
     commonProps?: CommonPropsTypes;
+    appearance?: Appearance;
     i18n?: I18n;
     loadingContext?: string;
     refreshComponent?: () => void;

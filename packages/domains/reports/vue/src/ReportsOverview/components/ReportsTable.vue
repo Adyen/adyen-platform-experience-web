@@ -10,6 +10,7 @@ import {
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
+    useShouldHideIllustrations,
 } from '@integration-components/composables-vue';
 import { DATE_FORMAT_REPORTS, downloadBlob } from '@integration-components/utils';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
@@ -60,6 +61,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const hideIllustrations = useShouldHideIllustrations();
 // Keep the reactive proxy here — destructuring `useConfigContext()` would unwrap
 // the `refreshing` primitive into a one-time snapshot and capture a stale
 // `endpoints` reference, breaking reactivity when the session is refreshed.
@@ -248,7 +250,7 @@ const paginationProps = computed(() => {
 });
 
 const emptyStateProps = computed(() => ({
-    image: 'no-results-found' as const,
+    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
     variant: 'embedded' as const,
     title: i18n.get('reports.overview.errors.listEmpty'),
     description: i18n.get('common.errors.updateFilters'),

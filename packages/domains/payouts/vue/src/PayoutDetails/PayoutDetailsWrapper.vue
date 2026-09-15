@@ -8,7 +8,7 @@ const { refresh, refreshCount } = createRefreshContext();
 </script>
 
 <template>
-    <UIElementProvider :core="props.core" component-name="payoutDetails" :refresh-component="refresh">
+    <UIElementProvider :core="props.core" component-name="payoutDetails" :component-appearance="props.appearance" :refresh-component="refresh">
         <PayoutDetailsContainer
             :key="refreshCount"
             :id="props.id"
