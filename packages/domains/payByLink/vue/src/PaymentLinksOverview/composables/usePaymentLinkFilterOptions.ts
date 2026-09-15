@@ -5,7 +5,7 @@ import type { IPaymentLinkFilters } from '@integration-components/types';
 import { toError } from '../utils/error';
 
 /**
- * Vue composable counterpart of the Preact `usePaymentLinkFilters` hook's filter-options portion:
+ * Provides payment link filter options:
  * fetches the allowed link types and per-status-group statuses from the Pay by Link filters endpoint.
  */
 export function usePaymentLinkFilterOptions() {

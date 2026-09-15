@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { ModalContextProvider, useCoreContext } from '@integration-components/core/vue';
-import { useShouldHideTitles } from '@integration-components/composables-vue';
+import { getTimezoneAwareDateRangeQueryParams, useShouldHideTitles } from '@integration-components/composables-vue';
 import { BentoTypography, BentoModal } from '@adyen/bento-vue3';
-import { getTimezoneAwareDateRangeQueryParams } from '@integration-components/composables-vue';
 import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
 import PayoutsFilters from './PayoutsFilters.vue';
 import PayoutsTable from './PayoutsTable.vue';
@@ -86,7 +85,7 @@ function onRowClick(payout: IPayout) {
 
     // Notify the consumer first so they can intercept and decide whether to
     // call `showModal` themselves. If no consumer callback is provided we open
-    // the modal directly (mirrors the Preact `useModalDetails.callback` flow).
+    // the modal directly.
     if (props.onRecordSelection) {
         props.onRecordSelection({
             balanceAccountId,
