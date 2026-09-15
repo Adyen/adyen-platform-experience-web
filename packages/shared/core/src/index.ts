@@ -1,3 +1,5 @@
+import './theme/styles';
+
 export { default as AdyenPlatformExperienceError } from './AdyenPlatformExperienceError';
 export type { InvalidField } from './AdyenPlatformExperienceError';
 

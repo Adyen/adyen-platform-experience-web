@@ -119,7 +119,7 @@ function onDropdownInput(value: string | number | { value?: string | number } | 
 </script>
 
 <template>
-    <FieldWrapper v-if="valueConfig.visible" name="amount.value" :error="error">
+    <FieldWrapper v-if="valueConfig.visible" name="amount.value">
         <BentoInputField
             ref="amountInput"
             :variant="variant"
@@ -131,10 +131,10 @@ function onDropdownInput(value: string | number | { value?: string | number } | 
             :min="0"
             :max="MAX_AMOUNT"
             :readonly="valueConfig.readOnly"
-            :error="!!error"
+            :error-message="error"
             :dropdown="dropdownProps"
             dropdown-position="start"
-            @input="onAmountInput"
+            @update:model-value="onAmountInput"
             @dropdown-input="onDropdownInput"
         />
     </FieldWrapper>

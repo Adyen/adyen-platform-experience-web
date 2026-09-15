@@ -1,8 +1,23 @@
-export type { CoreOptions, CoreInstance, DevEnvironment, onErrorHandler, AnalyticsConfig, SessionObject, SessionRequest } from './types';
+import '../theme/styles';
+
+export type {
+    CoreOptions,
+    CoreInstance,
+    DevEnvironment,
+    onErrorHandler,
+    AnalyticsConfig,
+    SessionObject,
+    SessionRequest,
+    ThemeMode,
+    CustomTheme,
+    CustomThemes,
+    ThemeVariables,
+} from './types';
 export type { SupportedLocales } from '../Localization/types';
 
 export * from './Context';
 export * from './ConfigContext';
 
+export { Core } from './Core';
 export { createRefreshContext, UIElement } from './UIElement';
 export { default as UIElementProvider } from './UIElementProvider.vue';
