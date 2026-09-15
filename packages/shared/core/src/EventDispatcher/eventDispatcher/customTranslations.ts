@@ -1,5 +1,5 @@
 import Localization from '../../Localization';
-import currentTranslations from '@integration-components/assets/translations/en-US.json' with { type: 'json' };
+import currentTranslations from '../../../../../sdk/translations/en-US.json';
 import { SUPPORTED_LOCALES } from '../../Localization/constants/localization';
 import { encodeAnalyticsEvent, getEventInsertId, getEventTime } from './utils';
 import { getUserAgent } from '../../runtime';

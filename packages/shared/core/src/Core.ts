@@ -7,6 +7,8 @@ import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitializa
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
 import type { CoreOptions, onErrorHandler, ResolvedEnvironment } from './types';
 import type { TranslationSourceRecord } from './translations';
+import { SDK_TRANSLATION_SOURCES } from '../../../sdk/src/translations';
+import type { I18n } from './vue/Context/types';
 
 /**
  * Minimal contract that UI element classes must satisfy so Core can manage them uniformly.
@@ -51,12 +53,12 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
 
     constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
         this.options = { environment: FALLBACK_ENV, ...options };
-        const { cdnTranslationsUrl, cdnConfigUrl } = this.resolveEnvironment();
+        const { cdnTranslationsUrl } = this.resolveEnvironment();
 
         this.applyEnvironmentAssets();
         this.applyAnalyticsOptions();
 
-        this.localization = new Localization(this.options.locale, this.options.availableTranslations, cdnTranslationsUrl, cdnConfigUrl);
+        this.localization = new Localization(this.options.locale, undefined, cdnTranslationsUrl, '', SDK_TRANSLATION_SOURCES);
 
         this.setOptions(this.options);
     }
@@ -118,7 +120,7 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
         this.session.analyticsEnabled = this.analyticsEnabled;
     }
 
-    public get i18n() {
+    public get i18n(): I18n {
         return this.localization.i18n;
     }
 

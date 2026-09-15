@@ -70,12 +70,36 @@ function normalizeDateRange(value: BentoDateRangePickerValue): BentoDateRangePic
 }
 
 const quickSelectRanges = [
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.last7Days'), value: 'last7Days', data: quickSelectDateRanges.last7Days },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.last30Days'), value: 'last30Days', data: quickSelectDateRanges.last30Days },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.thisWeek'), value: 'thisWeek', data: quickSelectDateRanges.thisWeek },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.lastWeek'), value: 'lastWeek', data: quickSelectDateRanges.lastWeek },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.thisMonth'), value: 'thisMonth', data: quickSelectDateRanges.thisMonth },
-    { label: i18n.get('common.filters.types.date.rangeSelect.options.lastMonth'), value: 'lastMonth', data: quickSelectDateRanges.lastMonth },
+    {
+        label: i18n.get('payByLink.overview.common.filters.types.date.rangeSelect.options.last7Days'),
+        value: 'last7Days',
+        data: quickSelectDateRanges.last7Days,
+    },
+    {
+        label: i18n.get('payByLink.overview.common.filters.types.date.rangeSelect.options.last30Days'),
+        value: 'last30Days',
+        data: quickSelectDateRanges.last30Days,
+    },
+    {
+        label: i18n.get('payByLink.overview.common.filters.types.date.rangeSelect.options.thisWeek'),
+        value: 'thisWeek',
+        data: quickSelectDateRanges.thisWeek,
+    },
+    {
+        label: i18n.get('payByLink.overview.common.filters.types.date.rangeSelect.options.lastWeek'),
+        value: 'lastWeek',
+        data: quickSelectDateRanges.lastWeek,
+    },
+    {
+        label: i18n.get('payByLink.overview.common.filters.types.date.rangeSelect.options.thisMonth'),
+        value: 'thisMonth',
+        data: quickSelectDateRanges.thisMonth,
+    },
+    {
+        label: i18n.get('payByLink.overview.common.filters.types.date.rangeSelect.options.lastMonth'),
+        value: 'lastMonth',
+        data: quickSelectDateRanges.lastMonth,
+    },
 ];
 
 const defaultDateRange = cloneDateRange(quickSelectDateRanges.last30Days);
@@ -122,7 +146,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
     config.push({
         field: 'dateRange',
-        label: i18n.get('common.filters.types.date.label'),
+        label: i18n.get('payByLink.overview.common.filters.types.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         defaultValue: defaultDateRange,
         options: {

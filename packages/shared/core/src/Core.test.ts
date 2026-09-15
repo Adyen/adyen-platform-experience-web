@@ -53,6 +53,17 @@ describe('Core', () => {
         expect(warningCalls).toHaveLength(0);
     });
 
+    it('owns the SDK localization instance', async () => {
+        const core = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+        });
+
+        await core.initialize();
+
+        expect(core.i18n.get('transactions.common.errors.updateFilters')).toBe('Try a different search or reset your filters, and we’ll try again.');
+    });
+
     it('should warn once when initialized server-side in development mode', async () => {
         vi.stubGlobal('window', undefined);
 

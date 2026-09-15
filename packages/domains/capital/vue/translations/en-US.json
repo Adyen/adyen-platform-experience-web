@@ -1,6 +1,13 @@
 {
     "capital.common.actions.contactSupport": "Contact support",
+    "capital.common.actions.contactSupport.labels.reachOut": "Reach out to support",
+    "capital.common.actions.dismiss.labels.dismiss": "Dismiss",
     "capital.common.actions.goBack": "Go back",
+    "capital.common.actions.refresh.labels.default": "Refresh",
+    "capital.common.errors.errorCode": "The error code is %{requestId}",
+    "capital.common.errors.errorCodeSupport": "Contact support for help and share error code %{requestId}",
+    "capital.common.errors.retry": "Try refreshing the page or come back later.",
+    "capital.common.errors.somethingWentWrong": "Something went wrong.",
     "capital.common.errors.unsupportedRegion": "Business financing isn’t available in your region yet, but check back here for an offer.",
     "capital.common.errors.unsupportedRegion.title": "Stay tuned!",
     "capital.common.fields.account": "Account",

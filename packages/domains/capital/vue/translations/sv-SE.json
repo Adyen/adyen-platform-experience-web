@@ -1,6 +1,13 @@
 {
     "capital.common.actions.contactSupport": "Kontakta supporten",
+    "capital.common.actions.contactSupport.labels.reachOut": "Kontakta supporten",
+    "capital.common.actions.dismiss.labels.dismiss": "Avvisa",
     "capital.common.actions.goBack": "Tillbaka",
+    "capital.common.actions.refresh.labels.default": "Uppdatera",
+    "capital.common.errors.errorCode": "Felkoden är %{requestId}",
+    "capital.common.errors.errorCodeSupport": "Kontakta supporten för hjälp och använd felkoden %{requestId}",
+    "capital.common.errors.retry": "Försök att uppdatera sidan eller kom tillbaka senare.",
+    "capital.common.errors.somethingWentWrong": "Något gick fel.",
     "capital.common.errors.unsupportedRegion": "Företagsfinansiering är inte tillgängligt i din region ännu, men undersök status genom att återkomma hit.",
     "capital.common.errors.unsupportedRegion.title": "Håll dig uppdaterad!",
     "capital.common.fields.account": "Konto",

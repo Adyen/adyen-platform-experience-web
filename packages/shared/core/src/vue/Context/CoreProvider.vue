@@ -6,12 +6,14 @@ import { CORE_CONTEXT_KEY } from './constants';
 
 const props = withDefaults(defineProps<CoreProviderProps>(), {
     loadingContext: '',
+    translationDomain: 'transactions',
 });
 
 const ready = ref(false);
 
 const coreContextValue = computed<CoreContextValue>(() => ({
     i18n: props.i18n ?? new Localization().i18n,
+    translationDomain: props.translationDomain,
     commonProps: props.commonProps || {},
     loadingContext: props.loadingContext ?? '',
     refreshComponent: props.refreshComponent,

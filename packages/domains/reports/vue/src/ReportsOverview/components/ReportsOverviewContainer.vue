@@ -30,7 +30,7 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
         <div v-if="hasError">
             <p>{{ i18n.get('reports.overview.errors.unavailable') }}</p>
             <button v-if="props.onContactSupport" @click="props.onContactSupport">
-                {{ i18n.get('common.actions.contactSupport.labels.default') }}
+                {{ i18n.get('reports.common.actions.contactSupport.labels.default') }}
             </button>
         </div>
 
