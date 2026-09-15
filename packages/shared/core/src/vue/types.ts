@@ -25,6 +25,7 @@ export interface CoreInstance {
     options: CoreOptions;
     i18n: I18n;
     localization: Localization;
+    bentoLocalization: Localization;
     loadingContext: string;
     analyticsEnabled: boolean;
     session: AuthSession;
