@@ -27,7 +27,7 @@
     },
     "devDependencies": {
         "@playwright/test": "catalog:",
-        "@storybook/vue3": "10.2.12",
+        "@storybook/vue3": "10.5.10",
         "dotenv": "^17.2.3",
         "msw": "catalog:"
     }
