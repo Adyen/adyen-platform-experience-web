@@ -14,3 +14,6 @@
   # Inherits 'publish' from the global [build] block automatically.
   # Explicitly overrides ONLY the specific command needed for Vue.
   command = "pnpm run build && pnpm run storybook:build:vue"
+
+[context."german"]
+  command = "pnpm run build && pnpm run storybook:build:vue"
