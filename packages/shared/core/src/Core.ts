@@ -1,4 +1,4 @@
-import { EMPTY_OBJECT, hasOwnProperty } from '@integration-components/utils';
+import { EMPTY_OBJECT } from '@integration-components/utils';
 import { AuthSession } from './session/AuthSession';
 import Localization from './Localization';
 import { Assets, AssetOptions } from './Assets/Assets';
@@ -6,7 +6,6 @@ import { getCustomTranslationsAnalyticsPayload } from './EventDispatcher/eventDi
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
 import type { CoreOptions, onErrorHandler, ResolvedEnvironment } from './types';
-import type { TranslationSourceRecord } from './translations';
 
 /**
  * Minimal contract that UI element classes must satisfy so Core can manage them uniformly.
@@ -20,9 +19,6 @@ export interface ManagedElement {
 
 export type CdnFetcher = <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
 
-export const AVAILABLE_TRANSLATIONS_DEPRECATION_WARNING =
-    '[AdyenPlatFormExperience] The "availableTranslations" option is deprecated and will be removed in a future major version. You can safely remove this option.';
-
 /**
  * Framework-agnostic source of truth for the Core runtime. Owns option resolution,
  * environment, session wiring, the shared `Localization` instance, asset getters, CDN
@@ -31,9 +27,9 @@ export const AVAILABLE_TRANSLATIONS_DEPRECATION_WARNING =
  * Rendering, mounting, and unmounting live in the Vue UIElement classes, not here.
  */
 
-export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends object = Record<never, never>> {
+export class Core<CustomTranslations extends object = Record<never, never>> {
     public static readonly version = process.env.SDK_VERSION!;
-    public options: CoreOptions<AvailableTranslations, CustomTranslations>;
+    public options: CoreOptions<CustomTranslations>;
     public loadingContext!: string;
     public analyticsEnabled!: boolean;
     public session = new AuthSession();
@@ -45,18 +41,17 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
     public getCdnDataset!: CdnFetcher;
     public components: ManagedElement[] = [];
 
-    private hasWarnedAboutAvailableTranslationsDeprecation = false;
     private hasWarnedAboutServerSideInitialization = false;
     private readyCustomTranslationsAnalytics = false;
 
-    constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
+    constructor(options: CoreOptions<CustomTranslations>) {
         this.options = { environment: FALLBACK_ENV, ...options };
         const { cdnTranslationsUrl, cdnConfigUrl } = this.resolveEnvironment();
 
         this.applyEnvironmentAssets();
         this.applyAnalyticsOptions();
 
-        this.localization = new Localization(this.options.locale, this.options.availableTranslations, cdnTranslationsUrl, cdnConfigUrl);
+        this.localization = new Localization(this.options.locale, cdnTranslationsUrl, cdnConfigUrl);
 
         this.setOptions(this.options);
     }
@@ -72,7 +67,7 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
      * Merge incoming options, propagate locale / custom translations to the shared
      * `Localization`, hand off to the subclass hook, then sync the session.
      */
-    protected setOptions(options: Partial<CoreOptions<AvailableTranslations, CustomTranslations>>): this {
+    protected setOptions(options: Partial<CoreOptions<CustomTranslations>>): this {
         const environmentChanged = options.environment !== undefined && options.environment !== this.options.environment;
         const loadingContextChanged = options.loadingContext !== undefined && options.loadingContext !== this.options.loadingContext;
         const analyticsChanged = options.analytics !== undefined && options.analytics !== this.options.analytics;
@@ -91,11 +86,6 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
 
         if (analyticsChanged) {
             this.applyAnalyticsOptions();
-        }
-
-        if (!this.hasWarnedAboutAvailableTranslationsDeprecation && hasOwnProperty(this.options, 'availableTranslations')) {
-            console.warn(AVAILABLE_TRANSLATIONS_DEPRECATION_WARNING);
-            this.hasWarnedAboutAvailableTranslationsDeprecation = true;
         }
 
         this.session.loadingContext = this.loadingContext;
@@ -149,11 +139,7 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
      * Apply a partial options patch, re-initialize, and propagate the update to
      * every registered component that belongs to this Core instance.
      */
-    public async update(
-        options: Partial<CoreOptions<AvailableTranslations, CustomTranslations>> = EMPTY_OBJECT as Partial<
-            CoreOptions<AvailableTranslations, CustomTranslations>
-        >
-    ): Promise<this> {
+    public async update(options: Partial<CoreOptions<CustomTranslations>> = EMPTY_OBJECT as Partial<CoreOptions<CustomTranslations>>): Promise<this> {
         this.setOptions(options);
         await this.initialize();
 

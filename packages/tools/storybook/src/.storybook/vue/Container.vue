@@ -34,7 +34,7 @@ async function initializeCore() {
 
         const { coreOptions } = props.componentProps ?? {};
 
-        const instance = new Core<[], Record<never, never>>({
+        const instance = new Core({
             environment: 'test',
             locale: props.locale || 'en-US',
             onSessionCreate: (_signal: AbortSignal) => getMySessionToken(props.session),
