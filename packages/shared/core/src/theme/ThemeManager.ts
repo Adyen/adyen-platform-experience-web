@@ -71,9 +71,8 @@ export class ThemeManager {
             const generatedStyle = Array.from(document.head.children).find(
                 element => !existingElements.has(element) && element instanceof HTMLStyleElement
             );
-            if (!generatedStyle) return;
 
-            return generatedStyle.textContent?.replace(':root', `[${THEME_ROOT_ATTRIBUTE}='${this.id}']`);
+            return generatedStyle?.textContent?.replace(':root', `[${THEME_ROOT_ATTRIBUTE}='${this.id}']`);
         } finally {
             generator.destroy();
         }
