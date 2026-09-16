@@ -158,6 +158,30 @@ test.describe('Payment link creation - Link creation validation', () => {
         await expect(amountField).toHaveValue('123.45');
     });
 
+    test('Should show custom validity errors on the field requiring attention', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID });
+
+        await page.getByTestId('form-field-store').getByRole('combobox').click();
+        await page.getByRole('option', { name: 'NY001' }).click();
+        await page.getByRole('button', { name: 'Continue' }).click();
+
+        await page.getByRole('combobox', { name: 'Validity' }).click();
+        await page.getByRole('option', { name: 'Custom' }).click();
+        await page.getByRole('button', { name: 'Continue' }).click();
+
+        const customValidity = page.getByTestId('form-field-linkValidity.quantity');
+        const quantity = customValidity.getByRole('spinbutton');
+        const unit = customValidity.getByRole('combobox');
+        await expect(quantity).toHaveAttribute('aria-invalid', 'true');
+        await expect(getFieldError(page, 'linkValidity.quantity')).toContainText('Please enter a duration value');
+
+        await quantity.fill('1');
+        await page.getByRole('button', { name: 'Continue' }).click();
+
+        await expect(unit).toHaveAttribute('aria-invalid', 'true');
+        await expect(getFieldError(page, 'linkValidity.quantity')).toContainText('Please select a duration unit');
+    });
+
     test('Should validate all required form fields', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 

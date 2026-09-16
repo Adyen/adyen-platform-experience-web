@@ -45,7 +45,7 @@ const getAsset = (bundle: Rollup.OutputBundle, fileName: string): Rollup.OutputA
 };
 
 describe('rewriteBentoCssVariables', () => {
-    test.each(['library.css', 'library.scss', 'Component.vue?vue&type=style&index=0&lang.css'])(
+    test.each(['library.css', 'library.scss', 'Component.vue?vue&type=style&index=0&lang.css', 'Component.vue?type=style&vue&index=0'])(
         'rewrites Bento variables while serving %s',
         async id => {
             await expect(runTransform(':root{--b-color:red;color:var(--b-color)}', id)).resolves.toEqual({

@@ -16,7 +16,6 @@ const wizard = useWizard();
 const { i18n } = wizard;
 const config = computed(() => wizard.getFieldConfig('linkValidity.durationUnit'));
 const required = computed(() => config.value.required || wizard.getFieldConfig('linkValidity.quantity').required);
-const error = computed(() => wizard.getError('linkValidity.quantity'));
 
 const presetItems = computed(() =>
     (props.options ?? []).map(({ quantity, durationUnit, type }) => {
@@ -38,6 +37,9 @@ const unitItems = computed(() =>
 const selection = ref('');
 const quantity = computed(() => (wizard.values.value['linkValidity.quantity'] as string | number | undefined) ?? '');
 const unit = computed(() => (wizard.values.value['linkValidity.durationUnit'] as string | undefined) ?? '');
+const error = computed(() => wizard.getError('linkValidity.quantity'));
+const unitError = computed(() => (quantity.value && !unit.value ? error.value : undefined));
+const quantityError = computed(() => (unitError.value ? undefined : error.value));
 
 function resolveSelection() {
     const q = wizard.getValue('linkValidity.quantity');
@@ -115,7 +117,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                     :model-value="quantity"
                     :min="1"
                     :readonly="config.readOnly"
-                    :error-message="error"
+                    :error-message="quantityError"
                     @update:model-value="onQuantityInput"
                 />
                 <BentoDropdown
@@ -123,6 +125,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                     :placeholder="i18n.get('common.inputs.select.placeholder')"
                     :model-value="unit"
                     :readonly="config.readOnly"
+                    :error-message="unitError"
                     @update:model-value="onUnitUpdate"
                 />
             </div>

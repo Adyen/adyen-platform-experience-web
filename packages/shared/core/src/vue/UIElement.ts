@@ -113,6 +113,7 @@ export class UIElement<Props extends Record<string, any>> {
 
         this.configureApp(this._app);
         this._app.mount(el);
+        this.core?.registerThemeRoot?.(el);
 
         return this;
     }
@@ -125,6 +126,9 @@ export class UIElement<Props extends Record<string, any>> {
 
     public unmount(): this {
         this._app?.unmount();
+        if (this._target) {
+            this.core?.unregisterThemeRoot?.(this._target);
+        }
         this._app = null;
         this._target = null;
         return this;

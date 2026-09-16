@@ -10,7 +10,6 @@ export type {
     SessionRequest,
     ThemeMode,
     CustomTheme,
-    CustomThemes,
     ThemeVariables,
 } from './types';
 export type { SupportedLocales } from '../Localization/types';
@@ -18,6 +17,6 @@ export type { SupportedLocales } from '../Localization/types';
 export * from './Context';
 export * from './ConfigContext';
 
-export { Core } from './Core';
+export { Core } from '../Core';
 export { createRefreshContext, UIElement } from './UIElement';
 export { default as UIElementProvider } from './UIElementProvider.vue';

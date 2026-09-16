@@ -5,10 +5,13 @@ const STORY_ID = 'mocked-reports-reports-overview--default';
 
 const getThemeState = (page: Page) =>
     page.evaluate(() => {
-        const styles = getComputedStyle(document.documentElement);
+        const root = document.querySelector('[data-adyen-pe-theme-root]');
+        if (!root) return;
+
+        const styles = getComputedStyle(root);
 
         return {
-            mode: document.documentElement.getAttribute('data-adyen-pe-theme'),
+            mode: root.getAttribute('data-adyen-pe-theme'),
             background: styles.getPropertyValue('--adyen-sdk-color-background-primary').trim(),
             primary: styles.getPropertyValue('--adyen-sdk-color-primary').trim(),
         };

@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Core, { AVAILABLE_TRANSLATIONS_DEPRECATION_WARNING } from './Core';
 import { SERVER_SIDE_INITIALIZATION_WARNING } from './runtime';
@@ -96,5 +99,88 @@ describe('Core', () => {
             expect(component.update).toHaveBeenCalledOnce();
             expect(component.update).toHaveBeenCalledWith(expect.objectContaining({ locale: 'de-DE' }));
         });
+    });
+
+    it('applies its theme to a component root without changing the document theme', () => {
+        const core = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            themeMode: 'dark',
+        });
+        const root = document.createElement('div');
+
+        core.registerThemeRoot(root);
+
+        expect(root.getAttribute('data-adyen-pe-theme')).toBe('dark');
+        expect(document.documentElement.hasAttribute('data-adyen-pe-theme')).toBe(false);
+    });
+
+    it('keeps custom themes isolated between Core instances', () => {
+        const firstCore = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            themeMode: 'light',
+            customTheme: { light: { primary: '#0050b3' } },
+        });
+        const secondCore = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            themeMode: 'dark',
+            customTheme: { dark: { primary: '#84adff' } },
+        });
+        const firstRoot = document.createElement('div');
+        const secondRoot = document.createElement('div');
+        document.body.append(firstRoot, secondRoot);
+
+        firstCore.registerThemeRoot(firstRoot);
+        secondCore.registerThemeRoot(secondRoot);
+
+        expect(getComputedStyle(firstRoot).getPropertyValue('--adyen-sdk-color-primary')).toBe('#0050b3');
+        expect(firstRoot.hasAttribute('data-adyen-pe-theme')).toBe(false);
+        expect(getComputedStyle(secondRoot).getPropertyValue('--adyen-sdk-color-primary')).toBe('#84adff');
+        expect(secondRoot.getAttribute('data-adyen-pe-theme')).toBe('dark');
+    });
+
+    it('updates the theme on every root registered to the Core instance', async () => {
+        const core = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            themeMode: 'dark',
+        });
+        const firstRoot = document.createElement('div');
+        const secondRoot = document.createElement('div');
+        document.body.append(firstRoot, secondRoot);
+        core.registerThemeRoot(firstRoot);
+        core.registerThemeRoot(secondRoot);
+
+        await core.update({
+            themeMode: 'light',
+            customTheme: { light: { background: '#f0f0f0' } },
+        });
+
+        expect(firstRoot.hasAttribute('data-adyen-pe-theme')).toBe(false);
+        expect(secondRoot.hasAttribute('data-adyen-pe-theme')).toBe(false);
+        expect(getComputedStyle(firstRoot).getPropertyValue('--adyen-sdk-color-background-primary')).toBe('#f0f0f0');
+        expect(getComputedStyle(secondRoot).getPropertyValue('--adyen-sdk-color-background-primary')).toBe('#f0f0f0');
+    });
+
+    it('preserves the current theme and options when theme generation fails', async () => {
+        const customTheme = { dark: { primary: '#84adff' } };
+        const core = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            themeMode: 'dark',
+            customTheme,
+        });
+        const root = document.createElement('div');
+        document.body.append(root);
+        core.registerThemeRoot(root);
+
+        await expect(core.update({ themeMode: 'light', customTheme: { light: { primary: 'invalid' } } })).rejects.toThrow();
+
+        expect(core.options.themeMode).toBe('dark');
+        expect(core.options.customTheme).toBe(customTheme);
+        expect(root.getAttribute('data-adyen-pe-theme')).toBe('dark');
+        expect(getComputedStyle(root).getPropertyValue('--adyen-sdk-color-primary')).toBe('#84adff');
     });
 });

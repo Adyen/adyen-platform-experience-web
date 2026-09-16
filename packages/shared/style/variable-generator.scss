@@ -1,3 +1,29 @@
+@use 'sass:map';
+@use '@adyen/bento-design-tokens/dist/scss-map/bento/aliases' as aliases;
+@use '@adyen/bento-design-tokens/dist/scss-map/bento/components' as components;
+@use '@adyen/bento-design-tokens/dist/scss-map/bento/definitions' as definitions;
+
+$adyen-token-maps: (
+    aliases.$color,
+    aliases.$focus-ring,
+    aliases.$text,
+    aliases.$z-index,
+    definitions.$animation,
+    definitions.$border,
+    definitions.$media-query,
+    definitions.$shadow,
+    definitions.$spacer,
+    components.$popover,
+    components.$toast,
+    components.$tooltip
+);
+
 @function token($token) {
-    @return var(--adyen-sdk-#{$token});
+    @each $token-map in $adyen-token-maps {
+        @if map.has-key($token-map, $token) {
+            @return var(--adyen-sdk-#{$token});
+        }
+    }
+
+    @error 'Unknown Bento design token: #{$token}';
 }

@@ -4,6 +4,7 @@ import Localization from './Localization';
 import { Assets, AssetOptions } from './Assets/Assets';
 import { getCustomTranslationsAnalyticsPayload } from './EventDispatcher/eventDispatcher/customTranslations';
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
+import { ThemeManager } from './theme/ThemeManager';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
 import type { CoreOptions, onErrorHandler, ResolvedEnvironment } from './types';
 import type { TranslationSourceRecord } from './translations';
@@ -24,9 +25,10 @@ export const AVAILABLE_TRANSLATIONS_DEPRECATION_WARNING =
     '[AdyenPlatFormExperience] The "availableTranslations" option is deprecated and will be removed in a future major version. You can safely remove this option.';
 
 /**
- * Framework-agnostic source of truth for the Core runtime. Owns option resolution,
- * environment, session wiring, the shared `Localization` instance, asset getters, CDN
- * helpers, the component registry, and the generic `initialize()` / `update()` lifecycle.
+ * Framework-neutral source of truth for the Core runtime. Owns option resolution,
+ * environment, session wiring, theming, the shared `Localization` instance, asset
+ * getters, CDN helpers, the component registry, and the generic `initialize()` /
+ * `update()` lifecycle.
  *
  * Rendering, mounting, and unmounting live in the Vue UIElement classes, not here.
  */
@@ -48,6 +50,7 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
     private hasWarnedAboutAvailableTranslationsDeprecation = false;
     private hasWarnedAboutServerSideInitialization = false;
     private readyCustomTranslationsAnalytics = false;
+    private readonly themeManager = new ThemeManager();
 
     constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
         this.options = { environment: FALLBACK_ENV, ...options };
@@ -59,6 +62,7 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
         this.localization = new Localization(this.options.locale, this.options.availableTranslations, cdnTranslationsUrl, cdnConfigUrl);
 
         this.setOptions(this.options);
+        this.themeManager.apply(this.options.themeMode, this.options.customTheme);
     }
 
     /**
@@ -70,7 +74,7 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
 
     /**
      * Merge incoming options, propagate locale / custom translations to the shared
-     * `Localization`, hand off to the subclass hook, then sync the session.
+     * `Localization`, then sync the session.
      */
     protected setOptions(options: Partial<CoreOptions<AvailableTranslations, CustomTranslations>>): this {
         const environmentChanged = options.environment !== undefined && options.environment !== this.options.environment;
@@ -154,7 +158,26 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
             CoreOptions<AvailableTranslations, CustomTranslations>
         >
     ): Promise<this> {
+        const themeModeChanged = hasOwnProperty(options, 'themeMode');
+        const customThemeChanged = hasOwnProperty(options, 'customTheme');
+        const themeChanged =
+            (themeModeChanged && options.themeMode !== this.options.themeMode) ||
+            (customThemeChanged && options.customTheme !== this.options.customTheme);
+
+        if (themeChanged) {
+            this.themeManager.apply(
+                themeModeChanged ? options.themeMode : this.options.themeMode,
+                customThemeChanged ? options.customTheme : this.options.customTheme
+            );
+        }
+
         this.setOptions(options);
+
+        const hasNonThemeOptions = Object.keys(options).some(option => option !== 'themeMode' && option !== 'customTheme');
+        if ((themeModeChanged || customThemeChanged) && !hasNonThemeOptions) {
+            return this;
+        }
+
         await this.initialize();
 
         this.components.forEach(component => {
@@ -185,6 +208,14 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
         if (component.core === this) {
             this.components.push(component);
         }
+    }
+
+    public registerThemeRoot(root: Element): void {
+        this.themeManager.register(root);
+    }
+
+    public unregisterThemeRoot(root: Element): void {
+        this.themeManager.unregister(root);
     }
 }
 

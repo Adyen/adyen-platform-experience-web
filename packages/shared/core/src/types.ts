@@ -3,6 +3,7 @@ import type { CustomTranslations as Translations, TranslationSourceRecord } from
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '@integration-components/utils/types';
 import { FALLBACK_LOCALE } from './Localization/constants/localization';
 import { SupportedLocales } from './Localization/types';
+import type { ThemeProps } from '@adyen/adyen-shared-web';
 
 type CreateLocalesUnionFromAvailableTranslations<T extends TranslationSourceRecord[]> = T extends T
     ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | typeof FALLBACK_LOCALE
@@ -50,6 +51,9 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
 
     analytics?: AnalyticsConfig;
 
+    themeMode?: ThemeMode;
+    customTheme?: CustomTheme;
+
     /**
      * @internal
      */
@@ -62,6 +66,14 @@ export type CoreOptions<
 > = _CoreOptions<AvailableTranslations, CustomTranslations extends Translations ? CustomTranslations : Record<never, never>>;
 
 export type DevEnvironment = 'test' | 'live' | 'beta';
+
+export type ThemeMode = 'dark' | 'light';
+export type ThemeVariables = Omit<ThemeProps, 'dark'>;
+
+export interface CustomTheme {
+    light?: ThemeVariables;
+    dark?: ThemeVariables;
+}
 
 export type onErrorHandler = (error: Error) => any;
 export type AnalyticsConfig = {

@@ -100,4 +100,22 @@ describe('UIElement', () => {
         expect(view.key).toBe(initialProviderKey);
         expect(getComponentSubtree(view).key).not.toBe(initialComponentKey);
     });
+
+    test('registers and unregisters its mount target as a theme root', () => {
+        const core = {
+            options: { locale: 'en-US' },
+            registerComponent: vi.fn(),
+            registerThemeRoot: vi.fn(),
+            unregisterThemeRoot: vi.fn(),
+            remove: vi.fn(),
+        };
+        const target = document.createElement('div');
+        const element = new UIElement({ render: () => null } as Component, { core }, 'transactions');
+
+        element.mount(target);
+        expect(core.registerThemeRoot).toHaveBeenCalledWith(target);
+
+        element.unmount();
+        expect(core.unregisterThemeRoot).toHaveBeenCalledWith(target);
+    });
 });
