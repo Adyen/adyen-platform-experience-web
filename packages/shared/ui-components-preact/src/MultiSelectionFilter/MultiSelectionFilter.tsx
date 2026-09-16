@@ -13,8 +13,10 @@ const MultiSelectionFilter = memo(
         onResetAction,
         readonly,
         isInvalid,
+        renderListItem,
     }: ReturnType<typeof useMultiSelectionFilter<FilterParam, FilterValue>> &
-        Required<Pick<SelectProps<any>, 'placeholder'>> & { readonly?: boolean; isInvalid?: boolean; onResetAction?: () => void }) => {
+        Required<Pick<SelectProps<any>, 'placeholder'>> &
+        Pick<SelectProps<any>, 'renderListItem'> & { readonly?: boolean; isInvalid?: boolean; onResetAction?: () => void }) => {
         const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
         const isOnlySmContainer = useResponsiveContainer(containerQueries.only.sm);
         const isOnlyMdContainer = useResponsiveContainer(containerQueries.only.md);
@@ -34,6 +36,7 @@ const MultiSelectionFilter = memo(
                     selected={selection}
                     withoutCollapseIndicator={true}
                     items={selectionOptions ?? []}
+                    renderListItem={renderListItem}
                     showOverlay={isSmContainer}
                     fitPosition={isOnlyMdContainer || isOnlySmContainer}
                     aria-label={placeholder}

@@ -3,6 +3,32 @@ import { goToStory } from '@integration-components/testing/playwright/utils';
 
 const STORY_ID = 'mocked-pay-by-link-payment-link-creation--default';
 
+test.describe('Payment link creation - Store selection', () => {
+    test('Shows the select placeholder before choosing a store', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID });
+
+        await expect(page.getByTestId('form-field-store').getByRole('button')).toHaveText('Select option');
+    });
+
+    test('Shows the store description alongside the store code', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID });
+
+        await page.getByTestId('form-field-store').getByRole('button', { name: 'Select option' }).click();
+
+        await expect(page.getByRole('option', { name: 'NY001' })).toContainText('Main Store - New York');
+    });
+
+    test('Shows the store description after selecting a store', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID });
+
+        const storeField = page.getByTestId('form-field-store');
+        await storeField.getByRole('button', { name: 'Select option' }).click();
+        await page.getByRole('option', { name: 'NY001' }).click();
+
+        await expect(storeField.getByRole('button')).toContainText('Main Store - New York');
+    });
+});
+
 test.describe('Payment link creation - Link creation success', () => {
     test('Should successfully create a payment link after filling out all form fields', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });

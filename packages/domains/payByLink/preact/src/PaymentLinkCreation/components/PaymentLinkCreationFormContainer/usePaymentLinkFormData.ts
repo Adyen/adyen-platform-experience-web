@@ -47,9 +47,10 @@ export const usePaymentLinkFormData = ({ storeIds, defaultValues, visibilityConf
                 }
                 return storeIds === storeId;
             })
-            .map(({ storeCode, storeId }) => ({
+            .map(({ description, storeCode, storeId }) => ({
                 id: storeId || '',
                 name: storeCode || '',
+                description: description || undefined,
             }));
     }, [storesData, storeIds]);
 
