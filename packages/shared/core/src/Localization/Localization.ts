@@ -14,7 +14,7 @@ import localSwapConfig from '../config/translations/swapConfig.json';
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;
     #languageCode: string = toTwoLetterCode(this.#locale);
-    #supportedLocales: Readonly<Locale[]> = SUPPORTED_LOCALES;
+    #supportedLocales: Readonly<Locale[]> = [...SUPPORTED_LOCALES];
 
     #customTranslations?: CustomTranslations;
     #translations: Translations = DEFAULT_TRANSLATIONS;
