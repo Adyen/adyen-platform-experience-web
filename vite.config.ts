@@ -74,7 +74,6 @@ export default defineConfig(({ mode }) => {
                               sourcemap: true,
                               indent: false,
                               globals: {
-                                  classnames: 'cx',
                                   'core-js': 'core',
                               },
                           }

@@ -64,16 +64,14 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
         </template>
 
         <template v-else-if="props.transactionsTotalsResult.error.value">
-            <div class="adyen-pe-transaction-insights-totals__error-container">
-                <ErrorMessageDisplay
-                    :error-info="{ title: 'common.errors.somethingWentWrong', messages: ['common.errors.retry'], refreshComponent: true }"
-                    :on-refresh="props.transactionsTotalsResult.refresh"
-                    with-image
-                    :outlined="false"
-                    :absolute-position="false"
-                    :with-background="false"
-                />
-            </div>
+            <ErrorMessageDisplay
+                :error-info="{ title: 'common.errors.somethingWentWrong', messages: ['common.errors.retry'], refreshComponent: true }"
+                :on-refresh="props.transactionsTotalsResult.refresh"
+                with-image
+                :outlined="false"
+                :absolute-position="false"
+                :with-background="false"
+            />
         </template>
 
         <template v-else-if="data">

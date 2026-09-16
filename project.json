@@ -33,7 +33,7 @@
             "executor": "nx:run-commands",
             "dependsOn": ["lint:playwright-selectors"],
             "options": {
-                "commands": ["eslint '{src,packages}/**/*.{js,ts,tsx,vue}'", "stylelint 'packages/**/*.scss'"],
+                "commands": ["eslint '{src,packages}/**/*.{js,ts,vue}'", "stylelint 'packages/**/*.scss'"],
                 "parallel": false
             },
             "cache": true
@@ -41,7 +41,7 @@
         "lint:playwright-selectors": {
             "executor": "nx:run-commands",
             "options": {
-                "command": "eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs 'packages/domains/**/tests/**/*.{spec,test}.{ts,tsx}' 'packages/shared/testing/**/*.{ts,tsx}'"
+                "command": "eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs 'packages/domains/**/tests/**/*.{spec,test}.ts' 'packages/shared/testing/**/*.ts'"
             },
             "cache": true
         },

@@ -21,7 +21,6 @@
         "@integration-components/style": "workspace:*",
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*",
-        "classnames": "catalog:",
         "vue-i18n": "^11"
     },
     "peerDependencies": {
