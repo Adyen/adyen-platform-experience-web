@@ -36,8 +36,8 @@ let pendingCoreOptions: Partial<CoreOptions> | undefined;
 const storyCoreOptions = computed(() => (props.componentProps?.coreOptions ?? {}) as Partial<CoreOptions>);
 
 const configuredThemeMode = computed<ThemeMode>(() => {
-    if (props.theme && props.theme !== 'story') return props.theme;
     if (props.themeDark !== undefined) return props.themeDark ? 'dark' : 'light';
+    if (props.theme && props.theme !== 'story') return props.theme;
     return storyCoreOptions.value.themeMode ?? 'light';
 });
 
