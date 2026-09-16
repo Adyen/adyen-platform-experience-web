@@ -10,6 +10,7 @@ export const STORES = [
         storeId: 'STORE_LON_001',
     },
     {
+        description: 'Main Store - Amsterdam',
         storeCode: 'AM001',
         storeId: 'STORE_AMS_001',
     },
