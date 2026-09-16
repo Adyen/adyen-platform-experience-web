@@ -50,6 +50,7 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
     private hasWarnedAboutAvailableTranslationsDeprecation = false;
     private hasWarnedAboutServerSideInitialization = false;
     private readyCustomTranslationsAnalytics = false;
+    private themeInitialized = false;
     private readonly themeManager = new ThemeManager();
 
     constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
@@ -62,7 +63,6 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
         this.localization = new Localization(this.options.locale, this.options.availableTranslations, cdnTranslationsUrl, cdnConfigUrl);
 
         this.setOptions(this.options);
-        this.themeManager.apply(this.options.themeMode, this.options.customTheme);
     }
 
     /**
@@ -80,8 +80,16 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
         const environmentChanged = options.environment !== undefined && options.environment !== this.options.environment;
         const loadingContextChanged = options.loadingContext !== undefined && options.loadingContext !== this.options.loadingContext;
         const analyticsChanged = options.analytics !== undefined && options.analytics !== this.options.analytics;
+        const nextThemeMode = hasOwnProperty(options, 'themeMode') ? options.themeMode : this.options.themeMode;
+        const nextCustomTheme = hasOwnProperty(options, 'customTheme') ? options.customTheme : this.options.customTheme;
+        const themeChanged = !this.themeInitialized || nextThemeMode !== this.options.themeMode || nextCustomTheme !== this.options.customTheme;
+
+        if (themeChanged) {
+            this.themeManager.apply(nextThemeMode, nextCustomTheme);
+        }
 
         this.options = { ...this.options, ...options };
+        this.themeInitialized = true;
 
         this.localization.locale = this.options.locale;
         this.localization.customTranslations = this.options.translations;
@@ -158,14 +166,6 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
             CoreOptions<AvailableTranslations, CustomTranslations>
         >
     ): Promise<this> {
-        const nextThemeMode = hasOwnProperty(options, 'themeMode') ? options.themeMode : this.options.themeMode;
-        const nextCustomTheme = hasOwnProperty(options, 'customTheme') ? options.customTheme : this.options.customTheme;
-        const themeChanged = nextThemeMode !== this.options.themeMode || nextCustomTheme !== this.options.customTheme;
-
-        if (themeChanged) {
-            this.themeManager.apply(nextThemeMode, nextCustomTheme);
-        }
-
         this.setOptions(options);
 
         const optionKeys = Object.keys(options);
