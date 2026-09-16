@@ -164,6 +164,27 @@ describe('Core', () => {
         expect(getComputedStyle(secondRoot).getPropertyValue('--adyen-sdk-color-background-primary')).toBe('#f0f0f0');
     });
 
+    it('only skips component updates for non-empty theme-only patches', async () => {
+        const core = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+        });
+        const component = {
+            _id: 'component',
+            core,
+            update: vi.fn(),
+            unmount: vi.fn(),
+        };
+        core.registerComponent(component);
+
+        await core.update();
+        expect(component.update).toHaveBeenCalledOnce();
+
+        component.update.mockClear();
+        await core.update({ themeMode: 'dark' });
+        expect(component.update).not.toHaveBeenCalled();
+    });
+
     it('preserves the current theme and options when theme generation fails', async () => {
         const customTheme = { dark: { primary: '#84adff' } };
         const core = new Core({

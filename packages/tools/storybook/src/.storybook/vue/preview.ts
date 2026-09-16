@@ -93,14 +93,13 @@ const preview: Preview = {
             setup() {
                 const { component, session, mockedApi, compact } = args;
                 const componentProps = computed<Record<string, unknown>>(previous => {
-                    const next = Object.fromEntries(Object.entries(args).filter(([arg]) => !STORYBOOK_ONLY_ARGS.has(arg)));
-                    const entries = Object.entries(next);
+                    const nextEntries = Object.entries(args).filter(([arg]) => !STORYBOOK_ONLY_ARGS.has(arg));
                     const unchanged =
                         previous &&
-                        entries.length === Object.keys(previous).length &&
-                        entries.every(([arg, value]) => Object.is(previous[arg], value));
+                        nextEntries.length === Object.keys(previous).length &&
+                        nextEntries.every(([arg, value]) => Object.is(previous[arg], value));
 
-                    return unchanged ? previous : next;
+                    return unchanged ? previous : Object.fromEntries(nextEntries);
                 });
                 const themeVariables = computed<ThemeVariables>(() =>
                     Object.fromEntries(

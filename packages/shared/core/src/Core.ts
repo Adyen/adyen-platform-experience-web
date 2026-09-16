@@ -158,23 +158,19 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
             CoreOptions<AvailableTranslations, CustomTranslations>
         >
     ): Promise<this> {
-        const themeModeChanged = hasOwnProperty(options, 'themeMode');
-        const customThemeChanged = hasOwnProperty(options, 'customTheme');
-        const themeChanged =
-            (themeModeChanged && options.themeMode !== this.options.themeMode) ||
-            (customThemeChanged && options.customTheme !== this.options.customTheme);
+        const nextThemeMode = hasOwnProperty(options, 'themeMode') ? options.themeMode : this.options.themeMode;
+        const nextCustomTheme = hasOwnProperty(options, 'customTheme') ? options.customTheme : this.options.customTheme;
+        const themeChanged = nextThemeMode !== this.options.themeMode || nextCustomTheme !== this.options.customTheme;
 
         if (themeChanged) {
-            this.themeManager.apply(
-                themeModeChanged ? options.themeMode : this.options.themeMode,
-                customThemeChanged ? options.customTheme : this.options.customTheme
-            );
+            this.themeManager.apply(nextThemeMode, nextCustomTheme);
         }
 
         this.setOptions(options);
 
-        const hasNonThemeOptions = Object.keys(options).some(option => option !== 'themeMode' && option !== 'customTheme');
-        if ((themeModeChanged || customThemeChanged) && !hasNonThemeOptions) {
+        const optionKeys = Object.keys(options);
+        const hasOnlyThemeOptions = optionKeys.length > 0 && optionKeys.every(option => option === 'themeMode' || option === 'customTheme');
+        if (hasOnlyThemeOptions) {
             return this;
         }
 
