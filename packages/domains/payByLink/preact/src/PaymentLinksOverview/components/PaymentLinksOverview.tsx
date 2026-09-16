@@ -217,8 +217,10 @@ export const PaymentLinksOverview = ({
         filters,
     });
 
+    const storesById = useMemo(() => new Map(stores?.filter(store => store.id).map(store => [store.id!, store] as const)), [stores]);
+
     const storesTypesFilter = useMultiSelectionFilter({
-        mapFilterOptionName: useCallback((storeId: string) => stores?.find(store => store.id === storeId)?.storeCode ?? storeId, [stores]),
+        mapFilterOptionName: useCallback((storeId: string) => storesById.get(storeId)?.storeCode ?? storeId, [storesById]),
         filterParam: PAYMENT_LINK_STORES_FILTER_PARAM,
         filterValues: useMemo(() => (stores && stores.length > 0 ? stores.filter(store => store.id).map(store => store.id!) : undefined), [stores]),
         defaultFilters,
@@ -230,9 +232,9 @@ export const PaymentLinksOverview = ({
         () =>
             storesTypesFilter.selectionOptions?.map(option => ({
                 ...option,
-                description: stores?.find(store => store.id === option.id)?.description,
+                description: storesById.get(option.id)?.description,
             })),
-        [stores, storesTypesFilter.selectionOptions]
+        [storesById, storesTypesFilter.selectionOptions]
     );
 
     useEffect(() => {
