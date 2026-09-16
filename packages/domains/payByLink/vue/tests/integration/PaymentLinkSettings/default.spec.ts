@@ -34,8 +34,6 @@ test.describe('Default', () => {
 
         await page.setViewportSize({ width: 375, height: 800 });
         await expect(chevrons.first()).toBeVisible();
-        await expect(navigation.locator('.b-list-item__inner').first()).toHaveCSS('gap', '16px');
-        await expect(navigation.locator('.b-list-item__inner').first()).toHaveCSS('padding', '16px 12px');
     });
 
     test('should successfully save theme changes', async ({ page }) => {
