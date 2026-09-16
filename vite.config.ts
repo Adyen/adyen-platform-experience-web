@@ -1,14 +1,14 @@
 // eslint-disable import/no-extraneous-dependencies
 import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
-import { preact } from '@preact/preset-vite';
 import vue from '@vitejs/plugin-vue';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { realApiProxies } from './endpoints/realApiProxies';
 import { getBuildEnvDefines } from './config/defines/build-env';
 import { getEnvironment } from './envs/getEnvs';
 import packageJson from './package.json';
-import svgr from 'vite-plugin-svgr';
+
+const KYC_CUSTOM_ELEMENT_TAGS = ['adyen-business-financing', 'adyen-terms-of-service-management'];
 
 export default defineConfig(({ mode }) => {
     const externalDependencies = Object.keys(packageJson.dependencies);
@@ -74,7 +74,6 @@ export default defineConfig(({ mode }) => {
                               sourcemap: true,
                               indent: false,
                               globals: {
-                                  classnames: 'cx',
                                   'core-js': 'core',
                               },
                           }
@@ -112,7 +111,8 @@ export default defineConfig(({ mode }) => {
             include: [
                 'src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'config/**/*.{test,spec}.?(c|m)[jt]s?(x)',
-                'packages/domains/*/{domain,preact,vue}/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'scripts/check-publish-contract/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/domains/*/{domain,vue}/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
             ],
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],
@@ -120,21 +120,19 @@ export default defineConfig(({ mode }) => {
                 provider: 'v8',
                 all: true,
                 include: [
-                    'src/**/*.{ts,tsx}',
-                    'packages/sdk/src/**/*.{ts,tsx}',
-                    'packages/shared/*/src/**/*.{ts,tsx,vue}',
-                    'packages/domains/*/domain/src/**/*.{ts,tsx}',
-                    'packages/domains/*/preact/src/**/*.{ts,tsx}',
-                    'packages/domains/*/vue/src/**/*.{ts,vue}',
+                    'src/**/*.ts',
+                    'packages/sdk/src/**/*.ts',
+                    'packages/domains/*/{domain,vue}/src/**/*.{ts,vue}',
+                    'packages/shared/{composables-vue,core,utils}/src/**/*.{ts,vue}',
                 ],
                 exclude: [
-                    '**/*.{test,spec}.{ts,tsx,vue}',
-                    '**/*.stories.{ts,tsx,vue}',
+                    '**/*.{test,spec}.{ts,vue}',
+                    '**/*.stories.{ts,vue}',
                     '**/__testing__/**',
                     '**/testing/**',
-                    '**/index.{ts,tsx}',
-                    '**/constants.{ts,tsx}',
-                    '**/types.{ts,tsx}',
+                    '**/index.ts',
+                    '**/constants.ts',
+                    '**/types.ts',
                     '**/*.d.ts',
                     'packages/shared/testing/**',
                     'packages/shared/types/**',
@@ -150,13 +148,13 @@ export default defineConfig(({ mode }) => {
             },
         },
         plugins: [
-            svgr({
-                svgrOptions: { jsxRuntime: 'automatic', exportType: 'default' },
-                esbuildOptions: { jsx: 'automatic' },
-                include: '**/*.svg?component',
+            vue({
+                template: {
+                    compilerOptions: {
+                        isCustomElement: tag => KYC_CUSTOM_ELEMENT_TAGS.includes(tag),
+                    },
+                },
             }),
-            vue(),
-            preact(),
             isAnalyseMode &&
                 visualizer({
                     title: 'Adyen Platform bundle visualizer',

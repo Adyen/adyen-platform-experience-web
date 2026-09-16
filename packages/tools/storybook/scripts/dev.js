@@ -11,7 +11,7 @@ const storybookBin = resolve(__dirname, '../node_modules/.bin/storybook');
 const configDir = process.argv[2];
 
 if (!configDir) {
-    console.error('\nUsage: node scripts/dev.js <config-dir>  (e.g. src/.storybook/preact)\n');
+    console.error('\nUsage: node scripts/dev.js <config-dir>  (e.g. src/.storybook/vue)\n');
     process.exit(1);
 }
 
