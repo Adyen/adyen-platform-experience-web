@@ -27,7 +27,7 @@ const isMobile = useResponsiveContainer(containerQueries.down.xs);
                 :key="item.value"
                 :label="item.label"
                 with-chevron
-                :class="[styles.item, { [styles.itemActive]: item.value === activeValue,  [styles.mobile]: !isMobile, [styles.desktop]: isMobile }]"
+                :class="[styles.item, { [styles.itemActive]: item.value === activeValue, [styles.mobile]: isMobile, [styles.desktop]: !isMobile }]"
                 :aria-current="item.value === activeValue ? 'true' : undefined"
                 @click="emit('select', item.value)"
             />
