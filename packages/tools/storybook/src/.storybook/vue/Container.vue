@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import {
-    Core,
     type CoreInstance,
     type SupportedLocales,
     type CoreOptions,
@@ -10,6 +9,7 @@ import {
     type ThemeVariables,
     UIElement,
 } from '@integration-components/core/vue';
+import { Core } from '@integration-components/core';
 import { getMySessionToken } from '@integration-components/testing/storybook-helpers';
 import '../../shared/styles.scss';
 

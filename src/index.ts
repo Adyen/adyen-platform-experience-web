@@ -1,13 +1,10 @@
-import { Core, CoreOptions, TranslationSourceRecord } from '@integration-components/core';
+import { Core, CoreOptions } from '@integration-components/core';
 import '@integration-components/style';
 import './global';
 
 export * from '@integration-components/core';
 
-export async function AdyenPlatformExperience<
-    AvailableTranslations extends TranslationSourceRecord[] = [],
-    CustomTranslations extends object = Record<never, never>,
->(props: CoreOptions<AvailableTranslations, CustomTranslations>) {
+export async function AdyenPlatformExperience<CustomTranslations extends object = Record<never, never>>(props: CoreOptions<CustomTranslations>) {
     const core = new Core(props);
     return await core.initialize();
 }

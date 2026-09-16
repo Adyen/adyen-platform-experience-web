@@ -1,23 +1,15 @@
 import type { SessionRequest } from './ConfigContext.types';
-import type { CustomTranslations as Translations, TranslationSourceRecord } from './translations';
+import type { CustomTranslations as Translations } from './translations';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '@integration-components/utils/types';
-import { FALLBACK_LOCALE } from './Localization/constants/localization';
 import { SupportedLocales } from './Localization/types';
 import type { ThemeProps } from '@adyen/adyen-shared-web';
-
-type CreateLocalesUnionFromAvailableTranslations<T extends TranslationSourceRecord[]> = T extends T
-    ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | typeof FALLBACK_LOCALE
-    : never;
 
 type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<
     WithReplacedUnderscoreOrDash<KeyOfRecord<T extends Translations ? T : Record<never, never>>, '_', '-'>,
     string
 >;
 
-interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends Translations = Record<never, never>> {
-    // TODO - Remove this prop on v2
-    availableTranslations?: AvailableTranslations;
-
+interface _CoreOptions<CustomTranslations extends Translations = Record<never, never>> {
     /**
      * Core-level balance account config
      */
@@ -36,7 +28,6 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
      * @defaultValue 'en-US'
      */
     locale?:
-        | (AvailableTranslations extends AvailableTranslations ? CreateLocalesUnionFromAvailableTranslations<AvailableTranslations> : never)
         | (CustomTranslations extends CustomTranslations ? CreateLocalesUnionFromCustomTranslations<CustomTranslations> : never)
         | SupportedLocales;
 
@@ -60,10 +51,9 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
     loadingContext?: string;
 }
 
-export type CoreOptions<
-    AvailableTranslations extends TranslationSourceRecord[] = [],
-    CustomTranslations extends object = Record<never, never>,
-> = _CoreOptions<AvailableTranslations, CustomTranslations extends Translations ? CustomTranslations : Record<never, never>>;
+export type CoreOptions<CustomTranslations extends object = Record<never, never>> = _CoreOptions<
+    CustomTranslations extends Translations ? CustomTranslations : Record<never, never>
+>;
 
 export type DevEnvironment = 'test' | 'live' | 'beta';
 
