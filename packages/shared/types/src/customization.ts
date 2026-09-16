@@ -1,6 +1,11 @@
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { CustomColumn } from './dataGrid';
 
+export type Appearance = {
+    illustrations?: 'hidden' | 'visible';
+    titles?: 'hidden' | 'visible';
+};
+
 interface BaseCustomObject {
     value: any;
 }

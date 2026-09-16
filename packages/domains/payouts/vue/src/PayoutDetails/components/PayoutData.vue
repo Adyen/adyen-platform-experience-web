@@ -15,6 +15,7 @@ import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { IPayoutDetails } from '@integration-components/types';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '@integration-components/utils';
 import { formatAmountWithCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '@integration-components/payouts/domain';
 import type { PayoutDetailsCustomization } from '../types';
@@ -31,10 +32,11 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
+const hideTitles = useShouldHideTitles();
 const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
 
 const payoutInner = computed(() => props.payout?.payout);
-const shouldHideTitle = computed(() => props.hideTitle || withinModal);
+const shouldHideTitle = computed(() => props.hideTitle || withinModal || hideTitles.value);
 
 // Adjustments: split into additions/subtractions, each sorted alphabetically by translation key.
 type ListItem = { key: string; value: string };

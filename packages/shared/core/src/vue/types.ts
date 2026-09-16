@@ -4,8 +4,9 @@ import type { SessionObject, SessionRequest } from '../ConfigContext.types';
 import type { DevEnvironment, onErrorHandler, AnalyticsConfig } from '../types';
 import type { I18n } from './Context/types';
 import type { SupportedLocales } from '../Localization/types';
+import type { Appearance } from '@integration-components/types';
 
-export type { DevEnvironment, onErrorHandler, AnalyticsConfig, SessionObject, SessionRequest };
+export type { Appearance, DevEnvironment, onErrorHandler, AnalyticsConfig, SessionObject, SessionRequest };
 
 export interface CoreOptions {
     environment?: DevEnvironment;
@@ -13,8 +14,14 @@ export interface CoreOptions {
     onSessionCreate: SessionRequest;
     onError?: onErrorHandler;
     analytics?: AnalyticsConfig;
+    appearance?: Appearance;
     loadingContext?: string;
     balanceAccountId?: string;
+}
+
+export interface UIElementProps {
+    core: CoreInstance;
+    appearance?: Appearance;
 }
 
 export interface CoreInstance {

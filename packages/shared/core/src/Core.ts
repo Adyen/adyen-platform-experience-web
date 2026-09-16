@@ -145,7 +145,7 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
 
         this.components.forEach(component => {
             if (component.core === this) {
-                component.update({ ...this.options });
+                component.update(this.options);
             }
         });
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import { BentoTypography, BentoSegmentedControl, BentoCard } from '@adyen/bento-vue3';
 import type { BentoSegmentedControlItem } from '@adyen/bento-vue3';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
@@ -13,6 +14,7 @@ defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 const { transactionsViewState } = useTransactionsOverviewContext();
 const { activeView, onViewChange, viewTabs } = transactionsViewState;
 
@@ -22,7 +24,9 @@ const bentoViewTabs = computed<BentoSegmentedControlItem[]>(() => viewTabs.value
 <template>
     <div>
         <div :class="styles.header">
-            <BentoTypography v-if="!hideTitle" variant="title">{{ i18n.get('transactions.overview.title') }}</BentoTypography>
+            <BentoTypography v-if="!hideTitle && !hideTitles" variant="title">
+                {{ i18n.get('transactions.overview.title') }}
+            </BentoTypography>
             <!-- Empty div for space between -->
             <div v-else />
             <BentoSegmentedControl

@@ -1,4 +1,4 @@
-import type { CoreInstance } from '@integration-components/core/vue';
+import type { UIElementProps } from '@integration-components/core/vue';
 import type { DisputeManagementProps } from '../../../domain/src';
 
 export type {
@@ -9,9 +9,7 @@ export type {
     DisputeManagementProps,
 } from '../../../domain/src';
 
-export interface DisputeManagementExternalProps extends Omit<DisputeManagementProps, 'ref'> {
-    core: CoreInstance;
-}
+export type DisputeManagementExternalProps = Omit<DisputeManagementProps, 'ref'> & UIElementProps;
 
 export type DisputeDataAlertMode = 'contactSupport' | 'autoDefended' | 'notDefended' | 'notDefendable';
 
