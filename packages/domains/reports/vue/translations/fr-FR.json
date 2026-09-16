@@ -1,0 +1,18 @@
+{
+    "reports.common.types.payout": "Versement",
+    "reports.overview.errors.download": "Une erreur s'est produite pendant le téléchargement",
+    "reports.overview.errors.listEmpty": "Aucun rapport trouvé",
+    "reports.overview.errors.listUnavailable": "Nous n'avons pas pu charger vos rapports.",
+    "reports.overview.errors.retryDownload": "Veuillez réessayer plus tard.",
+    "reports.overview.errors.tooManyDownloads": "Nous n'avons pas pu télécharger tous les fichiers. Veuillez réessayer plus tard.",
+    "reports.overview.errors.unavailable": "Nous n'avons pas pu charger l'aperçu des rapports.",
+    "reports.overview.filters.label": "Filtres de rapports",
+    "reports.overview.generateInfo": "Les rapports sont générés tous les jours à minuit, heure UTC.",
+    "reports.overview.list.controls.downloadReport.label": "Télécharger le rapport",
+    "reports.overview.list.fields.createdAt": "Date",
+    "reports.overview.list.fields.reportFile": "Fichier",
+    "reports.overview.list.fields.reportType": "Rapport",
+    "reports.overview.pagination.controls.limitSelect.label": "Rapports par page",
+    "reports.overview.pagination.label": "Pagination des rapports",
+    "reports.overview.title": "rapports"
+}

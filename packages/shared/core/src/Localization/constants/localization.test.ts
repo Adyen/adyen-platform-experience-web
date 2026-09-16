@@ -15,30 +15,36 @@ type I18nConfig = {
     customFileNamespaces?: CustomFileNamespaces;
 };
 
-describe('supported locales', async () => {
-    const translationsDir = path.resolve(__dirname, '../../../../assets/src/translations');
-    const translationFiles = await fs.readdir(translationsDir);
+describe('localization config', async () => {
+    const englishLocale = 'en-US';
+    const i18nConfigPath = path.resolve(__dirname, '../../../../../../.i18nrc');
+    const i18n: I18nConfig = JSON.parse(await fs.readFile(i18nConfigPath, 'utf8'));
+    const configDirectory = path.dirname(i18nConfigPath);
 
-    // prettier-ignore
-    const locales = translationFiles
-        .filter(file => /^[a-z]{2}-[A-Z]{2}\.json$/.test(file))
-        .map(file => file.split('.')[0]);
+    it('should have the correct translation source paths', () => {
+        const translationSourceFiles = ['packages/shared/assets/src/translations/en-US.json', 'packages/sdk/translations/en-US.json'].map(
+            sourcePath => {
+                const sourceFile = path.resolve(configDirectory, sourcePath);
+                const relativeTranslationsDir = path.relative(path.dirname(i18nConfigPath), path.dirname(sourceFile));
+                return `${relativeTranslationsDir}/${englishLocale}.json`;
+            }
+        );
 
-    it('should contain all supported locales in alphabetical order', () => {
-        expect(SUPPORTED_LOCALES).toStrictEqual(locales);
+        expect([...i18n.translationSourcePaths].sort()).toStrictEqual(translationSourceFiles.sort());
     });
 
-    describe('.i18nrc config', async () => {
-        const englishLocale = 'en-US';
-        const i18nConfigPath = path.resolve(__dirname, '../../../../../../.i18nrc');
-        const i18n: I18nConfig = JSON.parse(await fs.readFile(i18nConfigPath, 'utf8'));
-        const relativeTranslationsDir = path.relative(path.dirname(i18nConfigPath), translationsDir);
+    describe.each(i18n.translationSourcePaths)('translation source %s', async sourcePath => {
+        const sourceFile = path.resolve(configDirectory, sourcePath);
+        const translationsDir = path.dirname(sourceFile);
+        const translationFiles = await fs.readdir(translationsDir);
 
-        it('should have the correct translation source paths', () => {
-            // prettier-ignore
-            expect(i18n.translationSourcePaths).toStrictEqual([
-                `${relativeTranslationsDir}/${englishLocale}.json`,
-            ]);
+        // prettier-ignore
+        const locales = translationFiles
+            .filter(file => /^[a-z]{2}-[A-Z]{2}\.json$/.test(file))
+            .map(file => file.split('.')[0]);
+
+        it('should contain all supported locales in alphabetical order', () => {
+            expect(SUPPORTED_LOCALES).toStrictEqual(locales);
         });
 
         it('should list all supported locales in alphabetical order (except en-US)', () => {
