@@ -46,10 +46,17 @@ test.describe('Payment Links Overview', () => {
 
         test('should display all filter options', async ({ page }) => {
             await expect(page.getByRole('button', { name: /date/i })).toBeVisible();
+            await expect(page.getByRole('button', { name: 'Stores' })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Type' })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Status' })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Merchant reference' })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Payment Link ID' })).toBeVisible();
+        });
+
+        test('should show store descriptions alongside store codes', async ({ page }) => {
+            await page.getByRole('button', { name: 'Stores' }).click();
+
+            await expect(page.getByRole('option', { name: 'NY001' })).toContainText('Main Store - New York');
         });
 
         test('should display Create Payment Link and Settings buttons', async ({ page }) => {

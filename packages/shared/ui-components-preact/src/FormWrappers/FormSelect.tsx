@@ -5,13 +5,13 @@ import { useWizardFormContext } from '@integration-components/hooks-preact/form/
 import { FieldValues, ValidationRules } from '@integration-components/hooks-preact/form/types';
 import FormField from './FormField';
 import { VisibleField } from './VisibleField';
-import { SelectChangeEvent } from '../FormFields/Select/types';
+import { SelectChangeEvent, SelectItem, SelectProps } from '../FormFields/Select/types';
 import { FieldError } from '../FormFields/FieldError/FieldError';
 
-interface FormSelectProps<TFieldValues> {
+interface FormSelectProps<TFieldValues, TSelectItem extends SelectItem = SelectItem> {
     fieldName: FieldValues<TFieldValues>;
     label: string;
-    items: { id: string; name: string }[];
+    items: TSelectItem[];
     readonly?: boolean;
     filterable?: boolean;
     hideOptionalLabel?: boolean;
@@ -22,9 +22,12 @@ interface FormSelectProps<TFieldValues> {
     onChange?: (e: SelectChangeEvent) => void;
     clearable?: boolean;
     preventInvalidState?: boolean;
+    renderButtonContent?: SelectProps<TSelectItem>['renderButtonContent'];
+    renderListItem?: SelectProps<TSelectItem>['renderListItem'];
+    withoutCollapseIndicator?: boolean;
 }
 
-export function FormSelect<TFieldValues>({
+export function FormSelect<TFieldValues, TSelectItem extends SelectItem = SelectItem>({
     className,
     clearable,
     fieldName,
@@ -37,8 +40,11 @@ export function FormSelect<TFieldValues>({
     onChange,
     preventInvalidState,
     readonly,
+    renderButtonContent,
+    renderListItem,
     validate,
-}: FormSelectProps<TFieldValues>) {
+    withoutCollapseIndicator,
+}: FormSelectProps<TFieldValues, TSelectItem>) {
     const { control, fieldsConfig, getValues, setValue } = useWizardFormContext<TFieldValues>();
     const isRequired = useMemo(() => isRequiredProp ?? fieldsConfig[fieldName]?.required, [fieldsConfig, fieldName, isRequiredProp]);
     const isReadOnly = useMemo(() => isReadOnlyProp ?? fieldsConfig[fieldName]?.readOnly, [fieldsConfig, fieldName, isReadOnlyProp]);
@@ -93,7 +99,10 @@ export function FormSelect<TFieldValues>({
                                     name={fieldName}
                                     onChange={handleChange}
                                     readonly={readonly || isReadOnly}
+                                    renderButtonContent={renderButtonContent}
+                                    renderListItem={renderListItem}
                                     selected={field.value as string}
+                                    withoutCollapseIndicator={withoutCollapseIndicator}
                                     fitPosition
                                 />
                                 {isInvalid && fieldState.error?.message && (

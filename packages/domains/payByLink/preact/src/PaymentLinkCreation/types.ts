@@ -24,5 +24,11 @@ export interface PaymentLinkCreationProps extends UIElementProps {
 
 export type PaymentLinkCreationComponentProps = PaymentLinkCreationProps;
 
+export interface PaymentLinkStoreSelectItem {
+    id: string;
+    name: string;
+    description?: string;
+}
+
 // Placeholder for future configuration options
 export type PaymentLinkCreationConfig = Record<never, never>;

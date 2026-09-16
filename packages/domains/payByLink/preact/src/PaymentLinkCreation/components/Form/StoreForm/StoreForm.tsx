@@ -4,7 +4,7 @@ import { AlertTypeOption } from '@integration-components/ui-components-preact/Al
 import StoreField from './Fields/StoreField';
 
 import { StateUpdater, useMemo } from 'preact/hooks';
-import { PaymentLinkCreationFormValues } from '../../../types';
+import { PaymentLinkCreationFormValues, PaymentLinkStoreSelectItem } from '../../../types';
 import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import { IPaymentLinkSettings, IPaymentLinkStore } from '@integration-components/types';
 import { Dispatch } from 'preact/compat';
@@ -16,7 +16,7 @@ interface StoreFormProps {
     storeIds?: StoreIds;
     settingsData?: IPaymentLinkSettings;
     storesData?: IPaymentLinkStore[];
-    selectItems: { id: string; name: string }[];
+    selectItems: PaymentLinkStoreSelectItem[];
     termsAndConditionsProvisioned: boolean;
 }
 

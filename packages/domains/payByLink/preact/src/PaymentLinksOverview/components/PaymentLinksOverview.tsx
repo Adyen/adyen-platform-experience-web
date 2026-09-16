@@ -32,6 +32,8 @@ import { useCursorPaginatedRecords } from '@integration-components/ui-components
 import { Header } from '@integration-components/ui-components-preact/Header';
 import { DateFilter } from '@integration-components/ui-components-preact/FilterBar/filters/DateFilter';
 import MultiSelectionFilter, { useMultiSelectionFilter } from '@integration-components/ui-components-preact/MultiSelectionFilter';
+import { StoreSelectorItem } from '@integration-components/ui-components-preact/StoreSelector';
+import Select, { renderDefaultMultiSelectionCheckedness } from '@integration-components/ui-components-preact/FormFields/Select';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { isFunction, listFrom } from '@integration-components/utils';
@@ -44,7 +46,6 @@ import Tabs from '@integration-components/ui-components-preact/Tabs/Tabs';
 import { TabComponentProps } from '@integration-components/ui-components-preact/Tabs/types';
 import './PaymentLinksOverview.scss';
 import cx from 'classnames';
-import Select from '@integration-components/ui-components-preact/FormFields/Select';
 import { AriaAttributes } from 'preact/compat';
 import { PopoverContainerSize } from '@integration-components/ui-components-preact/Popover/types';
 import * as RangePreset from '@integration-components/ui-components-preact/Calendar/calendar/timerange/presets';
@@ -224,6 +225,15 @@ export const PaymentLinksOverview = ({
         updateFilters,
         filters,
     });
+
+    const storeSelectionOptions = useMemo(
+        () =>
+            storesTypesFilter.selectionOptions?.map(option => ({
+                ...option,
+                description: stores?.find(store => store.id === option.id)?.description,
+            })),
+        [stores, storesTypesFilter.selectionOptions]
+    );
 
     useEffect(() => {
         updateFilters({
@@ -420,6 +430,15 @@ export const PaymentLinksOverview = ({
                                     isInvalid={!!storeError}
                                     readonly={!!storeError}
                                     placeholder={i18n.get('payByLink.overview.filters.types.stores.label')}
+                                    renderListItem={data => (
+                                        <>
+                                            {renderDefaultMultiSelectionCheckedness(data)}
+                                            <div className={data.contentClassName}>
+                                                <StoreSelectorItem name={data.item.name} description={data.item.description} />
+                                            </div>
+                                        </>
+                                    )}
+                                    selectionOptions={storeSelectionOptions}
                                 />
                             )}
                             <DateFilter

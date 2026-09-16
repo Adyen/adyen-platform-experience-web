@@ -1,4 +1,4 @@
-import { LinkCreationFormStep } from '../../types';
+import { LinkCreationFormStep, PaymentLinkStoreSelectItem } from '../../types';
 import { CustomerDetailsForm } from '../Form/CustomerDetailsForm/CustomerDetailsForm';
 import { PaymentDetailsForm } from '../Form/PaymentDetailsForm/PaymentDetailsForm';
 import { FormSummary } from '../Form/Summary/FormSummary';
@@ -16,10 +16,7 @@ type FormStepRendererProps = {
     storesData?: {
         data: IPaymentLinkStore[];
     };
-    selectItems: {
-        id: string;
-        name: string;
-    }[];
+    selectItems: PaymentLinkStoreSelectItem[];
     termsAndConditionsProvisioned: boolean;
     configurationData?: IPaymentLinkConfiguration;
     isSameAddress: boolean;
