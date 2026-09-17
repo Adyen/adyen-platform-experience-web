@@ -9,7 +9,7 @@ import layoutStyles from '../FormLayout.module.scss';
 import styles from './StoreForm.module.scss';
 
 const props = defineProps<{
-    selectItems: { id: string; name: string }[];
+    selectItems: { id: string; name: string; description?: string }[];
     settingsData?: IPaymentLinkSettings;
     storesData?: IPaymentLinkStore[];
     termsAndConditionsProvisioned: boolean;
