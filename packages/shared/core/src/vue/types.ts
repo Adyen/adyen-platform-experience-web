@@ -1,21 +1,10 @@
 import type { AuthSession } from '../session/AuthSession';
 import type { AssetOptions } from '../Assets/Assets';
 import type { SessionObject, SessionRequest } from '../ConfigContext.types';
-import type { DevEnvironment, onErrorHandler, AnalyticsConfig } from '../types';
+import type { AnalyticsConfig, CoreOptions, CustomTheme, DevEnvironment, onErrorHandler, ThemeMode, ThemeVariables } from '../types';
 import type { I18n } from './Context/types';
-import type { SupportedLocales } from '../Localization/types';
 
-export type { DevEnvironment, onErrorHandler, AnalyticsConfig, SessionObject, SessionRequest };
-
-export interface CoreOptions {
-    environment?: DevEnvironment;
-    locale?: SupportedLocales;
-    onSessionCreate: SessionRequest;
-    onError?: onErrorHandler;
-    analytics?: AnalyticsConfig;
-    loadingContext?: string;
-    balanceAccountId?: string;
-}
+export type { CoreOptions, CustomTheme, DevEnvironment, onErrorHandler, AnalyticsConfig, SessionObject, SessionRequest, ThemeMode, ThemeVariables };
 
 export interface CoreInstance {
     options: CoreOptions;
@@ -27,4 +16,6 @@ export interface CoreInstance {
     getCdnDataset: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
     getImageAsset: (props: AssetOptions) => string;
     update: (options: Partial<CoreOptions>) => Promise<CoreInstance>;
+    registerThemeRoot: (root: Element) => void;
+    unregisterThemeRoot: (root: Element) => void;
 }

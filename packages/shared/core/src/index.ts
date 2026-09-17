@@ -1,3 +1,5 @@
+import './theme/styles';
+
 export { default as AdyenPlatformExperienceError } from './AdyenPlatformExperienceError';
 export type { InvalidField } from './AdyenPlatformExperienceError';
 
@@ -11,15 +13,7 @@ export { API_VERSION } from './Http/constants';
 
 export { default as CURRENCY_DECIMALS } from './Localization/constants/currency-decimals';
 export { default as Localization } from './Localization';
-export type {
-    TranslationSourceRecord,
-    CustomTranslations,
-    Locale,
-    TranslationKey,
-    Translations,
-    TranslationSource,
-    TranslationOptions,
-} from './Localization';
+export type { CustomTranslations, Locale, TranslationKey, Translations, TranslationOptions } from './Localization';
 
 export { createKeyFactoryFromConfig, createDynamicTranslationFactory } from './translation/factory';
 export type { KeyFactoryConfig, KeyFactoryFunction, TranslationFactoryFunction, TranslationFallbackFunction } from './translation/factory';
@@ -70,7 +64,16 @@ export {
     SERVER_SIDE_INITIALIZATION_WARNING,
 } from './runtime';
 
-export type { ResolvedEnvironment, CoreOptions, DevEnvironment, onErrorHandler, AnalyticsConfig } from './types';
+export type {
+    ResolvedEnvironment,
+    CoreOptions,
+    CustomTheme,
+    DevEnvironment,
+    onErrorHandler,
+    AnalyticsConfig,
+    ThemeMode,
+    ThemeVariables,
+} from './types';
 
 export { Core } from './Core';
 export type { CdnFetcher, ManagedElement } from './Core';

@@ -12,6 +12,10 @@
     "exports": {
         ".": "./src/index.ts",
         "./package.json": "./package.json",
+        "./theme": {
+            "types": "./src/theme.d.ts",
+            "default": "./src/theme.js"
+        },
         "./*": "./src/*.ts"
     }
 }
