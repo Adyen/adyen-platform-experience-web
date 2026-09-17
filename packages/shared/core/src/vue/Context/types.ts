@@ -1,8 +1,20 @@
 import type { Ref } from 'vue';
 import type Localization from '../../Localization';
 import type { DevEnvironment } from '../../types';
+import type { TranslationDomain, TranslationKey, TranslationOptions } from '../../translations';
 
-export type I18n = Localization['i18n'];
+export type { DomainCustomTranslations, DomainTranslationKey, TranslationDomain } from '../../translations';
+export { getDomainTranslationKey } from '../../translations';
+
+export type I18n = Omit<Localization['i18n'], 'get' | 'has'> & {
+    get(key: TranslationKey, options?: TranslationOptions): string;
+    has(key: string, options?: TranslationOptions): key is TranslationKey;
+};
+
+export interface DomainTranslationBinding {
+    i18n: I18n;
+    translationDomain: TranslationDomain;
+}
 
 export interface CommonPropsTypes {
     isCollatingErrors?: boolean;
@@ -19,6 +31,7 @@ export type OnErrorHandler = (error: Error) => void;
 export interface CoreProviderProps {
     commonProps?: CommonPropsTypes;
     i18n?: I18n;
+    translationDomain: TranslationDomain;
     loadingContext?: string;
     refreshComponent?: () => void;
     externalErrorHandler?: OnErrorHandler | null;

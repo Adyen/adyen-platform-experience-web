@@ -1,6 +1,13 @@
 {
     "capital.common.actions.contactSupport": "Contactez l'assistance",
+    "capital.common.actions.contactSupport.labels.reachOut": "Contacter l'assistance",
+    "capital.common.actions.dismiss.labels.dismiss": "Ignorer",
     "capital.common.actions.goBack": "Retour",
+    "capital.common.actions.refresh.labels.default": "Actualiser",
+    "capital.common.errors.errorCode": "Le code d'erreur est %{requestId}",
+    "capital.common.errors.errorCodeSupport": "Contactez l'assistance pour obtenir de l'aide et partagez le code d'erreur %{requestId}",
+    "capital.common.errors.retry": "Réessayez en actualisant la page ou retentez plus tard.",
+    "capital.common.errors.somethingWentWrong": "Une erreur s'est produite.",
     "capital.common.errors.unsupportedRegion": "Le financement d'entreprise n'est pas encore disponible dans votre région, mais revenez ici plus tard pour une offre.",
     "capital.common.errors.unsupportedRegion.title": "Plus d'informations bientôt !",
     "capital.common.fields.account": "Compte",

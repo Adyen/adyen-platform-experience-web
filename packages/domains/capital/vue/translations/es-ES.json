@@ -1,6 +1,13 @@
 {
     "capital.common.actions.contactSupport": "Contacta con el servicio de soporte",
+    "capital.common.actions.contactSupport.labels.reachOut": "Ponte en contacto con soporte",
+    "capital.common.actions.dismiss.labels.dismiss": "Descartar",
     "capital.common.actions.goBack": "Volver",
+    "capital.common.actions.refresh.labels.default": "Actualizar",
+    "capital.common.errors.errorCode": "El código de error es %{requestId}",
+    "capital.common.errors.errorCodeSupport": "Ponte en contacto con el servicio de asistencia para obtener ayuda y compartir el código de error %{requestId}",
+    "capital.common.errors.retry": "Prueba a actualizar la página o inténtalo más tarde.",
+    "capital.common.errors.somethingWentWrong": "Se ha producido un error.",
     "capital.common.errors.unsupportedRegion": "La financiación empresarial aún no está disponible en tu región, pero vuelve a consultar aquí para ver si hay alguna oferta.",
     "capital.common.errors.unsupportedRegion.title": "¡Mantente al tanto!",
     "capital.common.fields.account": "Cuenta",

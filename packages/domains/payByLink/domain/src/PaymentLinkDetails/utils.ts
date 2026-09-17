@@ -158,18 +158,22 @@ export const getPaymentLinkErrorMessageContent = (
     errorMessage: TranslationKey,
     hasContactSupport: boolean
 ): PaymentLinkErrorMessageContent => {
-    if (!error) return { title: 'common.errors.unexpected', message: ['common.errors.contactSupport'] };
+    if (!error) return { title: 'payByLink.common.errors.unexpected', message: ['payByLink.common.errors.contactSupport'] };
 
     switch (error.errorCode) {
         case undefined:
-            return { title: 'common.errors.somethingWentWrong', message: [errorMessage, 'common.errors.retry'], refreshComponent: true };
+            return {
+                title: 'payByLink.common.errors.somethingWentWrong',
+                message: [errorMessage, 'payByLink.common.errors.retry'],
+                refreshComponent: true,
+            };
         case '500':
             return {
-                title: 'common.errors.somethingWentWrong',
-                message: [errorMessage, hasContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport'],
+                title: 'payByLink.common.errors.somethingWentWrong',
+                message: [errorMessage, hasContactSupport ? 'payByLink.common.errors.errorCode' : 'payByLink.common.errors.errorCodeSupport'],
                 requestId: error.requestId,
             };
         default:
-            return { title: 'common.errors.unexpected', message: ['common.errors.contactSupport'] };
+            return { title: 'payByLink.common.errors.unexpected', message: ['payByLink.common.errors.contactSupport'] };
     }
 };

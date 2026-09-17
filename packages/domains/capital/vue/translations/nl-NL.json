@@ -1,6 +1,13 @@
 {
     "capital.common.actions.contactSupport": "Neem contact op met support",
+    "capital.common.actions.contactSupport.labels.reachOut": "Neem contact met support",
+    "capital.common.actions.dismiss.labels.dismiss": "Negeren",
     "capital.common.actions.goBack": "Terug",
+    "capital.common.actions.refresh.labels.default": "Vernieuwen",
+    "capital.common.errors.errorCode": "De foutcode is %{requestId}",
+    "capital.common.errors.errorCodeSupport": "Neem contact op met support voor hulp en vermeld de foutcode %{requestId}",
+    "capital.common.errors.retry": "Probeer de pagina te vernieuwen of kom later terug.",
+    "capital.common.errors.somethingWentWrong": "Er is iets fout gegaan.",
     "capital.common.errors.unsupportedRegion": "Zakelijke financiering is nog niet beschikbaar in jouw regio. Houd deze pagina in de gaten voor een aanbod.",
     "capital.common.errors.unsupportedRegion.title": "Houd het in de gaten!",
     "capital.common.fields.account": "Account",
