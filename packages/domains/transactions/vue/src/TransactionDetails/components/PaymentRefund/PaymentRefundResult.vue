@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
+import { BentoButtonActions, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
 import CrossCircleFillIcon from '@adyen/ui-assets-icons-40/vue/cross-circle-filled';
 import type { RefundResult } from '../../../../../domain/src';
@@ -21,6 +21,16 @@ const titleKey = computed(() => (isError.value ? 'common.errors.somethingWentWro
 const descriptionKey = computed(() =>
     isError.value ? 'transactions.details.refund.alerts.refundFailure' : 'transactions.details.refund.alerts.refundSuccess'
 );
+const actionButtons = computed<BentoButtonActionsList>(() => [
+    {
+        title: i18n.get('transactions.details.refund.actions.back'),
+        variant: 'secondary',
+        event: () => {
+            props.showDetails();
+            props.refreshTransaction();
+        },
+    },
+]);
 </script>
 
 <template>
@@ -29,16 +39,6 @@ const descriptionKey = computed(() =>
         <CheckmarkCircleFillIcon v-else :class="styles.refundResponseIconSuccess" />
         <BentoTypography variant="title" large>{{ i18n.get(titleKey) }}</BentoTypography>
         <BentoTypography variant="body">{{ i18n.get(descriptionKey) }}</BentoTypography>
-        <BentoButton
-            variant="secondary"
-            @click="
-                () => {
-                    props.showDetails();
-                    props.refreshTransaction();
-                }
-            "
-        >
-            {{ i18n.get('transactions.details.refund.actions.back') }}
-        </BentoButton>
+        <BentoButtonActions :actions="actionButtons" layout="buttons-end" :class="styles.refundResponseActions" />
     </div>
 </template>

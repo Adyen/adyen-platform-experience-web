@@ -26,8 +26,9 @@
     gap: style.token(spacer-040);
 }
 
-.settingsButton:global(.b-button) {
-    padding: style.token(spacer-050);
+.actionsContainer :global(.b-button-actions__container-wrapper) {
+    flex-direction: row;
+    justify-content: flex-end;
 }
 
 .filtersContainer {
@@ -35,14 +36,6 @@
     flex-wrap: wrap;
     align-items: flex-start;
     gap: style.token(spacer-040);
-}
-
-.actionButtonXs {
-    --icon-size: 16px;
-
-    font-size: var(--icon-size);
-    padding: 0;
-    width: calc(#{style.token(spacer-060)} * 3);
 }
 
 .filtersAlertContainer {
