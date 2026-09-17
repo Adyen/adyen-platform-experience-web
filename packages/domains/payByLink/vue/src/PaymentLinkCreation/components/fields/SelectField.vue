@@ -8,7 +8,7 @@ import type { PaymentLinkFieldName } from '../../../../../domain/src';
 const props = defineProps<{
     name: PaymentLinkFieldName;
     label: string;
-    items: { id: string; name: string }[];
+    items: { id: string; name: string; description?: string }[];
     filterable?: boolean;
     placeholder?: string;
     disabled?: boolean;
@@ -19,7 +19,7 @@ const config = computed(() => wizard.getFieldConfig(props.name));
 const error = computed(() => wizard.getError(props.name));
 const modelValue = computed(() => (wizard.values.value[props.name] as string | undefined) ?? '');
 
-const dropdownItems = computed(() => props.items.map(item => ({ label: item.name, value: item.id })));
+const dropdownItems = computed(() => props.items.map(item => ({ label: item.name, description: item.description || undefined, value: item.id })));
 
 function onUpdate(value: string | number | { value?: string | number } | Array<unknown> | undefined) {
     if (Array.isArray(value)) return;
@@ -44,6 +44,8 @@ function onUpdate(value: string | number | { value?: string | number } | Array<u
             :dynamic-filtering="props.filterable"
             :error="!!error"
             @update:model-value="onUpdate"
-        />
+        >
+            <template #display-value="{ label: itemLabel, description }"> {{ itemLabel }}{{ description ? ` ${description}` : '' }} </template>
+        </BentoDropdown>
     </FieldWrapper>
 </template>

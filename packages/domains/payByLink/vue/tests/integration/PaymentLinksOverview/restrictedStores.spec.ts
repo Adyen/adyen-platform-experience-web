@@ -22,4 +22,10 @@ test.describe('Payment Links Overview - Restricted stores', () => {
             expect(page.getByRole('checkbox', { name: 'AM001', exact: true })).toHaveCount(0),
         ]);
     });
+
+    test('should show store descriptions alongside store codes', async ({ page }) => {
+        await page.getByRole('button', { name: 'Stores', exact: true }).click();
+
+        await expect(page.getByText('Main Store - New York', { exact: true })).toBeVisible();
+    });
 });

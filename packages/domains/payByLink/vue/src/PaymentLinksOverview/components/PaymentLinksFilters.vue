@@ -115,7 +115,11 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             options: {
                 checkboxItems: (props.stores ?? [])
                     .filter(store => store.id)
-                    .map(store => ({ label: store.storeCode ?? store.id!, value: store.id! })),
+                    .map(store => ({
+                        label: store.storeCode ?? store.id!,
+                        description: store.description || undefined,
+                        value: store.id!,
+                    })),
             },
         });
     }
