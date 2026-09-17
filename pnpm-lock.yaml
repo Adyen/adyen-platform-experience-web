@@ -22,8 +22,8 @@ catalogs:
       specifier: 10.2.12
       version: 10.2.12
     '@vitest/coverage-v8':
-      specifier: 4.0.10
-      version: 4.0.10
+      specifier: 4.1.0
+      version: 4.1.0
     dotenv:
       specifier: ^17.2.3
       version: 17.2.3
@@ -167,7 +167,7 @@ importers:
         version: 6.0.5(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))(vue@3.5.31(typescript@5.8.3))
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 4.0.10(vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0)))
+        version: 4.1.0(vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0)))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.5.25)
@@ -2600,11 +2600,11 @@ packages:
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
       vue: ^3.2.25
 
-  '@vitest/coverage-v8@4.0.10':
+  '@vitest/coverage-v8@4.1.0':
     resolution: {}
     peerDependencies:
-      '@vitest/browser': 4.0.10
-      vitest: 4.0.10
+      '@vitest/browser': 4.1.0
+      vitest: 4.1.0
     peerDependenciesMeta:
       '@vitest/browser':
         optional: true
@@ -2629,9 +2629,6 @@ packages:
   '@vitest/pretty-format@3.2.4':
     resolution: {}
 
-  '@vitest/pretty-format@4.0.10':
-    resolution: {}
-
   '@vitest/pretty-format@4.1.0':
     resolution: {}
 
@@ -2648,9 +2645,6 @@ packages:
     resolution: {}
 
   '@vitest/utils@3.2.4':
-    resolution: {}
-
-  '@vitest/utils@4.0.10':
     resolution: {}
 
   '@vitest/utils@4.1.0':
@@ -2925,7 +2919,7 @@ packages:
     resolution: {}
     engines: {node: '>=4'}
 
-  ast-v8-to-istanbul@0.3.8:
+  ast-v8-to-istanbul@1.0.5:
     resolution: {}
 
   ast-walker-scope@0.8.3:
@@ -4197,10 +4191,6 @@ packages:
     resolution: {}
     engines: {node: '>=10'}
 
-  istanbul-lib-source-maps@5.0.6:
-    resolution: {}
-    engines: {node: '>=10'}
-
   istanbul-reports@3.2.0:
     resolution: {}
     engines: {node: '>=8'}
@@ -4239,10 +4229,10 @@ packages:
   js-stringify@1.0.2:
     resolution: {}
 
-  js-tokens@4.0.0:
+  js-tokens@10.0.0:
     resolution: {}
 
-  js-tokens@9.0.1:
+  js-tokens@4.0.0:
     resolution: {}
 
   js-yaml@4.3.1:
@@ -4415,7 +4405,7 @@ packages:
   magic-string@0.30.21:
     resolution: {}
 
-  magicast@0.5.1:
+  magicast@0.5.4:
     resolution: {}
 
   make-dir@4.0.0:
@@ -5386,9 +5376,6 @@ packages:
   statuses@2.0.1:
     resolution: {}
     engines: {node: '>= 0.8'}
-
-  std-env@3.10.0:
-    resolution: {}
 
   std-env@4.1.0:
     resolution: {}
@@ -8205,22 +8192,19 @@ snapshots:
       vite: 7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0)
       vue: 3.5.31(typescript@5.8.3)
 
-  '@vitest/coverage-v8@4.0.10(vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0)))':
+  '@vitest/coverage-v8@4.1.0(vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0)))':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
-      '@vitest/utils': 4.0.10
-      ast-v8-to-istanbul: 0.3.8
-      debug: 4.4.3
+      '@vitest/utils': 4.1.0
+      ast-v8-to-istanbul: 1.0.5
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
-      istanbul-lib-source-maps: 5.0.6
       istanbul-reports: 3.2.0
-      magicast: 0.5.1
-      std-env: 3.10.0
+      magicast: 0.5.4
+      obug: 2.1.1
+      std-env: 4.1.0
       tinyrainbow: 3.0.3
       vitest: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
-    transitivePeerDependencies:
-      - supports-color
 
   '@vitest/expect@3.2.4':
     dependencies:
@@ -8252,10 +8236,6 @@ snapshots:
     dependencies:
       tinyrainbow: 2.0.0
 
-  '@vitest/pretty-format@4.0.10':
-    dependencies:
-      tinyrainbow: 3.0.3
-
   '@vitest/pretty-format@4.1.0':
     dependencies:
       tinyrainbow: 3.0.3
@@ -8283,11 +8263,6 @@ snapshots:
       '@vitest/pretty-format': 3.2.4
       loupe: 3.2.1
       tinyrainbow: 2.0.0
-
-  '@vitest/utils@4.0.10':
-    dependencies:
-      '@vitest/pretty-format': 4.0.10
-      tinyrainbow: 3.0.3
 
   '@vitest/utils@4.1.0':
     dependencies:
@@ -8623,11 +8598,11 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  ast-v8-to-istanbul@0.3.8:
+  ast-v8-to-istanbul@1.0.5:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       estree-walker: 3.0.3
-      js-tokens: 9.0.1
+      js-tokens: 10.0.0
 
   ast-walker-scope@0.8.3:
     dependencies:
@@ -9918,14 +9893,6 @@ snapshots:
       make-dir: 4.0.0
       supports-color: 7.2.0
 
-  istanbul-lib-source-maps@5.0.6:
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.31
-      debug: 4.4.3
-      istanbul-lib-coverage: 3.2.2
-    transitivePeerDependencies:
-      - supports-color
-
   istanbul-reports@3.2.0:
     dependencies:
       html-escaper: 2.0.2
@@ -9980,9 +9947,9 @@ snapshots:
 
   js-stringify@1.0.2: {}
 
-  js-tokens@4.0.0: {}
+  js-tokens@10.0.0: {}
 
-  js-tokens@9.0.1: {}
+  js-tokens@4.0.0: {}
 
   js-yaml@4.3.1:
     dependencies:
@@ -10173,7 +10140,7 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  magicast@0.5.1:
+  magicast@0.5.4:
     dependencies:
       '@babel/parser': 7.29.7
       '@babel/types': 7.29.7
@@ -11418,8 +11385,6 @@ snapshots:
   stackback@0.0.2: {}
 
   statuses@2.0.1: {}
-
-  std-env@3.10.0: {}
 
   std-env@4.1.0: {}
 
