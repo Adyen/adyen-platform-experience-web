@@ -22,7 +22,7 @@
 
     $start-color: hsl($hue, $saturation, 80%);
 
-    $animation-name: skeleton-loading-#{floor($hue-value)}-#{floor($saturation-value)}-#{floor($lightness-value)};
+    $animation-name: skeleton-loading-#{math.floor($hue-value)}-#{math.floor($saturation-value)}-#{math.floor($lightness-value)};
 
     animation: #{$animation-name} 0.8s linear infinite alternate;
     background-color: inherit;

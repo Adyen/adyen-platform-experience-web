@@ -1,9 +1,10 @@
-import { EMPTY_OBJECT } from '@integration-components/utils';
+import { EMPTY_OBJECT, hasOwnProperty } from '@integration-components/utils';
 import { AuthSession } from './session/AuthSession';
 import Localization from './Localization';
 import { Assets, AssetOptions } from './Assets/Assets';
 import { getCustomTranslationsAnalyticsPayload } from './EventDispatcher/eventDispatcher/customTranslations';
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
+import { ThemeManager } from './theme/ThemeManager';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
 import type { CoreOptions, onErrorHandler, ResolvedEnvironment } from './types';
 
@@ -20,9 +21,10 @@ export interface ManagedElement {
 export type CdnFetcher = <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
 
 /**
- * Framework-agnostic source of truth for the Core runtime. Owns option resolution,
- * environment, session wiring, the shared `Localization` instance, asset getters, CDN
- * helpers, the component registry, and the generic `initialize()` / `update()` lifecycle.
+ * Framework-neutral source of truth for the Core runtime. Owns option resolution,
+ * environment, session wiring, theming, the shared `Localization` instance, asset
+ * getters, CDN helpers, the component registry, and the generic `initialize()` /
+ * `update()` lifecycle.
  *
  * Rendering, mounting, and unmounting live in the Vue UIElement classes, not here.
  */
@@ -43,6 +45,8 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
 
     private hasWarnedAboutServerSideInitialization = false;
     private readyCustomTranslationsAnalytics = false;
+    private themeInitialized = false;
+    private readonly themeManager = new ThemeManager();
 
     constructor(options: CoreOptions<CustomTranslations>) {
         this.options = { environment: FALLBACK_ENV, ...options };
@@ -65,14 +69,22 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
 
     /**
      * Merge incoming options, propagate locale / custom translations to the shared
-     * `Localization`, hand off to the subclass hook, then sync the session.
+     * `Localization`, then sync the session.
      */
     protected setOptions(options: Partial<CoreOptions<CustomTranslations>>): this {
         const environmentChanged = options.environment !== undefined && options.environment !== this.options.environment;
         const loadingContextChanged = options.loadingContext !== undefined && options.loadingContext !== this.options.loadingContext;
         const analyticsChanged = options.analytics !== undefined && options.analytics !== this.options.analytics;
+        const nextThemeMode = hasOwnProperty(options, 'themeMode') ? options.themeMode : this.options.themeMode;
+        const nextCustomTheme = hasOwnProperty(options, 'customTheme') ? options.customTheme : this.options.customTheme;
+        const themeChanged = !this.themeInitialized || nextThemeMode !== this.options.themeMode || nextCustomTheme !== this.options.customTheme;
+
+        if (themeChanged) {
+            this.themeManager.apply(nextThemeMode, nextCustomTheme);
+        }
 
         this.options = { ...this.options, ...options };
+        this.themeInitialized = true;
 
         this.localization.locale = this.options.locale;
         this.localization.customTranslations = this.options.translations;
@@ -141,6 +153,13 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
      */
     public async update(options: Partial<CoreOptions<CustomTranslations>> = EMPTY_OBJECT as Partial<CoreOptions<CustomTranslations>>): Promise<this> {
         this.setOptions(options);
+
+        const optionKeys = Object.keys(options);
+        const hasOnlyThemeOptions = optionKeys.length > 0 && optionKeys.every(option => option === 'themeMode' || option === 'customTheme');
+        if (hasOnlyThemeOptions) {
+            return this;
+        }
+
         await this.initialize();
 
         this.components.forEach(component => {
@@ -171,6 +190,14 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
         if (component.core === this) {
             this.components.push(component);
         }
+    }
+
+    public registerThemeRoot(root: Element): void {
+        this.themeManager.register(root);
+    }
+
+    public unregisterThemeRoot(root: Element): void {
+        this.themeManager.unregister(root);
     }
 }
 
