@@ -1,90 +1,98 @@
 import Localization from './Localization';
 import { describe, expect, test, vi } from 'vitest';
-import { es_ES, type TranslationKey } from '../translations';
+import type { TranslationKey } from '../translations';
 import sdkGermanTranslations from '../../../../sdk/translations/de-DE.json' with { type: 'json' };
 import sdkEnglishTranslations from '../../../../sdk/translations/en-US.json' with { type: 'json' };
+import { SUPPORTED_LOCALES } from './constants/localization';
 
 describe('Localization', () => {
     const translationKey = 'abc' as TranslationKey;
 
     describe('constructor', () => {
-        test('sets up locale and customTranslations', () => {
-            const lang = new Localization('es-ES', [es_ES]);
+        test('initializes supportedLocales as a copy of SUPPORTED_LOCALES', () => {
+            const lang = new Localization();
+
+            expect(lang.supportedLocales).toEqual(SUPPORTED_LOCALES);
+            expect(lang.supportedLocales).not.toBe(SUPPORTED_LOCALES);
+        });
+
+        test('sets up locale and customTranslations', async () => {
+            const lang = new Localization('es-ES');
 
             lang.customTranslations = {
                 'es-ES': { [translationKey]: 'es' },
             };
 
-            lang.ready.then(() => {
-                expect(lang.locale).toBe('es-ES');
-                expect(lang.customTranslations['es-ES']).toBeDefined();
-            });
+            await lang.ready;
+
+            expect(lang.locale).toBe('es-ES');
+            expect(lang.customTranslations['es-ES']).toBeDefined();
         });
 
-        test('sets up locale without country code and customTranslations without countryCode', () => {
-            const lang = new Localization('es', [es_ES]);
+        test('sets up locale without country code and customTranslations without countryCode', async () => {
+            const lang = new Localization('es');
 
             lang.customTranslations = {
                 es: { [translationKey]: 'es' },
             };
 
-            lang.ready.then(() => {
-                expect(lang.locale).toBe('es-ES');
-                expect(lang.customTranslations['es-ES']).toBeDefined();
-            });
+            await lang.ready;
+
+            expect(lang.locale).toBe('es-ES');
+            expect(lang.customTranslations['es-ES']).toBeDefined();
         });
 
-        test('sets up a custom locale and customTranslations', () => {
+        test('sets up a custom locale and customTranslations', async () => {
             const lang = new Localization('ca-CA');
 
             lang.customTranslations = {
                 'ca-CA': { [translationKey]: 'ca' },
             };
 
-            lang.ready.then(() => {
-                expect(lang.locale).toBe('ca-CA');
-                expect(lang.customTranslations['ca-CA']).toBeDefined();
-            });
+            await lang.ready;
+
+            expect(lang.locale).toBe('ca-CA');
+            expect(lang.customTranslations['ca-CA']).toBeDefined();
         });
 
-        test('sets up a custom locale without countryCode and customTranslations', () => {
+        test('sets up a custom locale without countryCode and customTranslations', async () => {
             const lang = new Localization('ca');
 
             lang.customTranslations = {
                 'ca-CA': { [translationKey]: 'ca' },
             };
 
-            lang.ready.then(() => {
-                expect(lang.locale).toBe('ca-CA');
-                expect(lang.customTranslations['ca-CA']).toBeDefined();
-            });
+            await lang.ready;
+
+            expect(lang.locale).toBe('ca-CA');
+            expect(lang.customTranslations['ca-CA']).toBeDefined();
         });
 
-        test('falls back to FALLBACK_LOCALE and removes customTranslations that do not match a language/language_country code', () => {
+        test('falls back to FALLBACK_LOCALE and removes customTranslations that do not match a language/language_country code', async () => {
             const lang = new Localization('FAKE');
 
             lang.customTranslations = {
                 FAKE: { [translationKey]: 'ca' },
             };
 
-            lang.ready.then(() => {
-                expect(lang.locale).toBe('en-US');
-                expect(lang.customTranslations).toEqual({});
-            });
+            await lang.ready;
+
+            expect(lang.locale).toBe('en-US');
+            expect(lang.customTranslations).toEqual({});
         });
     });
 
     describe('get', () => {
-        test('gets a string even if it is empty', () => {
+        test('gets a string even if it is empty', async () => {
             const lang = new Localization('en-US');
 
             lang.customTranslations = {
                 'en-US': { [translationKey]: '' },
             };
 
-            lang.ready.then(() => {
-                expect(lang.get(translationKey)).toBe(translationKey);
-            });
+            await lang.ready;
+
+            expect(lang.get(translationKey)).toBe(translationKey);
         });
 
         describe('backward compatibility with swapConfig', () => {
@@ -197,7 +205,7 @@ describe('Localization', () => {
 
             delete germanTranslationsWithoutFallbackKey[englishFallbackKey];
 
-            const localization = new Localization('de-DE', undefined, '', '', {
+            const localization = new Localization('de-DE', '', '', {
                 defaultTranslations: sdkEnglishTranslations,
                 localeTranslations: {
                     'de-DE': Promise.resolve(germanTranslationsWithoutFallbackKey),

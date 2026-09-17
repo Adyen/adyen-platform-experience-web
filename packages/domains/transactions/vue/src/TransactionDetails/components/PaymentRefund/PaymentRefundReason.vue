@@ -24,6 +24,12 @@ const refundReasons = computed(() =>
         value: r,
     }))
 );
+
+function onUpdate(value: string | number | { value?: string | number } | Array<unknown> | undefined) {
+    if (Array.isArray(value)) return;
+    const nextValue = typeof value === 'object' && value !== null ? value.value : value;
+    if (nextValue !== undefined) emit('change', String(nextValue) as RefundReason);
+}
 </script>
 
 <template>
@@ -35,9 +41,9 @@ const refundReasons = computed(() =>
             <BentoDropdown
                 :placeholder="i18n.get('transactions.details.refund.inputs.reason.label')"
                 :items="refundReasons"
-                :value="props.reason"
+                :model-value="props.reason"
                 :disabled="props.disabled"
-                @change="(v: string) => emit('change', v as RefundReason)"
+                @update:model-value="onUpdate"
             />
         </div>
     </div>

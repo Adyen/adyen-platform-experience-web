@@ -1,13 +1,5 @@
-import {
-    DEFAULT_DATETIME_FORMAT,
-    DEFAULT_TRANSLATIONS,
-    EXCLUDE_PROPS,
-    FALLBACK_LOCALE,
-    getLocalesFromTranslationSourcesRecord,
-    SUPPORTED_LOCALES,
-} from './constants/localization';
-import type { CustomTranslations, Locale, TranslationKey, TranslationOptions, TranslationSource, TranslationSourceRecord } from '../translations';
-import { en_US } from '../translations';
+import { DEFAULT_DATETIME_FORMAT, DEFAULT_TRANSLATIONS, EXCLUDE_PROPS, FALLBACK_LOCALE, SUPPORTED_LOCALES } from './constants/localization';
+import type { CustomTranslations, Locale, TranslationKey, TranslationOptions } from '../translations';
 import { getLocalisedAmount } from './amount/amount-util';
 import restamper from '@integration-components/utils/datetime/restamper';
 import type { RestamperWithTimezone } from '@integration-components/utils/datetime/restamper';
@@ -27,8 +19,7 @@ export type LocalizationSources = Readonly<{
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;
     #languageCode: string = toTwoLetterCode(this.#locale);
-    #availableLocales: Readonly<Locale[]> = [FALLBACK_LOCALE] as const;
-    #supportedLocales: Readonly<Locale[]> = this.#availableLocales;
+    #supportedLocales: Readonly<Locale[]> = [...SUPPORTED_LOCALES];
 
     #customTranslations?: CustomTranslations;
     #translations: Record<string, string> = DEFAULT_TRANSLATIONS as Record<string, string>;
@@ -46,15 +37,8 @@ export default class Localization {
 
     private watch = this.#refreshWatchlist.subscribe.bind(undefined);
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
-    public preferredTranslations?: Readonly<{ [k: Locale]: TranslationSource }>;
 
-    constructor(
-        locale: string = FALLBACK_LOCALE,
-        availableTranslations?: TranslationSourceRecord[],
-        cdnTranslationsUrl = '',
-        cdnConfigUrl = '',
-        sources?: LocalizationSources
-    ) {
+    constructor(locale: string = FALLBACK_LOCALE, cdnTranslationsUrl = '', cdnConfigUrl = '', sources?: LocalizationSources) {
         this.watch(noop);
         this.#defaultTranslations = sources?.defaultTranslations ?? (DEFAULT_TRANSLATIONS as Record<string, string>);
         this.#translations = this.#defaultTranslations;
@@ -76,15 +60,6 @@ export default class Localization {
                         errorLevel: 'info',
                     });
 
-        this.preferredTranslations = Object.freeze(
-            sources
-                ? (Object.fromEntries(
-                      Object.keys(sources.localeTranslations).map(sourceLocale => [sourceLocale, sources.localeTranslations[sourceLocale]!])
-                  ) as { [k: Locale]: TranslationSource })
-                : (availableTranslations?.reduce((records, curr) => ({ ...records, ...curr }), en_US) ?? { ...en_US })
-        );
-
-        this.#availableLocales = getLocalesFromTranslationSourcesRecord(this.preferredTranslations);
         this.locale = locale;
 
         // Load swap config
@@ -115,7 +90,7 @@ export default class Localization {
 
     set customTranslations(customTranslations: CustomTranslations | undefined | null) {
         let translations: CustomTranslations | undefined = undefined;
-        let supportedLocales: Locale[] = [...this.#availableLocales];
+        let supportedLocales: Locale[] = [...SUPPORTED_LOCALES];
 
         if (!isNullish(customTranslations)) {
             translations = formatCustomTranslations(customTranslations, SUPPORTED_LOCALES);

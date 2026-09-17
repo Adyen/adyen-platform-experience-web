@@ -5,7 +5,6 @@ import { useBalanceAccounts } from '@integration-components/composables-vue';
 import { BentoButton } from '@adyen/bento-vue3';
 import TransactionsOverview from '../TransactionsOverview/TransactionsOverview.vue';
 import type { TransactionsOverviewExternalProps } from '../../types';
-import '@adyen/bento-vue3/styles/bento-light';
 
 const props = withDefaults(
     defineProps<{
