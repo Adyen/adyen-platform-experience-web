@@ -79,4 +79,26 @@ test.describe('Core theme', () => {
 
         await expect.poll(() => getThemeState(page)).toEqual(initialTheme);
     });
+
+    test('reapplies light defaults on a light theme root nested inside a dark root', async ({ page }) => {
+        await updateStoryArgs(page, STORY_ID, {
+            coreOptions: {
+                themeMode: 'dark',
+            },
+        });
+        await expect.poll(() => getThemeState(page)).toMatchObject({ mode: 'dark' });
+
+        const nestedBackground = await page.evaluate(() => {
+            const outerRoot = document.querySelector('[data-adyen-pe-theme-root]');
+            if (!outerRoot) return;
+
+            const nestedRoot = document.createElement('div');
+            nestedRoot.setAttribute('data-adyen-pe-theme-root', 'nested-light-core');
+            outerRoot.appendChild(nestedRoot);
+
+            return getComputedStyle(nestedRoot).getPropertyValue('--adyen-sdk-color-background-primary').trim();
+        });
+
+        expect(nestedBackground).toBe('#ffffff');
+    });
 });

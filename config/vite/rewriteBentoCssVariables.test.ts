@@ -49,11 +49,20 @@ describe('rewriteBentoCssVariables', () => {
         'rewrites Bento variables while serving %s',
         async id => {
             await expect(runTransform(':root{--b-color:red;color:var(--b-color)}', id)).resolves.toEqual({
-                code: ':root{--adyen-sdk-color:red;color:var(--adyen-sdk-color)}',
+                code: ':root,[data-adyen-pe-theme-root]{--adyen-sdk-color:red;color:var(--adyen-sdk-color)}',
                 map: null,
             });
         }
     );
+
+    test('redeclares Bento light defaults on every registered theme root', async () => {
+        await expect(
+            runTransform(':root{--b-color-background-primary:#fff}', '/node_modules/@adyen/bento-design-tokens/dist/css/bento/variables.css')
+        ).resolves.toEqual({
+            code: ':root,[data-adyen-pe-theme-root]{--adyen-sdk-color-background-primary:#fff}',
+            map: null,
+        });
+    });
 
     test('does not transform non-style modules while serving', async () => {
         await expect(runTransform('const variable = "--b-color";', 'library.ts')).resolves.toBeNull();
@@ -68,7 +77,7 @@ describe('rewriteBentoCssVariables', () => {
         runGenerateBundle(bundle);
 
         expect(getAsset(bundle, 'assets/library.css').source).toBe(
-            ':root{--adyen-sdk-color:red;--adyen-sdk-spacing:8px}.button{color:var(--adyen-sdk-color);margin:var(--adyen-sdk-spacing) var(--other)}/* --adyen-sdk-comment */'
+            ':root,[data-adyen-pe-theme-root]{--adyen-sdk-color:red;--adyen-sdk-spacing:8px}.button{color:var(--adyen-sdk-color);margin:var(--adyen-sdk-spacing) var(--other)}/* --adyen-sdk-comment */'
         );
     });
 
@@ -80,11 +89,13 @@ describe('rewriteBentoCssVariables', () => {
 
         const source = getAsset(bundle, 'assets/library.CSS').source;
         expect(source).toBeInstanceOf(Uint8Array);
-        expect(new TextDecoder().decode(source as Uint8Array)).toBe(':root{--adyen-sdk-color:red;color:var(--adyen-sdk-color)}');
+        expect(new TextDecoder().decode(source as Uint8Array)).toBe(
+            ':root,[data-adyen-pe-theme-root]{--adyen-sdk-color:red;color:var(--adyen-sdk-color)}'
+        );
     });
 
     test('retains CSS sources that do not reference Bento variables', () => {
-        const source = new TextEncoder().encode(':root{--adyen-sdk-color:red}');
+        const source = new TextEncoder().encode(':root{--other-color:red}');
         const bundle = bundleWithAsset('assets/library.css', source);
 
         runGenerateBundle(bundle);
@@ -136,7 +147,7 @@ describe('rewriteBentoCssVariables', () => {
         runGenerateBundle(bundle);
 
         expect(getAsset(bundle, 'assets/library.css').source).toBe(
-            ":root{--my--b-color:blue;--adyen-sdk-color:red}.b-dark-theme-container{color:green}[data-adyen-pe-theme='dark']{color:black}"
+            ":root,[data-adyen-pe-theme-root]{--my--b-color:blue;--adyen-sdk-color:red}.b-dark-theme-container{color:green}[data-adyen-pe-theme='dark']{color:black}"
         );
     });
 });

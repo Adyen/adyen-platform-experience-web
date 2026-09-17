@@ -1,11 +1,10 @@
 import type { CustomTheme, ThemeMode, ThemeVariables } from '../types';
 import { ThemeGenerator } from '@adyen/adyen-shared-web';
-import { THEME_MODE_ATTRIBUTE } from '@integration-components/types/theme';
+import { THEME_MODE_ATTRIBUTE, THEME_ROOT_ATTRIBUTE } from '@integration-components/types/theme';
 import { uuid } from '@integration-components/utils';
 
-const THEME_ROOT_ATTRIBUTE = 'data-adyen-pe-theme-root';
-
-const hasVariables = (variables: ThemeVariables | undefined): variables is ThemeVariables => !!variables && Object.keys(variables).length > 0;
+const hasVariables = (variables: ThemeVariables | undefined): variables is ThemeVariables =>
+    !!variables && Object.values(variables).some(value => value !== undefined);
 
 export class ThemeManager {
     private readonly id = uuid();
@@ -26,6 +25,13 @@ export class ThemeManager {
     }
 
     public register(root: Element): void {
+        const currentOwner = root.getAttribute(THEME_ROOT_ATTRIBUTE);
+        if (currentOwner && currentOwner !== this.id) {
+            throw new Error(
+                '[AdyenPlatformExperience] This element is already themed by another Core instance. Give each Core instance its own mount target.'
+            );
+        }
+
         if (!this.css) {
             this.css = this.generateScopedCss(this.mode, this.customTheme?.[this.mode]);
         }
@@ -37,8 +43,10 @@ export class ThemeManager {
 
     public unregister(root: Element): void {
         this.roots.delete(root);
-        root.removeAttribute(THEME_MODE_ATTRIBUTE);
-        root.removeAttribute(THEME_ROOT_ATTRIBUTE);
+        if (root.getAttribute(THEME_ROOT_ATTRIBUTE) === this.id) {
+            root.removeAttribute(THEME_MODE_ATTRIBUTE);
+            root.removeAttribute(THEME_ROOT_ATTRIBUTE);
+        }
 
         if (!Array.from(this.roots).some(themeRoot => themeRoot.ownerDocument === root.ownerDocument)) {
             this.styleElements.get(root.ownerDocument)?.remove();
@@ -57,25 +65,17 @@ export class ThemeManager {
     }
 
     private generateScopedCss(mode: ThemeMode, variables: ThemeVariables | undefined): string | undefined {
-        if (!hasVariables(variables) || typeof document === 'undefined') return;
+        if (!hasVariables(variables)) return;
 
-        const generator = new ThemeGenerator();
-        const existingElements = new Set(document.head.children);
-
-        try {
-            generator.create({
-                ...variables,
-                dark: mode === 'dark',
-            });
-
-            const generatedStyle = Array.from(document.head.children).find(
-                element => !existingElements.has(element) && element instanceof HTMLStyleElement
-            );
-
-            return generatedStyle?.textContent?.replace(':root', `[${THEME_ROOT_ATTRIBUTE}='${this.id}']`);
-        } finally {
-            generator.destroy();
-        }
+        return (
+            new ThemeGenerator().generateCSS(
+                {
+                    ...variables,
+                    dark: mode === 'dark',
+                },
+                { selector: `[${THEME_ROOT_ATTRIBUTE}='${this.id}']` }
+            ) ?? undefined
+        );
     }
 
     private replaceStyles(css: string | undefined): void {

@@ -71,49 +71,54 @@ export class UIElement<Props extends Record<string, any>> {
         const el = typeof target === 'string' ? document.querySelector(target) : target;
         if (!el) throw new Error(`[UIElement] Mount target not found: ${String(target)}`);
 
+        this.core?.registerThemeRoot?.(el);
         this._target = el;
 
-        const props = this._props;
-        const core = this._core;
-        const component = this._component;
-        const componentName = this._componentName;
-        const customClassNames = this.customClassNames;
+        try {
+            const props = this._props;
+            const core = this._core;
+            const component = this._component;
+            const componentName = this._componentName;
+            const customClassNames = this.customClassNames;
 
-        const { refresh, refreshCount } = createRefreshContext();
+            const { refresh, refreshCount } = createRefreshContext();
 
-        this._app = createApp({
-            setup: () => () => {
-                return h(
-                    UIElementProvider,
-                    {
-                        core,
-                        componentName,
-                        customClassNames,
-                        refreshComponent: refresh,
-                    },
-                    { default: () => h(component, { ...props, key: refreshCount.value }) }
-                );
-            },
-        });
+            this._app = createApp({
+                setup: () => () => {
+                    return h(
+                        UIElementProvider,
+                        {
+                            core,
+                            componentName,
+                            customClassNames,
+                            refreshComponent: refresh,
+                        },
+                        { default: () => h(component, { ...props, key: refreshCount.value }) }
+                    );
+                },
+            });
 
-        // Bento's Vue components call `useI18n()` internally, which requires a
-        // vue-i18n instance to be installed on the Vue app. Install a minimal
-        // instance here so mounted components (and nested Bento primitives)
-        // resolve without throwing "Need to install with `app.use` function".
-        const locale = this._core?.options?.locale || 'en-US';
+            // Bento's Vue components call `useI18n()` internally, which requires a
+            // vue-i18n instance to be installed on the Vue app. Install a minimal
+            // instance here so mounted components (and nested Bento primitives)
+            // resolve without throwing "Need to install with `app.use` function".
+            const locale = this._core?.options?.locale || 'en-US';
 
-        this._app.use(
-            createVueI18n({
-                legacy: false,
-                locale,
-                fallbackLocale: 'en-US',
-                messages: { [locale]: {}, 'en-US': {} },
-            })
-        );
+            this._app.use(
+                createVueI18n({
+                    legacy: false,
+                    locale,
+                    fallbackLocale: 'en-US',
+                    messages: { [locale]: {}, 'en-US': {} },
+                })
+            );
 
-        this.configureApp(this._app);
-        this._app.mount(el);
-        this.core?.registerThemeRoot?.(el);
+            this.configureApp(this._app);
+            this._app.mount(el);
+        } catch (error) {
+            this.unmount();
+            throw error;
+        }
 
         return this;
     }

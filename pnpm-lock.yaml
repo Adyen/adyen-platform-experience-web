@@ -653,8 +653,8 @@ importers:
   packages/shared/core:
     dependencies:
       '@adyen/adyen-shared-web':
-        specifier: 0.3.0
-        version: 0.3.0
+        specifier: 0.4.0
+        version: 0.4.0
       '@adyen/bento-design-tokens':
         specifier: 2.1.1
         version: 2.1.1
@@ -790,7 +790,7 @@ packages:
   '@adyen/adyen-document-viewer@1.4.2':
     resolution: {}
 
-  '@adyen/adyen-shared-web@0.3.0':
+  '@adyen/adyen-shared-web@0.4.0':
     resolution: {}
     engines: {node: '>=20', pnpm: '>=10.16.0'}
 
@@ -5889,7 +5889,7 @@ packages:
   vue-component-type-helpers@2.2.12:
     resolution: {}
 
-  vue-component-type-helpers@3.3.9:
+  vue-component-type-helpers@3.3.11:
     resolution: {}
 
   vue-demi@0.14.10:
@@ -6143,7 +6143,7 @@ snapshots:
     optionalDependencies:
       '@rollup/rollup-darwin-x64': 4.59.0
 
-  '@adyen/adyen-shared-web@0.3.0':
+  '@adyen/adyen-shared-web@0.4.0':
     dependencies:
       '@adyen/bento-design-tokens': 2.1.1
       chroma-js: 3.2.0
@@ -7863,7 +7863,7 @@ snapshots:
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       type-fest: 2.19.0
       vue: 3.5.31(typescript@5.8.3)
-      vue-component-type-helpers: 3.3.9
+      vue-component-type-helpers: 3.3.11
 
   '@stylistic/stylelint-plugin@5.0.1(stylelint@17.5.0(typescript@5.8.3))':
     dependencies:
@@ -11973,7 +11973,7 @@ snapshots:
 
   vue-component-type-helpers@2.2.12: {}
 
-  vue-component-type-helpers@3.3.9: {}
+  vue-component-type-helpers@3.3.11: {}
 
   vue-demi@0.14.10(vue@3.5.31(typescript@5.8.3)):
     dependencies:

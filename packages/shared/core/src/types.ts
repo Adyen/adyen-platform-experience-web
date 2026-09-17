@@ -42,7 +42,18 @@ interface _CoreOptions<CustomTranslations extends Translations = Record<never, n
 
     analytics?: AnalyticsConfig;
 
+    /**
+     * Theme mode for this Core instance. The mode is applied to each component mount target.
+     *
+     * Bento content teleported outside a mount target uses the document-level default theme
+     * because Bento does not currently expose a per-Core teleport target.
+     */
     themeMode?: ThemeMode;
+
+    /**
+     * Per-mode custom theme variables. Color values must use `#RGB` or `#RRGGBB`.
+     * Invalid values throw while constructing or updating Core.
+     */
     customTheme?: CustomTheme;
 
     /**

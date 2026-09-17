@@ -103,6 +103,29 @@ describe('Core', () => {
         expect(secondRoot.getAttribute('data-adyen-pe-theme')).toBe('dark');
     });
 
+    it('rejects a theme root already owned by another Core instance', () => {
+        const firstCore = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            customTheme: { light: { primary: '#0050b3' } },
+        });
+        const secondCore = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            themeMode: 'dark',
+            customTheme: { dark: { primary: '#84adff' } },
+        });
+        const root = document.createElement('div');
+        document.body.append(root);
+
+        firstCore.registerThemeRoot(root);
+
+        expect(() => secondCore.registerThemeRoot(root)).toThrow('already themed by another Core instance');
+        secondCore.unregisterThemeRoot(root);
+        expect(getComputedStyle(root).getPropertyValue('--adyen-sdk-color-primary')).toBe('#0050b3');
+        expect(root.hasAttribute('data-adyen-pe-theme')).toBe(false);
+    });
+
     it('updates the theme on every root registered to the Core instance', async () => {
         const core = new Core({
             locale: 'en-US',
@@ -165,5 +188,16 @@ describe('Core', () => {
         expect(core.options.customTheme).toBe(customTheme);
         expect(root.getAttribute('data-adyen-pe-theme')).toBe('dark');
         expect(getComputedStyle(root).getPropertyValue('--adyen-sdk-color-primary')).toBe('#84adff');
+    });
+
+    it('rejects invalid custom theme colors during construction', () => {
+        expect(
+            () =>
+                new Core({
+                    locale: 'en-US',
+                    onSessionCreate: vi.fn(),
+                    customTheme: { light: { primary: 'invalid' } },
+                })
+        ).toThrow('Invalid hex color');
     });
 });
