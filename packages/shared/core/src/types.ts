@@ -2,6 +2,7 @@ import type { SessionRequest } from './ConfigContext.types';
 import type { CustomTranslations as Translations } from './translations';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '@integration-components/utils/types';
 import { SupportedLocales } from './Localization/types';
+import type { ThemeProps } from '@adyen/adyen-shared-web';
 
 type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<
     WithReplacedUnderscoreOrDash<KeyOfRecord<T extends Translations ? T : Record<never, never>>, '_', '-'>,
@@ -42,6 +43,20 @@ interface _CoreOptions<CustomTranslations extends Translations = Record<never, n
     analytics?: AnalyticsConfig;
 
     /**
+     * Theme mode for this Core instance. The mode is applied to each component mount target.
+     *
+     * Bento content teleported outside a mount target uses the document-level default theme
+     * because Bento does not currently expose a per-Core teleport target.
+     */
+    themeMode?: ThemeMode;
+
+    /**
+     * Per-mode custom theme variables. Color values must use `#RGB` or `#RRGGBB`.
+     * Invalid values throw while constructing or updating Core.
+     */
+    customTheme?: CustomTheme;
+
+    /**
      * @internal
      */
     loadingContext?: string;
@@ -52,6 +67,14 @@ export type CoreOptions<CustomTranslations extends object = Record<never, never>
 >;
 
 export type DevEnvironment = 'test' | 'live' | 'beta';
+
+export type ThemeMode = 'dark' | 'light';
+export type ThemeVariables = Omit<ThemeProps, 'dark'>;
+
+export interface CustomTheme {
+    light?: ThemeVariables;
+    dark?: ThemeVariables;
+}
 
 export type onErrorHandler = (error: Error) => any;
 export type AnalyticsConfig = {

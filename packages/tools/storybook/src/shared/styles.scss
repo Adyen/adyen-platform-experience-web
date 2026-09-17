@@ -1,3 +1,5 @@
+@use '@integration-components/style';
+
 html,
 body {
     font:
@@ -7,6 +9,7 @@ body {
 }
 
 body {
+    color: style.token(color-label-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
