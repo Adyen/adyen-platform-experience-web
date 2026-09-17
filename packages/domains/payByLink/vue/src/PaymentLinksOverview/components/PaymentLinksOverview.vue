@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onUnmounted } from 'vue';
-import { BentoTypography, BentoTabs, BentoTab, BentoButton, BentoAlert, BentoModal } from '@adyen/bento-vue3';
+import { BentoTypography, BentoTabs, BentoTab, BentoButtonActions, BentoAlert, BentoModal, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import PlusIcon from '@adyen/ui-assets-icons-16/vue/plus';
 import SettingsIcon from '@adyen/ui-assets-icons-16/vue/settings';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
@@ -208,6 +208,33 @@ function onPaymentLinkCreated(paymentLink: any) {
 }
 
 const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettings || config.endpoints?.createPBLPaymentLink));
+const actionButtons = computed<BentoButtonActionsList>(() => {
+    const actions: BentoButtonActionsList = [];
+
+    if (config.endpoints?.savePayByLinkSettings) {
+        actions.push({
+            title: i18n.get('payByLink.overview.actions.settings.a11y.label'),
+            event: openSettingsModal,
+            variant: 'secondary',
+            condensed: isMobile.value,
+            iconOnly: true,
+            iconLeft: SettingsIcon,
+        });
+    }
+
+    if (config.endpoints?.createPBLPaymentLink) {
+        actions.push({
+            title: i18n.get('payByLink.overview.list.actions.createPaymentLink'),
+            event: openPaymentLinkModal,
+            variant: 'primary',
+            condensed: isMobile.value,
+            iconOnly: isMobile.value,
+            iconLeft: isMobile.value ? PlusIcon : undefined,
+        });
+    }
+
+    return actions;
+});
 </script>
 
 <template>
@@ -218,38 +245,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
             </BentoTypography>
             <div v-else />
             <div v-if="hasActionButtons" :class="styles.actionsContainer">
-                <BentoButton v-if="!isMobile && config.endpoints?.createPBLPaymentLink" variant="primary" @click="openPaymentLinkModal">
-                    {{ i18n.get('payByLink.overview.list.actions.createPaymentLink') }}
-                </BentoButton>
-                <BentoButton
-                    v-if="!isMobile && config.endpoints?.savePayByLinkSettings"
-                    variant="secondary"
-                    :class="styles.settingsButton"
-                    :aria-label="i18n.get('payByLink.overview.actions.settings.a11y.label')"
-                    @click="openSettingsModal"
-                >
-                    <SettingsIcon />
-                </BentoButton>
-                <BentoButton
-                    v-if="isMobile && config.endpoints?.createPBLPaymentLink"
-                    variant="primary"
-                    condensed
-                    :class="styles.actionButtonXs"
-                    :aria-label="i18n.get('payByLink.overview.list.actions.createPaymentLink')"
-                    @click="openPaymentLinkModal"
-                >
-                    <PlusIcon />
-                </BentoButton>
-                <BentoButton
-                    v-if="isMobile && config.endpoints?.savePayByLinkSettings"
-                    variant="secondary"
-                    condensed
-                    :class="styles.actionButtonXs"
-                    :aria-label="i18n.get('payByLink.overview.actions.settings.a11y.label')"
-                    @click="openSettingsModal"
-                >
-                    <SettingsIcon />
-                </BentoButton>
+                <BentoButtonActions :actions="actionButtons" layout="buttons-end" />
             </div>
         </div>
 

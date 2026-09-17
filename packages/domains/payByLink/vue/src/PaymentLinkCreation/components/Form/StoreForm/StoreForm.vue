@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoAlert, BentoButton } from '@adyen/bento-vue3';
-import StoreField from '../../fields/StoreField.vue';
+import { BentoAlert, BentoButtonActions, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import { useWizard } from '../../../composables/wizardContext';
+import StoreField from '../../fields/StoreField.vue';
 import type { IPaymentLinkSettings, IPaymentLinkStore } from '@integration-components/types';
 import type { DomainTranslationKey } from '@integration-components/core/vue';
 import layoutStyles from '../FormLayout.module.scss';
@@ -34,6 +34,14 @@ const alertDescriptionKey = computed<DomainTranslationKey>(() =>
 function handleSetupTermsAndConditions() {
     emit('setupTermsAndConditions');
 }
+
+const actionButtons = computed<BentoButtonActionsList>(() => [
+    {
+        title: i18n.get('payByLink.creation.storeForm.alerts.tcSetupRequiredAction'),
+        event: handleSetupTermsAndConditions,
+        variant: 'tertiary',
+    },
+]);
 </script>
 
 <template>
@@ -48,9 +56,9 @@ function handleSetupTermsAndConditions() {
             {{ i18n.get('payByLink.creation.storeForm.alerts.tcSetupRequiredTitle') }}
             <template #description>
                 {{ i18n.get(alertDescriptionKey) }}
-                <BentoButton v-if="props.canModifySettings" variant="tertiary" @click="handleSetupTermsAndConditions">
-                    {{ i18n.get('payByLink.creation.storeForm.alerts.tcSetupRequiredAction') }}
-                </BentoButton>
+            </template>
+            <template v-if="props.canModifySettings" #actions>
+                <BentoButtonActions layout="buttons-start" :actions="actionButtons" />
             </template>
         </BentoAlert>
     </div>
