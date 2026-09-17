@@ -22,7 +22,10 @@ describe('localization config', async () => {
     const configDirectory = path.dirname(i18nConfigPath);
 
     it('should have the correct translation source paths', () => {
-        const translationSourceFiles = ['packages/sdk/translations/en-US.json'].map(sourcePath => {
+        const translationSourceFiles = [
+            'packages/sdk/translations/bento/en-US.json',
+            'packages/sdk/translations/en-US.json',
+        ].map(sourcePath => {
             const sourceFile = path.resolve(configDirectory, sourcePath);
             const relativeTranslationsDir = path.relative(path.dirname(i18nConfigPath), path.dirname(sourceFile));
             return `${relativeTranslationsDir}/${englishLocale}.json`;
