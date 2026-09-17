@@ -1,8 +1,16 @@
 <script setup lang="ts">
 import { computed, provide, ref, watch } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
+import {
+    BentoAlert,
+    BentoButton,
+    BentoButtonActions,
+    BentoStep,
+    BentoStepper,
+    BentoTypography,
+    type BentoButtonActionsList,
+} from '@adyen/bento-vue3';
 import { useShouldHideTitles } from '@integration-components/composables-vue';
-import { BentoAlert, BentoButton, BentoStep, BentoStepper, BentoTypography } from '@adyen/bento-vue3';
 import type { PaymentLinkCreationProps, PaymentLinkSettingsItem } from '../../../../../domain/src';
 import { usePaymentLinkFormData } from './usePaymentLinkFormData';
 import { usePaymentLinkWizard } from './usePaymentLinkWizard';
@@ -142,6 +150,29 @@ async function handleSubmit() {
         isSubmitting.value = false;
     }
 }
+
+const buttonActions = computed<BentoButtonActionsList>(() => {
+    const actions: BentoButtonActionsList = [
+        {
+            title: wizard.isLastStep.value ? i18n.get('payByLink.creation.form.steps.submit') : i18n.get('payByLink.creation.form.steps.continue'),
+            disabled: nextButtonDisabled.value || isNextStepLoading.value,
+            state: isNextStepLoading.value ? 'loading' : undefined,
+            event: wizard.isLastStep.value ? handleSubmit : handleContinue,
+            variant: 'primary',
+            iconRight: wizard.isLastStep.value ? undefined : ArrowRightIcon,
+        },
+    ];
+
+    if (!wizard.isFirstStep.value || props.onCreationDismiss) {
+        actions.push({
+            title: i18n.get('payByLink.creation.form.steps.back'),
+            event: handlePrevious,
+            variant: 'secondary',
+        });
+    }
+
+    return actions;
+});
 </script>
 
 <template>
@@ -232,35 +263,7 @@ async function handleSubmit() {
                     </BentoAlert>
 
                     <div :class="styles.buttonsContainer">
-                        <BentoButton
-                            v-if="!wizard.isFirstStep.value || props.onCreationDismiss"
-                            variant="secondary"
-                            type="button"
-                            @click="handlePrevious"
-                        >
-                            {{ i18n.get('payByLink.creation.form.steps.back') }}
-                        </BentoButton>
-                        <BentoButton
-                            v-if="wizard.isLastStep.value"
-                            variant="primary"
-                            type="submit"
-                            :disabled="nextButtonDisabled || isNextStepLoading"
-                        >
-                            {{ i18n.get('payByLink.creation.form.steps.submit') }}
-                        </BentoButton>
-                        <BentoButton
-                            v-else
-                            variant="primary"
-                            type="button"
-                            :disabled="nextButtonDisabled || isNextStepLoading"
-                            :state="isNextStepLoading ? 'loading' : undefined"
-                            @click="handleContinue"
-                        >
-                            {{ i18n.get('payByLink.creation.form.steps.continue') }}
-                            <template #iconRight>
-                                <ArrowRightIcon />
-                            </template>
-                        </BentoButton>
+                        <BentoButtonActions :actions="buttonActions" layout="buttons-end" />
                     </div>
                 </form>
             </div>
