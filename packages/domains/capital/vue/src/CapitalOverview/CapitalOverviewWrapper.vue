@@ -9,14 +9,6 @@ const { refresh, refreshCount } = createRefreshContext();
 
 <template>
     <UIElementProvider :core="props.core" component-name="capitalOverview" :refresh-component="refresh">
-        <CapitalOverviewContainer
-            :key="refreshCount"
-            :hide-title="props.hideTitle"
-            :on-funds-request="props.onFundsRequest"
-            :on-offer-dismiss="props.onOfferDismiss"
-            :on-offer-options-request="props.onOfferOptionsRequest"
-            :skip-pre-qualified-intro="props.skipPreQualifiedIntro"
-            :on-contact-support="props.onContactSupport"
-        />
+        <CapitalOverviewContainer :key="refreshCount" :hide-title="props.hideTitle" :on-contact-support="props.onContactSupport" />
     </UIElementProvider>
 </template>
