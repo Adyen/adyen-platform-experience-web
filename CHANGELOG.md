@@ -1,5 +1,11 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.14.2
+
+### Patch Changes
+
+- 2342d45: Display store descriptions alongside store codes in Pay by Link store selectors.
+
 ## 1.14.1
 
 ### Patch Changes
