@@ -1,6 +1,7 @@
 import { resolve } from 'node:path';
 import { defineConfig, mergeConfig, type UserConfig } from 'vite';
 import { getBuildEnvDefines } from './defines/build-env';
+import { rewriteBentoCssVariables } from './vite/rewriteBentoCssVariables';
 
 interface ViteLibOptions {
     projectRoot: string;
@@ -57,6 +58,7 @@ export function getViteLibConfig({
         json: {
             stringify: true,
         },
+        plugins: [rewriteBentoCssVariables()],
     } as const;
 
     return defineConfig(({ mode }) => mergeConfig(baseConfig, { ...overrides, define: getBuildEnvDefines(mode) }) as UserConfig);

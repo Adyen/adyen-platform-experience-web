@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { realApiProxies } from './endpoints/realApiProxies';
 import { getBuildEnvDefines } from './config/defines/build-env';
+import { rewriteBentoCssVariables } from './config/vite/rewriteBentoCssVariables';
 import { getEnvironment } from './envs/getEnvs';
 import packageJson from './package.json';
 
@@ -155,6 +156,7 @@ export default defineConfig(({ mode }) => {
                     },
                 },
             }),
+            rewriteBentoCssVariables(),
             isAnalyseMode &&
                 visualizer({
                     title: 'Adyen Platform bundle visualizer',

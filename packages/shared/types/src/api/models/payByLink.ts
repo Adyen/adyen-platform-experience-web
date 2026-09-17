@@ -18,6 +18,7 @@ export type IPaymentLinkFilters = Schema<components, 'FiltersResponseDTO'>;
 export type IPaymentLinkFilterStatusGroup = Schema<components, 'FiltersResponseDTO'>['statuses'];
 export type IPaymentLinkItem = Schema<components, 'PaymentLinksItem'>;
 export type IPaymentLinkSettings = Schema<components, 'PayByLinkSettingsResponse'>;
+export type IPaymentLinkSettingsRequest = Schema<components, 'SavePayByLinkSettingsRequest'>;
 export type IPaymentLinkStatusGroup = keyof Schema<components, 'PaymentLinkStatuses'>;
 export type IPaymentLinkTermsAndConditions = Schema<components, 'PayByLinkSettingsResponse'>;
 export type IPaymentLinkTheme = Schema<components, 'ThemeDTO'>;

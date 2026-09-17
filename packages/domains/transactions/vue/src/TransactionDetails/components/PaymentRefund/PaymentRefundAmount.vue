@@ -78,11 +78,11 @@ function onInput(rawValue: string) {
                 variant="static-value"
                 type="number"
                 :disabled="props.disabled"
-                :value="inputValue"
+                :model-value="inputValue"
                 :min="0"
-                :errorMessage="errorMessage || undefined"
+                :error-message="errorMessage || undefined"
                 :lang="i18n.locale"
-                @input="onInput"
+                @update:model-value="onInput"
             >
                 <template v-if="props.currency" #staticValue>{{ props.currency }}</template>
             </BentoInputField>

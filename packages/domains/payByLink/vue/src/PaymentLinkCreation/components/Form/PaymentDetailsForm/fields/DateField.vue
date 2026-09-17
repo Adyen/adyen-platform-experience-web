@@ -39,7 +39,7 @@ function onUpdate(value: Date | null) {
 </script>
 
 <template>
-    <FieldWrapper v-if="config.visible" :name="props.name" :error="error">
+    <FieldWrapper v-if="config.visible" :name="props.name">
         <BentoDatePicker
             :label="props.label"
             :model-value="modelValue"
