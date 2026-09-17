@@ -4,9 +4,9 @@ import Localization from './Localization';
 import { Assets, AssetOptions } from './Assets/Assets';
 import { getCustomTranslationsAnalyticsPayload } from './EventDispatcher/eventDispatcher/customTranslations';
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
+import { ThemeManager } from './theme/ThemeManager';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
 import type { CoreOptions, onErrorHandler, ResolvedEnvironment } from './types';
-import type { TranslationSourceRecord } from './translations';
 
 /**
  * Minimal contract that UI element classes must satisfy so Core can manage them uniformly.
@@ -20,20 +20,18 @@ export interface ManagedElement {
 
 export type CdnFetcher = <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
 
-export const AVAILABLE_TRANSLATIONS_DEPRECATION_WARNING =
-    '[AdyenPlatFormExperience] The "availableTranslations" option is deprecated and will be removed in a future major version. You can safely remove this option.';
-
 /**
- * Framework-agnostic source of truth for the Core runtime. Owns option resolution,
- * environment, session wiring, the shared `Localization` instance, asset getters, CDN
- * helpers, the component registry, and the generic `initialize()` / `update()` lifecycle.
+ * Framework-neutral source of truth for the Core runtime. Owns option resolution,
+ * environment, session wiring, theming, the shared `Localization` instance, asset
+ * getters, CDN helpers, the component registry, and the generic `initialize()` /
+ * `update()` lifecycle.
  *
  * Rendering, mounting, and unmounting live in the Vue UIElement classes, not here.
  */
 
-export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends object = Record<never, never>> {
+export class Core<CustomTranslations extends object = Record<never, never>> {
     public static readonly version = process.env.SDK_VERSION!;
-    public options: CoreOptions<AvailableTranslations, CustomTranslations>;
+    public options: CoreOptions<CustomTranslations>;
     public loadingContext!: string;
     public analyticsEnabled!: boolean;
     public session = new AuthSession();
@@ -45,18 +43,19 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
     public getCdnDataset!: CdnFetcher;
     public components: ManagedElement[] = [];
 
-    private hasWarnedAboutAvailableTranslationsDeprecation = false;
     private hasWarnedAboutServerSideInitialization = false;
     private readyCustomTranslationsAnalytics = false;
+    private themeInitialized = false;
+    private readonly themeManager = new ThemeManager();
 
-    constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
+    constructor(options: CoreOptions<CustomTranslations>) {
         this.options = { environment: FALLBACK_ENV, ...options };
         const { cdnTranslationsUrl, cdnConfigUrl } = this.resolveEnvironment();
 
         this.applyEnvironmentAssets();
         this.applyAnalyticsOptions();
 
-        this.localization = new Localization(this.options.locale, this.options.availableTranslations, cdnTranslationsUrl, cdnConfigUrl);
+        this.localization = new Localization(this.options.locale, cdnTranslationsUrl, cdnConfigUrl);
 
         this.setOptions(this.options);
     }
@@ -70,14 +69,22 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
 
     /**
      * Merge incoming options, propagate locale / custom translations to the shared
-     * `Localization`, hand off to the subclass hook, then sync the session.
+     * `Localization`, then sync the session.
      */
-    protected setOptions(options: Partial<CoreOptions<AvailableTranslations, CustomTranslations>>): this {
+    protected setOptions(options: Partial<CoreOptions<CustomTranslations>>): this {
         const environmentChanged = options.environment !== undefined && options.environment !== this.options.environment;
         const loadingContextChanged = options.loadingContext !== undefined && options.loadingContext !== this.options.loadingContext;
         const analyticsChanged = options.analytics !== undefined && options.analytics !== this.options.analytics;
+        const nextThemeMode = hasOwnProperty(options, 'themeMode') ? options.themeMode : this.options.themeMode;
+        const nextCustomTheme = hasOwnProperty(options, 'customTheme') ? options.customTheme : this.options.customTheme;
+        const themeChanged = !this.themeInitialized || nextThemeMode !== this.options.themeMode || nextCustomTheme !== this.options.customTheme;
+
+        if (themeChanged) {
+            this.themeManager.apply(nextThemeMode, nextCustomTheme);
+        }
 
         this.options = { ...this.options, ...options };
+        this.themeInitialized = true;
 
         this.localization.locale = this.options.locale;
         this.localization.customTranslations = this.options.translations;
@@ -91,11 +98,6 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
 
         if (analyticsChanged) {
             this.applyAnalyticsOptions();
-        }
-
-        if (!this.hasWarnedAboutAvailableTranslationsDeprecation && hasOwnProperty(this.options, 'availableTranslations')) {
-            console.warn(AVAILABLE_TRANSLATIONS_DEPRECATION_WARNING);
-            this.hasWarnedAboutAvailableTranslationsDeprecation = true;
         }
 
         this.session.loadingContext = this.loadingContext;
@@ -149,12 +151,15 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
      * Apply a partial options patch, re-initialize, and propagate the update to
      * every registered component that belongs to this Core instance.
      */
-    public async update(
-        options: Partial<CoreOptions<AvailableTranslations, CustomTranslations>> = EMPTY_OBJECT as Partial<
-            CoreOptions<AvailableTranslations, CustomTranslations>
-        >
-    ): Promise<this> {
+    public async update(options: Partial<CoreOptions<CustomTranslations>> = EMPTY_OBJECT as Partial<CoreOptions<CustomTranslations>>): Promise<this> {
         this.setOptions(options);
+
+        const optionKeys = Object.keys(options);
+        const hasOnlyThemeOptions = optionKeys.length > 0 && optionKeys.every(option => option === 'themeMode' || option === 'customTheme');
+        if (hasOnlyThemeOptions) {
+            return this;
+        }
+
         await this.initialize();
 
         this.components.forEach(component => {
@@ -185,6 +190,14 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
         if (component.core === this) {
             this.components.push(component);
         }
+    }
+
+    public registerThemeRoot(root: Element): void {
+        this.themeManager.register(root);
+    }
+
+    public unregisterThemeRoot(root: Element): void {
+        this.themeManager.unregister(root);
     }
 }
 

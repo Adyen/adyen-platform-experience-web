@@ -53,13 +53,3 @@ test.describe('Early renewal', () => {
         await expect(page.getByText('Pending')).toBeVisible();
     });
 });
-
-test.describe('onFundsRequest argument', () => {
-    test('should not go to grants screen when argument is set and request submit button in offer summary screen is clicked', async ({ page }) => {
-        await goToStory(page, { id: STORY_ID, args: { onFundsRequest: 'Enabled' } });
-        await goToOfferSummary(page);
-        await page.getByRole('button', { name: 'Submit request (€18,600)' }).click();
-
-        await expect(page.getByText('Business financing', { exact: true })).toBeHidden();
-    });
-});

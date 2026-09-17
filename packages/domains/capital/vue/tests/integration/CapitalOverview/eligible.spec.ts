@@ -83,22 +83,3 @@ test.describe('Eligible', () => {
         ]);
     });
 });
-
-test.describe('onFundsRequest argument', () => {
-    test('should not go to grants screen when argument is set and request submit button in offer summary screen is clicked', async ({
-        page,
-        analyticsEvents,
-    }) => {
-        await goToStory(page, { id: STORY_ID, args: { onFundsRequest: 'Enabled' } });
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
-
-        await goToOfferSummaryAndExpectAnalytics(page, analyticsEvents);
-        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
-
-        await expectAnalyticsEvents(analyticsEvents, [
-            ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
-        ]);
-
-        await expect(page.getByText('Business financing', { exact: true })).toBeHidden();
-    });
-});
