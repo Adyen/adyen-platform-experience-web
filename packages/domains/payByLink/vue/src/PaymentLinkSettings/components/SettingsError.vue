@@ -26,6 +26,6 @@ const errorInfo = computed(() =>
 
 <template>
     <div v-if="errorInfo">
-        <ErrorMessageDisplay :error-info="errorInfo" :absolute-position="false" />
+        <ErrorMessageDisplay :error-info="errorInfo" with-image :absolute-position="false" />
     </div>
 </template>
