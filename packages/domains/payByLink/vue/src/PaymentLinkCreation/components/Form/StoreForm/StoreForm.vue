@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoAlert, BentoButton } from '@adyen/bento-vue3';
-import SelectField from '../../fields/SelectField.vue';
+import StoreField from '../../fields/StoreField.vue';
 import { useWizard } from '../../../composables/wizardContext';
 import type { IPaymentLinkSettings, IPaymentLinkStore } from '@integration-components/types';
 import type { TranslationKey } from '@integration-components/core';
@@ -9,7 +9,7 @@ import layoutStyles from '../FormLayout.module.scss';
 import styles from './StoreForm.module.scss';
 
 const props = defineProps<{
-    selectItems: { id: string; name: string }[];
+    selectItems: { id: string; name: string; description?: string }[];
     settingsData?: IPaymentLinkSettings;
     storesData?: IPaymentLinkStore[];
     termsAndConditionsProvisioned: boolean;
@@ -38,7 +38,7 @@ function handleSetupTermsAndConditions() {
 
 <template>
     <div :class="layoutStyles.fieldsContainer">
-        <SelectField
+        <StoreField
             name="store"
             :label="i18n.get('payByLink.creation.fields.store.label')"
             :items="props.selectItems"

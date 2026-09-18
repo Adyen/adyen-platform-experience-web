@@ -113,4 +113,9 @@ test.describe('Default', () => {
         await expect(confirmErrorMessage).not.toBeVisible();
         await expect(validUrlErrorMessage).not.toBeVisible();
     });
+
+    test('should show store description as selected value in the store selector', async ({ page }) => {
+        const storeSelector = page.getByRole('combobox').first();
+        await expect(storeSelector).toHaveText('Main Store - New York');
+    });
 });
