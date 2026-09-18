@@ -1,11 +1,9 @@
-import { defineComponent, computed, h, type PropType, type VNode } from 'vue';
-import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
+import { defineComponent, computed, h, type Component, type PropType, type VNode } from 'vue';
+import { BentoButton, BentoEmptyState } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
 import { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from './getErrorMessage';
 import styles from './ErrorMessageDisplay.module.scss';
-
-const IMAGE_BREAKPOINT_MEDIUM_PX = 680;
 
 export const ErrorMessageDisplay = defineComponent({
     name: 'ErrorMessageDisplay',
@@ -31,7 +29,7 @@ export const ErrorMessageDisplay = defineComponent({
     },
 
     setup(props) {
-        const { i18n, refreshComponent: refreshCurrentComponent, getImageAsset } = useCoreContext();
+        const { i18n, refreshComponent: refreshCurrentComponent } = useCoreContext();
 
         const errorInfo = computed(
             () =>
@@ -49,23 +47,6 @@ export const ErrorMessageDisplay = defineComponent({
             props.condensed ? styles.condensed : '',
         ]);
 
-        const renderIllustration = () =>
-            h('div', { class: styles.illustration }, [
-                h('picture', {}, [
-                    h('source', {
-                        type: 'image/svg+xml',
-                        media: `(min-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`,
-                        srcset: props.imageDesktop ?? getImageAsset?.({ name: 'wrong-environment' }),
-                    }),
-                    h('source', {
-                        type: 'image/svg+xml',
-                        media: `(max-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`,
-                        srcset: props.imageMobile ?? getImageAsset?.({ name: 'wrong-environment', subFolder: 'images/small' }),
-                    }),
-                    h('img', { src: props.imageDesktop ?? getImageAsset?.({ name: 'wrong-environment' }), alt: '' }),
-                ]),
-            ]);
-
         const renderMessages = () => {
             const { messages, requestId } = errorInfo.value;
             const options = requestId ? { values: { requestId } } : undefined;
@@ -77,43 +58,68 @@ export const ErrorMessageDisplay = defineComponent({
             return nodes;
         };
 
-        const renderButtons = () => {
+        const primaryAction = computed<
+            | {
+                  title: string;
+                  event: () => void;
+                  icon?: Component;
+              }
+            | undefined
+        >(() => {
             const { onContactSupport, refreshComponent, contactSupportLabel } = errorInfo.value;
-            const buttons: VNode[] = [];
-
-            if (props.onDismiss && props.dismissLabel) {
-                const dismiss = props.onDismiss;
-                buttons.push(h(BentoButton, { type: 'button', variant: 'secondary', onClick: () => dismiss() }, () => i18n.get(props.dismissLabel!)));
-            }
 
             if (onContactSupport) {
-                buttons.push(
-                    h(BentoButton, { type: 'button', variant: 'primary', onClick: () => onContactSupport() }, () =>
-                        i18n.get(contactSupportLabel ?? 'common.actions.contactSupport.labels.reachOut')
-                    )
-                );
-            } else if (refreshComponent) {
-                const refresh = props.onRefresh ?? refreshCurrentComponent;
-                buttons.push(
-                    h(BentoButton, { type: 'button', variant: 'primary', onClick: () => refresh?.() }, () =>
-                        i18n.get('common.actions.refresh.labels.default')
-                    )
-                );
+                return {
+                    title: i18n.get(contactSupportLabel ?? 'common.actions.contactSupport.labels.reachOut'),
+                    event: onContactSupport,
+                };
             }
 
-            return buttons;
-        };
+            if (refreshComponent) {
+                const refresh = props.onRefresh ?? refreshCurrentComponent;
+                return {
+                    title: i18n.get('common.actions.refresh.labels.default'),
+                    event: () => refresh?.(),
+                };
+            }
+
+            return undefined;
+        });
+
+        const variant = computed(() => {
+            if (props.condensed) return 'condensed';
+            if (props.withImage || props.imageDesktop || props.imageMobile) return 'full-page';
+            return 'basic';
+        });
+
+        const image = computed(() => {
+            if (props.imageDesktop || props.imageMobile) return 'no-results-found';
+            if (props.withImage) return 'wrong-environment';
+            return undefined;
+        });
 
         return () => {
             const { title } = errorInfo.value;
             const messages = renderMessages();
-            const buttons = renderButtons();
 
             return h('div', { class: rootClass.value, 'data-testid': 'error-message-display' }, [
-                props.withImage || props.imageDesktop || props.imageMobile ? renderIllustration() : null,
-                title ? h(BentoTypography, { el: 'div', variant: 'title' }, () => i18n.get(title)) : null,
-                messages.length ? h(BentoTypography, { variant: 'body' }, () => messages) : null,
-                buttons.length ? h('div', { class: styles.button }, buttons) : null,
+                h(
+                    BentoEmptyState,
+                    {
+                        action: primaryAction.value,
+                        image: image.value,
+                        title: title ? i18n.get(title) : undefined,
+                        variant: variant.value,
+                    },
+                    { default: () => messages }
+                ),
+                props.onDismiss && props.dismissLabel
+                    ? h(
+                          'div',
+                          { class: styles.button },
+                          h(BentoButton, { type: 'button', variant: 'secondary', onClick: props.onDismiss }, () => i18n.get(props.dismissLabel!))
+                      )
+                    : null,
             ]);
         };
     },

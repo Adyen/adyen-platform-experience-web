@@ -10,7 +10,7 @@ vi.mock('@integration-components/core/vue', () => ({
 
 vi.mock('@adyen/bento-vue3', () => ({
     BentoButton: { name: 'BentoButton' },
-    BentoTypography: { name: 'BentoTypography' },
+    BentoEmptyState: { name: 'BentoEmptyState' },
 }));
 
 describe('ErrorMessageDisplay', () => {
@@ -20,14 +20,11 @@ describe('ErrorMessageDisplay', () => {
         ),
     };
     const refreshComponent = vi.fn();
-    const getImageAsset = vi.fn(({ subFolder }: { subFolder?: string }) => (subFolder ? 'small-default.svg' : 'default.svg'));
-
     beforeEach(() => {
         vi.clearAllMocks();
         vi.mocked(useCoreContext).mockReturnValue({
             i18n,
             refreshComponent,
-            getImageAsset,
         } as unknown as ReturnType<typeof useCoreContext>);
     });
 
@@ -57,7 +54,7 @@ describe('ErrorMessageDisplay', () => {
         });
     };
 
-    test('renders translated title and messages with the request ID', () => {
+    test('renders a Bento empty state with translated messages and the request ID', () => {
         const view = renderWithInfo({
             title: 'common.errors.somethingWentWrong',
             messages: ['common.errors.errorCode', 'common.errors.retry'],
@@ -65,16 +62,18 @@ describe('ErrorMessageDisplay', () => {
         });
 
         const children = view().children as VNode[];
-        const title = children[1]!;
-        const message = children[2]!;
+        const emptyState = children[0]!;
+        const description = (emptyState.children as { default: () => (VNode | string)[] }).default();
 
-        expect((title.children as { default: () => string }).default()).toBe('common.errors.somethingWentWrong');
-        expect((message.children as { default: () => (VNode | string)[] }).default()).toEqual(
-            expect.arrayContaining(['common.errors.errorCode:REQUEST-1', 'common.errors.retry:REQUEST-1'])
-        );
+        expect(emptyState.type).toMatchObject({ name: 'BentoEmptyState' });
+        expect(emptyState.props).toMatchObject({
+            title: 'common.errors.somethingWentWrong',
+            variant: 'basic',
+        });
+        expect(description).toEqual(expect.arrayContaining(['common.errors.errorCode:REQUEST-1', 'common.errors.retry:REQUEST-1']));
     });
 
-    test('uses explicit responsive images and falls back to SDK assets', () => {
+    test('maps custom illustrations to the Bento no-results illustration', () => {
         const view = renderWithInfo(
             { messages: [] },
             {
@@ -83,17 +82,15 @@ describe('ErrorMessageDisplay', () => {
             }
         );
 
-        const illustration = (view().children as VNode[])[0]!;
-        const picture = (illustration.children as VNode[])[0]!;
-        const [desktopSource, mobileSource, image] = picture.children as VNode[];
+        const emptyState = (view().children as VNode[])[0]!;
 
-        expect(desktopSource!.props?.srcset).toBe('desktop.svg');
-        expect(mobileSource!.props?.srcset).toBe('small-default.svg');
-        expect(image!.props).toMatchObject({ src: 'desktop.svg', alt: '' });
-        expect(getImageAsset).toHaveBeenCalledWith({ name: 'wrong-environment', subFolder: 'images/small' });
+        expect(emptyState.props).toMatchObject({
+            image: 'no-results-found',
+            variant: 'full-page',
+        });
     });
 
-    test('renders dismiss and support actions, with support taking precedence over refresh', () => {
+    test('renders a dismiss action alongside the Bento support action, with support taking precedence over refresh', () => {
         const onDismiss = vi.fn();
         const onContactSupport = vi.fn();
         const view = renderWithInfo(
@@ -108,14 +105,15 @@ describe('ErrorMessageDisplay', () => {
             }
         );
 
-        const buttonsContainer = (view().children as VNode[])[3]!;
-        const [dismissButton, supportButton] = buttonsContainer.children as VNode[];
+        const [emptyState, buttonsContainer] = view().children as VNode[];
+        const dismissButton = buttonsContainer!;
+        const supportAction = emptyState!.props?.action;
 
-        expect((dismissButton!.children as { default: () => string }).default()).toBe('common.actions.close');
-        expect((supportButton!.children as { default: () => string }).default()).toBe('common.actions.contactSupport.labels.reachOut');
+        expect((dismissButton.children as VNode[])[0]!.type).toMatchObject({ name: 'BentoButton' });
+        expect(supportAction).toMatchObject({ title: 'common.actions.contactSupport.labels.reachOut' });
 
-        dismissButton!.props?.onClick();
-        supportButton!.props?.onClick();
+        (dismissButton.children as VNode[])[0]!.props?.onClick();
+        supportAction.event();
 
         expect(onDismiss).toHaveBeenCalledOnce();
         expect(onContactSupport).toHaveBeenCalledOnce();
@@ -132,9 +130,8 @@ describe('ErrorMessageDisplay', () => {
             { onRefresh }
         );
 
-        const buttonsContainer = (view().children as VNode[])[3]!;
-        const [refreshButton] = buttonsContainer.children as VNode[];
-        refreshButton!.props?.onClick();
+        const emptyState = (view().children as VNode[])[0]!;
+        emptyState.props?.action.event();
 
         expect(onRefresh).toHaveBeenCalledOnce();
         expect(refreshComponent).not.toHaveBeenCalled();
