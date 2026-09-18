@@ -1,19 +1,11 @@
 @use '@integration-components/style' as style;
-@use '@integration-components/style/accessibility' as accessibility;
 
 .root {
     --adyen-pe-data-details-padding: #{style.token(spacer-070)};
 }
 
-.root .dataGrid[class] {
-    margin-inline: 0;
+.breakdownList {
     overflow: hidden;
-}
-
-.dataGridNoHeader {
-    :global(.b-data-grid__columns-row) {
-        @include accessibility.adyen-pe-visually-hidden;
-    }
 }
 
 .titleContainer {
@@ -61,7 +53,8 @@
 
 .cardTitle {
     color: style.token(color-label-secondary);
-    padding: style.token(spacer-000);
+    display: block;
+    padding-bottom: style.token(spacer-040);
 }
 
 .sectionAmount {
