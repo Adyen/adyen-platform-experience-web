@@ -1,0 +1,7 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "changesets": [
+    "bright-vue-future"
+  ]
+}
