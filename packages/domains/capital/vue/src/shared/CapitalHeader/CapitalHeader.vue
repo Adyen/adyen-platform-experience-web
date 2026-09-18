@@ -6,6 +6,7 @@ import type { TranslationKey } from '@integration-components/core';
 import styles from './CapitalHeader.module.scss';
 
 const props = defineProps<{
+    hideSubtitle?: boolean;
     hideTitle?: boolean;
     region?: string;
     titleKey: TranslationKey;
@@ -15,7 +16,7 @@ const { i18n } = useCoreContext();
 const title = computed(() => (props.hideTitle ? undefined : i18n.get(props.titleKey)));
 const description = computed(() => {
     const key = `capital.common.loanProviderInfo.${props.region}`;
-    return i18n.has(key) ? i18n.get(key) : undefined;
+    return !props.hideSubtitle && i18n.has(key) ? i18n.get(key) : undefined;
 });
 </script>
 

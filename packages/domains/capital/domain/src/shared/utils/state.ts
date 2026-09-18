@@ -2,7 +2,7 @@ import type { ICapitalState, IDynamicOffersConfig, IGrant, IGrantOfferResponseDT
 import { type SupportedRegions } from './regions';
 
 export type EnhancedCapitalState = {
-    dynamicOffer: ICapitalState['dynamicOffer'];
+    dynamicOfferConfig: ICapitalState['dynamicOffer'];
     hasGrants: boolean;
     isRegionSupported: boolean;
     region?: string;
@@ -52,7 +52,7 @@ export const getEnhancedCapitalState = (
     const isOfferValid = !!dynamicOffer && (!activeOrPendingGrants.length || !!renewableGrants.length);
 
     return {
-        dynamicOffer: isOfferValid ? dynamicOffer : undefined,
+        dynamicOfferConfig: isOfferValid ? dynamicOffer : undefined,
         hasGrants,
         isRegionSupported,
         region,
@@ -65,8 +65,6 @@ export const shouldGetGrants = (serverState: ICapitalState | undefined, isRegion
     const hasGrantsOnServer = !!(serverState?.activeOrPendingGrants?.length || serverState?.hasClosedGrants);
     return isRegionSupported && hasGrantsOnServer;
 };
-
-export const getIsEarlyRenewal = (state: EnhancedCapitalState): boolean => !!state.renewableGrants.length;
 
 export const getRenewableGrantDetails = (state: EnhancedCapitalState): FinancingDetails | undefined => {
     const renewableGrant = state.renewableGrants[0];

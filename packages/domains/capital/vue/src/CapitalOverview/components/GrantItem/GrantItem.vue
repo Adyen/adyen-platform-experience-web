@@ -9,6 +9,7 @@ import {
     BentoTooltipDirective as vBentoTooltip,
     BentoTypography,
     type BentoTagVariant,
+    BentoModal,
 } from '@adyen/bento-vue3';
 import ChevronDownIcon from '@adyen/ui-assets-icons-16/vue/chevron-down';
 import ChevronUpIcon from '@adyen/ui-assets-icons-16/vue/chevron-up';
@@ -18,15 +19,13 @@ import { useCoreContext, useEventDispatcherContext } from '@integration-componen
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '@integration-components/utils';
 import type { IGrant } from '@integration-components/types';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
-import GrantActions from '../GrantActions/GrantActions.vue';
+import ActionsAlert from '../ActionsAlert/ActionsAlert.vue';
 import GrantDetails from '../GrantDetails/GrantDetails.vue';
 import styles from './GrantItem.module.scss';
-
-type GrantAdjustmentDetail = 'revocation' | 'unscheduledRepayment';
+import RepaymentDetails from '../RepaymentDetails/RepaymentDetails.vue';
 
 const props = defineProps<{
     grant: IGrant;
-    showDetails?: (detail?: GrantAdjustmentDetail) => void;
 }>();
 
 const { i18n } = useCoreContext();
@@ -71,18 +70,6 @@ const getStatusTagVariant = (statusVariant: GrantStatusVariant): BentoTagVariant
     }
 };
 
-const sendRepayment = () => {
-    try {
-        props.showDetails?.('unscheduledRepayment');
-    } finally {
-        userEvents.addEvent?.('Clicked button', {
-            ...sharedCapitalOverviewAnalyticsEventProperties,
-            subCategory: 'Grant active',
-            label: 'Send repayment',
-        });
-    }
-};
-
 const handleActionsComplete = () => {
     areActionsLocallyCompleted.value = true;
 };
@@ -91,6 +78,21 @@ const toggleGrantDetails = () => {
     if (grantConfig.value.hasDetails) {
         isGrantDetailsOpen.value = !isGrantDetailsOpen.value;
     }
+};
+
+const areRepaymentDetailsOpen = ref(false);
+
+const openRepaymentDetails = () => {
+    areRepaymentDetailsOpen.value = true;
+    userEvents.addEvent?.('Clicked button', {
+        ...sharedCapitalOverviewAnalyticsEventProperties,
+        subCategory: 'Grant active',
+        label: 'Send repayment',
+    });
+};
+
+const closeRepaymentDetails = () => {
+    areRepaymentDetailsOpen.value = false;
 };
 </script>
 
@@ -164,7 +166,7 @@ const toggleGrantDetails = () => {
                     </div>
 
                     <div v-if="grantConfig.hasUnscheduledRepaymentDetails" :class="styles.actionsBar">
-                        <BentoButton :class="styles.mainActionBtn" variant="secondary" @click.stop="sendRepayment">
+                        <BentoButton :class="styles.mainActionBtn" variant="secondary" @click.stop="openRepaymentDetails">
                             {{ i18n.get('capital.overview.grants.item.actions.sendRepayment') }}
                         </BentoButton>
                     </div>
@@ -185,7 +187,7 @@ const toggleGrantDetails = () => {
         </BentoCard>
 
         <template v-if="grantConfig.hasAlerts">
-            <GrantActions
+            <ActionsAlert
                 v-if="props.grant.missingActions?.length"
                 :class-name="styles.alert"
                 :grant-id="props.grant.id"
@@ -198,4 +200,10 @@ const toggleGrantDetails = () => {
             </BentoAlert>
         </template>
     </div>
+    <BentoModal :is-open="areRepaymentDetailsOpen" size="medium" @close-modal="closeRepaymentDetails">
+        {{ i18n.get('capital.overview.repayment.title') }}
+        <template #content>
+            <RepaymentDetails :grant="grant" />
+        </template>
+    </BentoModal>
 </template>

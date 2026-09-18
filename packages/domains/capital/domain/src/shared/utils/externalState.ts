@@ -30,8 +30,8 @@ export const getExternalCapitalState = async (session: AuthSession, getCdnConfig
         };
     }
 
-    const { dynamicOffer, hasGrants, isRegionSupported, renewableGrants } = capitalState;
-    const hasOffer = !!dynamicOffer;
+    const { dynamicOfferConfig, hasGrants, isRegionSupported, renewableGrants } = capitalState;
+    const hasOffer = !!dynamicOfferConfig;
     const hasRenewableGrants = !!renewableGrants.length;
 
     if (!isRegionSupported) {

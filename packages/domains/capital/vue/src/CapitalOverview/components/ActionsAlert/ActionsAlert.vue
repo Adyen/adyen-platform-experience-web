@@ -2,11 +2,11 @@
 import { computed } from 'vue';
 import { BentoAlert } from '@adyen/bento-vue3';
 import type { IMissingAction } from '@integration-components/types';
-import GrantActionsEmbedded from '../GrantActionsEmbedded/GrantActionsEmbedded.vue';
-import GrantActionsHosted from '../GrantActionsHosted/GrantActionsHosted.vue';
+import EmbeddedActionsAlert from '../EmbeddedActionsAlert/EmbeddedActionsAlert.vue';
+import HostedActionsAlert from '../HostedActionsAlert/HostedActionsAlert.vue';
 import { useMissingActionsPolling } from '../../composables/useMissingActionsPolling';
 import { useOnboardingConfig } from '../../composables/useOnboardingConfig';
-import styles from './GrantActions.module.scss';
+import styles from './ActionsAlert.module.scss';
 
 const props = defineProps<{
     className?: string;
@@ -35,7 +35,7 @@ const { isFetchingOnboardingConfiguration, onboardingConfiguration } = useOnboar
                 <div :class="styles.actionsDescriptionSkeleton" />
             </template>
         </BentoAlert>
-        <GrantActionsEmbedded
+        <EmbeddedActionsAlert
             v-else-if="onboardingConfiguration"
             :class-name="props.className"
             :expiration-date="props.offerExpiresAt"
@@ -43,6 +43,6 @@ const { isFetchingOnboardingConfiguration, onboardingConfiguration } = useOnboar
             :missing-actions="missingActions"
             @complete="emit('complete')"
         />
-        <GrantActionsHosted v-else :class-name="props.className" :expiration-date="props.offerExpiresAt" :missing-actions="missingActions" />
+        <HostedActionsAlert v-else :class-name="props.className" :expiration-date="props.offerExpiresAt" :missing-actions="missingActions" />
     </template>
 </template>
