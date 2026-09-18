@@ -7,11 +7,11 @@ import {
     BentoTag,
     BentoLink,
     BentoButtonActions,
-    BentoDataGrid,
+    BentoList,
+    BentoListItem,
     BentoStructuredList,
     BentoStructuredListItem,
 } from '@adyen/bento-vue3';
-import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { IPayoutDetails } from '@integration-components/types';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '@integration-components/utils';
 import { formatAmountWithCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
@@ -123,49 +123,7 @@ function formatPayoutDate(dateStr: string): string {
 
 const formatAmount = (amount: { value: number; currency: string }) => formatAmountWithCurrencyCode(amount.value, i18n.locale, amount.currency);
 
-const fundsCapturedColumns = computed<BentoColumn[]>(() => [
-    {
-        field: 'label',
-        label: i18n.get('payouts.details.breakdown.fields.fundsCaptured'),
-        flex: 1,
-    },
-    {
-        field: 'quantity',
-        label: '',
-        flex: 1,
-        numeric: true,
-    },
-]);
-
-const additionsColumns = computed<BentoColumn[]>(() => [
-    {
-        field: 'label',
-        label: i18n.get('payouts.details.breakdown.fields.additions'),
-        flex: 1,
-    },
-    {
-        field: 'quantity',
-        label: '',
-        flex: 1,
-        numeric: true,
-    },
-]);
-
-const subtractionsColumns = computed<BentoColumn[]>(() => [
-    {
-        field: 'label',
-        label: i18n.get('payouts.details.breakdown.fields.subtractions'),
-        flex: 1,
-    },
-    {
-        field: 'quantity',
-        label: '',
-        flex: 1,
-        numeric: true,
-    },
-]);
-
-const fundsCapturedRows = computed<BentoDatagridDataItem[]>(() =>
+const fundsCapturedRows = computed(() =>
     (fundsCaptured.value ?? []).map((item, index) => ({
         id: `${item.key}-${index}`,
         label: getPayoutFundsCapturedType(i18n, item.key),
@@ -173,7 +131,7 @@ const fundsCapturedRows = computed<BentoDatagridDataItem[]>(() =>
     }))
 );
 
-const additionsRows = computed<BentoDatagridDataItem[]>(() =>
+const additionsRows = computed(() =>
     (adjustments.value?.additions ?? []).map((item, index) => ({
         id: `${item.key}-${index}`,
         label: getPayoutAdjustmentType(i18n, item.key),
@@ -181,7 +139,7 @@ const additionsRows = computed<BentoDatagridDataItem[]>(() =>
     }))
 );
 
-const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
+const subtractionsRows = computed(() =>
     (adjustments.value?.subtractions ?? []).map((item, index) => ({
         id: `${item.key}-${index}`,
         label: getPayoutAdjustmentType(i18n, item.key),
@@ -268,23 +226,18 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                         <template #content>
                             <div>
                                 <div :class="styles.card">
-                                    <BentoDataGrid
-                                        outline
-                                        data-testid="payout-funds-captured-breakdown"
-                                        :class="[styles.dataGrid, styles.dataGridNoHeader]"
-                                        :columns="fundsCapturedColumns"
-                                        :data="fundsCapturedRows"
-                                        :allow-row-clicks="false"
-                                        :has-resizable-columns="false"
-                                        :allow-column-drag-and-drop="false"
-                                    >
-                                        <template #item-label="{ item }">
-                                            <BentoTypography variant="body">{{ item.label }}</BentoTypography>
-                                        </template>
-                                        <template #item-quantity="{ item }">
-                                            <BentoTypography variant="body">{{ item.quantity }}</BentoTypography>
-                                        </template>
-                                    </BentoDataGrid>
+                                    <BentoList data-testid="payout-funds-captured-breakdown" :class="styles.breakdownList">
+                                        <BentoListItem
+                                            v-for="(item, index) in fundsCapturedRows"
+                                            :key="item.id"
+                                            :label="item.label"
+                                            :show-bottom-divider="index < fundsCapturedRows.length - 1"
+                                        >
+                                            <template #end>
+                                                <BentoTypography variant="body">{{ item.quantity }}</BentoTypography>
+                                            </template>
+                                        </BentoListItem>
+                                    </BentoList>
                                 </div>
                             </div>
                         </template>
@@ -320,44 +273,40 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                     <template #content>
                         <div v-if="adjustments && adjustments.additions.length" :class="styles.card">
                             <div>
-                                <BentoDataGrid
-                                    outline
-                                    data-testid="payout-adjustments-additions-breakdown"
-                                    :class="styles.dataGrid"
-                                    :columns="additionsColumns"
-                                    :data="additionsRows"
-                                    :allow-row-clicks="false"
-                                    :has-resizable-columns="false"
-                                    :allow-column-drag-and-drop="false"
-                                >
-                                    <template #item-label="{ item }">
-                                        <BentoTypography variant="body">{{ item.label }}</BentoTypography>
-                                    </template>
-                                    <template #item-quantity="{ item }">
-                                        <BentoTypography variant="body">{{ item.quantity }}</BentoTypography>
-                                    </template>
-                                </BentoDataGrid>
+                                <BentoTypography :class="styles.cardTitle" variant="body" strongest>
+                                    {{ i18n.get('payouts.details.breakdown.fields.additions') }}
+                                </BentoTypography>
+                                <BentoList data-testid="payout-adjustments-additions-breakdown" :class="styles.breakdownList">
+                                    <BentoListItem
+                                        v-for="(item, index) in additionsRows"
+                                        :key="item.id"
+                                        :label="item.label"
+                                        :show-bottom-divider="index < additionsRows.length - 1"
+                                    >
+                                        <template #end>
+                                            <BentoTypography variant="body">{{ item.quantity }}</BentoTypography>
+                                        </template>
+                                    </BentoListItem>
+                                </BentoList>
                             </div>
                         </div>
                         <div v-if="adjustments && adjustments.subtractions.length" :class="styles.card">
                             <div>
-                                <BentoDataGrid
-                                    outline
-                                    data-testid="payout-adjustments-subtractions-breakdown"
-                                    :class="styles.dataGrid"
-                                    :columns="subtractionsColumns"
-                                    :data="subtractionsRows"
-                                    :allow-row-clicks="false"
-                                    :has-resizable-columns="false"
-                                    :allow-column-drag-and-drop="false"
-                                >
-                                    <template #item-label="{ item }">
-                                        <BentoTypography variant="body">{{ item.label }}</BentoTypography>
-                                    </template>
-                                    <template #item-quantity="{ item }">
-                                        <BentoTypography variant="body">{{ item.quantity }}</BentoTypography>
-                                    </template>
-                                </BentoDataGrid>
+                                <BentoTypography :class="styles.cardTitle" variant="body" strongest>
+                                    {{ i18n.get('payouts.details.breakdown.fields.subtractions') }}
+                                </BentoTypography>
+                                <BentoList data-testid="payout-adjustments-subtractions-breakdown" :class="styles.breakdownList">
+                                    <BentoListItem
+                                        v-for="(item, index) in subtractionsRows"
+                                        :key="item.id"
+                                        :label="item.label"
+                                        :show-bottom-divider="index < subtractionsRows.length - 1"
+                                    >
+                                        <template #end>
+                                            <BentoTypography variant="body">{{ item.quantity }}</BentoTypography>
+                                        </template>
+                                    </BentoListItem>
+                                </BentoList>
                             </div>
                         </div>
                     </template>

@@ -78,7 +78,6 @@ test.describe('Default', () => {
         const list = breakdown.toggleContent;
 
         const locators = [
-            list.getByRole('columnheader', { name: 'Funds captured', exact: true }),
             ...BentoPayoutBreakdown.getPairwiseLocators(list, ['Captured', '1,200.00 EUR']),
             ...BentoPayoutBreakdown.getPairwiseLocators(list, ['Chargebacks', '- 300.00 EUR']),
             ...BentoPayoutBreakdown.getPairwiseLocators(list, ['Corrections', '- 10.00 EUR']),
@@ -109,13 +108,13 @@ test.describe('Default', () => {
 
         const locators = [
             // Additions
-            additions.getByRole('columnheader', { name: 'Additions', exact: true }),
+            additions.locator('../..').getByText('Additions', { exact: true }),
             ...BentoPayoutBreakdown.getPairwiseLocators(additions, ['Corrections', '10.00 EUR']),
             ...BentoPayoutBreakdown.getPairwiseLocators(additions, ['Grant repayments', '600.00 EUR']),
             ...BentoPayoutBreakdown.getPairwiseLocators(additions, ['Refunds', '100.00 EUR']),
 
             // Subtractions
-            subtractions.getByRole('columnheader', { name: 'Subtractions', exact: true }),
+            subtractions.locator('../..').getByText('Subtractions', { exact: true }),
             ...BentoPayoutBreakdown.getPairwiseLocators(subtractions, ['Fees', '- 100.00 EUR']),
             ...BentoPayoutBreakdown.getPairwiseLocators(subtractions, ['Grant issued', '- 550.00 EUR']),
             ...BentoPayoutBreakdown.getPairwiseLocators(subtractions, ['Other', '- 10.00 EUR']),
