@@ -20,15 +20,46 @@
     cursor: pointer;
     display: block;
     font: inherit;
-    padding: style.token(spacer-040) style.token(spacer-050);
+    padding-inline: style.token(spacer-040);
     text-align: left;
     width: 100%;
 
     &:hover {
         background-color: style.token(color-background-primary-hover);
     }
+
+    :global(.b-list-item__inner),
+    :global(.b-list-item__inner--clickable) {
+        background-color: transparent;
+
+        &:hover {
+            border-radius: style.token(border-radius-m);
+        }
+
+        &:active {
+            border-radius: style.token(border-radius-m);
+            background-color: transparent;
+        }
+    }
 }
 
 .itemActive {
+    border-radius: style.token(border-radius-m);
     background-color: style.token(color-background-primary-active);
+}
+
+.desktop {
+    :global(.b-list-item__chevron) {
+        display: none;
+    }
+}
+
+.mobile {
+    padding: style.token(spacer-040) style.token(spacer-050);
+
+    :global(.b-list-item__inner) {
+        align-items: flex-start;
+        gap: style.token(spacer-070);
+        justify-content: space-between;
+    }
 }
