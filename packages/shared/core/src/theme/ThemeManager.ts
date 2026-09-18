@@ -11,8 +11,10 @@ export class ThemeManager {
     private mode: ThemeMode = 'light';
     private customTheme?: CustomTheme;
     private readonly roots = new Set<Element>();
+    private readonly portals = new Set<Element>();
     private css?: string;
     private readonly styleElements = new Map<Document, HTMLStyleElement>();
+    private readonly portalObservers = new Map<Document, MutationObserver>();
 
     public apply(mode: ThemeMode = 'light', customTheme?: CustomTheme): void {
         const css = this.generateScopedCss(mode, customTheme?.[mode]);
@@ -22,6 +24,7 @@ export class ThemeManager {
         this.css = css;
         this.replaceStyles(css);
         this.roots.forEach(root => this.applyToRoot(root));
+        this.portals.forEach(portal => this.applyToRoot(portal));
     }
 
     public register(root: Element): void {
@@ -38,19 +41,22 @@ export class ThemeManager {
 
         this.roots.add(root);
         this.ensureStyle(root.ownerDocument);
+        this.ensurePortalObserver(root);
         this.applyToRoot(root);
     }
 
     public unregister(root: Element): void {
         this.roots.delete(root);
-        if (root.getAttribute(THEME_ROOT_ATTRIBUTE) === this.id) {
-            root.removeAttribute(THEME_MODE_ATTRIBUTE);
-            root.removeAttribute(THEME_ROOT_ATTRIBUTE);
-        }
+        this.removeFromRoot(root);
 
         if (!Array.from(this.roots).some(themeRoot => themeRoot.ownerDocument === root.ownerDocument)) {
+            this.releasePortals(root.ownerDocument);
+            this.portalObservers.get(root.ownerDocument)?.disconnect();
+            this.portalObservers.delete(root.ownerDocument);
             this.styleElements.get(root.ownerDocument)?.remove();
             this.styleElements.delete(root.ownerDocument);
+        } else {
+            this.syncPortals(root.ownerDocument);
         }
     }
 
@@ -62,6 +68,100 @@ export class ThemeManager {
         } else {
             root.removeAttribute(THEME_MODE_ATTRIBUTE);
         }
+    }
+
+    private ensurePortalObserver(root: Element): void {
+        const ownerDocument = root.ownerDocument;
+        const Observer = ownerDocument.defaultView?.MutationObserver;
+        if (!Observer || !ownerDocument.body) return;
+
+        let observer = this.portalObservers.get(ownerDocument);
+        if (!observer) {
+            observer = new Observer(() => this.syncPortals(ownerDocument));
+            this.portalObservers.set(ownerDocument, observer);
+        }
+
+        this.syncPortals(ownerDocument);
+    }
+
+    private syncPortals(ownerDocument: Document): void {
+        const previousPortals = [...this.portals].filter(portal => portal.ownerDocument === ownerDocument);
+        const ownedElements = [...this.roots].filter(element => element.ownerDocument === ownerDocument && element.isConnected);
+        const currentPortals = new Set<Element>();
+
+        for (let index = 0; index < ownedElements.length; index++) {
+            const ownedElement = ownedElements[index]!;
+            const controllers = ownedElement.matches('[aria-controls]')
+                ? [ownedElement, ...ownedElement.querySelectorAll('[aria-controls]')]
+                : [...ownedElement.querySelectorAll('[aria-controls]')];
+
+            controllers.forEach(controller => {
+                controller
+                    .getAttribute('aria-controls')
+                    ?.split(/\s+/)
+                    .filter(Boolean)
+                    .forEach(controlledId => {
+                        const controlledElement = ownerDocument.getElementById(controlledId);
+                        if (
+                            !controlledElement ||
+                            controlledElement.parentElement !== ownerDocument.body ||
+                            ownedElements.some(element => element === controlledElement || element.contains(controlledElement))
+                        )
+                            return;
+
+                        const currentOwner = controlledElement.getAttribute(THEME_ROOT_ATTRIBUTE);
+                        if (currentOwner && currentOwner !== this.id) return;
+
+                        currentPortals.add(controlledElement);
+                        this.portals.add(controlledElement);
+                        ownedElements.push(controlledElement);
+                        this.applyToRoot(controlledElement);
+                    });
+            });
+        }
+
+        previousPortals.forEach(portal => {
+            if (currentPortals.has(portal)) return;
+
+            this.portals.delete(portal);
+            this.removeFromRoot(portal);
+        });
+
+        this.resetPortalObserver(ownerDocument);
+    }
+
+    private resetPortalObserver(ownerDocument: Document): void {
+        const observer = this.portalObservers.get(ownerDocument);
+        if (!observer || !ownerDocument.body) return;
+
+        observer.disconnect();
+        observer.observe(ownerDocument.body, { childList: true });
+
+        [...this.roots, ...this.portals]
+            .filter(element => element.ownerDocument === ownerDocument && element.isConnected)
+            .forEach(element =>
+                observer.observe(element, {
+                    attributes: true,
+                    attributeFilter: ['aria-controls'],
+                    subtree: true,
+                })
+            );
+    }
+
+    private releasePortals(ownerDocument: Document): void {
+        this.portals.forEach(portal => {
+            if (portal.ownerDocument !== ownerDocument) return;
+
+            this.portals.delete(portal);
+            this.removeFromRoot(portal);
+        });
+    }
+
+    private removeFromRoot(root: Element): void {
+        if (root.getAttribute(THEME_ROOT_ATTRIBUTE) !== this.id) return;
+
+        root.removeAttribute(THEME_MODE_ATTRIBUTE);
+        root.removeAttribute(THEME_ROOT_ATTRIBUTE);
     }
 
     private generateScopedCss(mode: ThemeMode, variables: ThemeVariables | undefined): string | undefined {

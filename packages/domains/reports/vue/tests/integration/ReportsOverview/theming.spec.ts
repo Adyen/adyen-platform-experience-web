@@ -46,6 +46,28 @@ test.describe('Core theme', () => {
         await expect(page.getByRole('columnheader').first()).toHaveCSS('background-color', 'rgb(17, 17, 17)');
     });
 
+    test('applies the Core theme to filter dialogs teleported to the document body', async ({ page }) => {
+        await updateStoryArgs(page, STORY_ID, {
+            coreOptions: {
+                themeMode: 'dark',
+                customTheme: {
+                    dark: {
+                        background: '#111111',
+                    },
+                },
+            },
+        });
+
+        const themeRoot = page.locator('[data-adyen-pe-theme-root]');
+        const filterDialog = page.getByRole('dialog', { name: 'Date range', exact: true });
+
+        await page.getByRole('button', { name: /^Date range/, disabled: false }).click();
+        await expect(filterDialog).toBeVisible();
+        await expect(themeRoot.locator('[role="dialog"]')).toHaveCount(0);
+        await expect(filterDialog).toHaveCSS('--adyen-sdk-color-background-primary', '#111111');
+        await expect(filterDialog).toHaveCSS('background-color', 'rgb(22, 22, 22)');
+    });
+
     test('updates and resets public theme options', async ({ page }) => {
         const initialTheme = await getThemeState(page);
 

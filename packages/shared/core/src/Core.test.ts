@@ -7,6 +7,14 @@ import { SERVER_SIDE_INITIALIZATION_WARNING } from './runtime';
 
 describe('Core', () => {
     const originalNodeEnv = process.env.NODE_ENV;
+    const createControlledPortal = (root: Element, id: string) => {
+        const controller = document.createElement('button');
+        const portal = document.createElement('div');
+        controller.setAttribute('aria-controls', id);
+        portal.id = id;
+        root.append(controller);
+        return portal;
+    };
 
     beforeEach(() => {
         process.env.NODE_ENV = 'development';
@@ -101,6 +109,70 @@ describe('Core', () => {
         expect(firstRoot.hasAttribute('data-adyen-pe-theme')).toBe(false);
         expect(getComputedStyle(secondRoot).getPropertyValue('--adyen-sdk-color-primary')).toBe('#84adff');
         expect(secondRoot.getAttribute('data-adyen-pe-theme')).toBe('dark');
+    });
+
+    it('keeps controlled portals isolated between Core instances', async () => {
+        const firstCore = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            customTheme: { light: { primary: '#0050b3' } },
+        });
+        const secondCore = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            themeMode: 'dark',
+            customTheme: { dark: { primary: '#84adff' } },
+        });
+        const firstRoot = document.createElement('div');
+        const secondRoot = document.createElement('div');
+        const firstPortal = createControlledPortal(firstRoot, 'first-portal');
+        const secondPortal = createControlledPortal(secondRoot, 'second-portal');
+        document.body.append(firstRoot, secondRoot, firstPortal, secondPortal);
+
+        firstCore.registerThemeRoot(firstRoot);
+        secondCore.registerThemeRoot(secondRoot);
+
+        await vi.waitFor(() => {
+            expect(getComputedStyle(firstPortal).getPropertyValue('--adyen-sdk-color-primary')).toBe('#0050b3');
+            expect(firstPortal.hasAttribute('data-adyen-pe-theme')).toBe(false);
+            expect(getComputedStyle(secondPortal).getPropertyValue('--adyen-sdk-color-primary')).toBe('#84adff');
+            expect(secondPortal.getAttribute('data-adyen-pe-theme')).toBe('dark');
+        });
+
+        firstCore.unregisterThemeRoot(firstRoot);
+
+        expect(firstPortal.hasAttribute('data-adyen-pe-theme-root')).toBe(false);
+        expect(secondPortal.hasAttribute('data-adyen-pe-theme-root')).toBe(true);
+
+        secondCore.unregisterThemeRoot(secondRoot);
+    });
+
+    it('releases portals controlled by an unregistered root', async () => {
+        const core = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            themeMode: 'dark',
+        });
+        const firstRoot = document.createElement('div');
+        const secondRoot = document.createElement('div');
+        const firstPortal = createControlledPortal(firstRoot, 'releasable-portal');
+        const secondPortal = createControlledPortal(secondRoot, 'retained-portal');
+        document.body.append(firstRoot, secondRoot, firstPortal, secondPortal);
+
+        core.registerThemeRoot(firstRoot);
+        core.registerThemeRoot(secondRoot);
+
+        await vi.waitFor(() => {
+            expect(firstPortal.getAttribute('data-adyen-pe-theme')).toBe('dark');
+            expect(secondPortal.getAttribute('data-adyen-pe-theme')).toBe('dark');
+        });
+
+        core.unregisterThemeRoot(firstRoot);
+
+        expect(firstPortal.hasAttribute('data-adyen-pe-theme-root')).toBe(false);
+        expect(secondPortal.getAttribute('data-adyen-pe-theme')).toBe('dark');
+
+        core.unregisterThemeRoot(secondRoot);
     });
 
     it('rejects a theme root already owned by another Core instance', () => {
