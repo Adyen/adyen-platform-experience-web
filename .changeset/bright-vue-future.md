@@ -6,4 +6,4 @@
 - Added support for theming through the new `themeMode` and `customTheme` Core options.
 - Removed the deprecated `availableTranslations` Core option.
 - Removed flow-control callbacks and options across all Capital components, in favor of handling those flows internally.
-- Improved Pay By Link creation, overview, details, pagination, and accessibility behavior.
+- Removed support for CSS classname overrides across all components.
