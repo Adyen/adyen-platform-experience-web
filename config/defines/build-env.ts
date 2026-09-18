@@ -6,6 +6,7 @@ export const getBuildEnvDefines = (mode: string) => {
 
     return {
         ...getBaseEnvDefines(mode),
+        'process.env.NODE_ENV': JSON.stringify('production'),
         'process.env.VITE_BUILD_ID': JSON.stringify(BUILD_ID),
         'process.env.VITE_COMMIT_BRANCH': JSON.stringify(COMMIT_BRANCH),
         'process.env.VITE_COMMIT_HASH': JSON.stringify(COMMIT_HASH),
