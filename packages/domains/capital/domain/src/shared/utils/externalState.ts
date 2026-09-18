@@ -4,12 +4,19 @@ import sessionReady from '@integration-components/core/session/utils/sessionRead
 import { getSupportedRegions } from './regions';
 import { getEnhancedCapitalState } from './state';
 
-export type ExternalCapitalState = {
-    hasGrants: boolean;
-    hasOffer: boolean;
-    hasRenewableGrants: boolean;
-    state: 'isUnqualified' | 'isPreQualified' | 'hasRequestedGrants' | 'isInUnsupportedRegion';
-};
+export type ExternalCapitalState =
+    | { isAvailable: false }
+    | {
+          isAvailable: true;
+          isRegionSupported: boolean;
+          hasGrants: boolean;
+          hasRenewableGrants: boolean;
+          dynamicOfferConfig?: {
+              minAmount: number;
+              maxAmount: number;
+              currency: string;
+          };
+      };
 
 export const getExternalCapitalState = async (session: AuthSession, getCdnConfig?: CdnFetcher): Promise<ExternalCapitalState> => {
     await sessionReady(session);
@@ -22,34 +29,20 @@ export const getExternalCapitalState = async (session: AuthSession, getCdnConfig
     const capitalState = getEnhancedCapitalState(capitalStateResponse, supportedRegions);
 
     if (!capitalState) {
-        return {
-            hasGrants: false,
-            hasOffer: false,
-            hasRenewableGrants: false,
-            state: 'isUnqualified',
-        };
+        return { isAvailable: false };
     }
 
     const { dynamicOfferConfig, hasGrants, isRegionSupported, renewableGrants } = capitalState;
-    const hasOffer = !!dynamicOfferConfig;
-    const hasRenewableGrants = !!renewableGrants.length;
 
-    if (!isRegionSupported) {
-        return {
-            hasGrants: false,
-            hasOffer: false,
-            hasRenewableGrants: false,
-            state: 'isInUnsupportedRegion',
-        };
-    }
-
-    let state: ExternalCapitalState['state'] = 'isUnqualified';
-
-    if (hasGrants) {
-        state = 'hasRequestedGrants';
-    } else if (hasOffer) {
-        state = 'isPreQualified';
-    }
-
-    return { hasGrants, hasOffer, hasRenewableGrants, state };
+    return {
+        isAvailable: true,
+        isRegionSupported,
+        hasGrants,
+        hasRenewableGrants: !!renewableGrants.length,
+        dynamicOfferConfig: dynamicOfferConfig && {
+            minAmount: dynamicOfferConfig.minAmount.value,
+            maxAmount: dynamicOfferConfig.maxAmount.value,
+            currency: dynamicOfferConfig.minAmount.currency,
+        },
+    };
 };
