@@ -65,12 +65,12 @@ export class BentoPayoutBreakdown extends AbstractPayoutBreakdown {
         this._toggleButton = this._root.getByRole('button', { name, disabled: false });
         this._toggleButtonCollapsed = this._root.getByRole('button', { name, disabled: false, expanded: false });
         this._toggleButtonExpanded = this._root.getByRole('button', { name, disabled: false, expanded: true });
-        this._toggleContent = this._root.getByRole('grid');
+        this._toggleContent = this._root.getByRole('list');
     }
 
     static override getPairwiseLocators(list: Locator, item: [name: string, value: string]): readonly Locator[] {
-        const row = list.getByRole('gridcell', { name: item[0], exact: true }).locator('..');
-        return item.map(name => row.getByRole('gridcell', { name, exact: true }));
+        const row = list.getByRole('listitem').filter({ hasText: item[0] });
+        return item.map(name => row.getByText(name, { exact: true }));
     }
 }
 

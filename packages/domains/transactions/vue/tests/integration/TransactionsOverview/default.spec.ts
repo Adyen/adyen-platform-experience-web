@@ -197,6 +197,9 @@ test.describe('Default', () => {
             await expect(page.getByText('Total incoming', { exact: true })).toBeVisible();
             await expect(page.getByText('Total outgoing', { exact: true })).toBeVisible();
             await expect(page.getByText('USD', { exact: true }).first()).toBeVisible();
+            await expect(page.getByRole('list')).toHaveCount(2);
+            await expect(page.getByRole('listitem').first()).toBeVisible();
+            await expect(page.getByRole('grid')).toHaveCount(0);
         });
 
         test('should return to transactions view when "Transactions" button is clicked', async ({ page, analyticsEvents }) => {
