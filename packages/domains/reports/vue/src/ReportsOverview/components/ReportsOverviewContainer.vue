@@ -3,7 +3,6 @@ import { computed } from 'vue';
 import ReportsOverview from './ReportsOverview.vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useBalanceAccounts } from '@integration-components/composables-vue';
-import '@adyen/bento-vue3/styles/bento-light';
 
 const props = withDefaults(
     defineProps<{

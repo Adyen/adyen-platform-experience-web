@@ -273,6 +273,22 @@ export const CAPITAL_STATE_UNSUPPORTED_REGION: ICapitalState = {
     legalEntity: { region: 'TR' },
 };
 
+export const CAPITAL_STATE_INELIGIBLE: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT,
+    dynamicOffer: undefined,
+};
+
+export const CAPITAL_STATE_FIRST_OFFER: ICapitalState = CAPITAL_STATE_DEFAULT;
+
+export const CAPITAL_STATE_SINGLE_TERM: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT,
+    dynamicOffer: {
+        ...DYNAMIC_CAPITAL_OFFER,
+        estimatedRepaymentTermsInDays: [REPAYMENT_TERM_HALF],
+    },
+    hasClosedGrants: true,
+};
+
 export const CAPITAL_STATE_CA: ICapitalState = {
     ...CAPITAL_STATE_DEFAULT,
     dynamicOffer: {
@@ -293,13 +309,6 @@ export const CAPITAL_STATE_US: ICapitalState = {
     ...CAPITAL_STATE_DEFAULT,
     legalEntity: { region: 'US' },
 };
-
-export const CAPITAL_STATE_INELIGIBLE: ICapitalState = {
-    ...CAPITAL_STATE_DEFAULT,
-    dynamicOffer: undefined,
-};
-
-export const CAPITAL_STATE_FIRST_OFFER: ICapitalState = CAPITAL_STATE_DEFAULT;
 
 export const CAPITAL_STATE_ACTIVE_GRANT: ICapitalState = {
     ...CAPITAL_STATE_DEFAULT,

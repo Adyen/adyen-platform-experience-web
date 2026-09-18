@@ -8,6 +8,7 @@ import {
 } from '../../../../mocks/mock-data/capital';
 import {
     getBankAccount,
+    getBankAccountDetails,
     getBankAccountFieldCopyButtonTranslationKey,
     getBankAccountFieldFormattedValue,
     getBankAccountFieldTextToCopy,
@@ -40,6 +41,37 @@ describe('getTransferInstrumentIds', () => {
 describe('getBankAccountFields', () => {
     test('returns bank account fields sorted by provided order, excluding unknown fields and duplicated entries', () => {
         expect(getBankAccountFields({ ...GRANT_GB_ACCOUNT, order: ['iban', 'iban', 'unknown', 'region'] })).toEqual(['iban', 'region']);
+    });
+});
+
+describe('getBankAccountDetails', () => {
+    test('returns formatted account details with their presentation metadata', () => {
+        expect(getBankAccountDetails(GRANT_NL_ACCOUNT)).toEqual([
+            {
+                content: 'NL69 RABO 1319 7782 91',
+                copyButtonLabel: 'capital.overview.repayment.actions.copyIban',
+                field: 'iban',
+                isPrimary: true,
+                label: 'capital.overview.repayment.accountDetails.fields.iban',
+                textToCopy: 'NL69RABO1319778291',
+            },
+            {
+                content: 'Adyen N.V.',
+                copyButtonLabel: 'capital.overview.repayment.actions.copyBeneficiaryName',
+                field: 'beneficiaryName',
+                isPrimary: false,
+                label: 'capital.overview.repayment.accountDetails.fields.beneficiaryName',
+                textToCopy: 'Adyen N.V.',
+            },
+            {
+                content: 'NL',
+                copyButtonLabel: undefined,
+                field: 'region',
+                isPrimary: false,
+                label: 'capital.overview.repayment.accountDetails.fields.countryOrRegion',
+                textToCopy: undefined,
+            },
+        ]);
     });
 });
 

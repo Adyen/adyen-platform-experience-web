@@ -1,0 +1,11 @@
+@use '@integration-components/style' as style;
+
+.valueWithIcon {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-020);
+}
+
+.icon {
+    color: style.token(color-label-warning);
+}

@@ -5,9 +5,14 @@ import vue from '@vitejs/plugin-vue';
 import { getEnvironment } from '../../../../../../envs/getEnvs.ts';
 import { realApiProxies } from '../../../../../../endpoints/realApiProxies.js';
 import { getBaseEnvDefines } from '../../../../../../config/defines/base-env.ts';
+import { rewriteBentoCssVariables } from '../../../../../../config/vite/rewriteBentoCssVariables.ts';
 
 const root = '../../../../../..';
 const rootDir = resolve(import.meta.dirname, root);
+
+const KYC_CUSTOM_ELEMENT_TAGS = ['adyen-business-financing', 'adyen-terms-of-service-management'];
+
+const isCustomElement = (tag: string) => KYC_CUSTOM_ELEMENT_TAGS.includes(tag);
 
 const config: StorybookConfig = {
     stories: [`${root}/packages/domains/*/vue/stories/**/*.stories.*`],
@@ -34,10 +39,17 @@ const config: StorybookConfig = {
             // end tag".
             plugins: [
                 ...(() => {
-                    const result = vue();
+                    const result = vue({
+                        template: {
+                            compilerOptions: {
+                                isCustomElement: isCustomElement,
+                            },
+                        },
+                    });
                     const list = Array.isArray(result) ? result : [result];
                     return list.map(p => ({ ...(p as any), enforce: 'pre' as const }));
                 })(),
+                rewriteBentoCssVariables(),
             ],
             resolve: {
                 alias: {
