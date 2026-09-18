@@ -1,5 +1,5 @@
-export { DisputeManagementElement } from '../../vue/publish/src';
-export { DisputesOverviewElement } from '../../vue/publish/src';
+export { DisputeManagementElement as DisputeManagement } from '../../vue/publish/src';
+export { DisputesOverviewElement as DisputesOverview } from '../../vue/publish/src';
 
 export type {
     DisputeManagementExternalProps,
