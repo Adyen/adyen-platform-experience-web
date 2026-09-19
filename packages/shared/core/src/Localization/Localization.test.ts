@@ -1,6 +1,8 @@
 import Localization from './Localization';
 import { describe, expect, test, vi } from 'vitest';
 import type { TranslationKey } from '../translations';
+import sdkGermanTranslations from '../../../../sdk/translations/de-DE.json' with { type: 'json' };
+import sdkEnglishTranslations from '../../../../sdk/translations/en-US.json' with { type: 'json' };
 import { SUPPORTED_LOCALES } from './constants/localization';
 
 describe('Localization', () => {
@@ -192,6 +194,29 @@ describe('Localization', () => {
 
                 consoleWarnSpy.mockRestore();
             });
+        });
+    });
+
+    describe('SDK translation sources', () => {
+        test('loads a V2 locale catalog and falls back to English for untranslated keys', async () => {
+            const englishFallbackKey = 'common.errors.updateFilters';
+            const translationKey = 'capital.common.errors.unsupportedRegion';
+            const germanTranslationsWithoutFallbackKey: Record<string, string> = { ...sdkGermanTranslations };
+
+            delete germanTranslationsWithoutFallbackKey[englishFallbackKey];
+
+            const localization = new Localization('de-DE', '', '', {
+                defaultTranslations: sdkEnglishTranslations,
+                localeTranslations: {
+                    'de-DE': Promise.resolve(germanTranslationsWithoutFallbackKey),
+                    'en-US': Promise.resolve(sdkEnglishTranslations),
+                },
+            });
+
+            await localization.ready;
+
+            expect(localization.get(englishFallbackKey)).toBe(sdkEnglishTranslations[englishFallbackKey]);
+            expect(localization.get(translationKey)).toBe(sdkGermanTranslations[translationKey]);
         });
     });
 });
