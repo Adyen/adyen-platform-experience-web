@@ -8,6 +8,7 @@ import type { IMissingAction, IMissingActionType } from '@integration-components
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
 import { useActionsAlertTitles } from '../../composables/useActionsAlertTitles';
+import styles from './EmbeddedActions.module.scss';
 
 const props = defineProps<{
     className?: string;
@@ -177,42 +178,33 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div>
+    <div :class="styles.root">
         <BentoAlert :class="props.className" :type="areActionsCompleted ? 'highlight' : 'warning'">
             {{ alertTitle }}
-            <template #actions>
-                <BentoButtonActions layout="buttons-start" :actions="actionButtons" />
-            </template>
         </BentoAlert>
-        <BentoModal
-            v-if="!!activeAction"
-            :is-open="!!activeAction"
-            :is-dismissible="false"
-            :header-with-border="false"
-            size="large"
-            @close-modal="close"
-        >
-            <template #content>
-                <adyen-business-financing
-                    v-if="activeAction === 'AnaCredit'"
-                    :locale.prop="i18n.locale"
-                    :environment.prop="environment"
-                    :fetchToken.prop="fetchToken"
-                    :rootlegalentityid.prop="props.legalEntityId"
-                    @complete="handleBusinessFinancingComplete"
-                    @close="handleBusinessFinancingClose"
-                />
-                <adyen-terms-of-service-management
-                    v-if="activeAction === 'signToS'"
-                    :locale.prop="i18n.locale"
-                    :environment.prop="environment"
-                    :fetchToken.prop="fetchToken"
-                    :rootlegalentityid.prop="props.legalEntityId"
-                    @accept="handleTermsOfServiceAccept"
-                    @complete="handleTermsOfServiceComplete"
-                    @close="handleTermsOfServiceClose"
-                />
-            </template>
-        </BentoModal>
+        <BentoButtonActions :actions="actionButtons" />
     </div>
+    <BentoModal v-if="!!activeAction" :is-open="!!activeAction" :is-dismissible="false" :header-with-border="false" size="large" @close-modal="close">
+        <template #content>
+            <adyen-business-financing
+                v-if="activeAction === 'AnaCredit'"
+                :locale.prop="i18n.locale"
+                :environment.prop="environment"
+                :fetchToken.prop="fetchToken"
+                :rootlegalentityid.prop="props.legalEntityId"
+                @complete="handleBusinessFinancingComplete"
+                @close="handleBusinessFinancingClose"
+            />
+            <adyen-terms-of-service-management
+                v-if="activeAction === 'signToS'"
+                :locale.prop="i18n.locale"
+                :environment.prop="environment"
+                :fetchToken.prop="fetchToken"
+                :rootlegalentityid.prop="props.legalEntityId"
+                @accept="handleTermsOfServiceAccept"
+                @complete="handleTermsOfServiceComplete"
+                @close="handleTermsOfServiceClose"
+            />
+        </template>
+    </BentoModal>
 </template>

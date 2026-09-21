@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoAlert } from '@adyen/bento-vue3';
+import { BentoLoadingIndicator } from '@adyen/bento-vue3';
 import type { IMissingAction } from '@integration-components/types';
-import EmbeddedActions from '../EmbeddedActions/EmbeddedActions.vue';
-import HostedActions from '../HostedActions/HostedActions.vue';
-import { useMissingActionsPolling } from '../../composables/useMissingActionsPolling';
-import { useOnboardingConfig } from '../../composables/useOnboardingConfig';
-import styles from './Actions.module.scss';
+import EmbeddedActions from './EmbeddedActions/EmbeddedActions.vue';
+import HostedActions from './HostedActions.vue';
+import { useMissingActionsPolling } from '../composables/useMissingActionsPolling';
+import { useOnboardingConfig } from '../composables/useOnboardingConfig';
 
 const props = defineProps<{
     className?: string;
@@ -29,12 +28,7 @@ const { isFetchingOnboardingConfiguration, onboardingConfiguration } = useOnboar
 
 <template>
     <template v-if="missingActions.length">
-        <BentoAlert v-if="!isPollingComplete || isFetchingOnboardingConfiguration" :class="props.className" type="warning">
-            <div :class="styles.actionsTitleSkeleton" />
-            <template #description>
-                <div :class="styles.actionsDescriptionSkeleton" />
-            </template>
-        </BentoAlert>
+        <BentoLoadingIndicator v-if="!isPollingComplete || isFetchingOnboardingConfiguration" />
         <EmbeddedActions
             v-else-if="onboardingConfiguration"
             :class-name="props.className"
