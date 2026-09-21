@@ -11,6 +11,7 @@ const expectedBuildEnvDefineKeys = [
     'process.env.SESSION_PERMISSIONS',
     'process.env.TEST_ENV',
     'process.env.USE_CDN',
+    'process.env.NODE_ENV',
     'process.env.VITE_APP_LOADING_CONTEXT',
     'process.env.VITE_APP_PORT',
     'process.env.VITE_APP_URL',
