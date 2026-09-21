@@ -41,7 +41,7 @@ function handleShowDetails() {
             :fields-config="props.fieldsConfig"
             :store-ids="props.storeIds"
             :hide-title="props.hideTitle"
-            :on-creation-dismiss="props.onCreationDismiss"
+            :on-dismiss="props.onDismiss"
             :on-contact-support="props.onContactSupport"
             :embedded-in-overview="props.embeddedInOverview"
             @payment-link-created="handleCreated"

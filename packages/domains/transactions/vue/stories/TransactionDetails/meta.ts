@@ -7,6 +7,7 @@ export const TransactionDetailsMeta: Meta<ElementProps<TransactionDetailsExterna
     title: 'Components/Transactions/Transaction Details',
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
+        onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
         hideTitle: { control: 'boolean' },
         id: { control: 'text' },
     },

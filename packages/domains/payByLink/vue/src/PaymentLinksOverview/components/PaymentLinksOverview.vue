@@ -332,16 +332,18 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
             <template #content>
                 <PaymentLinkCreation
                     v-if="modalType === 'Creation'"
+                    :hide-title="props.hideTitle"
                     :fields-config="props.paymentLinkCreation?.fieldsConfig"
                     :store-ids="props.storeIds"
                     :on-payment-link-created="onPaymentLinkCreated"
-                    :on-creation-dismiss="props.paymentLinkCreation?.onCreationDismiss"
+                    :on-dismiss="props.paymentLinkCreation?.onDismiss"
                     :on-contact-support="props.onContactSupport"
                     embedded-in-overview
                 />
                 <PaymentLinkSettings
                     v-else-if="modalType === 'Settings'"
                     v-bind="props.paymentLinkSettings"
+                    :hide-title="props.hideTitle"
                     :store-ids="props.storeIds"
                     :on-contact-support="props.onContactSupport"
                     embedded-in-overview
