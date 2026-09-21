@@ -5,7 +5,6 @@ import {
     BentoButton,
     BentoCard,
     BentoTag,
-    BentoToggleButton,
     BentoTooltipDirective as vBentoTooltip,
     BentoTypography,
     type BentoTagVariant,
@@ -184,17 +183,10 @@ const closeRepaymentModal = () => {
                     </template>
                 </div>
                 <GrantDetails v-if="grantConfig.hasDetails && isGrantDetailsOpen" :grant="props.grant" />
-                <BentoToggleButton
-                    v-if="grantConfig.hasDetails"
-                    :aria-label="i18n.get('capital.overview.grants.item.details.a11y.label')"
-                    :class="styles.detailsToggle"
-                    :toggled="isGrantDetailsOpen"
-                    variant="tertiary"
-                    @click="toggleGrantDetails"
-                >
+                <div v-if="grantConfig.hasDetails" :class="styles.chevron">
                     <ChevronUpIcon v-if="isGrantDetailsOpen" />
                     <ChevronDownIcon v-else />
-                </BentoToggleButton>
+                </div>
             </template>
         </BentoCard>
     </div>

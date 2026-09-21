@@ -5,7 +5,7 @@ import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../fixtu
 
 const STORY_ID = 'mocked-capital-capital-overview--grants';
 
-const getGrantDetailsToggle = (page: Page) => page.getByRole('button', { name: 'Show grant details' }).first();
+const getGrantDetailsToggle = (page: Page) => page.getByLabel('Show grant details').first();
 
 test.describe('Grants', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
@@ -40,7 +40,7 @@ test.describe('Grants', () => {
         ]);
     });
 
-    test('should show grant details when button for expanding is clicked', async ({ page }) => {
+    test('should show grant details when grant card is expanded', async ({ page }) => {
         await getGrantDetailsToggle(page).click();
 
         await Promise.all([
@@ -72,7 +72,7 @@ test.describe('Grants', () => {
         ]);
     });
 
-    test('should hide grant details when button for collapsing is clicked', async ({ page }) => {
+    test('should hide grant details when grant card is collapsed', async ({ page }) => {
         await getGrantDetailsToggle(page).click();
         await getGrantDetailsToggle(page).click();
 
