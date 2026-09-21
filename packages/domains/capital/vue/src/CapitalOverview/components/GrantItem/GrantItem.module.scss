@@ -25,10 +25,10 @@
     gap: style.token(spacer-010);
 }
 
-.detailsToggle {
-    align-self: center;
+.chevron {
     display: flex;
     justify-content: center;
+    margin-top: style.token(spacer-070);
     width: 100%;
 }
 
