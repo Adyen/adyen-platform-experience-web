@@ -34,6 +34,7 @@ onMounted(() => getDisputesConfig());
         :data-customization="props.dataCustomization"
         :on-contact-support="props.onContactSupport"
         :on-dismiss="props.onDismiss"
+        :within-modal="!!withinModal"
     />
     <AcceptDisputeFlow v-else-if="flowState === DisputeFlowState.Accept" :on-dispute-accept="props.onDisputeAccept" />
     <DefendDisputeFlow v-else :on-dispute-defend="props.onDisputeDefend" />

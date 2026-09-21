@@ -21,10 +21,7 @@ import FormStepRenderer from './FormStepRenderer.vue';
 import ArrowRightIcon from '@adyen/ui-assets-icons-16/vue/arrow-right';
 import styles from './PaymentLinkCreationForm.module.scss';
 
-type PaymentLinkCreationFormProps = Pick<
-    PaymentLinkCreationProps,
-    'fieldsConfig' | 'storeIds' | 'hideTitle' | 'onCreationDismiss' | 'onContactSupport'
-> & {
+type PaymentLinkCreationFormProps = Pick<PaymentLinkCreationProps, 'fieldsConfig' | 'storeIds' | 'hideTitle' | 'onDismiss' | 'onContactSupport'> & {
     embeddedInOverview?: boolean;
 };
 
@@ -103,7 +100,7 @@ function handleContinue() {
 
 function handlePrevious() {
     if (wizard.isFirstStep.value) {
-        props.onCreationDismiss?.();
+        props.onDismiss?.();
         return;
     }
     submitError.value = null;
@@ -163,7 +160,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
         },
     ];
 
-    if (!wizard.isFirstStep.value || props.onCreationDismiss) {
+    if (!wizard.isFirstStep.value || props.onDismiss) {
         actions.push({
             title: i18n.get('payByLink.creation.form.steps.back'),
             event: handlePrevious,

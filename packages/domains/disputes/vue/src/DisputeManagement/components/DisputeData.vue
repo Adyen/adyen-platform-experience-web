@@ -23,6 +23,7 @@ import styles from './DisputeData.module.scss';
 
 const props = defineProps<{
     disputeId: string;
+    withinModal?: boolean;
     dataCustomization?: { details?: DisputeDetailsCustomization };
     onContactSupport?: () => void;
     onDismiss?: DisputeManagementProps['onDismiss'];
@@ -153,21 +154,28 @@ const actionButtons = computed(() => {
         buttons.push({
             title: i18n.get('disputes.management.details.actions.accept'),
             event: onAcceptClick,
-            variant: 'secondary',
+            variant: 'secondary' as const,
         });
     }
     if (showContactSupport.value && props.onContactSupport) {
         buttons.push({
             title: i18n.get('disputes.management.details.actions.contactSupport'),
             event: props.onContactSupport,
-            variant: 'secondary',
+            variant: 'secondary' as const,
+        });
+    }
+    if (props.onDismiss && !props.withinModal) {
+        buttons.push({
+            title: i18n.get('disputes.management.details.actions.dismiss'),
+            event: props.onDismiss,
+            variant: 'secondary' as const,
         });
     }
     for (const button of extraButtons.value) {
         buttons.push({
             title: String(button.value),
             event: button.config?.action,
-            variant: 'secondary',
+            variant: 'secondary' as const,
             class: button.config?.className,
         });
     }
