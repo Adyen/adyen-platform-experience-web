@@ -56,6 +56,7 @@
     "capital.offer.common.errors.unavailable": "Det gick inte att läsa in finansiella erbjudanden.",
     "capital.offer.common.noOfferDescription": "Vi uppdaterar våra finansiella erbjudanden regelbundet, så se till att komma tillbaka igen i framtiden.",
     "capital.offer.common.noOfferTitle": "Inget erbjudande tillgängligt för närvarande",
+    "capital.offer.selection.actions.goBack": "Tillbaka",
     "capital.offer.selection.actions.reviewOffer": "Granska förfrågan",
     "capital.offer.selection.actions.reviewOffer.states.loading": "Läser in",
     "capital.offer.selection.earlyRenewal.amountToReceive": "Belopp du kommer att få",

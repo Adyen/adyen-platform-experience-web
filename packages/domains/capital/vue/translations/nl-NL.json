@@ -56,6 +56,7 @@
     "capital.offer.common.errors.unavailable": "We konden geen financiële aanbiedingen laden.",
     "capital.offer.common.noOfferDescription": "We werken onze financiële aanbiedingen regelmatig bij, dus kom binnenkort zeker nog eens terug.",
     "capital.offer.common.noOfferTitle": "Momenteel geen aanbod beschikbaar",
+    "capital.offer.selection.actions.goBack": "Terug",
     "capital.offer.selection.actions.reviewOffer": "Beoordelingsverzoek",
     "capital.offer.selection.actions.reviewOffer.states.loading": "Bezig met laden",
     "capital.offer.selection.earlyRenewal.amountToReceive": "Bedrag dat je ontvangt",

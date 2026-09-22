@@ -56,6 +56,7 @@
     "capital.offer.common.errors.unavailable": "Nous n'avons pas pu charger les offres financières.",
     "capital.offer.common.noOfferDescription": "Nous mettons régulièrement à jour nos offres financières. N'hésitez donc pas à revenir sur cette page plus tard.",
     "capital.offer.common.noOfferTitle": "Aucune offre disponible actuellement",
+    "capital.offer.selection.actions.goBack": "Retour",
     "capital.offer.selection.actions.reviewOffer": "Demande de révision",
     "capital.offer.selection.actions.reviewOffer.states.loading": "Chargement",
     "capital.offer.selection.earlyRenewal.amountToReceive": "Montant que vous recevrez",
