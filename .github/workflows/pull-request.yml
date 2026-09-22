@@ -307,6 +307,10 @@ jobs:
         with:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
+      - name: Validate SDK translation catalogs
+        if: steps.skip-check.outcome != 'success'
+        run: pnpm run translations:check
+
       - name: Validate SDK translation instructions
         if: steps.skip-check.outcome != 'success'
         env:
