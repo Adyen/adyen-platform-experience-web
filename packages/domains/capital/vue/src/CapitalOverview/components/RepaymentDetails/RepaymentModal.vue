@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoDivider, BentoModal, BentoTypography } from '@adyen/bento-vue3';
+import { BentoCard, BentoDivider, BentoList, BentoListItem, BentoModal, BentoTypography } from '@adyen/bento-vue3';
 import { getBankAccount, getTransferInstrumentIds } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IGrant } from '@integration-components/types';
@@ -33,19 +33,26 @@ const addingBeneficiaryInstruction = computed(() =>
                 <BentoTypography>
                     {{ i18n.get('capital.overview.repayment.subtitle') }}
                 </BentoTypography>
-                <div :class="styles.repaymentAccount">
-                    <BentoTypography variant="body" stronger>
-                        {{ i18n.get('capital.overview.repayment.accountDetails.title') }}
-                    </BentoTypography>
-                    <AccountDetails :bank-account="bankAccount" />
-                </div>
-
+                <BentoCard>
+                    {{ i18n.get('capital.overview.repayment.accountDetails.title') }}
+                    <template #description>
+                        <AccountDetails :bank-account="bankAccount" />
+                    </template>
+                </BentoCard>
                 <div :class="styles.notice">
                     <template v-if="transferInstrumentIds.length">
                         <div>
                             <BentoTypography el="span" variant="caption" stronger>
                                 {{ i18n.get('capital.overview.repayment.transferInstruments') }}
                             </BentoTypography>
+
+                            <BentoList>
+                                <BentoListItem
+                                    v-for="transferInstrumentId in transferInstrumentIds"
+                                    :key="transferInstrumentId"
+                                    :label="transferInstrumentId"
+                                />
+                            </BentoList>
 
                             <ul :class="styles.transferInstrumentList">
                                 <li

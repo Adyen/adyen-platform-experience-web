@@ -1,11 +1,9 @@
 @use '@integration-components/style';
 
 .root {
-    align-items: flex-start;
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-090);
-    width: 100%;
 }
 
 .instructionList {
@@ -22,16 +20,6 @@
 
 .verifiedBankAccountDetails {
     color: style.token(color-label-secondary);
-}
-
-.repaymentAccount {
-    border: style.token(border-width-s) solid style.token(color-outline-primary);
-    border-radius: style.token(spacer-040);
-    display: flex;
-    flex-direction: column;
-    gap: style.token(spacer-060);
-    padding: style.token(spacer-060) style.token(spacer-080);
-    width: 100%;
 }
 
 .transferInstrumentItem {
