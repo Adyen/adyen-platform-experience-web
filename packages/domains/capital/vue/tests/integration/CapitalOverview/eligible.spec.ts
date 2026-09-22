@@ -14,10 +14,12 @@ import {
 
 const STORY_ID = 'mocked-capital-capital-overview--eligible';
 
+const getOfferButton = (page: Page) => page.getByTestId('capital-header').getByRole('button', { name: 'Request a new loan' });
+
 const getOfferModal = (page: Page) => page.getByRole('dialog');
 
 const openOfferAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
-    await page.getByRole('button', { name: 'Request a new loan' }).click();
+    await getOfferButton(page).click();
     await expectAnalyticsEvents(
         analyticsEvents,
         [
@@ -58,8 +60,20 @@ test.describe('Eligible', () => {
         await Promise.all([
             expect(page.getByText('Business financing', { exact: true })).toBeVisible(),
             expect(page.getByText('You are now eligible to request a new loan up to €25,000')).toBeVisible(),
-            expect(page.getByRole('button', { name: 'Request a new loan' })).toBeVisible(),
+            expect(getOfferButton(page)).toBeVisible(),
         ]);
+    });
+
+    test('should render the new loan button only in the component header', async ({ page }) => {
+        await expect(getOfferButton(page)).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Request a new loan' })).toHaveCount(1);
+    });
+
+    test('should keep the new loan button in the header when the title is hidden', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID, args: { hideTitle: 'true' } });
+
+        await expect(getOfferButton(page)).toBeVisible();
+        await expect(page.getByText('Business financing', { exact: true })).toBeHidden();
     });
 
     test('should open offer in a modal when new loan button is clicked', async ({ page, analyticsEvents }) => {

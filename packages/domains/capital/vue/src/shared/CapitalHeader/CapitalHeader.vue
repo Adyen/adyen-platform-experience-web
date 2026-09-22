@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoHeader, BentoTypography } from '@adyen/bento-vue3';
+import { BentoButtonActions, BentoHeader, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
 import styles from './CapitalHeader.module.scss';
 
 const props = defineProps<{
+    actions?: BentoButtonActionsList;
     hideSubtitle?: boolean;
     hideTitle?: boolean;
     region?: string;
@@ -21,10 +22,13 @@ const description = computed(() => {
 </script>
 
 <template>
-    <div v-if="title || description" :class="styles.root">
-        <BentoHeader v-if="title" variant="component" :title="title" :description="description" />
-        <BentoTypography v-else el="div" :class="styles.description">
-            {{ description }}
-        </BentoTypography>
+    <div v-if="title || description || props.actions?.length" :class="styles.root" data-testid="capital-header">
+        <BentoHeader v-if="title" variant="component" :title="title" :description="description" :actions="props.actions" />
+        <div v-else :class="styles.titlelessContent">
+            <BentoTypography v-if="description" el="div" :class="styles.description">
+                {{ description }}
+            </BentoTypography>
+            <BentoButtonActions v-if="props.actions?.length" :actions="props.actions" />
+        </div>
     </div>
 </template>

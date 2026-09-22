@@ -14,10 +14,12 @@ import type { Page } from '@playwright/test';
 
 const STORY_ID = 'mocked-capital-capital-overview--first-time-eligible';
 
+const getOfferButton = (page: Page) => page.getByTestId('capital-header').getByRole('button', { name: 'Request a new loan' });
+
 const getOfferModal = (page: Page) => page.getByRole('dialog');
 
 const openOfferAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
-    await page.getByRole('button', { name: 'See options' }).click();
+    await getOfferButton(page).click();
     await expectAnalyticsEvents(
         analyticsEvents,
         [
@@ -58,7 +60,7 @@ test.describe('First-time eligible', () => {
             expect(page.getByText('Business financing', { exact: true })).toBeVisible(),
             expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible(),
             expect(page.getByText('You have been pre-qualified for business financing up to €25,000.')).toBeVisible(),
-            expect(page.getByRole('button', { name: 'See options' })).toBeVisible(),
+            expect(getOfferButton(page)).toBeVisible(),
         ]);
     });
 

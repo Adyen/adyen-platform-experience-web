@@ -5,10 +5,12 @@ import type { Page } from '@playwright/test';
 
 const STORY_ID = 'mocked-capital-capital-overview--early-renewal';
 
+const getOfferButton = (page: Page) => page.getByTestId('capital-header').getByRole('button', { name: 'Request a new loan' });
+
 const getOfferModal = (page: Page) => page.getByRole('dialog');
 
 const openOffer = async (page: Page) => {
-    await page.getByRole('button', { name: 'Request a new loan' }).click();
+    await getOfferButton(page).click();
 };
 
 const goToOfferSummary = async (page: Page) => {
@@ -41,7 +43,7 @@ test.describe('Early renewal', () => {
                     "Part of this new loan amount will be used to repay your current loan's balance, and any outstanding fees on that loan will be waived."
                 )
             ).toBeVisible(),
-            expect(page.getByRole('button', { name: 'Request a new loan' })).toBeVisible(),
+            expect(getOfferButton(page)).toBeVisible(),
         ]);
     });
 
