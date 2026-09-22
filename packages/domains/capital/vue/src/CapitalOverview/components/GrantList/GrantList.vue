@@ -53,7 +53,7 @@ const displayedGrants = computed(() => {
                 :aria-label="i18n.get('capital.overview.grants.list.tabs.a11y.label')"
                 :items="grantGroupItems"
             />
-            <BentoList :class="styles.items">
+            <BentoList>
                 <BentoListItem v-for="grant in displayedGrants" :key="grant.id">
                     <template #content>
                         <GrantItem :grant="grant" />
