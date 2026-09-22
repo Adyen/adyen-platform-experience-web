@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import '@adyen/bento-vue3/styles/bento-light';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
 import { getDynamicOfferConfig, getIsEarlyRenewal, sharedCapitalOfferAnalyticsEventProperties } from '@integration-components/capital/domain';
 import { useLandedPageEvent } from '@integration-components/composables-vue';
@@ -31,11 +30,6 @@ useLandedPageEvent(
 );
 
 const handleOfferSelect = (offer: IGrantOfferResponseDTO) => {
-    if (props.onOfferSelect) {
-        props.onOfferSelect(offer);
-        return;
-    }
-
     createdOffer.value = offer;
     isOfferReviewVisible.value = true;
 };

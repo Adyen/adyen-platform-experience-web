@@ -1,21 +1,22 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { createConnection } from 'node:net';
-import { basename, dirname, resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
+import { isStorybookConfigAllowed, STORYBOOK_CONFIG } from './config.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const storybookBin = resolve(__dirname, '../node_modules/.bin/storybook');
 
-const configDir = process.argv[2];
+const requestedConfigDir = process.argv[2];
 
-if (!configDir) {
-    console.error('\nUsage: node scripts/dev.js <config-dir>  (e.g. src/.storybook/vue)\n');
+if (!isStorybookConfigAllowed(requestedConfigDir)) {
+    console.error('\nUsage: node scripts/dev.js src/.storybook/vue\n');
     process.exit(1);
 }
 
-const framework = basename(configDir);
+const { configDir, framework } = STORYBOOK_CONFIG;
 const projectDir = resolve(import.meta.dirname, '..');
 const rootDir = resolve(import.meta.dirname, '../../../..');
 const envDefaultPath = resolve(rootDir, 'envs/env.default');

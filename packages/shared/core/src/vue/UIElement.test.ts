@@ -137,4 +137,61 @@ describe('UIElement', () => {
         expect(view.props?.globalAppearance).toEqual({ illustrations: 'visible' });
         expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
     });
+
+    test('registers and unregisters its mount target as a theme root', () => {
+        const core = {
+            options: { locale: 'en-US' },
+            registerComponent: vi.fn(),
+            registerThemeRoot: vi.fn(),
+            unregisterThemeRoot: vi.fn(),
+            remove: vi.fn(),
+        };
+        const target = document.createElement('div');
+        const element = new UIElement({ render: () => null } as Component, { core }, 'transactions');
+
+        element.mount(target);
+        expect(core.registerThemeRoot).toHaveBeenCalledWith(target);
+
+        element.unmount();
+        expect(core.unregisterThemeRoot).toHaveBeenCalledWith(target);
+    });
+
+    test('does not mount when another Core already owns the target', () => {
+        const ownershipError = new Error('already themed by another Core instance');
+        const core = {
+            options: { locale: 'en-US' },
+            registerComponent: vi.fn(),
+            registerThemeRoot: vi.fn(() => {
+                throw ownershipError;
+            }),
+            unregisterThemeRoot: vi.fn(),
+            remove: vi.fn(),
+        };
+        const element = new UIElement({ render: () => null } as Component, { core }, 'transactions');
+
+        expect(() => element.mount(document.createElement('div'))).toThrow(ownershipError);
+        expect(app.mount).not.toHaveBeenCalled();
+        expect(core.unregisterThemeRoot).not.toHaveBeenCalled();
+    });
+
+    test('unregisters its theme root when mounting fails', () => {
+        const mountError = new Error('mount failed');
+        const core = {
+            options: { locale: 'en-US' },
+            registerComponent: vi.fn(),
+            registerThemeRoot: vi.fn(),
+            unregisterThemeRoot: vi.fn(),
+            remove: vi.fn(),
+        };
+        const target = document.createElement('div');
+        const element = new UIElement({ render: () => null } as Component, { core }, 'transactions');
+        app.mount.mockImplementationOnce(() => {
+            throw mountError;
+        });
+
+        expect(() => element.mount(target)).toThrow(mountError);
+        expect(core.registerThemeRoot).toHaveBeenCalledWith(target);
+        expect(core.unregisterThemeRoot).toHaveBeenCalledWith(target);
+        expect(app.unmount).toHaveBeenCalledOnce();
+    });
 });

@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { getBuildEnvDefines } from '../../config/defines/build-env';
+import { rewriteBentoCssVariables } from '../../config/vite/rewriteBentoCssVariables';
 import rootPkgJson from '../../package.json';
 
 const projectRoot = resolve(fileURLToPath(import.meta.url), '..');
@@ -122,5 +123,6 @@ export default defineConfig(({ mode }) => ({
                 },
             },
         }),
+        rewriteBentoCssVariables(),
     ],
 }));

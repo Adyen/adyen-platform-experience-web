@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { realApiProxies } from './endpoints/realApiProxies';
 import { getBuildEnvDefines } from './config/defines/build-env';
+import { rewriteBentoCssVariables } from './config/vite/rewriteBentoCssVariables';
 import { getEnvironment } from './envs/getEnvs';
 import packageJson from './package.json';
 
@@ -114,6 +115,7 @@ export default defineConfig(({ mode }) => {
                 'scripts/check-publish-contract/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/domains/*/{domain,vue}/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/tools/*/scripts/**/*.{test,spec}.?(c|m)[jt]s?(x)',
             ],
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],
             coverage: {
@@ -125,7 +127,18 @@ export default defineConfig(({ mode }) => {
                     'packages/domains/*/{domain,vue}/src/**/*.{ts,vue}',
                     'packages/shared/{composables-vue,core,utils}/src/**/*.{ts,vue}',
                 ],
-                exclude: ['**/index.ts', '**/constants.ts', '**/types.ts', '**/*.d.ts', '**/*.{test,spec}.ts', '**/__testing__/**', 'node_modules'],
+                exclude: [
+                    '**/*.{test,spec}.{ts,vue}',
+                    '**/*.stories.{ts,vue}',
+                    '**/__testing__/**',
+                    '**/testing/**',
+                    '**/index.ts',
+                    '**/constants.ts',
+                    '**/types.ts',
+                    '**/*.d.ts',
+                    'packages/shared/testing/**',
+                    'packages/shared/types/**',
+                ],
                 reporter: ['lcov', 'text', 'json-summary', 'json'],
                 reportsDirectory: resolve(__dirname, 'coverage'),
                 // Uncomment next line once we reach 80% of coverage
@@ -144,6 +157,7 @@ export default defineConfig(({ mode }) => {
                     },
                 },
             }),
+            rewriteBentoCssVariables(),
             isAnalyseMode &&
                 visualizer({
                     title: 'Adyen Platform bundle visualizer',

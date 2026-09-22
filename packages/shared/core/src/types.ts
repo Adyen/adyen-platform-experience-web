@@ -1,23 +1,16 @@
 import type { SessionRequest } from './ConfigContext.types';
-import type { CustomTranslations as Translations, TranslationSourceRecord } from './translations';
+import type { CustomTranslations as Translations } from './translations';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '@integration-components/utils/types';
-import { FALLBACK_LOCALE } from './Localization/constants/localization';
 import { SupportedLocales } from './Localization/types';
 import type { Appearance } from '@integration-components/types';
-
-type CreateLocalesUnionFromAvailableTranslations<T extends TranslationSourceRecord[]> = T extends T
-    ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | typeof FALLBACK_LOCALE
-    : never;
+import type { ThemeProps } from '@adyen/adyen-shared-web';
 
 type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<
     WithReplacedUnderscoreOrDash<KeyOfRecord<T extends Translations ? T : Record<never, never>>, '_', '-'>,
     string
 >;
 
-interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends Translations = Record<never, never>> {
-    // TODO - Remove this prop on v2
-    availableTranslations?: AvailableTranslations;
-
+interface _CoreOptions<CustomTranslations extends Translations = Record<never, never>> {
     /**
      * Core-level balance account config
      */
@@ -36,7 +29,6 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
      * @defaultValue 'en-US'
      */
     locale?:
-        | (AvailableTranslations extends AvailableTranslations ? CreateLocalesUnionFromAvailableTranslations<AvailableTranslations> : never)
         | (CustomTranslations extends CustomTranslations ? CreateLocalesUnionFromCustomTranslations<CustomTranslations> : never)
         | SupportedLocales;
 
@@ -54,17 +46,38 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
     analytics?: AnalyticsConfig;
 
     /**
+     * Theme mode for this Core instance. The mode is applied to each component mount target.
+     *
+     * Bento content teleported outside a mount target uses the document-level default theme
+     * because Bento does not currently expose a per-Core teleport target.
+     */
+    themeMode?: ThemeMode;
+
+    /**
+     * Per-mode custom theme variables. Color values must use `#RGB` or `#RRGGBB`.
+     * Invalid values throw while constructing or updating Core.
+     */
+    customTheme?: CustomTheme;
+
+    /**
      * @internal
      */
     loadingContext?: string;
 }
 
-export type CoreOptions<
-    AvailableTranslations extends TranslationSourceRecord[] = [],
-    CustomTranslations extends object = Record<never, never>,
-> = _CoreOptions<AvailableTranslations, CustomTranslations extends Translations ? CustomTranslations : Record<never, never>>;
+export type CoreOptions<CustomTranslations extends object = Record<never, never>> = _CoreOptions<
+    CustomTranslations extends Translations ? CustomTranslations : Record<never, never>
+>;
 
 export type DevEnvironment = 'test' | 'live' | 'beta';
+
+export type ThemeMode = 'dark' | 'light';
+export type ThemeVariables = Omit<ThemeProps, 'dark'>;
+
+export interface CustomTheme {
+    light?: ThemeVariables;
+    dark?: ThemeVariables;
+}
 
 export type onErrorHandler = (error: Error) => any;
 export type AnalyticsConfig = {
