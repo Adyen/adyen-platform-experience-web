@@ -1,8 +1,42 @@
 import { createApp, h, reactive, ref, type App, type Component } from 'vue';
-import { createI18n as createVueI18n } from 'vue-i18n';
+import { createI18n as createVueI18n, type I18n as VueI18n } from 'vue-i18n';
 import type { ExternalComponentType } from '@integration-components/types';
 import { uuid } from '@integration-components/utils';
 import UIElementProvider from './UIElementProvider.vue';
+import Localization from '../Localization';
+import type { DomainTranslationBinding } from './Context/types';
+import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
+import type { CustomTranslations, TranslationDomain } from '../translations';
+
+const getTranslationDomain = (componentName: ExternalComponentType): TranslationDomain => {
+    switch (componentName) {
+        case 'capitalOverview':
+        case 'capitalOffer':
+            return 'capital';
+        case 'disputes':
+        case 'disputesManagement':
+            return 'disputes';
+        case 'paymentLinkCreation':
+        case 'paymentLinkDetails':
+        case 'paymentLinksOverview':
+        case 'paymentLinkSettings':
+            return 'payByLink';
+        case 'payouts':
+        case 'payoutDetails':
+            return 'payouts';
+        case 'reports':
+            return 'reports';
+        case 'transactions':
+        case 'transactionDetails':
+            return 'transactions';
+        default: {
+            // Typing the unhandled case as `never` turns a new component type without a domain
+            // into a compile error, and still fails loudly for untyped integrations at runtime.
+            const unknownComponent: never = componentName;
+            throw new Error(`[UIElement] No translation domain is registered for component "${String(unknownComponent)}".`);
+        }
+    }
+};
 
 export const createRefreshContext = () => {
     const refreshCount = ref(0);
@@ -34,6 +68,12 @@ export class UIElement<Props extends Record<string, any>> {
     protected _core: Props['core'];
     protected _props: Omit<Props, 'core'>;
     protected _target: Element | null = null;
+    protected _localization: Localization | null = null;
+    protected _customTranslations: CustomTranslations | undefined;
+    protected _locale: string | undefined;
+    protected _vueI18n: VueI18n<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>, string, false> | null = null;
+    protected _translationDomain: TranslationDomain | null = null;
+    protected _refreshTranslations: (() => void) | null = null;
 
     /**
      * Returns the core instance associated with this element, if any.
@@ -61,7 +101,15 @@ export class UIElement<Props extends Record<string, any>> {
         this.core?.registerComponent(this);
     }
 
-    protected configureApp(_app: App): void {
+    protected configureApp(app: App, domainTranslations: DomainTranslationBinding): void {
+        if (!this._vueI18n) throw new Error('[UIElement] Vue I18n must be initialized before configuring the app.');
+
+        app.use(this._vueI18n);
+        app.provide(DOMAIN_TRANSLATION_BINDING_KEY, domainTranslations);
+        this.configureComponentApp(app);
+    }
+
+    protected configureComponentApp(_app: App): void {
         // UI element subclasses can register framework-specific plugins before mounting.
     }
 
@@ -81,7 +129,19 @@ export class UIElement<Props extends Record<string, any>> {
             const componentName = this._componentName;
             const customClassNames = this.customClassNames;
 
+            const localization = core.localization;
+            const customTranslations = core.options.translations as CustomTranslations | undefined;
+
+            const i18n = localization.i18n;
+            this._localization = localization;
+            this._customTranslations = customTranslations;
+            this._locale = localization.locale;
+
+            const translationDomain = getTranslationDomain(componentName);
+            this._translationDomain = translationDomain;
+
             const { refresh, refreshCount } = createRefreshContext();
+            this._refreshTranslations = refresh;
 
             this._app = createApp({
                 setup: () => () => {
@@ -104,16 +164,18 @@ export class UIElement<Props extends Record<string, any>> {
             // resolve without throwing "Need to install with `app.use` function".
             const locale = this._core?.options?.locale || 'en-US';
 
-            this._app.use(
-                createVueI18n({
-                    legacy: false,
-                    locale,
-                    fallbackLocale: 'en-US',
-                    messages: { [locale]: {}, 'en-US': {} },
-                })
-            );
+            this._vueI18n = createVueI18n({
+                legacy: false,
+                locale,
+                fallbackLocale: 'en-US',
+                messages: { [locale]: {}, 'en-US': {} },
+            });
 
-            this.configureApp(this._app);
+            void Promise.all([localization.ready]).then(() => {
+                this.#syncTranslations();
+            });
+
+            this.configureApp(this._app, { i18n, translationDomain });
             this._app.mount(el);
         } catch (error) {
             this.unmount();
@@ -126,6 +188,21 @@ export class UIElement<Props extends Record<string, any>> {
     public update(props: Partial<Props>): this {
         const { core: _, ...componentProps } = props;
         Object.assign(this._props as Record<string, unknown>, componentProps);
+
+        if (!this._localization || !this._vueI18n) return this;
+
+        const locale = this.core.options.locale;
+        const customTranslations = this.core.options.translations as CustomTranslations | undefined;
+        const localeChanged = locale !== undefined && this._locale !== this._localization.locale;
+        const customTranslationsChanged = this._customTranslations !== customTranslations;
+
+        if (localeChanged || customTranslationsChanged) {
+            this._customTranslations = customTranslations;
+            this._locale = this._localization.locale;
+            this._vueI18n.global.locale.value = this._localization.locale;
+            void Promise.all([this._localization.ready]).then(() => this.#syncTranslations());
+        }
+
         return this;
     }
 
@@ -136,6 +213,12 @@ export class UIElement<Props extends Record<string, any>> {
         }
         this._app = null;
         this._target = null;
+        this._localization = null;
+        this._customTranslations = undefined;
+        this._locale = undefined;
+        this._vueI18n = null;
+        this._translationDomain = null;
+        this._refreshTranslations = null;
         return this;
     }
 
@@ -143,6 +226,11 @@ export class UIElement<Props extends Record<string, any>> {
         this.unmount();
         this.core?.remove(this);
         return this;
+    }
+
+    #syncTranslations(): void {
+        if (!this._localization || !this._vueI18n || !this._translationDomain) return;
+        this._refreshTranslations?.();
     }
 }
 

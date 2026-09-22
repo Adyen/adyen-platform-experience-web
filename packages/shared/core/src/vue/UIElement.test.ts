@@ -4,6 +4,14 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createApp, type Component, type VNode } from 'vue';
 import { UIElement } from './UIElement';
+import type { CoreOptions } from './types';
+import deDE from '../../../../sdk/translations/de-DE.json' with { type: 'json' };
+import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
+import type { DomainTranslationBinding } from './Context/types';
+import Localization from '../Localization';
+import { SDK_TRANSLATION_SOURCES } from '../../../../sdk/src/translations';
+import Core from '../Core';
+import type { ExternalComponentType } from '@integration-components/types';
 
 vi.mock('./UIElementProvider.vue', () => ({
     default: 'ui-element-provider',
@@ -15,16 +23,18 @@ vi.mock('vue', async () => {
 });
 
 vi.mock('vue-i18n', () => ({
-    createI18n: vi.fn(() => ({})),
+    createI18n: vi.fn(() => ({ global: { locale: { value: 'en-US' } } })),
 }));
 
 const getComponentSubtree = (view: VNode) => (view.children as { default: () => VNode }).default();
+const createLocalization = (locale = 'en-US') => new Localization(locale, '', SDK_TRANSLATION_SOURCES);
 
 describe('UIElement', () => {
     const app = {
         mount: vi.fn(),
         unmount: vi.fn(),
         use: vi.fn(),
+        provide: vi.fn(),
     };
 
     let rootComponent: { setup: () => () => VNode };
@@ -32,6 +42,7 @@ describe('UIElement', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         app.use.mockReturnValue(app);
+        app.provide.mockReturnValue(app);
 
         vi.mocked(createApp).mockImplementation(component => {
             rootComponent = component as typeof rootComponent;
@@ -42,6 +53,7 @@ describe('UIElement', () => {
     test('provides a refresh callback scoped to the current element', () => {
         const core = {
             options: { locale: 'en-US' },
+            localization: createLocalization(),
             registerComponent: vi.fn(),
             remove: vi.fn(),
             update: vi.fn(),
@@ -70,6 +82,7 @@ describe('UIElement', () => {
     test('preserves the remount key on prop update and changes it on refresh', () => {
         const core = {
             options: { locale: 'en-US' },
+            localization: createLocalization(),
             registerComponent: vi.fn(),
             remove: vi.fn(),
             update: vi.fn(),
@@ -101,9 +114,94 @@ describe('UIElement', () => {
         expect(getComponentSubtree(view).key).not.toBe(initialComponentKey);
     });
 
+    test('does not remount when Core forwards unchanged translation options', async () => {
+        const core = {
+            options: { locale: 'en-US' },
+            localization: createLocalization(),
+            registerComponent: vi.fn(),
+            remove: vi.fn(),
+            update: vi.fn(),
+        };
+
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core, locale: 'en-US' }, 'transactions');
+        element.mount(document.createElement('div'));
+
+        const renderElement = rootComponent.setup();
+
+        const [, domainTranslations] = app.provide.mock.calls.find(([key]) => key === DOMAIN_TRANSLATION_BINDING_KEY) as [
+            typeof DOMAIN_TRANSLATION_BINDING_KEY,
+            DomainTranslationBinding,
+        ];
+
+        await domainTranslations.i18n.ready;
+        await Promise.resolve();
+
+        const initialComponentKey = getComponentSubtree(renderElement()).key;
+
+        element.update({ locale: 'en-US' });
+
+        await Promise.resolve();
+        expect(getComponentSubtree(renderElement()).key).toBe(initialComponentKey);
+    });
+
+    test('provides V2 SDK translations to the component', async () => {
+        const core = {
+            options: { locale: 'en-US' },
+            localization: createLocalization(),
+            registerComponent: vi.fn(),
+            remove: vi.fn(),
+            update: vi.fn(),
+        };
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core }, 'transactions');
+
+        element.mount(document.createElement('div'));
+        const [, domainTranslations] = app.provide.mock.calls.find(([key]) => key === DOMAIN_TRANSLATION_BINDING_KEY) as [
+            typeof DOMAIN_TRANSLATION_BINDING_KEY,
+            DomainTranslationBinding,
+        ];
+        const i18n = domainTranslations.i18n;
+
+        await i18n.ready;
+
+        expect(i18n.get('transactions.common.errors.updateFilters')).toBe('Try a different search or reset your filters, and we’ll try again.');
+    });
+
+    test('updates V2 translations after a Core locale or custom translation update', async () => {
+        const options: CoreOptions = {
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            translations: {
+                'en-US': {
+                    'transactions.common.errors.updateFilters': 'Use a custom filter message.',
+                },
+            },
+        };
+        const core = new Core(options);
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core, locale: 'en-US' }, 'transactions');
+
+        element.mount(document.createElement('div'));
+        const [, domainTranslations] = app.provide.mock.calls.find(([key]) => key === DOMAIN_TRANSLATION_BINDING_KEY) as [
+            typeof DOMAIN_TRANSLATION_BINDING_KEY,
+            DomainTranslationBinding,
+        ];
+        const i18n = domainTranslations.i18n;
+
+        await i18n.ready;
+        expect(i18n.get('transactions.common.errors.updateFilters')).toBe('Use a custom filter message.');
+
+        await core.update({ locale: 'de-DE', translations: undefined });
+
+        await i18n.ready;
+        expect(i18n.get('transactions.common.errors.updateFilters')).toBe(deDE['transactions.common.errors.updateFilters']);
+    });
+
     test('registers and unregisters its mount target as a theme root', () => {
         const core = {
             options: { locale: 'en-US' },
+            localization: createLocalization(),
             registerComponent: vi.fn(),
             registerThemeRoot: vi.fn(),
             unregisterThemeRoot: vi.fn(),
@@ -123,6 +221,7 @@ describe('UIElement', () => {
         const ownershipError = new Error('already themed by another Core instance');
         const core = {
             options: { locale: 'en-US' },
+            localization: createLocalization(),
             registerComponent: vi.fn(),
             registerThemeRoot: vi.fn(() => {
                 throw ownershipError;
@@ -141,6 +240,7 @@ describe('UIElement', () => {
         const mountError = new Error('mount failed');
         const core = {
             options: { locale: 'en-US' },
+            localization: createLocalization(),
             registerComponent: vi.fn(),
             registerThemeRoot: vi.fn(),
             unregisterThemeRoot: vi.fn(),
@@ -156,5 +256,39 @@ describe('UIElement', () => {
         expect(core.registerThemeRoot).toHaveBeenCalledWith(target);
         expect(core.unregisterThemeRoot).toHaveBeenCalledWith(target);
         expect(app.unmount).toHaveBeenCalledOnce();
+    });
+
+    test('resolves the translation domain from the component name', () => {
+        const core = {
+            options: { locale: 'en-US' },
+            localization: createLocalization(),
+            registerComponent: vi.fn(),
+            remove: vi.fn(),
+            update: vi.fn(),
+        };
+        const element = new UIElement({ render: () => null } as Component, { core }, 'capitalOffer');
+
+        element.mount(document.createElement('div'));
+
+        const [, domainTranslations] = app.provide.mock.calls.find(([key]) => key === DOMAIN_TRANSLATION_BINDING_KEY) as [
+            typeof DOMAIN_TRANSLATION_BINDING_KEY,
+            DomainTranslationBinding,
+        ];
+
+        expect(domainTranslations.translationDomain).toBe('capital');
+    });
+
+    test('does not mount a component that has no registered translation domain', () => {
+        const core = {
+            options: { locale: 'en-US' },
+            localization: createLocalization(),
+            registerComponent: vi.fn(),
+            remove: vi.fn(),
+            update: vi.fn(),
+        };
+        const element = new UIElement({ render: () => null } as Component, { core }, 'unregisteredComponent' as ExternalComponentType);
+
+        expect(() => element.mount(document.createElement('div'))).toThrow(/No translation domain is registered/);
+        expect(app.mount).not.toHaveBeenCalled();
     });
 });

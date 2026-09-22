@@ -221,7 +221,7 @@ const getRowActions: BentoDataGridRowActionsProp = (item: BentoDatagridDataItem)
     const ButtonIcon = failedReportKeys.value.has(reportKey) ? DownloadErrorIcon : DownloadIcon;
 
     const label = isDownloading
-        ? `${i18n.get('common.actions.download.labels.inProgress')}..`
+        ? `${i18n.get('reports.common.actions.download.labels.inProgress')}..`
         : i18n.get('reports.overview.list.controls.downloadReport.label');
 
     return [
@@ -251,7 +251,7 @@ const emptyStateProps = computed(() => ({
     image: 'no-results-found' as const,
     variant: 'embedded' as const,
     title: i18n.get('reports.overview.errors.listEmpty'),
-    description: i18n.get('common.errors.updateFilters'),
+    description: i18n.get('reports.common.errors.updateFilters'),
 }));
 
 function handleNavigate(page: number) {

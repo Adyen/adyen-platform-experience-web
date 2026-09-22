@@ -135,7 +135,7 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
 
     const formSteps = computed<ReadonlyArray<FormStepConfig>>(() => {
         const skipStoreStep = storesSelectorItems.value.length === 1 && termsAndConditionsProvisioned.value;
-        return getFormSteps({ i18n, getFieldConfig, visibilityConfig: props().fieldsConfig?.visibility }).filter(
+        return getFormSteps({ getFieldConfig, visibilityConfig: props().fieldsConfig?.visibility }).filter(
             step => !(step.id === 'store' && skipStoreStep)
         );
     });

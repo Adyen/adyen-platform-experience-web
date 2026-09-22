@@ -3,7 +3,7 @@ const lintPlaywrightSelectors = filenames => [
 ];
 
 module.exports = {
-    'packages/shared/assets/src/translations/*.json': filenames => [`pnpm run translations:sort ${filenames.join(' ')}`],
+    'packages/{sdk,domains/*/vue}/translations/**/*.json': filenames => [`pnpm run translations:sort ${filenames.join(' ')}`],
     // Fix Prettier formatting
     '{src,packages}/**/*.{ts,js,scss,css,md,json,html,vue}': filenames => [`pnpm exec prettier --write ${filenames.join(' ')}`],
     // Fix stylelint issues only (no checking/reporting)
