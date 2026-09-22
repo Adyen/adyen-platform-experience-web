@@ -1,21 +1,6 @@
 @use '@integration-components/style';
 
-.root {
-    display: flex;
-    flex-direction: column;
-    gap: style.token(spacer-040);
-}
-
-.detailContent {
-    display: flex;
-    margin: 0;
-}
-
-.detailLabel {
-    color: style.token(color-label-secondary);
-}
-
-.copyableContent {
+.itemValue {
     align-items: center;
     display: flex;
     gap: style.token(spacer-030);
