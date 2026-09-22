@@ -238,6 +238,13 @@ module.exports = [
         },
     },
 
+    {
+        files: ['packages/tools/storybook/scripts/**/*.js'],
+        rules: {
+            'import-x/extensions': 'off',
+        },
+    },
+
     // Storybook config files use explicit .ts/.js extensions (allowImportingTsExtensions)
     {
         files: ['packages/tools/storybook/src/.storybook/**/*'],

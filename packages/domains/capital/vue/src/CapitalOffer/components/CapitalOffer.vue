@@ -30,11 +30,6 @@ useLandedPageEvent(
 );
 
 const handleOfferSelect = (offer: IGrantOfferResponseDTO) => {
-    if (props.onOfferSelect) {
-        props.onOfferSelect(offer);
-        return;
-    }
-
     createdOffer.value = offer;
     isOfferReviewVisible.value = true;
 };

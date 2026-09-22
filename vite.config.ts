@@ -115,6 +115,7 @@ export default defineConfig(({ mode }) => {
                 'scripts/check-publish-contract/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/domains/*/{domain,vue}/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/tools/*/scripts/**/*.{test,spec}.?(c|m)[jt]s?(x)',
             ],
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],
             coverage: {
