@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { BentoLoadingIndicator } from '@adyen/bento-vue3';
 import type { IMissingAction } from '@integration-components/types';
-import EmbeddedActions from './EmbeddedActions/EmbeddedActions.vue';
+import EmbeddedActions from './EmbeddedActions.vue';
 import HostedActions from './HostedActions.vue';
 import { useMissingActionsPolling } from '../composables/useMissingActionsPolling';
 import { useOnboardingConfig } from '../composables/useOnboardingConfig';

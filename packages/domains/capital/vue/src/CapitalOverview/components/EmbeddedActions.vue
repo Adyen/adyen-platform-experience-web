@@ -6,9 +6,8 @@ import { getMissingActionsMetadata } from '@integration-components/capital/domai
 import { useConfigContext, useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IMissingAction, IMissingActionType } from '@integration-components/types';
 import { EMPTY_OBJECT } from '@integration-components/utils';
-import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
-import { useActionsAlertTitles } from '../../composables/useActionsAlertTitles';
-import styles from './EmbeddedActions.module.scss';
+import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../domain/src/CapitalOverview/constants';
+import { useActionsAlertTitles } from '../composables/useActionsAlertTitles';
 
 const props = defineProps<{
     className?: string;
@@ -178,12 +177,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div :class="styles.root">
-        <BentoAlert :class="props.className" :type="areActionsCompleted ? 'highlight' : 'warning'">
-            {{ alertTitle }}
-        </BentoAlert>
-        <BentoButtonActions :actions="actions" layout="fill-container" />
-    </div>
+    <BentoAlert :class="props.className" :type="areActionsCompleted ? 'highlight' : 'warning'">
+        {{ alertTitle }}
+    </BentoAlert>
+    <BentoButtonActions :actions="actions" layout="fill-container" />
     <BentoModal v-if="!!activeAction" :is-open="!!activeAction" :is-dismissible="false" :header-with-border="false" size="large" @close-modal="close">
         <template #content>
             <adyen-business-financing

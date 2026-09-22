@@ -4,34 +4,27 @@
     width: 100%;
 }
 
-.statusContainer {
-    align-items: center;
+.cardHeader {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: style.token(spacer-080);
 }
 
-.alert {
-    margin-top: style.token(spacer-080);
-}
-
-.cardContent {
+.cardHeaderCompactLayout {
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-010);
 }
 
-.chevron {
+.amountAndStatusContainer {
     display: flex;
-    justify-content: center;
-    margin-top: style.token(spacer-070);
-    width: 100%;
+    justify-content: space-between;
 }
 
-.grantID {
-    align-items: flex-start;
+.amountContainer {
     display: flex;
-    margin-top: style.token(spacer-010);
-    width: fit-content;
+    flex-direction: column;
+    gap: style.token(spacer-010);
 }
 
 .textSecondary {
@@ -68,6 +61,20 @@
         background-color: style.token(color-decorative-blue);
         opacity: 0.2;
     }
+}
+
+.grantID {
+    align-items: flex-start;
+    display: flex;
+    margin-top: style.token(spacer-010);
+    width: fit-content;
+}
+
+.chevron {
+    display: flex;
+    justify-content: center;
+    margin-top: style.token(spacer-070);
+    width: 100%;
 }
 
 .actionsBar {

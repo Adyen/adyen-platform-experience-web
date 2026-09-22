@@ -76,23 +76,25 @@ const headerActions = computed<BentoButtonActionsList | undefined>(() => {
 </script>
 
 <template>
-    <BentoLoadingIndicator v-if="isLoading" />
-    <template v-else>
-        <CapitalHeader :actions="headerActions" :hide-title="hideTitles" :region="capitalState?.region" title-key="capital.common.title" />
-        <CapitalError v-if="error" :error="error" :on-contact-support="props.onContactSupport" />
-        <template v-else-if="capitalState">
-            <CapitalError v-if="!capitalState.isRegionSupported" unsupported-region />
-            <div v-else :class="styles.root">
-                <OfferAlert
-                    v-if="capitalState.dynamicOfferConfig"
-                    :dynamic-offer-config="capitalState.dynamicOfferConfig"
-                    :has-grants="capitalState.hasGrants"
-                    :is-early-renewal="isEarlyRenewal"
-                />
-                <GrantList :capital-state="capitalState" :requested-grant="requestedGrant" :on-contact-support="props.onContactSupport" />
-            </div>
+    <div :class="styles.root">
+        <BentoLoadingIndicator v-if="isLoading" />
+        <template v-else>
+            <CapitalHeader :actions="headerActions" :hide-title="hideTitles" :region="capitalState?.region" title-key="capital.common.title" />
+            <CapitalError v-if="error" :error="error" :on-contact-support="props.onContactSupport" />
+            <template v-else-if="capitalState">
+                <CapitalError v-if="!capitalState.isRegionSupported" unsupported-region />
+                <template v-else>
+                    <OfferAlert
+                        v-if="capitalState.dynamicOfferConfig"
+                        :dynamic-offer-config="capitalState.dynamicOfferConfig"
+                        :has-grants="capitalState.hasGrants"
+                        :is-early-renewal="isEarlyRenewal"
+                    />
+                    <GrantList :capital-state="capitalState" :requested-grant="requestedGrant" :on-contact-support="props.onContactSupport" />
+                </template>
+            </template>
         </template>
-    </template>
+    </div>
     <OfferModal
         :is-open="isOfferModalOpen"
         :on-close="closeOfferModal"

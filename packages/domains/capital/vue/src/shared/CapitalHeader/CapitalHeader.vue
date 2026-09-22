@@ -22,7 +22,7 @@ const description = computed(() => {
 </script>
 
 <template>
-    <div v-if="title || description || props.actions?.length" :class="styles.root" data-testid="capital-header">
+    <div v-if="title || description || props.actions?.length" data-testid="capital-header">
         <BentoHeader v-if="title" variant="component" :title="title" :description="description" :actions="props.actions" />
         <div v-else :class="styles.titlelessContent">
             <BentoTypography v-if="description" el="div" :class="styles.description">

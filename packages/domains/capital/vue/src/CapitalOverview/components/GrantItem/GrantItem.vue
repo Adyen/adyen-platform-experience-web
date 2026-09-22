@@ -104,65 +104,68 @@ const closeRepaymentModal = () => {
             @click="toggleGrantDetails"
         >
             <template #content>
-                <div :class="styles.cardContent">
-                    <div :class="styles.statusContainer">
-                        <BentoTypography
-                            variant="caption"
-                            :class="{ [styles.textSecondary]: grantConfig.isLabelColorSecondary }"
-                            data-testid="grant-amount-label"
-                        >
-                            {{ i18n.get(grantConfig.amountLabelKey) }}
-                        </BentoTypography>
-
-                        <BentoTypography v-if="props.grant.status === 'Active'" variant="caption">
-                            <time :datetime="grantConfig.repaymentPeriodEndDate.toISOString()">
-                                {{ termEndLabel }}
-                            </time>
-                        </BentoTypography>
-
-                        <div v-else-if="grantConfig.statusKey" v-bento-tooltip="statusTooltip">
-                            <BentoTag :label="i18n.get(grantConfig.statusKey)" :variant="getStatusTagVariant(grantConfig.statusTagVariant)" />
+                <div :class="styles.cardHeader">
+                    <div :class="styles.cardHeaderCompactLayout">
+                        <div :class="styles.amountAndStatusContainer">
+                            <div :class="styles.amountContainer">
+                                <BentoTypography
+                                    variant="caption"
+                                    :class="{ [styles.textSecondary]: grantConfig.isLabelColorSecondary }"
+                                    data-testid="grant-amount-label"
+                                >
+                                    {{ i18n.get(grantConfig.amountLabelKey) }}
+                                </BentoTypography>
+                                <BentoTypography variant="title" medium :class="{ [styles.textSecondary]: grantConfig.isAmountColorSecondary }">
+                                    {{ formattedAmount }}
+                                </BentoTypography>
+                            </div>
+                            <BentoTypography v-if="props.grant.status === 'Active'" variant="caption">
+                                <time :datetime="grantConfig.repaymentPeriodEndDate.toISOString()">
+                                    {{ termEndLabel }}
+                                </time>
+                            </BentoTypography>
+                            <div v-else-if="grantConfig.statusKey" v-bento-tooltip="statusTooltip">
+                                <BentoTag :label="i18n.get(grantConfig.statusKey)" :variant="getStatusTagVariant(grantConfig.statusTagVariant)" />
+                            </div>
+                        </div>
+                        <div v-if="grantConfig.isProgressBarVisible">
+                            <progress
+                                v-bento-tooltip="repaymentProgressLabel"
+                                :class="styles.progressBar"
+                                :aria-label="i18n.get('capital.overview.grants.item.progressBar.a11y.label')"
+                                :value="props.grant.repaidTotalAmount.value"
+                                :max="props.grant.totalAmount.value"
+                            />
+                            <div v-if="shouldDisplayLegend" :class="styles.progressBarLegend" aria-hidden="true">
+                                <BentoTypography
+                                    v-if="repaymentProgressLabels.current"
+                                    el="span"
+                                    variant="caption"
+                                    :class="styles.progressBarLegendLabel"
+                                >
+                                    {{ repaymentProgressLabels.current }}
+                                </BentoTypography>
+                                <BentoTypography
+                                    v-if="repaymentProgressLabels.max"
+                                    el="span"
+                                    variant="caption"
+                                    :class="styles.progressBarLegendLabel"
+                                >
+                                    {{ repaymentProgressLabels.max }}
+                                </BentoTypography>
+                            </div>
+                        </div>
+                        <div v-if="grantConfig.isGrantIdVisible" :class="styles.grantID">
+                            <CopyText
+                                copy-button-aria-label-key="capital.overview.grants.item.actions.copyGrantID"
+                                data-testid="grant-id-copy-text"
+                                is-underline-visible
+                                :text-to-copy="props.grant.id"
+                                type="Text"
+                                :visible-text="i18n.get('capital.common.fields.grantID')"
+                            />
                         </div>
                     </div>
-
-                    <BentoTypography variant="title" medium :class="{ [styles.textSecondary]: grantConfig.isAmountColorSecondary }">
-                        {{ formattedAmount }}
-                    </BentoTypography>
-
-                    <div v-if="grantConfig.isProgressBarVisible">
-                        <progress
-                            v-bento-tooltip="repaymentProgressLabel"
-                            :class="styles.progressBar"
-                            :aria-label="i18n.get('capital.overview.grants.item.progressBar.a11y.label')"
-                            :value="props.grant.repaidTotalAmount.value"
-                            :max="props.grant.totalAmount.value"
-                        />
-                        <div v-if="shouldDisplayLegend" :class="styles.progressBarLegend" aria-hidden="true">
-                            <BentoTypography
-                                v-if="repaymentProgressLabels.current"
-                                el="span"
-                                variant="caption"
-                                :class="styles.progressBarLegendLabel"
-                            >
-                                {{ repaymentProgressLabels.current }}
-                            </BentoTypography>
-                            <BentoTypography v-if="repaymentProgressLabels.max" el="span" variant="caption" :class="styles.progressBarLegendLabel">
-                                {{ repaymentProgressLabels.max }}
-                            </BentoTypography>
-                        </div>
-                    </div>
-
-                    <div v-if="grantConfig.isGrantIdVisible" :class="styles.grantID">
-                        <CopyText
-                            copy-button-aria-label-key="capital.overview.grants.item.actions.copyGrantID"
-                            data-testid="grant-id-copy-text"
-                            is-underline-visible
-                            :text-to-copy="props.grant.id"
-                            type="Text"
-                            :visible-text="i18n.get('capital.common.fields.grantID')"
-                        />
-                    </div>
-
                     <div v-if="grantConfig.hasUnscheduledRepaymentDetails" :class="styles.actionsBar">
                         <BentoButton :class="styles.mainActionBtn" variant="secondary" @click.stop="openRepaymentDetails">
                             {{ i18n.get('capital.overview.grants.item.actions.sendRepayment') }}
