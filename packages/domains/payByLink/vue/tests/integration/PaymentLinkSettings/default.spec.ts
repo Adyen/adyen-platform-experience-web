@@ -19,20 +19,20 @@ test.describe('Default', () => {
         const navigation = page.getByRole('navigation', { name: 'Settings' });
 
         await expect(navigation).toBeVisible();
-        await expect(navigation.locator('li[aria-current="true"]')).toContainText('Theme');
+        await expect(navigation.locator('button[aria-current="true"]')).toContainText('Theme');
 
         await navigation.getByRole('button', { name: 'Terms and conditions' }).click();
-        await expect(navigation.locator('li[aria-current="true"]')).toContainText('Terms and conditions');
+        await expect(navigation.locator('button[aria-current="true"]')).toContainText('Terms and conditions');
     });
 
     test('should only show navigation chevrons on mobile', async ({ page }) => {
         const navigation = page.getByRole('navigation', { name: 'Settings' });
-        const chevrons = navigation.locator('.b-list-item__chevron');
+        const chevrons = navigation.getByTestId('secondary-nav-chevron');
 
-        await expect(chevrons).toHaveCount(2);
-        await expect(chevrons.first()).toBeHidden();
+        await expect(chevrons).toHaveCount(0);
 
         await page.setViewportSize({ width: 375, height: 800 });
+        await expect(chevrons).toHaveCount(2);
         await expect(chevrons.first()).toBeVisible();
     });
 
