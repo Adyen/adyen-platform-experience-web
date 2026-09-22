@@ -15,6 +15,27 @@ test.describe('Default', () => {
         await goToStory(page, { id: STORY_ID });
     });
 
+    test('should render the settings sections as accessible navigation items', async ({ page }) => {
+        const navigation = page.getByRole('navigation', { name: 'Settings' });
+
+        await expect(navigation).toBeVisible();
+        await expect(navigation.locator('button[aria-current="true"]')).toContainText('Theme');
+
+        await navigation.getByRole('button', { name: 'Terms and conditions' }).click();
+        await expect(navigation.locator('button[aria-current="true"]')).toContainText('Terms and conditions');
+    });
+
+    test('should only show navigation chevrons on mobile', async ({ page }) => {
+        const navigation = page.getByRole('navigation', { name: 'Settings' });
+        const chevrons = navigation.getByTestId('secondary-nav-chevron');
+
+        await expect(chevrons).toHaveCount(0);
+
+        await page.setViewportSize({ width: 375, height: 800 });
+        await expect(chevrons).toHaveCount(2);
+        await expect(chevrons.first()).toBeVisible();
+    });
+
     test('should successfully save theme changes', async ({ page }) => {
         const saveButton = page.getByRole('button', { name: 'Save' });
         await saveButton.click();
