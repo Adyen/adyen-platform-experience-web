@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoDropdown } from '@adyen/bento-vue3';
 import FieldWrapper from './FieldWrapper.vue';
+import StoreDropdown, { type StoreOption } from '../../../shared/components/StoreDropdown.vue';
+import { getStoreDropdownDisplayValue } from '../../../shared/utils/storeDropdown';
 import { useWizard } from '../../composables/wizardContext';
 import type { PaymentLinkFieldName } from '../../../../../domain/src';
 
 const props = defineProps<{
     name: PaymentLinkFieldName;
     label: string;
-    items: { id: string; name: string; description?: string }[];
-    filterable?: boolean;
+    items: StoreOption[];
     placeholder?: string;
+    filterable?: boolean;
     disabled?: boolean;
 }>();
 
@@ -19,22 +20,17 @@ const config = computed(() => wizard.getFieldConfig(props.name));
 const error = computed(() => wizard.getError(props.name));
 const modelValue = computed(() => (wizard.values.value[props.name] as string | undefined) ?? '');
 
-const dropdownItems = computed(() => props.items.map(item => ({ label: item.name, description: item.description || undefined, value: item.id })));
-
-function onUpdate(value: string | number | { value?: string | number } | Array<unknown> | undefined) {
-    if (Array.isArray(value)) return;
-    const nextValue = typeof value === 'object' && value !== null ? value.value : value;
-    if (nextValue === undefined) return;
-    const stringValue = String(nextValue);
-    const displayName = props.items.find(item => item.id === stringValue)?.name ?? stringValue;
-    wizard.setValue(props.name, stringValue, displayName);
+function onUpdate(value: string, selectedStore?: StoreOption) {
+    const storeCode = selectedStore?.storeCode || selectedStore?.name || value;
+    const displayName = getStoreDropdownDisplayValue(storeCode, selectedStore?.description);
+    wizard.setValue(props.name, value, displayName);
 }
 </script>
 
 <template>
     <FieldWrapper v-if="config.visible" :name="props.name">
-        <BentoDropdown
-            :items="dropdownItems"
+        <StoreDropdown
+            :items="props.items"
             :label="props.label"
             :placeholder="props.placeholder ?? props.label"
             :model-value="modelValue"

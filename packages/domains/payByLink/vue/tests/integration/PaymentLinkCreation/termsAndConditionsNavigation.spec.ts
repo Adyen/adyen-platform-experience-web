@@ -22,6 +22,6 @@ test.describe('Payment link creation - Terms and conditions setup', () => {
         await page.getByRole('button', { name: 'Go back' }).click();
 
         await expect(storeField).toBeVisible();
-        await expect(storeSelect).toHaveText('AM001');
+        await expect(storeSelect).toHaveText('Main Store - Amsterdam');
     });
 });

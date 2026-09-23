@@ -4,6 +4,16 @@ import { goToStory } from '@integration-components/testing/playwright/utils';
 const STORY_ID = 'mocked-pay-by-link-payment-link-creation--default';
 const getFieldError = (page: Page, name: string) => page.getByTestId(`form-field-${name}`).locator('[aria-live="polite"]');
 
+test('Shows the selected store description as selected value', async ({ page }) => {
+    await goToStory(page, { id: STORY_ID });
+
+    const storeField = page.getByTestId('form-field-store');
+    await storeField.getByRole('combobox').click();
+    await page.getByRole('option', { name: 'NY001' }).click();
+
+    await expect(storeField.getByRole('combobox')).toHaveText('Main Store - New York');
+});
+
 test.describe('Payment link creation - Link creation success', () => {
     test('Should successfully create a payment link after filling out all form fields', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
