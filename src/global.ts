@@ -7,8 +7,8 @@ import { Core } from '@integration-components/core';
 const globalKey = 'AdyenPlatformExperienceMetadata' satisfies keyof typeof window;
 
 /**
- * Creates a null-prototype object whose properties are non-writable and non-configurable.
- * Used to produce a frozen-like struct that cannot be accidentally reassigned or deleted.
+ * Creates an object whose own properties are non-writable and non-configurable.
+ * Used to produce a struct whose existing properties cannot be reassigned, redefined or deleted.
  */
 const fixedStruct = <T extends Record<string, any>>(obj: T) => {
     const descriptors = (Object.entries(obj) as [keyof T, T[keyof T]][]).reduce(

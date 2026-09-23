@@ -607,6 +607,15 @@ importers:
         specifier: workspace:*
         version: link:../shared/style
     devDependencies:
+      '@integration-components/testing':
+        specifier: workspace:*
+        version: link:../shared/testing
+      '@playwright/test':
+        specifier: 'catalog:'
+        version: 1.61.0
+      '@storybook/vue3':
+        specifier: 'catalog:'
+        version: 10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.8.3))
       '@vitejs/plugin-vue':
         specifier: ^6.0.5
         version: 6.0.5(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))(vue@3.5.31(typescript@5.8.3))
