@@ -7,7 +7,7 @@ import type { IPaymentLinkConfiguration, IPaymentLinkCountry, IPaymentLinkSettin
 
 const props = defineProps<{
     currentFormStep: string;
-    selectItems: { id: string; name: string }[];
+    selectItems: { id: string; name: string; description?: string }[];
     settingsData?: IPaymentLinkSettings;
     storesData?: { data?: IPaymentLinkStore[] };
     configurationData?: IPaymentLinkConfiguration;
