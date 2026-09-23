@@ -64,7 +64,7 @@ const getStatusTagVariant = (statusVariant: GrantStatusVariant): BentoTagVariant
             return 'orange';
         case 'Default':
         default:
-            return 'blue';
+            return 'grey';
     }
 };
 
