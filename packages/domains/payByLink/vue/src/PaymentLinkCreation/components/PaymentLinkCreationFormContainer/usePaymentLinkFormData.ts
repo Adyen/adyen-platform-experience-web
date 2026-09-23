@@ -121,7 +121,11 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
                 if (Array.isArray(storeIds) && storeId) return storeIds.includes(storeId);
                 return storeIds === storeId;
             })
-            .map(({ storeCode, storeId }) => ({ id: storeId || '', name: storeCode || '' }));
+            .map(({ description, storeCode, storeId }) => ({
+                id: storeId || '',
+                name: storeCode || '',
+                description: description || undefined,
+            }));
     });
 
     const termsAndConditionsProvisioned = computed(() => !!settingsData.value?.termsOfServiceUrl);
