@@ -32,7 +32,6 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
-const earliestDate = startOfDay(new Date(Date.now() - EARLIEST_PAYMENT_LINK_DATE_DAYS * DAY_IN_MS));
 
 const quickSelectRanges = createQuickSelectRanges(
     {
@@ -43,12 +42,13 @@ const quickSelectRanges = createQuickSelectRanges(
         thisMonth: quickSelectDateRanges.thisMonth,
         lastMonth: quickSelectDateRanges.lastMonth,
     },
+    'payByLink.overview.common.filters.types.date.rangeSelect.options.',
     key => i18n.get(key)
 );
 
 const { defaultDateRange, selectedDateRange, normalizeDateRange, getDateRangeFilterOptions, getDateRangeQueryParams } = useDateRangeFilterState({
     defaultValue: quickSelectDateRanges.last30Days,
-    earliestDate,
+    earliestDate: startOfDay(new Date(Date.now() - EARLIEST_PAYMENT_LINK_DATE_DAYS * DAY_IN_MS)),
 });
 
 const { selectedValues: selectedStoreIds, setSelectedValues: setSelectedStoreIds } = useSortedMultiSelection<string>();
@@ -109,7 +109,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
     config.push({
         field: 'dateRange',
-        label: i18n.get('common.filters.types.date.label'),
+        label: i18n.get('payByLink.overview.common.filters.types.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         defaultValue: defaultDateRange,
         options: {

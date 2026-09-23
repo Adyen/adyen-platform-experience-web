@@ -9,9 +9,7 @@ import rootPkgJson from '../../package.json';
 const projectRoot = resolve(fileURLToPath(import.meta.url), '..');
 const rootDir = resolve(projectRoot, '../..');
 const srcDir = resolve(rootDir, 'src');
-const assetsDir = resolve(rootDir, 'packages/shared/assets/src');
 const styleDir = resolve(rootDir, 'packages/shared/style');
-const enUsFile = resolve(assetsDir, 'translations/en-US.json');
 const translationsDir = resolve(rootDir, 'packages/shared/core/src/translations');
 const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
@@ -108,11 +106,6 @@ export default defineConfig(({ mode }) => ({
             load(id: string) {
                 if (id === translationsLocalFile) {
                     return `export const translations_dev_assets = {};`;
-                }
-                // Asset translation JSON files (all locales except en-US which is bundled)
-                // are only used via local.ts (dev mode). Stub them out for production builds.
-                if (id !== enUsFile && id.startsWith(assetsDir)) {
-                    return `export default {};`;
                 }
             },
         },

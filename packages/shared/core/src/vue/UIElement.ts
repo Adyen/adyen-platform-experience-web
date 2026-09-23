@@ -1,8 +1,42 @@
 import { createApp, h, reactive, ref, type App, type Component } from 'vue';
-import { createI18n as createVueI18n } from 'vue-i18n';
+import { createI18n as createVueI18n, type I18n as VueI18n } from 'vue-i18n';
 import type { ExternalComponentType } from '@integration-components/types';
 import { uuid } from '@integration-components/utils';
 import UIElementProvider from './UIElementProvider.vue';
+import type { DomainTranslationBinding } from './Context/types';
+import { applyBentoDomainOverrides, getBentoLocaleMessages } from './bentoTranslations';
+import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
+import type { CustomTranslations, TranslationDomain } from '../translations';
+
+const getTranslationDomain = (componentName: ExternalComponentType): TranslationDomain => {
+    switch (componentName) {
+        case 'capitalOverview':
+        case 'capitalOffer':
+            return 'capital';
+        case 'disputes':
+        case 'disputesManagement':
+            return 'disputes';
+        case 'paymentLinkCreation':
+        case 'paymentLinkDetails':
+        case 'paymentLinksOverview':
+        case 'paymentLinkSettings':
+            return 'payByLink';
+        case 'payouts':
+        case 'payoutDetails':
+            return 'payouts';
+        case 'reports':
+            return 'reports';
+        case 'transactions':
+        case 'transactionDetails':
+            return 'transactions';
+        default: {
+            // Typing the unhandled case as `never` turns a new component type without a domain
+            // into a compile error, and still fails loudly for untyped integrations at runtime.
+            const unknownComponent: never = componentName;
+            throw new Error(`[UIElement] No translation domain is registered for component "${String(unknownComponent)}".`);
+        }
+    }
+};
 
 export const createRefreshContext = () => {
     const refreshCount = ref(0);
@@ -34,6 +68,12 @@ export class UIElement<Props extends Record<string, any>> {
     protected _core: Props['core'];
     protected _props: Omit<Props, 'core'>;
     protected _target: Element | null = null;
+    protected _bentoOverrides: Record<string, string> | null = null;
+    protected _customTranslations: CustomTranslations | undefined;
+    protected _locale: string | undefined;
+    protected _vueI18n: VueI18n<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>, string, false> | null = null;
+    protected _translationDomain: TranslationDomain | null = null;
+    protected _refreshTranslations: (() => void) | null = null;
 
     /**
      * Returns the core instance associated with this element, if any.
@@ -61,7 +101,15 @@ export class UIElement<Props extends Record<string, any>> {
         this.core?.registerComponent(this);
     }
 
-    protected configureApp(_app: App): void {
+    protected configureApp(app: App, domainTranslations: DomainTranslationBinding): void {
+        if (!this._vueI18n) throw new Error('[UIElement] Vue I18n must be initialized before configuring the app.');
+
+        app.use(this._vueI18n);
+        app.provide(DOMAIN_TRANSLATION_BINDING_KEY, domainTranslations);
+        this.configureComponentApp(app);
+    }
+
+    protected configureComponentApp(_app: App): void {
         // UI element subclasses can register framework-specific plugins before mounting.
     }
 
@@ -81,7 +129,21 @@ export class UIElement<Props extends Record<string, any>> {
             const componentName = this._componentName;
             const customClassNames = this.customClassNames;
 
+            const localization = core.localization;
+            const customTranslations = core.options.translations as CustomTranslations | undefined;
+
+            const i18n = localization.i18n;
+            this._customTranslations = customTranslations;
+            this._locale = localization.locale;
+
+            const bentoOverrides = reactive<Record<string, string>>({});
+            const translationDomain = getTranslationDomain(componentName);
+
+            this._bentoOverrides = bentoOverrides;
+            this._translationDomain = translationDomain;
+
             const { refresh, refreshCount } = createRefreshContext();
+            this._refreshTranslations = refresh;
 
             this._app = createApp({
                 setup: () => () => {
@@ -89,6 +151,7 @@ export class UIElement<Props extends Record<string, any>> {
                         UIElementProvider,
                         {
                             core,
+                            bentoOverrides,
                             componentName,
                             customClassNames,
                             refreshComponent: refresh,
@@ -104,16 +167,16 @@ export class UIElement<Props extends Record<string, any>> {
             // resolve without throwing "Need to install with `app.use` function".
             const locale = this._core?.options?.locale || 'en-US';
 
-            this._app.use(
-                createVueI18n({
-                    legacy: false,
-                    locale,
-                    fallbackLocale: 'en-US',
-                    messages: { [locale]: {}, 'en-US': {} },
-                })
-            );
+            this._vueI18n = createVueI18n({
+                legacy: false,
+                locale,
+                fallbackLocale: 'en-US',
+                messages: { [locale]: {}, 'en-US': {} },
+            });
 
-            this.configureApp(this._app);
+            this.#syncTranslationsWhenReady();
+
+            this.configureApp(this._app, { i18n, translationDomain });
             this._app.mount(el);
         } catch (error) {
             this.unmount();
@@ -126,6 +189,24 @@ export class UIElement<Props extends Record<string, any>> {
     public update(props: Partial<Props>): this {
         const { core: _, ...componentProps } = props;
         Object.assign(this._props as Record<string, unknown>, componentProps);
+
+        if (!this._vueI18n) return this;
+
+        const customTranslations = this.core.options.translations as CustomTranslations | undefined;
+        const localeChanged = this._locale !== this.core.localization.locale;
+        const customTranslationsChanged = this._customTranslations !== customTranslations;
+
+        if (localeChanged || customTranslationsChanged) {
+            if (localeChanged) {
+                const locale = this.core.localization.locale;
+                this._vueI18n.global.locale.value = locale;
+                this._locale = locale;
+            }
+
+            this._customTranslations = customTranslations;
+            this.#syncTranslationsWhenReady();
+        }
+
         return this;
     }
 
@@ -136,6 +217,12 @@ export class UIElement<Props extends Record<string, any>> {
         }
         this._app = null;
         this._target = null;
+        this._bentoOverrides = null;
+        this._customTranslations = undefined;
+        this._locale = undefined;
+        this._vueI18n = null;
+        this._translationDomain = null;
+        this._refreshTranslations = null;
         return this;
     }
 
@@ -143,6 +230,48 @@ export class UIElement<Props extends Record<string, any>> {
         this.unmount();
         this.core?.remove(this);
         return this;
+    }
+
+    /**
+     * Runs the background translation sync once both localization stores are ready. The sync happens after
+     * the component has mounted, so a failure there is reported through the Core error handler (or logged)
+     * instead of escaping as an unhandled promise rejection.
+     */
+    #syncTranslationsWhenReady(): void {
+        Promise.all([this.core.localization.ready, this.core.bentoLocalization.ready])
+            .then(() => this.#syncTranslations())
+            .catch((error: unknown) => this.#reportTranslationSyncError(error));
+    }
+
+    #reportTranslationSyncError(error: unknown): void {
+        const onError = this.core?.options?.onError;
+
+        if (onError) {
+            try {
+                onError(error instanceof Error ? error : new Error(String(error)));
+                return;
+            } catch (ex) {
+                console.error(ex);
+            }
+        }
+
+        console.error(error);
+    }
+
+    #syncTranslations(): void {
+        if (!this._vueI18n || !this._bentoOverrides || !this._translationDomain) return;
+
+        const bentoTranslations = getBentoLocaleMessages(
+            key => this.core.bentoLocalization.getTemplate(key),
+            key => this.core.bentoLocalization.has(key)
+        );
+
+        const bentoLocale = this.core.bentoLocalization.locale;
+
+        this._vueI18n.global.locale.value = bentoLocale;
+        this._vueI18n.global.setLocaleMessage(bentoLocale, bentoTranslations);
+        applyBentoDomainOverrides(this._bentoOverrides, this.core.localization.i18n, bentoTranslations, this._translationDomain, this._componentName);
+        this._refreshTranslations?.();
     }
 }
 

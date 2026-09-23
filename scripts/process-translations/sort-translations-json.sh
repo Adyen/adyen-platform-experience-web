@@ -24,7 +24,7 @@ sort_translations_json() {
         return 1
     fi
 
-    local sorted_json=$($sort_json "$(cat $json_path)" 2> /dev/null || echo $ERROR_TOKEN)
+    local sorted_json=$($sort_json < "$json_path" 2> /dev/null || echo $ERROR_TOKEN)
 
     if [[ $sorted_json ]]; then
         if [[ $sorted_json == $ERROR_TOKEN ]]; then

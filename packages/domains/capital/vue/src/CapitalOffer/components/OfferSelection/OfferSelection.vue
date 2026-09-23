@@ -122,7 +122,7 @@ const actions = computed<BentoButtonActionsList>(() => {
         ...(props.onDismiss
             ? [
                   {
-                      title: i18n.get('capital.common.actions.goBack'),
+                      title: i18n.get('capital.offer.selection.actions.goBack'),
                       event: props.onDismiss,
                   },
               ]

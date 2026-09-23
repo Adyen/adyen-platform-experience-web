@@ -3,10 +3,12 @@ import { AuthSession } from './session/AuthSession';
 import Localization from './Localization';
 import { Assets, AssetOptions } from './Assets/Assets';
 import { getCustomTranslationsAnalyticsPayload } from './EventDispatcher/eventDispatcher/customTranslations';
+import { SDK_BENTO_TRANSLATION_SOURCES, SDK_TRANSLATION_SOURCES } from '../../../sdk/src/translations';
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
 import { ThemeManager } from './theme/ThemeManager';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
 import type { CoreOptions, onErrorHandler, ResolvedEnvironment } from './types';
+import type { I18n } from './vue/Context/types';
 
 /**
  * Minimal contract that UI element classes must satisfy so Core can manage them uniformly.
@@ -36,6 +38,7 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
     public analyticsEnabled!: boolean;
     public session = new AuthSession();
     public localization: Localization;
+    public bentoLocalization: Localization;
     public onError?: onErrorHandler;
     public getImageAsset!: (props: AssetOptions) => string;
     public getDatasetAsset!: (props: AssetOptions) => string;
@@ -50,12 +53,13 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
 
     constructor(options: CoreOptions<CustomTranslations>) {
         this.options = { environment: FALLBACK_ENV, ...options };
-        const { cdnTranslationsUrl, cdnConfigUrl } = this.resolveEnvironment();
+        const { cdnTranslationsUrl } = this.resolveEnvironment();
 
         this.applyEnvironmentAssets();
         this.applyAnalyticsOptions();
 
-        this.localization = new Localization(this.options.locale, cdnTranslationsUrl, cdnConfigUrl);
+        this.localization = new Localization(this.options.locale, cdnTranslationsUrl, SDK_TRANSLATION_SOURCES);
+        this.bentoLocalization = new Localization(this.options.locale, `${cdnTranslationsUrl}/bento`, SDK_BENTO_TRANSLATION_SOURCES);
 
         this.setOptions(this.options);
     }
@@ -88,6 +92,7 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
 
         this.localization.locale = this.options.locale;
         this.localization.customTranslations = this.options.translations;
+        this.bentoLocalization.locale = this.options.locale;
 
         if (environmentChanged) {
             this.applyEnvironmentAssets();
@@ -120,7 +125,7 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
         this.session.analyticsEnabled = this.analyticsEnabled;
     }
 
-    public get i18n() {
+    public get i18n(): I18n {
         return this.localization.i18n;
     }
 
@@ -134,7 +139,7 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
             this.hasWarnedAboutServerSideInitialization = true;
         }
 
-        await this.localization.ready;
+        await Promise.all([this.localization.ready, this.bentoLocalization.ready]);
 
         if (!this.readyCustomTranslationsAnalytics && this.analyticsEnabled) {
             const analyticsPayload = getCustomTranslationsAnalyticsPayload(this.localization.i18n.customTranslations);
