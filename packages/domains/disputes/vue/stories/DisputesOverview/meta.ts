@@ -1,5 +1,5 @@
 import type { Meta } from '@storybook/vue3';
-import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, densityControl, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 import type { DisputesOverviewExternalProps } from '../../src';
 import DisputesOverviewElement from '../../src/DisputesOverview/DisputesOverviewElement';
 
@@ -13,11 +13,14 @@ export const DisputesOverviewMeta: Meta<ElementProps<DisputesOverviewExternalPro
         hideTitle: { control: 'boolean' },
         showDetails: { control: 'boolean' },
         allowLimitSelection: { control: 'boolean' },
+        density: densityControl(),
+        appearance: { table: { disable: true } },
     },
     args: {
         component: DisputesOverviewElement,
         allowLimitSelection: true,
         showDetails: true,
+        density: 'default',
     },
     parameters: {
         controls: {

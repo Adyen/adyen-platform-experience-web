@@ -2,8 +2,8 @@ import type { SessionRequest } from './ConfigContext.types';
 import type { CustomTranslations as Translations } from './translations';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '@integration-components/utils/types';
 import { SupportedLocales } from './Localization/types';
-import type { Appearance } from '@integration-components/types';
 import type { ThemeProps } from '@adyen/adyen-shared-web';
+import type { GlobalAppearance } from '@integration-components/types';
 
 type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<
     WithReplacedUnderscoreOrDash<KeyOfRecord<T extends Translations ? T : Record<never, never>>, '_', '-'>,
@@ -41,7 +41,7 @@ interface _CoreOptions<CustomTranslations extends Translations = Record<never, n
      */
     translations?: CustomTranslations extends Translations ? CustomTranslations : Translations;
 
-    appearance?: Appearance;
+    appearance?: GlobalAppearance;
 
     analytics?: AnalyticsConfig;
 

@@ -3,10 +3,14 @@ import '../theme/styles';
 export type {
     AnalyticsConfig,
     Appearance,
+    ComponentAppearance,
+    ComponentDensity,
     CoreInstance,
     CoreOptions,
     CustomTheme,
+    DensityMode,
     DevEnvironment,
+    GlobalAppearance,
     onErrorHandler,
     SessionObject,
     SessionRequest,
@@ -22,3 +26,4 @@ export * from './ConfigContext';
 export { Core } from '../Core';
 export { createRefreshContext, UIElement } from './UIElement';
 export { default as UIElementProvider } from './UIElementProvider.vue';
+export { resolveAppearance } from './customization';

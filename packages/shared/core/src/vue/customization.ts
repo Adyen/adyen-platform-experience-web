@@ -6,11 +6,15 @@ export const resolveAppearance = (
 ): Appearance | undefined => {
     const illustrations = componentAppearance?.illustrations ?? experienceAppearance?.illustrations;
     const titles = componentAppearance?.titles ?? experienceAppearance?.titles;
+    const density = componentAppearance?.density;
 
-    return illustrations || titles
+    const resolvedDensity = density && typeof density === 'object' && Object.keys(density).length > 0 ? density : undefined;
+
+    return illustrations || titles || resolvedDensity
         ? {
               ...(illustrations && { illustrations }),
               ...(titles && { titles }),
+              ...(resolvedDensity && { density: resolvedDensity }),
           }
         : undefined;
 };

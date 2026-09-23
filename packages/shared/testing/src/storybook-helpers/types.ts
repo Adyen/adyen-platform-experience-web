@@ -1,5 +1,6 @@
 import type { StoryObj } from '@storybook/vue3';
 import { CoreOptions } from '@integration-components/sdk-internal';
+import type { DensityMode } from '@integration-components/types';
 
 type GlobalStoriesProps = {
     mockedApi?: boolean;
@@ -8,6 +9,7 @@ type GlobalStoriesProps = {
     component: any;
     coreOptions?: Partial<CoreOptions>;
     skipDecorators?: boolean;
+    density?: DensityMode;
 };
 
 type ComponentPropsOf<T> = T extends new (...args: any) => any ? ConstructorParameters<T>[0] : T;

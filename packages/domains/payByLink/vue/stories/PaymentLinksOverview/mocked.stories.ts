@@ -17,6 +17,15 @@ export const Default: ElementStory<PaymentLinksOverviewExternalProps> = {
     },
 };
 
+export const Condensed: ElementStory<PaymentLinksOverviewExternalProps> = {
+    name: 'Condensed',
+    args: {
+        mockedApi: true,
+        storeIds: ['STORE_NY_001', 'STORE_LON_001', 'STORE_AMS_001'],
+        density: 'condensed',
+    },
+};
+
 export const SingleStore: ElementStory<PaymentLinksOverviewExternalProps> = {
     name: 'Single store',
     args: {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, provide, ref } from 'vue';
-import type { Appearance, CoreInstance } from './types';
+import type { ComponentAppearance, CoreInstance, GlobalAppearance } from './types';
 import CoreProvider from './Context/CoreProvider.vue';
 import { resolveAppearance } from './customization';
 import ConfigProvider from './ConfigContext/ConfigProvider.vue';
@@ -12,9 +12,9 @@ import './UIElement.scss';
 interface Props {
     core: CoreInstance;
     componentName: ExternalComponentType;
-    componentAppearance?: Appearance;
+    componentAppearance?: ComponentAppearance<any>;
     customClassNames?: string;
-    globalAppearance?: Appearance;
+    globalAppearance?: GlobalAppearance;
     refreshComponent: () => void;
 }
 

@@ -1,7 +1,7 @@
 import type { Meta } from '@storybook/vue3';
 import type { PayoutsOverviewExternalProps } from '../../src';
 import PayoutsOverviewElement from '../../src/PayoutsOverview/PayoutsOverviewElement';
-import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, densityControl, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
 export const PayoutsOverviewMeta: Meta<ElementProps<PayoutsOverviewExternalProps>> = {
     title: 'Components/Payouts/Payouts Overview',
@@ -13,11 +13,14 @@ export const PayoutsOverviewMeta: Meta<ElementProps<PayoutsOverviewExternalProps
         hideTitle: { control: 'boolean' },
         showDetails: { control: 'boolean' },
         allowLimitSelection: { control: 'boolean' },
+        density: densityControl(),
+        appearance: { table: { disable: true } },
     },
     args: {
         component: PayoutsOverviewElement,
         allowLimitSelection: true,
         showDetails: true,
+        density: 'default',
     },
     parameters: {
         controls: {

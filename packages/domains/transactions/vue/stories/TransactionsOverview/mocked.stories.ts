@@ -24,6 +24,14 @@ export const Default: ElementStory<TransactionsOverviewExternalProps> = {
     args: sharedArgs,
 };
 
+export const Condensed: ElementStory<TransactionsOverviewExternalProps> = {
+    name: 'Condensed',
+    args: {
+        ...sharedArgs,
+        density: 'condensed',
+    },
+};
+
 export const SingleBalanceAccount: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Single balance account',
     args: sharedArgs,

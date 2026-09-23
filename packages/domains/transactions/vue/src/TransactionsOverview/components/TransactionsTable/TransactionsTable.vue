@@ -9,6 +9,7 @@ import {
     DataOverviewError,
     useTableColumns,
     useShouldHideIllustrations,
+    useCondensed,
 } from '@integration-components/composables-vue';
 import {
     BentoDataGrid,
@@ -53,6 +54,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const hideIllustrations = useShouldHideIllustrations();
+const isCondensed = useCondensed('dataGrid');
 const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceAccount?.timeZone);
 
 const isMobile = useResponsiveContainer(containerQueries.down.sm);
@@ -187,6 +189,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
 
         <BentoDataGrid
             v-else
+            :condensed="isCondensed"
             :columns="columns"
             :data="gridData"
             :loading="isLoading"

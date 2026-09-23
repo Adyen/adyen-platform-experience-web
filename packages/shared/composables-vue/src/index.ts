@@ -19,7 +19,7 @@ export * from './getErrorMessage';
 export { default as getErrorMessage } from './getErrorMessage';
 export { DataOverviewError } from './DataOverviewError';
 export { ErrorMessageDisplay } from './ErrorMessageDisplay';
-export { useShouldHideIllustrations, useShouldHideTitles } from './customization';
+export { useShouldHideIllustrations, useShouldHideTitles, useDensity, useCondensed } from './customization';
 export { CopyText } from './CopyText';
 
 export { default as useTimezoneAwareDateFormatting } from './useTimezoneAwareDateFormatting';
