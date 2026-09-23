@@ -1,6 +1,10 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
+// Git is executed with a PATH restricted to fixed, unwriteable system directories, so a manipulated
+// process environment cannot substitute an attacker-controlled binary.
+const FIXED_PATH_ENV = { ...process.env, PATH: '/usr/bin:/bin' };
+
 const SDK_CATALOGS = [
     {
         catalog: 'packages/sdk/translations/en-US.json',
@@ -20,7 +24,13 @@ const readJsonAtRevision = (revision, filePath) => {
     try {
         return {
             exists: true,
-            value: JSON.parse(execFileSync('git', ['show', `${revision}:${filePath}`], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })),
+            value: JSON.parse(
+                execFileSync('git', ['show', `${revision}:${filePath}`], {
+                    encoding: 'utf8',
+                    env: FIXED_PATH_ENV,
+                    stdio: ['ignore', 'pipe', 'ignore'],
+                })
+            ),
         };
     } catch {
         return { exists: false, value: {} };
@@ -29,11 +39,13 @@ const readJsonAtRevision = (revision, filePath) => {
 
 const baseRevision = process.argv[2];
 
-if (!baseRevision) {
-    throw new Error('Usage: node scripts/process-translations/validate-sdk-instructions.mjs <base-revision>');
+// The revision comes from the CI command line ("origin/${BASE_REF}", where BASE_REF is the PR base
+// branch) and is passed as a git argument: reject anything git could interpret as an option.
+if (!baseRevision || !/^[A-Za-z0-9][A-Za-z0-9._/-]*$/.test(baseRevision)) {
+    throw new Error('Base revision must be a plain git reference such as "origin/main".');
 }
 
-const mergeBase = execFileSync('git', ['merge-base', 'HEAD', baseRevision], { encoding: 'utf8' }).trim();
+const mergeBase = execFileSync('git', ['merge-base', 'HEAD', baseRevision], { encoding: 'utf8', env: FIXED_PATH_ENV }).trim();
 const failures = [];
 let changedKeyCount = 0;
 

@@ -14,6 +14,10 @@ const checkOnly = process.argv.includes('--check');
 const stagedOnly = process.argv.includes('--staged');
 const execFile = promisify(execFileCallback);
 
+// Child processes run with a PATH restricted to fixed, unwriteable system directories, so a
+// manipulated process environment cannot substitute an attacker-controlled binary.
+const FIXED_PATH_ENV = { ...process.env, PATH: '/usr/bin:/bin' };
+
 const getRelativePath = filePath => path.relative(projectRoot, filePath);
 
 const readJson = async filePath => {
@@ -27,7 +31,7 @@ const readJson = async filePath => {
         }
     } else {
         try {
-            const { stdout } = await execFile('git', ['show', `:${getRelativePath(filePath)}`], { cwd: projectRoot });
+            const { stdout } = await execFile('git', ['show', `:${getRelativePath(filePath)}`], { cwd: projectRoot, env: FIXED_PATH_ENV });
             fileContent = stdout;
         } catch {
             return null;
@@ -44,8 +48,16 @@ const writeJson = async (filePath, value) => {
         return;
     }
 
-    const blobHash = execFileSync('git', ['hash-object', '-w', '--stdin'], { cwd: projectRoot, input: content, encoding: 'utf8' });
-    await execFile('git', ['update-index', '--add', '--cacheinfo', '100644', blobHash.trim(), getRelativePath(filePath)], { cwd: projectRoot });
+    const blobHash = execFileSync('git', ['hash-object', '-w', '--stdin'], {
+        cwd: projectRoot,
+        input: content,
+        encoding: 'utf8',
+        env: FIXED_PATH_ENV,
+    });
+    await execFile('git', ['update-index', '--add', '--cacheinfo', '100644', blobHash.trim(), getRelativePath(filePath)], {
+        cwd: projectRoot,
+        env: FIXED_PATH_ENV,
+    });
 };
 
 const sortJson = value => {
@@ -53,7 +65,14 @@ const sortJson = value => {
     // The payload is passed on stdin: passing it as an argument fails with E2BIG on Linux because
     // SDK catalogs exceed the ~128KB single-argument limit (MAX_ARG_STRLEN).
     // The async execFile does not support the `input` option, so the synchronous variant is used.
-    const stdout = execFileSync(sortJsonPath, [], { input: serializedValue, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
+    // The helper is invoked through the absolute path of the running node binary instead of its
+    // shebang, so its interpreter is not resolved through a writable PATH.
+    const stdout = execFileSync(process.execPath, [sortJsonPath], {
+        input: serializedValue,
+        encoding: 'utf8',
+        maxBuffer: 16 * 1024 * 1024,
+        env: FIXED_PATH_ENV,
+    });
     return stdout ? JSON.parse(stdout) : value;
 };
 
