@@ -21,6 +21,6 @@ export interface DisputesOverviewExternalProps extends UIElementProps {
     };
 }
 
-export type DisputesOverviewProps = Omit<DisputesOverviewExternalProps, 'core' | 'customization'>;
+export type DisputesOverviewProps = Omit<DisputesOverviewExternalProps, 'core'>;
 
 export type { IBalanceAccountBase };
