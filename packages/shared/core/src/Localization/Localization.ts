@@ -1,4 +1,5 @@
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_TRANSLATIONS, EXCLUDE_PROPS, FALLBACK_LOCALE, SUPPORTED_LOCALES } from './constants/localization';
+import { getCachedTranslations } from './translationCache';
 import type { CustomTranslations, Locale, TranslationKey, TranslationOptions } from '../translations';
 import { getLocalisedAmount } from './amount/amount-util';
 import restamper from '@integration-components/utils/datetime/restamper';
@@ -15,6 +16,14 @@ export type LocalizationSources = Readonly<{
     localeTranslations: Readonly<Record<string, Promise<Record<string, string>> | (() => Promise<Record<string, string>>)>>;
 }>;
 
+export type TranslationFamily = Readonly<{
+    base: string | null;
+    zero: string | null;
+    one: string | null;
+    plural: string | null;
+    unsupportedExactCounts: number[];
+}>;
+
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;
     #languageCode: string = toTwoLetterCode(this.#locale);
@@ -23,6 +32,7 @@ export default class Localization {
     #customTranslations?: CustomTranslations;
     #translations: Record<string, string> = DEFAULT_TRANSLATIONS as Record<string, string>;
     #defaultTranslations: Record<string, string>;
+    #translationFamilyExactCounts = new Map<string, readonly number[]>();
     #translationsLoader = createTranslationsLoader.call(this);
     readonly #fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>;
 
@@ -39,6 +49,7 @@ export default class Localization {
         this.watch(noop);
         this.#defaultTranslations = sources?.defaultTranslations ?? (DEFAULT_TRANSLATIONS as Record<string, string>);
         this.#translations = this.#defaultTranslations;
+        this.#translationFamilyExactCounts = this.#getTranslationFamilyExactCounts(this.#translations);
 
         const getBundledTranslations = (locale: string) => {
             const source = sources?.localeTranslations[locale];
@@ -46,29 +57,30 @@ export default class Localization {
         };
 
         this.#fetchTranslationFromCdnPromise = (locale: string) => {
+            const url = `${cdnTranslationsUrl}/${locale}.json`;
+
+            const fetchTranslationsFromCdn = () =>
+                httpGet<any>({
+                    loadingContext: cdnTranslationsUrl,
+                    path: `/${locale}.json`,
+                    versionless: true,
+                    skipContentType: true,
+                    errorLevel: 'info',
+                });
+
             if (!sources) {
                 return process.env.VITE_LOCAL_ASSETS
                     ? Promise.resolve(translations_dev_assets[locale]!)
-                    : httpGet<any>({
-                          loadingContext: cdnTranslationsUrl,
-                          path: `/${locale}.json`,
-                          versionless: true,
-                          skipContentType: true,
-                          errorLevel: 'info',
-                      });
+                    : getCachedTranslations(url, fetchTranslationsFromCdn);
             }
 
             if (locale === FALLBACK_LOCALE || process.env.VITE_LOCAL_ASSETS) {
                 return getBundledTranslations(locale);
             }
 
-            return httpGet<any>({
-                loadingContext: cdnTranslationsUrl,
-                path: `/${locale}.json`,
-                versionless: true,
-                skipContentType: true,
-                errorLevel: 'info',
-            })
+            // The cache coalesces concurrent requests for the same catalog and serves the cached
+            // response within its time-to-live; an empty or rejected CDN response falls back to the bundled catalog.
+            return getCachedTranslations(url, fetchTranslationsFromCdn)
                 .then(translations => translations ?? getBundledTranslations(locale))
                 .catch(() => getBundledTranslations(locale));
         };
@@ -158,6 +170,7 @@ export default class Localization {
                 customTranslations,
                 this.#defaultTranslations
             );
+            this.#translationFamilyExactCounts = this.#getTranslationFamilyExactCounts(this.#translations);
             this.#locale = this.#translationsLoader.locale;
             this.#supportedLocales = Object.freeze(this.#translationsLoader.supportedLocales);
             this.#customTranslations = customTranslations;
@@ -173,6 +186,29 @@ export default class Localization {
         });
     }
 
+    #getTranslationFamilyExactCounts(translations: Record<string, string>): Map<string, readonly number[]> {
+        const exactCounts = new Map<string, number[]>();
+
+        for (const translationKey of Object.keys(translations)) {
+            const separatorIndex = translationKey.lastIndexOf('__');
+            if (separatorIndex < 0) continue;
+
+            const count = Number(translationKey.slice(separatorIndex + 2));
+            if (!Number.isInteger(count) || count <= 1) continue;
+
+            const key = translationKey.slice(0, separatorIndex);
+            const counts = exactCounts.get(key);
+
+            if (counts) {
+                counts.push(count);
+            } else {
+                exactCounts.set(key, [count]);
+            }
+        }
+
+        return exactCounts;
+    }
+
     /**
      * Returns a translated string from a key in the current {@link Localization.locale}
      * @param key - Translation key
@@ -182,6 +218,30 @@ export default class Localization {
     get(key: TranslationKey, options?: TranslationOptions): string {
         const translation = getTranslation(this.#translations, key, options);
         return isNull(translation) ? key : translation;
+    }
+
+    /**
+     * Returns the untranslated template for a key in the current locale.
+     * This is intended for consumers that need to compile the SDK placeholder
+     * syntax for another localization runtime.
+     */
+    getTemplate(key: string): string | null {
+        return this.#translations[key] ?? null;
+    }
+
+    /**
+     * Returns the raw count-based templates for a key in the current locale.
+     * Bento can represent the zero, one, and greater-than-one forms, but not
+     * arbitrary exact counts above one.
+     */
+    getTranslationFamily(key: string): TranslationFamily {
+        return {
+            base: this.getTemplate(key),
+            zero: this.getTemplate(`${key}__0`),
+            one: this.getTemplate(`${key}__1`),
+            plural: this.getTemplate(`${key}__plural`),
+            unsupportedExactCounts: [...(this.#translationFamilyExactCounts.get(key) ?? [])],
+        };
     }
 
     /**

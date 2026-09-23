@@ -1,16 +1,23 @@
 import Localization from './Localization';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { TranslationKey } from '../translations';
 import sdkGermanTranslations from '../../../../sdk/translations/de-DE.json' with { type: 'json' };
 import sdkEnglishTranslations from '../../../../sdk/translations/en-US.json' with { type: 'json' };
+import { DEFAULT_TRANSLATIONS_CACHE_TTL, invalidateTranslationsCache } from './translationCache';
 import { SUPPORTED_LOCALES } from './constants/localization';
 
 describe('Localization', () => {
     const translationKey = 'abc' as TranslationKey;
 
+    // The translations cache is shared module-wide, so every test starts with a clean cache.
+    beforeEach(() => {
+        invalidateTranslationsCache();
+    });
+
     afterEach(() => {
         vi.unstubAllEnvs();
         vi.unstubAllGlobals();
+        vi.useRealTimers();
     });
 
     describe('constructor', () => {
@@ -101,6 +108,61 @@ describe('Localization', () => {
         });
     });
 
+    describe('getTranslationFamily', () => {
+        test('indexes exact counts and refreshes the index when the locale changes', async () => {
+            const localization = new Localization('de-DE', '', {
+                defaultTranslations: {
+                    items: 'Items',
+                    items__0: 'No items',
+                    items__1: 'One item',
+                    items__plural: '%{count} items',
+                },
+                localeTranslations: {
+                    'de-DE': Promise.resolve({
+                        items__2: 'Zwei Artikel',
+                        items__3: 'Drei Artikel',
+                        items__other: 'Other items',
+                    }),
+                    'en-US': Promise.resolve({}),
+                },
+            });
+
+            await localization.ready;
+
+            const germanFamily = localization.getTranslationFamily('items');
+
+            expect(germanFamily).toEqual({
+                base: 'Items',
+                zero: 'No items',
+                one: 'One item',
+                plural: '%{count} items',
+                unsupportedExactCounts: [2, 3],
+            });
+
+            germanFamily.unsupportedExactCounts.push(99);
+            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([2, 3]);
+
+            localization.locale = 'en-US';
+            await localization.ready;
+
+            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([]);
+
+            localization.customTranslations = {
+                'en-US': {
+                    ['items__4' as TranslationKey]: 'Four items',
+                },
+            };
+            await localization.ready;
+
+            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([4]);
+
+            localization.customTranslations = undefined;
+            await localization.ready;
+
+            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([]);
+        });
+    });
+
     describe('SDK translation sources', () => {
         test('loads SDK locale catalog and falls back to English for untranslated keys', async () => {
             const englishFallbackKey = 'transactions.common.errors.updateFilters';
@@ -163,6 +225,158 @@ describe('Localization', () => {
             expect(localization.get('transactions.common.errors.updateFilters' as TranslationKey)).toBe(
                 sdkGermanTranslations['transactions.common.errors.updateFilters']
             );
+        });
+    });
+
+    describe('CDN translations cache', () => {
+        const cdnTranslationsUrl = 'https://cdn.example/translations';
+        const createSources = () => ({
+            defaultTranslations: sdkEnglishTranslations,
+            localeTranslations: {
+                'de-DE': Promise.resolve(sdkGermanTranslations),
+                'en-US': Promise.resolve(sdkEnglishTranslations),
+            },
+        });
+
+        const createFetchMock = () =>
+            vi.fn().mockImplementation(async () => new Response(JSON.stringify({}), { headers: { 'Content-Type': 'application/json' } }));
+
+        test('requests a catalog once and reuses the cached response for repeated loads of the same locale', async () => {
+            vi.stubEnv('VITE_LOCAL_ASSETS', '');
+            const fetchMock = createFetchMock();
+            vi.stubGlobal('fetch', fetchMock);
+
+            const localization = new Localization('de-DE', cdnTranslationsUrl, createSources());
+
+            // Mimic Core.setOptions, which re-assigns the same locale and customTranslations right after construction.
+            localization.locale = 'de-DE';
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(String(fetchMock.mock.calls[0]?.[0])).toBe(`${cdnTranslationsUrl}/de-DE.json`);
+
+            // No-op requests (same locale and customTranslations) reuse the cached response.
+            localization.locale = 'de-DE';
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+
+            // A locale change requests the new catalog once.
+            localization.locale = 'fr-FR';
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+            expect(String(fetchMock.mock.calls[1]?.[0])).toBe(`${cdnTranslationsUrl}/fr-FR.json`);
+
+            // Switching back to a locale whose catalog is still cached does not hit the CDN again.
+            localization.locale = 'de-DE';
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+        });
+
+        test('reuses the cached response while customTranslations changes reload the catalog', async () => {
+            vi.stubEnv('VITE_LOCAL_ASSETS', '');
+            const fetchMock = createFetchMock();
+            vi.stubGlobal('fetch', fetchMock);
+
+            const localization = new Localization('de-DE', cdnTranslationsUrl, createSources());
+
+            localization.locale = 'de-DE';
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+
+            localization.customTranslations = { 'de-DE': { [translationKey]: 'custom' } };
+
+            await localization.ready;
+
+            expect(localization.get(translationKey)).toBe('custom');
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+        });
+
+        test('expires the cached response after the translations cache TTL and requests the catalog again', async () => {
+            vi.stubEnv('VITE_LOCAL_ASSETS', '');
+
+            let cdnContentVersion = 0;
+            const fetchMock = vi.fn().mockImplementation(
+                async () =>
+                    new Response(JSON.stringify({ [translationKey]: `cdn-v${++cdnContentVersion}` }), {
+                        headers: { 'Content-Type': 'application/json' },
+                    })
+            );
+
+            vi.stubGlobal('fetch', fetchMock);
+
+            vi.useFakeTimers();
+
+            const localization = new Localization('de-DE', cdnTranslationsUrl, createSources());
+
+            localization.locale = 'de-DE';
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(localization.get(translationKey)).toBe('cdn-v1');
+
+            // A reload within the TTL reuses the cached response.
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+
+            // Once the TTL has passed, the next reload requests the catalog again.
+            vi.advanceTimersByTime(DEFAULT_TRANSLATIONS_CACHE_TTL);
+
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+            expect(localization.get(translationKey)).toBe('cdn-v2');
+        });
+
+        test('requests the catalog again after the cache is invalidated', async () => {
+            vi.stubEnv('VITE_LOCAL_ASSETS', '');
+
+            let cdnContentVersion = 0;
+            const fetchMock = vi.fn().mockImplementation(
+                async () =>
+                    new Response(JSON.stringify({ [translationKey]: `cdn-v${++cdnContentVersion}` }), {
+                        headers: { 'Content-Type': 'application/json' },
+                    })
+            );
+
+            vi.stubGlobal('fetch', fetchMock);
+
+            const localization = new Localization('de-DE', cdnTranslationsUrl, createSources());
+
+            localization.locale = 'de-DE';
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(localization.get(translationKey)).toBe('cdn-v1');
+
+            invalidateTranslationsCache();
+
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+            expect(localization.get(translationKey)).toBe('cdn-v2');
         });
     });
 });

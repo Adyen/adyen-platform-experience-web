@@ -56,6 +56,7 @@
     "capital.offer.common.errors.unavailable": "Vi kunne ikke laste inn finanstilbud.",
     "capital.offer.common.noOfferDescription": "Vi oppdaterer finanstilbudene våre regelmessig, så kom gjerne tilbake igjen senere.",
     "capital.offer.common.noOfferTitle": "Ingen tilbud er tilgjengelige for øyeblikket",
+    "capital.offer.selection.actions.goBack": "Gå tilbake",
     "capital.offer.selection.actions.reviewOffer": "Gå gjennom forespørselen",
     "capital.offer.selection.actions.reviewOffer.states.loading": "Laster inn",
     "capital.offer.selection.earlyRenewal.amountToReceive": "Beløp du mottat",
