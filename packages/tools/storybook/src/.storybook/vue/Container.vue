@@ -51,7 +51,14 @@ const configuredAppearance = computed<Appearance>(() => ({
 }));
 
 const componentPropsWithoutCoreOptions = computed(() => {
-    const { coreOptions: _, ...rest } = props.componentProps ?? {};
+    const { coreOptions: _, density, ...rest } = props.componentProps ?? {};
+    if (density) {
+        const appearance = {
+            ...(rest.appearance as Record<string, any>),
+            density: typeof density === 'string' ? { dataGrid: density } : density,
+        };
+        return { ...rest, appearance };
+    }
     return rest;
 });
 

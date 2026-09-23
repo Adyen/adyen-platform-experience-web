@@ -24,6 +24,17 @@ export const Default: ElementStory<PayoutDetailsExternalProps> = {
     },
 };
 
+export const Condensed: ElementStory<PayoutDetailsExternalProps> = {
+    name: 'Condensed',
+    args: {
+        ...sharedArgs,
+        density: 'condensed',
+    },
+    parameters: {
+        msw: { ...PAYOUT_DETAILS_HANDLERS.default },
+    },
+};
+
 export const ErrorDetails: ElementStory<PayoutDetailsExternalProps> = {
     name: 'Error - Details',
     args: sharedArgs,

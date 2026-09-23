@@ -18,6 +18,14 @@ export const Default: ElementStory<PayoutsOverviewExternalProps> = {
     args: { mockedApi: true },
 };
 
+export const Condensed: ElementStory<PayoutsOverviewExternalProps> = {
+    name: 'Condensed',
+    args: {
+        mockedApi: true,
+        density: 'condensed',
+    },
+};
+
 export const SingleBalanceAccount: ElementStory<PayoutsOverviewExternalProps> = {
     name: 'Single balance account',
     args: { mockedApi: true },

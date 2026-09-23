@@ -1,9 +1,25 @@
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { CustomColumn } from './dataGrid';
 
+export type DensityMode = 'default' | 'condensed';
+
+export type ComponentDensity<Target extends string = string> = Partial<Record<Target, DensityMode>>;
+
+export type GlobalAppearance = {
+    illustrations?: 'hidden' | 'visible';
+    titles?: 'hidden' | 'visible';
+};
+
+export type ComponentAppearance<Target extends string = never> = {
+    illustrations?: 'hidden' | 'visible';
+    titles?: 'hidden' | 'visible';
+    density?: [Target] extends [never] ? never : ComponentDensity<Target>;
+};
+
 export type Appearance = {
     illustrations?: 'hidden' | 'visible';
     titles?: 'hidden' | 'visible';
+    density?: Record<string, DensityMode | undefined>;
 };
 
 interface BaseCustomObject {

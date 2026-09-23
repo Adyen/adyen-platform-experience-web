@@ -1,7 +1,7 @@
 import type { Meta } from '@storybook/vue3';
 import type { PaymentLinksOverviewExternalProps } from '../../src';
 import PaymentLinksOverviewElement from '../../src/PaymentLinksOverview/PaymentLinksOverviewElement';
-import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, densityControl, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
 export const PaymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExternalProps>> = {
     title: 'Components/Pay by Link/Payment Links Overview',
@@ -11,13 +11,15 @@ export const PaymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExt
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         hideTitle: { control: 'boolean' },
         showDetails: { control: 'boolean' },
-        storeIds: { control: 'object' },
         preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
         allowLimitSelection: { control: 'boolean' },
+        density: densityControl(),
+        appearance: { table: { disable: true } },
     },
     args: {
         component: PaymentLinksOverviewElement,
         allowLimitSelection: true,
+        density: 'default',
     },
     parameters: {
         controls: {

@@ -3,24 +3,28 @@ import type { AssetOptions } from '../Assets/Assets';
 import type { SessionObject, SessionRequest } from '../ConfigContext.types';
 import type { AnalyticsConfig, CoreOptions, CustomTheme, DevEnvironment, onErrorHandler, ThemeMode, ThemeVariables } from '../types';
 import type { I18n } from './Context/types';
-import type { Appearance } from '@integration-components/types';
+import type { Appearance, ComponentAppearance, ComponentDensity, DensityMode, GlobalAppearance } from '@integration-components/types';
 
 export type {
+    AnalyticsConfig,
     Appearance,
+    ComponentAppearance,
+    ComponentDensity,
     CoreOptions,
     CustomTheme,
+    DensityMode,
     DevEnvironment,
+    GlobalAppearance,
     onErrorHandler,
-    AnalyticsConfig,
     SessionObject,
     SessionRequest,
     ThemeMode,
     ThemeVariables,
 };
 
-export interface UIElementProps {
+export interface UIElementProps<Target extends string = string> {
     core: CoreInstance;
-    appearance?: Appearance;
+    appearance?: ComponentAppearance<Target>;
 }
 
 export interface CoreInstance {
