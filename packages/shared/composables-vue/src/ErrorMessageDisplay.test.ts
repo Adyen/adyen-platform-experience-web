@@ -18,6 +18,7 @@ vi.mock('@adyen/bento-vue3', async () => {
     };
 });
 vi.mock('@integration-components/core/vue', () => ({
+    getDomainTranslationKey: (domain: string, key: string) => `${domain}.${key}`,
     useCoreContext: vi.fn(),
 }));
 
@@ -25,6 +26,7 @@ test('does not pass an image to data overview errors when illustrations are hidd
     vi.mocked(useCoreContext).mockReturnValue({
         i18n: { get: vi.fn() } as unknown as ReturnType<typeof useCoreContext>['i18n'],
         appearance: { illustrations: 'hidden' },
+        translationDomain: 'transactions',
     });
 
     const target = document.createElement('div');
@@ -42,6 +44,7 @@ test('does not render illustrations when they are hidden globally', () => {
         i18n: { get: vi.fn() } as unknown as ReturnType<typeof useCoreContext>['i18n'],
         appearance: { illustrations: 'hidden' },
         getImageAsset,
+        translationDomain: 'transactions',
     });
 
     const target = document.createElement('div');
@@ -70,6 +73,7 @@ describe('ErrorMessageDisplay', () => {
             i18n,
             refreshComponent,
             getImageAsset,
+            translationDomain: 'transactions',
         } as unknown as ReturnType<typeof useCoreContext>);
     });
 
@@ -101,8 +105,8 @@ describe('ErrorMessageDisplay', () => {
 
     test('renders translated title and messages with the request ID', () => {
         const view = renderWithInfo({
-            title: 'common.errors.somethingWentWrong',
-            messages: ['common.errors.errorCode', 'common.errors.retry'],
+            title: 'transactions.common.errors.somethingWentWrong',
+            messages: ['transactions.common.errors.errorCode', 'transactions.common.errors.retry'],
             requestId: 'REQUEST-1',
         });
 
@@ -110,9 +114,9 @@ describe('ErrorMessageDisplay', () => {
         const title = children[1]!;
         const message = children[2]!;
 
-        expect((title.children as { default: () => string }).default()).toBe('common.errors.somethingWentWrong');
+        expect((title.children as { default: () => string }).default()).toBe('transactions.common.errors.somethingWentWrong');
         expect((message.children as { default: () => (VNode | string)[] }).default()).toEqual(
-            expect.arrayContaining(['common.errors.errorCode:REQUEST-1', 'common.errors.retry:REQUEST-1'])
+            expect.arrayContaining(['transactions.common.errors.errorCode:REQUEST-1', 'transactions.common.errors.retry:REQUEST-1'])
         );
     });
 
@@ -145,7 +149,7 @@ describe('ErrorMessageDisplay', () => {
                 refreshComponent: true,
             },
             {
-                dismissLabel: 'common.actions.close',
+                dismissLabel: 'transactions.common.actions.dismiss.labels.close',
                 onDismiss,
             }
         );
@@ -153,8 +157,8 @@ describe('ErrorMessageDisplay', () => {
         const buttonsContainer = (view().children as VNode[])[3]!;
         const [dismissButton, supportButton] = buttonsContainer.children as VNode[];
 
-        expect((dismissButton!.children as { default: () => string }).default()).toBe('common.actions.close');
-        expect((supportButton!.children as { default: () => string }).default()).toBe('common.actions.contactSupport.labels.reachOut');
+        expect((dismissButton!.children as { default: () => string }).default()).toBe('transactions.common.actions.dismiss.labels.close');
+        expect((supportButton!.children as { default: () => string }).default()).toBe('transactions.common.actions.contactSupport.labels.reachOut');
 
         dismissButton!.props?.onClick();
         supportButton!.props?.onClick();

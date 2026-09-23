@@ -1,10 +1,24 @@
 import Localization from './Localization';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { TranslationKey } from '../translations';
+import sdkGermanTranslations from '../../../../sdk/translations/de-DE.json' with { type: 'json' };
+import sdkEnglishTranslations from '../../../../sdk/translations/en-US.json' with { type: 'json' };
+import { DEFAULT_TRANSLATIONS_CACHE_TTL, invalidateTranslationsCache } from './translationCache';
 import { SUPPORTED_LOCALES } from './constants/localization';
 
 describe('Localization', () => {
     const translationKey = 'abc' as TranslationKey;
+
+    // The translations cache is shared module-wide, so every test starts with a clean cache.
+    beforeEach(() => {
+        invalidateTranslationsCache();
+    });
+
+    afterEach(() => {
+        vi.unstubAllEnvs();
+        vi.unstubAllGlobals();
+        vi.useRealTimers();
+    });
 
     describe('constructor', () => {
         test('initializes supportedLocales as a copy of SUPPORTED_LOCALES', () => {
@@ -92,106 +106,277 @@ describe('Localization', () => {
 
             expect(lang.get(translationKey)).toBe(translationKey);
         });
+    });
 
-        describe('backward compatibility with swapConfig', () => {
-            test('returns custom translation when user provides old key that maps to new key', async () => {
-                const lang = new Localization('en-US');
-
-                // User provides translation using the old key "contactSupport"
-                lang.customTranslations = {
-                    'en-US': {
-                        contactSupport: 'Call us now',
-                    } as unknown as Record<TranslationKey, string>,
-                };
-
-                await lang.ready;
-
-                const result = lang.get('capital.common.actions.contactSupport' as TranslationKey);
-                expect(result).toBe('Call us now');
+    describe('getTranslationFamily', () => {
+        test('indexes exact counts and refreshes the index when the locale changes', async () => {
+            const localization = new Localization('de-DE', '', {
+                defaultTranslations: {
+                    items: 'Items',
+                    items__0: 'No items',
+                    items__1: 'One item',
+                    items__plural: '%{count} items',
+                },
+                localeTranslations: {
+                    'de-DE': Promise.resolve({
+                        items__2: 'Zwei Artikel',
+                        items__3: 'Drei Artikel',
+                        items__other: 'Other items',
+                    }),
+                    'en-US': Promise.resolve({}),
+                },
             });
 
-            test('returns translation normally when new key is used', async () => {
-                const lang = new Localization('en-US');
+            await localization.ready;
 
-                // User provides translation using the new key
-                lang.customTranslations = {
-                    'en-US': {
-                        'capital.common.actions.contactSupport': 'Get help now',
-                    },
-                };
+            const germanFamily = localization.getTranslationFamily('items');
 
-                await lang.ready;
-
-                const result = lang.get('capital.common.actions.contactSupport' as TranslationKey);
-                expect(result).toBe('Get help now');
+            expect(germanFamily).toEqual({
+                base: 'Items',
+                zero: 'No items',
+                one: 'One item',
+                plural: '%{count} items',
+                unsupportedExactCounts: [2, 3],
             });
 
-            test('returns translation normally if custom translation is missing', async () => {
-                const lang = new Localization('en-US');
-                await lang.ready;
+            germanFamily.unsupportedExactCounts.push(99);
+            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([2, 3]);
 
-                const result = lang.get('capital.common.actions.contactSupport' as TranslationKey);
-                expect(result).toBe('Contact support');
+            localization.locale = 'en-US';
+            await localization.ready;
+
+            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([]);
+
+            localization.customTranslations = {
+                'en-US': {
+                    ['items__4' as TranslationKey]: 'Four items',
+                },
+            };
+            await localization.ready;
+
+            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([4]);
+
+            localization.customTranslations = undefined;
+            await localization.ready;
+
+            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([]);
+        });
+    });
+
+    describe('SDK translation sources', () => {
+        test('loads SDK locale catalog and falls back to English for untranslated keys', async () => {
+            const englishFallbackKey = 'transactions.common.errors.updateFilters';
+            const translationKey = 'capital.common.errors.unsupportedRegion';
+            const germanTranslationsWithoutFallbackKey: Record<string, string> = { ...sdkGermanTranslations };
+
+            delete germanTranslationsWithoutFallbackKey[englishFallbackKey];
+
+            const localization = new Localization('de-DE', '', {
+                defaultTranslations: sdkEnglishTranslations,
+                localeTranslations: {
+                    'de-DE': Promise.resolve(germanTranslationsWithoutFallbackKey),
+                    'en-US': Promise.resolve(sdkEnglishTranslations),
+                },
             });
 
-            test('prioritizes new key custom translation over old key custom translation', async () => {
-                const lang = new Localization('en-US');
+            await localization.ready;
 
-                lang.customTranslations = {
-                    'en-US': {
-                        'capital.common.actions.contactSupport': 'New Translation',
-                        contactSupport: 'Old Translation',
-                    } as unknown as Record<TranslationKey, string>,
-                };
+            expect(localization.get(englishFallbackKey)).toBe(sdkEnglishTranslations[englishFallbackKey]);
+            expect(localization.get(translationKey)).toBe(sdkGermanTranslations[translationKey]);
+        });
 
-                await lang.ready;
+        test('loads SDK locale catalogs from the CDN before bundled catalogs', async () => {
+            vi.stubEnv('VITE_LOCAL_ASSETS', '');
+            const fetch = vi.fn().mockResolvedValue(
+                new Response(JSON.stringify({ 'transactions.common.errors.updateFilters': 'CDN translation' }), {
+                    headers: { 'Content-Type': 'application/json' },
+                })
+            );
+            vi.stubGlobal('fetch', fetch);
 
-                const result = lang.get('capital.common.actions.contactSupport' as TranslationKey);
-                expect(result).toBe('New Translation');
+            const localization = new Localization('de-DE', 'https://cdn.example/translations', {
+                defaultTranslations: sdkEnglishTranslations,
+                localeTranslations: {
+                    'de-DE': Promise.resolve(sdkGermanTranslations),
+                    'en-US': Promise.resolve(sdkEnglishTranslations),
+                },
             });
 
-            test('warns when falling back to a deprecated key', async () => {
-                const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-                const lang = new Localization('en-US');
+            await localization.ready;
 
-                lang.customTranslations = {
-                    'en-US': {
-                        contactSupport: 'Call us now',
-                    } as unknown as Record<TranslationKey, string>,
-                };
+            expect(String(fetch.mock.calls[0]?.[0])).toBe('https://cdn.example/translations/de-DE.json');
+            expect(localization.get('transactions.common.errors.updateFilters' as TranslationKey)).toBe('CDN translation');
+        });
 
-                await lang.ready;
+        test('falls back to bundled SDK locale catalogs when CDN loading fails', async () => {
+            vi.stubEnv('VITE_LOCAL_ASSETS', '');
+            vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('CDN unavailable')));
 
-                lang.get('capital.common.actions.contactSupport' as TranslationKey);
-
-                expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('Deprecated translation key detected: "contactSupport"'));
-
-                consoleWarnSpy.mockRestore();
+            const localization = new Localization('de-DE', 'https://cdn.example/translations', {
+                defaultTranslations: sdkEnglishTranslations,
+                localeTranslations: {
+                    'de-DE': Promise.resolve(sdkGermanTranslations),
+                    'en-US': Promise.resolve(sdkEnglishTranslations),
+                },
             });
 
-            test('does not check swapConfig for 1:1 mappings', async () => {
-                const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-                const lang = new Localization('en-US');
+            await localization.ready;
 
-                // "capital.actionNeeded" maps to itself in swapConfig (1:1 mapping)
-                lang.customTranslations = {
-                    'en-US': {
-                        ['capital.actionNeeded' as TranslationKey]: 'Action Required',
-                    },
-                };
+            expect(localization.get('transactions.common.errors.updateFilters' as TranslationKey)).toBe(
+                sdkGermanTranslations['transactions.common.errors.updateFilters']
+            );
+        });
+    });
 
-                await lang.ready;
+    describe('CDN translations cache', () => {
+        const cdnTranslationsUrl = 'https://cdn.example/translations';
+        const createSources = () => ({
+            defaultTranslations: sdkEnglishTranslations,
+            localeTranslations: {
+                'de-DE': Promise.resolve(sdkGermanTranslations),
+                'en-US': Promise.resolve(sdkEnglishTranslations),
+            },
+        });
 
-                const result = lang.get('capital.actionNeeded' as TranslationKey);
+        const createFetchMock = () =>
+            vi.fn().mockImplementation(async () => new Response(JSON.stringify({}), { headers: { 'Content-Type': 'application/json' } }));
 
-                // Should return the custom translation
-                expect(result).toBe('Action Required');
+        test('requests a catalog once and reuses the cached response for repeated loads of the same locale', async () => {
+            vi.stubEnv('VITE_LOCAL_ASSETS', '');
+            const fetchMock = createFetchMock();
+            vi.stubGlobal('fetch', fetchMock);
 
-                // Should not emit deprecation warning for 1:1 mappings
-                expect(consoleWarnSpy).not.toHaveBeenCalled();
+            const localization = new Localization('de-DE', cdnTranslationsUrl, createSources());
 
-                consoleWarnSpy.mockRestore();
-            });
+            // Mimic Core.setOptions, which re-assigns the same locale and customTranslations right after construction.
+            localization.locale = 'de-DE';
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(String(fetchMock.mock.calls[0]?.[0])).toBe(`${cdnTranslationsUrl}/de-DE.json`);
+
+            // No-op requests (same locale and customTranslations) reuse the cached response.
+            localization.locale = 'de-DE';
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+
+            // A locale change requests the new catalog once.
+            localization.locale = 'fr-FR';
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+            expect(String(fetchMock.mock.calls[1]?.[0])).toBe(`${cdnTranslationsUrl}/fr-FR.json`);
+
+            // Switching back to a locale whose catalog is still cached does not hit the CDN again.
+            localization.locale = 'de-DE';
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+        });
+
+        test('reuses the cached response while customTranslations changes reload the catalog', async () => {
+            vi.stubEnv('VITE_LOCAL_ASSETS', '');
+            const fetchMock = createFetchMock();
+            vi.stubGlobal('fetch', fetchMock);
+
+            const localization = new Localization('de-DE', cdnTranslationsUrl, createSources());
+
+            localization.locale = 'de-DE';
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+
+            localization.customTranslations = { 'de-DE': { [translationKey]: 'custom' } };
+
+            await localization.ready;
+
+            expect(localization.get(translationKey)).toBe('custom');
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+        });
+
+        test('expires the cached response after the translations cache TTL and requests the catalog again', async () => {
+            vi.stubEnv('VITE_LOCAL_ASSETS', '');
+
+            let cdnContentVersion = 0;
+            const fetchMock = vi.fn().mockImplementation(
+                async () =>
+                    new Response(JSON.stringify({ [translationKey]: `cdn-v${++cdnContentVersion}` }), {
+                        headers: { 'Content-Type': 'application/json' },
+                    })
+            );
+
+            vi.stubGlobal('fetch', fetchMock);
+
+            vi.useFakeTimers();
+
+            const localization = new Localization('de-DE', cdnTranslationsUrl, createSources());
+
+            localization.locale = 'de-DE';
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(localization.get(translationKey)).toBe('cdn-v1');
+
+            // A reload within the TTL reuses the cached response.
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+
+            // Once the TTL has passed, the next reload requests the catalog again.
+            vi.advanceTimersByTime(DEFAULT_TRANSLATIONS_CACHE_TTL);
+
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+            expect(localization.get(translationKey)).toBe('cdn-v2');
+        });
+
+        test('requests the catalog again after the cache is invalidated', async () => {
+            vi.stubEnv('VITE_LOCAL_ASSETS', '');
+
+            let cdnContentVersion = 0;
+            const fetchMock = vi.fn().mockImplementation(
+                async () =>
+                    new Response(JSON.stringify({ [translationKey]: `cdn-v${++cdnContentVersion}` }), {
+                        headers: { 'Content-Type': 'application/json' },
+                    })
+            );
+
+            vi.stubGlobal('fetch', fetchMock);
+
+            const localization = new Localization('de-DE', cdnTranslationsUrl, createSources());
+
+            localization.locale = 'de-DE';
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(localization.get(translationKey)).toBe('cdn-v1');
+
+            invalidateTranslationsCache();
+
+            localization.customTranslations = undefined;
+
+            await localization.ready;
+
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+            expect(localization.get(translationKey)).toBe('cdn-v2');
         });
     });
 });

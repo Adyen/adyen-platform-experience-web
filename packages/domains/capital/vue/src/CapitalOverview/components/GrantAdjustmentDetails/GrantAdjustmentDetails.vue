@@ -24,7 +24,7 @@ const { i18n } = useCoreContext();
                 :description="props.headerSubtitleKey ? i18n.get(props.headerSubtitleKey) : undefined"
                 variant="component"
             />
-            <BentoButton variant="tertiary" :aria-label="i18n.get('common.actions.dismiss.labels.dismiss')" @click="props.onDetailsClose">
+            <BentoButton variant="tertiary" :aria-label="i18n.get('capital.common.actions.dismiss.labels.dismiss')" @click="props.onDetailsClose">
                 <CrossIcon />
             </BentoButton>
         </div>

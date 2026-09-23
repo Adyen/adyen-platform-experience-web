@@ -32,7 +32,7 @@ test('returns no appearance without global or component options', () => {
 });
 
 test('exposes reactive appearance through the core context value', () => {
-    const props = shallowReactive<CoreProviderProps>({});
+    const props = shallowReactive<CoreProviderProps>({ translationDomain: 'transactions' });
     const coreContext = createCoreContextValue(props);
     const illustrationsHidden = computed(() => coreContext.appearance?.illustrations === 'hidden');
     const titlesHidden = computed(() => coreContext.appearance?.titles === 'hidden');

@@ -137,7 +137,7 @@ const emptyStateProps = computed(() => ({
     image: hideIllustrations.value ? undefined : ('no-results-found' as const),
     variant: 'embedded' as const,
     title: i18n.get('payouts.overview.errors.listEmpty'),
-    description: i18n.get('common.errors.updateFilters'),
+    description: i18n.get('payouts.common.errors.updateFilters'),
 }));
 
 function handleNavigate(page: number) {
