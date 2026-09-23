@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { sameValue } from './compare';
+import { isShallowEqual, sameValue } from './compare';
 
 describe('sameValue', () => {
     test('should return `true` if both arguments are NaN (unlike strict equality)', () => {
@@ -57,5 +57,32 @@ describe('sameValue', () => {
             expect(value === value).toBe(true);
             expect(sameValue(value, value)).toBe(true);
         });
+    });
+});
+
+describe('isShallowEqual', () => {
+    test('returns true for the same object or two objects with equal primitive properties', () => {
+        const value = { illustrations: 'hidden' as const, titles: 'visible' as const };
+
+        expect(isShallowEqual(value, value)).toBe(true);
+        expect(isShallowEqual(value, { illustrations: 'hidden', titles: 'visible' })).toBe(true);
+    });
+
+    test('returns false when a property value or property name differs', () => {
+        expect(isShallowEqual({ illustrations: 'hidden' }, { illustrations: 'visible' })).toBe(false);
+        expect(isShallowEqual({ illustrations: undefined }, { titles: undefined })).toBe(false);
+    });
+
+    test('compares nested objects by reference', () => {
+        const nested = { dataGrid: 'condensed' };
+
+        expect(isShallowEqual({ density: nested }, { density: nested })).toBe(true);
+        expect(isShallowEqual({ density: nested }, { density: { dataGrid: 'condensed' } })).toBe(false);
+    });
+
+    test('handles nullish values', () => {
+        expect(isShallowEqual(undefined, undefined)).toBe(true);
+        expect(isShallowEqual(null, null)).toBe(true);
+        expect(isShallowEqual(undefined, {})).toBe(false);
     });
 });

@@ -1,7 +1,7 @@
-import { createApp, h, reactive, ref, type App, type Component } from 'vue';
+import { createApp, h, reactive, ref, shallowRef, type App, type Component } from 'vue';
 import { createI18n as createVueI18n } from 'vue-i18n';
-import type { ExternalComponentType } from '@integration-components/types';
-import { uuid } from '@integration-components/utils';
+import type { Appearance, ExternalComponentType } from '@integration-components/types';
+import { isShallowEqual, uuid } from '@integration-components/utils';
 import UIElementProvider from './UIElementProvider.vue';
 
 export const createRefreshContext = () => {
@@ -32,7 +32,7 @@ export class UIElement<Props extends Record<string, any>> {
     protected _component: Component;
     protected _componentName: ExternalComponentType;
     protected _core: Props['core'];
-    protected _coreUpdateCount = ref(0);
+    protected _globalAppearance = shallowRef<Appearance | undefined>(undefined);
     protected _props: Omit<Props, 'core'>;
     protected _target: Element | null = null;
 
@@ -57,6 +57,7 @@ export class UIElement<Props extends Record<string, any>> {
         this._core = core;
         this._component = component;
         this._componentName = componentName;
+        this._globalAppearance.value = core?.options?.appearance;
         this._props = reactive(componentProps) as typeof componentProps;
 
         this.core?.registerComponent(this);
@@ -80,14 +81,13 @@ export class UIElement<Props extends Record<string, any>> {
             const core = this._core;
             const component = this._component;
             const componentName = this._componentName;
-            const coreUpdateCount = this._coreUpdateCount;
+            const globalAppearance = this._globalAppearance;
             const customClassNames = this.customClassNames;
 
             const { refresh, refreshCount } = createRefreshContext();
 
             this._app = createApp({
                 setup: () => () => {
-                    void coreUpdateCount.value;
                     const { appearance, ...componentProps } = props;
 
                     return h(
@@ -97,7 +97,7 @@ export class UIElement<Props extends Record<string, any>> {
                             componentName,
                             componentAppearance: appearance,
                             customClassNames,
-                            globalAppearance: core.options.appearance,
+                            globalAppearance: globalAppearance.value,
                             refreshComponent: refresh,
                         },
                         { default: () => h(component, { ...componentProps, key: refreshCount.value }) }
@@ -131,8 +131,13 @@ export class UIElement<Props extends Record<string, any>> {
     }
 
     public update(props: Partial<Props>): this {
-        if (props === this.core.options) {
-            this._coreUpdateCount.value++;
+        // When Core.update is called, it propagates its options to registered components via component.update(this.options).
+        // Check if the update is from Core and only update global appearance if it actually changed to avoid unnecessary re-renders.
+        if (props === this.core?.options) {
+            const nextAppearance = this.core?.options?.appearance;
+            if (!isShallowEqual(this._globalAppearance.value, nextAppearance)) {
+                this._globalAppearance.value = nextAppearance;
+            }
             return this;
         }
 
