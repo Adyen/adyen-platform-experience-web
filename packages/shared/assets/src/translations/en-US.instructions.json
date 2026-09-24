@@ -82,6 +82,8 @@
     "capital.overview.grants.item.details.a11y.label": "Label for a button that toggles the visibility of the details of a loan (a.k.a grant)",
     "capital.overview.grants.item.details.requestedFunds": "Label for an amount of funds requested by the user",
     "capital.overview.grants.item.progressBar.a11y.label": "Label for a progress bar that indicates progress of loan (a.k.a grant) repayment",
+    "capital.overview.grants.item.progressBar.label": "Label for a progress bar that indicates progress of loan (a.k.a grant) repayment",
+    "capital.overview.grants.item.progressBar.repaymentRatioTotal": "Text shown after the repaid amount on the repayment progress bar, indicating the total amount to be repaid",
     "capital.overview.grants.item.termEnds": "Label for the end date of a term",
     "capital.overview.grants.list.actions.newOffer": "Label for a button that enables the user to see a new offer",
     "capital.overview.grants.list.tabs.a11y.label": "Label for a group of tabs for navigating across different lists of grants",

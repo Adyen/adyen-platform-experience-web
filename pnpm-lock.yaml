@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@adyen/bento-vue3':
-      specifier: 2.1.1
-      version: 2.1.1
+      specifier: 2.3.0
+      version: 2.3.0
     '@adyen/ui-assets-icons-16':
       specifier: 7.9.3
       version: 7.9.3
@@ -46,7 +46,7 @@ catalogs:
 overrides:
   '@babel/core': 7.29.6
   '@babel/plugin-transform-modules-systemjs': 7.29.4
-  '@adyen/bento-design-tokens': 2.1.1
+  '@adyen/bento-design-tokens': 2.3.0
   '@adyen/bento-vue3>vue-router': 5.0.4
   '@types/node': 24.10.13
   axios: 1.18.0
@@ -82,8 +82,8 @@ importers:
         version: 3.41.0
     devDependencies:
       '@adyen/bento-design-tokens':
-        specifier: 2.1.1
-        version: 2.1.1
+        specifier: 2.3.0
+        version: 2.3.0
       '@changesets/cli':
         specifier: 3.0.0-next.6
         version: 3.0.0-next.6
@@ -293,7 +293,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 2.1.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 2.3.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/kyc-components':
         specifier: '>=4.0.0-compact.9 <4.0.0'
         version: 4.0.0-compact.9(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))
@@ -351,7 +351,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 2.1.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 2.3.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -400,7 +400,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 2.1.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 2.3.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -458,7 +458,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 2.1.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 2.3.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -510,7 +510,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 2.1.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 2.3.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -553,7 +553,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 2.1.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 2.3.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -626,7 +626,7 @@ importers:
     dependencies:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
-        version: 2.1.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        version: 2.3.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
@@ -656,8 +656,8 @@ importers:
         specifier: 0.4.0
         version: 0.4.0
       '@adyen/bento-design-tokens':
-        specifier: 2.1.1
-        version: 2.1.1
+        specifier: 2.3.0
+        version: 2.3.0
       '@integration-components/assets':
         specifier: workspace:*
         version: link:../assets
@@ -794,10 +794,10 @@ packages:
     resolution: {}
     engines: {node: '>=20', pnpm: '>=10.16.0'}
 
-  '@adyen/bento-design-tokens@2.1.1':
+  '@adyen/bento-design-tokens@2.3.0':
     resolution: {}
 
-  '@adyen/bento-vue3@2.1.1':
+  '@adyen/bento-vue3@2.3.0':
     resolution: {}
     peerDependencies:
       vue: ^3.2.47
@@ -6132,14 +6132,14 @@ snapshots:
 
   '@adyen/adyen-shared-web@0.4.0':
     dependencies:
-      '@adyen/bento-design-tokens': 2.1.1
+      '@adyen/bento-design-tokens': 2.3.0
       chroma-js: 3.2.0
 
-  '@adyen/bento-design-tokens@2.1.1': {}
+  '@adyen/bento-design-tokens@2.3.0': {}
 
-  '@adyen/bento-vue3@2.1.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)':
+  '@adyen/bento-vue3@2.3.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)':
     dependencies:
-      '@adyen/bento-design-tokens': 2.1.1
+      '@adyen/bento-design-tokens': 2.3.0
       '@floating-ui/core': 1.6.8
       '@floating-ui/vue': 1.0.7(vue@3.5.31(typescript@5.8.3))
       '@types/mdast': 3.0.15
