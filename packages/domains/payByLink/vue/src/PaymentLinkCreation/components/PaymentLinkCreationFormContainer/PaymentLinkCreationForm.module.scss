@@ -17,11 +17,8 @@
     flex-direction: column;
 }
 
-.buttonsContainer {
-    display: flex;
-    justify-content: flex-end;
-    gap: style.token(spacer-040);
-    margin-top: style.token(spacer-070);
+:global(.b-form-layout__actions) {
+    width: 100%;
 }
 
 .errorAlert,

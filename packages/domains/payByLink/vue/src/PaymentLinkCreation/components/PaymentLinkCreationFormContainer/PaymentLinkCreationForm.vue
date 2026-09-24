@@ -5,6 +5,7 @@ import {
     BentoAlert,
     BentoButton,
     BentoButtonActions,
+    BentoFormLayout,
     BentoStep,
     BentoStepper,
     BentoTypography,
@@ -205,65 +206,65 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
                     :aria-label="data.formStepsAriaLabel.value"
                     @update:index="handleStepSelect"
                 >
-                    <BentoStep v-for="item in data.stepperItems.value" :key="item.id">{{ item.label }}</BentoStep>
+                    <BentoStep v-for="item in data.stepperItems.value" :key="item.id">
+                        {{ item.label }}
+                    </BentoStep>
                 </BentoStepper>
             </div>
 
-            <div :class="styles.container">
-                <form @submit.prevent="handleSubmit">
-                    <FormStepRenderer
-                        :current-form-step="currentFormStepId"
-                        :select-items="data.storesSelectorItems.value"
-                        :settings-data="data.settingsData.value"
-                        :stores-data="data.storesData.value"
-                        :configuration-data="data.configurationData.value"
-                        :countries-data="data.countriesData.value"
-                        :country-dataset-data="data.countryDatasetData.value"
-                        :is-fetching-countries="data.isFetchingCountries.value"
-                        :is-fetching-country-dataset="data.isFetchingCountryDataset.value"
-                        :terms-and-conditions-provisioned="data.termsAndConditionsProvisioned.value"
-                        :can-modify-settings="data.canModifySettings.value"
-                        :is-same-address="isSameAddress"
-                        :on-contact-support="props.onContactSupport"
-                        @update:is-same-address="(value: boolean) => (isSameAddress = value)"
-                        @setup-terms-and-conditions="handleSetupTermsAndConditions"
-                    />
+            <BentoFormLayout form :loading="isSubmitting" @submit.prevent="handleSubmit">
+                <template v-if="isSubmitError" #error-message>
+                    {{ submitErrorTitle }}
+                    <ul v-if="mappedInvalidFields.length" :class="styles.invalidFieldsError">
+                        <li v-for="(message, index) in mappedInvalidFields" :key="index">
+                            {{ message }}
+                        </li>
+                    </ul>
+                    <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
+                        {{ i18n.get('payByLink.common.actions.contactSupport.labels.reachOut') }}
+                    </BentoButton>
+                </template>
 
-                    <BentoAlert v-if="showConfigurationError" :class="styles.errorAlert" type="critical" role="alert">
-                        {{ i18n.get('payByLink.common.errors.somethingWentWrong') }}
-                        <template #description>
-                            <span>{{ i18n.get('payByLink.creation.errors.unavailable') }}</span>
-                            <span>{{ i18n.get('payByLink.common.errors.retry') }}</span>
-                        </template>
-                    </BentoAlert>
+                <FormStepRenderer
+                    :current-form-step="currentFormStepId"
+                    :select-items="data.storesSelectorItems.value"
+                    :settings-data="data.settingsData.value"
+                    :stores-data="data.storesData.value"
+                    :configuration-data="data.configurationData.value"
+                    :countries-data="data.countriesData.value"
+                    :country-dataset-data="data.countryDatasetData.value"
+                    :is-fetching-countries="data.isFetchingCountries.value"
+                    :is-fetching-country-dataset="data.isFetchingCountryDataset.value"
+                    :terms-and-conditions-provisioned="data.termsAndConditionsProvisioned.value"
+                    :can-modify-settings="data.canModifySettings.value"
+                    :is-same-address="isSameAddress"
+                    :on-contact-support="props.onContactSupport"
+                    @update:is-same-address="(value: boolean) => (isSameAddress = value)"
+                    @setup-terms-and-conditions="handleSetupTermsAndConditions"
+                />
 
-                    <BentoAlert v-if="accountIsMisconfigured" :class="styles.warningAlert" type="warning" role="alert">
-                        {{ i18n.get('payByLink.common.errors.accountConfiguration') }}
-                        <template #description>
-                            <span>{{ i18n.get('payByLink.common.errors.contactSupport') }}</span>
-                            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                                {{ i18n.get('payByLink.common.actions.contactSupport.labels.reachOut') }}
-                            </BentoButton>
-                        </template>
-                    </BentoAlert>
+                <BentoAlert v-if="showConfigurationError" :class="styles.errorAlert" type="critical" role="alert">
+                    {{ i18n.get('payByLink.common.errors.somethingWentWrong') }}
+                    <template #description>
+                        <span>{{ i18n.get('payByLink.creation.errors.unavailable') }}</span>
+                        <span>{{ i18n.get('payByLink.common.errors.retry') }}</span>
+                    </template>
+                </BentoAlert>
 
-                    <BentoAlert v-if="isSubmitError" :class="styles.errorAlert" type="critical" role="alert">
-                        {{ submitErrorTitle }}
-                        <template #description>
-                            <ul v-if="mappedInvalidFields.length" :class="styles.invalidFieldsError">
-                                <li v-for="(message, index) in mappedInvalidFields" :key="index">{{ message }}</li>
-                            </ul>
-                            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                                {{ i18n.get('payByLink.common.actions.contactSupport.labels.reachOut') }}
-                            </BentoButton>
-                        </template>
-                    </BentoAlert>
+                <BentoAlert v-if="accountIsMisconfigured" :class="styles.warningAlert" type="warning" role="alert">
+                    {{ i18n.get('payByLink.common.errors.accountConfiguration') }}
+                    <template #description>
+                        <span>{{ i18n.get('payByLink.common.errors.contactSupport') }}</span>
+                        <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
+                            {{ i18n.get('payByLink.common.actions.contactSupport.labels.reachOut') }}
+                        </BentoButton>
+                    </template>
+                </BentoAlert>
 
-                    <div :class="styles.buttonsContainer">
-                        <BentoButtonActions :actions="buttonActions" layout="buttons-end" />
-                    </div>
-                </form>
-            </div>
+                <template #actions-right>
+                    <BentoButtonActions :actions="buttonActions" layout="buttons-end" />
+                </template>
+            </BentoFormLayout>
         </template>
     </div>
 </template>

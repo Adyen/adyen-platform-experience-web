@@ -45,15 +45,13 @@ export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternal
     name: 'With props to sub-components',
     args: {
         mockedApi: true,
+        hideTitle: true,
         paymentLinkCreation: {
             fieldsConfig: {
                 data: {
                     reference: 'Prefilled Merchant Reference',
                 },
             },
-        },
-        paymentLinkSettings: {
-            hideTitle: true,
         },
     },
 };

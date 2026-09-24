@@ -1,11 +1,5 @@
 @use '@integration-components/style' as style;
 
-.shopperNameContainer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: style.token(spacer-060);
-}
-
 .sameAddressCheckbox {
     display: flex;
     align-items: center;
