@@ -58,10 +58,16 @@ function resolveExportsWithChecker(indexPath: string, allowJs: boolean): string[
         rootNames: [indexPath],
         options: {
             allowJs,
+            // Export enumeration is structural: it needs neither the default libs
+            // nor the ambient @types packages auto-included from node_modules. With
+            // them enabled every program loaded ~200 extra files (slow enough to
+            // time out tests on CI) and depended on whatever happened to be installed.
+            lib: [],
             module: ts.ModuleKind.ESNext,
             moduleResolution: ts.ModuleResolutionKind.Bundler,
             skipLibCheck: true,
             target: ts.ScriptTarget.ESNext,
+            types: [],
         },
     });
     const sourceFile = program.getSourceFile(indexPath);

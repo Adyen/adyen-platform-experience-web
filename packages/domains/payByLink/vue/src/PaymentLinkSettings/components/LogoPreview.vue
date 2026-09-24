@@ -24,7 +24,9 @@ function onRemove() {
 
 <template>
     <div :class="styles.previewContainer">
-        <BentoTypography variant="body" el="span" stronger>{{ i18n.get(LogoLabel[props.logoType]) }}</BentoTypography>
+        <BentoTypography variant="body" el="span" stronger>
+            {{ i18n.get(LogoLabel[props.logoType]) }}
+        </BentoTypography>
         <img :src="logoUrl" :alt="i18n.get(LogoLabel[props.logoType])" :class="styles.previewImage" />
         <BentoButton :disabled="props.disabled" variant="secondary" :class="styles.previewRemove" @click="onRemove">
             {{ i18n.get('payByLink.settings.theme.action.logo.remove') }}

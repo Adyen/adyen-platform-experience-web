@@ -10,8 +10,8 @@ const { refresh, refreshCount } = createRefreshContext();
 <template>
     <UIElementProvider :core="props.core" component-name="transactionDetails" :component-appearance="props.appearance" :refresh-component="refresh">
         <TransactionDetailsContainer
-            :key="refreshCount"
             :id="props.id"
+            :key="refreshCount"
             :data-customization="props.dataCustomization"
             :on-contact-support="props.onContactSupport"
             :hide-title="props.hideTitle"

@@ -70,8 +70,8 @@ function onUploadError(hasError: boolean) {
         :label="i18n.get('disputes.common.inputs.file.labels.default')"
         :max-count="1"
         :required="props.required"
+        condensed
         @change="onChange"
         @error:upload="onUploadError"
-        condensed
     />
 </template>

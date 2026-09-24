@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-/* eslint-disable vue/one-component-per-file */
+
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { createApp, defineComponent, h, type App } from 'vue';
 import CoreProvider from './CoreProvider.vue';

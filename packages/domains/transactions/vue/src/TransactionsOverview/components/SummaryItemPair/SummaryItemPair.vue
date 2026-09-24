@@ -42,8 +42,10 @@ const getValueStyle = (index: number) => {
         <div :class="styles.pair">
             <div>
                 <div :class="styles.labelWrap">
-                    <BentoTypography variant="body">{{ label1 }}</BentoTypography>
-                    <BentoInfoIcon v-if="tooltip1" :tooltipText="tooltip1" />
+                    <BentoTypography variant="body">
+                        {{ label1 }}
+                    </BentoTypography>
+                    <BentoInfoIcon v-if="tooltip1" :tooltip-text="tooltip1" />
                     <span v-else aria-hidden="true" :class="styles.tooltipPlaceholder" />
                 </div>
                 <div :class="styles.itemValueContainer" :style="getValueStyle(0)">
@@ -56,8 +58,10 @@ const getValueStyle = (index: number) => {
         <div :class="styles.pair">
             <div>
                 <div :class="styles.labelWrap">
-                    <BentoTypography variant="body">{{ label2 }}</BentoTypography>
-                    <BentoInfoIcon v-if="tooltip2" :tooltipText="tooltip2" />
+                    <BentoTypography variant="body">
+                        {{ label2 }}
+                    </BentoTypography>
+                    <BentoInfoIcon v-if="tooltip2" :tooltip-text="tooltip2" />
                     <span v-else aria-hidden="true" :class="styles.tooltipPlaceholder" />
                 </div>
                 <div :class="styles.itemValueContainer" :style="getValueStyle(1)">

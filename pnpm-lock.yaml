@@ -71,7 +71,7 @@ overrides:
   webpack: ^5.106.2
   ws: 8.21.0
 
-pnpmfileChecksum: sha256-uqUjxjMT4bvZN8bIa9IwAM3O6WDWkrgK7Nz9UJ/u64Q=
+pnpmfileChecksum: sha256-4QJLW1WMdmfRh0Y9I/8q8QoQiUFlXKJWC4Iby+xffGE=
 
 importers:
 

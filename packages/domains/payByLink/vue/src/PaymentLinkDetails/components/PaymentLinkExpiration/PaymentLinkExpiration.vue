@@ -57,7 +57,9 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
             {{ i18n.get('payByLink.details.expiration.title') }}
         </BentoTypography>
 
-        <BentoTypography variant="body">{{ i18n.get('payByLink.details.expiration.description') }}</BentoTypography>
+        <BentoTypography variant="body">
+            {{ i18n.get('payByLink.details.expiration.description') }}
+        </BentoTypography>
 
         <BentoAlert v-if="hasError" type="critical" role="alert">
             {{ i18n.get('payByLink.details.expiration.errorTitle') }}
