@@ -300,6 +300,9 @@ importers:
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
+      '@adyen/ui-assets-icons-40':
+        specifier: 'catalog:'
+        version: 4.9.2(vue@3.5.31(typescript@5.8.3))
       '@integration-components/composables-vue':
         specifier: workspace:*
         version: link:../../shared/composables-vue

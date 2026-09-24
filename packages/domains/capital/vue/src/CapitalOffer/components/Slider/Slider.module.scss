@@ -6,7 +6,7 @@ $adyen-pe-slider-thumb-background-color: style.token(color-background-primary);
 $adyen-pe-slider-thumb-border-color: style.token(color-background-inverse-primary);
 $adyen-pe-slider-thumb-size: style.token(spacer-070);
 $adyen-pe-slider-border-size: 3px;
-$adyen-pe-slider-border-radius: style.token(border-radius-m);
+$adyen-pe-slider-border-radius: style.token(border-radius-l);
 
 @mixin adyen-pe-slider-thumb-appearance {
     -webkit-appearance: none;
@@ -22,7 +22,7 @@ $adyen-pe-slider-border-radius: style.token(border-radius-m);
 
     &:hover,
     &:active {
-        background-color: $adyen-pe-slider-thumb-border-color;
+        background-color: style.token(color-background-primary);
     }
 }
 
@@ -38,11 +38,11 @@ $adyen-pe-slider-border-radius: style.token(border-radius-m);
 
     &:focus {
         &::-webkit-slider-thumb {
-            background-color: $adyen-pe-slider-thumb-border-color;
+            background-color: style.token(color-background-primary);
         }
 
         &::-moz-range-thumb {
-            background-color: $adyen-pe-slider-thumb-border-color;
+            background-color: style.token(color-background-primary);
         }
     }
 

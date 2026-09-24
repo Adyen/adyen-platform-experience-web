@@ -16,6 +16,7 @@
         "@adyen/bento-vue3": "catalog:",
         "@adyen/kyc-components": ">=4.0.0-compact.9 <4.0.0",
         "@adyen/ui-assets-icons-16": "catalog:",
+        "@adyen/ui-assets-icons-40": "catalog:",
         "@integration-components/composables-vue": "workspace:*",
         "@integration-components/core": "workspace:*",
         "@integration-components/sdk-internal": "workspace:*",

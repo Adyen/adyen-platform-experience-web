@@ -1,0 +1,23 @@
+@use '@integration-components/style' as style;
+
+.root {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+}
+
+.iconCritical {
+    color: style.token(color-label-critical);
+}
+
+.iconInformational {
+    color: style.token(color-label-highlight);
+}
+
+.actions {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: -16px;
+}
