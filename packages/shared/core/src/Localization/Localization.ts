@@ -9,7 +9,7 @@ import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './uti
 import { ALREADY_RESOLVED_PROMISE, createWatchlist, isNull, isNullish, isUndefined, noop, struct } from '@integration-components/utils';
 import { httpGet } from '../Http/http';
 import { SupportedLocales } from './types';
-import { translations_dev_assets } from '../translations/local';
+import { translationsDevAssets } from '../translations/local';
 
 export type LocalizationSources = Readonly<{
     defaultTranslations: Record<string, string>;
@@ -70,7 +70,7 @@ export default class Localization {
 
             if (!sources) {
                 return process.env.VITE_LOCAL_ASSETS
-                    ? Promise.resolve(translations_dev_assets[locale]!)
+                    ? Promise.resolve(translationsDevAssets[locale]!)
                     : getCachedTranslations(url, fetchTranslationsFromCdn);
             }
 

@@ -1,6 +1,6 @@
 import { ElementProps, getMySessionToken } from '@integration-components/testing/storybook-helpers';
 import { AdyenPlatformExperience } from '@integration-components/sdk-internal';
-import { CapitalOverviewMeta } from './meta';
+import { capitalOverviewMeta } from './meta';
 import { capitalOverviewHandlers } from '../../../mocks/mock-server';
 import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import type { Decorator, Meta, StoryObj } from '@storybook/vue3';
@@ -14,7 +14,7 @@ type ConditionalMountArgs = CapitalOverviewExternalProps &
 type GuardedCapitalState = 'isInUnsupportedRegion' | 'isUnqualified';
 
 const meta: Meta<ElementProps<typeof CapitalOverviewElement>> = {
-    ...CapitalOverviewMeta,
+    ...capitalOverviewMeta,
     title: 'Mocked/Capital/Capital Overview',
 };
 

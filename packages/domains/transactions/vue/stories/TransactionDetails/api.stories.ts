@@ -1,10 +1,10 @@
 import type { Meta } from '@storybook/vue3';
-import { TransactionDetailsMeta } from './meta';
+import { transactionDetailsMeta } from './meta';
 import type { TransactionDetailsExternalProps } from '../../src';
 import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT, SessionControls } from '@integration-components/testing/storybook-helpers';
 
 const meta: Meta<ElementProps<TransactionDetailsExternalProps>> = {
-    ...TransactionDetailsMeta,
+    ...transactionDetailsMeta,
     title: 'API-connected/Transactions/Transaction Details',
 };
 

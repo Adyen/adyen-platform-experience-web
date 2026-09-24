@@ -363,7 +363,7 @@ const passThroughRefundLockDeadlineCheckpoint = () => {
 
 const i18n = new Localization().i18n;
 
-const DownloadFields: Record<ITransactionExportColumn, (transaction: ITransaction) => string> = {
+const downloadFields: Record<ITransactionExportColumn, (transaction: ITransaction) => string> = {
     id: ({ id }) => id,
     balanceAccountId: ({ balanceAccountId }) => balanceAccountId,
     createdAt: ({ createdAt }) => `"${new Date(createdAt).toISOString()}"`,
@@ -491,7 +491,7 @@ export const transactionsMocks = [
         await delay(500);
         const { transactions } = fetchTransactionsForRequest(request);
         const columnsParam = new URLSearchParams(new URL(request.url).searchParams).getAll('columns');
-        const columns = (Object.keys(DownloadFields) as ITransactionExportColumn[]).filter(column => columnsParam.includes(column));
+        const columns = (Object.keys(downloadFields) as ITransactionExportColumn[]).filter(column => columnsParam.includes(column));
 
         if (columns.length === 0 || transactions.length === 0) {
             return new HttpResponse(null, { status: 204 });
@@ -504,7 +504,7 @@ export const transactionsMocks = [
                           `${columns.join(',')}\r\n`,
                           ...transactions
                               .slice(0, 100)
-                              .map(transaction => `${columns.map(column => DownloadFields[column](transaction)).join(',')}\r\n`),
+                              .map(transaction => `${columns.map(column => downloadFields[column](transaction)).join(',')}\r\n`),
                       ]
                     : []
             ),

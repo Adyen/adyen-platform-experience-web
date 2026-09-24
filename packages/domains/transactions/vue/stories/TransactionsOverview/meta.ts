@@ -3,7 +3,7 @@ import type { TransactionsOverviewExternalProps } from '../../src';
 import TransactionsOverviewElement from '../../src/TransactionsOverview/TransactionsOverviewElement';
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
-export const TransactionsOverviewMeta: Meta<ElementProps<TransactionsOverviewExternalProps>> = {
+export const transactionsOverviewMeta: Meta<ElementProps<TransactionsOverviewExternalProps>> = {
     title: 'Components/Transactions/Transactions Overview',
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),

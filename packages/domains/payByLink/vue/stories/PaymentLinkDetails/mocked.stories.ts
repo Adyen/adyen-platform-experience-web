@@ -1,11 +1,11 @@
 import type { Meta } from '@storybook/vue3';
-import { PaymentLinkDetailsMeta } from './meta';
+import { paymentLinkDetailsMeta } from './meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { PaymentLinkDetailsExternalProps } from '../../src';
-import { PaymentLinkDetailsMockedResponses } from '../../../mocks/mock-server/payByLink';
+import { paymentLinkDetailsMockedResponses } from '../../../mocks/mock-server/payByLink';
 
 const meta: Meta<ElementProps<PaymentLinkDetailsExternalProps>> = {
-    ...PaymentLinkDetailsMeta,
+    ...paymentLinkDetailsMeta,
     title: 'Mocked/Pay by Link/Payment Link Details',
 };
 
@@ -49,7 +49,7 @@ export const Redacted: ElementStory<PaymentLinkDetailsExternalProps> = {
     },
     parameters: {
         msw: {
-            handlers: PaymentLinkDetailsMockedResponses.redacted,
+            handlers: paymentLinkDetailsMockedResponses.redacted,
         },
     },
 };
@@ -62,7 +62,7 @@ export const ErrorDetails: ElementStory<PaymentLinkDetailsExternalProps> = {
     },
     parameters: {
         msw: {
-            handlers: PaymentLinkDetailsMockedResponses.errorDetails,
+            handlers: paymentLinkDetailsMockedResponses.errorDetails,
         },
     },
 };
@@ -75,7 +75,7 @@ export const ErrorExpire: ElementStory<PaymentLinkDetailsExternalProps> = {
     },
     parameters: {
         msw: {
-            handlers: PaymentLinkDetailsMockedResponses.errorExpiration,
+            handlers: paymentLinkDetailsMockedResponses.errorExpiration,
         },
     },
 };

@@ -3,7 +3,7 @@ import type { DisputeManagementExternalProps } from '../../src';
 import DisputeManagementElement from '../../src/DisputeManagement/DisputeManagementElement';
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
-export const DisputeManagementMeta: Meta<ElementProps<DisputeManagementExternalProps>> = {
+export const disputeManagementMeta: Meta<ElementProps<DisputeManagementExternalProps>> = {
     title: 'Components/Disputes/Dispute Management',
     argTypes: {
         id: { type: 'string' },

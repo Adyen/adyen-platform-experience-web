@@ -5,7 +5,7 @@ import { ErrorTypes } from '../Http/utils';
 import { AUTO_REFRESH, MAX_AGE_MS } from './constants';
 import type { SessionObject, SessionRequest } from '../ConfigContext.types';
 import type { HttpOptions } from '../Http/types';
-import type { onErrorHandler } from '../types';
+import type { OnErrorHandler } from '../types';
 
 type _AuthSessionSpecification = SessionSpecification<SessionObject, Parameters<typeof _http>>;
 
@@ -16,7 +16,7 @@ type _AuthSessionSpecification = SessionSpecification<SessionObject, Parameters<
 // `declare` class fields.
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface AuthSessionSpecification {
-    errorHandler: onErrorHandler | null;
+    errorHandler: OnErrorHandler | null;
     readonly autoRefresh: _AuthSessionSpecification['autoRefresh'];
     readonly onRefresh: _AuthSessionSpecification['onRefresh'];
 }
