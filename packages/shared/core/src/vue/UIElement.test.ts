@@ -241,6 +241,24 @@ describe('UIElement', () => {
         expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
     });
 
+    test('forwards non-appearance options from Core.update to the component', async () => {
+        const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core, locale: 'en-US' }, 'transactions');
+
+        element.mount(document.createElement('div'));
+
+        const renderElement = rootComponent.setup();
+        expect(getComponentSubtree(renderElement()).props?.locale).toBe('en-US');
+
+        await core.update({ locale: 'de-DE', appearance: { illustrations: 'hidden' } });
+
+        const view = renderElement();
+        expect(getComponentSubtree(view).props?.locale).toBe('de-DE');
+        expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
+        expect(view.props?.globalAppearance).toEqual({ illustrations: 'hidden' });
+    });
+
     test('preserves component appearance when global appearance updates', async () => {
         const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
         const appearance = { illustrations: 'hidden' as const };

@@ -203,6 +203,8 @@ export class UIElement<Props extends Record<string, any>> {
             if (!isShallowEqual(this._globalAppearance.value, nextAppearance)) {
                 this._globalAppearance.value = nextAppearance;
             }
+            const { appearance: _appearance, core: _core, ...componentProps } = props;
+            Object.assign(this._props as Record<string, unknown>, componentProps);
         } else {
             const { core: _, ...componentProps } = props;
             Object.assign(this._props as Record<string, unknown>, componentProps);
