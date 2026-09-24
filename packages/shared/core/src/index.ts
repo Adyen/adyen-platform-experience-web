@@ -74,6 +74,7 @@ export type {
     ThemeMode,
     ThemeVariables,
 } from './types';
+export type { Appearance } from '@integration-components/types';
 
 export { Core } from './Core';
 export type { CdnFetcher, ManagedElement } from './Core';

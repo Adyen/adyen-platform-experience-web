@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createApp, type Component, type VNode } from 'vue';
 import { createI18n } from 'vue-i18n';
 import { UIElement } from './UIElement';
-import type { CoreOptions } from './types';
+import type { Appearance, CoreOptions } from './types';
 import deDE from '../../../../sdk/translations/de-DE.json' with { type: 'json' };
 import { SDK_BENTO_TRANSLATION_SOURCES, SDK_TRANSLATION_SOURCES } from '../../../../sdk/src/translations';
 import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
@@ -222,6 +222,97 @@ describe('UIElement', () => {
 
         await i18n.ready;
         expect(i18n.get('transactions.common.errors.updateFilters')).toBe(deDE['transactions.common.errors.updateFilters']);
+    });
+
+    test('reacts to global appearance updates from Core.update', async () => {
+        const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core }, 'transactions');
+
+        element.mount(document.createElement('div'));
+
+        const renderElement = rootComponent.setup();
+        expect(renderElement().props?.globalAppearance).toBeUndefined();
+
+        await core.update({ appearance: { illustrations: 'hidden' } });
+
+        const view = renderElement();
+        expect(view.props?.globalAppearance).toEqual({ illustrations: 'hidden' });
+        expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
+    });
+
+    test('forwards non-appearance options from Core.update to the component', async () => {
+        const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core, locale: 'en-US' }, 'transactions');
+
+        element.mount(document.createElement('div'));
+
+        const renderElement = rootComponent.setup();
+        expect(getComponentSubtree(renderElement()).props?.locale).toBe('en-US');
+
+        await core.update({ locale: 'de-DE', appearance: { illustrations: 'hidden' } });
+
+        const view = renderElement();
+        expect(getComponentSubtree(view).props?.locale).toBe('de-DE');
+        expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
+        expect(view.props?.globalAppearance).toEqual({ illustrations: 'hidden' });
+    });
+
+    test('preserves component appearance when global appearance updates', async () => {
+        const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
+        const appearance = { illustrations: 'hidden' as const };
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core, appearance }, 'transactions');
+
+        element.mount(document.createElement('div'));
+
+        const renderElement = rootComponent.setup();
+        expect(renderElement().props?.componentAppearance).toEqual(appearance);
+
+        await core.update({ appearance: { illustrations: 'visible' } });
+
+        const view = renderElement();
+        expect(view.props?.componentAppearance).toEqual(appearance);
+        expect(view.props?.globalAppearance).toEqual({ illustrations: 'visible' });
+        expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
+    });
+
+    test('applies a direct appearance update to the component appearance, never to the global', () => {
+        const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
+        const appearance: Appearance = { illustrations: 'visible' };
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core, appearance }, 'transactions');
+
+        element.mount(document.createElement('div'));
+
+        const renderElement = rootComponent.setup();
+        expect(renderElement().props?.componentAppearance).toEqual(appearance);
+
+        element.update({ appearance: { illustrations: 'hidden' } });
+
+        const view = renderElement();
+        expect(view.props?.componentAppearance).toEqual({ illustrations: 'hidden' }); // The component appearance updates.
+        expect(view.props?.globalAppearance).toBeUndefined(); // The global appearance stays with Core.
+        expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
+    });
+
+    test('clears the component appearance when a direct update provides an explicit undefined appearance', () => {
+        const core = new Core({ locale: 'en-US', appearance: { illustrations: 'hidden' }, onSessionCreate: vi.fn() });
+        const componentAppearance: Appearance = { titles: 'hidden' };
+        const component = { render: () => null } as Component;
+        const element = new UIElement(component, { core, appearance: componentAppearance }, 'transactions');
+
+        element.mount(document.createElement('div'));
+
+        const renderElement = rootComponent.setup();
+        expect(renderElement().props?.componentAppearance).toEqual(componentAppearance);
+
+        element.update({ appearance: undefined });
+
+        const view = renderElement();
+        expect(view.props?.componentAppearance).toBeUndefined(); // An explicit undefined clears the component appearance.
+        expect(view.props?.globalAppearance).toEqual({ illustrations: 'hidden' }); // The global appearance stays with Core.
     });
 
     test('registers and unregisters its mount target as a theme root', () => {

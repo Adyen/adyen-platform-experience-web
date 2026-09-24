@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import {
+    type Appearance,
     type CoreInstance,
     type SupportedLocales,
     type CoreOptions,
@@ -18,6 +19,8 @@ const props = defineProps<{
     componentProps?: Record<string, any>;
     locale?: SupportedLocales;
     fontFamily?: string;
+    illustrations?: Appearance['illustrations'];
+    titles?: Appearance['titles'];
     theme?: ThemeMode | 'story';
     themeDark?: boolean;
     themeVariables?: ThemeVariables;
@@ -40,6 +43,12 @@ const configuredThemeMode = computed<ThemeMode>(() => {
     if (props.theme && props.theme !== 'story') return props.theme;
     return storyCoreOptions.value.themeMode ?? 'light';
 });
+
+const configuredAppearance = computed<Appearance>(() => ({
+    ...storyCoreOptions.value.appearance,
+    ...(props.illustrations && { illustrations: props.illustrations }),
+    ...(props.titles && { titles: props.titles }),
+}));
 
 const componentPropsWithoutCoreOptions = computed(() => {
     const { coreOptions: _, ...rest } = props.componentProps ?? {};
@@ -75,6 +84,7 @@ async function initializeCore() {
             onSessionCreate: (_signal: AbortSignal) => getMySessionToken(props.session),
             ...storyCoreOptions.value,
             ...getThemeOptions(),
+            appearance: configuredAppearance.value,
         });
 
         core = await instance.initialize();
@@ -108,6 +118,17 @@ watch(
         };
         if (core) return core.update(nextOptions);
         pendingCoreOptions = nextOptions;
+    },
+    { deep: true }
+);
+
+// Kept separate from the theme watcher so that theme-only changes keep Core's
+// re-initialization short-circuit and do not re-render mounted components.
+watch(
+    configuredAppearance,
+    appearance => {
+        if (core) return core.update({ appearance });
+        pendingCoreOptions = { ...pendingCoreOptions, appearance };
     },
     { deep: true }
 );

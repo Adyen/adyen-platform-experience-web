@@ -161,15 +161,13 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
 
         const optionKeys = Object.keys(options);
         const hasOnlyThemeOptions = optionKeys.length > 0 && optionKeys.every(option => option === 'themeMode' || option === 'customTheme');
-        if (hasOnlyThemeOptions) {
-            return this;
-        }
+        if (hasOnlyThemeOptions) return this;
 
         await this.initialize();
 
         this.components.forEach(component => {
             if (component.core === this) {
-                component.update({ ...this.options });
+                component.update(this.options);
             }
         });
 

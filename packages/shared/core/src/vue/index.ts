@@ -1,16 +1,18 @@
 import '../theme/styles';
 
 export type {
-    CoreOptions,
+    AnalyticsConfig,
+    Appearance,
     CoreInstance,
+    CoreOptions,
+    CustomTheme,
     DevEnvironment,
     onErrorHandler,
-    AnalyticsConfig,
     SessionObject,
     SessionRequest,
     ThemeMode,
-    CustomTheme,
     ThemeVariables,
+    UIElementProps,
 } from './types';
 export type { SupportedLocales } from '../Localization/types';
 

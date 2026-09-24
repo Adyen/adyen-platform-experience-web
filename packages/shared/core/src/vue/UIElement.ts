@@ -1,7 +1,7 @@
-import { createApp, h, reactive, ref, type App, type Component } from 'vue';
+import { createApp, h, reactive, ref, shallowRef, type App, type Component } from 'vue';
 import { createI18n as createVueI18n, type I18n as VueI18n } from 'vue-i18n';
-import type { ExternalComponentType } from '@integration-components/types';
-import { uuid } from '@integration-components/utils';
+import type { Appearance, ExternalComponentType } from '@integration-components/types';
+import { isShallowEqual, uuid } from '@integration-components/utils';
 import UIElementProvider from './UIElementProvider.vue';
 import type { DomainTranslationBinding } from './Context/types';
 import { applyBentoDomainOverrides, getBentoLocaleMessages } from './bentoTranslations';
@@ -66,6 +66,7 @@ export class UIElement<Props extends Record<string, any>> {
     protected _component: Component;
     protected _componentName: ExternalComponentType;
     protected _core: Props['core'];
+    protected _globalAppearance = shallowRef<Appearance | undefined>(undefined);
     protected _props: Omit<Props, 'core'>;
     protected _target: Element | null = null;
     protected _bentoOverrides: Record<string, string> | null = null;
@@ -96,6 +97,7 @@ export class UIElement<Props extends Record<string, any>> {
         this._core = core;
         this._component = component;
         this._componentName = componentName;
+        this._globalAppearance.value = core?.options?.appearance;
         this._props = reactive(componentProps) as typeof componentProps;
 
         this.core?.registerComponent(this);
@@ -127,6 +129,7 @@ export class UIElement<Props extends Record<string, any>> {
             const core = this._core;
             const component = this._component;
             const componentName = this._componentName;
+            const globalAppearance = this._globalAppearance;
             const customClassNames = this.customClassNames;
 
             const localization = core.localization;
@@ -147,16 +150,20 @@ export class UIElement<Props extends Record<string, any>> {
 
             this._app = createApp({
                 setup: () => () => {
+                    const { appearance, ...componentProps } = props;
+
                     return h(
                         UIElementProvider,
                         {
                             core,
                             bentoOverrides,
                             componentName,
+                            componentAppearance: appearance,
                             customClassNames,
+                            globalAppearance: globalAppearance.value,
                             refreshComponent: refresh,
                         },
-                        { default: () => h(component, { ...props, key: refreshCount.value }) }
+                        { default: () => h(component, { ...componentProps, key: refreshCount.value }) }
                     );
                 },
             });
@@ -187,8 +194,27 @@ export class UIElement<Props extends Record<string, any>> {
     }
 
     public update(props: Partial<Props>): this {
-        const { core: _, ...componentProps } = props;
-        Object.assign(this._props as Record<string, unknown>, componentProps);
+        const isCoreUpdate = props === this.core?.options;
+
+        // The global appearance is owned by Core. Refresh it from Core options whenever it changes,
+        // guarding with a shallow-equal check to avoid unnecessary re-renders.
+        const nextGlobalAppearance = this.core?.options?.appearance;
+
+        if (!isShallowEqual(this._globalAppearance.value, nextGlobalAppearance)) {
+            this._globalAppearance.value = nextGlobalAppearance;
+        }
+
+        if (isCoreUpdate) {
+            // Core.update forwards its full options, where `appearance` is the global one (synced
+            // above). Keep it out of the component props so it cannot clobber the component appearance.
+            const { appearance: _appearance, core: _core, ...componentProps } = props;
+            Object.assign(this._props as Record<string, unknown>, componentProps);
+        } else {
+            // A direct update carries component props, where `appearance` is component-specific,
+            // exactly like the appearance prop at construction.
+            const { core: _core, ...componentProps } = props;
+            Object.assign(this._props as Record<string, unknown>, componentProps);
+        }
 
         if (!this._vueI18n) return this;
 

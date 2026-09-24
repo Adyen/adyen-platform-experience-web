@@ -1,6 +1,7 @@
 import type { Ref } from 'vue';
 import type Localization from '../../Localization';
 import type { DevEnvironment } from '../../types';
+import type { Appearance } from '@integration-components/types';
 import type { TranslationDomain, TranslationKey, TranslationOptions } from '../../translations';
 
 export type { DomainCustomTranslations, DomainTranslationKey, TranslationDomain } from '../../translations';
@@ -30,6 +31,7 @@ export type OnErrorHandler = (error: Error) => void;
 
 export interface CoreProviderProps {
     commonProps?: CommonPropsTypes;
+    appearance?: Appearance;
     i18n?: I18n;
     translationDomain: TranslationDomain;
     loadingContext?: string;

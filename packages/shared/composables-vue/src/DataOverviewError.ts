@@ -4,6 +4,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 import { getDomainTranslationKey, type DomainTranslationKey } from '@integration-components/core/vue';
 import { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from './getErrorMessage';
 import { useLiveAnnouncement } from './useLiveAnnouncement';
+import { useShouldHideIllustrations } from './customization';
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 
 export const DataOverviewError = defineComponent({
@@ -24,6 +25,7 @@ export const DataOverviewError = defineComponent({
     setup(props) {
         const { i18n, refreshComponent: refreshCurrentComponent, translationDomain } = useCoreContext();
         const { announce, announcement } = useLiveAnnouncement();
+        const hideIllustrations = useShouldHideIllustrations();
         const isErrorCodeCopied = ref(false);
 
         const errorInfo = computed(
@@ -110,7 +112,7 @@ export const DataOverviewError = defineComponent({
             h(
                 BentoEmptyState,
                 {
-                    image: props.image,
+                    image: hideIllustrations.value ? undefined : props.image,
                     variant: props.variant,
                     title: title.value,
                     action: action.value,

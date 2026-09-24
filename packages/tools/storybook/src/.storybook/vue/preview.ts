@@ -33,13 +33,15 @@ setup(app => {
 });
 
 // Storybook's Vue3 renderer does not force-remount on globals changes — it only
-// reactively updates args. To make globals (locale, fontFamily, theme) reactive we
-// store them in a module-level reactive object that is mutated each time the
+// reactively updates args. To make globals (locale, fontFamily, theme, illustrations, titles)
+// reactive we store them in a module-level reactive object that is mutated each time the
 // render function is called, and expose them via computed refs in setup().
 const storyGlobals = reactive({
     locale: 'en-US' as string,
     fontFamily: undefined as string | undefined,
     theme: 'story' as ThemeMode | 'story',
+    illustrations: 'visible' as 'visible' | 'hidden',
+    titles: 'visible' as 'visible' | 'hidden',
 });
 
 const preview: Preview = {
@@ -58,10 +60,34 @@ const preview: Preview = {
                 dynamicTitle: true,
             },
         },
+        illustrations: {
+            description: 'Global illustration visibility for components',
+            toolbar: {
+                title: 'Illustrations',
+                items: [
+                    { title: 'Illustrations visible', value: 'visible' },
+                    { title: 'Illustrations hidden', value: 'hidden' },
+                ],
+                dynamicTitle: true,
+            },
+        },
+        titles: {
+            description: 'Global title visibility for components',
+            toolbar: {
+                title: 'Titles',
+                items: [
+                    { title: 'Titles visible', value: 'visible' },
+                    { title: 'Titles hidden', value: 'hidden' },
+                ],
+                dynamicTitle: true,
+            },
+        },
     },
     initialGlobals: {
         ...sharedPreviewConfig.initialGlobals,
         theme: 'story',
+        illustrations: 'visible',
+        titles: 'visible',
     },
     argTypes: {
         ...sharedPreviewConfig.argTypes,
@@ -87,6 +113,8 @@ const preview: Preview = {
         storyGlobals.locale = context.globals.locale ?? 'en-US';
         storyGlobals.fontFamily = context.globals.fontFamily;
         storyGlobals.theme = context.globals.theme ?? 'story';
+        storyGlobals.illustrations = context.globals.illustrations ?? 'visible';
+        storyGlobals.titles = context.globals.titles ?? 'visible';
 
         return {
             components: { Container },
@@ -111,11 +139,16 @@ const preview: Preview = {
                 );
 
                 return {
-                    containerKey: computed(() => `${storyGlobals.locale}-${storyGlobals.fontFamily}-${JSON.stringify(session)}`),
+                    containerKey: computed(
+                        () =>
+                            `${storyGlobals.locale}-${storyGlobals.fontFamily}-${storyGlobals.illustrations}-${storyGlobals.titles}-${JSON.stringify(session)}`
+                    ),
                     component: toRaw(component),
                     locale: computed(() => storyGlobals.locale),
                     fontFamily: computed(() => storyGlobals.fontFamily),
                     theme: computed(() => storyGlobals.theme),
+                    illustrations: computed(() => storyGlobals.illustrations),
+                    titles: computed(() => storyGlobals.titles),
                     session,
                     mockedApi,
                     compact,
@@ -124,7 +157,7 @@ const preview: Preview = {
                     themeVariables,
                 };
             },
-            template: `<Container :key="containerKey" :component="component" :component-props="componentProps" :locale="locale" :font-family="fontFamily" :theme="theme" :theme-dark="themeDark" :theme-variables="themeVariables" :session="session" :mocked-api="mockedApi" :compact="compact" />`,
+            template: `<Container :key="containerKey" :component="component" :component-props="componentProps" :locale="locale" :font-family="fontFamily" :theme="theme" :theme-dark="themeDark" :theme-variables="themeVariables" :illustrations="illustrations" :titles="titles" :session="session" :mocked-api="mockedApi" :compact="compact" />`,
         };
     },
 };

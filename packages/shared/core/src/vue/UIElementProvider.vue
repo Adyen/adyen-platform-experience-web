@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { inject, provide, ref } from 'vue';
+import { computed, inject, provide, ref } from 'vue';
+import type { Appearance, CoreInstance } from './types';
 import { useBentoTranslationOverrides } from '@adyen/bento-vue3';
-import type { CoreInstance } from './types';
 import CoreProvider from './Context/CoreProvider.vue';
+import { resolveAppearance } from './customization';
 import ConfigProvider from './ConfigContext/ConfigProvider.vue';
 import EventDispatcherProvider from './Context/eventDispatcher/EventDispatcherProvider.vue';
 import type { ExternalComponentType } from '@integration-components/types';
@@ -13,12 +14,15 @@ interface Props {
     core: CoreInstance;
     bentoOverrides: Record<string, string>;
     componentName: ExternalComponentType;
+    componentAppearance?: Appearance;
     customClassNames?: string;
+    globalAppearance?: Appearance;
     refreshComponent: () => void;
 }
 
 const props = defineProps<Props>();
 const componentRef = ref<HTMLDivElement | null>(null);
+const appearance = computed(() => resolveAppearance(props.globalAppearance ?? props.core.options.appearance, props.componentAppearance));
 const domainTranslations = inject(DOMAIN_TRANSLATION_BINDING_KEY);
 
 if (!domainTranslations) throw new Error('[UIElementProvider] Domain translations must be configured before mounting.');
@@ -31,6 +35,7 @@ useBentoTranslationOverrides(props.bentoOverrides);
     <CoreProvider
         :i18n="domainTranslations.i18n"
         :translation-domain="domainTranslations.translationDomain"
+        :appearance="appearance"
         :loading-context="props.core.loadingContext"
         :get-cdn-config="props.core.getCdnConfig"
         :get-cdn-dataset="props.core.getCdnDataset"

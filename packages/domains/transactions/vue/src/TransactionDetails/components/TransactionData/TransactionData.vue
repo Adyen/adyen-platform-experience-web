@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue';
 import { BentoLoadingIndicator, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import PaymentDetails from '../PaymentDetails/PaymentDetails.vue';
 import PaymentRefund from '../PaymentRefund/PaymentRefund.vue';
 import { ActiveView } from '../../../../../domain/src';
@@ -26,7 +27,8 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
-const shouldHideTitle = computed(() => props.hideTitle || withinModal);
+const hideTitles = useShouldHideTitles();
+const shouldHideTitle = computed(() => props.hideTitle || withinModal || hideTitles.value);
 
 const activeView = ref<ActiveView>(ActiveView.DETAILS);
 const locked = ref(false);
