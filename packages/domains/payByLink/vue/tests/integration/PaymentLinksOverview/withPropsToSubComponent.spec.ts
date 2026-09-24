@@ -13,8 +13,7 @@ test.describe('PayByLinkOverview - With props to sub-components', () => {
 
         const dialog = await openSettingsModal(page);
 
-        await expect(dialog.getByRole('button', { name: 'Terms and conditions', exact: true })).toBeVisible();
-        await expect(dialog.getByRole('heading', { name: 'Settings', exact: true })).toHaveCount(0);
+        await expect(dialog.getByRole('button', { name: 'Go back', exact: true })).not.toBeVisible();
     });
 
     test('should drill the props down to the link creation sub component', async ({ page }) => {

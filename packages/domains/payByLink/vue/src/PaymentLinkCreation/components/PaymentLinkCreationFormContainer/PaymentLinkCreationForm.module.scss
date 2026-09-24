@@ -24,6 +24,10 @@
     margin-top: style.token(spacer-070);
 }
 
+:global(.b-form-layout__actions) {
+    width: 100%;
+}
+
 .errorAlert,
 .warningAlert {
     margin-top: style.token(spacer-040);
