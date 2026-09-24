@@ -196,17 +196,23 @@ export class UIElement<Props extends Record<string, any>> {
     public update(props: Partial<Props>): this {
         const isCoreUpdate = props === this.core?.options;
 
-        // When Core.update is called, it propagates its options to registered components via component.update(this.options).
-        // Update global appearance only when it changes, avoiding unnecessary re-renders.
+        // The global appearance is owned by Core. Refresh it from Core options whenever it changes,
+        // guarding with a shallow-equal check to avoid unnecessary re-renders.
+        const nextGlobalAppearance = this.core?.options?.appearance;
+
+        if (!isShallowEqual(this._globalAppearance.value, nextGlobalAppearance)) {
+            this._globalAppearance.value = nextGlobalAppearance;
+        }
+
         if (isCoreUpdate) {
-            const nextAppearance = this.core?.options?.appearance;
-            if (!isShallowEqual(this._globalAppearance.value, nextAppearance)) {
-                this._globalAppearance.value = nextAppearance;
-            }
+            // Core.update forwards its full options, where `appearance` is the global one (synced
+            // above). Keep it out of the component props so it cannot clobber the component appearance.
             const { appearance: _appearance, core: _core, ...componentProps } = props;
             Object.assign(this._props as Record<string, unknown>, componentProps);
         } else {
-            const { core: _, ...componentProps } = props;
+            // A direct update carries component props, where `appearance` is component-specific,
+            // exactly like the appearance prop at construction.
+            const { core: _core, ...componentProps } = props;
             Object.assign(this._props as Record<string, unknown>, componentProps);
         }
 
