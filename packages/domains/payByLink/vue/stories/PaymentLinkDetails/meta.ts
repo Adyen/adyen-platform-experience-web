@@ -3,7 +3,7 @@ import type { PaymentLinkDetailsExternalProps } from '../../src';
 import PaymentLinkDetailsElement from '../../src/PaymentLinkDetails/PaymentLinkDetailsElement';
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
-export const PaymentLinkDetailsMeta: Meta<ElementProps<PaymentLinkDetailsExternalProps>> = {
+export const paymentLinkDetailsMeta: Meta<ElementProps<PaymentLinkDetailsExternalProps>> = {
     title: 'Components/Pay by Link/Payment Link Details',
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
