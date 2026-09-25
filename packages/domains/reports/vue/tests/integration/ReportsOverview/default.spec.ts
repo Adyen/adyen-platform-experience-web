@@ -61,7 +61,8 @@ test.describe('Default', () => {
 
                 await firstDownloadButton.click();
                 await expect(firstDownloadButton).toBeDisabled();
-                await expect(firstDownloadButton).toHaveText(/Downloading../);
+                await expect(firstDownloadButton.getByTestId('loading-indicator')).toBeVisible();
+                await expect(firstDownloadButton).toHaveText(/Download report/);
                 await expect(downloadButtonsDisabled).toHaveCount(REPORTS_PER_PAGE);
             };
 

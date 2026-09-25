@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoInputField, BentoTypography } from '@adyen/bento-vue3';
+import { BentoFormLayoutGroup, BentoInputField, BentoTypography } from '@adyen/bento-vue3';
 import FieldWrapper from '../../../fields/FieldWrapper.vue';
 import CountryField from './CountryField.vue';
 import { useWizard } from '../../../../composables/wizardContext';
@@ -28,11 +28,6 @@ const lengths = computed(() => PAYMENT_LINK_CREATION_FIELD_LENGTHS[props.prefix]
 
 const STREET_ROW_FIELDS = ['street', 'houseNumberOrName'] as const;
 const CITY_ROW_FIELDS = ['city', 'postalCode'] as const;
-
-const STREET_ROW_FIELD_CLASSES: Record<(typeof STREET_ROW_FIELDS)[number], string | undefined> = {
-    street: styles.fieldLarge,
-    houseNumberOrName: styles.fieldSmall,
-};
 
 function fieldName(field: string): PaymentLinkFieldName {
     return `${props.prefix}.${field}` as PaymentLinkFieldName;
@@ -72,51 +67,51 @@ function onInput(field: string, value: string | number) {
 </script>
 
 <template>
-    <div :class="styles.root">
-        <div :class="styles.titleContainer">
-            <BentoTypography variant="title" stronger>{{ props.title }}</BentoTypography>
-            <BentoTypography v-if="props.isOptional" variant="body" :class="styles.optionalLabel">
-                {{ `(${i18n.get('payByLink.creation.fields.optional.label')})` }}
-            </BentoTypography>
-        </div>
-        <div :class="styles.row">
-            <template v-for="field in STREET_ROW_FIELDS" :key="field">
-                <FieldWrapper v-if="getConfig(field).visible" :name="fieldName(field)" :class="STREET_ROW_FIELD_CLASSES[field]">
-                    <BentoInputField
-                        :label="getLabel(field)"
-                        type="text"
-                        :model-value="getValue(field)"
-                        :readonly="getConfig(field).readOnly"
-                        :error-message="getError(field)"
-                        :maxlength="getMaxLength(field)"
-                        @update:model-value="(value: string | number) => onInput(field, value)"
-                    />
-                </FieldWrapper>
-            </template>
-        </div>
-        <div :class="styles.row">
-            <CountryField
-                :name="fieldName('country')"
-                :label="getLabel('country')"
-                :items="props.countryItems"
-                :loading="props.countriesLoading"
-                :copy-to="copyName('country')"
-                :copy-enabled="props.copyEnabled"
-                hide-optional-label
-            />
-            <template v-for="field in CITY_ROW_FIELDS" :key="field">
-                <FieldWrapper v-if="getConfig(field).visible" :name="fieldName(field)">
-                    <BentoInputField
-                        :label="getLabel(field)"
-                        type="text"
-                        :model-value="getValue(field)"
-                        :readonly="getConfig(field).readOnly"
-                        :error-message="getError(field)"
-                        :maxlength="getMaxLength(field)"
-                        @update:model-value="(value: string | number) => onInput(field, value)"
-                    />
-                </FieldWrapper>
-            </template>
-        </div>
+    <div :class="styles.titleContainer">
+        <BentoTypography variant="title" stronger>
+            {{ props.title }}
+        </BentoTypography>
+        <BentoTypography v-if="props.isOptional" variant="body" :class="styles.optionalLabel">
+            {{ `(${i18n.get('payByLink.creation.fields.optional.label')})` }}
+        </BentoTypography>
     </div>
+    <BentoFormLayoutGroup layout="66-33">
+        <template v-for="field in STREET_ROW_FIELDS" :key="field">
+            <FieldWrapper v-if="getConfig(field).visible" :name="fieldName(field)" :error="getError(field)">
+                <BentoInputField
+                    :label="getLabel(field)"
+                    type="text"
+                    :model-value="getValue(field)"
+                    :readonly="getConfig(field).readOnly"
+                    :error-message="getError(field)"
+                    :maxlength="getMaxLength(field)"
+                    @update:model-value="(value: string | number) => onInput(field, value)"
+                />
+            </FieldWrapper>
+        </template>
+    </BentoFormLayoutGroup>
+    <BentoFormLayoutGroup layout="33-33-33">
+        <CountryField
+            :name="fieldName('country')"
+            :label="getLabel('country')"
+            :items="props.countryItems"
+            :loading="props.countriesLoading"
+            :copy-to="copyName('country')"
+            :copy-enabled="props.copyEnabled"
+            hide-optional-label
+        />
+        <template v-for="field in CITY_ROW_FIELDS" :key="field">
+            <FieldWrapper v-if="getConfig(field).visible" :name="fieldName(field)" :error="getError(field)">
+                <BentoInputField
+                    :label="getLabel(field)"
+                    type="text"
+                    :model-value="getValue(field)"
+                    :readonly="getConfig(field).readOnly"
+                    :error-message="getError(field)"
+                    :maxlength="getMaxLength(field)"
+                    @update:model-value="(value: string | number) => onInput(field, value)"
+                />
+            </FieldWrapper>
+        </template>
+    </BentoFormLayoutGroup>
 </template>

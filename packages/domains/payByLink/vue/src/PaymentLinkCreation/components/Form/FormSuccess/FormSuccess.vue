@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onBeforeUnmount, ref } from 'vue';
+import { computed, onBeforeUnmount, ref } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
+import { BentoButtonActions, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
 import styles from './FormSuccess.module.scss';
 
@@ -33,6 +33,19 @@ async function onCopy() {
         // no-op
     }
 }
+
+const actionButtons = computed<BentoButtonActionsList>(() => [
+    {
+        title: copied.value ? i18n.get('payByLink.creation.success.copiedToClipboard') : i18n.get('payByLink.creation.success.copyLink'),
+        event: onCopy,
+        variant: 'primary',
+    },
+    {
+        title: i18n.get('payByLink.creation.success.showDetails'),
+        event: () => props.onShowDetails?.(),
+        variant: 'secondary',
+    },
+]);
 </script>
 
 <template>
@@ -47,12 +60,7 @@ async function onCopy() {
             </BentoTypography>
         </div>
         <div :class="styles.actions">
-            <BentoButton variant="secondary" @click="props.onShowDetails?.()">
-                {{ i18n.get('payByLink.creation.success.showDetails') }}
-            </BentoButton>
-            <BentoButton variant="primary" @click="onCopy">
-                {{ copied ? i18n.get('payByLink.creation.success.copiedToClipboard') : i18n.get('payByLink.creation.success.copyLink') }}
-            </BentoButton>
+            <BentoButtonActions :actions="actionButtons" layout="buttons-end" />
         </div>
     </section>
 </template>

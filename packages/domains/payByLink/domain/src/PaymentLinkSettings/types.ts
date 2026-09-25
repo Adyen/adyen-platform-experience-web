@@ -7,6 +7,7 @@ export interface PaymentLinkSettingsProps extends UIElementProps {
     settingsItems?: PaymentLinkSettingsItem[];
     embeddedInOverview?: boolean;
     navigateBack?: () => void;
+    onDismiss?: () => void;
 }
 
 export type PaymentLinkSettingsItem = 'theme' | 'termsAndConditions';

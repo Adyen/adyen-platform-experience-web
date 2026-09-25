@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
+import { useCoreContext, useEventDispatcherContext, useModalContext } from '@integration-components/core/vue';
 import { BentoButtonActions } from '@adyen/bento-vue3';
 import { sharedTransactionDetailsEventProperties, ActiveView } from '../../../../../domain/src';
 import type { TransactionDetails } from '../../../../../domain/src';
@@ -13,6 +13,7 @@ const props = defineProps<{
     extraFields: Record<string, any> | undefined;
     refundAvailable: boolean;
     refundDisabled: boolean;
+    onDismiss?: () => void;
     setActiveView: (view: ActiveView) => void;
     transaction: TransactionDetails;
     transactionNavigator: TransactionNavigatorState;
@@ -20,6 +21,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const userEvents = useEventDispatcherContext();
+const { withinModal } = useModalContext();
 
 const navigatorState = computed(() => props.transactionNavigator);
 
@@ -71,7 +73,18 @@ const customActions = computed(() =>
         }))
 );
 
-const actions = computed(() => [primaryAction.value, secondaryAction.value, ...customActions.value].filter(Boolean) as any[]);
+// The dismiss action is hidden inside overview modals, which have their own close affordance.
+const dismissAction = computed(() => {
+    if (!props.onDismiss || withinModal) return undefined;
+    return {
+        disabled: false,
+        event: props.onDismiss,
+        title: i18n.get('transactions.details.common.actions.goBack'),
+        variant: 'secondary' as const,
+    };
+});
+
+const actions = computed(() => [primaryAction.value, secondaryAction.value, ...customActions.value, dismissAction.value].filter(Boolean) as any[]);
 </script>
 
 <template>

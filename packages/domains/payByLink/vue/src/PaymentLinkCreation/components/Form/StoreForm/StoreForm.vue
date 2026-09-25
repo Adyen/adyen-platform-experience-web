@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoAlert, BentoButton } from '@adyen/bento-vue3';
-import StoreField from '../../fields/StoreField.vue';
+import { BentoAlert, BentoButtonActions, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import { useWizard } from '../../../composables/wizardContext';
+import StoreField from '../../fields/StoreField.vue';
 import type { IPaymentLinkSettings, IPaymentLinkStore } from '@integration-components/types';
 import type { DomainTranslationKey } from '@integration-components/core/vue';
 import layoutStyles from '../FormLayout.module.scss';
-import styles from './StoreForm.module.scss';
 
 const props = defineProps<{
     selectItems: { id: string; name: string; description?: string }[];
@@ -34,6 +33,14 @@ const alertDescriptionKey = computed<DomainTranslationKey>(() =>
 function handleSetupTermsAndConditions() {
     emit('setupTermsAndConditions');
 }
+
+const actionButtons = computed<BentoButtonActionsList>(() => [
+    {
+        title: i18n.get('payByLink.creation.storeForm.alerts.tcSetupRequiredAction'),
+        event: handleSetupTermsAndConditions,
+        variant: 'tertiary',
+    },
+]);
 </script>
 
 <template>
@@ -44,13 +51,13 @@ function handleSetupTermsAndConditions() {
             :items="props.selectItems"
             :placeholder="i18n.get('payByLink.creation.inputs.select.placeholder')"
         />
-        <BentoAlert v-if="showTcAlert" :class="styles.tcAlert" type="warning" role="alert">
+        <BentoAlert v-if="showTcAlert" type="warning" role="alert">
             {{ i18n.get('payByLink.creation.storeForm.alerts.tcSetupRequiredTitle') }}
             <template #description>
                 {{ i18n.get(alertDescriptionKey) }}
-                <BentoButton v-if="props.canModifySettings" variant="tertiary" @click="handleSetupTermsAndConditions">
-                    {{ i18n.get('payByLink.creation.storeForm.alerts.tcSetupRequiredAction') }}
-                </BentoButton>
+            </template>
+            <template v-if="props.canModifySettings" #actions>
+                <BentoButtonActions layout="buttons-start" :actions="actionButtons" />
             </template>
         </BentoAlert>
     </div>

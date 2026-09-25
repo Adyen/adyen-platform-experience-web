@@ -32,10 +32,6 @@
 }
 
 .breakdowns .breakdownList {
-    :global(.b-data-grid-columns) {
-        display: none;
-    }
-
     @include breakpoints.adyen-pe-screen-md-and-up {
         margin-inline: unset;
     }

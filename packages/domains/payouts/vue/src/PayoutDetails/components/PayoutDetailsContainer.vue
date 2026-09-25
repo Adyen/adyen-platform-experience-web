@@ -16,6 +16,7 @@ const props = defineProps<{
     balanceAccountDescription?: string;
     hideTitle?: boolean;
     onContactSupport?: () => void;
+    onDismiss?: () => void;
     dataCustomization?: { details?: PayoutDetailsCustomization };
 }>();
 
@@ -79,6 +80,8 @@ const showLoadingPlaceholder = computed(() => isFetching.value && !data.value &&
                 :error="error"
                 :error-message="'payouts.details.errors.unavailable'"
                 :on-contact-support="props.onContactSupport"
+                :on-dismiss="props.onDismiss"
+                :dismiss-label="'payouts.details.common.actions.goBack'"
                 with-image
                 :outlined="false"
                 :absolute-position="false"
@@ -98,6 +101,7 @@ const showLoadingPlaceholder = computed(() => isFetching.value && !data.value &&
             :extra-fields="extraFields"
             :data-customization="props.dataCustomization"
             :hide-title="props.hideTitle"
+            :on-dismiss="props.onDismiss"
         />
     </div>
 </template>

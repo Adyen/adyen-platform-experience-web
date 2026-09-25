@@ -14,6 +14,7 @@ export const Default: ElementStory<PaymentLinkSettingsExternalProps> = {
     name: 'Default',
     args: {
         mockedApi: true,
+        onDismiss: 'Enabled',
     },
 };
 
