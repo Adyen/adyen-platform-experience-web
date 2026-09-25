@@ -1,11 +1,11 @@
 import type { Meta } from '@storybook/vue3';
 import type { CapitalOfferExternalProps } from '../../src';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
-import { capitalOfferMeta } from './meta';
+import { CapitalOfferMeta } from './meta';
 import { capitalOfferHandlers } from '../../../mocks/mock-server';
 
 const meta: Meta<ElementProps<CapitalOfferExternalProps>> = {
-    ...capitalOfferMeta,
+    ...CapitalOfferMeta,
     title: 'Mocked/Capital/Capital Offer',
 };
 

@@ -1,2 +1,2 @@
 export { CapitalOverviewElement } from './CapitalOverviewElement';
-export type { CapitalOverviewExternalProps, CapitalOverviewComponentProps } from './types';
+export type { CapitalOverviewExternalProps } from './types';

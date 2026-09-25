@@ -1,13 +1,13 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedGrantsOverviewAnalyticsEventProperties } from '../../../../fixtures/CapitalOverview/constants/analytics';
+import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../fixtures/CapitalOverview/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--single-action';
 
 test.describe('Single action', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedCapitalOverviewAnalyticsEventProperties]]);
     });
 
     test('should render pending grant with actions', async ({ page }) => {

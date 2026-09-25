@@ -1,6 +1,6 @@
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 import type { Meta } from '@storybook/vue3';
-import CapitalOverviewElement from '../../src/CapitalOverview/CapitalOverviewElement';
+import { CapitalOverviewElement } from '../../src';
 
 export const CapitalOverviewMeta: Meta<ElementProps<typeof CapitalOverviewElement>> = {
     argTypes: {

@@ -1,50 +1,48 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
-import { getDynamicOfferConfig, getIsEarlyRenewal, sharedCapitalOfferAnalyticsEventProperties } from '@integration-components/capital/domain';
+import { getDynamicOfferConfig, sharedCapitalOfferAnalyticsEventProperties } from '@integration-components/capital/domain';
 import { useLandedPageEvent } from '@integration-components/composables-vue';
 import OfferSelection from './OfferSelection/OfferSelection.vue';
 import OfferSummary from './OfferSummary/OfferSummary.vue';
-import type { CapitalOfferComponentProps } from '../types';
+import type { CapitalOfferProps } from '../types';
 import { useEnhancedCapitalState } from '../../shared/composables/useEnhancedCapitalState';
 import CapitalHeader from '../../shared/CapitalHeader/CapitalHeader.vue';
 import CapitalError from '../../shared/CapitalError/CapitalError.vue';
 
-const props = defineProps<CapitalOfferComponentProps>();
+const props = defineProps<CapitalOfferProps>();
 
-const externalCapitalState = computed(() => props.externalCapitalState);
-const { capitalState: backendCapitalState, error: capitalStateError } = useEnhancedCapitalState(() => !externalCapitalState.value);
-const capitalState = computed(() => externalCapitalState.value ?? backendCapitalState.value);
+const { capitalState: backendCapitalState, error: capitalStateError } = useEnhancedCapitalState(() => !props.capitalState);
+const capitalState = computed(() => props.capitalState ?? backendCapitalState.value);
 const dynamicOfferConfig = computed(() => capitalState.value && getDynamicOfferConfig(capitalState.value));
+const activeStep = ref<'selection' | 'summary'>('selection');
+const titleKey = computed(() => (activeStep.value === 'summary' ? 'capital.offer.summary.title' : 'capital.offer.selection.title'));
 const createdOffer = ref<IGrantOfferResponseDTO>();
-const isOfferReviewVisible = ref(false);
 
 useLandedPageEvent(
     () => ({
         ...sharedCapitalOfferAnalyticsEventProperties,
         subCategory: 'Capital offer',
         label: 'Capital offer',
-        isEarlyRenewal: capitalState.value ? getIsEarlyRenewal(capitalState.value) : false,
+        isEarlyRenewal: !!capitalState.value?.renewableGrants.length,
     }),
     () => !!capitalState.value
 );
 
+watch(titleKey, title => props.onTitleChange?.(title), { immediate: true });
+
 const handleOfferSelect = (offer: IGrantOfferResponseDTO) => {
     createdOffer.value = offer;
-    isOfferReviewVisible.value = true;
+    activeStep.value = 'summary';
 };
 
 const handleSummaryBack = () => {
-    isOfferReviewVisible.value = false;
+    activeStep.value = 'selection';
 };
 </script>
 
 <template>
-    <CapitalHeader
-        :hide-title="props.hideTitle"
-        :region="capitalState?.region"
-        :title-key="isOfferReviewVisible ? 'capital.offer.summary.title' : 'capital.offer.selection.title'"
-    />
+    <CapitalHeader :hide-subtitle="props.hideSubtitle" :hide-title="props.hideTitle" :region="capitalState?.region" :title-key="titleKey" />
     <CapitalError v-if="capitalStateError" :error="capitalStateError" :on-back="props.onOfferDismiss" :on-contact-support="props.onContactSupport" />
     <template v-else-if="capitalState">
         <CapitalError
@@ -54,7 +52,7 @@ const handleSummaryBack = () => {
         />
         <template v-else>
             <OfferSelection
-                v-show="!isOfferReviewVisible"
+                v-show="activeStep === 'selection'"
                 :capital-state="capitalState"
                 :created-offer="createdOffer"
                 :dynamic-offer-config="dynamicOfferConfig"
@@ -64,7 +62,7 @@ const handleSummaryBack = () => {
             />
             <OfferSummary
                 v-if="createdOffer"
-                v-show="isOfferReviewVisible"
+                v-show="activeStep === 'summary'"
                 :capital-state="capitalState"
                 :offer="createdOffer"
                 :on-back="handleSummaryBack"

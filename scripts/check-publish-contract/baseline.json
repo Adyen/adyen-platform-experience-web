@@ -82,8 +82,8 @@
         "TransactionsOverviewProps",
         "TranslationKey"
     ],
-    "esFileCount": 1201,
-    "cssHash": "36095403aa1c9537db6c36abcab65c7af6b2b130141c1cc415e885258833bfe0",
+    "esFileCount": 1195,
+    "cssHash": "92e34a89b49438c8e82efcef4c84363845ef0333782b84c783bf34f87794c971",
     "typeFiles": [
         "packages/domains/capital/domain/src/CapitalOffer/constants.d.ts",
         "packages/domains/capital/domain/src/CapitalOffer/index.d.ts",
@@ -424,7 +424,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "1e63e8d57cb8e123e4c63571b7e3b1de9ce2f41ebbc5284f2192078f7e4a5512",
+    "typeTreeHash": "7ae56552c22e774096d1bf3bfc86120b8568acbfe30e1efcec0261029dbbabb3",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",
