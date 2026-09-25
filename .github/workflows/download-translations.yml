@@ -6,7 +6,7 @@ on:
 jobs:
   download-files:
     name: Download completed translation files
-    if: github.event_name == 'workflow_dispatch' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'group/'))
+    if: github.event_name == 'workflow_dispatch' && github.ref_name == 'develop'
     runs-on: ubuntu-latest
     environment: smartling-translations # provides Smartling credentials
     permissions:
@@ -35,7 +35,7 @@ jobs:
       - name: Download and commit files
         run: |
           # Checkout new branch from the default branch
-          git checkout -B ${{ env.BRANCH_NAME }} ${{ env.BASE_REF }}
+          git checkout -B "$BRANCH_NAME" "$BASE_REF"
 
           # Configure the Git user (GitHub Actions Bot)
           # See https://github.com/orgs/community/discussions/26560
@@ -43,9 +43,10 @@ jobs:
           git config --local user.name "github-actions[bot]"
 
           # Download files from Smartling
-          npx -y @adyen/smartling-bot@${{ steps.setup-smartling.outputs.smartling_bot_version }} download-files -p ./scripts/process-translations/post-download.sh
+          "$SMARTLING_BOT_CLI" download-files -p ./scripts/process-translations/post-download.sh
         env:
           BASE_REF: ${{ github.ref_name }}
           BRANCH_NAME: "bot/translations"
           COMMIT_TITLE: "chore(lang): update translations"
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SMARTLING_BOT_CLI: ${{ steps.setup-smartling.outputs.smartling_bot_cli }}

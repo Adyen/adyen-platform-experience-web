@@ -1,26 +1,33 @@
 import { execFile as execFileCallback, execFileSync } from 'node:child_process';
-import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { watch } from 'node:fs';
+import { readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { promisify } from 'node:util';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { GIT_BIN, SAFE_ENV } from './safe-env.mjs';
 
-const projectRoot = path.resolve(import.meta.dirname, '../..');
-const i18nConfigPath = path.join(projectRoot, '.i18nrc');
-const sdkTranslationsDirectory = path.join(projectRoot, 'packages/sdk/translations');
-const domainsDirectory = path.join(projectRoot, 'packages/domains');
-const sortJsonPath = path.join(projectRoot, 'scripts/process-translations/sort-json');
+const scriptDirectory = import.meta.dirname;
+const defaultProjectRoot = path.resolve(scriptDirectory, '../..');
+const sdkTranslationsDirectoryName = 'packages/sdk/translations';
+const domainsDirectoryName = 'packages/domains';
+const domainTranslationsDirectoryName = 'vue/translations';
+const sortJsonPath = path.join(scriptDirectory, 'sort-json');
 const englishLocale = 'en-US';
+const rootArgumentPrefix = '--root=';
+const rerunDelayMs = 100;
 
 const checkOnly = process.argv.includes('--check');
 const stagedOnly = process.argv.includes('--staged');
+const watchMode = process.argv.includes('--watch');
+const rootArgument = process.argv.find(argument => argument.startsWith(rootArgumentPrefix));
+
+// Tests and tooling can point the script at a throwaway project root; the default is this checkout.
+const projectRoot = rootArgument ? path.resolve(rootArgument.slice(rootArgumentPrefix.length)) : defaultProjectRoot;
+const i18nConfigPath = path.join(projectRoot, '.i18nrc');
+const sdkTranslationsDirectory = path.join(projectRoot, sdkTranslationsDirectoryName);
+const domainsDirectory = path.join(projectRoot, domainsDirectoryName);
+
 const execFile = promisify(execFileCallback);
-
-// Child processes run in a fully pinned environment: the only PATH they see is a literal list of
-// fixed, unwriteable system directories, and nothing is inherited from process.env, so neither a
-// substituted binary nor variables such as GIT_* can influence the child.
-const SAFE_ENV = { PATH: '/usr/bin:/bin' };
-
-// Git is invoked through its absolute system path, so the binary is never resolved via PATH.
-const GIT_BIN = '/usr/bin/git';
 
 const getRelativePath = filePath => path.relative(projectRoot, filePath);
 
@@ -80,67 +87,243 @@ const sortJson = value => {
     return stdout ? JSON.parse(stdout) : value;
 };
 
-const hasTranslations = async domain => (await readJson(path.join(domainsDirectory, domain, 'vue/translations', `${englishLocale}.json`))) !== null;
+const hasTranslations = async domain =>
+    (await readJson(path.join(domainsDirectory, domain, domainTranslationsDirectoryName, `${englishLocale}.json`))) !== null;
 
-const i18nConfig = await readJson(i18nConfigPath);
-if (!i18nConfig) throw new Error(`Unable to read ${getRelativePath(i18nConfigPath)} from the ${stagedOnly ? 'staged snapshot' : 'working tree'}.`);
+const synchronize = async () => {
+    const i18nConfig = await readJson(i18nConfigPath);
+    if (!i18nConfig) {
+        throw new Error(`Unable to read ${getRelativePath(i18nConfigPath)} from the ${stagedOnly ? 'staged snapshot' : 'working tree'}.`);
+    }
 
-const locales = [englishLocale, ...i18nConfig.locales];
-const domainEntries = await readdir(domainsDirectory, { withFileTypes: true });
+    const locales = [englishLocale, ...i18nConfig.locales];
+    const domainEntries = await readdir(domainsDirectory, { withFileTypes: true });
 
-const domains = (
-    await Promise.all(
-        domainEntries.filter(entry => entry.isDirectory()).map(async entry => ((await hasTranslations(entry.name)) ? entry.name : null))
+    const domains = (
+        await Promise.all(
+            domainEntries.filter(entry => entry.isDirectory()).map(async entry => ((await hasTranslations(entry.name)) ? entry.name : null))
+        )
     )
-)
-    .filter(Boolean)
-    .sort();
+        .filter(Boolean)
+        .sort();
 
-let outOfSync = false;
+    let outOfSync = false;
 
-for (const locale of locales) {
-    const translations = {};
+    for (const locale of locales) {
+        const translations = {};
 
-    for (const domain of domains) {
-        const domainTranslationsPath = path.join(domainsDirectory, domain, 'vue/translations', `${locale}.json`);
-        const domainTranslations = await readJson(domainTranslationsPath);
-        if (domainTranslations === null) continue;
+        for (const domain of domains) {
+            const domainTranslationsPath = path.join(domainsDirectory, domain, domainTranslationsDirectoryName, `${locale}.json`);
+            const domainTranslations = await readJson(domainTranslationsPath);
+            if (domainTranslations === null) continue;
 
-        for (const [key, value] of Object.entries(domainTranslations)) {
-            if (!key.startsWith(`${domain}.`)) {
-                throw new Error(`${path.relative(projectRoot, domainTranslationsPath)} contains a key outside the ${domain} namespace: ${key}`);
+            for (const [key, value] of Object.entries(domainTranslations)) {
+                if (!key.startsWith(`${domain}.`)) {
+                    throw new Error(`${getRelativePath(domainTranslationsPath)} contains a key outside the ${domain} namespace: ${key}`);
+                }
+
+                translations[key] = value;
             }
+        }
 
-            translations[key] = value;
+        const expectedTranslations = sortJson(translations);
+
+        const sdkTranslationsPath = path.join(sdkTranslationsDirectory, `${locale}.json`);
+        const sdkTranslations = await readJson(sdkTranslationsPath);
+
+        if (sdkTranslations === null) {
+            throw new Error(`Unable to read ${getRelativePath(sdkTranslationsPath)} from the ${stagedOnly ? 'staged snapshot' : 'working tree'}.`);
+        }
+
+        if (JSON.stringify(sdkTranslations) === JSON.stringify(expectedTranslations)) continue;
+
+        outOfSync = true;
+
+        if (checkOnly) {
+            console.error(`${getRelativePath(sdkTranslationsPath)} is not synchronized with domain translations.`);
+        } else {
+            await writeJson(sdkTranslationsPath, expectedTranslations);
+            console.log(`Synchronized ${getRelativePath(sdkTranslationsPath)}.`);
         }
     }
 
-    const expectedTranslations = sortJson(translations);
+    return outOfSync;
+};
 
-    const sdkTranslationsPath = path.join(sdkTranslationsDirectory, `${locale}.json`);
-    const sdkTranslations = await readJson(sdkTranslationsPath);
+// Debounces change events into batched synchronization passes, and never runs two passes
+// concurrently: overlapping passes would interleave their catalog reads and writes. A pass that
+// comes due while another one is still running is postponed until the running pass finishes.
+// Exported so tests can exercise the scheduling contract directly.
+export const createSynchronizationScheduler = (runPass, delayMs) => {
+    let isSyncing = false;
+    let rerunTimeout = null;
+    const pendingChanges = new Set();
 
-    if (sdkTranslations === null) {
-        throw new Error(`Unable to read ${getRelativePath(sdkTranslationsPath)} from the ${stagedOnly ? 'staged snapshot' : 'working tree'}.`);
+    const runScheduledPass = async () => {
+        if (isSyncing) {
+            if (rerunTimeout) clearTimeout(rerunTimeout);
+            rerunTimeout = setTimeout(runScheduledPass, delayMs);
+            return;
+        }
+
+        isSyncing = true;
+        const changedPaths = [...pendingChanges];
+        pendingChanges.clear();
+
+        try {
+            await runPass(changedPaths);
+        } finally {
+            isSyncing = false;
+        }
+    };
+
+    return {
+        schedule: changedPath => {
+            pendingChanges.add(changedPath);
+            if (rerunTimeout) clearTimeout(rerunTimeout);
+            rerunTimeout = setTimeout(runScheduledPass, delayMs);
+        },
+    };
+};
+
+// Matches the catalog file names that the domain catalog watchers report relative to the domains directory.
+const domainCatalogFilePattern = new RegExp(`(^|/)${domainTranslationsDirectoryName.replaceAll('/', '\\/')}/[^/]+\\.json$`);
+
+// Windows reports watcher file names with backslash separators, so they are normalized before
+// matching. Exported so tests can exercise the file-name matching directly.
+export const isDomainCatalogFile = filename => typeof filename === 'string' && domainCatalogFilePattern.test(filename.replaceAll('\\', '/'));
+
+const runOnce = async () => {
+    const outOfSync = await synchronize();
+
+    if (outOfSync && checkOnly) {
+        console.error('Run `pnpm run translations:sync` and commit the generated SDK catalog updates.');
+        process.exit(1);
     }
 
-    if (JSON.stringify(sdkTranslations) === JSON.stringify(expectedTranslations)) continue;
+    if (!outOfSync) {
+        console.log('SDK catalogs are synchronized with domain translations.');
+    }
+};
 
-    outOfSync = true;
+const runWatchMode = async () => {
+    // A failed synchronization does not stop the watcher: the process can be embedded in a
+    // longer-lived one (for example a dev-server script), so it keeps watching and retries on
+    // the next change.
+    try {
+        await synchronize();
+    } catch (error) {
+        console.error(`The initial synchronization failed and will retry on the next change: ${error.message}`);
+    }
 
-    if (checkOnly) {
-        console.error(`${path.relative(projectRoot, sdkTranslationsPath)} is not synchronized with domain translations.`);
+    console.log(`Watching for domain catalog changes under ${getRelativePath(domainsDirectory)} and ${getRelativePath(i18nConfigPath)}...`);
+
+    const watchers = [];
+
+    const stopWatching = exitCode => {
+        watchers.forEach(watcher => watcher.close());
+        process.exit(exitCode);
+    };
+
+    const scheduler = createSynchronizationScheduler(async changedPaths => {
+        console.log(`Re-synchronizing after changes in ${changedPaths.join(', ')}.`);
+
+        try {
+            await synchronize();
+        } catch (error) {
+            // A catalog can be observed mid-write; the next change event retries the synchronization.
+            console.error(`Synchronization failed and will retry on the next change: ${error.message}`);
+        }
+    }, rerunDelayMs);
+
+    const scheduleRerun = changedPath => scheduler.schedule(getRelativePath(changedPath));
+
+    // Some platforms report directory events without a filename; those are treated as potential
+    // catalog changes because a synchronization pass over unchanged catalogs is a cheap no-op.
+    const handleDomainCatalogEvent = filename => {
+        if (filename === null || filename === undefined) {
+            scheduleRerun(domainsDirectory);
+            return;
+        }
+        if (isDomainCatalogFile(filename)) scheduleRerun(path.join(domainsDirectory, filename));
+    };
+
+    const handleI18nConfigEvent = filename => {
+        if (filename === null || filename === undefined || filename === path.basename(i18nConfigPath)) scheduleRerun(i18nConfigPath);
+    };
+
+    // Only the domain catalogs and the i18n configuration are watched: the SDK catalogs are generated
+    // output, so watching them would only observe this script's own writes. Each domain's catalog
+    // directory is watched individually instead of the domains directory recursively: recursive
+    // watching needs newer runtimes on Linux and a watch per catalog directory is cheaper, at the
+    // price of missing domains that appear after the watcher starts.
+    const domainEntries = await readdir(domainsDirectory, { withFileTypes: true });
+
+    for (const entry of domainEntries) {
+        if (!entry.isDirectory()) continue;
+
+        const domainTranslationsDirectory = path.join(domainsDirectory, entry.name, domainTranslationsDirectoryName);
+
+        let directoryStatistics;
+        try {
+            directoryStatistics = await stat(domainTranslationsDirectory);
+        } catch {
+            // Not every domain owns a translations catalog.
+            continue;
+        }
+        if (!directoryStatistics.isDirectory()) continue;
+
+        watchers.push(
+            watch(domainTranslationsDirectory, (_eventType, filename) => {
+                handleDomainCatalogEvent(
+                    filename === null || filename === undefined ? null : path.join(entry.name, domainTranslationsDirectoryName, filename)
+                );
+            })
+        );
+    }
+
+    watchers.push(watch(projectRoot, (_eventType, filename) => handleI18nConfigEvent(filename)));
+
+    for (const watcher of watchers) {
+        watcher.once('error', error => {
+            console.error(`Translation watch failed: ${error.message}`);
+            stopWatching(1);
+        });
+    }
+
+    // SIGINT covers interactive interruption; SIGTERM is what process managers and containers send,
+    // so the watcher stops through the same graceful path instead of dying by the signal's default
+    // disposition.
+    process.once('SIGINT', () => stopWatching(0));
+    process.once('SIGTERM', () => stopWatching(0));
+};
+
+// The module can be imported (by tests) without side effects; the CLI part below only runs when the
+// file is executed directly.
+const isMain = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isMain) {
+    if (watchMode && (checkOnly || stagedOnly)) {
+        console.error('The --watch option cannot be combined with --check or --staged.');
+        process.exit(1);
+    }
+
+    // The watcher is a local development aid: CI environments never keep it running.
+    if (watchMode && process.env.CI) {
+        console.log('Translations watch skipped: CI environment detected.');
+        process.exit(0);
+    }
+
+    if (rootArgument) {
+        const rootStatistics = await stat(projectRoot);
+        if (!rootStatistics.isDirectory()) {
+            throw new Error(`The ${rootArgumentPrefix} option must point at a directory: ${projectRoot}`);
+        }
+    }
+
+    if (!watchMode) {
+        await runOnce();
     } else {
-        await writeJson(sdkTranslationsPath, expectedTranslations);
-        console.log(`Synchronized ${path.relative(projectRoot, sdkTranslationsPath)}.`);
+        await runWatchMode();
     }
-}
-
-if (outOfSync && checkOnly) {
-    console.error('Run `pnpm run translations:sync` and commit the generated SDK catalog updates.');
-    process.exit(1);
-}
-
-if (!outOfSync) {
-    console.log('SDK catalogs are synchronized with domain translations.');
 }

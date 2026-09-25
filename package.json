@@ -79,7 +79,10 @@
     "test:release": "node --test scripts/release-v1/*.test.mjs scripts/npm-publish/*.test.mjs",
     "translations:check": "node scripts/process-translations/sync-sdk-catalogs.mjs --check",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
+    "translations:split": "node scripts/process-translations/split-sdk-catalogs.mjs",
+    "translations:split:check": "node scripts/process-translations/split-sdk-catalogs.mjs --check",
     "translations:sync": "node scripts/process-translations/sync-sdk-catalogs.mjs",
+    "translations:watch": "node scripts/process-translations/sync-sdk-catalogs.mjs --watch",
     "types:check": "nx run-many --target=types:check",
     "types:watch": "concurrently --kill-others-on-fail 'nx run-many --target=types:watch' 'tsc --project tsconfig-build.json --watch'",
     "version": "./scripts/bump-version.sh"
