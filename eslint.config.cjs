@@ -172,6 +172,18 @@ module.exports = [
             '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'off', overrides: { properties: 'explicit' } }],
         },
     },
+    {
+        files: ['src/index.ts', 'packages/sdk/src/index.ts'],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                {
+                    selector: 'ExportAllDeclaration',
+                    message: 'Public SDK entry points must use explicit exports.',
+                },
+            ],
+        },
+    },
 
     // testing-library rules for test files
     {

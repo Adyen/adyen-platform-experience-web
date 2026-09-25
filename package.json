@@ -55,6 +55,7 @@
     "changeset": "changeset",
     "format": "prettier --write '{src,packages}/**/*.{ts,js,css,scss,html,vue}'",
     "check-publish-contract": "pnpm run build && tsx scripts/check-publish-contract/check.ts",
+    "check-publish-contract:built": "tsx scripts/check-publish-contract/check.ts",
     "check-publish-contract:update": "pnpm run build && tsx scripts/check-publish-contract/check.ts --update",
     "lint": "nx run @adyen/adyen-platform-experience-web:lint",
     "lint:playwright-selectors": "nx run @adyen/adyen-platform-experience-web:lint:playwright-selectors",

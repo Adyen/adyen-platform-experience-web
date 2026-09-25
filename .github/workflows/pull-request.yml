@@ -334,3 +334,10 @@ jobs:
       - name: Build library
         if: steps.skip-check.outcome != 'success'
         run: pnpm run build
+
+      - name: Verify public SDK contract
+        if: >-
+          steps.skip-check.outcome != 'success' &&
+          (github.event.pull_request.base.ref == 'develop' ||
+           github.event.pull_request.base.ref == 'main')
+        run: pnpm run check-publish-contract:built
