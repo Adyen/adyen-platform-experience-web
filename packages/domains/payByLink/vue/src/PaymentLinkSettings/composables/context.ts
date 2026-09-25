@@ -2,7 +2,7 @@ import { computed, inject, provide, ref, watch, type ComputedRef, type Injection
 import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import type { StoreIds } from '@integration-components/payByLink/domain';
-import { DEFAULT_MENU_ITEM, MenuItem } from '../constants';
+import { DEFAULT_MENU_ITEM, menuItem } from '../constants';
 import type { MenuItemType, PaymentLinkSettingsData, PaymentLinkSettingsItem, PaymentLinkSettingsPayload, StoreItem } from '../types';
 import { useSettingsPermission } from './useSettingsPermission';
 import { useStores } from './useStores';
@@ -125,8 +125,8 @@ export function providePaymentLinkSettings(options: ProvidePaymentLinkSettingsOp
         navigateBack,
     });
 
-    const themeFetchEnabled = computed(() => activeMenuItem.value === MenuItem.theme);
-    const termsAndConditionsFetchEnabled = computed(() => activeMenuItem.value === MenuItem.termsAndConditions);
+    const themeFetchEnabled = computed(() => activeMenuItem.value === menuItem.theme);
+    const termsAndConditionsFetchEnabled = computed(() => activeMenuItem.value === menuItem.termsAndConditions);
 
     const { theme, isFetching: loadingThemes, error: themeError } = useStoreTheme(selectedStore, themeFetchEnabled);
     const {
@@ -175,7 +175,7 @@ export function providePaymentLinkSettings(options: ProvidePaymentLinkSettingsOp
 
     const hasPermission = computed(() => {
         if (!activeMenuItem.value) return false;
-        return activeMenuItem.value === MenuItem.theme ? themeEnabled.value : termsAndConditionsEnabled.value;
+        return activeMenuItem.value === menuItem.theme ? themeEnabled.value : termsAndConditionsEnabled.value;
     });
 
     const isLoadingContent = computed(() => {

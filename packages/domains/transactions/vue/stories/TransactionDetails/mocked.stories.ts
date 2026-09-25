@@ -1,12 +1,12 @@
 import type { Meta } from '@storybook/vue3';
-import { TransactionDetailsMeta } from './meta';
+import { transactionDetailsMeta } from './meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { TransactionDetailsExternalProps } from '../../src';
 import { TRANSACTION_DETAILS_HANDLERS } from '../../../mocks/mock-server/transactions';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION } from '../../../fixtures/data/TransactionDetails';
 
 const meta: Meta<ElementProps<TransactionDetailsExternalProps>> = {
-    ...TransactionDetailsMeta,
+    ...transactionDetailsMeta,
     title: 'Mocked/Transactions/Transaction Details',
 };
 

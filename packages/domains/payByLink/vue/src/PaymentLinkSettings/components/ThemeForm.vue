@@ -4,7 +4,7 @@ import { BentoAlert, BentoInputField, BentoTypography } from '@adyen/bento-vue3'
 import { useCoreContext } from '@integration-components/core/vue';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { cloneFormData } from '../utils/getThemePayload';
-import { logoOptionsList, ThemeFormDataRequest } from '../constants';
+import { logoOptionsList, themeFormDataRequest } from '../constants';
 import type { LogoType, ThemeFormData } from '../types';
 import LogoInput from './LogoInput.vue';
 import LogoPreview from './LogoPreview.vue';
@@ -36,9 +36,9 @@ const showMissingBrandName = ref(false);
 
 function buildInitialPayload(): FormData {
     const formData = new FormData();
-    if (props.theme.brandName) formData.set(ThemeFormDataRequest.BRAND, props.theme.brandName);
-    if (props.theme.logo) formData.set(ThemeFormDataRequest.LOGO, props.theme.logo);
-    if (props.theme.fullWidthLogo) formData.set(ThemeFormDataRequest.FULL_WIDTH_LOGO, props.theme.fullWidthLogo);
+    if (props.theme.brandName) formData.set(themeFormDataRequest.BRAND, props.theme.brandName);
+    if (props.theme.logo) formData.set(themeFormDataRequest.LOGO, props.theme.logo);
+    if (props.theme.fullWidthLogo) formData.set(themeFormDataRequest.FULL_WIDTH_LOGO, props.theme.fullWidthLogo);
     return cloneFormData(formData);
 }
 
@@ -78,7 +78,7 @@ function onBrandNameChange(value: string | number) {
     showMissingBrandName.value = false;
     brandName.value = name;
     const nextFormData = cloneFormData(themePayload);
-    nextFormData.set(ThemeFormDataRequest.BRAND, name);
+    nextFormData.set(themeFormDataRequest.BRAND, name);
     themePayload = nextFormData;
     setPayload(nextFormData);
 }

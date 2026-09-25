@@ -1,11 +1,11 @@
 import type { Meta } from '@storybook/vue3';
-import { DisputeManagementMeta } from './meta';
+import { disputeManagementMeta } from './meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { DisputeManagementExternalProps } from '../../src';
 import { DISPUTE_DETAILS_HANDLERS } from '../../../mocks/mock-server/disputes';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, INITIAL_DISPUTE_ID } from '../../../fixtures/data/DisputeManagement';
 
-const meta: Meta<ElementProps<DisputeManagementExternalProps>> = { ...DisputeManagementMeta, title: 'Mocked/Disputes/Dispute Management' };
+const meta: Meta<ElementProps<DisputeManagementExternalProps>> = { ...disputeManagementMeta, title: 'Mocked/Disputes/Dispute Management' };
 const sharedArgs = { mockedApi: true };
 
 export const Default: ElementStory<DisputeManagementExternalProps> = {

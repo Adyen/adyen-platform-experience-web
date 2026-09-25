@@ -1,17 +1,17 @@
 import type { TranslationKey } from '@integration-components/core';
 import type { LogoType, PaymentLinkSettingsItem, PaymentLinkSettingsMenuItem } from './types';
 
-export const MenuItem = {
+export const menuItem = {
     theme: 'theme',
     termsAndConditions: 'termsAndConditions',
 } as const;
 
 export const MENU_ITEMS = [
-    { value: MenuItem.theme, label: 'payByLink.settings.navigation.theme' },
-    { value: MenuItem.termsAndConditions, label: 'payByLink.settings.navigation.termsAndConditions' },
+    { value: menuItem.theme, label: 'payByLink.settings.navigation.theme' },
+    { value: menuItem.termsAndConditions, label: 'payByLink.settings.navigation.termsAndConditions' },
 ] as PaymentLinkSettingsMenuItem[];
 
-export const DEFAULT_MENU_ITEM = MenuItem.theme as PaymentLinkSettingsItem;
+export const DEFAULT_MENU_ITEM = menuItem.theme as PaymentLinkSettingsItem;
 
 export const THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE = 51200; // 50KB
 export const THEME_FORM_ALLOWED_FILE_TYPES = ['image/jpeg'] as const;
@@ -23,12 +23,12 @@ export const logoOptions: Record<string, LogoType> = {
 
 export const logoOptionsList: LogoType[] = ['logo', 'fullWidthLogo'];
 
-export const LogoLabel = {
+export const logoLabel = {
     logo: 'payByLink.settings.theme.logo.input.label',
     fullWidthLogo: 'payByLink.settings.theme.wideLogo.input.label',
 } as Record<LogoType, TranslationKey>;
 
-export const ThemeFormDataRequest = {
+export const themeFormDataRequest = {
     BRAND: 'brandName',
     LOGO: 'logo',
     FULL_WIDTH_LOGO: 'fullWidthLogo',

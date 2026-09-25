@@ -1,6 +1,6 @@
 import { HttpMethod } from '@integration-components/core';
 
-export const AnalyticsEndpoints = {
+export const analyticsEndpoints = {
     sendEngageEvent: {
         method: 'POST' as HttpMethod,
         url: 'uxdsclient/engage',
@@ -13,7 +13,7 @@ export const AnalyticsEndpoints = {
     },
 };
 
-export const TransactionsOverviewComponentView = {
+export const transactionsOverviewComponentView = {
     getBalanceAccounts: {
         method: 'GET' as HttpMethod,
         url: 'balanceAccounts',
@@ -44,11 +44,11 @@ export const TransactionsOverviewComponentView = {
         url: 'transactions/download',
         versions: [1, 2],
     },
-    ...AnalyticsEndpoints,
+    ...analyticsEndpoints,
 };
 
-export const TransactionsOverviewComponentManageRefunds = {
-    ...TransactionsOverviewComponentView,
+export const transactionsOverviewComponentManageRefunds = {
+    ...transactionsOverviewComponentView,
     initiateRefund: {
         method: 'POST' as HttpMethod,
         url: 'transactions/{transactionId}/refund',
@@ -56,7 +56,7 @@ export const TransactionsOverviewComponentManageRefunds = {
     },
 };
 
-export const ReportsOverviewComponentView = {
+export const reportsOverviewComponentView = {
     downloadReport: {
         method: 'GET' as HttpMethod,
         url: 'reports/download',
@@ -72,10 +72,10 @@ export const ReportsOverviewComponentView = {
         url: 'reports',
         versions: [1],
     },
-    ...AnalyticsEndpoints,
+    ...analyticsEndpoints,
 };
 
-export const PayoutsOverviewComponentView = {
+export const payoutsOverviewComponentView = {
     getBalanceAccounts: {
         method: 'GET' as HttpMethod,
         url: 'balanceAccounts',
@@ -91,10 +91,10 @@ export const PayoutsOverviewComponentView = {
         url: 'payouts',
         versions: [1],
     },
-    ...AnalyticsEndpoints,
+    ...analyticsEndpoints,
 };
 
-export const CapitalComponentManage = {
+export const capitalComponentManage = {
     anaCreditActionDetails: {
         method: 'GET' as HttpMethod,
         url: 'capital/grants/missingActions/anaCredit',
@@ -140,10 +140,10 @@ export const CapitalComponentManage = {
         url: 'capital/grants/missingActions/signToS',
         versions: [1],
     },
-    ...AnalyticsEndpoints,
+    ...analyticsEndpoints,
 };
 
-export const DisputesComponentManage = {
+export const disputesComponentManage = {
     acceptDispute: {
         method: 'POST' as HttpMethod,
         url: 'disputes/{disputePspReference}/accept',
@@ -179,10 +179,10 @@ export const DisputesComponentManage = {
         url: 'disputes',
         versions: [1],
     },
-    ...AnalyticsEndpoints,
+    ...analyticsEndpoints,
 };
 
-export const PayByLinkComponentView = {
+export const payByLinkComponentView = {
     getPaymentLinks: {
         method: 'GET' as HttpMethod,
         url: 'paybylink/paymentLinks',
@@ -203,11 +203,11 @@ export const PayByLinkComponentView = {
         url: 'paybylink/paymentLinks/{paymentLinkId}',
         versions: [1],
     },
-    ...AnalyticsEndpoints,
+    ...analyticsEndpoints,
 };
 
-export const PayByLinkComponentManageLinks = {
-    ...PayByLinkComponentView,
+export const payByLinkComponentManageLinks = {
+    ...payByLinkComponentView,
     countries: {
         method: 'GET' as HttpMethod,
         url: 'paybylink/countries',
@@ -238,10 +238,10 @@ export const PayByLinkComponentManageLinks = {
         url: 'paybylink/paymentLinks/{storeId}/configuration',
         versions: [1],
     },
-    ...AnalyticsEndpoints,
+    ...analyticsEndpoints,
 };
 
-export const PayByLinkComponentManageSettings = {
+export const payByLinkComponentManageSettings = {
     getPayByLinkStores: {
         method: 'GET' as HttpMethod,
         url: 'stores',
@@ -267,5 +267,5 @@ export const PayByLinkComponentManageSettings = {
         url: 'paybylink/themes/{storeId}',
         versions: [1],
     },
-    ...AnalyticsEndpoints,
+    ...analyticsEndpoints,
 };

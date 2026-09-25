@@ -105,7 +105,7 @@ export default defineConfig(({ mode }) => ({
             enforce: 'pre' as const,
             load(id: string) {
                 if (id === translationsLocalFile) {
-                    return `export const translations_dev_assets = {};`;
+                    return `export const translationsDevAssets = {};`;
                 }
             },
         },

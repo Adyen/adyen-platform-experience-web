@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import { LogoLabel } from '../constants';
+import { logoLabel } from '../constants';
 import type { LogoType } from '../types';
 import styles from './ThemeForm.module.scss';
 
@@ -25,9 +25,9 @@ function onRemove() {
 <template>
     <div :class="styles.previewContainer">
         <BentoTypography variant="body" el="span" stronger>
-            {{ i18n.get(LogoLabel[props.logoType]) }}
+            {{ i18n.get(logoLabel[props.logoType]) }}
         </BentoTypography>
-        <img :src="logoUrl" :alt="i18n.get(LogoLabel[props.logoType])" :class="styles.previewImage" />
+        <img :src="logoUrl" :alt="i18n.get(logoLabel[props.logoType])" :class="styles.previewImage" />
         <BentoButton :disabled="props.disabled" variant="secondary" :class="styles.previewRemove" @click="onRemove">
             {{ i18n.get('payByLink.settings.theme.action.logo.remove') }}
         </BentoButton>

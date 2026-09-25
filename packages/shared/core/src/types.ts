@@ -32,7 +32,7 @@ interface _CoreOptions<CustomTranslations extends Translations = Record<never, n
         | (CustomTranslations extends CustomTranslations ? CreateLocalesUnionFromCustomTranslations<CustomTranslations> : never)
         | SupportedLocales;
 
-    onError?: onErrorHandler;
+    onError?: OnErrorHandler;
     onSessionCreate: SessionRequest;
 
     /**
@@ -79,7 +79,7 @@ export interface CustomTheme {
     dark?: ThemeVariables;
 }
 
-export type onErrorHandler = (error: Error) => any;
+export type OnErrorHandler = (error: Error) => any;
 export type AnalyticsConfig = {
     enabled?: boolean;
 };

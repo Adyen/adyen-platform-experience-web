@@ -45,13 +45,13 @@ export type DataCustomizationObject<Columns extends string, DataRetrieved, Callb
     onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
 };
 
-export type DetailsCustomFieldConfig<k> = {
-    key: k;
+export type DetailsCustomFieldConfig<K> = {
+    key: K;
     visibility?: 'visible' | 'hidden';
 };
 
 export type CustomDetailsField<T extends string> = {
-    [k in T]: DetailsCustomFieldConfig<k>;
+    [K in T]: DetailsCustomFieldConfig<K>;
 }[T];
 
 export type DetailsDataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {

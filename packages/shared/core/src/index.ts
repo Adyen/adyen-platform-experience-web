@@ -69,7 +69,7 @@ export type {
     CoreOptions,
     CustomTheme,
     DevEnvironment,
-    onErrorHandler,
+    OnErrorHandler,
     AnalyticsConfig,
     ThemeMode,
     ThemeVariables,

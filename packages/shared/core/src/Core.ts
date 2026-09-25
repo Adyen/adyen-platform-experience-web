@@ -7,7 +7,7 @@ import { SDK_BENTO_TRANSLATION_SOURCES, SDK_TRANSLATION_SOURCES } from '../../..
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
 import { ThemeManager } from './theme/ThemeManager';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
-import type { CoreOptions, onErrorHandler, ResolvedEnvironment } from './types';
+import type { CoreOptions, OnErrorHandler, ResolvedEnvironment } from './types';
 import type { I18n } from './vue/Context/types';
 
 /**
@@ -39,7 +39,7 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
     public session = new AuthSession();
     public localization: Localization;
     public bentoLocalization: Localization;
-    public onError?: onErrorHandler;
+    public onError?: OnErrorHandler;
     public getImageAsset!: (props: AssetOptions) => string;
     public getDatasetAsset!: (props: AssetOptions) => string;
     public getCdnConfig!: CdnFetcher;

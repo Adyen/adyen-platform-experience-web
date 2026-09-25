@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import { useSettingsPermission } from '../composables/useSettingsPermission';
-import { MenuItem, PERMISSION_ERROR } from '../constants';
+import { menuItem, PERMISSION_ERROR } from '../constants';
 import type { PaymentLinkSettingsItem } from '../types';
 import PaymentLinkThemeContainer from './PaymentLinkThemeContainer.vue';
 import TermsAndConditionsContainer from './TermsAndConditionsContainer.vue';
@@ -30,12 +30,12 @@ const permissionError = computed<AdyenPlatformExperienceError | undefined>(() =>
 
 <template>
     <div :class="isSmContainer ? layoutStyles.contentItemMobile : layoutStyles.contentItem">
-        <LoadingSkeleton v-if="isLoadingContent" :row-number="activeMenuItem === MenuItem.termsAndConditions ? 2 : 3" />
-        <template v-else-if="activeMenuItem === MenuItem.theme">
+        <LoadingSkeleton v-if="isLoadingContent" :row-number="activeMenuItem === menuItem.termsAndConditions ? 2 : 3" />
+        <template v-else-if="activeMenuItem === menuItem.theme">
             <SettingsError v-if="!themeEnabled" :error="permissionError" :error-message="THEME_ERROR_MESSAGE_KEY" />
             <PaymentLinkThemeContainer v-else />
         </template>
-        <template v-else-if="activeMenuItem === MenuItem.termsAndConditions">
+        <template v-else-if="activeMenuItem === menuItem.termsAndConditions">
             <SettingsError v-if="!termsAndConditionsEnabled" :error="permissionError" :error-message="TERMS_AND_CONDITIONS_ERROR_MESSAGE_KEY" />
             <TermsAndConditionsContainer v-else />
         </template>

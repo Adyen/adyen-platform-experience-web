@@ -6,8 +6,8 @@ import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
 import { isStorybookConfigAllowed, STORYBOOK_CONFIG } from './config.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const storybookBin = resolve(__dirname, '../node_modules/.bin/storybook');
+const currentDir = dirname(fileURLToPath(import.meta.url));
+const storybookBin = resolve(currentDir, '../node_modules/.bin/storybook');
 
 const requestedConfigDir = process.argv[2];
 

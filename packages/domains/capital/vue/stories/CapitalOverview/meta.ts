@@ -2,7 +2,7 @@ import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration
 import type { Meta } from '@storybook/vue3';
 import CapitalOverviewElement from '../../src/CapitalOverview/CapitalOverviewElement';
 
-export const CapitalOverviewMeta: Meta<ElementProps<typeof CapitalOverviewElement>> = {
+export const capitalOverviewMeta: Meta<ElementProps<typeof CapitalOverviewElement>> = {
     argTypes: {
         hideTitle: { type: 'boolean' },
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),

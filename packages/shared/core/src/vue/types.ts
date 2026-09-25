@@ -1,12 +1,12 @@
 import type { AuthSession } from '../session/AuthSession';
 import type { AssetOptions } from '../Assets/Assets';
-import type { AnalyticsConfig, CoreOptions, CustomTheme, DevEnvironment, onErrorHandler, ThemeMode, ThemeVariables } from '../types';
+import type { AnalyticsConfig, CoreOptions, CustomTheme, DevEnvironment, OnErrorHandler, ThemeMode, ThemeVariables } from '../types';
 import type { I18n } from './Context/types';
 import type { Appearance } from '@integration-components/types';
 import type Localization from '../Localization';
 
 export type { Appearance };
-export type { CoreOptions, CustomTheme, DevEnvironment, onErrorHandler, AnalyticsConfig, ThemeMode, ThemeVariables };
+export type { CoreOptions, CustomTheme, DevEnvironment, OnErrorHandler, AnalyticsConfig, ThemeMode, ThemeVariables };
 export type { SessionObject, SessionRequest } from '../ConfigContext.types';
 
 export interface UIElementProps {
