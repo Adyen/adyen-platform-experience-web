@@ -4,6 +4,8 @@ import { isAbsolute, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const threshold = 80;
+// Like Sonar's small-change rule: the threshold applies only from this many changed executable lines.
+const minimumLines = 20;
 const sourceRoots = [
     /^src\/.+\.ts$/,
     /^packages\/sdk\/src\/.+\.ts$/,
@@ -85,7 +87,8 @@ export function analyzeChangedCoverage(diff, lcov) {
         }
     }
 
-    return { covered, total, missing, passed: missing.length === 0 && (total === 0 || covered * 100 >= threshold * total) };
+    const smallChange = total < minimumLines;
+    return { covered, total, missing, smallChange, passed: missing.length === 0 && (smallChange || covered * 100 >= threshold * total) };
 }
 
 export function pilotWarning({ covered, total, missing, passed }) {
@@ -97,13 +100,23 @@ export function pilotWarning({ covered, total, missing, passed }) {
 }
 
 export function pilotComment(analysis) {
-    const { covered, total, missing, passed } = analysis;
+    const { covered, total, missing, smallChange, passed } = analysis;
+    const percentage = total ? `**${((covered / total) * 100).toFixed(2)}%**` : '';
     const coverageText =
         total === 0
             ? missing.length
                 ? `⚠️ **N/A** (coverage report incomplete; target: **${threshold}%**)`
                 : 'ℹ️ **N/A** (no measurable changed runtime TypeScript lines)'
-            : `${passed ? '✅' : '⚠️'} **${((covered / total) * 100).toFixed(2)}%** (target: **${threshold}%**)`;
+            : smallChange
+              ? `${missing.length ? '⚠️' : 'ℹ️'} ${percentage} (${total} changed executable line${total === 1 ? '' : 's'}; the ${threshold}% target applies from ${minimumLines})`
+              : `${passed ? '✅' : '⚠️'} ${percentage} (target: **${threshold}%**)`;
+    const result = !passed
+        ? 'below target or missing coverage'
+        : total === 0
+          ? 'not applicable'
+          : smallChange
+            ? 'small change, target not applied'
+            : 'pass';
 
     return [
         '<!-- changed-typescript-coverage-pilot -->',
@@ -112,7 +125,7 @@ export function pilotComment(analysis) {
         coverageText,
         ...(missing.length ? ['', 'Changed source files missing from LCOV:', ...missing.map(file => `- \`${file}\``)] : []),
         '',
-        `Result: ${!passed ? 'below target or missing coverage' : total === 0 ? 'not applicable' : 'pass'}. Vue components require separate Playwright checks.`,
+        `Result: ${result}. Vue components require separate Playwright checks.`,
         ...(!passed ? ['', '> [!WARNING]', `> ${pilotWarning(analysis)}`] : []),
         '',
         'The 80% comparison is advisory during the pilot. It will become a required check after the pilot is validated.',
