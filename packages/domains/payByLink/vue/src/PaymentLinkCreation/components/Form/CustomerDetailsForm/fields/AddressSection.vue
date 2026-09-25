@@ -74,7 +74,9 @@ function onInput(field: string, value: string | number) {
 <template>
     <div :class="styles.root">
         <div :class="styles.titleContainer">
-            <BentoTypography variant="title" stronger>{{ props.title }}</BentoTypography>
+            <BentoTypography variant="title" stronger>
+                {{ props.title }}
+            </BentoTypography>
             <BentoTypography v-if="props.isOptional" variant="body" :class="styles.optionalLabel">
                 {{ `(${i18n.get('payByLink.creation.fields.optional.label')})` }}
             </BentoTypography>

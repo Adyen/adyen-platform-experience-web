@@ -70,7 +70,9 @@ function onAmountChange(value: number) {
             @change="onAmountChange"
         />
         <BentoAlert v-if="maxAmountAlert" type="highlight" variant="tip">
-            <template #description>{{ maxAmountAlert }}</template>
+            <template #description>
+                {{ maxAmountAlert }}
+            </template>
         </BentoAlert>
         <PaymentRefundActions
             :begin-refund="props.beginRefund"

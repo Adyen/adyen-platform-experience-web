@@ -31,7 +31,9 @@ const isMobile = useResponsiveContainer(containerQueries.down.xs);
                         :aria-current="item.value === activeValue ? 'true' : undefined"
                         @click="emit('select', item.value)"
                     >
-                        <BentoTypography variant="body" el="span">{{ item.label }}</BentoTypography>
+                        <BentoTypography variant="body" el="span">
+                            {{ item.label }}
+                        </BentoTypography>
                         <ChevronRightIcon v-if="isMobile" :class="styles.chevron" data-testid="secondary-nav-chevron" aria-hidden="true" />
                     </button>
                 </template>

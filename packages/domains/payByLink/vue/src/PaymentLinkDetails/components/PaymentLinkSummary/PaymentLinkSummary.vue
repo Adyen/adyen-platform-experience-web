@@ -46,12 +46,16 @@ const formattedExpirationDate = computed(() =>
         <template #content>
             <div :class="styles.content">
                 <BentoTag v-if="statusLabel" :label="statusLabel" :variant="statusVariant" />
-                <BentoTypography variant="title" large>{{ formattedAmount }}</BentoTypography>
+                <BentoTypography variant="title" large>
+                    {{ formattedAmount }}
+                </BentoTypography>
                 <div>
                     <BentoTypography el="span" variant="body" :class="styles.expiresLabel">
                         {{ `${i18n.get('payByLink.details.fields.expiresOn')}: ` }}
                     </BentoTypography>
-                    <BentoTypography el="span" variant="body">{{ formattedExpirationDate }}</BentoTypography>
+                    <BentoTypography el="span" variant="body">
+                        {{ formattedExpirationDate }}
+                    </BentoTypography>
                 </div>
             </div>
         </template>

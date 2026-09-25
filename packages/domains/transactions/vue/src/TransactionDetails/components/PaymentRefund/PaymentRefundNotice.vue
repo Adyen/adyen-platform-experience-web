@@ -8,7 +8,11 @@ const { i18n } = useCoreContext();
 
 <template>
     <div :class="layoutStyles.container">
-        <BentoTypography variant="title" stronger>{{ i18n.get('transactions.details.refund.title') }}</BentoTypography>
-        <BentoTypography variant="body">{{ i18n.get('transactions.details.refund.processingInfo') }}</BentoTypography>
+        <BentoTypography variant="title" stronger>
+            {{ i18n.get('transactions.details.refund.title') }}
+        </BentoTypography>
+        <BentoTypography variant="body">
+            {{ i18n.get('transactions.details.refund.processingInfo') }}
+        </BentoTypography>
     </div>
 </template>

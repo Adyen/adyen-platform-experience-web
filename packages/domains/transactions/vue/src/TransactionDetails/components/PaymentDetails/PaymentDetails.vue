@@ -79,10 +79,10 @@ const onTabChange = (newIndex: number) => {
 
         <div :class="layoutStyles.container">
             <BentoTabs
-                :class="styles.tabs"
                 v-if="navigationTabs.length > 1"
+                :class="styles.tabs"
                 :aria-label="i18n.get('transactions.details.viewSelect.a11y.label')"
-                :activeTabIndex="activeTabIndex"
+                :active-tab-index="activeTabIndex"
                 @update:active-tab-index="onTabChange"
             >
                 <BentoTab v-for="tab in navigationTabs" :key="tab.id" :title="i18n.get(tab.label)" />

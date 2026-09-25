@@ -194,7 +194,9 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
 
 <template>
     <div v-if="!shouldHideTitle" :class="styles.pageTitle">
-        <BentoTypography variant="title">{{ i18n.get('payouts.details.title') }}</BentoTypography>
+        <BentoTypography variant="title">
+            {{ i18n.get('payouts.details.title') }}
+        </BentoTypography>
     </div>
 
     <div v-if="payoutInner" :class="styles.root">
@@ -245,9 +247,13 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                         </BentoLink>
                         <div v-else-if="item.type === 'icon' && item.config" :class="[styles.extraDetailsIcon, item.config.className]">
                             <img :src="item.config.src" :alt="item.config.alt || item.value" :class="item.config.className" />
-                            <BentoTypography variant="body">{{ item.value }}</BentoTypography>
+                            <BentoTypography variant="body">
+                                {{ item.value }}
+                            </BentoTypography>
                         </div>
-                        <BentoTypography v-else variant="body" :class="item.config?.className">{{ item.value }}</BentoTypography>
+                        <BentoTypography v-else variant="body" :class="item.config?.className">
+                            {{ item.value }}
+                        </BentoTypography>
                     </BentoStructuredListItem>
                 </BentoStructuredList>
             </template>
@@ -261,10 +267,12 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                     <BentoCard v-if="fundsCaptured && fundsCaptured.length" expandable closed>
                         <template #header>
                             <div :class="styles.cardHeader">
-                                <BentoTypography variant="body" strongest>{{
-                                    i18n.get('payouts.details.breakdown.fields.fundsCaptured')
-                                }}</BentoTypography>
-                                <BentoTypography variant="body">{{ formatAmount(payoutInner.fundsCapturedAmount) }}</BentoTypography>
+                                <BentoTypography variant="body" strongest>
+                                    {{ i18n.get('payouts.details.breakdown.fields.fundsCaptured') }}
+                                </BentoTypography>
+                                <BentoTypography variant="body">
+                                    {{ formatAmount(payoutInner.fundsCapturedAmount) }}
+                                </BentoTypography>
                             </div>
                         </template>
                         <template #content>
@@ -281,10 +289,14 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                                         :allow-column-drag-and-drop="false"
                                     >
                                         <template #item-label="{ item }">
-                                            <BentoTypography variant="body">{{ item.label }}</BentoTypography>
+                                            <BentoTypography variant="body">
+                                                {{ item.label }}
+                                            </BentoTypography>
                                         </template>
                                         <template #item-quantity="{ item }">
-                                            <BentoTypography variant="body">{{ item.quantity }}</BentoTypography>
+                                            <BentoTypography variant="body">
+                                                {{ item.quantity }}
+                                            </BentoTypography>
                                         </template>
                                     </BentoDataGrid>
                                 </div>
@@ -333,10 +345,14 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                                     :allow-column-drag-and-drop="false"
                                 >
                                     <template #item-label="{ item }">
-                                        <BentoTypography variant="body">{{ item.label }}</BentoTypography>
+                                        <BentoTypography variant="body">
+                                            {{ item.label }}
+                                        </BentoTypography>
                                     </template>
                                     <template #item-quantity="{ item }">
-                                        <BentoTypography variant="body">{{ item.quantity }}</BentoTypography>
+                                        <BentoTypography variant="body">
+                                            {{ item.quantity }}
+                                        </BentoTypography>
                                     </template>
                                 </BentoDataGrid>
                             </div>
@@ -354,10 +370,14 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                                     :allow-column-drag-and-drop="false"
                                 >
                                     <template #item-label="{ item }">
-                                        <BentoTypography variant="body">{{ item.label }}</BentoTypography>
+                                        <BentoTypography variant="body">
+                                            {{ item.label }}
+                                        </BentoTypography>
                                     </template>
                                     <template #item-quantity="{ item }">
-                                        <BentoTypography variant="body">{{ item.quantity }}</BentoTypography>
+                                        <BentoTypography variant="body">
+                                            {{ item.quantity }}
+                                        </BentoTypography>
                                     </template>
                                 </BentoDataGrid>
                             </div>
@@ -399,7 +419,9 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
         <BentoCard v-if="payoutInner.unpaidAmount" :background="'secondary'">
             <template #content>
                 <div :class="[styles.cardHeader, styles.cardHeaderSummary]">
-                    <BentoTypography variant="body">{{ i18n.get('payouts.details.breakdown.fields.remainingAmount') }}</BentoTypography>
+                    <BentoTypography variant="body">
+                        {{ i18n.get('payouts.details.breakdown.fields.remainingAmount') }}
+                    </BentoTypography>
                     <BentoTypography variant="body">
                         {{ formatAmount(payoutInner.unpaidAmount) }}
                     </BentoTypography>

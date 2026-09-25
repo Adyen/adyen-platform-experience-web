@@ -34,14 +34,18 @@ function onAcceptRequirements() {
             <div :class="styles.root">
                 <div :class="styles.sectionsContainer">
                     <div v-for="section in termsRequirementsConfig.sections" :key="section.id" :class="styles.section">
-                        <BentoTypography variant="title" el="div">{{ i18n.get(section.titleKey) }}</BentoTypography>
+                        <BentoTypography variant="title" el="div">
+                            {{ i18n.get(section.titleKey) }}
+                        </BentoTypography>
                         <div :class="styles.sectionContent">
                             <BentoTypography variant="body">
                                 {{ i18n.get(section.descriptionKey) }}
                             </BentoTypography>
                             <ul :class="styles.list">
                                 <li v-for="item in section.items" :key="item.key">
-                                    <BentoTypography variant="body">{{ i18n.get(item.key) }}</BentoTypography>
+                                    <BentoTypography variant="body">
+                                        {{ i18n.get(item.key) }}
+                                    </BentoTypography>
                                 </li>
                             </ul>
                         </div>

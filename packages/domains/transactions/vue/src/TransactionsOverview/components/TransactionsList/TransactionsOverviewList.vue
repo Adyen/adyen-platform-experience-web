@@ -91,7 +91,9 @@ onMounted(() => {
     <div ref="summaryEl" :class="styles.summary">
         <div ref="totalsSectionEl" :class="[styles.summarySection, styles.summarySectionTotals]">
             <BentoAlert v-if="totalsError" type="warning">
-                <template #default>{{ i18n.get('transactions.overview.totals.error') }}</template>
+                <template #default>
+                    {{ i18n.get('transactions.overview.totals.error') }}
+                </template>
                 <template #actions>
                     <BentoButton variant="tertiary" :disabled="!transactionsTotalsResult.canRefresh.value" @click="transactionsTotalsResult.refresh">
                         {{ i18n.get('transactions.common.actions.refresh.labels.default') }}
@@ -102,7 +104,9 @@ onMounted(() => {
         </div>
         <div ref="balancesSectionEl" :class="[styles.summarySection, styles.summarySectionBalances]">
             <BentoAlert v-if="balancesError" type="warning">
-                <template #default>{{ i18n.get('transactions.overview.balances.error') }}</template>
+                <template #default>
+                    {{ i18n.get('transactions.overview.balances.error') }}
+                </template>
                 <template #actions>
                     <BentoButton variant="tertiary" :disabled="!accountBalancesResult.canRefresh.value" @click="accountBalancesResult.refresh">
                         {{ i18n.get('transactions.common.actions.refresh.labels.default') }}
