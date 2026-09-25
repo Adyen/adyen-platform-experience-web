@@ -34,7 +34,7 @@
             "dependsOn": ["lint:playwright-selectors"],
             "inputs": ["default", "{workspaceRoot}/**/*"],
             "options": {
-                "commands": ["eslint . --max-warnings 0", "stylelint 'packages/**/*.scss'"],
+                "commands": ["eslint . --max-warnings 0", "stylelint 'packages/**/*.scss' --max-warnings 0 --report-needless-disables"],
                 "parallel": false
             },
             "cache": true
