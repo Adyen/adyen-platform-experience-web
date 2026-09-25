@@ -8,6 +8,7 @@ const sourceRoots = [
     /^src\/.+\.ts$/,
     /^packages\/sdk\/src\/.+\.ts$/,
     /^packages\/domains\/[^/]+\/(?:domain|vue)\/src\/.+\.ts$/,
+    /^packages\/domains\/[^/]+\/[^/]+\/model\/.+\.ts$/,
     /^packages\/shared\/(?:composables-vue|core|utils)\/src\/.+\.ts$/,
 ];
 

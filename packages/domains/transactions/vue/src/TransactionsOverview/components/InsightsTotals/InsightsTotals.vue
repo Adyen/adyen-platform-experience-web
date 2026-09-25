@@ -6,7 +6,7 @@ import { BentoTypography, BentoDataGrid, BentoDivider } from '@adyen/bento-vue3'
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { getTransactionCategory } from '@integration-components/transactions/domain';
 import type { CurrencyLookupRecord } from '../../composables/useCurrenciesLookup';
-import type { useTransactionsTotals } from '../../composables/useTransactionsTotals';
+import type { useTransactionsTotals } from '../../../../../TransactionsOverview/model/useTransactionsTotals';
 import styles from './InsightsTotals.module.scss';
 
 const props = defineProps<{

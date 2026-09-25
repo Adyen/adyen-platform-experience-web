@@ -81,6 +81,24 @@ test('reports a missing LCOV entry instead of treating unmeasured runtime code a
     });
 });
 
+test('requires unit coverage for moved feature model code', () => {
+    const model = 'packages/domains/transactions/TransactionsOverview/model/useTransactionsTotals.ts';
+    const diff = patch(model, '@@ -0,0 +1 @@\n+export const useTransactionsTotals = () => true;\n');
+
+    assert.deepEqual(analyzeChangedCoverage(diff, ''), {
+        covered: 0,
+        total: 0,
+        missing: [model],
+        passed: false,
+    });
+    assert.deepEqual(analyzeChangedCoverage(diff, lcov(model, [[1, 1]])), {
+        covered: 1,
+        total: 1,
+        missing: [],
+        passed: true,
+    });
+});
+
 test('skips comment-only changes when the source is present in LCOV', () => {
     const diff = patch(source, '@@ -10,0 +11 @@\n+// why this is safe\n');
 

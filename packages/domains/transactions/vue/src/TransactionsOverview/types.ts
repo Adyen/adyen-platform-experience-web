@@ -1,18 +1,9 @@
 import type { UIElementProps } from '@integration-components/core/vue';
 import type { TransactionDetailsCustomization, TransactionsListCustomization } from '../../../domain/src';
-import type { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus } from '@integration-components/types';
+import type { IBalanceAccountBase, ITransaction } from '@integration-components/types';
 
 export type { TransactionsCustomColumn, TransactionsListCustomization, TransactionsTableFields } from '../../../domain/src';
-
-export interface TransactionsFilters {
-    balanceAccountId?: string;
-    categories: readonly ITransactionCategory[];
-    statuses: readonly ITransactionStatus[];
-    currencies: readonly IAmount['currency'][];
-    createdSince: string;
-    createdUntil: string;
-    paymentPspReference?: string;
-}
+export type { TransactionsFilters } from '../../../domain/src/TransactionsOverview/types';
 
 export interface TransactionsOverviewExternalProps extends UIElementProps {
     balanceAccountId?: string;

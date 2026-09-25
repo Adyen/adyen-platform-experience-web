@@ -1,7 +1,7 @@
 import { ref, computed, provide, inject, watch, type InjectionKey } from 'vue';
 import { useAccountBalances } from '@integration-components/composables-vue';
 import { useTransactionsList } from './useTransactionsList';
-import { useTransactionsTotals } from './useTransactionsTotals';
+import { useTransactionsTotals } from '../../../../TransactionsOverview/model/useTransactionsTotals';
 import { useCurrenciesLookup } from './useCurrenciesLookup';
 import { useTransactionsViewSwitcher, TransactionsView } from './useTransactionsViewSwitcher';
 import { quickSelectDateRanges } from '@integration-components/utils';
