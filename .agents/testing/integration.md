@@ -42,6 +42,16 @@ pnpm run test:integration
 
 CI builds Storybook first, then runs tests with sharding.
 
+### Story Coverage
+
+`goToStory` tags each test with the story it opens, and a Playwright reporter writes `story-coverage/visited*.json` (one file per shard). After a run:
+
+```bash
+pnpm run test:integration:story-coverage   # Per-domain table: stories opened by a passing test vs Storybook index.json
+```
+
+It reads `packages/tools/storybook/storybook-static/index.json` by default (`--index` overrides) and writes `story-coverage/summary.json`. Real-API (`api-*`) stories are excluded. Domains with no spec file in the run (e.g. running one domain only) show as "not run" and are excluded from the total. Always navigate with `goToStory`, never `page.goto('/iframe.html…')`, or the test is invisible to this report. CI appends the table to the integration workflow's step summary.
+
 ## Patterns & Conventions
 
 ### Spec File Naming

@@ -234,7 +234,7 @@ module.exports = [
         rules: {
             'import-x/no-extraneous-dependencies': [
                 'error',
-                { devDependencies: ['**/storybook-helpers/**/*.ts'], packageDir: ['packages/shared/testing'] },
+                { devDependencies: ['**/storybook-helpers/**/*.ts', '**/*.test.ts'], packageDir: ['packages/shared/testing'] },
             ],
         },
     },

@@ -29,7 +29,7 @@ const config: PlaywrightTestConfig = {
     /* Allow CI worker tuning via PLAYWRIGHT_WORKERS. */
     workers: process.env.CI ? ciWorkers : undefined,
 
-    reporter: 'html',
+    reporter: [['html'], ['./packages/shared/testing/src/playwright/storyCoverageReporter.ts']],
 
     use: {
         /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */

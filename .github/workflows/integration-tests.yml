@@ -231,3 +231,57 @@ jobs:
           name: playwright-report-${{ matrix.framework }}-${{ github.sha }}-shard-${{ matrix.shard.index }}
           path: playwright-report/
           retention-days: 3
+
+      # Ship the (small) Storybook index with the shard data so the report job does not download the full build.
+      - name: Add Storybook index to story coverage data
+        if: always() && env.SHOULD_RUN_TESTS == 'true'
+        run: mkdir -p story-coverage && cp storybook-static/index.json story-coverage/index.json
+
+      - name: Upload story coverage data
+        if: always() && env.SHOULD_RUN_TESTS == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: story-coverage-${{ matrix.framework }}-${{ github.sha }}-shard-${{ matrix.shard.index }}
+          path: |
+            story-coverage/visited-*.json
+            story-coverage/index.json
+          if-no-files-found: warn
+          retention-days: 1
+
+  # Advisory: reports which Storybook stories were opened by a passing Playwright test, per domain.
+  story-coverage:
+    needs:
+      - is-pr-approved
+      - build-storybook-static
+      - e2e-local-mocked-api
+    if: always() && needs.is-pr-approved.outputs.should_run_tests == 'true' && needs.build-storybook-static.result == 'success'
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        framework: ${{ fromJSON(needs.is-pr-approved.outputs.frameworks) }}
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: 24.18.0
+
+      - name: Download story coverage data
+        uses: actions/download-artifact@v4
+        with:
+          pattern: story-coverage-${{ matrix.framework }}-${{ github.sha }}-shard-*
+          path: story-coverage
+          merge-multiple: true
+
+      - name: Test story coverage script
+        run: node --test scripts/story-coverage/report.test.mjs
+
+      - name: Report story coverage
+        run: node scripts/story-coverage/report.mjs --index story-coverage/index.json --input story-coverage --summary "$GITHUB_STEP_SUMMARY"

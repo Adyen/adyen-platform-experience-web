@@ -76,6 +76,7 @@
     "test:integration": "cross-env TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --project local-chrome",
     "test:integration:vue": "pnpm run test:integration",
     "test:integration:ui": "pnpm run test:integration --ui",
+    "test:integration:story-coverage": "node scripts/story-coverage/report.mjs",
     "test:release": "node --test scripts/release-v1/*.test.mjs scripts/npm-publish/*.test.mjs",
     "translations:check": "node scripts/process-translations/sync-sdk-catalogs.mjs --check",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
