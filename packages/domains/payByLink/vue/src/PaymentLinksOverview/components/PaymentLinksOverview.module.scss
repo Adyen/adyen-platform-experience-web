@@ -11,8 +11,8 @@
 }
 
 .header {
-    display: flex;
     align-items: center;
+    display: flex;
     justify-content: space-between;
 }
 
@@ -31,9 +31,9 @@
 }
 
 .filtersContainer {
+    align-items: flex-start;
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
     gap: style.token(spacer-040);
 }
 

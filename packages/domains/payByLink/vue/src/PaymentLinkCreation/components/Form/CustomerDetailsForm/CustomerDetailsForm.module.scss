@@ -2,13 +2,13 @@
 
 .shopperNameContainer {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: style.token(spacer-060);
+    grid-template-columns: 1fr 1fr;
 }
 
 .sameAddressCheckbox {
-    display: flex;
     align-items: center;
-    gap: style.token(spacer-020);
     cursor: pointer;
+    display: flex;
+    gap: style.token(spacer-020);
 }

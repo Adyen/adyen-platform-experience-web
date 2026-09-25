@@ -19,8 +19,8 @@
 
 .buttonsContainer {
     display: flex;
-    justify-content: flex-end;
     gap: style.token(spacer-040);
+    justify-content: flex-end;
     margin-top: style.token(spacer-070);
 }
 
@@ -41,9 +41,9 @@
 }
 
 .skeletonItem {
-    height: style.token(spacer-090);
-    border-radius: style.token(border-radius-m);
     background: style.token(color-background-secondary);
+    border-radius: style.token(border-radius-m);
+    height: style.token(spacer-090);
 }
 
 .skeletonItemSmall {

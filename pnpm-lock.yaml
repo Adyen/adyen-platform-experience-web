@@ -168,9 +168,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 4.1.0(vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0)))
-      autoprefixer:
-        specifier: ^10.4.20
-        version: 10.4.20(postcss@8.5.25)
       concurrently:
         specifier: ^7.0.0
         version: 7.6.0
@@ -228,9 +225,6 @@ importers:
       openapi-typescript:
         specifier: ^7.10.1
         version: 7.10.1(typescript@5.8.3)
-      postcss:
-        specifier: 8.5.25
-        version: 8.5.25
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -258,6 +252,9 @@ importers:
       stylelint-config-sass-guidelines:
         specifier: ^13.0.0
         version: 13.0.0(postcss@8.5.25)(stylelint@17.5.0(typescript@5.8.3))
+      stylelint-order:
+        specifier: ^8.1.1
+        version: 8.1.1(stylelint@17.5.0(typescript@5.8.3))
       stylelint-scss:
         specifier: ^7.0.0
         version: 7.0.0(stylelint@17.5.0(typescript@5.8.3))
@@ -2945,13 +2942,6 @@ packages:
   asynckit@0.4.0:
     resolution: {}
 
-  autoprefixer@10.4.20:
-    resolution: {}
-    engines: {node: ^10 || ^12 || >=14}
-    hasBin: true
-    peerDependencies:
-      postcss: 8.5.25
-
   available-typed-arrays@1.0.7:
     resolution: {}
     engines: {node: '>= 0.4'}
@@ -3044,11 +3034,6 @@ packages:
     resolution: {}
     engines: {node: '>=8'}
 
-  browserslist@4.24.4:
-    resolution: {}
-    engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
-    hasBin: true
-
   browserslist@4.28.1:
     resolution: {}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
@@ -3086,9 +3071,6 @@ packages:
   callsites@3.1.0:
     resolution: {}
     engines: {node: '>=6'}
-
-  caniuse-lite@1.0.30001707:
-    resolution: {}
 
   caniuse-lite@1.0.30001774:
     resolution: {}
@@ -3439,9 +3421,6 @@ packages:
     engines: {node: '>=0.12.18'}
     hasBin: true
 
-  electron-to-chromium@1.5.126:
-    resolution: {}
-
   electron-to-chromium@1.5.302:
     resolution: {}
 
@@ -3778,9 +3757,6 @@ packages:
   form-data@4.0.6:
     resolution: {}
     engines: {node: '>= 6'}
-
-  fraction.js@4.3.7:
-    resolution: {}
 
   fs-constants@1.0.0:
     resolution: {}
@@ -4696,17 +4672,10 @@ packages:
       encoding:
         optional: true
 
-  node-releases@2.0.19:
-    resolution: {}
-
   node-releases@2.0.27:
     resolution: {}
 
   normalize-path@3.0.0:
-    resolution: {}
-    engines: {node: '>=0.10.0'}
-
-  normalize-range@0.1.2:
     resolution: {}
     engines: {node: '>=0.10.0'}
 
@@ -4952,6 +4921,11 @@ packages:
   postcss-selector-parser@7.1.1:
     resolution: {}
     engines: {node: '>=4'}
+
+  postcss-sorting@10.0.0:
+    resolution: {}
+    peerDependencies:
+      postcss: 8.5.25
 
   postcss-value-parser@4.2.0:
     resolution: {}
@@ -5473,6 +5447,12 @@ packages:
       postcss: 8.5.25
       stylelint: ^17.1.0
 
+  stylelint-order@8.1.1:
+    resolution: {}
+    engines: {node: '>=20.19.0'}
+    peerDependencies:
+      stylelint: ^16.18.0 || ^17.0.0
+
   stylelint-scss@7.0.0:
     resolution: {}
     engines: {node: '>=20.19.0'}
@@ -5747,12 +5727,6 @@ packages:
 
   unrs-resolver@1.11.1:
     resolution: {}
-
-  update-browserslist-db@1.1.3:
-    resolution: {}
-    hasBin: true
-    peerDependencies:
-      browserslist: '>= 4.21.0'
 
   update-browserslist-db@1.2.3:
     resolution: {}
@@ -8626,16 +8600,6 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  autoprefixer@10.4.20(postcss@8.5.25):
-    dependencies:
-      browserslist: 4.24.4
-      caniuse-lite: 1.0.30001707
-      fraction.js: 4.3.7
-      normalize-range: 0.1.2
-      picocolors: 1.1.1
-      postcss: 8.5.25
-      postcss-value-parser: 4.2.0
-
   available-typed-arrays@1.0.7:
     dependencies:
       possible-typed-array-names: 1.1.0
@@ -8741,13 +8705,6 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  browserslist@4.24.4:
-    dependencies:
-      caniuse-lite: 1.0.30001707
-      electron-to-chromium: 1.5.126
-      node-releases: 2.0.19
-      update-browserslist-db: 1.1.3(browserslist@4.24.4)
-
   browserslist@4.28.1:
     dependencies:
       baseline-browser-mapping: 2.10.0
@@ -8795,8 +8752,6 @@ snapshots:
       get-intrinsic: 1.3.0
 
   callsites@3.1.0: {}
-
-  caniuse-lite@1.0.30001707: {}
 
   caniuse-lite@1.0.30001774: {}
 
@@ -9143,8 +9098,6 @@ snapshots:
   eastasianwidth@0.2.0: {}
 
   ejs@5.0.1: {}
-
-  electron-to-chromium@1.5.126: {}
 
   electron-to-chromium@1.5.302: {}
 
@@ -9534,8 +9487,6 @@ snapshots:
       es-set-tostringtag: 2.1.0
       hasown: 2.0.4
       mime-types: 2.1.35
-
-  fraction.js@4.3.7: {}
 
   fs-constants@1.0.0: {}
 
@@ -10562,13 +10513,9 @@ snapshots:
     dependencies:
       whatwg-url: 5.0.0
 
-  node-releases@2.0.19: {}
-
   node-releases@2.0.27: {}
 
   normalize-path@3.0.0: {}
-
-  normalize-range@0.1.2: {}
 
   npm-run-path@4.0.1:
     dependencies:
@@ -10925,6 +10872,10 @@ snapshots:
     dependencies:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
+
+  postcss-sorting@10.0.0(postcss@8.5.25):
+    dependencies:
+      postcss: 8.5.25
 
   postcss-value-parser@4.2.0: {}
 
@@ -11488,6 +11439,12 @@ snapshots:
       stylelint: 17.5.0(typescript@5.8.3)
       stylelint-scss: 7.0.0(stylelint@17.5.0(typescript@5.8.3))
 
+  stylelint-order@8.1.1(stylelint@17.5.0(typescript@5.8.3)):
+    dependencies:
+      postcss: 8.5.25
+      postcss-sorting: 10.0.0(postcss@8.5.25)
+      stylelint: 17.5.0(typescript@5.8.3)
+
   stylelint-scss@7.0.0(stylelint@17.5.0(typescript@5.8.3)):
     dependencies:
       css-tree: 3.2.1
@@ -11832,12 +11789,6 @@ snapshots:
       '@unrs/resolver-binding-win32-arm64-msvc': 1.11.1
       '@unrs/resolver-binding-win32-ia32-msvc': 1.11.1
       '@unrs/resolver-binding-win32-x64-msvc': 1.11.1
-
-  update-browserslist-db@1.1.3(browserslist@4.24.4):
-    dependencies:
-      browserslist: 4.24.4
-      escalade: 3.2.0
-      picocolors: 1.1.1
 
   update-browserslist-db@1.2.3(browserslist@4.28.1):
     dependencies:
