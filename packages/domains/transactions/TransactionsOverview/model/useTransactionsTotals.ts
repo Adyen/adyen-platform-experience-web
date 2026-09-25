@@ -2,7 +2,7 @@ import { ref, computed, watch, onScopeDispose } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { isFunction } from '@integration-components/utils';
 import type { ITransactionTotal } from '@integration-components/types';
-import type { TransactionsFilters } from '../types';
+import type { TransactionsFilters } from '../../domain/src/TransactionsOverview/types';
 
 interface UseTransactionsTotalsProps {
     filters: TransactionsFilters;

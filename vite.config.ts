@@ -116,6 +116,7 @@ export default defineConfig(({ mode }) => {
                 'config/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'scripts/check-publish-contract/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/domains/*/{domain,vue}/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/domains/*/*/model/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/tools/*/scripts/**/*.{test,spec}.?(c|m)[jt]s?(x)',
             ],
@@ -127,6 +128,7 @@ export default defineConfig(({ mode }) => {
                     'src/**/*.ts',
                     'packages/sdk/src/**/*.ts',
                     `packages/domains/*/{domain,vue}/src/**/*.${coverageExtensions}`,
+                    'packages/domains/*/*/model/**/*.ts',
                     `packages/shared/{composables-vue,core,utils}/src/**/*.${coverageExtensions}`,
                 ],
                 exclude: [

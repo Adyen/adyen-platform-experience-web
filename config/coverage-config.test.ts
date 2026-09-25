@@ -28,6 +28,12 @@ const getCoverage = async () => {
 
 afterEach(() => vi.unstubAllEnvs());
 
+test('feature model tests are discovered by Vitest', async () => {
+    const config = await getConfig();
+
+    expect(config.test?.include).toContain('packages/domains/*/*/model/**/*.{test,spec}.?(c|m)[jt]s?(x)');
+});
+
 test('default coverage includes the complete first-party Vue runtime', async () => {
     vi.stubEnv('UNIT_LOGIC_COVERAGE', '');
     const coverage = await getCoverage();
@@ -36,6 +42,7 @@ test('default coverage includes the complete first-party Vue runtime', async () 
         'src/**/*.ts',
         'packages/sdk/src/**/*.ts',
         'packages/domains/*/{domain,vue}/src/**/*.{ts,vue}',
+        'packages/domains/*/*/model/**/*.ts',
         'packages/shared/{composables-vue,core,utils}/src/**/*.{ts,vue}',
     ]);
     expect(coverage.reportsDirectory).toMatch(/coverage$/);
@@ -50,6 +57,7 @@ test('unit coverage includes all first-party runtime TypeScript without Vue comp
         'src/**/*.ts',
         'packages/sdk/src/**/*.ts',
         'packages/domains/*/{domain,vue}/src/**/*.ts',
+        'packages/domains/*/*/model/**/*.ts',
         'packages/shared/{composables-vue,core,utils}/src/**/*.ts',
     ]);
     expect(coverage.reportsDirectory).toMatch(/coverage-unit$/);

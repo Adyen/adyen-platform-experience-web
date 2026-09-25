@@ -16,6 +16,7 @@ import {
     TRANSACTION_ANALYTICS_CATEGORY,
     TRANSACTION_ANALYTICS_SUBCATEGORY_LIST,
     TRANSACTION_ANALYTICS_SUBCATEGORY_INSIGHTS,
+    getFilterAnalyticsValue,
     getEarliestTransactionDate,
 } from '@integration-components/transactions/domain';
 import type { FilterType, MixpanelProperty } from '@integration-components/core/EventDispatcher/eventDispatcher/user-events';
@@ -239,14 +240,10 @@ function fireFilterEvent(field: string, value: unknown, actionType?: 'reset' | '
     let eventValue: MixpanelProperty | null | undefined;
 
     if (eventActionType === 'update') {
-        if (field === 'paymentPspReference') {
-            eventValue = null;
-        } else if (field === 'dateRange' && dateRange) {
+        if (field === 'dateRange' && dateRange) {
             eventValue = quickSelectRanges.find(range => range.value === dateRange.range)?.label ?? getCustomDateRangeEventValue(dateRange);
-        } else if (Array.isArray(value)) {
-            eventValue = String(value);
         } else {
-            eventValue = value as MixpanelProperty;
+            eventValue = getFilterAnalyticsValue(field, value);
         }
     }
 
