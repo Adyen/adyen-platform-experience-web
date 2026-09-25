@@ -200,6 +200,7 @@ onUnmounted(() => {
         </BentoCard>
 
         <DisputeManagementModal
+            v-if="selectedDisputeId"
             :dispute-id="selectedDisputeId"
             :data-customization="props.dataCustomization?.details"
             :on-contact-support="props.onContactSupport"
