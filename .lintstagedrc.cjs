@@ -6,8 +6,8 @@ module.exports = {
     'packages/{sdk,domains/*/vue}/translations/**/*.json': filenames => [`pnpm run translations:sort ${filenames.join(' ')}`],
     // Fix Prettier formatting
     '{src,packages}/**/*.{ts,js,scss,css,md,json,html,vue}': filenames => [`pnpm exec prettier --write ${filenames.join(' ')}`],
-    // Fix stylelint issues only (no checking/reporting)
-    'packages/**/*.scss': filenames => [`pnpm exec stylelint --fix ${filenames.join(' ')}`],
+    // Fix and check stylelint (auto-fixes what it can; fails the commit on remaining errors or warnings)
+    'packages/**/*.scss': filenames => [`pnpm exec stylelint --fix --max-warnings 0 --report-needless-disables ${filenames.join(' ')}`],
     // Fix and check ESLint (auto-fixes what it can; fails the commit on remaining errors or warnings)
     '{src,packages}/**/*.{js,ts,vue}': filenames => [`pnpm exec eslint --fix --max-warnings 0 ${filenames.join(' ')}`],
     // Check playwright selector usage (mirrors lint:playwright-selectors)
