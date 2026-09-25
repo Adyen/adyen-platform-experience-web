@@ -15,7 +15,7 @@ const KYC_CUSTOM_ELEMENT_TAGS = ['adyen-business-financing', 'adyen-terms-of-ser
 const isCustomElement = (tag: string) => KYC_CUSTOM_ELEMENT_TAGS.includes(tag);
 
 const config: StorybookConfig = {
-    stories: [`${root}/packages/domains/*/vue/stories/**/*.stories.*`],
+    stories: [`${root}/packages/domains/*/vue/stories/**/*.stories.*`, `${root}/packages/sdk/stories/**/*.stories.*`],
     staticDirs: [
         '../../../static',
         { from: resolve(rootDir, 'packages/shared/assets/src/datasets'), to: '/datasets' },
