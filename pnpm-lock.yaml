@@ -606,6 +606,12 @@ importers:
       '@integration-components/style':
         specifier: workspace:*
         version: link:../shared/style
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.31(typescript@5.8.3)
+      vue-i18n:
+        specifier: ^11.3.2
+        version: 11.3.2(vue@3.5.31(typescript@5.8.3))
     devDependencies:
       '@integration-components/testing':
         specifier: workspace:*
@@ -619,15 +625,15 @@ importers:
       '@vitejs/plugin-vue':
         specifier: ^6.0.5
         version: 6.0.5(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))(vue@3.5.31(typescript@5.8.3))
+      terser:
+        specifier: 5.46.2
+        version: 5.46.2
       tsc-alias:
         specifier: ^1.8.17
         version: 1.8.17
       vite:
         specifier: 'catalog:'
         version: 7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0)
-      vue:
-        specifier: 'catalog:'
-        version: 3.5.31(typescript@5.8.3)
 
   packages/shared/assets: {}
 

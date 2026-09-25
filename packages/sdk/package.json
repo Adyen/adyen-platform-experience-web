@@ -12,15 +12,17 @@
     },
     "dependencies": {
         "@integration-components/sdk-internal": "workspace:*",
-        "@integration-components/style": "workspace:*"
+        "@integration-components/style": "workspace:*",
+        "vue": "catalog:",
+        "vue-i18n": "^11.3.2"
     },
     "devDependencies": {
         "@integration-components/testing": "workspace:*",
         "@playwright/test": "catalog:",
         "@storybook/vue3": "catalog:",
         "@vitejs/plugin-vue": "^6.0.5",
+        "terser": "5.46.2",
         "tsc-alias": "^1.8.17",
-        "vite": "catalog:",
-        "vue": "catalog:"
+        "vite": "catalog:"
     }
 }
