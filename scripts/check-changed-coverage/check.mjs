@@ -55,10 +55,18 @@ const measuredLines = lcov => {
     for (const line of lcov.split('\n')) {
         if (line.startsWith('SF:')) {
             file = normalizePath(line.slice(3));
-            files.set(file, new Map());
+            files.set(file, { hits: new Map(), branches: new Map() });
         } else if (line.startsWith('DA:') && file) {
             const match = /^DA:(\d+),(\d+)/.exec(line);
-            if (match) files.get(file).set(Number(match[1]), Number(match[2]));
+            if (match) files.get(file).hits.set(Number(match[1]), Number(match[2]));
+        } else if (line.startsWith('BRDA:') && file) {
+            const match = /^BRDA:(\d+),[^,]*,[^,]*,(\d+|-)$/.exec(line);
+            if (!match) continue;
+            const { branches } = files.get(file);
+            const counts = branches.get(Number(match[1])) ?? { covered: 0, total: 0 };
+            counts.total++;
+            if (match[2] !== '-' && Number(match[2]) > 0) counts.covered++;
+            branches.set(Number(match[1]), counts);
         } else if (line === 'end_of_record') {
             file = undefined;
         }
@@ -66,53 +74,78 @@ const measuredLines = lcov => {
     return files;
 };
 
+const plural = (count, noun) => `${count} ${noun}${count === 1 ? '' : 's'}`;
+
+// SonarCloud's Coverage on New Code: (covered lines + covered conditions) / (lines to cover + conditions to cover).
+const coveragePercent = ({ lines, conditions }) => ((lines.covered + conditions.covered) / (lines.total + conditions.total)) * 100;
+
 export function analyzeChangedCoverage(diff, lcov) {
     const changed = changedLines(diff);
     const measured = measuredLines(lcov);
     const missing = [];
-    let covered = 0;
-    let total = 0;
+    const lines = { covered: 0, total: 0 };
+    const conditions = { covered: 0, total: 0 };
 
-    for (const [file, lines] of changed) {
-        if (lines.size === 0) continue;
-        const counts = measured.get(file);
-        if (!counts) {
+    for (const [file, changedLineNumbers] of changed) {
+        if (changedLineNumbers.size === 0) continue;
+        const report = measured.get(file);
+        if (!report) {
             missing.push(file);
             continue;
         }
-        for (const line of lines) {
-            if (!counts.has(line)) continue;
-            total++;
-            if (counts.get(line) > 0) covered++;
+        for (const line of changedLineNumbers) {
+            if (report.hits.has(line)) {
+                lines.total++;
+                if (report.hits.get(line) > 0) lines.covered++;
+            }
+            const branch = report.branches.get(line);
+            if (branch) {
+                conditions.total += branch.total;
+                conditions.covered += branch.covered;
+            }
         }
     }
 
-    const smallChange = total < minimumLines;
-    return { covered, total, missing, smallChange, passed: missing.length === 0 && (smallChange || covered * 100 >= threshold * total) };
+    // Like SonarCloud, small changes are measured by lines to cover only.
+    const smallChange = lines.total < minimumLines;
+    const meetsThreshold = smallChange || coveragePercent({ lines, conditions }) >= threshold;
+    return { lines, conditions, missing, smallChange, passed: missing.length === 0 && meetsThreshold };
 }
 
-export function pilotWarning({ covered, total, missing, passed }) {
+export function pilotWarning(analysis) {
+    const { lines, conditions, missing, passed } = analysis;
     if (passed) return undefined;
     if (missing.length) {
         return `${missing.length} changed runtime TypeScript file${missing.length === 1 ? ' is' : 's are'} missing from the unit coverage report. Check the coverage scope; after the pilot, this will block PRs.`;
     }
-    return `New code unit-test coverage is ${((covered / total) * 100).toFixed(2)}%, below the ${threshold}% target. Merging as-is leaves ${total - covered} changed executable line${total - covered === 1 ? '' : 's'} without unit coverage, weakening the project's quality safeguards and raising regression risk. After the pilot, PRs below ${threshold}% will be blocked.`;
+    const uncoveredConditions = conditions.total - conditions.covered;
+    const gaps = [
+        plural(lines.total - lines.covered, 'changed executable line'),
+        ...(uncoveredConditions ? [plural(uncoveredConditions, 'branch condition')] : []),
+    ].join(' and ');
+    return `New code unit-test coverage is ${coveragePercent(analysis).toFixed(2)}%, below the ${threshold}% target. Merging as-is leaves ${gaps} without unit coverage, weakening the project's quality safeguards and raising regression risk. After the pilot, PRs below ${threshold}% will be blocked.`;
 }
 
 export function pilotComment(analysis) {
-    const { covered, total, missing, smallChange, passed } = analysis;
-    const percentage = total ? `**${((covered / total) * 100).toFixed(2)}%**` : '';
+    const { lines, conditions, missing, smallChange, passed } = analysis;
+    const percentage = lines.total ? `**${coveragePercent(analysis).toFixed(2)}%**` : '';
     const coverageText =
-        total === 0
+        lines.total === 0
             ? missing.length
                 ? `⚠️ **N/A** (coverage report incomplete; target: **${threshold}%**)`
                 : 'ℹ️ **N/A** (no measurable changed runtime TypeScript lines)'
             : smallChange
-              ? `${missing.length ? '⚠️' : 'ℹ️'} ${percentage} (${total} changed executable line${total === 1 ? '' : 's'}; the ${threshold}% target applies from ${minimumLines})`
+              ? `${missing.length ? '⚠️' : 'ℹ️'} ${percentage} (${plural(lines.total, 'changed line')} to cover; the ${threshold}% target applies from ${minimumLines})`
               : `${passed ? '✅' : '⚠️'} ${percentage} (target: **${threshold}%**)`;
+    const breakdown = lines.total
+        ? [
+              '',
+              `Lines: ${lines.covered}/${lines.total} · Branch conditions: ${conditions.covered}/${conditions.total} · Computed like SonarCloud's Coverage on New Code.`,
+          ]
+        : [];
     const result = !passed
         ? 'below target or missing coverage'
-        : total === 0
+        : lines.total === 0
           ? 'not applicable'
           : smallChange
             ? 'small change, target not applied'
@@ -123,6 +156,7 @@ export function pilotComment(analysis) {
         '### Unit-test coverage for changed code (pilot)',
         '',
         coverageText,
+        ...breakdown,
         ...(missing.length ? ['', 'Changed source files missing from LCOV:', ...missing.map(file => `- \`${file}\``)] : []),
         '',
         `Result: ${result}. Vue components require separate Playwright checks.`,

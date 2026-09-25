@@ -12,13 +12,21 @@ const patch = (file, hunk) => `diff --git a/${file} b/${file}
 --- /dev/null
 +++ b/${file}
 ${hunk}`;
-const lcov = (file, lines) => `SF:${file}
+const lcov = (file, lines, branches = []) => `SF:${file}
 ${lines.map(([line, hits]) => `DA:${line},${hits}`).join('\n')}
+${branches.map(([line, taken], index) => `BRDA:${line},0,${index},${taken}`).join('\n')}
 end_of_record
 `;
 const addedLines = count =>
     patch(source, `@@ -0,0 +1,${count} @@\n${Array.from({ length: count }, (_, i) => `+export const line${i + 1} = ${i};\n`).join('')}`);
 const hitsFor = (count, coveredCount) => Array.from({ length: count }, (_, i) => [i + 1, i < coveredCount ? 1 : 0]);
+const analysis = ({ lines = [0, 0], conditions = [0, 0], missing = [], smallChange, passed }) => ({
+    lines: { covered: lines[0], total: lines[1] },
+    conditions: { covered: conditions[0], total: conditions[1] },
+    missing,
+    smallChange,
+    passed,
+});
 
 test('checks only executable added lines against the 80% threshold', () => {
     const diff = patch(
@@ -30,13 +38,7 @@ test('checks only executable added lines against the 80% threshold', () => {
         Array.from({ length: 20 }, (_, i) => [i + 2, i < 15 ? 1 : 0])
     );
 
-    assert.deepEqual(analyzeChangedCoverage(diff, report), {
-        covered: 15,
-        total: 20,
-        missing: [],
-        smallChange: false,
-        passed: false,
-    });
+    assert.deepEqual(analyzeChangedCoverage(diff, report), analysis({ lines: [15, 20], smallChange: false, passed: false }));
 });
 
 test('passes at exactly 80% across multiple hunks and ignores removed lines', () => {
@@ -48,40 +50,50 @@ test('passes at exactly 80% across multiple hunks and ignores removed lines', ()
         ...Array.from({ length: 10 }, (_, i) => [20 + i, i < 6 ? 1 : 0]),
     ]);
 
-    assert.deepEqual(analyzeChangedCoverage(diff, report), {
-        covered: 16,
-        total: 20,
-        missing: [],
-        smallChange: false,
-        passed: true,
-    });
+    assert.deepEqual(analyzeChangedCoverage(diff, report), analysis({ lines: [16, 20], smallChange: false, passed: true }));
 });
 
-test('does not apply the 80% threshold below 20 changed executable lines', () => {
-    assert.deepEqual(analyzeChangedCoverage(addedLines(19), lcov(source, hitsFor(19, 0))), {
-        covered: 0,
-        total: 19,
-        missing: [],
-        smallChange: true,
-        passed: true,
-    });
-    assert.deepEqual(analyzeChangedCoverage(addedLines(20), lcov(source, hitsFor(20, 15))), {
-        covered: 15,
-        total: 20,
-        missing: [],
-        smallChange: false,
-        passed: false,
-    });
+test('combines changed lines and their branch conditions like SonarCloud coverage', () => {
+    const report = lcov(source, hitsFor(20, 20), [
+        [1, 1],
+        [1, 0],
+        [2, 3],
+        [2, '-'],
+        [2, 0],
+        [30, 0],
+    ]);
+
+    assert.deepEqual(
+        analyzeChangedCoverage(addedLines(20), report),
+        analysis({ lines: [20, 20], conditions: [2, 5], smallChange: false, passed: true })
+    );
+    assert.deepEqual(
+        analyzeChangedCoverage(
+            addedLines(20),
+            lcov(
+                source,
+                hitsFor(20, 17),
+                Array.from({ length: 10 }, () => [1, 0])
+            )
+        ),
+        analysis({ lines: [17, 20], conditions: [0, 10], smallChange: false, passed: false })
+    );
+});
+
+test('does not apply the 80% threshold below 20 changed lines to cover, regardless of conditions', () => {
+    const conditions = Array.from({ length: 10 }, () => [1, 0]);
+    assert.deepEqual(
+        analyzeChangedCoverage(addedLines(19), lcov(source, hitsFor(19, 0), conditions)),
+        analysis({ lines: [0, 19], conditions: [0, 10], smallChange: true, passed: true })
+    );
+    assert.deepEqual(
+        analyzeChangedCoverage(addedLines(20), lcov(source, hitsFor(20, 15))),
+        analysis({ lines: [15, 20], smallChange: false, passed: false })
+    );
 });
 
 test('still fails a small change whose source is missing from the coverage report', () => {
-    assert.deepEqual(analyzeChangedCoverage(addedLines(3), ''), {
-        covered: 0,
-        total: 0,
-        missing: [source],
-        smallChange: true,
-        passed: false,
-    });
+    assert.deepEqual(analyzeChangedCoverage(addedLines(3), ''), analysis({ missing: [source], smallChange: true, passed: false }));
 });
 
 test('skips Vue, test, excluded, and out-of-scope TypeScript files', () => {
@@ -95,37 +107,19 @@ test('skips Vue, test, excluded, and out-of-scope TypeScript files', () => {
     ];
     const diff = files.map(file => patch(file, '@@ -0,0 +1 @@\n+new line\n')).join('');
 
-    assert.deepEqual(analyzeChangedCoverage(diff, ''), {
-        covered: 0,
-        total: 0,
-        missing: [],
-        smallChange: true,
-        passed: true,
-    });
+    assert.deepEqual(analyzeChangedCoverage(diff, ''), analysis({ smallChange: true, passed: true }));
 });
 
 test('reports a missing LCOV entry instead of treating unmeasured runtime code as covered', () => {
     const diff = patch(source, '@@ -0,0 +1 @@\n+export const rule = true;\n');
 
-    assert.deepEqual(analyzeChangedCoverage(diff, ''), {
-        covered: 0,
-        total: 0,
-        missing: [source],
-        smallChange: true,
-        passed: false,
-    });
+    assert.deepEqual(analyzeChangedCoverage(diff, ''), analysis({ missing: [source], smallChange: true, passed: false }));
 });
 
 test('skips comment-only changes when the source is present in LCOV', () => {
     const diff = patch(source, '@@ -10,0 +11 @@\n+// why this is safe\n');
 
-    assert.deepEqual(analyzeChangedCoverage(diff, lcov(source, [[5, 1]])), {
-        covered: 0,
-        total: 0,
-        missing: [],
-        smallChange: true,
-        passed: true,
-    });
+    assert.deepEqual(analyzeChangedCoverage(diff, lcov(source, [[5, 1]])), analysis({ smallChange: true, passed: true }));
 });
 
 test('matches absolute LCOV paths and ignores unchanged lines in a hunk', () => {
@@ -136,63 +130,58 @@ test('matches absolute LCOV paths and ignores unchanged lines in a hunk', () => 
         [9, 0],
     ]);
 
-    assert.deepEqual(analyzeChangedCoverage(diff, report), {
-        covered: 1,
-        total: 1,
-        missing: [],
-        smallChange: true,
-        passed: true,
-    });
+    assert.deepEqual(analyzeChangedCoverage(diff, report), analysis({ lines: [1, 1], smallChange: true, passed: true }));
 });
 
 test('warns about uncovered new logic without claiming overall coverage decreased', () => {
-    const result = { covered: 15, total: 20, missing: [], smallChange: false, passed: false };
     assert.equal(
-        pilotWarning(result),
-        "New code unit-test coverage is 75.00%, below the 80% target. Merging as-is leaves 5 changed executable lines without unit coverage, weakening the project's quality safeguards and raising regression risk. After the pilot, PRs below 80% will be blocked."
+        pilotWarning(analysis({ lines: [15, 20], conditions: [1, 4], smallChange: false, passed: false })),
+        "New code unit-test coverage is 66.67%, below the 80% target. Merging as-is leaves 5 changed executable lines and 3 branch conditions without unit coverage, weakening the project's quality safeguards and raising regression risk. After the pilot, PRs below 80% will be blocked."
     );
-    assert.equal(pilotWarning({ covered: 16, total: 20, missing: [], smallChange: false, passed: true }), undefined);
-    assert.equal(pilotWarning({ covered: 0, total: 5, missing: [], smallChange: true, passed: true }), undefined);
-    assert.equal(pilotWarning({ covered: 0, total: 0, missing: [], smallChange: true, passed: true }), undefined);
+    assert.equal(pilotWarning(analysis({ lines: [16, 20], smallChange: false, passed: true })), undefined);
+    assert.equal(pilotWarning(analysis({ lines: [0, 5], smallChange: true, passed: true })), undefined);
+    assert.equal(pilotWarning(analysis({ smallChange: true, passed: true })), undefined);
 });
 
 test('warns about missing coverage without guessing how many lines are executable', () => {
     assert.equal(
-        pilotWarning({ covered: 0, total: 0, missing: [source], smallChange: true, passed: false }),
+        pilotWarning(analysis({ missing: [source], smallChange: true, passed: false })),
         '1 changed runtime TypeScript file is missing from the unit coverage report. Check the coverage scope; after the pilot, this will block PRs.'
     );
 });
 
 test('renders a marked PR comment for failures, passing PRs, and PRs without changed logic', () => {
-    const failed = pilotComment({ covered: 15, total: 20, missing: [], smallChange: false, passed: false });
+    const failed = pilotComment(analysis({ lines: [15, 20], conditions: [1, 4], smallChange: false, passed: false }));
     assert.match(failed, /^<!-- changed-typescript-coverage-pilot -->\n/);
     assert.match(failed, /### Unit-test coverage for changed code \(pilot\)/);
-    assert.match(failed, /⚠️ \*\*75\.00%\*\* \(target: \*\*80%\*\*\)/);
-    assert.match(failed, /> \[!WARNING\]\n> New code unit-test coverage is 75\.00%/);
+    assert.match(failed, /⚠️ \*\*66\.67%\*\* \(target: \*\*80%\*\*\)/);
+    assert.match(failed, /Lines: 15\/20 · Branch conditions: 1\/4 · Computed like SonarCloud's Coverage on New Code\./);
+    assert.match(failed, /> \[!WARNING\]\n> New code unit-test coverage is 66\.67%/);
     assert.match(
         failed,
         new RegExp(
-            'Merging as-is leaves 5 changed executable lines without unit coverage, ' +
+            'Merging as-is leaves 5 changed executable lines and 3 branch conditions without unit coverage, ' +
                 "weakening the project's quality safeguards and raising regression risk\\."
         )
     );
     assert.doesNotMatch(failed, /overall coverage decreased/);
 
-    const passed = pilotComment({ covered: 16, total: 20, missing: [], smallChange: false, passed: true });
+    const passed = pilotComment(analysis({ lines: [16, 20], smallChange: false, passed: true }));
     assert.match(passed, /✅ \*\*80\.00%\*\* \(target: \*\*80%\*\*\)/);
     assert.match(passed, /Result: pass/);
     assert.doesNotMatch(passed, /Merging as-is/);
 
-    const small = pilotComment({ covered: 1, total: 3, missing: [], smallChange: true, passed: true });
-    assert.match(small, /ℹ️ \*\*33\.33%\*\* \(3 changed executable lines; the 80% target applies from 20\)/);
+    const small = pilotComment(analysis({ lines: [1, 3], smallChange: true, passed: true }));
+    assert.match(small, /ℹ️ \*\*33\.33%\*\* \(3 changed lines to cover; the 80% target applies from 20\)/);
     assert.match(small, /Result: small change, target not applied/);
     assert.doesNotMatch(small, /Merging as-is/);
 
-    const noLines = pilotComment({ covered: 0, total: 0, missing: [], smallChange: true, passed: true });
+    const noLines = pilotComment(analysis({ smallChange: true, passed: true }));
     assert.match(noLines, /ℹ️ \*\*N\/A\*\* \(no measurable changed runtime TypeScript lines\)/);
     assert.match(noLines, /Result: not applicable/);
+    assert.doesNotMatch(noLines, /Branch conditions/);
 
-    const incomplete = pilotComment({ covered: 0, total: 0, missing: [source], smallChange: true, passed: false });
+    const incomplete = pilotComment(analysis({ missing: [source], smallChange: true, passed: false }));
     assert.match(incomplete, /⚠️ \*\*N\/A\*\* \(coverage report incomplete; target: \*\*80%\*\*\)/);
     assert.match(incomplete, /missing from LCOV/);
 });
