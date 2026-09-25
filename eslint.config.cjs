@@ -266,7 +266,7 @@ module.exports = [
         },
     },
 
-    // Domain quality gates (docs/testing-strategy.md#gatekeeping). Domains depend only on shared libraries,
+    // Domain quality gates. Domains depend only on shared libraries,
     // never on another domain: affected-domain test selection relies on it. Inline ESLint comments are
     // disabled so a gate cannot be switched off from inside a domain; exceptions go through this file.
     {
@@ -303,7 +303,7 @@ module.exports = [
         },
     },
 
-    // domain/src stays framework-neutral (docs/adr/0001-unit-coverage-and-domain-boundaries.md#source-boundaries).
+    // domain/src stays framework-neutral: business rules are unit-tested there without Vue.
     {
         files: ['packages/domains/*/domain/src/**/*.ts'],
         // Known exception: the payment link schema types its translator with the Vue-layer `I18n` type.
