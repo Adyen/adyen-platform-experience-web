@@ -43,6 +43,7 @@ storybook-static/
 
 playwright-report
 test-results
+/story-coverage/
 
 scripts/generate-ts-schemas/variables
 scripts/*/variables

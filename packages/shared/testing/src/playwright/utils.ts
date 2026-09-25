@@ -2,12 +2,14 @@ import type { PageAnalyticsEvent } from '../fixtures/eventDispatcher/events';
 import type { Locator, Page, Request } from '@playwright/test';
 import { expect } from '@playwright/test';
 import { BalanceAccountFilter } from './utils/filters';
+import { recordStoryVisit } from './storyCoverage';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
 
 export const goToStory = async (page: Page, params: { id: string; args?: Record<string, string> }) => {
     const { args, ...restOfParams } = params;
+    recordStoryVisit(params.id);
     const queryParams = new URLSearchParams({
         ...restOfParams,
         ...(args
