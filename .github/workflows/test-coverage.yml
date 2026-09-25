@@ -3,76 +3,188 @@ name: Unit Test Coverage
 on:
     pull_request:
         branches:
+            - main
             - develop
+            - version/v1.x
             - group/*
+            - bot/translations
+        types: [opened, synchronize, reopened]
+        paths-ignore:
+            - README.md
+            - LICENSE
+            - .gitignore
+    pull_request_review:
+        types: [submitted]
+
+concurrency:
+    group: changed-typescript-coverage-${{ github.event.pull_request.number }}-${{ github.event_name }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
 
 jobs:
-    base_coverage:
-        if: false
+    unit-tests:
+        name: Unit tests
+        if: |
+            github.event_name == 'pull_request' ||
+            (github.event_name == 'pull_request_review' &&
+             github.event.review.state == 'approved' &&
+             (github.event.pull_request.base.ref == 'main' ||
+              github.event.pull_request.base.ref == 'develop' ||
+              github.event.pull_request.base.ref == 'version/v1.x' ||
+              startsWith(github.event.pull_request.base.ref, 'group/')))
         runs-on: ubuntu-latest
-        permissions:
-            contents: write
-            pull-requests: write
+        timeout-minutes: 15
+        outputs:
+            coverage_artifact: ${{ steps.unit-coverage-artifact.outcome == 'success' }}
+        env:
+            COVERAGE_ENABLED: >-
+                ${{ github.event_name == 'pull_request' &&
+                    github.event.pull_request.head.repo.full_name == github.repository &&
+                    (github.event.pull_request.base.ref == 'develop' ||
+                     startsWith(github.event.pull_request.base.ref, 'group/')) }}
         steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+            - name: Check if automated sync PR
+              id: skip-check
+              if: >-
+                  github.event.pull_request.user.login == 'github-actions[bot]'
+                  && startsWith(github.event.pull_request.head.ref, 'chore/sync-main-into-develop')
+                  && startsWith(github.event.pull_request.title, 'chore(release): sync main into develop')
+              run: echo "Skipping unit tests (automated sync PR)"
+
+            - name: Checkout PR head
+              if: steps.skip-check.outcome != 'success'
+              uses: actions/checkout@v4.2.2
               with:
-                  ref: develop
+                  ref: ${{ github.event.pull_request.head.sha }}
+                  fetch-depth: 0
+                  persist-credentials: false
 
             - name: Run the preliminary setup steps
+              if: steps.skip-check.outcome != 'success'
               uses: ./.github/actions/setup-env
               with:
-                NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
+                  NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
-            - run: pnpm run test:coverage
+            - name: Run unit tests
+              if: steps.skip-check.outcome != 'success' && env.COVERAGE_ENABLED != 'true'
+              run: pnpm run test -- --run
 
-            - name: Upload coverage report
+            - name: Run unit tests with coverage
+              if: steps.skip-check.outcome != 'success' && env.COVERAGE_ENABLED == 'true'
+              env:
+                  TEST_ENV: 1
+              run: pnpm run test:coverage:unit
+
+            - name: Verify unit coverage report
+              if: steps.skip-check.outcome != 'success' && env.COVERAGE_ENABLED == 'true'
+              run: test -s coverage-unit/lcov.info
+
+            - name: Upload unit coverage
+              id: unit-coverage-artifact
+              if: steps.skip-check.outcome != 'success' && env.COVERAGE_ENABLED == 'true'
               uses: actions/upload-artifact@v4
               with:
-                  name: coverage-report-${{ github.sha }}
-                  path: coverage/
-    coverage:
-        if: false
-        needs: [base_coverage]
+                  name: unit-coverage-${{ github.event.pull_request.head.sha }}
+                  path: coverage-unit/lcov.info
+                  if-no-files-found: error
+                  retention-days: 1
+
+    changed-typescript-coverage:
+        name: Unit-test coverage for changed code (pilot)
+        needs: unit-tests
+        if: >-
+            always() &&
+            github.event_name == 'pull_request' &&
+            github.event.pull_request.head.repo.full_name == github.repository &&
+            (github.event.pull_request.base.ref == 'develop' ||
+             startsWith(github.event.pull_request.base.ref, 'group/')) &&
+            needs.unit-tests.outputs.coverage_artifact == 'true'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout PR head
+              uses: actions/checkout@v4.2.2
+              with:
+                  ref: ${{ github.event.pull_request.head.sha }}
+                  fetch-depth: 0
+                  persist-credentials: false
+
+            - name: Set up Node
+              uses: actions/setup-node@v4.4.0
+              with:
+                  node-version: 24.18.0
+
+            - name: Download unit coverage
+              uses: actions/download-artifact@v4
+              with:
+                  name: unit-coverage-${{ github.event.pull_request.head.sha }}
+                  path: coverage-unit
+
+            - name: Test changed coverage checker
+              run: node --test scripts/check-changed-coverage/check.test.mjs
+
+            - name: Verify unit coverage report
+              run: test -s coverage-unit/lcov.info
+
+            # Only the changed-lines result is non-blocking during the pilot.
+            - name: Report unit-test coverage of changed code
+              continue-on-error: true
+              env:
+                  BASE_SHA: ${{ github.event.pull_request.base.sha }}
+                  HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+              run: node scripts/check-changed-coverage/check.mjs "$BASE_SHA" "$HEAD_SHA"
+
+            - name: Upload PR coverage comment
+              uses: actions/upload-artifact@v4
+              with:
+                  name: changed-typescript-coverage-comment
+                  path: coverage-unit/pr-comment.md
+                  if-no-files-found: error
+                  retention-days: 1
+
+    coverage-comment:
+        name: Post unit-test coverage for changed code
+        needs: changed-typescript-coverage
+        if: needs.changed-typescript-coverage.result == 'success'
         runs-on: ubuntu-latest
         permissions:
-            contents: read
+            actions: read
             pull-requests: write
-
         steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+            - name: Download PR coverage comment
+              uses: actions/download-artifact@v4
               with:
-                  fetch-depth: 0
+                  name: changed-typescript-coverage-comment
 
-            - name: Run the preliminary setup steps
-              uses: ./.github/actions/setup-env
+            - name: Replace PR coverage comment
+              uses: actions/github-script@v7
               with:
-                NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
+                  script: |
+                      const body = require('node:fs').readFileSync('pr-comment.md', 'utf8');
+                      const marker = '<!-- changed-typescript-coverage-pilot -->';
+                      const { owner, repo } = context.repo;
+                      const issue_number = context.issue.number;
+                      const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+                      const previous = comments.filter(comment => comment.user?.login === 'github-actions[bot]' && comment.body?.startsWith(marker));
 
-            - name: Download latest coverage report from develop
-              run: |
-                  gh run download -n coverage-report-${{ github.sha }} -D coverage-base/
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                      for (const comment of previous) {
+                          await github.rest.issues.deleteComment({ owner, repo, comment_id: comment.id });
+                      }
+                      await github.rest.issues.createComment({ owner, repo, issue_number, body });
 
-            - name: Run tests with coverage
-              run: pnpm run test:coverage
-
-            # STEP 1: Check for overall drop & post a PR comment
-            - name: Report overall coverage drop
-              uses: andybelltree/lcov-reporter-action@v1.7.0
-              with:
-                  lcov-base: ./coverage-base/lcov.info
-                  lcov-file: ./coverage/lcov.info
-                  # This workflow will fail if TOTAL coverage drops more than 0.2%
-                  fail-drop-percent-threshold: 0.2
-                  filter-changed-files: true
-                  delete-old-comments: true
-
-            # STEP 2: Enforce an 80% minimum on new code
-            - name: Enforce coverage on changed lines
-              run: |
-                  git fetch origin develop
-                  # This command fails if CHANGED lines are less than 80% covered
-                  git diff origin/develop | npx @connectis/diff-test-coverage --coverage ./coverage/lcov.info --type lcov --line-coverage 80
+    sonar-analysis:
+        name: Analyze
+        needs: unit-tests
+        if: >-
+            always() &&
+            github.event_name == 'pull_request' &&
+            github.event.pull_request.base.ref == 'develop' &&
+            github.actor != 'dependabot[bot]' &&
+            github.event.pull_request.head.repo.full_name == github.repository &&
+            needs.unit-tests.outputs.coverage_artifact == 'true'
+        permissions:
+            contents: read
+            actions: read
+        uses: ./.github/workflows/sonarcloud.yml
+        secrets: inherit

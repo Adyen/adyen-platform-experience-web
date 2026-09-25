@@ -3,6 +3,7 @@
 const { existsSync, readdirSync } = require('node:fs');
 const { join, relative } = require('node:path');
 const js = require('@eslint/js');
+const nx = require('@nx/eslint-plugin');
 const globals = require('globals');
 const tsParser = require('@typescript-eslint/parser');
 const tsPlugin = require('@typescript-eslint/eslint-plugin');
@@ -234,7 +235,7 @@ module.exports = [
         rules: {
             'import-x/no-extraneous-dependencies': [
                 'error',
-                { devDependencies: ['**/storybook-helpers/**/*.ts'], packageDir: ['packages/shared/testing'] },
+                { devDependencies: ['**/storybook-helpers/**/*.ts', '**/*.test.ts'], packageDir: ['packages/shared/testing'] },
             ],
         },
     },
@@ -262,6 +263,72 @@ module.exports = [
         files: ['packages/tools/storybook/src/.storybook/**/*'],
         rules: {
             'import-x/extensions': 'off',
+        },
+    },
+
+    // Domain quality gates. Domains depend only on shared libraries,
+    // never on another domain: affected-domain test selection relies on it. Inline ESLint comments are
+    // disabled so a gate cannot be switched off from inside a domain; exceptions go through this file.
+    {
+        files: ['packages/domains/**/*.{ts,vue}'],
+        linterOptions: {
+            noInlineConfig: true,
+        },
+        plugins: {
+            '@nx': nx,
+        },
+        rules: {
+            '@nx/enforce-module-boundaries': [
+                'error',
+                {
+                    enforceBuildableLibDependency: false,
+                    depConstraints: [{ sourceTag: 'type:domain', onlyDependOnLibsWithTags: ['type:shared'] }],
+                },
+            ],
+            'no-warning-comments': ['error', { terms: ['istanbul ignore', 'v8 ignore', 'c8 ignore'], location: 'start' }],
+        },
+    },
+
+    // Decision-heavy code belongs in composables or domain/src, where unit coverage measures it, not in components.
+    {
+        files: ['packages/domains/*/vue/src/**/*.vue'],
+        // Known exceptions, above the limit before it was introduced. Extract their logic, then remove them here.
+        ignores: [
+            'packages/domains/transactions/vue/src/TransactionDetails/components/PaymentDetails/PaymentDetailsProperties.vue',
+            'packages/domains/disputes/vue/src/DisputeManagement/components/DisputeDataProperties.vue',
+            'packages/domains/payByLink/vue/src/PaymentLinkCreation/components/Form/Summary/FormSummary.vue',
+        ],
+        rules: {
+            complexity: ['error', 15],
+        },
+    },
+
+    // domain/src stays framework-neutral: business rules are unit-tested there without Vue.
+    {
+        files: ['packages/domains/*/domain/src/**/*.ts'],
+        // Known exception: the payment link schema types its translator with the Vue-layer `I18n` type.
+        // Move that type to the framework-neutral core, then remove this entry.
+        ignores: ['packages/domains/payByLink/domain/src/PaymentLinkCreation/schema{,.test}.ts'],
+        rules: {
+            'no-restricted-imports': [
+                'error',
+                {
+                    patterns: [
+                        {
+                            group: [
+                                'vue',
+                                'vue-i18n',
+                                '@integration-components/composables-vue',
+                                '@integration-components/composables-vue/*',
+                                '*.vue',
+                                '**/vue',
+                                '**/vue/**',
+                            ],
+                            message: 'domain/src must stay framework-neutral: move Vue-dependent code to vue/src.',
+                        },
+                    ],
+                },
+            ],
         },
     },
 ];

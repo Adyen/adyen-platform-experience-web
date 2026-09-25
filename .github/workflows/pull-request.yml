@@ -319,16 +319,12 @@ jobs:
           git fetch --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
           node scripts/process-translations/validate-sdk-instructions.mjs "origin/${BASE_REF}"
 
-      - name: Run unit tests
-        if: steps.skip-check.outcome != 'success'
-        run: pnpm run test -- --run
-
       - name: Run lint checks
-        if: steps.skip-check.outcome != 'success' && github.event.pull_request.base.ref == 'version/v1.x'
+        if: steps.skip-check.outcome != 'success' && (github.event.pull_request.base.ref == 'version/v1.x' || github.event.pull_request.base.ref == 'develop' || startsWith(github.event.pull_request.base.ref, 'group/'))
         run: pnpm run lint
 
       - name: Run type checks
-        if: steps.skip-check.outcome != 'success' && github.event.pull_request.base.ref == 'version/v1.x'
+        if: steps.skip-check.outcome != 'success' && (github.event.pull_request.base.ref == 'version/v1.x' || github.event.pull_request.base.ref == 'develop' || startsWith(github.event.pull_request.base.ref, 'group/'))
         run: pnpm run types:check
 
       - name: Build library

@@ -89,11 +89,15 @@ test('V1 pull requests protect Changesets and automated release identities', () 
     assert.match(workflow, /\^chore\/v1-prerelease-exit-\(alpha\|beta\|rc\|next\)\$/);
 });
 
-test('lint and type checks are scoped to V1 pull requests', () => {
+test('lint and type checks run for V1, develop, and group pull requests', () => {
     const workflow = readRepositoryFile('.github/workflows/pull-request.yml');
 
-    assert.match(workflow, /- name: Run lint checks\n\s+if: .*base\.ref == 'version\/v1\.x'/);
-    assert.match(workflow, /- name: Run type checks\n\s+if: .*base\.ref == 'version\/v1\.x'/);
+    for (const step of ['Run lint checks', 'Run type checks']) {
+        const condition = new RegExp(`- name: ${step}\\n\\s+if: (.*)`).exec(workflow)?.[1] ?? '';
+        assert.match(condition, /base\.ref == 'version\/v1\.x'/);
+        assert.match(condition, /base\.ref == 'develop'/);
+        assert.match(condition, /startsWith\(github\.event\.pull_request\.base\.ref, 'group\/'\)/);
+    }
 });
 
 test('V1 state preparation reuses one branch per transition', () => {

@@ -15,6 +15,8 @@ export default defineConfig(({ mode }) => {
     const externalDependencies = Object.keys(packageJson.dependencies);
     const isAnalyseMode = mode === 'analyse';
     const isUmdBuild = mode === 'umd';
+    const isUnitCoverage = process.env.UNIT_LOGIC_COVERAGE === 'true';
+    const coverageExtensions = isUnitCoverage ? 'ts' : '{ts,vue}';
 
     const { api, app } = getEnvironment(mode);
 
@@ -124,8 +126,8 @@ export default defineConfig(({ mode }) => {
                 include: [
                     'src/**/*.ts',
                     'packages/sdk/src/**/*.ts',
-                    'packages/domains/*/{domain,vue}/src/**/*.{ts,vue}',
-                    'packages/shared/{composables-vue,core,utils}/src/**/*.{ts,vue}',
+                    `packages/domains/*/{domain,vue}/src/**/*.${coverageExtensions}`,
+                    `packages/shared/{composables-vue,core,utils}/src/**/*.${coverageExtensions}`,
                 ],
                 exclude: [
                     '**/*.{test,spec}.{ts,vue}',
@@ -140,7 +142,7 @@ export default defineConfig(({ mode }) => {
                     'packages/shared/types/**',
                 ],
                 reporter: ['lcov', 'text', 'json-summary', 'json'],
-                reportsDirectory: resolve(__dirname, 'coverage'),
+                reportsDirectory: resolve(__dirname, isUnitCoverage ? 'coverage-unit' : 'coverage'),
                 // Uncomment next line once we reach 80% of coverage
                 //thresholds: 80,
                 reportOnFailure: true,

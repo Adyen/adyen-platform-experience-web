@@ -4,10 +4,7 @@ on:
     push:
         branches:
             - develop
-    pull_request:
-        branches:
-            - develop
-        types: [opened, synchronize, reopened]
+    workflow_call:
 
 concurrency:
     group: sonarcloud-${{ github.workflow }}-${{ github.ref }}
@@ -15,13 +12,12 @@ concurrency:
 
 permissions:
     contents: read
+    actions: read
 
 jobs:
     analysis:
         name: Analyze
-        if: >-
-            github.actor != 'dependabot[bot]' &&
-            (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository)
+        if: github.actor != 'dependabot[bot]'
         runs-on: ubuntu-latest
         timeout-minutes: 15
 
@@ -30,28 +26,38 @@ jobs:
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
+                  ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+                  persist-credentials: false
 
             - name: Set up environment
               uses: ./.github/actions/setup-env
               with:
                   NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
-            - name: Run tests with coverage
-              run: pnpm run test:coverage
+            - name: Run tests with unit-only TypeScript coverage
+              if: github.event_name == 'push'
+              run: pnpm run test:coverage:unit
+
+            - name: Download unit coverage from PR tests
+              if: github.event_name == 'pull_request'
+              uses: actions/download-artifact@v4
+              with:
+                  name: unit-coverage-${{ github.event.pull_request.head.sha }}
+                  path: coverage-unit
 
             - name: Verify coverage report paths
               shell: bash
               run: |
-                  test -s coverage/lcov.info
-                  grep -q '^SF:' coverage/lcov.info
+                  test -s coverage-unit/lcov.info
+                  grep -q '^SF:' coverage-unit/lcov.info
 
                   while IFS= read -r source_entry; do
                       source_file="${source_entry#SF:}"
                       if [[ ! -f "${source_file}" ]]; then
-                          echo "::error file=coverage/lcov.info::Coverage source does not exist: ${source_file}"
+                          echo "::error file=coverage-unit/lcov.info::Coverage source does not exist: ${source_file}"
                           exit 1
                       fi
-                  done < <(grep '^SF:' coverage/lcov.info)
+                  done < <(grep '^SF:' coverage-unit/lcov.info)
 
             - name: Run SonarCloud analysis
               uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602 # v6.0.0
