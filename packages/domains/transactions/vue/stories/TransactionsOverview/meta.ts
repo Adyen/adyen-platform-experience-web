@@ -17,7 +17,6 @@ export const TransactionsOverviewMeta: Meta<ElementProps<TransactionsOverviewExt
     args: {
         component: TransactionsOverviewElement,
         allowLimitSelection: true,
-        showDetails: true,
     },
     parameters: {
         controls: {

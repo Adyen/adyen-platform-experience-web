@@ -18,7 +18,7 @@ const props = withDefaults(
         onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
         dataCustomization?: TransactionsOverviewExternalProps['dataCustomization'];
     }>(),
-    {}
+    { showDetails: true }
 );
 
 const { i18n } = useCoreContext();
