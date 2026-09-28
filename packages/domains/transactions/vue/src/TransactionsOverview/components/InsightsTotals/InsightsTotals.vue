@@ -2,8 +2,7 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { ErrorMessageDisplay } from '@integration-components/composables-vue';
-import { BentoDivider, BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
-import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
+import { BentoTypography, BentoDivider } from '@adyen/bento-vue3';
 import { getTransactionCategory } from '@integration-components/transactions/domain';
 import type { CurrencyLookupRecord } from '../../composables/useCurrenciesLookup';
 import type { useTransactionsTotals } from '../../composables/useTransactionsTotals';
@@ -28,26 +27,25 @@ function formatAmount(value: number, currency: string): string {
     return `${i18n.amount(value, currency, { hideCurrency: true })} ${currency}`;
 }
 
-const breakdownColumns = computed<BentoColumn[]>(() => [
-    { field: 'label', label: '', flex: 1 },
-    { field: 'value', label: '', flex: 1, numeric: true },
-]);
-
-const incomingsBreakdown = computed<BentoDatagridDataItem[]>(() =>
-    (data.value?.breakdown?.incomings ?? []).map((item: any, idx: number) => ({
+const incomingsBreakdown = computed(() => {
+    const totals = data.value;
+    if (!totals) return [];
+    return (totals.breakdown?.incomings ?? []).map((item, idx) => ({
         id: `incoming-${idx}`,
         label: getTransactionCategory(i18n, item.category) as string,
-        value: formatAmount(item.value, data.value!.currency),
-    }))
-);
+        value: formatAmount(item.value, totals.currency),
+    }));
+});
 
-const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
-    (data.value?.breakdown?.expenses ?? []).map((item: any, idx: number) => ({
+const expensesBreakdown = computed(() => {
+    const totals = data.value;
+    if (!totals) return [];
+    return (totals.breakdown?.expenses ?? []).map((item, idx) => ({
         id: `expense-${idx}`,
         label: getTransactionCategory(i18n, item.category) as string,
-        value: formatAmount(item.value, data.value!.currency),
-    }))
-);
+        value: formatAmount(item.value, totals.currency),
+    }));
+});
 </script>
 
 <template>
@@ -108,18 +106,21 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
                             </BentoTypography>
                         </div>
                     </div>
-                    <BentoDataGrid
-                        v-if="incomingsBreakdown.length"
-                        :class="styles.breakdownList"
-                        :columns="breakdownColumns"
-                        :data="incomingsBreakdown"
-                        :loading="false"
-                        :has-resizable-columns="false"
-                        :allow-column-drag-and-drop="false"
-                        :allow-row-clicks="false"
-                        hide-header
-                        condensed
-                    />
+                    <BentoTypography v-if="incomingsBreakdown.length" el="div" rich-text>
+                        <table :class="styles.breakdownTable">
+                            <caption :class="styles.visuallyHidden">
+                                {{
+                                    i18n.get('transactions.overview.totals.tags.incoming')
+                                }}
+                            </caption>
+                            <tbody>
+                                <tr v-for="item in incomingsBreakdown" :key="item.id">
+                                    <td>{{ item.label }}</td>
+                                    <td :class="styles.amount">{{ item.value }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </BentoTypography>
                 </div>
 
                 <BentoDivider :class="styles.divider" variant="vertical" />
@@ -138,17 +139,21 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
                             </BentoTypography>
                         </div>
                     </div>
-                    <BentoDataGrid
-                        v-if="expensesBreakdown.length"
-                        :class="styles.breakdownList"
-                        :columns="breakdownColumns"
-                        :data="expensesBreakdown"
-                        :loading="false"
-                        :has-resizable-columns="false"
-                        :allow-column-drag-and-drop="false"
-                        :allow-row-clicks="false"
-                        condensed
-                    />
+                    <BentoTypography v-if="expensesBreakdown.length" el="div" rich-text>
+                        <table :class="styles.breakdownTable">
+                            <caption :class="styles.visuallyHidden">
+                                {{
+                                    i18n.get('transactions.overview.totals.tags.outgoing')
+                                }}
+                            </caption>
+                            <tbody>
+                                <tr v-for="item in expensesBreakdown" :key="item.id">
+                                    <td>{{ item.label }}</td>
+                                    <td :class="styles.amount">{{ item.value }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </BentoTypography>
                 </div>
             </div>
         </template>
