@@ -227,6 +227,39 @@ module.exports = [
         },
     },
 
+    // Naming conventions: value identifiers are camelCase (or UPPER_CASE constants), types and classes are PascalCase
+    {
+        files: ['**/*.{js,mjs,cjs,ts,vue}'],
+        rules: {
+            '@typescript-eslint/naming-convention': [
+                'error',
+                // Locale-coded translation identifiers (e.g. da_DK, pt_BR, _en_US) are allowed to mirror IETF locale tags
+                { selector: 'variable', filter: { regex: '^_?[a-z]{2}_[A-Z]{2}$', match: true }, format: null },
+                // Dunder sentinel identifiers (e.g. __INDEXED_PROTO__) are allowed
+                { selector: 'variable', filter: { regex: '^__\\w+__$', match: true }, format: null },
+                // Imported names follow their source: helpers (camelCase), types/classes (PascalCase), constants (UPPER_CASE)
+                { selector: 'import', format: ['camelCase', 'PascalCase', 'UPPER_CASE'] },
+                // Value identifiers: camelCase; const-bound values may also be UPPER_CASE constants or PascalCase (components, class references); leading underscore marks module-private values
+                { selector: 'variable', modifiers: ['const'], format: ['camelCase', 'UPPER_CASE', 'PascalCase'], leadingUnderscore: 'allow' },
+                // Re-assignable identifiers stay camelCase (UPPER_CASE retained for mutable test counters)
+                { selector: 'variable', format: ['camelCase', 'UPPER_CASE'], leadingUnderscore: 'allow' },
+                // PascalCase stays valid for component-like factories (e.g. AdyenPlatformExperience); leading underscore marks module-private functions
+                { selector: 'function', format: ['camelCase', 'PascalCase'], leadingUnderscore: 'allow' },
+                { selector: 'parameter', format: ['camelCase'], leadingUnderscore: 'allow' },
+                // Types, classes, interfaces and enums: PascalCase; leading underscore marks internal types
+                { selector: 'typeLike', format: ['PascalCase'], leadingUnderscore: 'allow' },
+            ],
+        },
+    },
+
+    // Generated API resource types are exempt (produced by schemas:generate, never hand-edited)
+    {
+        files: ['packages/shared/types/src/api/resources/**', 'src/types/api/**'],
+        rules: {
+            '@typescript-eslint/naming-convention': 'off',
+        },
+    },
+
     // testing-library rules for test files
     {
         ...testingLib.configs['flat/vue'],
