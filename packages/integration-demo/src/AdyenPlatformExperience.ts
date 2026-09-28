@@ -23,7 +23,6 @@ export class AdyenPlatformExperience {
             AdyenPlatformExperience.initializationPromise = (async () => {
                 try {
                     const core = await AdyenPlatformExperienceCore({
-                        availableTranslations: [],
                         onSessionCreate: getSessionToken,
                         locale: 'en-US',
                     });
