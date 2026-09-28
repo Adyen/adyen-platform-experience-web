@@ -284,4 +284,4 @@ jobs:
         run: node --test scripts/story-coverage/report.test.mjs
 
       - name: Report story coverage
-        run: node scripts/story-coverage/report.mjs --index story-coverage/index.json --input story-coverage --summary "$GITHUB_STEP_SUMMARY"
+        run: node scripts/story-coverage/report.mjs --index story-coverage/index.json --input story-coverage

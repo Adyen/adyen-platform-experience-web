@@ -1,5 +1,5 @@
 import { appendFileSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
@@ -8,7 +8,10 @@ const PASSING_OUTCOMES = new Set(['expected', 'flaky']);
 
 const isInScope = entry => entry.type === 'story' && !entry.id.startsWith('api-');
 
-export const domainOf = importPath => /(?:^|\/)domains\/([^/]+)\//.exec(importPath)?.[1] ?? (/(?:^|\/)sdk\//.test(importPath) ? 'sdk' : 'other');
+export const domainOf = importPath => {
+    if (!importPath) return 'other';
+    return /(?:^|\/)domains\/([^/]+)\//.exec(importPath)?.[1] ?? (/(?:^|\/)sdk\//.test(importPath) ? 'sdk' : 'other');
+};
 
 export const summarize = (index, { testFiles, visits }) => {
     const entries = Object.values(index.entries ?? index.stories ?? {});
@@ -91,23 +94,33 @@ export const readRuns = inputDir => {
     if (!files.length) throw new Error(`No visited-*.json files in ${inputDir}. Run the Playwright integration tests first.`);
     const runs = files.sort().map(file => JSON.parse(readFileSync(join(inputDir, file), 'utf8')));
     return {
-        testFiles: [...new Set(runs.flatMap(({ testFiles }) => testFiles))],
-        visits: runs.flatMap(({ visits }) => visits),
+        testFiles: [...new Set(runs.flatMap(({ testFiles }) => testFiles ?? []))],
+        visits: runs.flatMap(({ visits }) => visits ?? []),
     };
 };
 
-export const run = (argv, log = console.log) => {
+/** Resolves a CLI path and rejects it unless it stays inside `root`, so arguments cannot read or write elsewhere. */
+const resolveInside = (root, path, option) => {
+    const resolved = resolve(root, path);
+    const fromRoot = relative(root, resolved);
+    if (fromRoot === '..' || fromRoot.startsWith(`..${sep}`) || isAbsolute(fromRoot)) throw new Error(`--${option} must be inside ${root}: ${path}`);
+    return resolved;
+};
+
+export const run = (argv, { log = console.log, cwd = process.cwd(), env = process.env } = {}) => {
     const { values } = parseArgs({
         args: argv,
-        options: { index: { type: 'string' }, input: { type: 'string', default: 'story-coverage' }, summary: { type: 'string' } },
+        options: { index: { type: 'string', default: DEFAULT_INDEX_PATH }, input: { type: 'string', default: 'story-coverage' } },
     });
-    const indexPath = values.index ?? DEFAULT_INDEX_PATH;
+    const indexPath = resolveInside(cwd, values.index, 'index');
+    const inputDir = resolveInside(cwd, values.input, 'input');
     if (!existsSync(indexPath)) throw new Error(`Storybook index.json not found at ${indexPath}. Build Storybook first or pass --index.`);
 
-    const summary = summarize(JSON.parse(readFileSync(indexPath, 'utf8')), readRuns(values.input));
+    const summary = summarize(JSON.parse(readFileSync(indexPath, 'utf8')), readRuns(inputDir));
     const markdown = formatMarkdown(summary);
-    writeFileSync(join(values.input, 'summary.json'), `${JSON.stringify(summary, null, 2)}\n`);
-    if (values.summary) appendFileSync(values.summary, markdown);
+    writeFileSync(join(inputDir, 'summary.json'), `${JSON.stringify(summary, null, 2)}\n`);
+    // The step summary path comes from the GitHub runner, not from CLI arguments.
+    if (env.GITHUB_STEP_SUMMARY) appendFileSync(env.GITHUB_STEP_SUMMARY, markdown);
     log(markdown);
     return summary;
 };

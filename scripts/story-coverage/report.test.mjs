@@ -45,6 +45,11 @@ test('domainOf attributes stories and specs to their owning domain or the SDK', 
     assert.equal(domainOf('../../tools/storybook/stories/misc.stories.ts'), 'other');
 });
 
+test('domainOf returns other for a missing import path', () => {
+    assert.equal(domainOf(undefined), 'other');
+    assert.equal(domainOf(''), 'other');
+});
+
 test('summarize counts only in-scope stories with a passing visit as covered', () => {
     const summary = summarize(index, fullRun);
 
@@ -119,6 +124,14 @@ test('readRuns merges every shard file in the input directory', () => {
     assert.deepEqual(readRuns(dir), { testFiles: [allTestFiles[0], allTestFiles[2]], visits: [visits[0], visits[4]] });
 });
 
+test('readRuns treats missing testFiles or visits in a shard file as empty', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'story-coverage-'));
+    writeFileSync(join(dir, 'visited-1-of-2.json'), JSON.stringify({ visits: [visits[0]] }));
+    writeFileSync(join(dir, 'visited-2-of-2.json'), JSON.stringify({ testFiles: [allTestFiles[0]] }));
+
+    assert.deepEqual(readRuns(dir), { testFiles: [allTestFiles[0]], visits: [visits[0]] });
+});
+
 test('readRuns fails when no shard produced visit data', () => {
     const dir = mkdtempSync(join(tmpdir(), 'story-coverage-'));
 
@@ -134,8 +147,18 @@ test('run writes the JSON summary and appends markdown to the step summary', () 
     const stepSummary = join(dir, 'step-summary.md');
     writeFileSync(stepSummary, 'previous\n');
 
-    run(['--index', join(dir, 'index.json'), '--input', input, '--summary', stepSummary], () => {});
+    run(['--index', 'index.json', '--input', 'input'], { log: () => {}, cwd: dir, env: { GITHUB_STEP_SUMMARY: stepSummary } });
 
     assert.equal(JSON.parse(readFileSync(join(input, 'summary.json'), 'utf8')).totals.covered, 2);
     assert.match(readFileSync(stepSummary, 'utf8'), /^previous\n## Story coverage/);
+});
+
+test('run rejects --index and --input paths outside the working directory', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'story-coverage-'));
+    const outside = mkdtempSync(join(tmpdir(), 'story-coverage-outside-'));
+    writeFileSync(join(outside, 'index.json'), JSON.stringify(index));
+
+    assert.throws(() => run(['--index', join(outside, 'index.json')], { log: () => {}, cwd: dir, env: {} }), /--index must be inside/);
+    assert.throws(() => run(['--index', '../index.json', '--input', '.'], { log: () => {}, cwd: dir, env: {} }), /--index must be inside/);
+    assert.throws(() => run(['--input', outside], { log: () => {}, cwd: dir, env: {} }), /--input must be inside/);
 });

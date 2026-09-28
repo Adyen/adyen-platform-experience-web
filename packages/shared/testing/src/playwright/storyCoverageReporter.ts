@@ -25,9 +25,11 @@ export default class StoryCoverageReporter implements Reporter {
     private config?: FullConfig;
     private suite?: Suite;
     private readonly outputDir: string;
+    private readonly projects?: string[];
 
-    constructor({ outputDir = 'story-coverage' }: { outputDir?: string } = {}) {
+    constructor({ outputDir = 'story-coverage', projects }: { outputDir?: string; projects?: string[] } = {}) {
         this.outputDir = outputDir;
+        this.projects = projects;
     }
 
     onBegin(config: FullConfig, suite: Suite) {
@@ -37,11 +39,13 @@ export default class StoryCoverageReporter implements Reporter {
 
     onEnd() {
         if (!this.config || !this.suite) return;
+        const tests = this.suite.allTests().filter(test => !this.projects || this.projects.includes(test.parent.project()?.name ?? ''));
+        // Runs without tests from the configured projects (e.g. the contract project) must not overwrite integration results.
+        // Integration runs always write, even without story visits, so their spec files still count as run.
+        if (!tests.length) return;
         const { configFile, shard } = this.config;
         const rootDir = configFile ? dirname(configFile) : process.cwd();
-        const storyRun = collectStoryRun(this.suite.allTests(), rootDir);
-        // Runs without stories (e.g. the contract project) must not overwrite integration results.
-        if (!storyRun.visits.length) return;
+        const storyRun = collectStoryRun(tests, rootDir);
         const outputDir = resolve(rootDir, this.outputDir);
         const fileName = shard ? `visited-${shard.current}-of-${shard.total}.json` : 'visited.json';
         mkdirSync(outputDir, { recursive: true });
