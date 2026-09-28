@@ -6,7 +6,7 @@ on:
 jobs:
   download-files:
     name: Download completed translation files
-    if: github.event_name == 'workflow_dispatch' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'group/'))
+    if: github.event_name == 'workflow_dispatch' && github.ref_name == 'version/v1.x'
     runs-on: ubuntu-latest
     environment: smartling-translations # provides Smartling credentials
     permissions:
