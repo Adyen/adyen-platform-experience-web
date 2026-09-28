@@ -2,6 +2,7 @@
 export {
     CapitalOffer,
     CapitalOverview,
+    type CapitalState,
     type CapitalOfferProps,
     type CapitalOverviewProps,
 } from '../../domains/capital/publish/src';

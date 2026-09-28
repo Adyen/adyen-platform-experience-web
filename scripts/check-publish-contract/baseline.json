@@ -41,6 +41,7 @@
         "CapitalOfferProps",
         "CapitalOverview",
         "CapitalOverviewProps",
+        "CapitalState",
         "CoreOptions",
         "CustomTheme",
         "CustomTranslations",
@@ -424,7 +425,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "0fc4ea5e73d5c8ab4b9129d46a95bf5da6ee21c0fc33f4bacd14d87afc76430b",
+    "typeTreeHash": "c4ca34fd011be98e74a48a3a33facb68796a5b2eb682064595334841f3640158",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",
