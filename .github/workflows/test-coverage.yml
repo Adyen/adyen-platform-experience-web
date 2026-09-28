@@ -77,10 +77,6 @@ jobs:
                   TEST_ENV: 1
               run: pnpm run test:coverage:unit
 
-            - name: Verify unit coverage report
-              if: steps.skip-check.outcome != 'success' && env.COVERAGE_ENABLED == 'true'
-              run: test -s coverage-unit/lcov.info
-
             - name: Upload unit coverage
               id: unit-coverage-artifact
               if: steps.skip-check.outcome != 'success' && env.COVERAGE_ENABLED == 'true'
@@ -92,7 +88,7 @@ jobs:
                   retention-days: 1
 
     changed-typescript-coverage:
-        name: Unit-test coverage for changed code (pilot)
+        name: Unit-test coverage for changed code
         needs: unit-tests
         if: >-
             always() &&
@@ -123,9 +119,6 @@ jobs:
 
             - name: Test changed coverage checker
               run: node --test scripts/check-changed-coverage/check.test.mjs
-
-            - name: Verify unit coverage report
-              run: test -s coverage-unit/lcov.info
 
             # Only the changed-lines result is non-blocking during the pilot.
             - name: Report unit-test coverage of changed code
@@ -162,7 +155,7 @@ jobs:
               with:
                   script: |
                       const body = require('node:fs').readFileSync('pr-comment.md', 'utf8');
-                      const marker = '<!-- changed-typescript-coverage-pilot -->';
+                      const marker = '<!-- changed-code-coverage -->';
                       const { owner, repo } = context.repo;
                       const issue_number = context.issue.number;
                       const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });

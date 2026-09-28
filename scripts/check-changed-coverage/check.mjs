@@ -112,57 +112,36 @@ export function analyzeChangedCoverage(diff, lcov) {
     return { lines, conditions, missing, smallChange, passed: missing.length === 0 && meetsThreshold };
 }
 
-export function pilotWarning(analysis) {
-    const { lines, conditions, missing, passed } = analysis;
-    if (passed) return undefined;
-    if (missing.length) {
-        return `${missing.length} changed runtime TypeScript file${missing.length === 1 ? ' is' : 's are'} missing from the unit coverage report. Check the coverage scope; after the pilot, this will block PRs.`;
-    }
-    const uncoveredConditions = conditions.total - conditions.covered;
-    const gaps = [
-        plural(lines.total - lines.covered, 'changed executable line'),
-        ...(uncoveredConditions ? [plural(uncoveredConditions, 'branch condition')] : []),
-    ].join(' and ');
-    return `New code unit-test coverage is ${coveragePercent(analysis).toFixed(2)}%, below the ${threshold}% target. Merging as-is leaves ${gaps} without unit coverage, weakening the project's quality safeguards and raising regression risk. After the pilot, PRs below ${threshold}% will be blocked.`;
-}
-
-export function pilotComment(analysis) {
+function renderComment(analysis) {
     const { lines, conditions, missing, smallChange, passed } = analysis;
     const percentage = lines.total ? `**${coveragePercent(analysis).toFixed(2)}%**` : '';
-    const coverageText =
-        lines.total === 0
-            ? missing.length
-                ? `⚠️ **N/A** (coverage report incomplete; target: **${threshold}%**)`
-                : 'ℹ️ **N/A** (no measurable changed runtime TypeScript lines)'
-            : smallChange
-              ? `${missing.length ? '⚠️' : 'ℹ️'} ${percentage} (${plural(lines.total, 'changed line')} to cover; the ${threshold}% target applies from ${minimumLines})`
-              : `${passed ? '✅' : '⚠️'} ${percentage} (target: **${threshold}%**)`;
-    const breakdown = lines.total
-        ? [
-              '',
-              `Lines: ${lines.covered}/${lines.total} · Branch conditions: ${conditions.covered}/${conditions.total} · Computed like SonarCloud's Coverage on New Code.`,
-          ]
-        : [];
-    const result = !passed
-        ? 'below target or missing coverage'
-        : lines.total === 0
-          ? 'not applicable'
-          : smallChange
-            ? 'small change, target not applied'
-            : 'pass';
+    const uncoveredConditions = conditions.total - conditions.covered;
+    const uncovered = [
+        plural(lines.total - lines.covered, 'uncovered line'),
+        ...(uncoveredConditions ? [plural(uncoveredConditions, 'uncovered branch condition')] : []),
+    ].join(' and ');
+    let status;
+    if (missing.length) status = `⚠️ ${plural(missing.length, 'changed file')} missing from the unit coverage report. Check the coverage scope:`;
+    else if (!lines.total) status = 'ℹ️ No changed runtime TypeScript lines to measure.';
+    else if (smallChange)
+        status = `ℹ️ ${percentage}: ${plural(lines.total, 'changed line')} to cover; the ${threshold}% target applies from ${minimumLines}.`;
+    else if (passed) status = `✅ ${percentage} (target: ${threshold}%).`;
+    else status = `⚠️ ${percentage}, below the ${threshold}% target: ${uncovered}.`;
 
     return [
-        '<!-- changed-typescript-coverage-pilot -->',
-        '### Unit-test coverage for changed code (pilot)',
+        '<!-- changed-code-coverage -->',
+        '### Unit-test coverage for changed code',
         '',
-        coverageText,
-        ...breakdown,
-        ...(missing.length ? ['', 'Changed source files missing from LCOV:', ...missing.map(file => `- \`${file}\``)] : []),
+        status,
+        ...missing.map(file => `- \`${file}\``),
+        ...(lines.total
+            ? [
+                  '',
+                  `Lines: ${lines.covered}/${lines.total} · Branch conditions: ${conditions.covered}/${conditions.total} · Computed Coverage on New Code.`,
+              ]
+            : []),
         '',
-        `Result: ${result}. Vue components require separate Playwright checks.`,
-        ...(!passed ? ['', '> [!WARNING]', `> ${pilotWarning(analysis)}`] : []),
-        '',
-        'The 80% comparison is advisory during the pilot. It will become a required check after the pilot is validated.',
+        `Advisory during the pilot; afterwards, PRs below ${threshold}% will be blocked. Vue components are checked by Playwright, not here.`,
     ].join('\n');
 }
 
@@ -183,7 +162,7 @@ function main() {
     const diff = readChangedDiff(base, head);
     const report = readFileSync('coverage-unit/lcov.info', 'utf8');
     const analysis = analyzeChangedCoverage(diff, report);
-    const message = pilotComment(analysis);
+    const message = renderComment(analysis);
 
     console.log(message);
     if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${message}\n`);

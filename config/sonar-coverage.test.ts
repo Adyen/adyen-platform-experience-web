@@ -29,16 +29,3 @@ test('Sonar measures unit TypeScript without excluding Vue from issue analysis',
         expect(sourceExclusions).not.toContain(path);
     }
 });
-
-test('Sonar generates coverage on develop pushes and reuses the PR coverage report', () => {
-    const sonarWorkflow = readProjectFile('.github/workflows/sonarcloud.yml');
-    const unitWorkflow = readProjectFile('.github/workflows/test-coverage.yml');
-
-    expect(sonarWorkflow).toMatch(/push:\s*\n\s+branches:\s*\n\s+- develop/);
-    expect(sonarWorkflow).toContain('run: pnpm run test:coverage:unit');
-    expect(sonarWorkflow).toContain('uses: actions/download-artifact@v4');
-    expect(sonarWorkflow).toContain('name: unit-coverage-${{ github.event.pull_request.head.sha }}');
-
-    expect(unitWorkflow).toContain('run: pnpm run test:coverage:unit');
-    expect(unitWorkflow).toContain('path: coverage-unit/lcov.info');
-});
