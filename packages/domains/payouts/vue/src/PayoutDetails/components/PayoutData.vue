@@ -15,7 +15,7 @@ import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { IPayoutDetails } from '@integration-components/types';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '@integration-components/utils';
 import { formatAmountWithCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
-import { useShouldHideTitles, useCondensedDataGrid } from '@integration-components/composables-vue';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '@integration-components/payouts/domain';
 import type { PayoutDetailsCustomization } from '../types';
@@ -33,7 +33,6 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
-const isCondensed = useCondensedDataGrid();
 const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
 
 const payoutInner = computed(() => props.payout?.payout);
@@ -277,7 +276,6 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                                         :class="[styles.dataGrid, styles.dataGridNoHeader]"
                                         :columns="fundsCapturedColumns"
                                         :data="fundsCapturedRows"
-                                        :condensed="isCondensed"
                                         :allow-row-clicks="false"
                                         :has-resizable-columns="false"
                                         :allow-column-drag-and-drop="false"
@@ -330,7 +328,6 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                                     :class="styles.dataGrid"
                                     :columns="additionsColumns"
                                     :data="additionsRows"
-                                    :condensed="isCondensed"
                                     :allow-row-clicks="false"
                                     :has-resizable-columns="false"
                                     :allow-column-drag-and-drop="false"
@@ -352,7 +349,6 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                                     :class="styles.dataGrid"
                                     :columns="subtractionsColumns"
                                     :data="subtractionsRows"
-                                    :condensed="isCondensed"
                                     :allow-row-clicks="false"
                                     :has-resizable-columns="false"
                                     :allow-column-drag-and-drop="false"
