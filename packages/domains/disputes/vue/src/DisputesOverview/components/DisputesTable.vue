@@ -262,8 +262,8 @@ function handleListItemClick(dispute: IDisputeListItem) {
                 </BentoList>
 
                 <BentoPagination
-                    hide-first-last-page-buttons
                     v-if="showMobilePagination"
+                    hide-first-last-page-buttons
                     :page="props.currentPage"
                     :size="props.limit"
                     :has-next="props.hasNext"

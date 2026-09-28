@@ -42,7 +42,7 @@ function formatTimestamp(date: string): string {
                 format: BentoDateFormat.FULL_DATE_TIME_WITHOUT_PERIOD,
                 value: formatTimestamp(event.createdAt),
             }"
-            :dataList="[
+            :data-list="[
                 {
                     label: i18n.get('transactions.details.timeline.fields.amount'),
                     value: formatAmount(event.amount.value, event.amount.currency),

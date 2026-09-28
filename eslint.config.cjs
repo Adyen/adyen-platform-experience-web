@@ -58,6 +58,10 @@ module.exports = [
             },
             globals: Object.fromEntries(Object.entries({ ...globals.browser, ...globals.node, ...globals.es2020 }).map(([k, v]) => [k.trim(), v])),
         },
+        linterOptions: {
+            // Stale disable comments fail lint instead of silently accumulating as warnings
+            reportUnusedDisableDirectives: 'error',
+        },
         plugins: {
             '@typescript-eslint': tsPlugin,
             'import-x': importX,
@@ -95,17 +99,14 @@ module.exports = [
                         'stories/**/*',
                         'playwright.config.ts',
                         'vite.config.ts',
-                        'config/**/*.ts',
-                        'envs/**/*.ts',
-                        'mocks/**/*.ts',
                         'packages/**/vite.config.ts',
                         '**/*.test.ts',
+                        '{config,endpoints,envs,mocks,scripts,src}/**/*.ts',
                         '{src,packages}/**/{__testing__,testing}/**/*.ts',
                         'packages/domains/*/{domain,vue}/tests/**/*.ts',
                         'packages/domains/*/**/stories/**/*.ts',
                         'packages/domains/*/{fixtures,mocks}/**/*.ts',
                         'packages/sdk/tests/**/*.ts',
-                        'src/**/*.ts',
                     ],
                     includeTypes: false,
                 },
@@ -162,6 +163,22 @@ module.exports = [
             'vue/max-attributes-per-line': 'off',
             'vue/multi-word-component-names': 'off',
             'vue/require-default-prop': 'off',
+            // Prettier owns template content layout; these stylistic rules fight it
+            'vue/singleline-html-element-content-newline': 'off',
+            'vue/multiline-html-element-content-newline': 'off',
+            // Semantic template rules: enforce as errors
+            'vue/attributes-order': 'error',
+            // Enforce kebab-case attributes, but ignore camelCase props bound to embedded web components:
+            // their .prop DOM property names must match the web component's API exactly
+            'vue/attribute-hyphenation': ['error', 'always', { ignore: ['fetchToken'] }],
+        },
+    },
+
+    // Test files commonly define multiple small inline components per file
+    {
+        files: ['**/*.{test,spec}.ts'],
+        rules: {
+            'vue/one-component-per-file': 'off',
         },
     },
 
@@ -182,6 +199,31 @@ module.exports = [
                     message: 'Public SDK entry points must use explicit exports.',
                 },
             ],
+        },
+    },
+
+    // Root CommonJS tooling files use require() and dev-only dependencies
+    {
+        files: ['*.cjs', '.pnpmfile.cjs', 'config/**/*.cjs', 'scripts/**/*.cjs', '.changeset/**/*.js'],
+        rules: {
+            '@typescript-eslint/no-require-imports': 'off',
+            'import-x/no-extraneous-dependencies': ['error', { devDependencies: true, peerDependencies: true }],
+        },
+    },
+
+    // Root config files import with explicit .ts extensions (allowImportingTsExtensions)
+    {
+        files: ['config/**/*.ts'],
+        rules: {
+            'import-x/extensions': 'off',
+        },
+    },
+
+    // Netlify edge functions need explicit extensions (Deno-style resolution)
+    {
+        files: ['netlify/edge-functions/**'],
+        rules: {
+            'import-x/extensions': ['error', 'always'],
         },
     },
 

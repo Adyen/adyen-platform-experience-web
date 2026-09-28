@@ -8,8 +8,8 @@ module.exports = {
     '{src,packages}/**/*.{ts,js,scss,css,md,json,html,vue}': filenames => [`pnpm exec prettier --write ${filenames.join(' ')}`],
     // Fix stylelint issues only (no checking/reporting)
     'packages/**/*.scss': filenames => [`pnpm exec stylelint --fix ${filenames.join(' ')}`],
-    // Check ESLint for errors (will fail commit if errors found)
-    '{src,packages}/**/*.{js,ts,vue}': filenames => [`pnpm exec eslint ${filenames.join(' ')}`],
+    // Fix and check ESLint (auto-fixes what it can; fails the commit on remaining errors or warnings)
+    '{src,packages}/**/*.{js,ts,vue}': filenames => [`pnpm exec eslint --fix --max-warnings 0 ${filenames.join(' ')}`],
     // Check playwright selector usage (mirrors lint:playwright-selectors)
     'packages/domains/**/tests/**/*.{spec,test}.ts': lintPlaywrightSelectors,
     'packages/sdk/tests/**/*.{spec,test}.ts': lintPlaywrightSelectors,

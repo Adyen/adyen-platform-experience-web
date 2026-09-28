@@ -312,7 +312,9 @@ function formatDate(dateStr: string): string {
             </template>
             <template #item-dateAndReportType="{ item }">
                 <div :class="styles.dateReportType">
-                    <BentoTypography v-if="item.reportType" variant="body" stronger>{{ item.reportType }}</BentoTypography>
+                    <BentoTypography v-if="item.reportType" variant="body" stronger>
+                        {{ item.reportType }}
+                    </BentoTypography>
                     <time v-if="item.createdAt" :datetime="item.createdAt">
                         <BentoTypography variant="body" :class="styles.date">{{ formatDate(item.createdAt) }}</BentoTypography>
                     </time>

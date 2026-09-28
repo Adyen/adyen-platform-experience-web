@@ -32,8 +32,9 @@
         "lint": {
             "executor": "nx:run-commands",
             "dependsOn": ["lint:playwright-selectors"],
+            "inputs": ["default", "{workspaceRoot}/**/*"],
             "options": {
-                "commands": ["eslint '{src,packages}/**/*.{js,ts,vue}'", "stylelint 'packages/**/*.scss'"],
+                "commands": ["eslint . --max-warnings 0", "stylelint 'packages/**/*.scss'"],
                 "parallel": false
             },
             "cache": true

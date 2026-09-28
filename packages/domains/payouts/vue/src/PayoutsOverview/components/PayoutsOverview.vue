@@ -106,8 +106,12 @@ function closeModal() {
 <template>
     <div :class="styles.root">
         <div v-if="!props.hideTitle && !hideTitles" :class="styles.header">
-            <BentoTypography variant="title">{{ i18n.get('payouts.overview.title') }}</BentoTypography>
-            <BentoTypography variant="body" :class="styles.description">{{ i18n.get('payouts.overview.generateInfo') }}</BentoTypography>
+            <BentoTypography variant="title">
+                {{ i18n.get('payouts.overview.title') }}
+            </BentoTypography>
+            <BentoTypography variant="body" :class="styles.description">
+                {{ i18n.get('payouts.overview.generateInfo') }}
+            </BentoTypography>
         </div>
 
         <div role="toolbar" :class="styles.toolbar">

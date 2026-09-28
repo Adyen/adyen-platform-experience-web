@@ -71,8 +71,12 @@ const listError = computed(() => reportsListResult.error.value as Error | undefi
 <template>
     <div :class="styles.root">
         <div v-if="!props.hideTitle && !hideTitles" :class="styles.header">
-            <BentoTypography variant="title">{{ i18n.get('reports.overview.title') }}</BentoTypography>
-            <BentoTypography variant="body" :class="styles.description">{{ i18n.get('reports.overview.generateInfo') }}</BentoTypography>
+            <BentoTypography variant="title">
+                {{ i18n.get('reports.overview.title') }}
+            </BentoTypography>
+            <BentoTypography variant="body" :class="styles.description">
+                {{ i18n.get('reports.overview.generateInfo') }}
+            </BentoTypography>
         </div>
 
         <ReportsFilters :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />

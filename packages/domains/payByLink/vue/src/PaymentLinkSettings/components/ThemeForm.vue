@@ -123,17 +123,27 @@ function getLogoUrl(type: LogoType) {
 <template>
     <div :class="styles.container">
         <BentoAlert v-if="showMissingBrandName" type="critical" :dismissible="false">
-            <template #description>{{ i18n.get('payByLink.settings.common.alerts.validationError') }}</template>
+            <template #description>
+                {{ i18n.get('payByLink.settings.common.alerts.validationError') }}
+            </template>
         </BentoAlert>
         <BentoAlert v-else-if="isSaveSuccess && !navigateBack" type="success" variant="tip" :dismissible="false">
-            <template #description>{{ i18n.get('payByLink.settings.common.alerts.saveSuccess') }}</template>
+            <template #description>
+                {{ i18n.get('payByLink.settings.common.alerts.saveSuccess') }}
+            </template>
         </BentoAlert>
         <BentoAlert v-else-if="isSaveError" type="critical" variant="tip" :dismissible="false">
-            <template #description>{{ i18n.get('payByLink.settings.common.alerts.saveError') }}</template>
+            <template #description>
+                {{ i18n.get('payByLink.settings.common.alerts.saveError') }}
+            </template>
         </BentoAlert>
         <div :class="layoutStyles.contentHeader">
-            <BentoTypography variant="title" medium el="div">{{ i18n.get('payByLink.settings.theme.title') }}</BentoTypography>
-            <BentoTypography variant="body" wide>{{ i18n.get('payByLink.settings.theme.subtitle') }}</BentoTypography>
+            <BentoTypography variant="title" medium el="div">
+                {{ i18n.get('payByLink.settings.theme.title') }}
+            </BentoTypography>
+            <BentoTypography variant="body" wide>
+                {{ i18n.get('payByLink.settings.theme.subtitle') }}
+            </BentoTypography>
         </div>
         <div :class="styles.root">
             <div :class="layoutStyles.inputContainer">
