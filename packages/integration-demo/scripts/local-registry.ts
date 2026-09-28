@@ -12,12 +12,24 @@ import { execFileSync, spawn, type ChildProcess } from 'node:child_process';
 import { readFileSync, writeFileSync, copyFileSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { createServer } from 'node:net';
+import { pathToFileURL } from 'node:url';
 
 const DEMO_DIR = resolve(import.meta.dirname, '..');
 const ROOT = resolve(DEMO_DIR, '../..');
 const DEMO_PKG_PATH = resolve(DEMO_DIR, 'package.json');
 const DEMO_PKG_BACKUP_PATH = resolve(DEMO_DIR, 'package.json.bak');
 const PKG_NAME = '@adyen/adyen-platform-experience-web';
+
+export function publishCommand(registryUrl: string, npmrcPath: string): string[] {
+    return ['npm', 'publish', '--registry', registryUrl, '--tag', 'integration-test', '--userconfig', npmrcPath];
+}
+
+export function publishedTarballDependency(tarballUrl: string, registryUrl: string): string {
+    if (new URL(tarballUrl).origin !== new URL(registryUrl).origin) {
+        throw new Error(`Published tarball is not from the local registry: ${tarballUrl}`);
+    }
+    return tarballUrl;
+}
 
 // ── Utilities ──────────────────────────────────────────────────────────────────
 
@@ -206,7 +218,7 @@ async function main() {
         // Verdaccio requires auth — write a temporary .npmrc with a dummy token
         const npmrcPath = resolve(verdaccioTmpDir!, '.npmrc');
         writeFileSync(npmrcPath, `//localhost:${port}/:_authToken=dummy-token\n`);
-        run(['npm', 'publish', '--registry', registryUrl, '--no-git-checks', '--userconfig', npmrcPath], ROOT, 'publish');
+        run(publishCommand(registryUrl, npmrcPath), ROOT, 'publish');
 
         // ── 4. Install from Verdaccio in integration-demo ─────────────────
         // Backup package.json
@@ -216,8 +228,14 @@ async function main() {
         const demoPkg = JSON.parse(readFileSync(DEMO_PKG_PATH, 'utf-8'));
         const rootPkg = JSON.parse(readFileSync(resolve(ROOT, 'package.json'), 'utf-8'));
         const sdkVersion = rootPkg.version;
+        const tarballMetadata = execFileSync(
+            'npm',
+            ['view', `${PKG_NAME}@${sdkVersion}`, 'dist.tarball', '--registry', registryUrl, '--userconfig', npmrcPath, '--json'],
+            { cwd: ROOT, encoding: 'utf-8' }
+        );
+        const tarballUrl = JSON.parse(tarballMetadata);
 
-        demoPkg.dependencies[PKG_NAME] = sdkVersion;
+        demoPkg.dependencies[PKG_NAME] = publishedTarballDependency(tarballUrl, registryUrl);
         writeFileSync(DEMO_PKG_PATH, JSON.stringify(demoPkg, null, 4) + '\n');
 
         // Write a temporary .npmrc that scopes only @adyen packages to Verdaccio
@@ -255,14 +273,16 @@ async function main() {
     process.exit(exitCode);
 }
 
-// Handle unexpected exits
-process.on('SIGINT', () => {
-    cleanup();
-    process.exit(130);
-});
-process.on('SIGTERM', () => {
-    cleanup();
-    process.exit(143);
-});
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+    // Handle unexpected exits
+    process.on('SIGINT', () => {
+        cleanup();
+        process.exit(130);
+    });
+    process.on('SIGTERM', () => {
+        cleanup();
+        process.exit(143);
+    });
 
-main();
+    main();
+}

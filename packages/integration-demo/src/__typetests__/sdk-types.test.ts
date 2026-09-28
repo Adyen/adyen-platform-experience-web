@@ -13,12 +13,12 @@ import {
     AdyenPlatformExperience,
     CapitalOverview,
     CapitalOffer,
-    type CapitalComponentState,
+    type CapitalState,
     type CapitalOverviewProps,
     type CapitalOfferProps,
     TransactionsOverview,
     TransactionDetails,
-    type TransactionsOverviewComponentProps,
+    type TransactionsOverviewProps,
     type TransactionDetailsProps,
     PayoutsOverview,
     PayoutDetails,
@@ -44,7 +44,6 @@ import {
 
 async function testCoreFactory() {
     const core = await AdyenPlatformExperience({
-        availableTranslations: [],
         onSessionCreate: async () => ({ id: 'test', token: 'test' }),
         locale: 'en-US',
     });
@@ -67,10 +66,16 @@ async function testCapital() {
     offer.mount('#container');
     offer.unmount();
 
-    const state: CapitalComponentState = { state: 'isPreQualified' };
+    const state: CapitalState = {
+        hasGrants: false,
+        hasOffer: true,
+        hasRenewableGrants: false,
+        state: 'isPreQualified',
+    };
+    const _overviewState: CapitalState = await overview.getState();
 
-    const _overviewProps: CapitalOverviewProps = {};
-    const _offerProps: CapitalOfferProps = { onFundsRequest: () => {} };
+    const _overviewProps: CapitalOverviewProps = { core };
+    const _offerProps: CapitalOfferProps = { core, onFundsRequest: () => {} };
 }
 
 // ── Transactions ───────────────────────────────────────────────────────────────
@@ -86,8 +91,8 @@ async function testTransactions() {
     details.mount('#container');
     details.unmount();
 
-    const _overviewProps: TransactionsOverviewComponentProps = {};
-    const _detailsProps: TransactionDetailsProps = { id: 'tx-123' };
+    const _overviewProps: TransactionsOverviewProps = { core };
+    const _detailsProps: TransactionDetailsProps = { core, id: 'tx-123' };
 }
 
 // ── Payouts ────────────────────────────────────────────────────────────────────
@@ -107,8 +112,9 @@ async function testPayouts() {
     details.mount('#container');
     details.unmount();
 
-    const _overviewProps: PayoutsOverviewProps = {};
+    const _overviewProps: PayoutsOverviewProps = { core };
     const _detailsProps: PayoutDetailsProps = {
+        core,
         id: 'BA32CKZ223227T5L6834T3LBX',
         date: '2025-06-13T00:00:00.000+00:00',
     };
@@ -123,7 +129,7 @@ async function testReports() {
     overview.mount('#container');
     overview.unmount();
 
-    const _props: ReportsOverviewProps = {};
+    const _props: ReportsOverviewProps = { core };
 }
 
 // ── Disputes ───────────────────────────────────────────────────────────────────
@@ -139,8 +145,8 @@ async function testDisputes() {
     management.mount('#container');
     management.unmount();
 
-    const _overviewProps: DisputesOverviewProps = {};
-    const _managementProps: DisputeManagementProps = { id: 'D2CT6C4NZM27Z5V5' };
+    const _overviewProps: DisputesOverviewProps = { core };
+    const _managementProps: DisputeManagementProps = { core, id: 'D2CT6C4NZM27Z5V5' };
 }
 
 // ── Pay by Link ────────────────────────────────────────────────────────────────
@@ -164,10 +170,10 @@ async function testPayByLink() {
     settings.mount('#container');
     settings.unmount();
 
-    const _overviewProps: PaymentLinksOverviewProps = {};
-    const _creationProps: PaymentLinkCreationProps = {};
-    const _detailsProps: PaymentLinkDetailsProps = { id: 'PL123' };
-    const _settingsProps: PaymentLinkSettingsProps = {};
+    const _overviewProps: PaymentLinksOverviewProps = { core };
+    const _creationProps: PaymentLinkCreationProps = { core };
+    const _detailsProps: PaymentLinkDetailsProps = { core, id: 'PL123' };
+    const _settingsProps: PaymentLinkSettingsProps = { core };
 }
 
 export { testCoreFactory, testCapital, testTransactions, testPayouts, testReports, testDisputes, testPayByLink };
