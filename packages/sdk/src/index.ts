@@ -2,9 +2,9 @@
 export {
     CapitalOffer,
     CapitalOverview,
-    type CapitalState,
     type CapitalOfferProps,
     type CapitalOverviewProps,
+    type CapitalState,
 } from '../../domains/capital/publish/src';
 
 // prettier-ignore
