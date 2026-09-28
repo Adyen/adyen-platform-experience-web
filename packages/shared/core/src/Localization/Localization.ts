@@ -1,5 +1,6 @@
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_TRANSLATIONS, EXCLUDE_PROPS, FALLBACK_LOCALE, SUPPORTED_LOCALES } from './constants/localization';
-import type { CustomTranslations, Locale, TranslationKey, TranslationOptions, Translations } from '../translations';
+import { getCachedTranslations } from './translationCache';
+import type { CustomTranslations, Locale, TranslationKey, TranslationOptions } from '../translations';
 import { getLocalisedAmount } from './amount/amount-util';
 import restamper from '@integration-components/utils/datetime/restamper';
 import type { RestamperWithTimezone } from '@integration-components/utils/datetime/restamper';
@@ -9,7 +10,19 @@ import { ALREADY_RESOLVED_PROMISE, createWatchlist, isNull, isNullish, isUndefin
 import { httpGet } from '../Http/http';
 import { SupportedLocales } from './types';
 import { translations_dev_assets } from '../translations/local';
-import localSwapConfig from '../config/translations/swapConfig.json';
+
+export type LocalizationSources = Readonly<{
+    defaultTranslations: Record<string, string>;
+    localeTranslations: Readonly<Record<string, Promise<Record<string, string>> | (() => Promise<Record<string, string>>)>>;
+}>;
+
+export type TranslationFamily = Readonly<{
+    base: string | null;
+    zero: string | null;
+    one: string | null;
+    plural: string | null;
+    unsupportedExactCounts: number[];
+}>;
 
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;
@@ -17,7 +30,9 @@ export default class Localization {
     #supportedLocales: Readonly<Locale[]> = [...SUPPORTED_LOCALES];
 
     #customTranslations?: CustomTranslations;
-    #translations: Translations = DEFAULT_TRANSLATIONS;
+    #translations: Record<string, string> = DEFAULT_TRANSLATIONS as Record<string, string>;
+    #defaultTranslations: Record<string, string>;
+    #translationFamilyExactCounts = new Map<string, readonly number[]>();
     #translationsLoader = createTranslationsLoader.call(this);
     readonly #fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>;
 
@@ -26,48 +41,51 @@ export default class Localization {
     #markRefreshAsDone?: () => void;
     #refreshWatchlist = createWatchlist({ timestamp: () => performance.now() });
     #restamp: RestamperWithTimezone = restamper();
-    #keySwapConfig: Record<string, string | string[]> = localSwapConfig;
-    #warnedDeprecatedKeys = new Set<string>();
 
     private watch = this.#refreshWatchlist.subscribe.bind(undefined);
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
 
-    constructor(locale: string = FALLBACK_LOCALE, cdnTranslationsUrl = '', cdnConfigUrl = '') {
+    constructor(locale: string = FALLBACK_LOCALE, cdnTranslationsUrl = '', sources?: LocalizationSources) {
         this.watch(noop);
+        this.#defaultTranslations = sources?.defaultTranslations ?? (DEFAULT_TRANSLATIONS as Record<string, string>);
+        this.#translations = this.#defaultTranslations;
+        this.#translationFamilyExactCounts = this.#getTranslationFamilyExactCounts(this.#translations);
 
-        this.#fetchTranslationFromCdnPromise = (locale: string) =>
-            process.env.VITE_LOCAL_ASSETS
-                ? translations_dev_assets[locale]!
-                : httpGet<any>({
-                      loadingContext: cdnTranslationsUrl,
-                      path: `/${locale}.json`,
-                      versionless: true,
-                      skipContentType: true,
-                      errorLevel: 'info',
-                  });
+        const getBundledTranslations = (locale: string) => {
+            const source = sources?.localeTranslations[locale];
+            return Promise.resolve(typeof source === 'function' ? source() : (source ?? {}));
+        };
 
-        this.locale = locale;
+        this.#fetchTranslationFromCdnPromise = (locale: string) => {
+            const url = `${cdnTranslationsUrl}/${locale}.json`;
 
-        // Load swap config
-        (async () => {
-            // If no CDN config URL provided, use local fallback
-            if (!cdnConfigUrl || process.env.VITE_LOCAL_ASSETS) {
-                return localSwapConfig;
-            }
-
-            try {
-                return await httpGet<Record<string, string | string[]>>({
-                    loadingContext: cdnConfigUrl,
-                    path: '/translations/swapConfig.json',
+            const fetchTranslationsFromCdn = () =>
+                httpGet<any>({
+                    loadingContext: cdnTranslationsUrl,
+                    path: `/${locale}.json`,
                     versionless: true,
                     skipContentType: true,
-                    errorLevel: 'error',
+                    errorLevel: 'info',
                 });
-            } catch (error) {
-                console.warn('Failed to load swapConfig from CDN, using local fallback', error);
-                return localSwapConfig;
+
+            if (!sources) {
+                return process.env.VITE_LOCAL_ASSETS
+                    ? Promise.resolve(translations_dev_assets[locale]!)
+                    : getCachedTranslations(url, fetchTranslationsFromCdn);
             }
-        })().then(config => (this.#keySwapConfig = config));
+
+            if (locale === FALLBACK_LOCALE || process.env.VITE_LOCAL_ASSETS) {
+                return getBundledTranslations(locale);
+            }
+
+            // The cache coalesces concurrent requests for the same catalog and serves the cached
+            // response within its time-to-live; an empty or rejected CDN response falls back to the bundled catalog.
+            return getCachedTranslations(url, fetchTranslationsFromCdn)
+                .then(translations => translations ?? getBundledTranslations(locale))
+                .catch(() => getBundledTranslations(locale));
+        };
+
+        this.locale = locale;
     }
 
     get customTranslations(): CustomTranslations {
@@ -147,7 +165,12 @@ export default class Localization {
         };
 
         const currentRefresh = (this.#currentRefresh = (async () => {
-            this.#translations = await this.#translationsLoader.load(this.#fetchTranslationFromCdnPromise, customTranslations);
+            this.#translations = await this.#translationsLoader.load(
+                this.#fetchTranslationFromCdnPromise,
+                customTranslations,
+                this.#defaultTranslations
+            );
+            this.#translationFamilyExactCounts = this.#getTranslationFamilyExactCounts(this.#translations);
             this.#locale = this.#translationsLoader.locale;
             this.#supportedLocales = Object.freeze(this.#translationsLoader.supportedLocales);
             this.#customTranslations = customTranslations;
@@ -163,6 +186,29 @@ export default class Localization {
         });
     }
 
+    #getTranslationFamilyExactCounts(translations: Record<string, string>): Map<string, readonly number[]> {
+        const exactCounts = new Map<string, number[]>();
+
+        for (const translationKey of Object.keys(translations)) {
+            const separatorIndex = translationKey.lastIndexOf('__');
+            if (separatorIndex < 0) continue;
+
+            const count = Number(translationKey.slice(separatorIndex + 2));
+            if (!Number.isInteger(count) || count <= 1) continue;
+
+            const key = translationKey.slice(0, separatorIndex);
+            const counts = exactCounts.get(key);
+
+            if (counts) {
+                counts.push(count);
+            } else {
+                exactCounts.set(key, [count]);
+            }
+        }
+
+        return exactCounts;
+    }
+
     /**
      * Returns a translated string from a key in the current {@link Localization.locale}
      * @param key - Translation key
@@ -170,60 +216,32 @@ export default class Localization {
      * @returns Translated string
      */
     get(key: TranslationKey, options?: TranslationOptions): string {
-        const customTranslations = this.#customTranslations?.[this.#locale];
-        const initialSwapKey = this.#keySwapConfig[key];
-
-        // Check if there's a mapped old key in swapConfig and if user provided custom translation with old key
-        if (customTranslations && initialSwapKey && !Array.isArray(initialSwapKey) && initialSwapKey !== key) {
-            let currentKey: string = key;
-            const keyChain: string[] = [];
-            const visitedKeys = new Set<string>();
-
-            while (true) {
-                // Cycle detected, stop lookup
-                if (visitedKeys.has(currentKey)) break;
-
-                visitedKeys.add(currentKey);
-                keyChain.push(currentKey);
-
-                const nextSwapKey = this.#keySwapConfig[currentKey];
-
-                // Stop if no mapping, or array (composite key)
-                if (!nextSwapKey || Array.isArray(nextSwapKey)) break;
-
-                currentKey = nextSwapKey;
-            }
-
-            // Check translations in order (Newest -> Oldest)
-            for (let i = 0; i < keyChain.length; i++) {
-                const translationKey = keyChain[i]!;
-                const translation = getTranslation(customTranslations, translationKey, options);
-
-                if (!isNull(translation)) {
-                    if (translationKey !== key) {
-                        if (!this.#warnedDeprecatedKeys.has(translationKey)) {
-                            console.warn(
-                                `[Adyen Platform Experience Web] Deprecated translation key detected: "${translationKey}". ` +
-                                    `Please update to use the new key: "${key}". ` +
-                                    `This backward compatibility will be removed in a future version.`
-                            );
-                            this.#warnedDeprecatedKeys.add(translationKey);
-                        }
-
-                        // Path compression (for shorter subsequent lookups)
-                        if (i > 1) {
-                            this.#keySwapConfig[key] = translationKey;
-                        }
-                    }
-
-                    return translation;
-                }
-            }
-        }
-
-        // Get translation normally (this includes custom translations with new key + default translations)
         const translation = getTranslation(this.#translations, key, options);
         return isNull(translation) ? key : translation;
+    }
+
+    /**
+     * Returns the untranslated template for a key in the current locale.
+     * This is intended for consumers that need to compile the SDK placeholder
+     * syntax for another localization runtime.
+     */
+    getTemplate(key: string): string | null {
+        return this.#translations[key] ?? null;
+    }
+
+    /**
+     * Returns the raw count-based templates for a key in the current locale.
+     * Bento can represent the zero, one, and greater-than-one forms, but not
+     * arbitrary exact counts above one.
+     */
+    getTranslationFamily(key: string): TranslationFamily {
+        return {
+            base: this.getTemplate(key),
+            zero: this.getTemplate(`${key}__0`),
+            one: this.getTemplate(`${key}__1`),
+            plural: this.getTemplate(`${key}__plural`),
+            unsupportedExactCounts: [...(this.#translationFamilyExactCounts.get(key) ?? [])],
+        };
     }
 
     /**

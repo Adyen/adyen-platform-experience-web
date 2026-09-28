@@ -38,6 +38,7 @@ const quickSelectRanges = createQuickSelectRanges(
         lastMonth: quickSelectDateRanges.lastMonth,
         yearToDate: quickSelectDateRanges.yearToDate,
     },
+    'disputes.overview.common.filters.types.date.rangeSelect.options.',
     key => i18n.get(key)
 );
 
@@ -70,7 +71,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
     if (hasMultipleBalanceAccounts.value) {
         filters.push({
             field: 'balanceAccountId',
-            label: i18n.get('common.filters.types.account.label'),
+            label: i18n.get('disputes.overview.common.filters.types.account.label'),
             type: BentoFilterItemType.SELECT,
             visible: !props.compact,
             ...(!props.compact ? { defaultValue: balanceAccountOptions.value[0]?.value } : {}),
@@ -78,7 +79,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
                 listboxItems: [
                     ...balanceAccountOptions.value,
                     {
-                        label: i18n.get('common.filters.types.account.options.all'),
+                        label: i18n.get('disputes.overview.common.filters.types.account.options.all'),
                         value: ALL_BALANCE_ACCOUNTS_VALUE,
                     },
                 ],
@@ -88,7 +89,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
     filters.push({
         field: 'dateRange',
-        label: i18n.get('common.filters.types.date.label'),
+        label: i18n.get('disputes.overview.common.filters.types.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         visible: !props.compact,
         ...(!props.compact ? { defaultValue: defaultDateRange } : {}),

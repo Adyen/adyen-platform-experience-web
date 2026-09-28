@@ -104,6 +104,7 @@ module.exports = [
                         'packages/domains/*/{domain,vue}/tests/**/*.ts',
                         'packages/domains/*/**/stories/**/*.ts',
                         'packages/domains/*/{fixtures,mocks}/**/*.ts',
+                        'packages/sdk/tests/**/*.ts',
                         'src/**/*.ts',
                     ],
                     includeTypes: false,
@@ -140,7 +141,6 @@ module.exports = [
             '@typescript-eslint/indent': 'off',
             '@typescript-eslint/no-empty-function': ['error', { allow: ['arrowFunctions'] }],
             '@typescript-eslint/ban-types': 'off',
-
         },
     },
 
@@ -170,6 +170,18 @@ module.exports = [
         files: ['**/*.ts'],
         rules: {
             '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'off', overrides: { properties: 'explicit' } }],
+        },
+    },
+    {
+        files: ['src/index.ts', 'packages/sdk/src/index.ts'],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                {
+                    selector: 'ExportAllDeclaration',
+                    message: 'Public SDK entry points must use explicit exports.',
+                },
+            ],
         },
     },
 

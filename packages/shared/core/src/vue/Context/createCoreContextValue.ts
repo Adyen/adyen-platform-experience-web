@@ -9,6 +9,9 @@ export const createCoreContextValue = (props: CoreProviderProps): CoreContextVal
         get i18n() {
             return props.i18n ?? fallbackI18n;
         },
+        get translationDomain() {
+            return props.translationDomain;
+        },
         get commonProps() {
             return props.commonProps || {};
         },

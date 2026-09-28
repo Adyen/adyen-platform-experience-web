@@ -134,11 +134,11 @@ function onCopyText(text: string, itemId?: string, trackingName?: string) {
         });
     }
 
-    announce(() => i18n.get('common.actions.copy.labels.done'));
+    announce(() => i18n.get('transactions.common.actions.copy.labels.done'));
 }
 
 function getCopyTooltip(itemId?: string) {
-    const key = copiedItemId.value === itemId ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default';
+    const key = copiedItemId.value === itemId ? 'transactions.common.actions.copy.labels.done' : 'transactions.common.actions.copy.labels.default';
     return i18n.get(key);
 }
 

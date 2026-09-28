@@ -44,6 +44,7 @@ describe('CoreProvider', () => {
                         i18n,
                         loadingContext: 'session',
                         refreshComponent,
+                        translationDomain: 'transactions',
                     },
                     { default: () => h(child) }
                 ),
@@ -64,6 +65,7 @@ describe('CoreProvider', () => {
             i18n,
             loadingContext: 'session',
             refreshComponent,
+            translationDomain: 'transactions',
         });
     });
 });

@@ -1,9 +1,9 @@
 import type { AuthSession } from '../session/AuthSession';
 import type { AssetOptions } from '../Assets/Assets';
-import type { SessionObject, SessionRequest } from '../ConfigContext.types';
 import type { AnalyticsConfig, CoreOptions, CustomTheme, DevEnvironment, onErrorHandler, ThemeMode, ThemeVariables } from '../types';
 import type { I18n } from './Context/types';
 import type { Appearance, ComponentAppearance, ComponentDensity, DensityMode, GlobalAppearance } from '@integration-components/types';
+import type Localization from '../Localization';
 
 export type {
     AnalyticsConfig,
@@ -16,11 +16,10 @@ export type {
     DevEnvironment,
     GlobalAppearance,
     onErrorHandler,
-    SessionObject,
-    SessionRequest,
     ThemeMode,
     ThemeVariables,
 };
+export type { SessionObject, SessionRequest } from '../ConfigContext.types';
 
 export interface UIElementProps<Target extends string = string> {
     core: CoreInstance;
@@ -30,6 +29,8 @@ export interface UIElementProps<Target extends string = string> {
 export interface CoreInstance {
     options: CoreOptions;
     i18n: I18n;
+    localization: Localization;
+    bentoLocalization: Localization;
     loadingContext: string;
     analyticsEnabled: boolean;
     session: AuthSession;

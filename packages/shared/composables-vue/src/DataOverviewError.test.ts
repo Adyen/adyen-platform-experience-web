@@ -8,6 +8,7 @@ import { DataOverviewError } from './DataOverviewError';
 import type { ErrorMessageInfo } from './getErrorMessage';
 
 vi.mock('@integration-components/core/vue', () => ({
+    getDomainTranslationKey: (domain: string, key: string) => `${domain}.${key}`,
     useCoreContext: vi.fn(),
 }));
 
@@ -25,7 +26,9 @@ describe('DataOverviewError', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(useCoreContext).mockReturnValue({ i18n, refreshComponent } as unknown as ReturnType<typeof useCoreContext>);
+        vi.mocked(useCoreContext).mockReturnValue({ i18n, refreshComponent, translationDomain: 'transactions' } as unknown as ReturnType<
+            typeof useCoreContext
+        >);
     });
 
     const renderWithInfo = (errorInfo: ErrorMessageInfo, extraProps: Record<string, unknown> = {}) => {
@@ -49,8 +52,8 @@ describe('DataOverviewError', () => {
     test('translates the error and prioritizes its contact-support action', () => {
         const onContactSupport = vi.fn();
         const view = renderWithInfo({
-            title: 'common.errors.somethingWentWrong',
-            messages: ['common.errors.errorCode', 'common.errors.retry'],
+            title: 'transactions.common.errors.somethingWentWrong',
+            messages: ['transactions.common.errors.errorCode', 'transactions.common.errors.retry'],
             requestId: 'REQUEST-1',
             refreshComponent: true,
             onContactSupport,
@@ -59,22 +62,24 @@ describe('DataOverviewError', () => {
         const rendered = view();
         const description = (rendered.children as { default: () => VNode[] }).default();
 
-        expect(rendered.props?.title).toBe('common.errors.somethingWentWrong');
+        expect(rendered.props?.title).toBe('transactions.common.errors.somethingWentWrong');
         expect(rendered.props?.action).toMatchObject({
-            title: 'common.actions.contactSupport.labels.reachOut',
+            title: 'transactions.common.actions.contactSupport.labels.reachOut',
             variant: 'primary',
         });
         rendered.props?.action.event();
         expect(onContactSupport).toHaveBeenCalledOnce();
         expect(refreshComponent).not.toHaveBeenCalled();
-        expect(description.map(node => (typeof node === 'object' ? node.children : node))).toContain('common.errors.errorCode:REQUEST-1');
+        expect(description.map(node => (typeof node === 'object' ? node.children : node))).toContain(
+            'transactions.common.errors.errorCode:REQUEST-1'
+        );
     });
 
     test('uses the current component refresh action when requested', () => {
         const refreshIcon = {};
         const view = renderWithInfo(
             {
-                messages: ['common.errors.retry'],
+                messages: ['transactions.common.errors.retry'],
                 refreshComponent: true,
             },
             { refreshIcon }
@@ -82,7 +87,7 @@ describe('DataOverviewError', () => {
 
         const action = view().props?.action;
         expect(action).toMatchObject({
-            title: 'common.actions.refresh.labels.default',
+            title: 'transactions.common.actions.refresh.labels.default',
             icon: refreshIcon,
             variant: 'primary',
         });
@@ -98,19 +103,19 @@ describe('DataOverviewError', () => {
             value: { writeText },
         });
         const view = renderWithInfo({
-            messages: ['common.errors.errorCode'],
+            messages: ['transactions.common.errors.errorCode'],
             requestId: 'REQUEST-2',
         });
 
         const action = view().props?.action;
         expect(action).toMatchObject({
-            title: 'common.actions.copy.labels.errorCode',
+            title: 'transactions.common.actions.copy.labels.errorCode',
             variant: 'secondary',
         });
 
         await action.event();
 
         expect(writeText).toHaveBeenCalledWith('REQUEST-2');
-        expect(view().props?.action.title).toBe('common.actions.copy.labels.done');
+        expect(view().props?.action.title).toBe('transactions.common.actions.copy.labels.done');
     });
 });

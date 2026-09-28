@@ -6,13 +6,13 @@ const { app } = getEnvironment('development');
 
 const baseUrl = `http://${app.host}:${app.port}`;
 const ciWorkers = Math.max(1, Number.parseInt(process.env.PLAYWRIGHT_WORKERS ?? '', 10) || 2);
-const integrationTestFiles = ['*/vue/tests/integration/**/*.spec.ts'];
+const integrationTestFiles = ['domains/*/vue/tests/integration/**/*.spec.ts', 'sdk/tests/integration/**/*.spec.ts'];
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-    testDir: 'packages/domains',
+    testDir: 'packages',
     timeout: 30 * 1000,
     globalTimeout: 10 * 60 * 1000, // 10 minutes
     expect: {
@@ -56,7 +56,7 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: 'contract',
-            testMatch: ['*/domain/tests/contract/**/*.spec.ts'],
+            testMatch: ['domains/*/domain/tests/contract/**/*.spec.ts'],
             use: {
                 ignoreHTTPSErrors: true,
             },

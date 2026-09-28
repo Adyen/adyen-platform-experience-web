@@ -41,7 +41,7 @@
         "lint:playwright-selectors": {
             "executor": "nx:run-commands",
             "options": {
-                "command": "eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs 'packages/domains/**/tests/**/*.{spec,test}.ts' 'packages/shared/testing/**/*.ts'"
+                "command": "eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs 'packages/domains/**/tests/**/*.{spec,test}.ts' 'packages/sdk/tests/**/*.{spec,test}.ts' 'packages/shared/testing/**/*.ts'"
             },
             "cache": true
         },

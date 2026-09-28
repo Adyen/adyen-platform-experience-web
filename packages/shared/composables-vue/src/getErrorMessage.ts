@@ -1,33 +1,36 @@
-import type { TranslationKey } from '@integration-components/core';
+import { getDomainTranslationKey, type DomainTranslationKey, type TranslationDomain } from '@integration-components/core/translations';
 
 export type ErrorWithCode = Error & { errorCode?: string; requestId?: string };
 
 export type ErrorMessageInfo = {
-    title?: TranslationKey;
-    messages: TranslationKey[];
+    title?: DomainTranslationKey;
+    messages: DomainTranslationKey[];
     refreshComponent?: boolean;
     onContactSupport?: () => void;
-    contactSupportLabel?: TranslationKey;
+    contactSupportLabel?: DomainTranslationKey;
     requestId?: string;
-};
-
-const UNEXPECTED_ERROR: ErrorMessageInfo = {
-    title: 'common.errors.unexpected',
-    messages: ['common.errors.contactSupport'],
 };
 
 const getCommonErrorMessage = (
     errorCode: string | undefined,
-    notFoundMessage: TranslationKey,
+    notFoundMessage: DomainTranslationKey,
+    domain: TranslationDomain,
     onContactSupport?: () => void
 ): ErrorMessageInfo | null => {
     switch (errorCode) {
         case '29_001':
-            return { title: 'common.errors.requestInvalid', messages: ['common.errors.contactSupport'], onContactSupport };
+            return {
+                title: getDomainTranslationKey(domain, 'common.errors.requestInvalid'),
+                messages: [getDomainTranslationKey(domain, 'common.errors.contactSupport')],
+                onContactSupport,
+            };
         case '30_112':
-            return { title: 'common.errors.notFound', messages: [notFoundMessage], onContactSupport };
+            return { title: getDomainTranslationKey(domain, 'common.errors.notFound'), messages: [notFoundMessage], onContactSupport };
         case '00_403':
-            return UNEXPECTED_ERROR;
+            return {
+                title: getDomainTranslationKey(domain, 'common.errors.unexpected'),
+                messages: [getDomainTranslationKey(domain, 'common.errors.contactSupport')],
+            };
         default:
             return null;
     }
@@ -35,33 +38,42 @@ const getCommonErrorMessage = (
 
 export const getErrorMessage = (
     error: ErrorWithCode | undefined,
-    errorMessage: TranslationKey,
+    errorMessage: DomainTranslationKey,
+    domain: TranslationDomain,
     onContactSupport?: () => void,
-    notFoundMessage: TranslationKey = errorMessage
+    notFoundMessage: DomainTranslationKey = errorMessage
 ): ErrorMessageInfo => {
-    if (!error) return UNEXPECTED_ERROR;
+    if (!error)
+        return {
+            title: getDomainTranslationKey(domain, 'common.errors.unexpected'),
+            messages: [getDomainTranslationKey(domain, 'common.errors.contactSupport')],
+        };
 
-    const commonError = getCommonErrorMessage(error.errorCode, notFoundMessage, onContactSupport);
+    const commonError = getCommonErrorMessage(error.errorCode, notFoundMessage, domain, onContactSupport);
     if (commonError) return commonError;
 
     switch (error.errorCode) {
         case undefined:
             return {
-                title: 'common.errors.somethingWentWrong',
-                messages: [errorMessage, 'common.errors.retry'],
+                title: getDomainTranslationKey(domain, 'common.errors.somethingWentWrong'),
+                messages: [errorMessage, getDomainTranslationKey(domain, 'common.errors.retry')],
                 refreshComponent: true,
             };
         case '00_500': {
-            const secondaryErrorMessage: TranslationKey = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
+            const errorMessageKey = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
+            const secondaryErrorMessage = getDomainTranslationKey(domain, errorMessageKey);
             return {
-                title: 'common.errors.somethingWentWrong',
+                title: getDomainTranslationKey(domain, 'common.errors.somethingWentWrong'),
                 messages: [errorMessage, secondaryErrorMessage],
                 onContactSupport,
                 requestId: error.requestId,
             };
         }
         default:
-            return UNEXPECTED_ERROR;
+            return {
+                title: getDomainTranslationKey(domain, 'common.errors.unexpected'),
+                messages: [getDomainTranslationKey(domain, 'common.errors.contactSupport')],
+            };
     }
 };
 

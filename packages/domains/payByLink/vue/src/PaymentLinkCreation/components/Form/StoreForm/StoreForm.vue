@@ -4,7 +4,7 @@ import { BentoAlert, BentoButton } from '@adyen/bento-vue3';
 import StoreField from '../../fields/StoreField.vue';
 import { useWizard } from '../../../composables/wizardContext';
 import type { IPaymentLinkSettings, IPaymentLinkStore } from '@integration-components/types';
-import type { TranslationKey } from '@integration-components/core';
+import type { DomainTranslationKey } from '@integration-components/core/vue';
 import layoutStyles from '../FormLayout.module.scss';
 import styles from './StoreForm.module.scss';
 
@@ -25,7 +25,7 @@ const { i18n } = wizard;
 
 const selectedStoreId = computed(() => wizard.getValue('store'));
 const showTcAlert = computed(() => !!props.settingsData && !!props.storesData && !!selectedStoreId.value && !props.termsAndConditionsProvisioned);
-const alertDescriptionKey = computed<TranslationKey>(() =>
+const alertDescriptionKey = computed<DomainTranslationKey>(() =>
     props.canModifySettings
         ? 'payByLink.creation.storeForm.alerts.tcSetupRequired'
         : 'payByLink.creation.storeForm.alerts.tcSetupRequiredWithoutPermissions'
@@ -42,7 +42,7 @@ function handleSetupTermsAndConditions() {
             name="store"
             :label="i18n.get('payByLink.creation.fields.store.label')"
             :items="props.selectItems"
-            :placeholder="i18n.get('common.inputs.select.placeholder')"
+            :placeholder="i18n.get('payByLink.creation.inputs.select.placeholder')"
         />
         <BentoAlert v-if="showTcAlert" :class="styles.tcAlert" type="warning" role="alert">
             {{ i18n.get('payByLink.creation.storeForm.alerts.tcSetupRequiredTitle') }}

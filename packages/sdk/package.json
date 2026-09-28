@@ -15,6 +15,9 @@
         "@integration-components/style": "workspace:*"
     },
     "devDependencies": {
+        "@integration-components/testing": "workspace:*",
+        "@playwright/test": "catalog:",
+        "@storybook/vue3": "catalog:",
         "@vitejs/plugin-vue": "^6.0.5",
         "tsc-alias": "^1.8.17",
         "vite": "catalog:",

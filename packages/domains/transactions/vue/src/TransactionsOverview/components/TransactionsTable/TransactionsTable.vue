@@ -146,7 +146,7 @@ const emptyStateProps = computed(() => ({
     image: hideIllustrations.value ? undefined : ('no-results-found' as const),
     variant: 'embedded' as const,
     title: i18n.get('transactions.overview.errors.listEmpty'),
-    description: i18n.get('common.errors.updateFilters'),
+    description: i18n.get('transactions.common.errors.updateFilters'),
 }));
 
 function handleNavigate(page: number) {
@@ -211,7 +211,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
                                 {{ item.paymentMethod ? parsePaymentMethodType(item.paymentMethod) : item.bankAccount?.accountNumberLastFourDigits }}
                             </BentoTypography>
                         </template>
-                        <BentoTag v-else variant="grey" :label="i18n.get('common.tags.noData')" />
+                        <BentoTag v-else variant="grey" :label="i18n.get('transactions.common.tags.noData')" />
                     </div>
                     <time v-if="item.createdAt" :datetime="item.createdAt" :class="styles.date">
                         <BentoTypography variant="body">{{ formatDate(item.createdAt) }}</BentoTypography>
@@ -233,7 +233,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
                             {{ item.paymentMethod ? parsePaymentMethodType(item.paymentMethod) : item.bankAccount?.accountNumberLastFourDigits }}
                         </BentoTypography>
                     </template>
-                    <BentoTag v-else variant="grey" :label="i18n.get('common.tags.noData')" />
+                    <BentoTag v-else variant="grey" :label="i18n.get('transactions.common.tags.noData')" />
                 </div>
             </template>
 

@@ -1,30 +1,32 @@
-import { AdyenErrorResponse, AdyenPlatformExperienceError, type TranslationKey } from '@integration-components/core';
+import { AdyenErrorResponse, AdyenPlatformExperienceError } from '@integration-components/core';
+
+type CapitalTranslationKey = `capital.${string}`;
 
 export type CapitalErrorMessage = {
-    title: TranslationKey;
-    message: TranslationKey | TranslationKey[];
+    title: CapitalTranslationKey;
+    message: CapitalTranslationKey | CapitalTranslationKey[];
     refreshComponent?: boolean;
     onContactSupport?: () => void;
-    translationValues?: { [key in TranslationKey]?: string };
+    translationValues?: { [key in CapitalTranslationKey]?: string };
 };
 
-export type CapitalErrorMessageInfo = Omit<CapitalErrorMessage, 'message' | 'translationValues'> & {
-    messages: TranslationKey[];
+export type CapitalErrorMessageInfo = Omit<CapitalErrorMessage, 'title' | 'message' | 'translationValues'> & {
+    title: CapitalTranslationKey;
+    messages: CapitalTranslationKey[];
     requestId?: string;
 };
 
 export type BalanceAccountErrorMessage = {
-    title: TranslationKey;
-    message: TranslationKey;
+    title: CapitalTranslationKey;
+    message: CapitalTranslationKey;
 };
 
 const BALANCE_ACCOUNT_ERROR_CODE = '30_013';
 
 export const COMMON_CAPITAL_ERROR_MESSAGE = {
-    contactSupportForHelp: 'common.errors.contactSupport',
     couldNotLoadOffers: 'capital.offer.common.errors.unavailable',
-    tryRefreshingThePage: 'common.errors.retry',
-    somethingWentWrong: 'common.errors.somethingWentWrong',
+    tryRefreshingThePage: 'capital.common.errors.retry',
+    somethingWentWrong: 'capital.common.errors.somethingWentWrong',
 } as const;
 
 const UNKNOWN_ERROR: CapitalErrorMessage = {
@@ -44,7 +46,7 @@ export const getBalanceAccountErrorMessage = (error: AdyenErrorResponse | undefi
 
 export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): CapitalErrorMessage => {
     if (!error) return UNKNOWN_ERROR;
-    const errorCodeMessage = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
+    const errorCodeMessage = onContactSupport ? 'capital.common.errors.errorCode' : 'capital.common.errors.errorCodeSupport';
     const translationValues = error.requestId ? { [errorCodeMessage]: error.requestId } : undefined;
 
     switch (error.errorCode) {
@@ -90,8 +92,8 @@ export const getCapitalErrorMessageInfo = (
     error: AdyenPlatformExperienceError | undefined,
     onContactSupport?: () => void
 ): CapitalErrorMessageInfo => {
-    const { message, translationValues, ...rest } = getCapitalErrorMessage(error, onContactSupport);
+    const { title, message, translationValues, ...rest } = getCapitalErrorMessage(error, onContactSupport);
     const messages = Array.isArray(message) ? message : [message];
     const requestId = translationValues && Object.values(translationValues)[0];
-    return { ...rest, messages, requestId };
+    return { ...rest, title, messages, requestId };
 };

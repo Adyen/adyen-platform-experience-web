@@ -26,7 +26,7 @@ const alertTitle = computed(() => (props.missingActions.length > 1 ? alertTitles
         {{ i18n.get('capital.overview.grants.item.alerts.somethingWentWrong') }}
         <template #actions>
             <BentoButton :class="styles.button" @click="refreshComponent">
-                {{ i18n.get('common.actions.refresh.labels.default') }}
+                {{ i18n.get('capital.common.actions.refresh.labels.default') }}
             </BentoButton>
         </template>
     </BentoAlert>

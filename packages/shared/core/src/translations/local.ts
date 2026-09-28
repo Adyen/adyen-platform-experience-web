@@ -3,17 +3,17 @@ import type { Translations } from './index';
 const _getTranslations = (translationsPromise: Promise<{ default: Translations }>) =>
     translationsPromise.then(({ default: translations }) => translations);
 
-export const da_DK = { 'da-DK': _getTranslations(import('@integration-components/assets/translations/da-DK.json')) };
-export const de_DE = { 'de-DE': _getTranslations(import('@integration-components/assets/translations/de-DE.json')) };
-export const es_ES = { 'es-ES': _getTranslations(import('@integration-components/assets/translations/es-ES.json')) };
-export const fi_FI = { 'fi-FI': _getTranslations(import('@integration-components/assets/translations/fi-FI.json')) };
-export const fr_FR = { 'fr-FR': _getTranslations(import('@integration-components/assets/translations/fr-FR.json')) };
-export const it_IT = { 'it-IT': _getTranslations(import('@integration-components/assets/translations/it-IT.json')) };
-export const nl_NL = { 'nl-NL': _getTranslations(import('@integration-components/assets/translations/nl-NL.json')) };
-export const no_NO = { 'no-NO': _getTranslations(import('@integration-components/assets/translations/no-NO.json')) };
-export const pt_BR = { 'pt-BR': _getTranslations(import('@integration-components/assets/translations/pt-BR.json')) };
-export const sv_SE = { 'sv-SE': _getTranslations(import('@integration-components/assets/translations/sv-SE.json')) };
-export const en_US = { 'en-US': _getTranslations(import('@integration-components/assets/translations/en-US.json')) };
+export const da_DK = { 'da-DK': _getTranslations(import('../../../../sdk/translations/da-DK.json')) };
+export const de_DE = { 'de-DE': _getTranslations(import('../../../../sdk/translations/de-DE.json')) };
+export const es_ES = { 'es-ES': _getTranslations(import('../../../../sdk/translations/es-ES.json')) };
+export const fi_FI = { 'fi-FI': _getTranslations(import('../../../../sdk/translations/fi-FI.json')) };
+export const fr_FR = { 'fr-FR': _getTranslations(import('../../../../sdk/translations/fr-FR.json')) };
+export const it_IT = { 'it-IT': _getTranslations(import('../../../../sdk/translations/it-IT.json')) };
+export const nl_NL = { 'nl-NL': _getTranslations(import('../../../../sdk/translations/nl-NL.json')) };
+export const no_NO = { 'no-NO': _getTranslations(import('../../../../sdk/translations/no-NO.json')) };
+export const pt_BR = { 'pt-BR': _getTranslations(import('../../../../sdk/translations/pt-BR.json')) };
+export const sv_SE = { 'sv-SE': _getTranslations(import('../../../../sdk/translations/sv-SE.json')) };
+export const en_US = { 'en-US': _getTranslations(import('../../../../sdk/translations/en-US.json')) };
 
 export const translations_dev_assets: Record<string, Promise<any>> = {
     ...da_DK,

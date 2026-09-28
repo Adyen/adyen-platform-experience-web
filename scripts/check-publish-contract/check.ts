@@ -10,7 +10,7 @@
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { buildSnapshot, diff, type Snapshot } from './lib.js';
+import { buildSnapshot, diff, getPublicExportViolations, type Snapshot } from './lib.js';
 
 const ROOT = resolve(import.meta.dirname!, '../..');
 const BASELINE_PATH = resolve(import.meta.dirname!, 'baseline.json');
@@ -18,11 +18,22 @@ const UPDATE_MODE = process.argv.includes('--update');
 
 export function run() {
     const snapshot = buildSnapshot(ROOT);
+    const exportViolations = getPublicExportViolations(snapshot);
+
+    if (exportViolations.length > 0) {
+        console.error('Public SDK export contract violated:');
+        for (const entry of exportViolations) {
+            console.error(entry);
+        }
+        process.exit(1);
+    }
 
     if (UPDATE_MODE) {
         writeFileSync(BASELINE_PATH, JSON.stringify(snapshot, null, 4) + '\n');
         console.log(`Baseline updated (${BASELINE_PATH})`);
         console.log(`  JS exports: ${snapshot.jsExports.length}`);
+        console.log(`  CommonJS exports: ${snapshot.cjsExports.length}`);
+        console.log(`  Declaration exports: ${snapshot.declarationExports.length}`);
         console.log(`  ES modules: ${snapshot.esFileCount}`);
         console.log(`  Type files: ${snapshot.typeFiles.length}`);
         process.exit(0);

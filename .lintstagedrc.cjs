@@ -3,7 +3,7 @@ const lintPlaywrightSelectors = filenames => [
 ];
 
 module.exports = {
-    'packages/shared/assets/src/translations/*.json': filenames => [`pnpm run translations:sort ${filenames.join(' ')}`],
+    'packages/{sdk,domains/*/vue}/translations/**/*.json': filenames => [`pnpm run translations:sort ${filenames.join(' ')}`],
     // Fix Prettier formatting
     '{src,packages}/**/*.{ts,js,scss,css,md,json,html,vue}': filenames => [`pnpm exec prettier --write ${filenames.join(' ')}`],
     // Fix stylelint issues only (no checking/reporting)
@@ -12,5 +12,6 @@ module.exports = {
     '{src,packages}/**/*.{js,ts,vue}': filenames => [`pnpm exec eslint ${filenames.join(' ')}`],
     // Check playwright selector usage (mirrors lint:playwright-selectors)
     'packages/domains/**/tests/**/*.{spec,test}.ts': lintPlaywrightSelectors,
+    'packages/sdk/tests/**/*.{spec,test}.ts': lintPlaywrightSelectors,
     'packages/shared/testing/**/*.ts': lintPlaywrightSelectors,
 };

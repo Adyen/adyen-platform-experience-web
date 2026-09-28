@@ -1,4 +1,4 @@
-import type { TranslationKey } from '@integration-components/core';
+import type { DomainTranslationKey } from '@integration-components/core/translations';
 import type { UIElementProps } from '@integration-components/types';
 
 export interface PaymentLinkDetailsProps extends UIElementProps {
@@ -21,7 +21,7 @@ export type PaymentLinkStatusTagVariant = 'info' | 'success' | 'neutral' | 'warn
 export type PaymentLinkActivityStatus = 'green' | 'red' | 'blue' | 'black';
 
 export type ListItemData = {
-    key: TranslationKey;
+    key: DomainTranslationKey;
     value?: string;
     isCopyable?: boolean;
     linkUrl?: string;
@@ -30,8 +30,8 @@ export type ListItemData = {
 export type PaymentLinkListItems = Record<'linkInformation' | 'shopperInformation' | 'shippingAddress' | 'billingAddress', ListItemData[]>;
 
 export type PaymentLinkErrorMessageContent = {
-    title: TranslationKey;
-    message: TranslationKey[];
+    title: DomainTranslationKey;
+    message: DomainTranslationKey[];
     refreshComponent?: boolean;
     requestId?: string;
 };

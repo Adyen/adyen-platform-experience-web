@@ -22,7 +22,7 @@ export class ReportsOverviewElement extends UIElement<ReportsOverviewExternalPro
         super(ReportsOverviewContainer, props, 'reports');
     }
 
-    protected configureApp(app: App): void {
+    protected configureComponentApp(app: App): void {
         app.use(BentoVue, { withToast: true, withDesignTokensCSSInjection: false });
     }
 }

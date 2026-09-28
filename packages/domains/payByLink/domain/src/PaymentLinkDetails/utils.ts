@@ -1,4 +1,4 @@
-import type { TranslationKey } from '@integration-components/core';
+import type { DomainTranslationKey } from '@integration-components/core/translations';
 import type {
     IPaymentLinkActivity,
     IPaymentLinkDetails,
@@ -18,10 +18,10 @@ import type {
 } from './types';
 
 type ErrorLike = { errorCode?: string; requestId?: string } | undefined;
-type I18nLike = { has: (key: string) => boolean; get: (key: TranslationKey) => string };
+type I18nLike = { has: (key: string) => boolean; get: (key: DomainTranslationKey) => string };
 type DateFormatFn = (date: string | Date, options?: Intl.DateTimeFormatOptions) => string;
 
-export const getActivityTitleKey = (activity: IPaymentLinkActivity): TranslationKey | undefined => {
+export const getActivityTitleKey = (activity: IPaymentLinkActivity): DomainTranslationKey | undefined => {
     switch (activity.type) {
         case 'createdAction':
             return 'payByLink.details.activity.created';
@@ -34,7 +34,7 @@ export const getActivityTitleKey = (activity: IPaymentLinkActivity): Translation
     }
 };
 
-export const getActivityDescriptionKey = (activity: IPaymentLinkActivity): TranslationKey | undefined => {
+export const getActivityDescriptionKey = (activity: IPaymentLinkActivity): DomainTranslationKey | undefined => {
     switch (activity.expirationReason) {
         case 'maximumAttemptsReached':
             return 'payByLink.details.activity.expirationReason.maximumAttemptsReached';
@@ -70,12 +70,12 @@ export const getPaymentLinkStatusTagVariant = (status: IPaymentLinkStatus | unde
 
 export const getPaymentLinkStatusLabel = (i18n: I18nLike, status: IPaymentLinkStatus | undefined): string | undefined => {
     if (!status) return undefined;
-    return i18n.has(`payByLink.common.status.${status}`) ? i18n.get(`payByLink.common.status.${status}` as TranslationKey) : status;
+    return i18n.has(`payByLink.common.status.${status}`) ? i18n.get(`payByLink.common.status.${status}` as DomainTranslationKey) : status;
 };
 
 export const getPaymentLinkTypeLabel = (i18n: I18nLike, linkType: IPaymentLinkType | undefined): string | undefined => {
     if (!linkType) return undefined;
-    return i18n.has(`payByLink.common.linkType.${linkType}`) ? i18n.get(`payByLink.common.linkType.${linkType}` as TranslationKey) : linkType;
+    return i18n.has(`payByLink.common.linkType.${linkType}`) ? i18n.get(`payByLink.common.linkType.${linkType}` as DomainTranslationKey) : linkType;
 };
 
 const filterEmptyListItems = (items: ListItemData[]): ListItemData[] => items.filter(item => item.value != null && item.value !== '');
@@ -123,10 +123,10 @@ export const buildPaymentLinkListItems = (
         { key: 'payByLink.details.fields.shopper.phone', value: paymentLink.shopperInformation?.telephoneNumber, isCopyable: true },
         { key: 'payByLink.details.fields.shopper.country', value: paymentLink.shopperInformation?.shopperCountry },
         ...(isShippingAddressRedacted
-            ? [{ key: 'payByLink.details.fields.shippingAddress.title' as TranslationKey, value: BACKEND_REDACTED_DATA_MARKER }]
+            ? [{ key: 'payByLink.details.fields.shippingAddress.title' as DomainTranslationKey, value: BACKEND_REDACTED_DATA_MARKER }]
             : []),
         ...(isBillingAddressRedacted
-            ? [{ key: 'payByLink.details.fields.billingAddress.title' as TranslationKey, value: BACKEND_REDACTED_DATA_MARKER }]
+            ? [{ key: 'payByLink.details.fields.billingAddress.title' as DomainTranslationKey, value: BACKEND_REDACTED_DATA_MARKER }]
             : []),
     ]);
 
@@ -134,15 +134,15 @@ export const buildPaymentLinkListItems = (
         !address
             ? []
             : filterEmptyListItems([
-                  { key: `payByLink.details.fields.${prefix}.street` as TranslationKey, value: address.street, isCopyable: true },
+                  { key: `payByLink.details.fields.${prefix}.street` as DomainTranslationKey, value: address.street, isCopyable: true },
                   {
-                      key: `payByLink.details.fields.${prefix}.houseNumberOrName` as TranslationKey,
+                      key: `payByLink.details.fields.${prefix}.houseNumberOrName` as DomainTranslationKey,
                       value: address.houseNumberOrName,
                       isCopyable: true,
                   },
-                  { key: `payByLink.details.fields.${prefix}.country` as TranslationKey, value: address.country },
-                  { key: `payByLink.details.fields.${prefix}.city` as TranslationKey, value: address.city, isCopyable: true },
-                  { key: `payByLink.details.fields.${prefix}.postalCode` as TranslationKey, value: address.postalCode, isCopyable: true },
+                  { key: `payByLink.details.fields.${prefix}.country` as DomainTranslationKey, value: address.country },
+                  { key: `payByLink.details.fields.${prefix}.city` as DomainTranslationKey, value: address.city, isCopyable: true },
+                  { key: `payByLink.details.fields.${prefix}.postalCode` as DomainTranslationKey, value: address.postalCode, isCopyable: true },
               ]);
 
     return {
@@ -155,21 +155,25 @@ export const buildPaymentLinkListItems = (
 
 export const getPaymentLinkErrorMessageContent = (
     error: ErrorLike,
-    errorMessage: TranslationKey,
+    errorMessage: DomainTranslationKey,
     hasContactSupport: boolean
 ): PaymentLinkErrorMessageContent => {
-    if (!error) return { title: 'common.errors.unexpected', message: ['common.errors.contactSupport'] };
+    if (!error) return { title: 'payByLink.common.errors.unexpected', message: ['payByLink.common.errors.contactSupport'] };
 
     switch (error.errorCode) {
         case undefined:
-            return { title: 'common.errors.somethingWentWrong', message: [errorMessage, 'common.errors.retry'], refreshComponent: true };
+            return {
+                title: 'payByLink.common.errors.somethingWentWrong',
+                message: [errorMessage, 'payByLink.common.errors.retry'],
+                refreshComponent: true,
+            };
         case '500':
             return {
-                title: 'common.errors.somethingWentWrong',
-                message: [errorMessage, hasContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport'],
+                title: 'payByLink.common.errors.somethingWentWrong',
+                message: [errorMessage, hasContactSupport ? 'payByLink.common.errors.errorCode' : 'payByLink.common.errors.errorCodeSupport'],
                 requestId: error.requestId,
             };
         default:
-            return { title: 'common.errors.unexpected', message: ['common.errors.contactSupport'] };
+            return { title: 'payByLink.common.errors.unexpected', message: ['payByLink.common.errors.contactSupport'] };
     }
 };
