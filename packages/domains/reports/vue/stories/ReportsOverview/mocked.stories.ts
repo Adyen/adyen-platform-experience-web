@@ -33,14 +33,6 @@ export const Default: ElementStory<ReportsOverviewExternalProps> = {
     args: defaultArgs,
 };
 
-export const Condensed: ElementStory<ReportsOverviewExternalProps> = {
-    name: 'Condensed',
-    args: {
-        ...defaultArgs,
-        density: 'condensed',
-    },
-};
-
 export const DataCustomization: ElementStory<ReportsOverviewExternalProps> = {
     name: 'Data customization',
     args: {

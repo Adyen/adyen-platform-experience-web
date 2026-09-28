@@ -17,14 +17,6 @@ export const Default: ElementStory<DisputesOverviewExternalProps> = {
     args: sharedArgs,
 };
 
-export const Condensed: ElementStory<DisputesOverviewExternalProps> = {
-    name: 'Condensed',
-    args: {
-        ...sharedArgs,
-        density: 'condensed',
-    },
-};
-
 export const EmptyList: ElementStory<DisputesOverviewExternalProps> = {
     name: 'Empty list',
     args: sharedArgs,

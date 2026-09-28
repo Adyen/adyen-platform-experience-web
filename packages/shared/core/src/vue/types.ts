@@ -2,14 +2,13 @@ import type { AuthSession } from '../session/AuthSession';
 import type { AssetOptions } from '../Assets/Assets';
 import type { AnalyticsConfig, CoreOptions, CustomTheme, DevEnvironment, onErrorHandler, ThemeMode, ThemeVariables } from '../types';
 import type { I18n } from './Context/types';
-import type { Appearance, ComponentAppearance, ComponentDensity, DensityMode, GlobalAppearance } from '@integration-components/types';
+import type { Appearance, ComponentAppearance, DensityMode, GlobalAppearance } from '@integration-components/types';
 import type Localization from '../Localization';
 
 export type {
     AnalyticsConfig,
     Appearance,
     ComponentAppearance,
-    ComponentDensity,
     CoreOptions,
     CustomTheme,
     DensityMode,
@@ -21,7 +20,7 @@ export type {
 };
 export type { SessionObject, SessionRequest } from '../ConfigContext.types';
 
-export interface UIElementProps<Target extends string = string> {
+export interface UIElementProps<Target extends string = never> {
     core: CoreInstance;
     appearance?: ComponentAppearance<Target>;
 }

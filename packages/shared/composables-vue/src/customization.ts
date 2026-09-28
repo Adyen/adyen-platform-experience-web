@@ -1,44 +1,20 @@
-import { computed, type ComputedRef } from 'vue';
+import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import type { DensityMode } from '@integration-components/types';
 
 export const useShouldHideIllustrations = () => {
-    let coreContext: ReturnType<typeof useCoreContext> | undefined;
-    try {
-        coreContext = useCoreContext();
-    } catch {
-        // Fallback for isolated unit tests
-    }
+    const coreContext = useCoreContext();
 
-    return computed(() => coreContext?.appearance?.illustrations === 'hidden');
+    return computed(() => coreContext.appearance?.illustrations === 'hidden');
 };
 
 export const useShouldHideTitles = () => {
-    let coreContext: ReturnType<typeof useCoreContext> | undefined;
-    try {
-        coreContext = useCoreContext();
-    } catch {
-        // Fallback for isolated unit tests
-    }
+    const coreContext = useCoreContext();
 
-    return computed(() => coreContext?.appearance?.titles === 'hidden');
+    return computed(() => coreContext.appearance?.titles === 'hidden');
 };
 
-export const useDensity = (target: string): ComputedRef<DensityMode> => {
-    let coreContext: ReturnType<typeof useCoreContext> | undefined;
-    try {
-        coreContext = useCoreContext();
-    } catch {
-        // Fallback for isolated unit tests
-    }
+export const useCondensed = (target: 'dataGrid') => {
+    const coreContext = useCoreContext();
 
-    return computed<DensityMode>(() => {
-        const density = coreContext?.appearance?.density;
-        return density?.[target] ?? 'default';
-    });
-};
-
-export const useCondensed = (target: string): ComputedRef<boolean> => {
-    const density = useDensity(target);
-    return computed(() => density.value === 'condensed');
+    return computed(() => coreContext.appearance?.density?.[target] === 'condensed');
 };

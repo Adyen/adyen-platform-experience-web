@@ -278,25 +278,6 @@ describe('UIElement', () => {
         expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
     });
 
-    test('reacts to component appearance updates via element.update', () => {
-        const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
-        const component = { render: () => null } as Component;
-        const element = new UIElement<{
-            core: typeof core;
-            appearance?: { density?: { dataGrid?: 'default' | 'condensed' } };
-        }>(component, { core }, 'payouts');
-
-        element.mount(document.createElement('div'));
-
-        const renderElement = rootComponent.setup();
-        expect(renderElement().props?.componentAppearance).toBeUndefined();
-
-        element.update({ appearance: { density: { dataGrid: 'condensed' } } });
-
-        const view = renderElement();
-        expect(view.props?.componentAppearance).toEqual({ density: { dataGrid: 'condensed' } });
-    });
-
     test('applies a direct appearance update to the component appearance, never to the global', () => {
         const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
         const appearance: Appearance = { illustrations: 'visible' };

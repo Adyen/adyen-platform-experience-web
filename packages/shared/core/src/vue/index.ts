@@ -4,7 +4,6 @@ export type {
     AnalyticsConfig,
     Appearance,
     ComponentAppearance,
-    ComponentDensity,
     CoreInstance,
     CoreOptions,
     CustomTheme,
@@ -26,4 +25,3 @@ export * from './ConfigContext';
 export { Core } from '../Core';
 export { createRefreshContext, UIElement } from './UIElement';
 export { default as UIElementProvider } from './UIElementProvider.vue';
-export { resolveAppearance } from './customization';

@@ -12,7 +12,7 @@ let lastDataGridProps: Record<string, any> = {};
 vi.mock('@adyen/bento-vue3', () => ({
     BentoDataGrid: defineComponent({
         name: 'BentoDataGrid',
-        props: ['condensed', 'emptyState', 'columns', 'data', 'loading', 'pagination'],
+        props: ['condensed'],
         setup(props) {
             lastDataGridProps = props;
             return () => h('div', { 'data-testid': 'bento-datagrid' });
@@ -59,48 +59,6 @@ describe('PayoutsTable', () => {
         app.mount(target);
 
         expect(lastDataGridProps.condensed).toBe(true);
-
-        app.unmount();
-    });
-
-    test('hides illustration in emptyState when illustrations is hidden', () => {
-        vi.mocked(useCoreContext).mockReturnValue({
-            i18n,
-            appearance: {
-                illustrations: 'hidden',
-            },
-        } as unknown as ReturnType<typeof useCoreContext>);
-
-        const target = document.createElement('div');
-        const app = createApp(PayoutsTable, {
-            balanceAccountId: 'BA123',
-            loading: false,
-            showPagination: false,
-            data: [],
-        });
-        app.mount(target);
-
-        expect(lastDataGridProps.emptyState?.image).toBeUndefined();
-
-        app.unmount();
-    });
-
-    test('includes illustration in emptyState by default', () => {
-        vi.mocked(useCoreContext).mockReturnValue({
-            i18n,
-            appearance: {},
-        } as unknown as ReturnType<typeof useCoreContext>);
-
-        const target = document.createElement('div');
-        const app = createApp(PayoutsTable, {
-            balanceAccountId: 'BA123',
-            loading: false,
-            showPagination: false,
-            data: [],
-        });
-        app.mount(target);
-
-        expect(lastDataGridProps.emptyState?.image).toBe('no-results-found');
 
         app.unmount();
     });

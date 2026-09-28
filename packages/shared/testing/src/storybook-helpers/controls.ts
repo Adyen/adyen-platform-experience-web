@@ -17,5 +17,3 @@ export const densityControl = () =>
         control: { type: 'inline-radio' },
         options: ['default', 'condensed'],
     }) as const;
-
-export const densityDataGridControls = densityControl;
