@@ -1,15 +1,18 @@
 import type { UIElementProps } from '@integration-components/core/vue';
 import type { TransactionDetailsCustomization, TransactionsListCustomization } from '../../../domain/src';
 import type {
-    DataGridComponentAppearance,
+    GlobalAppearance,
     IAmount,
     IBalanceAccountBase,
     ITransaction,
     ITransactionCategory,
     ITransactionStatus,
+    WithDataGridAppearance,
 } from '@integration-components/types';
 
 export type { TransactionsCustomColumn, TransactionsListCustomization, TransactionsTableFields } from '../../../domain/src';
+
+export type TransactionsOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
 
 export interface TransactionsFilters {
     balanceAccountId?: string;
@@ -22,7 +25,7 @@ export interface TransactionsFilters {
 }
 
 export interface TransactionsOverviewExternalProps extends UIElementProps {
-    appearance?: DataGridComponentAppearance;
+    appearance?: TransactionsOverviewAppearance;
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
     preferredLimit?: number;

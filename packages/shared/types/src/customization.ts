@@ -12,11 +12,11 @@ export type DataGridAppearance = {
     density?: DensityMode;
 };
 
-export type DataGridComponentAppearance = GlobalAppearance & {
+export type WithDataGridAppearance = {
     dataGrid?: DataGridAppearance;
 };
 
-export type Appearance = DataGridComponentAppearance;
+export type Appearance = GlobalAppearance & WithDataGridAppearance;
 
 interface BaseCustomObject {
     value: any;

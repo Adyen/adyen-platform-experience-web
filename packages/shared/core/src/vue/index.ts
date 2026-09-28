@@ -7,7 +7,6 @@ export type {
     CoreOptions,
     CustomTheme,
     DataGridAppearance,
-    DataGridComponentAppearance,
     DensityMode,
     DevEnvironment,
     GlobalAppearance,
@@ -17,6 +16,7 @@ export type {
     ThemeMode,
     ThemeVariables,
     UIElementProps,
+    WithDataGridAppearance,
 } from './types';
 export type { SupportedLocales } from '../Localization/types';
 

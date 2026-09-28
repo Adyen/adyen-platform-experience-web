@@ -1,11 +1,13 @@
 import type { UIElementProps } from '@integration-components/core/vue';
-import type { DataGridComponentAppearance, IBalanceAccountBase } from '@integration-components/types';
+import type { GlobalAppearance, IBalanceAccountBase, WithDataGridAppearance } from '@integration-components/types';
 import type { PayoutDetailsCustomization, PayoutsListCustomization } from '@integration-components/payouts/domain';
+
+export type PayoutsOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
 
 // ── Component prop types ──
 
 export interface PayoutsOverviewExternalProps extends UIElementProps {
-    appearance?: DataGridComponentAppearance;
+    appearance?: PayoutsOverviewAppearance;
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
     preferredLimit?: number;
