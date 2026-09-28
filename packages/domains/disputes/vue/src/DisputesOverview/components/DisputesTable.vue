@@ -25,7 +25,7 @@ import {
     DataOverviewError,
     useTableColumns,
     useShouldHideIllustrations,
-    useCondensed,
+    useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { getDisputeDeadlineTimeRemaining, getDisputeReason, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
@@ -61,7 +61,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const hideIllustrations = useShouldHideIllustrations();
-const isCondensed = useCondensed('dataGrid');
+const isCondensed = useCondensedDataGrid();
 const config = useConfigContext();
 
 const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceAccount?.timeZone);

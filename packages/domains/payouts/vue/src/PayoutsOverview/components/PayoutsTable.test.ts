@@ -39,14 +39,10 @@ describe('PayoutsTable', () => {
         vi.mocked(useConfigContext).mockReturnValue({} as any);
     });
 
-    test('passes condensed: true to BentoDataGrid when density.dataGrid is condensed', () => {
+    test('passes condensed: true to BentoDataGrid when dataGrid.density is condensed', () => {
         vi.mocked(useCoreContext).mockReturnValue({
             i18n,
-            appearance: {
-                density: {
-                    dataGrid: 'condensed',
-                },
-            },
+            appearance: { dataGrid: { density: 'condensed' } },
         } as unknown as ReturnType<typeof useCoreContext>);
 
         const target = document.createElement('div');

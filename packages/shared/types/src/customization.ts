@@ -8,13 +8,15 @@ export type GlobalAppearance = {
     titles?: 'hidden' | 'visible';
 };
 
-export type ComponentAppearance<Target extends string = never> = GlobalAppearance & {
-    density?: [Target] extends [never] ? never : Partial<Record<Target, DensityMode>>;
+export type DataGridAppearance = {
+    density?: DensityMode;
 };
 
-export type Appearance = GlobalAppearance & {
-    density?: Partial<Record<string, DensityMode>>;
+export type DataGridComponentAppearance = GlobalAppearance & {
+    dataGrid?: DataGridAppearance;
 };
+
+export type Appearance = DataGridComponentAppearance;
 
 interface BaseCustomObject {
     value: any;

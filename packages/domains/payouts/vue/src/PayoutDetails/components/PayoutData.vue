@@ -15,7 +15,7 @@ import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { IPayoutDetails } from '@integration-components/types';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '@integration-components/utils';
 import { formatAmountWithCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
-import { useShouldHideTitles, useCondensed } from '@integration-components/composables-vue';
+import { useShouldHideTitles, useCondensedDataGrid } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '@integration-components/payouts/domain';
 import type { PayoutDetailsCustomization } from '../types';
@@ -33,7 +33,7 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
-const isCondensed = useCondensed('dataGrid');
+const isCondensed = useCondensedDataGrid();
 const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
 
 const payoutInner = computed(() => props.payout?.payout);

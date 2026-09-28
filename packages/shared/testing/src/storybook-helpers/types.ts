@@ -9,7 +9,7 @@ type GlobalStoriesProps = {
     component: any;
     coreOptions?: Partial<CoreOptions>;
     skipDecorators?: boolean;
-    density?: DensityMode;
+    dataGridDensity?: DensityMode;
 };
 
 type ComponentPropsOf<T> = T extends new (...args: any) => any ? ConstructorParameters<T>[0] : T;

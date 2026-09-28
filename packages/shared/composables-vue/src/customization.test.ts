@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { useCoreContext } from '@integration-components/core/vue';
-import { useCondensed, useShouldHideIllustrations, useShouldHideTitles } from './customization';
+import { useCondensedDataGrid, useShouldHideIllustrations, useShouldHideTitles } from './customization';
 
 vi.mock('@integration-components/core/vue', () => ({
     useCoreContext: vi.fn(),
@@ -35,29 +35,21 @@ describe('customization composables', () => {
         expect(useShouldHideTitles().value).toBe(false);
     });
 
-    test('useCondensed reflects the target density', () => {
+    test('useCondensedDataGrid reflects the data grid density', () => {
         vi.mocked(useCoreContext).mockReturnValue({
-            appearance: {
-                density: {
-                    dataGrid: 'condensed',
-                },
-            },
+            appearance: { dataGrid: { density: 'condensed' } },
         } as unknown as ReturnType<typeof useCoreContext>);
 
-        expect(useCondensed('dataGrid').value).toBe(true);
+        expect(useCondensedDataGrid().value).toBe(true);
 
         vi.mocked(useCoreContext).mockReturnValue({
-            appearance: {
-                density: {
-                    dataGrid: 'default',
-                },
-            },
+            appearance: { dataGrid: { density: 'default' } },
         } as unknown as ReturnType<typeof useCoreContext>);
 
-        expect(useCondensed('dataGrid').value).toBe(false);
+        expect(useCondensedDataGrid().value).toBe(false);
 
         vi.mocked(useCoreContext).mockReturnValue({ appearance: {} } as unknown as ReturnType<typeof useCoreContext>);
 
-        expect(useCondensed('dataGrid').value).toBe(false);
+        expect(useCondensedDataGrid().value).toBe(false);
     });
 });

@@ -6,7 +6,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 import {
     containerQueries,
     DataOverviewError,
-    useCondensed,
+    useCondensedDataGrid,
     useResponsiveContainer,
     useTimezoneAwareDateFormatting,
 } from '@integration-components/composables-vue';
@@ -46,7 +46,7 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const { dateFormat } = useTimezoneAwareDateFormatting();
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
-const isCondensed = useCondensed('dataGrid');
+const isCondensed = useCondensedDataGrid();
 
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 const errorInfo = computed(() => getPaymentLinksErrorMessage(props.error, 'payByLink.overview.errors.couldNotLoadLinks', props.onContactSupport));

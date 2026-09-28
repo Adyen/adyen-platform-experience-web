@@ -51,8 +51,9 @@ const configuredAppearance = computed<Appearance>(() => ({
 }));
 
 const componentPropsWithoutCoreOptions = computed(() => {
-    const { coreOptions: _, density, ...rest } = props.componentProps ?? {};
-    return density ? { ...rest, appearance: { ...rest.appearance, density: { dataGrid: density } } } : rest;
+    const { coreOptions: _, dataGridDensity, ...rest } = props.componentProps ?? {};
+    if (!dataGridDensity) return rest;
+    return { ...rest, appearance: { ...rest.appearance, dataGrid: { ...rest.appearance?.dataGrid, density: dataGridDensity } } };
 });
 
 const getThemeOptions = (): Pick<CoreOptions, 'themeMode' | 'customTheme'> => {

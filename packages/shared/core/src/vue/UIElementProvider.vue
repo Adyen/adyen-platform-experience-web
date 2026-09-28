@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, provide, ref } from 'vue';
-import type { ComponentAppearance, CoreInstance, GlobalAppearance } from './types';
+import type { Appearance, CoreInstance, GlobalAppearance } from './types';
 import { useBentoTranslationOverrides } from '@adyen/bento-vue3';
 import CoreProvider from './Context/CoreProvider.vue';
 import { resolveAppearance } from './customization';
@@ -14,7 +14,7 @@ interface Props {
     core: CoreInstance;
     bentoOverrides: Record<string, string>;
     componentName: ExternalComponentType;
-    componentAppearance?: ComponentAppearance<any>;
+    componentAppearance?: Appearance;
     customClassNames?: string;
     globalAppearance?: GlobalAppearance;
     refreshComponent: () => void;

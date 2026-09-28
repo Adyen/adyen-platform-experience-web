@@ -12,7 +12,7 @@ import {
     DataOverviewError,
     useTableColumns,
     useShouldHideIllustrations,
-    useCondensed,
+    useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
@@ -45,7 +45,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const hideIllustrations = useShouldHideIllustrations();
-const isCondensed = useCondensed('dataGrid');
+const isCondensed = useCondensedDataGrid();
 // Reactive proxy — destructuring would unwrap `refreshing` into a stale snapshot.
 const config = useConfigContext();
 

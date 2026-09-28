@@ -27,30 +27,15 @@ test('component appearance overrides global appearance', () => {
     });
 });
 
-test('resolves component density target object', () => {
-    expect(
-        resolveAppearance(
-            { illustrations: 'hidden' },
-            {
-                density: {
-                    dataGrid: 'condensed',
-                },
-            }
-        )
-    ).toEqual({
+test('resolves component data grid appearance', () => {
+    expect(resolveAppearance({ illustrations: 'hidden' }, { dataGrid: { density: 'condensed' } })).toEqual({
         illustrations: 'hidden',
-        density: {
-            dataGrid: 'condensed',
-        },
+        dataGrid: { density: 'condensed' },
     });
 });
 
-test('ignores empty density object', () => {
-    expect(
-        resolveAppearance(undefined, {
-            density: {},
-        })
-    ).toBeUndefined();
+test('ignores empty data grid appearance', () => {
+    expect(resolveAppearance(undefined, { dataGrid: {} })).toBeUndefined();
 });
 
 test('returns no appearance without global or component options', () => {

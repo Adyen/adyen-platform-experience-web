@@ -11,9 +11,9 @@ export const enabledDisabledCallbackRadioControls = (actionName: string, options
     } as const;
 };
 
-export const densityControl = () =>
+export const dataGridDensityControl = () =>
     ({
-        name: 'density',
+        name: 'dataGridDensity',
         control: { type: 'inline-radio' },
         options: ['default', 'condensed'],
     }) as const;

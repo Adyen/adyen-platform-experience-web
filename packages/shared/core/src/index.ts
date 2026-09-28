@@ -74,7 +74,7 @@ export type {
     ThemeMode,
     ThemeVariables,
 } from './types';
-export type { Appearance, GlobalAppearance, ComponentAppearance, DensityMode } from '@integration-components/types';
+export type { Appearance, DataGridAppearance, DataGridComponentAppearance, DensityMode, GlobalAppearance } from '@integration-components/types';
 
 export { Core } from './Core';
 export type { CdnFetcher, ManagedElement } from './Core';

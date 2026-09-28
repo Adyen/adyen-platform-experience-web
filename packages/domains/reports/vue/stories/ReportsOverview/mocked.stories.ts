@@ -14,6 +14,7 @@ const meta: Meta<ElementProps<ReportsOverviewStoryArgs>> = {
     ...ReportsOverviewMeta,
     title: 'Mocked/Reports/Reports Overview',
     argTypes: {
+        ...ReportsOverviewMeta.argTypes,
         enforceDownloadDelay: {
             table: { disable: true },
         },

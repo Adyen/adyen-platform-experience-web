@@ -3,10 +3,11 @@ import '../theme/styles';
 export type {
     AnalyticsConfig,
     Appearance,
-    ComponentAppearance,
     CoreInstance,
     CoreOptions,
     CustomTheme,
+    DataGridAppearance,
+    DataGridComponentAppearance,
     DensityMode,
     DevEnvironment,
     GlobalAppearance,

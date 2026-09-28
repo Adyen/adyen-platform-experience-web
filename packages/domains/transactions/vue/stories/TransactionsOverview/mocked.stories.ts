@@ -28,7 +28,7 @@ export const Condensed: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Condensed',
     args: {
         ...sharedArgs,
-        density: 'condensed',
+        dataGridDensity: 'condensed',
     },
 };
 
