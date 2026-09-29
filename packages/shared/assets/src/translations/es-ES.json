@@ -957,7 +957,7 @@
     "payByLink.settings.terms.requirements.deliveryInformation.title": "Tu información de entrega",
     "payByLink.settings.terms.requirements.generalTerms.description": "Las condiciones generales deben incluir:",
     "payByLink.settings.terms.requirements.generalTerms.governingLaw": "Una mención de la ley aplicable que rige la relación entre tú y tus clientes.",
-    "payByLink.settings.terms.requirements.generalTerms.legalEntity": "El nombre de la entidad legal responsable del proceso de pago. Esta es la entidad legal de la cuenta comercial que utilizas al crear el enlace de pago.",
+    "payByLink.settings.terms.requirements.generalTerms.legalEntity": "El nombre de la entidad legal responsable del proceso de pago. Esta es la entidad legal de la merchant account que utilizas al crear el enlace de pago.",
     "payByLink.settings.terms.requirements.generalTerms.paymentExplanation": "Una explicación de cómo realiza los pagos, por ejemplo, pagos al instante o a través de una suscripción.",
     "payByLink.settings.terms.requirements.generalTerms.productDescription": "Una descripción de los productos o servicios que ofrece.",
     "payByLink.settings.terms.requirements.generalTerms.thirdParties": "Mención de terceros que intervengan en la prestación del servicio o producto.",
