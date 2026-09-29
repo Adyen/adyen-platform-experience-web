@@ -1,8 +1,7 @@
-// eslint-disable-next-line import/extensions
 import { realApiProxies } from '../../endpoints/realApiProxies.js';
 
-export default async (request: Request, context: any) => {
-    // @ts-ignore
+export default async (request: Request, _context: any) => {
+    // @ts-expect-error Netlify.env is a runtime global provided by the edge functions environment
     const { SESSION_API_URL, SESSION_ACCOUNT_HOLDER, SESSION_PERMISSIONS, VITE_API_KEY } = Netlify.env.toObject();
 
     const session = {
@@ -29,7 +28,6 @@ export default async (request: Request, context: any) => {
             ...(request.method === 'POST' ? { body: request.body } : {}),
         });
 
-        // @ts-ignore
         return Response.json(await res.json());
     } catch (err) {
         console.log(err);

@@ -70,7 +70,9 @@ function onInput(rawValue: string) {
 <template>
     <div :class="layoutStyles.container">
         <div :class="styles.inputHead">
-            <BentoTypography variant="body" stronger>{{ i18n.get('transactions.details.refund.inputs.amount.label') }}</BentoTypography>
+            <BentoTypography variant="body" stronger>
+                {{ i18n.get('transactions.details.refund.inputs.amount.label') }}
+            </BentoTypography>
         </div>
         <div>
             <BentoInputField
@@ -84,7 +86,9 @@ function onInput(rawValue: string) {
                 :lang="i18n.locale"
                 @update:model-value="onInput"
             >
-                <template v-if="props.currency" #staticValue>{{ props.currency }}</template>
+                <template v-if="props.currency" #staticValue>
+                    {{ props.currency }}
+                </template>
             </BentoInputField>
         </div>
     </div>

@@ -3,7 +3,7 @@ import type { PaymentLinksOverviewExternalProps } from '../../src';
 import PaymentLinksOverviewElement from '../../src/PaymentLinksOverview/PaymentLinksOverviewElement';
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
-export const PaymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExternalProps>> = {
+export const paymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExternalProps>> = {
     title: 'Components/Pay by Link/Payment Links Overview',
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),

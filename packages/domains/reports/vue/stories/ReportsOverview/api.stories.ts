@@ -1,10 +1,10 @@
 import type { Meta } from '@storybook/vue3';
-import { ReportsOverviewMeta } from './meta';
+import { reportsOverviewMeta } from './meta';
 import type { ReportsOverviewExternalProps } from '../../src';
 import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT, SessionControls } from '@integration-components/testing/storybook-helpers';
 
 const meta: Meta<ElementProps<ReportsOverviewExternalProps>> = {
-    ...ReportsOverviewMeta,
+    ...reportsOverviewMeta,
     title: 'API-connected/Reports/Reports Overview',
 };
 

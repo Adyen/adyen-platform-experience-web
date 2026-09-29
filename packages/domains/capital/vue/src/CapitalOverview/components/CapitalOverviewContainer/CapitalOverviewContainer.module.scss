@@ -1,13 +1,12 @@
-@use '@integration-components/style/skeleton' as skeleton;
 @use '@integration-components/style';
-/* stylelint-disable */
+@use '@integration-components/style/skeleton';
 
 .root {
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-080);
-    min-height: 150px;
     max-width: 600px;
+    min-height: 150px;
 }
 
 .skeleton {

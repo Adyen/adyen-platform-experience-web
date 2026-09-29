@@ -59,6 +59,10 @@ module.exports = [
             },
             globals: Object.fromEntries(Object.entries({ ...globals.browser, ...globals.node, ...globals.es2020 }).map(([k, v]) => [k.trim(), v])),
         },
+        linterOptions: {
+            // Stale disable comments fail lint instead of silently accumulating as warnings
+            reportUnusedDisableDirectives: 'error',
+        },
         plugins: {
             '@typescript-eslint': tsPlugin,
             'import-x': importX,
@@ -96,17 +100,14 @@ module.exports = [
                         'stories/**/*',
                         'playwright.config.ts',
                         'vite.config.ts',
-                        'config/**/*.ts',
-                        'envs/**/*.ts',
-                        'mocks/**/*.ts',
                         'packages/**/vite.config.ts',
                         '**/*.test.ts',
+                        '{config,endpoints,envs,mocks,scripts,src}/**/*.ts',
                         '{src,packages}/**/{__testing__,testing}/**/*.ts',
                         'packages/domains/*/{domain,vue}/tests/**/*.ts',
                         'packages/domains/*/**/stories/**/*.ts',
                         'packages/domains/*/{fixtures,mocks}/**/*.ts',
                         'packages/sdk/tests/**/*.ts',
-                        'src/**/*.ts',
                     ],
                     includeTypes: false,
                 },
@@ -163,6 +164,22 @@ module.exports = [
             'vue/max-attributes-per-line': 'off',
             'vue/multi-word-component-names': 'off',
             'vue/require-default-prop': 'off',
+            // Prettier owns template content layout; these stylistic rules fight it
+            'vue/singleline-html-element-content-newline': 'off',
+            'vue/multiline-html-element-content-newline': 'off',
+            // Semantic template rules: enforce as errors
+            'vue/attributes-order': 'error',
+            // Enforce kebab-case attributes, but ignore camelCase props bound to embedded web components:
+            // their .prop DOM property names must match the web component's API exactly
+            'vue/attribute-hyphenation': ['error', 'always', { ignore: ['fetchToken'] }],
+        },
+    },
+
+    // Test files commonly define multiple small inline components per file
+    {
+        files: ['**/*.{test,spec}.ts'],
+        rules: {
+            'vue/one-component-per-file': 'off',
         },
     },
 
@@ -183,6 +200,64 @@ module.exports = [
                     message: 'Public SDK entry points must use explicit exports.',
                 },
             ],
+        },
+    },
+
+    // Root CommonJS tooling files use require() and dev-only dependencies
+    {
+        files: ['*.cjs', '.pnpmfile.cjs', 'config/**/*.cjs', 'scripts/**/*.cjs', '.changeset/**/*.js'],
+        rules: {
+            '@typescript-eslint/no-require-imports': 'off',
+            'import-x/no-extraneous-dependencies': ['error', { devDependencies: true, peerDependencies: true }],
+        },
+    },
+
+    // Root config files import with explicit .ts extensions (allowImportingTsExtensions)
+    {
+        files: ['config/**/*.ts'],
+        rules: {
+            'import-x/extensions': 'off',
+        },
+    },
+
+    // Netlify edge functions need explicit extensions (Deno-style resolution)
+    {
+        files: ['netlify/edge-functions/**'],
+        rules: {
+            'import-x/extensions': ['error', 'always'],
+        },
+    },
+
+    // Naming conventions: value identifiers are camelCase (or UPPER_CASE constants), types and classes are PascalCase
+    {
+        files: ['**/*.{js,mjs,cjs,ts,vue}'],
+        rules: {
+            '@typescript-eslint/naming-convention': [
+                'error',
+                // Locale-coded translation identifiers (e.g. da_DK, pt_BR, _en_US) are allowed to mirror IETF locale tags
+                { selector: 'variable', filter: { regex: '^_?[a-z]{2}_[A-Z]{2}$', match: true }, format: null },
+                // Dunder sentinel identifiers (e.g. __INDEXED_PROTO__) are allowed
+                { selector: 'variable', filter: { regex: '^__\\w+__$', match: true }, format: null },
+                // Imported names follow their source: helpers (camelCase), types/classes (PascalCase), constants (UPPER_CASE)
+                { selector: 'import', format: ['camelCase', 'PascalCase', 'UPPER_CASE'] },
+                // Value identifiers: camelCase; const-bound values may also be UPPER_CASE constants or PascalCase (components, class references); leading underscore marks module-private values
+                { selector: 'variable', modifiers: ['const'], format: ['camelCase', 'UPPER_CASE', 'PascalCase'], leadingUnderscore: 'allow' },
+                // Re-assignable identifiers stay camelCase (UPPER_CASE retained for mutable test counters)
+                { selector: 'variable', format: ['camelCase', 'UPPER_CASE'], leadingUnderscore: 'allow' },
+                // PascalCase stays valid for component-like factories (e.g. AdyenPlatformExperience); leading underscore marks module-private functions
+                { selector: 'function', format: ['camelCase', 'PascalCase'], leadingUnderscore: 'allow' },
+                { selector: 'parameter', format: ['camelCase'], leadingUnderscore: 'allow' },
+                // Types, classes, interfaces and enums: PascalCase; leading underscore marks internal types
+                { selector: 'typeLike', format: ['PascalCase'], leadingUnderscore: 'allow' },
+            ],
+        },
+    },
+
+    // Generated API resource types are exempt (produced by schemas:generate, never hand-edited)
+    {
+        files: ['packages/shared/types/src/api/resources/**', 'src/types/api/**'],
+        rules: {
+            '@typescript-eslint/naming-convention': 'off',
         },
     },
 

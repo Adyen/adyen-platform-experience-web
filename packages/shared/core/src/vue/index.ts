@@ -7,7 +7,7 @@ export type {
     CoreOptions,
     CustomTheme,
     DevEnvironment,
-    onErrorHandler,
+    OnErrorHandler,
     SessionObject,
     SessionRequest,
     ThemeMode,

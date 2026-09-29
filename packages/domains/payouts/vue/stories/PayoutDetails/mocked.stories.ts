@@ -3,10 +3,10 @@ import type { PayoutDetailsExternalProps } from '../../src';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, DEFAULT_PAYOUT_DETAILS } from '../../../fixtures/data/PayoutDetails';
 import { PAYOUT_DETAILS_HANDLERS } from '../../../mocks/mock-server/payouts';
-import { PayoutDetailsMeta } from './meta';
+import { payoutDetailsMeta } from './meta';
 
 const meta: Meta<ElementProps<PayoutDetailsExternalProps>> = {
-    ...PayoutDetailsMeta,
+    ...payoutDetailsMeta,
     title: 'Mocked/Payouts/Payout Details',
 };
 
