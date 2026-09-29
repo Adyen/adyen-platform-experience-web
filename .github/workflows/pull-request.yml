@@ -276,6 +276,11 @@ jobs:
 
             RELEASE_IMPACTING=false
             for FILE in "${CHANGED_FILES[@]}"; do
+              # Translation catalogs are served from the CDN, with the bundled catalogs only as
+              # fallbacks, so changes limited to them are not release-impacting.
+              if [[ "$FILE" == "packages/shared/assets/src/translations/"* ]]; then
+                continue
+              fi
               if [[ "$FILE" =~ ^(src/|packages/|declarations/|endpoints/|mocks/) ]] ||
                  [[ "$FILE" == "package.json" && "$IS_BOOTSTRAP_PR" != "true" ]] ||
                  [[ "$FILE" == "pnpm-lock.yaml" ]] ||
