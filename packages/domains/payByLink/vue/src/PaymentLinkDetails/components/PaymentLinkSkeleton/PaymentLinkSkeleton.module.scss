@@ -1,7 +1,6 @@
 @use '@integration-components/style';
 @use '@integration-components/style/skeleton';
 
-//stylelint-disable no-invalid-position-at-import-rule
 @use '@integration-components/style/breakpoints' as *;
 
 .root {
@@ -23,7 +22,6 @@
     border-radius: style.token(border-radius-s);
     height: 22px;
     width: 60px;
-    /* stylelint-disable-next-line order/order */
     @include skeleton.adyen-pe-skeleton-animation();
 }
 
@@ -31,7 +29,6 @@
     border-radius: style.token(border-radius-s);
     height: 34px;
     width: 180px;
-    /* stylelint-disable-next-line order/order */
     @include skeleton.adyen-pe-skeleton-animation();
 }
 
@@ -40,7 +37,6 @@
     height: 20px;
     max-width: 100%;
     width: 390px;
-    /* stylelint-disable-next-line order/order */
     @include skeleton.adyen-pe-skeleton-animation();
 }
 
@@ -58,7 +54,6 @@
     border-radius: style.token(border-radius-s);
     height: 26px;
     width: 120px;
-    /* stylelint-disable-next-line order/order */
     @include skeleton.adyen-pe-skeleton-animation();
 }
 
@@ -84,7 +79,6 @@
     border-radius: style.token(border-radius-s);
     height: 20px;
     width: 180px;
-    /* stylelint-disable-next-line order/order */
     @include skeleton.adyen-pe-skeleton-animation();
 }
 
@@ -92,6 +86,5 @@
     border-radius: style.token(border-radius-s);
     height: 20px;
     width: 300px;
-    /* stylelint-disable-next-line order/order */
     @include skeleton.adyen-pe-skeleton-animation();
 }
