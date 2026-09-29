@@ -1,10 +1,10 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 
 const STORY_ID = 'mocked-capital-capital-overview--unsupported-region';
 
 test.describe('Unsupported region', () => {
-    test('should render unsupported region screen', async ({ page }) => {
+    test('should render unsupported region screen', async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
 
         await Promise.all([
@@ -12,6 +12,8 @@ test.describe('Unsupported region', () => {
             expect(page.getByText('Stay tuned!')).toBeVisible(),
             expect(page.getByText('Business financing isn’t available in your region yet, but check back here for an offer.')).toBeVisible(),
         ]);
+
+        await expectAnalyticsEvents(analyticsEvents, []);
     });
 });
 
