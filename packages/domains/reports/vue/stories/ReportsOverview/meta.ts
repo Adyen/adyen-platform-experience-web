@@ -4,7 +4,7 @@ import ReportsOverviewElement from '../../src/ReportsOverview/ReportsOverviewEle
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 import { DEFAULT_PAGE_LIMITS } from '@integration-components/utils';
 
-export const ReportsOverviewMeta: Meta<ElementProps<ReportsOverviewExternalProps>> = {
+export const reportsOverviewMeta: Meta<ElementProps<ReportsOverviewExternalProps>> = {
     title: 'Components/Reports/Reports Overview',
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),

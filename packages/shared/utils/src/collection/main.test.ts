@@ -231,8 +231,8 @@ describe('some', () => {
             ['hello world', [char => char === 'a', false]], // string
         ]);
 
-        map.forEach(([predicate, bool], arr_like) => {
-            expect(some(arr_like, predicate)).toBe(bool);
+        map.forEach(([predicate, bool], arrLike) => {
+            expect(some(arrLike, predicate)).toBe(bool);
         });
     });
 });

@@ -71,7 +71,9 @@ const alerts = computed<AlertItem[]>(() => {
 <template>
     <div v-if="alerts.length > 0" :class="styles.refundStatusesContainer">
         <BentoAlert v-for="(alert, idx) in alerts" :key="idx" :type="alert.type" variant="tip">
-            <template #description>{{ alert.description }}</template>
+            <template #description>
+                {{ alert.description }}
+            </template>
         </BentoAlert>
     </div>
 </template>

@@ -4,7 +4,7 @@ import PayoutsOverviewElement from '../../src/PayoutsOverview/PayoutsOverviewEle
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 import { DEFAULT_PAGE_LIMITS } from '@integration-components/utils';
 
-export const PayoutsOverviewMeta: Meta<ElementProps<PayoutsOverviewExternalProps>> = {
+export const payoutsOverviewMeta: Meta<ElementProps<PayoutsOverviewExternalProps>> = {
     title: 'Components/Payouts/Payouts Overview',
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),

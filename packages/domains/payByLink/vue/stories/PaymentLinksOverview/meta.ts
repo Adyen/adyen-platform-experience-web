@@ -4,7 +4,7 @@ import PaymentLinksOverviewElement from '../../src/PaymentLinksOverview/PaymentL
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 import { DEFAULT_PAGE_LIMITS } from '@integration-components/utils';
 
-export const PaymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExternalProps>> = {
+export const paymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExternalProps>> = {
     title: 'Components/Pay by Link/Payment Links Overview',
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),

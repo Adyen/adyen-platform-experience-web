@@ -1,12 +1,12 @@
 import type { Meta } from '@storybook/vue3';
-import { PaymentLinkCreationMeta } from './meta';
+import { paymentLinkCreationMeta } from './meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { PaymentLinkCreationExternalProps } from '../../src';
-import { PayByLinkOverviewMockedResponses, PaymentLinkCreationMockedResponses } from '../../../mocks/mock-server/payByLink';
+import { payByLinkOverviewMockedResponses, paymentLinkCreationMockedResponses } from '../../../mocks/mock-server/payByLink';
 import { PAYMENT_LINKS_FIELDS_CONFIG } from '../utils/constants/paymentLinks';
 
 const meta: Meta<ElementProps<PaymentLinkCreationExternalProps>> = {
-    ...PaymentLinkCreationMeta,
+    ...paymentLinkCreationMeta,
     title: 'Mocked/Pay by Link/Payment Link Creation',
 };
 
@@ -70,7 +70,7 @@ export const StoresMisconfiguration: ElementStory<PaymentLinkCreationExternalPro
     name: 'Stores misconfiguration',
     args: defaultArgs,
     parameters: {
-        msw: { ...PayByLinkOverviewMockedResponses.storesMisconfiguration },
+        msw: { ...payByLinkOverviewMockedResponses.storesMisconfiguration },
     },
 };
 
@@ -78,7 +78,7 @@ export const StoresNetworkError: ElementStory<PaymentLinkCreationExternalProps> 
     name: 'Error - Stores Network Error',
     args: defaultArgs,
     parameters: {
-        msw: { ...PayByLinkOverviewMockedResponses.storeNetworkError },
+        msw: { ...payByLinkOverviewMockedResponses.storeNetworkError },
     },
 };
 
@@ -89,7 +89,7 @@ export const SubmitNetworkError: ElementStory<PaymentLinkCreationExternalProps> 
         fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
     },
     parameters: {
-        msw: { ...PaymentLinkCreationMockedResponses.submitNetworkError },
+        msw: { ...paymentLinkCreationMockedResponses.submitNetworkError },
     },
 };
 
@@ -100,7 +100,7 @@ export const SubmitInvalidFieldError: ElementStory<PaymentLinkCreationExternalPr
         fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
     },
     parameters: {
-        msw: { ...PaymentLinkCreationMockedResponses.submitInvalidFields },
+        msw: { ...paymentLinkCreationMockedResponses.submitInvalidFields },
     },
 };
 
@@ -111,7 +111,7 @@ export const ConfigurationError: ElementStory<PaymentLinkCreationExternalProps> 
         fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
     },
     parameters: {
-        msw: { ...PaymentLinkCreationMockedResponses.configError },
+        msw: { ...paymentLinkCreationMockedResponses.configError },
     },
 };
 
@@ -124,7 +124,7 @@ export const CountryDatasetError: ElementStory<PaymentLinkCreationExternalProps>
         fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
     },
     parameters: {
-        msw: { ...PaymentLinkCreationMockedResponses.countryDatasetError },
+        msw: { ...paymentLinkCreationMockedResponses.countryDatasetError },
     },
 };
 
@@ -136,7 +136,7 @@ export const CountriesNetworkError: ElementStory<PaymentLinkCreationExternalProp
         fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
     },
     parameters: {
-        msw: { ...PaymentLinkCreationMockedResponses.countriesError },
+        msw: { ...paymentLinkCreationMockedResponses.countriesError },
     },
 };
 

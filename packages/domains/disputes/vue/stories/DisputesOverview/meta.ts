@@ -4,7 +4,7 @@ import { DEFAULT_PAGE_LIMITS } from '@integration-components/utils';
 import type { DisputesOverviewExternalProps } from '../../src';
 import DisputesOverviewElement from '../../src/DisputesOverview/DisputesOverviewElement';
 
-export const DisputesOverviewMeta: Meta<ElementProps<DisputesOverviewExternalProps>> = {
+export const disputesOverviewMeta: Meta<ElementProps<DisputesOverviewExternalProps>> = {
     title: 'Components/Disputes/Disputes Overview',
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),

@@ -20,16 +20,18 @@ $adyen-pe-slider-border-radius: style.token(border-radius-m);
     transition: background-color 0.5s;
     width: $adyen-pe-slider-thumb-size;
 
+    // stylelint-disable nesting-selector-no-missing-scoping-root
     &:hover,
     &:active {
         background-color: $adyen-pe-slider-thumb-border-color;
     }
+    // stylelint-enable nesting-selector-no-missing-scoping-root
 }
 
 .root {
     -webkit-appearance: none;
     background: $adyen-pe-slider-track-color;
-    background-image: linear-gradient($adyen-pe-slider-progress-color, $adyen-pe-slider-progress-color);
+    background-image: linear-gradient(#{$adyen-pe-slider-progress-color}, #{$adyen-pe-slider-progress-color});
     background-repeat: no-repeat;
     border-radius: $adyen-pe-slider-border-radius;
     cursor: pointer;

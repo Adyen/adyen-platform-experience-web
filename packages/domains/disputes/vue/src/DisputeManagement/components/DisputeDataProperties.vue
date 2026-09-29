@@ -269,8 +269,8 @@ async function downloadEvidence(documentType: string) {
                     {{ getCopyValue(item) }}
                 </BentoTypography>
                 <BentoButton
-                    variant="tertiary"
                     v-bento-tooltip="getCopyTooltip(item.id)"
+                    variant="tertiary"
                     :aria-label="i18n.get('disputes.common.actions.copy.labels.default')"
                     @click="onCopyText(getCopyValue(item)!, item.id)"
                     @blur="resetCopiedItem"

@@ -102,7 +102,7 @@ async function initializeCore() {
         element.mount(componentRoot.value!);
     } catch (e: any) {
         error.value = e?.message || 'Core initialization failed';
-        // eslint-disable-next-line no-console
+
         console.error('Core initialization failed:', e);
     }
 }

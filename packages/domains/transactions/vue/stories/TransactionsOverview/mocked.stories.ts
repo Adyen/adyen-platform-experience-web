@@ -1,5 +1,5 @@
 import type { Meta } from '@storybook/vue3';
-import { TransactionsOverviewMeta } from './meta';
+import { transactionsOverviewMeta } from './meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { TransactionsOverviewExternalProps } from '../../src';
 import { http, HttpResponse } from 'msw';
@@ -13,7 +13,7 @@ import {
 } from '../../../fixtures/data/TransactionsOverview';
 
 const meta: Meta<ElementProps<TransactionsOverviewExternalProps>> = {
-    ...TransactionsOverviewMeta,
+    ...transactionsOverviewMeta,
     title: 'Mocked/Transactions/Transactions Overview',
 };
 

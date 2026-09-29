@@ -1,4 +1,4 @@
-import type { onErrorHandler } from '@integration-components/core';
+import type { OnErrorHandler } from '@integration-components/core';
 
 /**
  * Props common to every external element. The concrete Core class lives in
@@ -27,7 +27,7 @@ export type UIElementStatus = 'ready' | 'loading' | 'error' | 'success';
 export interface UIElementProps {
     hideTitle?: boolean;
     onContactSupport?: () => void;
-    onError?: onErrorHandler;
+    onError?: OnErrorHandler;
     ref?: any;
 }
 

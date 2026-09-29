@@ -40,14 +40,16 @@ const refundIsDisabled = computed(() => refundMeta.refundDisabled.value || refun
 
 const lineItems = computed<readonly ILineItem[]>(() => Object.freeze(props.transaction.lineItems ?? EMPTY_ARRAY));
 
-watch(refundMeta.refundLocked, locked_ => {
-    if (locked_) locked.value = false;
+watch(refundMeta.refundLocked, isLocked => {
+    if (isLocked) locked.value = false;
 });
 </script>
 
 <template>
     <div v-if="!shouldHideTitle" :class="styles.title">
-        <BentoTypography variant="title">{{ i18n.get('transactions.details.title') }}</BentoTypography>
+        <BentoTypography variant="title">
+            {{ i18n.get('transactions.details.title') }}
+        </BentoTypography>
     </div>
 
     <div v-if="props.fetchingTransaction" :class="styles.loading">

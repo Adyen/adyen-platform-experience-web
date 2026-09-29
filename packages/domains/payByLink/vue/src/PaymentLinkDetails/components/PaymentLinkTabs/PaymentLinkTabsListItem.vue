@@ -34,16 +34,20 @@ async function onCopy() {
 
 <template>
     <BentoStructuredListItem :label="i18n.get(props.item.key)">
-        <BentoTypography v-if="isRedacted" variant="body">{{ FRONTEND_REDACTED_DATA_MARKER }}</BentoTypography>
+        <BentoTypography v-if="isRedacted" variant="body">
+            {{ FRONTEND_REDACTED_DATA_MARKER }}
+        </BentoTypography>
 
         <div v-else-if="props.item.isCopyable" :class="styles.copyableValue">
             <BentoLink v-if="props.item.linkUrl" :to="props.item.linkUrl" target="_blank" rel="noopener noreferrer" external>
                 {{ props.item.value }}
             </BentoLink>
-            <BentoTypography v-else variant="body">{{ props.item.value }}</BentoTypography>
+            <BentoTypography v-else variant="body">
+                {{ props.item.value }}
+            </BentoTypography>
             <BentoButton
-                variant="tertiary"
                 v-bento-tooltip="i18n.get(isCopied ? 'payByLink.common.actions.copy.labels.done' : 'payByLink.common.actions.copy.labels.default')"
+                variant="tertiary"
                 :aria-label="i18n.get('payByLink.common.actions.copy.labels.default')"
                 @click="onCopy"
                 @blur="emit('clearCopied')"
@@ -53,6 +57,8 @@ async function onCopy() {
             </BentoButton>
         </div>
 
-        <BentoTypography v-else variant="body">{{ props.item.value }}</BentoTypography>
+        <BentoTypography v-else variant="body">
+            {{ props.item.value }}
+        </BentoTypography>
     </BentoStructuredListItem>
 </template>
