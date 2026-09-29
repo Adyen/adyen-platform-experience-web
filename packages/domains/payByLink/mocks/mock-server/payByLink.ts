@@ -1,17 +1,17 @@
 import { http, HttpResponse, PathParams } from 'msw';
 import {
-    CapitalComponentManage,
+    capitalComponentManage,
     compareDates,
     CROSS_DOMAIN_ENDPOINTS,
     delay,
-    DisputesComponentManage,
+    disputesComponentManage,
     getPaginationLinks,
-    PayByLinkComponentManageLinks,
-    PayByLinkComponentView,
-    PayoutsOverviewComponentView,
-    ReportsOverviewComponentView,
-    TransactionsOverviewComponentManageRefunds,
-    TransactionsOverviewComponentView,
+    payByLinkComponentManageLinks,
+    payByLinkComponentView,
+    payoutsOverviewComponentView,
+    reportsOverviewComponentView,
+    transactionsOverviewComponentManageRefunds,
+    transactionsOverviewComponentView,
 } from '@integration-components/testing/msw';
 import { PAY_BY_LINK_ENDPOINTS } from '../endpoints';
 import { IPaymentLinkSettingsRequest, IPaymentLinkStatusGroup } from '@integration-components/types';
@@ -88,7 +88,7 @@ const getErrorHandler = (error: any, status = 500) => {
     };
 };
 
-export const PayByLinkOverviewMockedResponses = {
+export const payByLinkOverviewMockedResponses = {
     tooManyStores: {
         handlers: [http.get(mockPayByLinkEndpoints.list, getErrorHandler(PAY_BY_LINK_ERRORS.TOO_MANY_STORES, 422))],
     },
@@ -125,7 +125,7 @@ export const PayByLinkOverviewMockedResponses = {
     },
 };
 
-export const PaymentLinkCreationMockedResponses = {
+export const paymentLinkCreationMockedResponses = {
     submitNetworkError: {
         handlers: [
             http.post(mockPayByLinkEndpoints.list, async () => {
@@ -168,7 +168,7 @@ export const PaymentLinkCreationMockedResponses = {
     },
 };
 
-export const PaymentLinkDetailsMockedResponses = {
+export const paymentLinkDetailsMockedResponses = {
     redacted: {
         handlers: [
             http.get(mockPayByLinkEndpoints.details, async ({ params }) => {
@@ -200,7 +200,7 @@ export const PaymentLinkDetailsMockedResponses = {
     },
 };
 
-export const PaymentLinkThemesMockedResponses = {
+export const paymentLinkThemesMockedResponses = {
     themeError: {
         handlers: [
             http.get(mockPayByLinkEndpoints.themes, async () => {
@@ -220,7 +220,7 @@ export const PaymentLinkThemesMockedResponses = {
     },
 };
 
-export const PaymentLinkSettingsMockedResponses = {
+export const paymentLinkSettingsMockedResponses = {
     termsAndConditionsError: {
         handlers: [
             http.get(mockPayByLinkEndpoints.settings, async () => {
@@ -245,14 +245,14 @@ export const PaymentLinkSettingsMockedResponses = {
                 await delay(DELAY_TIME);
                 return HttpResponse.json({
                     endpoints: {
-                        ...TransactionsOverviewComponentView,
-                        ...TransactionsOverviewComponentManageRefunds,
-                        ...ReportsOverviewComponentView,
-                        ...PayoutsOverviewComponentView,
-                        ...CapitalComponentManage,
-                        ...DisputesComponentManage,
-                        ...PayByLinkComponentView,
-                        ...PayByLinkComponentManageLinks,
+                        ...transactionsOverviewComponentView,
+                        ...transactionsOverviewComponentManageRefunds,
+                        ...reportsOverviewComponentView,
+                        ...payoutsOverviewComponentView,
+                        ...capitalComponentManage,
+                        ...disputesComponentManage,
+                        ...payByLinkComponentView,
+                        ...payByLinkComponentManageLinks,
                     },
                 });
             }),

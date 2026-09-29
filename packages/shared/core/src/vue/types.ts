@@ -1,6 +1,6 @@
 import type { AuthSession } from '../session/AuthSession';
 import type { AssetOptions } from '../Assets/Assets';
-import type { AnalyticsConfig, CoreOptions, CustomTheme, DevEnvironment, onErrorHandler, ThemeMode, ThemeVariables } from '../types';
+import type { AnalyticsConfig, CoreOptions, CustomTheme, DevEnvironment, OnErrorHandler, ThemeMode, ThemeVariables } from '../types';
 import type { I18n } from './Context/types';
 import type { Appearance, DataGridAppearance, DensityMode, GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
 import type Localization from '../Localization';
@@ -14,7 +14,7 @@ export type {
     DensityMode,
     DevEnvironment,
     GlobalAppearance,
-    onErrorHandler,
+    OnErrorHandler,
     ThemeMode,
     ThemeVariables,
     WithDataGridAppearance,

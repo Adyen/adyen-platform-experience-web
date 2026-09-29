@@ -1,5 +1,5 @@
 import type { Meta } from '@storybook/vue3';
-import { ReportsOverviewMeta } from './meta';
+import { reportsOverviewMeta } from './meta';
 import { getWorker } from 'msw-storybook-addon';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { ReportsOverviewExternalProps } from '../../src';
@@ -11,10 +11,10 @@ import { http, HttpResponse } from 'msw';
 type ReportsOverviewStoryArgs = ReportsOverviewExternalProps & { enforceDownloadDelay?: boolean };
 
 const meta: Meta<ElementProps<ReportsOverviewStoryArgs>> = {
-    ...ReportsOverviewMeta,
+    ...reportsOverviewMeta,
     title: 'Mocked/Reports/Reports Overview',
     argTypes: {
-        ...ReportsOverviewMeta.argTypes,
+        ...reportsOverviewMeta.argTypes,
         enforceDownloadDelay: {
             table: { disable: true },
         },

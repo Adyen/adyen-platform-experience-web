@@ -12,7 +12,7 @@ let lastDataGridProps: Record<string, any> = {};
 vi.mock('@adyen/bento-vue3', () => ({
     BentoDataGrid: defineComponent({
         name: 'BentoDataGrid',
-        props: ['condensed'],
+        props: { condensed: Boolean },
         setup(props) {
             lastDataGridProps = props;
             return () => h('div', { 'data-testid': 'bento-datagrid' });

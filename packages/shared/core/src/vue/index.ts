@@ -10,7 +10,7 @@ export type {
     DensityMode,
     DevEnvironment,
     GlobalAppearance,
-    onErrorHandler,
+    OnErrorHandler,
     SessionObject,
     SessionRequest,
     ThemeMode,

@@ -177,7 +177,9 @@ async function handleSubmit() {
                     :aria-label="data.formStepsAriaLabel.value"
                     @update:index="handleStepSelect"
                 >
-                    <BentoStep v-for="item in data.stepperItems.value" :key="item.id">{{ item.label }}</BentoStep>
+                    <BentoStep v-for="item in data.stepperItems.value" :key="item.id">
+                        {{ item.label }}
+                    </BentoStep>
                 </BentoStepper>
             </div>
 
@@ -223,7 +225,9 @@ async function handleSubmit() {
                         {{ submitErrorTitle }}
                         <template #description>
                             <ul v-if="mappedInvalidFields.length" :class="styles.invalidFieldsError">
-                                <li v-for="(message, index) in mappedInvalidFields" :key="index">{{ message }}</li>
+                                <li v-for="(message, index) in mappedInvalidFields" :key="index">
+                                    {{ message }}
+                                </li>
                             </ul>
                             <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
                                 {{ i18n.get('payByLink.common.actions.contactSupport.labels.reachOut') }}

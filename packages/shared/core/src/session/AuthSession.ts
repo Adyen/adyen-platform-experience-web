@@ -3,7 +3,7 @@ import AuthSessionSpecification from './AuthSessionSpecification';
 import { ERR_SESSION_REFRESH_ABORTED, EVT_SESSION_EXPIRED, EVT_SESSION_READY, SessionContext } from './SessionContext';
 import { boolOrFalse, boolOrTrue, createErrorContainer, createPromisor, createWatchlist, isFunction } from '@integration-components/utils';
 
-import type { onErrorHandler } from '../types';
+import type { OnErrorHandler } from '../types';
 
 export class AuthSession {
     private _canSkipSessionRefresh = false;
@@ -104,7 +104,7 @@ export class AuthSession {
         this._setupContext.analyticsEnabled = analyticsEnabled;
     }
 
-    set errorHandler(errorHandler: onErrorHandler | null) {
+    set errorHandler(errorHandler: OnErrorHandler | null) {
         this._specification.errorHandler = errorHandler;
     }
 

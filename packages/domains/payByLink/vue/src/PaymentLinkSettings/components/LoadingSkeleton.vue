@@ -11,10 +11,10 @@ withDefaults(
 
 <template>
     <div :class="styles.root">
-        <div :class="[styles.item, styles.header]"></div>
+        <div :class="[styles.item, styles.header]" />
         <div v-for="index in rowNumber" :key="index" :class="styles.container">
-            <div :class="[styles.item, styles.small]"></div>
-            <div :class="[styles.item, styles.large]"></div>
+            <div :class="[styles.item, styles.small]" />
+            <div :class="[styles.item, styles.large]" />
         </div>
     </div>
 </template>
