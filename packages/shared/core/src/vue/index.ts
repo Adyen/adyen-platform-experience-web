@@ -6,13 +6,17 @@ export type {
     CoreInstance,
     CoreOptions,
     CustomTheme,
+    DataGridAppearance,
+    DensityMode,
     DevEnvironment,
+    GlobalAppearance,
     OnErrorHandler,
     SessionObject,
     SessionRequest,
     ThemeMode,
     ThemeVariables,
     UIElementProps,
+    WithDataGridAppearance,
 } from './types';
 export type { SupportedLocales } from '../Localization/types';
 

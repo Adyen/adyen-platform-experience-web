@@ -25,6 +25,7 @@ import {
     DataOverviewError,
     useTableColumns,
     useShouldHideIllustrations,
+    useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { getDisputeDeadlineTimeRemaining, getDisputeReason, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
@@ -60,6 +61,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const hideIllustrations = useShouldHideIllustrations();
+const isCondensed = useCondensedDataGrid();
 const config = useConfigContext();
 
 const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceAccount?.timeZone);
@@ -275,6 +277,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
 
         <BentoDataGrid
             v-else
+            :condensed="isCondensed"
             :columns="columns"
             :data="gridData"
             :loading="isLoading"

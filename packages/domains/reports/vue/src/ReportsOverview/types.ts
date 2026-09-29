@@ -1,6 +1,13 @@
 import type { ReportsOverviewProps } from '../../../domain/src';
 import type { UIElementProps } from '@integration-components/core/vue';
-import type { CustomColumn, IBalanceAccountBase, IReport, OnDataRetrievedCallback } from '@integration-components/types';
+import type {
+    CustomColumn,
+    GlobalAppearance,
+    IBalanceAccountBase,
+    IReport,
+    OnDataRetrievedCallback,
+    WithDataGridAppearance,
+} from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 
 export interface DataCustomizationList<Fields extends string> {
@@ -8,8 +15,10 @@ export interface DataCustomizationList<Fields extends string> {
     onDataRetrieve?: OnDataRetrievedCallback<IReport[]>;
 }
 
+export type ReportsOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
+
 // ── Component prop types ──
-export type ReportsOverviewExternalProps = Omit<ReportsOverviewProps, 'ref'> & UIElementProps;
+export type ReportsOverviewExternalProps = Omit<ReportsOverviewProps, 'ref'> & UIElementProps & { appearance?: ReportsOverviewAppearance };
 
 export type { IBalanceAccountBase };
 
