@@ -7,7 +7,6 @@ on:
       - develop
       - version/v1.x
       - group/*
-      - bot/translations
     types: [opened, synchronize, reopened]
     paths-ignore:
       - README.md

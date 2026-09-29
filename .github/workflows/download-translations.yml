@@ -3,6 +3,11 @@ name: Download translations
 on:
   workflow_dispatch:
 
+# Download runs for a release line must not race each other on the bot branch
+concurrency:
+  group: translations-download-${{ github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   download-files:
     name: Download completed translation files
@@ -46,6 +51,6 @@ jobs:
           npx -y @adyen/smartling-bot@${{ steps.setup-smartling.outputs.smartling_bot_version }} download-files -p ./scripts/process-translations/post-download.sh
         env:
           BASE_REF: ${{ github.ref_name }}
-          BRANCH_NAME: "bot/translations"
+          BRANCH_NAME: "bot/translations-v1"
           COMMIT_TITLE: "chore(lang): update translations"
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
