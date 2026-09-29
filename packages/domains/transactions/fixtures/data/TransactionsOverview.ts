@@ -41,7 +41,7 @@ export const DATA_CUSTOMIZATION_LIST: TransactionsListCustomization = {
         { key: '_reference', flex: 1.5 },
         { key: 'transactionType', visibility: 'hidden' },
         { key: 'amount', flex: 2 },
-        { key: '_button', flex: 1.5, align: 'right' },
+        { key: '_button', flex: 1.5 },
     ],
 
     onDataRetrieve: async data => {

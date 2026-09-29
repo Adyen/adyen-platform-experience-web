@@ -1,7 +1,6 @@
 export type DataGridCustomColumnConfig<k> = {
     key: k;
     flex?: number;
-    align?: 'right' | 'left' | 'center';
     visibility?: 'visible' | 'hidden';
 };
 

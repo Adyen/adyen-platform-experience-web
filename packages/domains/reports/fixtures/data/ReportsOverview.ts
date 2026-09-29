@@ -19,13 +19,7 @@ export const CUSTOM_TRANSLATIONS = {
 };
 
 export const DATA_CUSTOMIZATION: ReportsListCustomization = {
-    fields: [
-        { key: 'createdAt' },
-        { key: 'reportType', visibility: 'hidden' },
-        { key: '_summary' },
-        { key: '_sendEmail', align: 'right' },
-        { key: 'reportFile', flex: 0.8 },
-    ],
+    fields: [{ key: 'createdAt' }, { key: 'reportType', visibility: 'hidden' }, { key: '_summary' }, { key: '_sendEmail' }],
 
     onDataRetrieve: async data => {
         await sleep(200);

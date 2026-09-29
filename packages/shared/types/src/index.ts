@@ -3,4 +3,5 @@ export * from './components';
 export * from './customization';
 export * from './dataGrid';
 export * from './element';
+export * from './pagination';
 export * from './select';

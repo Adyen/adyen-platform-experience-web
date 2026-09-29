@@ -46,6 +46,13 @@ test.describe('Default', () => {
             await expect(pagination.getByRole('button', { name: /Next page/i, disabled: false })).toBeVisible();
         });
 
+        test('should only offer the supported page limits', async ({ page }) => {
+            const pagination = page.getByRole('navigation', { name: /Pagination/i });
+
+            await pagination.getByRole('combobox', { name: /Items/i }).click();
+            await expect(page.getByRole('listbox').getByRole('option')).toHaveText([/^10(?!\d)/, /^20(?!\d)/, /^30(?!\d)/, /^40(?!\d)/, /^50(?!\d)/]);
+        });
+
         test('should disable downloading in desktop and small containers', async ({ page }) => {
             await goToStory(page, { id: STORY_ID, args: { enforceDownloadDelay: 'true' } });
 

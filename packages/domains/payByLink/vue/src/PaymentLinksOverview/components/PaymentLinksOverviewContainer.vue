@@ -9,7 +9,7 @@ const props = withDefaults(
         allowLimitSelection?: boolean;
         balanceAccountId?: string;
         hideTitle?: boolean;
-        preferredLimit?: 10 | 20;
+        preferredLimit?: number;
         showDetails?: boolean;
         storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
         onFiltersChanged?: PaymentLinksOverviewExternalProps['onFiltersChanged'];

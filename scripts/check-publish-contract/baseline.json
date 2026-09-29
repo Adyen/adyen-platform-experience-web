@@ -82,7 +82,7 @@
         "TransactionsOverviewProps",
         "TranslationKey"
     ],
-    "esFileCount": 1201,
+    "esFileCount": 1202,
     "cssHash": "36095403aa1c9537db6c36abcab65c7af6b2b130141c1cc415e885258833bfe0",
     "typeFiles": [
         "packages/domains/capital/domain/src/CapitalOffer/constants.d.ts",
@@ -335,6 +335,7 @@
         "packages/shared/types/src/dataGrid.d.ts",
         "packages/shared/types/src/element.d.ts",
         "packages/shared/types/src/index.d.ts",
+        "packages/shared/types/src/pagination.d.ts",
         "packages/shared/types/src/select.d.ts",
         "packages/shared/utils/src/abort/constants.d.ts",
         "packages/shared/utils/src/abort/internals.d.ts",
@@ -362,6 +363,7 @@
         "packages/shared/utils/src/file/upload.d.ts",
         "packages/shared/utils/src/index.d.ts",
         "packages/shared/utils/src/layout/breakpoints.d.ts",
+        "packages/shared/utils/src/pagination/constants.d.ts",
         "packages/shared/utils/src/paymentMethod/paymentMethod.d.ts",
         "packages/shared/utils/src/primitives/async/abortable/index.d.ts",
         "packages/shared/utils/src/primitives/async/abortable/main.d.ts",
@@ -424,7 +426,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "1e63e8d57cb8e123e4c63571b7e3b1de9ce2f41ebbc5284f2192078f7e4a5512",
+    "typeTreeHash": "cc0855de3d7e17e4512b613bacb5e850a110785dd3dae4fb1188ab83347e6a27",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",

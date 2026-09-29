@@ -1,9 +1,9 @@
 import { computed, watch } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
-import { isFunction } from '@integration-components/utils';
+import { usePageLimit } from '@integration-components/composables-vue/usePageLimit';
+import { DEFAULT_PAGE_LIMITS, isFunction } from '@integration-components/utils';
 import type { IReport } from '@integration-components/types';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../domain/src';
 import type { ReportsListResponse } from '../types';
 
 interface UseReportsListProps {
@@ -38,6 +38,12 @@ export function useReportsList(props: () => UseReportsListProps) {
         { immediate: true }
     );
 
+    const pageLimit = usePageLimit({
+        options: DEFAULT_PAGE_LIMITS,
+        preferredLimit: () => props().preferredLimit,
+        allowLimitSelection: () => props().allowLimitSelection,
+    });
+
     return useCursorPaginatedRecords<IReport>({
         getFetchKey: () => {
             if (!canFetch.value) return null;
@@ -67,7 +73,7 @@ export function useReportsList(props: () => UseReportsListProps) {
                 previousCursor: json?._links?.prev?.cursor,
             };
         },
-        preferredLimit: props().preferredLimit ?? DEFAULT_PAGE_LIMIT,
-        limitOptions: () => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined),
+        preferredLimit: pageLimit.initialLimit,
+        limitOptions: pageLimit.limitOptions,
     });
 }
