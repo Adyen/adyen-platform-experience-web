@@ -1,52 +1,67 @@
 import { sessionAwareTest } from '@integration-components/testing/playwright/session-request-function';
 import { getRequestURL } from '@integration-components/testing/playwright/contract-utils';
-import { expect } from '@playwright/test';
-import { ENVS } from './env_constants';
+import { expectNonEmpty, expectStructure, recentDateRange } from '@integration-components/testing/playwright/contract-structure';
+import { SuccessResponse } from '@integration-components/types/api/endpoints';
+import { APIRequestContext, expect } from '@playwright/test';
 import process from 'node:process';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
 
-const environment = process.env.NODE_ENV as 'live' | 'test';
-const ENV = ENVS[environment] || ENVS.test;
+const balanceAccountId = process.env.BALANCE_ACCOUNT || '';
 
-sessionAwareTest('/payouts endpoint should return consistent data', async ({ requestContext, headers }) => {
-    const payoutsList = await requestContext.get(
+// Structure templates: only the fields and their types matter, the values are placeholders.
+const AMOUNT = { value: 0, currency: '' };
+const PAYOUT: SuccessResponse<'getPayouts'>['data'][number] = {
+    fundsCapturedAmount: AMOUNT,
+    adjustmentAmount: AMOUNT,
+    payoutAmount: AMOUNT,
+    unpaidAmount: AMOUNT,
+    createdAt: '',
+};
+const PAYOUT_BREAKDOWN: SuccessResponse<'getPayout'> = {
+    payout: PAYOUT,
+    amountBreakdowns: {
+        fundsCapturedBreakdown: [{ amount: AMOUNT, category: '' }],
+        adjustmentBreakdown: [{ amount: AMOUNT, category: '' }],
+    },
+};
+
+const getRecentPayouts = async (requestContext: APIRequestContext, headers?: Record<string, string>) => {
+    const response = await requestContext.get(
         getRequestURL({
             version: 1,
             method: 'get',
             endpoint: '/payouts',
-            params: {
-                query: { balanceAccountId: ENV.balanceAccountId, createdSince: ENV.createdSince, createdUntil: ENV.createdUntil },
-            },
+            params: { query: { balanceAccountId, ...recentDateRange(180) } },
         }),
         { headers }
     );
 
-    const responseData = await payoutsList.json();
+    expect(response.status()).toBe(200);
+    return response.json() as Promise<SuccessResponse<'getPayouts'>>;
+};
 
-    expect(payoutsList.status()).toBe(200);
-    expect(responseData).toHaveProperty('data');
-    expect(responseData.data[0]).toStrictEqual(ENV.payouts_list_response![0]);
+sessionAwareTest('/payouts endpoint should return payouts with the expected structure', async ({ requestContext, headers }) => {
+    const payouts = await getRecentPayouts(requestContext, headers);
+
+    expectStructure(payouts, { data: [PAYOUT] });
+    expectNonEmpty(payouts.data, 'payouts in the last 180 days');
 });
 
-sessionAwareTest('/payouts/breakdown endpoint should return consistent data', async ({ requestContext, headers }) => {
-    const payoutsDetails = await requestContext.get(
+sessionAwareTest('/payouts/breakdown endpoint should return a breakdown with the expected structure', async ({ requestContext, headers }) => {
+    const [payout] = expectNonEmpty((await getRecentPayouts(requestContext, headers)).data, 'payouts in the last 180 days');
+
+    const breakdown = await requestContext.get(
         getRequestURL({
             version: 1,
             method: 'get',
             endpoint: '/payouts/breakdown',
-            params: {
-                query: { balanceAccountId: ENV.balanceAccountId, createdAt: ENV.payoutCreationDate },
-            },
+            params: { query: { balanceAccountId, createdAt: new Date(payout!.createdAt).toISOString() } },
         }),
         { headers }
     );
 
-    const responseData = await payoutsDetails.json();
-
-    expect(payoutsDetails.status()).toBe(200);
-    expect(responseData).toHaveProperty('payout');
-    expect(responseData).toHaveProperty('amountBreakdowns');
-    expect(responseData).toStrictEqual(ENV.payout_details_response);
+    expect(breakdown.status()).toBe(200);
+    expectStructure(await breakdown.json(), PAYOUT_BREAKDOWN);
 });

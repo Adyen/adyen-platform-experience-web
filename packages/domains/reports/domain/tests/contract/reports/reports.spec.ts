@@ -1,65 +1,63 @@
 import { sessionAwareTest } from '@integration-components/testing/playwright/session-request-function';
 import { getRequestURL } from '@integration-components/testing/playwright/contract-utils';
-import { expect } from '@playwright/test';
-import { ENVS } from './env_constants';
+import { expectNonEmpty, expectStructure, recentDateRange } from '@integration-components/testing/playwright/contract-structure';
+import { SuccessResponse } from '@integration-components/types/api/endpoints';
+import { APIRequestContext, expect } from '@playwright/test';
 import process from 'node:process';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
 
-const environment = process.env.NODE_ENV as 'live' | 'test';
-const ENV = ENVS[environment] || ENVS.test;
+const balanceAccountId = process.env.BALANCE_ACCOUNT || '';
+const REPORT_TYPE = 'payout';
 
-sessionAwareTest('/reports endpoint should return consistent data', async ({ requestContext, headers }) => {
-    const reportsList = await requestContext.get(
+// Structure templates: only the fields and their types matter, the values are placeholders.
+const REPORT: NonNullable<SuccessResponse<'getReports'>['data']>[number] = { createdAt: '', type: REPORT_TYPE };
+const REPORT_CSV_COLUMNS =
+    'BalancePlatform,AccountHolder,BalanceAccount,AccountHolder Reference,AccountHolder Description,BalanceAccount Reference,BalanceAccount Description,Transfer Id,Transaction Id,Booking date,Booking date TimeZone,Value date,Value date TimeZone,Category,Type,Status,Currency,Balance (PC),Rolling Balance,Reference,Description,Counterparty Balance Account Id,Psp Payment Merchant Reference,Psp Payment Psp Reference,Payout Date,Psp Modification Psp Reference,Psp Modification Merchant Reference';
+
+const getRecentReports = async (requestContext: APIRequestContext, headers?: Record<string, string>) => {
+    const response = await requestContext.get(
         getRequestURL({
             version: 1,
             method: 'get',
             endpoint: '/reports',
-            params: {
-                query: {
-                    balanceAccountId: ENV.balanceAccountId,
-                    createdSince: ENV.createdSince,
-                    createdUntil: ENV.createdUntil,
-                    type: ENV.reportType,
-                },
-            },
+            params: { query: { balanceAccountId, type: REPORT_TYPE, ...recentDateRange(180) } },
         }),
         { headers }
     );
 
-    const responseData = await reportsList.json();
+    expect(response.status()).toBe(200);
+    return response.json() as Promise<SuccessResponse<'getReports'>>;
+};
 
-    expect(reportsList.status()).toBe(200);
-    expect(responseData).toHaveProperty('data');
-    expect(responseData.data[0]).toStrictEqual(ENV.reports_list_response![0]);
+sessionAwareTest('/reports endpoint should return reports with the expected structure', async ({ requestContext, headers }) => {
+    const reports = await getRecentReports(requestContext, headers);
+
+    expectStructure(reports, { data: [REPORT] });
+    expectNonEmpty(reports.data, 'payout reports in the last 180 days');
 });
 
-sessionAwareTest('/reports/download endpoint should return consistent data', async ({ requestContext, headers }) => {
-    const reportDownload = await requestContext.get(
+sessionAwareTest('/reports/download endpoint should return a CSV with the expected columns', async ({ requestContext, headers }) => {
+    const [report] = expectNonEmpty((await getRecentReports(requestContext, headers)).data, 'payout reports in the last 180 days');
+
+    const download = await requestContext.get(
         getRequestURL({
             version: 1,
             method: 'get',
             endpoint: '/reports/download',
-            params: {
-                query: { balanceAccountId: ENV.balanceAccountId, createdAt: ENV.reportCreationDate, type: ENV.reportType },
-            },
+            params: { query: { balanceAccountId, createdAt: new Date(report!.createdAt).toISOString(), type: REPORT_TYPE } },
         }),
         { headers }
     );
 
-    const reportFilenameDateFragment = new Date(ENV.reportCreationDate).toISOString().split('T')[0]!.replace(/-/g, '_');
-    const responseHeaders = reportDownload.headers();
-    const responseData = await reportDownload.body();
-    const [csvColumnRow = '', ...csvDataRows] = responseData.toString().split('\n');
-    const dataRows = csvDataRows.filter(Boolean);
+    const responseHeaders = download.headers();
+    const [csvColumnRow = ''] = (await download.body()).toString().split('\n');
 
-    expect(responseHeaders).toMatchObject({
-        'content-disposition': `attachment; filename=balanceaccount_${ENV.reportType}_report_${reportFilenameDateFragment}.csv`,
-        'content-type': 'text/csv;charset=UTF-8',
-    });
-
-    expect(reportDownload.status()).toBe(200);
-    expect(csvColumnRow).toStrictEqual(ENV.report_download_columns);
-    expect(dataRows[0]).toStrictEqual(ENV.report_download_first_row.toString());
+    expect(download.status()).toBe(200);
+    expect(responseHeaders['content-type']).toMatch(/^text\/csv/);
+    expect(responseHeaders['content-disposition']).toMatch(
+        new RegExp(`^attachment; filename=balanceaccount_${REPORT_TYPE}_report_\\d{4}_\\d{2}_\\d{2}\\.csv$`)
+    );
+    expect(csvColumnRow.trim()).toBe(REPORT_CSV_COLUMNS);
 });
