@@ -128,7 +128,7 @@ test('V1 GitHub releases expose exactly one deployable CDN archive', () => {
 test('V1 and mainline npm publishes use one trusted top-level workflow', () => {
     const trustedPublisher = readRepositoryFile('.github/workflows/tag-and-release.yml');
     const v1Release = readRepositoryFile('.github/workflows/release-v1.yml');
-    const v1Route = trustedPublisher.match(/^  release-v1:[\s\S]*?(?=^  create-github-release:)/m)?.[0] ?? '';
+    const v1Route = trustedPublisher.match(/^ {2}release-v1:[\s\S]*?(?=^ {2}create-github-release:)/m)?.[0] ?? '';
 
     assert.match(trustedPublisher, /branches:.*version\/v1\.x/);
     assert.match(v1Route, /github\.event\.pull_request\.merged == true/);

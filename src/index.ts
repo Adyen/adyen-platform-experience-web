@@ -8,7 +8,7 @@ export type {
     CustomTheme,
     CustomTranslations,
     DevEnvironment,
-    onErrorHandler as ErrorHandler,
+    OnErrorHandler as ErrorHandler,
     SessionObject,
     SessionRequest,
     ThemeMode,

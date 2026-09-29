@@ -1,27 +1,27 @@
 import type { HttpMethod } from '@integration-components/core';
 import type { EndpointName } from '@integration-components/types/api/endpoints';
 import {
-    CapitalComponentManage,
-    DisputesComponentManage,
-    PayByLinkComponentManageLinks,
-    PayByLinkComponentManageSettings,
-    PayByLinkComponentView,
-    PayoutsOverviewComponentView,
-    ReportsOverviewComponentView,
-    TransactionsOverviewComponentManageRefunds,
-    TransactionsOverviewComponentView,
+    capitalComponentManage,
+    disputesComponentManage,
+    payByLinkComponentManageLinks,
+    payByLinkComponentManageSettings,
+    payByLinkComponentView,
+    payoutsOverviewComponentView,
+    reportsOverviewComponentView,
+    transactionsOverviewComponentManageRefunds,
+    transactionsOverviewComponentView,
 } from '../msw/rolesToEndpointsMapping';
 
 export const setupBasicResponse = {
     endpoints: {
-        ...TransactionsOverviewComponentView,
-        ...TransactionsOverviewComponentManageRefunds,
-        ...ReportsOverviewComponentView,
-        ...PayoutsOverviewComponentView,
-        ...CapitalComponentManage,
-        ...DisputesComponentManage,
-        ...PayByLinkComponentView,
-        ...PayByLinkComponentManageLinks,
-        ...PayByLinkComponentManageSettings,
+        ...transactionsOverviewComponentView,
+        ...transactionsOverviewComponentManageRefunds,
+        ...reportsOverviewComponentView,
+        ...payoutsOverviewComponentView,
+        ...capitalComponentManage,
+        ...disputesComponentManage,
+        ...payByLinkComponentView,
+        ...payByLinkComponentManageLinks,
+        ...payByLinkComponentManageSettings,
     } satisfies Record<EndpointName, { method: HttpMethod; url: string; versions: number[] }>,
 };

@@ -1,7 +1,7 @@
 import type { Meta } from '@storybook/vue3';
 import { http, HttpResponse } from 'msw';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
-import { PayoutsOverviewMeta } from './meta';
+import { payoutsOverviewMeta } from './meta';
 import type { PayoutsOverviewExternalProps } from '../../src';
 import { PAYOUTS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/payouts';
 import { PAYOUTS_ENDPOINTS } from '../../../mocks/endpoints';
@@ -9,7 +9,7 @@ import { DEFAULT_PAYOUT_DETAILS } from '../../../fixtures/data/PayoutDetails';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION_DETAILS, DATA_CUSTOMIZATION_LIST } from '../../../fixtures/data/PayoutsOverview';
 
 const meta: Meta<ElementProps<PayoutsOverviewExternalProps>> = {
-    ...PayoutsOverviewMeta,
+    ...payoutsOverviewMeta,
     title: 'Mocked/Payouts/Payouts Overview',
 };
 

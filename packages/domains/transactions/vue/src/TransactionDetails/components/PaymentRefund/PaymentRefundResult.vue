@@ -27,8 +27,12 @@ const descriptionKey = computed(() =>
     <div :class="styles.refundResponse">
         <CrossCircleFillIcon v-if="isError" :class="styles.refundResponseIconError" />
         <CheckmarkCircleFillIcon v-else :class="styles.refundResponseIconSuccess" />
-        <BentoTypography variant="title" large>{{ i18n.get(titleKey) }}</BentoTypography>
-        <BentoTypography variant="body">{{ i18n.get(descriptionKey) }}</BentoTypography>
+        <BentoTypography variant="title" large>
+            {{ i18n.get(titleKey) }}
+        </BentoTypography>
+        <BentoTypography variant="body">
+            {{ i18n.get(descriptionKey) }}
+        </BentoTypography>
         <BentoButton
             variant="secondary"
             @click="

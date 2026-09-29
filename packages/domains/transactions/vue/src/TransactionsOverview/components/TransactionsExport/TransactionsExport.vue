@@ -215,21 +215,25 @@ const popoverActions = computed(() => [
         >
             <div :class="styles.popoverSections">
                 <div :class="styles.filters">
-                    <BentoTypography variant="body" strongest>{{ `${i18n.get('transactions.overview.export.filters.title')}:` }}</BentoTypography>
+                    <BentoTypography variant="body" strongest>
+                        {{ `${i18n.get('transactions.overview.export.filters.title')}:` }}
+                    </BentoTypography>
                     <BentoTag v-for="filter in activeFilters" :key="filter" variant="grey" :label="i18n.get(filter)" />
                 </div>
 
                 <BentoDivider />
 
                 <div :class="styles.columns">
-                    <BentoTypography variant="body" strongest>{{ i18n.get('transactions.overview.export.columns.title') }}</BentoTypography>
+                    <BentoTypography variant="body" strongest>
+                        {{ i18n.get('transactions.overview.export.columns.title') }}
+                    </BentoTypography>
                     <BentoToggle label-position="after" :value="masterSwitchChecked" @input="onMasterSwitchChange">
                         {{ i18n.get('transactions.overview.export.columns.types.all', { values: { count: EXPORT_COLUMNS.length } }) }}
                     </BentoToggle>
                     <BentoToggle
                         v-for="{ column, label, checked } in columnSwitches"
-                        label-position="after"
                         :key="column"
+                        label-position="after"
                         :value="checked"
                         @input="(val: boolean) => onColumnChange(column, val)"
                     >
@@ -239,7 +243,9 @@ const popoverActions = computed(() => [
             </div>
 
             <BentoAlert type="highlight">
-                <template #default>{{ i18n.get('transactions.overview.export.actions.download.info') }}</template>
+                <template #default>
+                    {{ i18n.get('transactions.overview.export.actions.download.info') }}
+                </template>
             </BentoAlert>
         </BentoPopover>
     </div>

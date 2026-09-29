@@ -11,9 +11,9 @@ import {
 import { EndpointDownloadStreamData } from '@integration-components/types/api/endpoints';
 import { normalizeLoadingContext, normalizeUrl } from '../utils';
 import { HttpOptions } from './types';
-import { onErrorHandler } from '../types';
+import { OnErrorHandler } from '../types';
 
-const errorHandlerHelper = (errorHandler?: onErrorHandler, error?: any) => {
+const errorHandlerHelper = (errorHandler?: OnErrorHandler, error?: any) => {
     // Always throws
     try {
         errorHandler?.(error);

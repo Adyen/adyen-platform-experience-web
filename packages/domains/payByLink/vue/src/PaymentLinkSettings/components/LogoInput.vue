@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { BentoFileUploader } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import { LOGO_DIMENSIONS, LogoLabel, THEME_FORM_ALLOWED_FILE_TYPES, THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from '../constants';
+import { LOGO_DIMENSIONS, logoLabel, THEME_FORM_ALLOWED_FILE_TYPES, THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from '../constants';
 import type { LogoType } from '../types';
 import styles from './ThemeForm.module.scss';
 
@@ -75,12 +75,12 @@ function onChange(files?: FileList) {
 
 <template>
     <div :class="styles.fileInput">
-        <img v-if="props.previewUrl" :src="props.previewUrl" :alt="i18n.get(LogoLabel[props.logoType])" :class="styles.previewImage" />
+        <img v-if="props.previewUrl" :src="props.previewUrl" :alt="i18n.get(logoLabel[props.logoType])" :class="styles.previewImage" />
         <BentoFileUploader
             v-model="modelValue"
             condensed
             :disabled="props.disabled"
-            :label="i18n.get(LogoLabel[props.logoType])"
+            :label="i18n.get(logoLabel[props.logoType])"
             :max-count="1"
             :max-dimensions="maxDimensions"
             :max-size="THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE"

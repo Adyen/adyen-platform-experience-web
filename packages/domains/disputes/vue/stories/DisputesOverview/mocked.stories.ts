@@ -1,12 +1,12 @@
 import type { Meta } from '@storybook/vue3';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { DisputesOverviewExternalProps } from '../../src';
-import { DisputesOverviewMeta } from './meta';
+import { disputesOverviewMeta } from './meta';
 import { DISPUTES_LIST_HANDLERS } from '../../../mocks/mock-server/disputes';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION_DETAILS, DATA_CUSTOMIZATION_LIST } from '../../../fixtures/data/DisputesOverview';
 
 const meta: Meta<ElementProps<DisputesOverviewExternalProps>> = {
-    ...DisputesOverviewMeta,
+    ...disputesOverviewMeta,
     title: 'Mocked/Disputes/Disputes Overview',
 };
 
