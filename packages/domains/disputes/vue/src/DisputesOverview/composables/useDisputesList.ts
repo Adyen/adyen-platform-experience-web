@@ -5,6 +5,7 @@ import { usePageLimit } from '@integration-components/composables-vue/usePageLim
 import { DEFAULT_PAGE_LIMITS, isFunction, listFrom } from '@integration-components/utils';
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 import type { DisputesOverviewFilters } from '../../../../domain/src';
+import type { DisputesOverviewExternalProps } from '../types';
 
 interface UseDisputesListProps {
     fetchEnabled: boolean;
@@ -15,7 +16,7 @@ interface UseDisputesListProps {
     createdSince: string | undefined;
     createdUntil: string | undefined;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: DisputesOverviewExternalProps['preferredLimit'];
     refreshToken?: number;
     onFiltersChanged?: (filters: DisputesOverviewFilters) => any;
 }

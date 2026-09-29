@@ -4,7 +4,7 @@ import { useCursorPaginatedRecords } from '@integration-components/composables-v
 import { usePageLimit } from '@integration-components/composables-vue/usePageLimit';
 import { DEFAULT_PAGE_LIMITS, isFunction } from '@integration-components/utils';
 import type { IReport } from '@integration-components/types';
-import type { ReportsListResponse } from '../types';
+import type { ReportsListResponse, ReportsOverviewExternalProps } from '../types';
 
 interface UseReportsListProps {
     fetchEnabled: boolean;
@@ -12,7 +12,7 @@ interface UseReportsListProps {
     createdSince: string;
     createdUntil: string;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: ReportsOverviewExternalProps['preferredLimit'];
     onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
 }
 

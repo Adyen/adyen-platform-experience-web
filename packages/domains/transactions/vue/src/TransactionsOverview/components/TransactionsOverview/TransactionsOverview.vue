@@ -17,7 +17,7 @@ import styles from './TransactionsOverview.module.scss';
 const props = defineProps<{
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: TransactionsOverviewExternalProps['preferredLimit'];
     hideTitle?: boolean;
     showDetails?: boolean;
     hideInsights?: boolean;

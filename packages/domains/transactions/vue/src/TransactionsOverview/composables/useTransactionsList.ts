@@ -6,13 +6,13 @@ import { useCustomColumnsData } from '@integration-components/composables-vue';
 import { DEFAULT_PAGE_LIMITS, isFunction, normalizeCustomFields, hasCustomField, mergeRecords } from '@integration-components/utils';
 import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '@integration-components/transactions/domain';
 import type { ITransaction, CustomDataRetrieved } from '@integration-components/types';
-import type { TransactionsFilters, TransactionsListCustomization, TransactionsListResponse } from '../types';
+import type { TransactionsFilters, TransactionsListCustomization, TransactionsListResponse, TransactionsOverviewExternalProps } from '../types';
 
 interface UseTransactionsListProps {
     filters: TransactionsFilters;
     fetchEnabled: boolean;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: TransactionsOverviewExternalProps['preferredLimit'];
     dataCustomization?: { list?: TransactionsListCustomization };
     onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
 }

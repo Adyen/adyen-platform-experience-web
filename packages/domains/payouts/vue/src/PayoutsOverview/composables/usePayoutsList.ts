@@ -4,6 +4,7 @@ import { useCursorPaginatedRecords } from '@integration-components/composables-v
 import { usePageLimit } from '@integration-components/composables-vue/usePageLimit';
 import { DEFAULT_PAGE_LIMITS, isFunction } from '@integration-components/utils';
 import type { IPayout } from '@integration-components/types';
+import type { PayoutsOverviewExternalProps } from '../types';
 
 interface UsePayoutsListProps {
     fetchEnabled: boolean;
@@ -11,7 +12,7 @@ interface UsePayoutsListProps {
     createdSince: string;
     createdUntil: string;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: PayoutsOverviewExternalProps['preferredLimit'];
     onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
 }
 

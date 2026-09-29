@@ -20,7 +20,7 @@ interface UsePaymentLinksListProps {
     createdSince: string;
     createdUntil: string;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
     onFiltersChanged?: PaymentLinksOverviewExternalProps['onFiltersChanged'];
     lastRefreshTimestamp: number;
 }
