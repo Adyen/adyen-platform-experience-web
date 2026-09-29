@@ -39,25 +39,24 @@ const getRecentPayouts = async (requestContext: APIRequestContext, headers?: Rec
     );
 
     expect(response.status()).toBe(200);
-    return response.json() as Promise<SuccessResponse<'getPayouts'>>;
+    const payouts: SuccessResponse<'getPayouts'> = await response.json();
+    expectStructure(payouts, { data: [PAYOUT] });
+    return expectNonEmpty(payouts.data, 'payouts in the last 180 days');
 };
 
 sessionAwareTest('/payouts endpoint should return payouts with the expected structure', async ({ requestContext, headers }) => {
-    const payouts = await getRecentPayouts(requestContext, headers);
-
-    expectStructure(payouts, { data: [PAYOUT] });
-    expectNonEmpty(payouts.data, 'payouts in the last 180 days');
+    await getRecentPayouts(requestContext, headers);
 });
 
 sessionAwareTest('/payouts/breakdown endpoint should return a breakdown with the expected structure', async ({ requestContext, headers }) => {
-    const [payout] = expectNonEmpty((await getRecentPayouts(requestContext, headers)).data, 'payouts in the last 180 days');
+    const [payout] = await getRecentPayouts(requestContext, headers);
 
     const breakdown = await requestContext.get(
         getRequestURL({
             version: 1,
             method: 'get',
             endpoint: '/payouts/breakdown',
-            params: { query: { balanceAccountId, createdAt: new Date(payout!.createdAt).toISOString() } },
+            params: { query: { balanceAccountId, createdAt: payout.createdAt } },
         }),
         { headers }
     );

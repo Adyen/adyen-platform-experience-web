@@ -33,9 +33,9 @@ export const expectStructure = (actual: unknown, template: unknown) => {
     expect(structureMismatches(actual, template), 'response structure differs from the expected contract').toEqual([]);
 };
 
-export const expectNonEmpty = <T>(items: T[] | undefined, what: string): T[] => {
+export const expectNonEmpty = <T>(items: T[] | undefined, what: string): [T, ...T[]] => {
     expect(items?.length ?? 0, `no ${what} found, so the contract cannot be checked`).toBeGreaterThan(0);
-    return items!;
+    return items as [T, ...T[]];
 };
 
 export const recentDateRange = (days: number, now = Date.now()) => ({

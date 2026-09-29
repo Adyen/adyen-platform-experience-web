@@ -28,25 +28,24 @@ const getRecentReports = async (requestContext: APIRequestContext, headers?: Rec
     );
 
     expect(response.status()).toBe(200);
-    return response.json() as Promise<SuccessResponse<'getReports'>>;
+    const reports: SuccessResponse<'getReports'> = await response.json();
+    expectStructure(reports, { data: [REPORT] });
+    return expectNonEmpty(reports.data, 'payout reports in the last 180 days');
 };
 
 sessionAwareTest('/reports endpoint should return reports with the expected structure', async ({ requestContext, headers }) => {
-    const reports = await getRecentReports(requestContext, headers);
-
-    expectStructure(reports, { data: [REPORT] });
-    expectNonEmpty(reports.data, 'payout reports in the last 180 days');
+    await getRecentReports(requestContext, headers);
 });
 
 sessionAwareTest('/reports/download endpoint should return a CSV with the expected columns', async ({ requestContext, headers }) => {
-    const [report] = expectNonEmpty((await getRecentReports(requestContext, headers)).data, 'payout reports in the last 180 days');
+    const [report] = await getRecentReports(requestContext, headers);
 
     const download = await requestContext.get(
         getRequestURL({
             version: 1,
             method: 'get',
             endpoint: '/reports/download',
-            params: { query: { balanceAccountId, createdAt: new Date(report!.createdAt).toISOString(), type: REPORT_TYPE } },
+            params: { query: { balanceAccountId, createdAt: report.createdAt, type: REPORT_TYPE } },
         }),
         { headers }
     );
