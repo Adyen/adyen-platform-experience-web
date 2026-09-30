@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoButtonActions, BentoCard, BentoLoadingIndicator, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
-import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
+import { useConfigContext, useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { ErrorMessageDisplay } from '@integration-components/composables-vue';
 import {
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
@@ -23,7 +23,6 @@ import styles from './DisputeData.module.scss';
 
 const props = defineProps<{
     disputeId: string;
-    withinModal?: boolean;
     dataCustomization?: { details?: DisputeDetailsCustomization };
     onContactSupport?: () => void;
     onDismiss?: DisputeManagementProps['onDismiss'];
@@ -32,6 +31,7 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const config = useConfigContext();
 const { dispute: storedDispute, setDispute, setFlowState, defenseReasonConfig } = useDisputeFlow();
+const { withinModal } = useModalContext();
 
 const { data, error, isFetching, refetch } = useDisputeDetails(() => ({
     disputeId: props.disputeId,
@@ -164,19 +164,19 @@ const actionButtons = computed(() => {
             variant: 'secondary' as const,
         });
     }
-    if (props.onDismiss && !props.withinModal) {
-        buttons.push({
-            title: i18n.get('disputes.management.details.actions.dismiss'),
-            event: props.onDismiss,
-            variant: 'secondary' as const,
-        });
-    }
     for (const button of extraButtons.value) {
         buttons.push({
             title: String(button.value),
             event: button.config?.action,
             variant: 'secondary' as const,
             class: button.config?.className,
+        });
+    }
+    if (props.onDismiss && !withinModal) {
+        buttons.push({
+            title: i18n.get('disputes.management.common.actions.goBack'),
+            event: props.onDismiss,
+            variant: 'secondary' as const,
         });
     }
     return buttons;
