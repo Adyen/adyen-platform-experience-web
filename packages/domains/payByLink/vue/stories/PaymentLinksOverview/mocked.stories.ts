@@ -53,6 +53,9 @@ export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternal
                 },
             },
         },
+        paymentLinkSettings: {
+            onDismiss: () => {},
+        },
     },
 };
 
