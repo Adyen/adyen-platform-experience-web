@@ -1,4 +1,4 @@
-import { computed, watch, type Ref } from 'vue';
+import { computed, watch, toValue, type MaybeRefOrGetter } from 'vue';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { getEnhancedCapitalState, getSupportedRegions } from '@integration-components/capital/domain';
 import { useAsyncRequest } from '@integration-components/composables-vue';
@@ -10,30 +10,30 @@ type CapitalStateResponse = {
     supportedRegions: Awaited<ReturnType<typeof getSupportedRegions>>;
 };
 
-export const useEnhancedCapitalState = (isEnabled: () => boolean, requestedGrant?: Ref<IGrant | undefined>) => {
+export const useEnhancedCapitalState = (isEnabled: MaybeRefOrGetter<boolean>, requestedGrant?: MaybeRefOrGetter<IGrant | undefined>) => {
     const config = useConfigContext();
     const { getCdnConfig } = useCoreContext();
     const request = useAsyncRequest<CapitalStateResponse>();
     const getCapitalState = computed(() => config.endpoints.getCapitalState);
     const capitalState = computed(() => {
         const response = request.data.value;
-        return response ? getEnhancedCapitalState(response.capitalState, response.supportedRegions, requestedGrant?.value) : undefined;
+        return response ? getEnhancedCapitalState(response.capitalState, response.supportedRegions, toValue(requestedGrant)) : undefined;
     });
 
     watch(
-        [isEnabled, getCapitalState],
-        ([enabled, getCapitalStateRequest]) => {
+        [() => toValue(isEnabled), getCapitalState],
+        ([isEnabledValue, getCapitalStateRequest]) => {
             request.abort();
 
-            if (!enabled || !getCapitalStateRequest) return;
+            if (!isEnabledValue || !getCapitalStateRequest) return;
 
             void request.execute(async signal => {
-                const [capitalState, supportedRegions] = await Promise.all([
+                const [capitalStateResponse, supportedRegions] = await Promise.all([
                     getCapitalStateRequest({ signal }, { query: EMPTY_OBJECT }),
                     getSupportedRegions(getCdnConfig),
                 ]);
 
-                return { capitalState, supportedRegions };
+                return { capitalState: capitalStateResponse, supportedRegions };
             });
         },
         { immediate: true }
