@@ -968,6 +968,7 @@
     "transactions.details.actions.copyReferenceID": "Label for a button that copies the reference ID of a transaction",
     "transactions.details.actions.goToPayment": "Used as a label of a button which links refund with the payment it belongs.",
     "transactions.details.actions.refund": "Will be displayed as a button label informing the user of how much they are about to refund if they continue with the refund action. The %{amount} placeholder represents the refund amount formatted like so: $45.99",
+    "transactions.details.common.actions.goBack": "Label for a go back button",
     "transactions.details.common.refundedStates.full": "Used to indicate that a payment has been refunded up to the full amount.",
     "transactions.details.common.refundedStates.partial": "Used to indicate that only a part of a payment has been refunded.",
     "transactions.details.common.refundReasons.duplicate": "Used to indicate that a transaction is repeat payment for a similar item.",

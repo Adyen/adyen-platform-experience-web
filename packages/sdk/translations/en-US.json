@@ -607,7 +607,6 @@
     "disputes.management.details.actions.copyMerchantReference": "Copy merchant reference",
     "disputes.management.details.actions.copyPaymentReference": "Copy payment reference",
     "disputes.management.details.actions.defendChargeback": "Defend chargeback",
-    "disputes.management.details.actions.dismiss": "Go back",
     "disputes.management.details.actions.downloadEvidence": "Download evidence",
     "disputes.management.details.actions.submitInformation": "Provide information",
     "disputes.management.details.alerts.autoDefended": "This chargeback was defended automatically.",
