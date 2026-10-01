@@ -11,7 +11,7 @@ on:
 jobs:
   upload-files:
     name: Upload translation source files
-    if: github.event_name == 'workflow_dispatch' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'group/'))
+    if: github.event_name == 'workflow_dispatch' && github.ref_name == 'develop'
     runs-on: ubuntu-latest
     environment: smartling-translations # provides Smartling credentials
     permissions:
@@ -38,8 +38,14 @@ jobs:
 
       - name: Create translations job (with authorization)
         if: ${{ inputs.authorize_job }}
-        run: npx -y @adyen/smartling-bot@${{ steps.setup-smartling.outputs.smartling_bot_version }} upload-files -ar ${{ github.ref_name }}
+        run: '"$SMARTLING_BOT_CLI" upload-files -ar "$REF_NAME"'
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          SMARTLING_BOT_CLI: ${{ steps.setup-smartling.outputs.smartling_bot_cli }}
 
       - name: Create translations job (without authorization)
         if: ${{ ! inputs.authorize_job }}
-        run: npx -y @adyen/smartling-bot@${{ steps.setup-smartling.outputs.smartling_bot_version }} upload-files -r ${{ github.ref_name }}
+        run: '"$SMARTLING_BOT_CLI" upload-files -r "$REF_NAME"'
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          SMARTLING_BOT_CLI: ${{ steps.setup-smartling.outputs.smartling_bot_cli }}

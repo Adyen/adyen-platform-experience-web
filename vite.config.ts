@@ -21,7 +21,6 @@ export default defineConfig(({ mode }) => {
     const { api, app } = getEnvironment(mode);
 
     const assetsDir = resolve(__dirname, 'packages/shared/assets/src');
-    const enUsFile = resolve(assetsDir, 'translations/en-US.json');
     const translationsDir = resolve(__dirname, 'packages/shared/core/src/translations');
     const translationsIndexFile = resolve(translationsDir, 'index.ts');
     const translationsLocalFile = resolve(translationsDir, 'local.ts');
@@ -31,8 +30,8 @@ export default defineConfig(({ mode }) => {
             return true;
         }
 
-        // Allow specific files from assets to be bundled.
-        if (id === enUsFile || id === translationsIndexFile) {
+        // Allow the core translation index (which embeds the English catalog) to be bundled.
+        if (id === translationsIndexFile) {
             return false;
         }
 
@@ -115,6 +114,7 @@ export default defineConfig(({ mode }) => {
                 'src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'config/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'scripts/check-publish-contract/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'scripts/process-translations/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/domains/*/{domain,vue}/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/tools/*/scripts/**/*.{test,spec}.?(c|m)[jt]s?(x)',
