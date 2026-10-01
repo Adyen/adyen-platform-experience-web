@@ -20,6 +20,7 @@ const props = defineProps<{
     dataCustomization?: { details?: TransactionDetailsCustomization };
     fetchingTransaction: boolean;
     hideTitle?: boolean;
+    onDismiss?: () => void;
     refreshTransaction: () => void;
     transaction: TransactionDetails;
     transactionNavigator: TransactionNavigatorState;
@@ -87,5 +88,6 @@ watch(refundMeta.refundLocked, isLocked => {
         :set-active-view="(v: ActiveView) => (activeView = v)"
         :transaction="props.transaction"
         :transaction-navigator="props.transactionNavigator"
+        :on-dismiss="props.onDismiss"
     />
 </template>

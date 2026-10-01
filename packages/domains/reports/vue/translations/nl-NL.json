@@ -4,7 +4,6 @@
     "reports.common.actions.copy.labels.default": "Kopiëren",
     "reports.common.actions.copy.labels.done": "Gekopieerd",
     "reports.common.actions.copy.labels.errorCode": "Foutcode kopiëren",
-    "reports.common.actions.download.labels.inProgress": "Downloaden",
     "reports.common.actions.refresh.labels.default": "Vernieuwen",
     "reports.common.errors.componentUnavailable": "Er is iets fout gegaan.",
     "reports.common.errors.contactSupport": "Neem contact op met support voor hulp.",

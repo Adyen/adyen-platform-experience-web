@@ -17,6 +17,17 @@
     color: style.token(color-background-critical-strong);
 }
 
+.refundResponseActions {
+    flex-grow: 0;
+    width: max-content;
+}
+
+.refundResponseActions :global(.b-button-actions__container-wrapper),
+.refundResponseActions :global(.b-button-actions__button-wrapper),
+.refundResponseActions :global(.b-button-actions__button-wrapper > *) {
+    width: max-content;
+}
+
 .inputHead {
     display: flex;
     justify-content: space-between;

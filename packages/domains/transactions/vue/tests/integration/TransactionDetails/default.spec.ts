@@ -211,7 +211,7 @@ test.describe('Default', () => {
             });
             // [TODO]: Address missing ARIA label association with combobox (refund reason select dropdown)
             const reasonSelect = page.getByRole('combobox', { /*name: 'Reason for refund', exact: true,*/ expanded: false });
-            const disabledRefundButton = page.getByRole('button', { name: 'In progress..', exact: true, disabled: true });
+            const disabledRefundButton = page.getByRole('button', { name: 'Refund €133.75', exact: true, disabled: true });
             const enabledRefundButton = page.getByRole('button', { name: 'Refund €133.75', exact: true, disabled: false });
 
             await expect(amountInput).toBeEnabled();
@@ -224,6 +224,7 @@ test.describe('Default', () => {
             await expect(amountInput).toBeDisabled();
             await expect(reasonSelect).toBeDisabled();
             await expect(disabledRefundButton).toBeVisible();
+            await expect(disabledRefundButton.getByTestId('loading-indicator')).toBeVisible();
             await expect(enabledRefundButton).toBeHidden();
         });
 
