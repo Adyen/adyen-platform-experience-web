@@ -3,10 +3,11 @@ import type { TransactionDetailsExternalProps } from '../../src';
 import TransactionDetailsElement from '../../src/TransactionDetails/TransactionDetailsElement';
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
-export const TransactionDetailsMeta: Meta<ElementProps<TransactionDetailsExternalProps>> = {
+export const transactionDetailsMeta: Meta<ElementProps<TransactionDetailsExternalProps>> = {
     title: 'Components/Transactions/Transaction Details',
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
+        onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
         hideTitle: { control: 'boolean' },
         id: { control: 'text' },
     },

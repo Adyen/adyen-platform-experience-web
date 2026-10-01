@@ -1,19 +1,20 @@
 import type { Meta } from '@storybook/vue3';
 import type { PaymentLinkSettingsExternalProps } from '../../src';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
-import { PaymentLinkSettingsMeta } from './meta';
+import { paymentLinkSettingsMeta } from './meta';
 import {
-    PayByLinkOverviewMockedResponses,
-    PaymentLinkSettingsMockedResponses,
-    PaymentLinkThemesMockedResponses,
+    payByLinkOverviewMockedResponses,
+    paymentLinkSettingsMockedResponses,
+    paymentLinkThemesMockedResponses,
 } from '../../../mocks/mock-server/payByLink';
 
-const meta: Meta<ElementProps<PaymentLinkSettingsExternalProps>> = { ...PaymentLinkSettingsMeta, title: 'Mocked/Pay by Link/Payment Link Settings' };
+const meta: Meta<ElementProps<PaymentLinkSettingsExternalProps>> = { ...paymentLinkSettingsMeta, title: 'Mocked/Pay by Link/Payment Link Settings' };
 
 export const Default: ElementStory<PaymentLinkSettingsExternalProps> = {
     name: 'Default',
     args: {
         mockedApi: true,
+        onDismiss: 'Enabled',
     },
 };
 
@@ -24,7 +25,7 @@ export const EmptyStores: ElementStory<PaymentLinkSettingsExternalProps> = {
     },
     parameters: {
         msw: {
-            ...PayByLinkOverviewMockedResponses.storesMisconfiguration,
+            ...payByLinkOverviewMockedResponses.storesMisconfiguration,
         },
     },
 };
@@ -36,7 +37,7 @@ export const ThemeError: ElementStory<PaymentLinkSettingsExternalProps> = {
     },
     parameters: {
         msw: {
-            ...PaymentLinkThemesMockedResponses.themeError,
+            ...paymentLinkThemesMockedResponses.themeError,
         },
     },
 };
@@ -48,7 +49,7 @@ export const ThemesSaveError: ElementStory<PaymentLinkSettingsExternalProps> = {
     },
     parameters: {
         msw: {
-            ...PaymentLinkThemesMockedResponses.saveThemesError,
+            ...paymentLinkThemesMockedResponses.saveThemesError,
         },
     },
 };
@@ -60,7 +61,7 @@ export const SettingsError: ElementStory<PaymentLinkSettingsExternalProps> = {
     },
     parameters: {
         msw: {
-            ...PaymentLinkSettingsMockedResponses.termsAndConditionsError,
+            ...paymentLinkSettingsMockedResponses.termsAndConditionsError,
         },
     },
 };
@@ -72,7 +73,7 @@ export const SettingsSaveError: ElementStory<PaymentLinkSettingsExternalProps> =
     },
     parameters: {
         msw: {
-            ...PaymentLinkSettingsMockedResponses.saveSettingsError,
+            ...paymentLinkSettingsMockedResponses.saveSettingsError,
         },
     },
 };
@@ -84,7 +85,7 @@ export const SettingsRoleNotAssigned: ElementStory<PaymentLinkSettingsExternalPr
     },
     parameters: {
         msw: {
-            ...PaymentLinkSettingsMockedResponses.permissionError,
+            ...paymentLinkSettingsMockedResponses.permissionError,
         },
     },
 };

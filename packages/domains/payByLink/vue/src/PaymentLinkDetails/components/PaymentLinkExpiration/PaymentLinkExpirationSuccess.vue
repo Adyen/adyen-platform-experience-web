@@ -27,8 +27,12 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
 <template>
     <div :class="styles.root">
         <SuccessIcon :class="styles.icon" aria-hidden="true" />
-        <BentoTypography variant="title">{{ i18n.get('payByLink.details.expirationSuccess.title') }}</BentoTypography>
-        <BentoTypography variant="body">{{ i18n.get('payByLink.details.expirationSuccess.description') }}</BentoTypography>
+        <BentoTypography variant="title">
+            {{ i18n.get('payByLink.details.expirationSuccess.title') }}
+        </BentoTypography>
+        <BentoTypography variant="body">
+            {{ i18n.get('payByLink.details.expirationSuccess.description') }}
+        </BentoTypography>
         <BentoButtonActions :actions="actionButtons" layout="space-between" :class="styles.actions" />
     </div>
 </template>

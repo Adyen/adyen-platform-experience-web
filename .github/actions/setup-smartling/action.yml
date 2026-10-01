@@ -16,18 +16,13 @@ inputs:
     required: true
 
 outputs:
-  smartling_bot_version:
-    description: 'Version of @adyen/smartling-bot to use with npx'
-    value: ${{ steps.set-smartling-bot-version.outputs.smartling_bot_version }}
+  smartling_bot_cli:
+    description: 'Executable of the installed @adyen/smartling-bot CLI'
+    value: ${{ steps.install-smartling-bot.outputs.smartling_bot_cli }}
 
 runs:
   using: composite
   steps:
-    - name: Set smartling-bot version
-      id: set-smartling-bot-version
-      shell: sh
-      run: echo "smartling_bot_version=0.13.2" >> $GITHUB_OUTPUT
-
     - name: Create the configuration file
       shell: sh
       env:
@@ -42,3 +37,20 @@ runs:
         SMARTLING_USER_SECRET=$SMARTLING_USER_SECRET
         EOF
         npm config set //registry.npmjs.org/:_authToken "$NPM_READ_ONLY_TOKEN"
+
+    - name: Install smartling-bot
+      id: install-smartling-bot
+      shell: sh
+      run: |
+        # The CLI is installed once at an exact, immutable version instead of being fetched on
+        # demand with npx; the workflows run the installed executable directly.
+        install_directory="$RUNNER_TEMP/smartling-bot"
+        npm install --prefix "$install_directory" @adyen/smartling-bot@0.13.2
+        smartling_bot_cli="$install_directory/node_modules/.bin/smartling-bot"
+        
+        if [ ! -x "$smartling_bot_cli" ]; then
+            echo "The smartling-bot executable is missing after installation: $smartling_bot_cli" >&2
+            exit 1
+        fi
+        
+        echo "smartling_bot_cli=$smartling_bot_cli" >> "$GITHUB_OUTPUT"

@@ -13,12 +13,12 @@
 }
 
 .description {
-    margin-bottom: style.token(spacer-040);
     color: style.token(color-label-secondary);
+    margin-bottom: style.token(spacer-040);
 }
 
 .toolbar {
-    display: flex;
     align-items: center;
+    display: flex;
     gap: style.token(spacer-040);
 }

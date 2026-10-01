@@ -41,13 +41,13 @@ const { maxWidths, updateMaxWidths } = useMaxWidths();
     <!-- BentoCard evaluates slot presence on mount; re-keying forces re-creation 
       when the number of currencies changes so the #content slot is correctly detected -->
     <BentoCard
+        v-if="availableBalances.length > 0 || loadingBalances"
         ref="cardRef"
         :key="availableBalances.length > 1 ? 'multi' : 'single'"
         :closed="!open"
-        v-if="availableBalances.length > 0 || loadingBalances"
-        @click="updateToggleState"
         :clickable="availableBalances.length > 1"
         :expandable="availableBalances.length > 1"
+        @click="updateToggleState"
     >
         <template #header>
             <div :class="[styles.summaryHeader, styles.summaryGroup]">
@@ -63,7 +63,7 @@ const { maxWidths, updateMaxWidths } = useMaxWidths();
                 />
             </div>
         </template>
-        <template #content v-if="availableBalances.length > 1">
+        <template v-if="availableBalances.length > 1" #content>
             <div :class="styles.summaryGroup">
                 <div v-if="loadingBalances">
                     <BentoLoadingIndicator />

@@ -17,13 +17,13 @@ export const getPastDatesMapForEachMonthInYear = (restamper: RestamperWithTimezo
 
 export const runTimezoneTestRoutine = (timezoneOffset: RestampResult['offset'], systemTimezoneResult: RestampResult, result: RestampResult) => {
     if (!isUndefined(result.formatted)) {
-        const TimezoneGMTSuffix = getGMTSuffixForTimezoneOffset(timezoneOffset);
-        expect(result.formatted).toMatch(TimezoneGMTSuffix);
+        const timezoneGMTSuffix = getGMTSuffixForTimezoneOffset(timezoneOffset);
+        expect(result.formatted).toMatch(timezoneGMTSuffix);
     }
 
     if (!isUndefined(systemTimezoneResult.formatted)) {
-        const SystemTimezoneGMTSuffix = getSystemTimezoneGMTSuffixFromTimezoneOffsets(timezoneOffset, result.offset);
-        expect(systemTimezoneResult.formatted).toMatch(SystemTimezoneGMTSuffix);
+        const systemTimezoneGMTSuffix = getSystemTimezoneGMTSuffixFromTimezoneOffsets(timezoneOffset, result.offset);
+        expect(systemTimezoneResult.formatted).toMatch(systemTimezoneGMTSuffix);
     }
 
     expect(result.timestamp).toBe(systemTimezoneResult.timestamp); // same time (hence, same timestamp)

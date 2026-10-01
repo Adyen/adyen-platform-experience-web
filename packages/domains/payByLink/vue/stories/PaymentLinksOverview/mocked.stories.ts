@@ -1,11 +1,11 @@
 import type { Meta } from '@storybook/vue3';
-import { PaymentLinksOverviewMeta } from './meta';
+import { paymentLinksOverviewMeta } from './meta';
 import type { PaymentLinksOverviewExternalProps } from '../../src';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
-import { PayByLinkOverviewMockedResponses } from '../../../mocks/mock-server/payByLink';
+import { payByLinkOverviewMockedResponses } from '../../../mocks/mock-server/payByLink';
 
 const meta: Meta<ElementProps<PaymentLinksOverviewExternalProps>> = {
-    ...PaymentLinksOverviewMeta,
+    ...paymentLinksOverviewMeta,
     title: 'Mocked/Pay by Link/Payment Links Overview',
 };
 
@@ -45,6 +45,7 @@ export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternal
     name: 'With props to sub-components',
     args: {
         mockedApi: true,
+        hideTitle: true,
         paymentLinkCreation: {
             fieldsConfig: {
                 data: {
@@ -53,7 +54,7 @@ export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternal
             },
         },
         paymentLinkSettings: {
-            hideTitle: true,
+            onDismiss: () => {},
         },
     },
 };
@@ -65,7 +66,7 @@ export const EmptyList: ElementStory<PaymentLinksOverviewExternalProps> = {
     },
     parameters: {
         msw: {
-            ...PayByLinkOverviewMockedResponses.emptyList,
+            ...payByLinkOverviewMockedResponses.emptyList,
         },
     },
 };
@@ -77,7 +78,7 @@ export const TooManyStores: ElementStory<PaymentLinksOverviewExternalProps> = {
     },
     parameters: {
         msw: {
-            ...PayByLinkOverviewMockedResponses.tooManyStores,
+            ...payByLinkOverviewMockedResponses.tooManyStores,
         },
     },
 };
@@ -89,7 +90,7 @@ export const StoresMisconfiguration: ElementStory<PaymentLinksOverviewExternalPr
     },
     parameters: {
         msw: {
-            ...PayByLinkOverviewMockedResponses.storesMisconfiguration,
+            ...payByLinkOverviewMockedResponses.storesMisconfiguration,
         },
     },
 };
@@ -101,7 +102,7 @@ export const StoreNetworkError: ElementStory<PaymentLinksOverviewExternalProps> 
     },
     parameters: {
         msw: {
-            ...PayByLinkOverviewMockedResponses.storeNetworkError,
+            ...payByLinkOverviewMockedResponses.storeNetworkError,
         },
     },
 };
@@ -113,7 +114,7 @@ export const ErrorFiltersGeneric: ElementStory<PaymentLinksOverviewExternalProps
     },
     parameters: {
         msw: {
-            ...PayByLinkOverviewMockedResponses.filtersNetworkError,
+            ...payByLinkOverviewMockedResponses.filtersNetworkError,
         },
     },
 };

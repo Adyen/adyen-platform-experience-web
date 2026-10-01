@@ -35,7 +35,9 @@ function onUpdate(value: string | number | { value?: string | number } | Array<u
 <template>
     <div :class="layoutStyles.container">
         <div :class="styles.inputHead">
-            <BentoTypography variant="body" stronger>{{ i18n.get('transactions.details.refund.inputs.reason.label') }}</BentoTypography>
+            <BentoTypography variant="body" stronger>
+                {{ i18n.get('transactions.details.refund.inputs.reason.label') }}
+            </BentoTypography>
         </div>
         <div>
             <BentoDropdown

@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { ErrorMessageDisplay } from '@integration-components/composables-vue';
-import { BentoTypography, BentoDataGrid, BentoDivider } from '@adyen/bento-vue3';
+import { BentoDivider, BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { getTransactionCategory } from '@integration-components/transactions/domain';
 import type { CurrencyLookupRecord } from '../../composables/useCurrenciesLookup';
@@ -80,17 +80,25 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
 
         <template v-else-if="data">
             <div :class="styles.amountDisplay">
-                <BentoTypography variant="body">{{ i18n.get('transactions.overview.totals.tags.periodResult') }}</BentoTypography>
+                <BentoTypography variant="body">
+                    {{ i18n.get('transactions.overview.totals.tags.periodResult') }}
+                </BentoTypography>
                 <div :class="styles.amountDisplayAmount">
-                    <BentoTypography variant="title" medium>{{ i18n.amount(data.total, data.currency, { hideCurrency: true }) }}</BentoTypography>
-                    <BentoTypography variant="title" medium>{{ data.currency }}</BentoTypography>
+                    <BentoTypography variant="title" medium>
+                        {{ i18n.amount(data.total, data.currency, { hideCurrency: true }) }}
+                    </BentoTypography>
+                    <BentoTypography variant="title" medium>
+                        {{ data.currency }}
+                    </BentoTypography>
                 </div>
             </div>
 
             <div :class="styles.breakdowns">
                 <div :class="styles.breakdown">
                     <div :class="styles.amountDisplay">
-                        <BentoTypography variant="body">{{ i18n.get('transactions.overview.totals.tags.incoming') }}</BentoTypography>
+                        <BentoTypography variant="body">
+                            {{ i18n.get('transactions.overview.totals.tags.incoming') }}
+                        </BentoTypography>
                         <div :class="styles.amountDisplayAmount">
                             <BentoTypography variant="body" strongest>
                                 {{ i18n.amount(data.incomings, data.currency, { hideCurrency: true }) }}
@@ -118,7 +126,9 @@ const expensesBreakdown = computed<BentoDatagridDataItem[]>(() =>
 
                 <div :class="styles.breakdown">
                     <div :class="styles.amountDisplay">
-                        <BentoTypography variant="body">{{ i18n.get('transactions.overview.totals.tags.outgoing') }}</BentoTypography>
+                        <BentoTypography variant="body">
+                            {{ i18n.get('transactions.overview.totals.tags.outgoing') }}
+                        </BentoTypography>
                         <div :class="styles.amountDisplayAmount">
                             <BentoTypography variant="body" strongest>
                                 {{ i18n.amount(data.expenses, data.currency, { hideCurrency: true }) }}

@@ -11,5 +11,5 @@
         "types": ["node", "vitest/globals", "@testing-library/jest-dom"]
     },
     "include": ["src/**/*.ts", "declarations/**/*.d.ts"],
-    "exclude": ["node_modules", "dist", "config/inject-css.ts", "packages"]
+    "exclude": ["node_modules", "dist", "packages"]
 }

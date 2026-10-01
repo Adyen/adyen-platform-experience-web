@@ -20,6 +20,7 @@ const props = defineProps<{
     dataCustomization?: { details?: TransactionDetailsCustomization };
     fetchingTransaction: boolean;
     hideTitle?: boolean;
+    onDismiss?: () => void;
     refreshTransaction: () => void;
     transaction: TransactionDetails;
     transactionNavigator: TransactionNavigatorState;
@@ -40,14 +41,16 @@ const refundIsDisabled = computed(() => refundMeta.refundDisabled.value || refun
 
 const lineItems = computed<readonly ILineItem[]>(() => Object.freeze(props.transaction.lineItems ?? EMPTY_ARRAY));
 
-watch(refundMeta.refundLocked, locked_ => {
-    if (locked_) locked.value = false;
+watch(refundMeta.refundLocked, isLocked => {
+    if (isLocked) locked.value = false;
 });
 </script>
 
 <template>
     <div v-if="!shouldHideTitle" :class="styles.title">
-        <BentoTypography variant="title">{{ i18n.get('transactions.details.title') }}</BentoTypography>
+        <BentoTypography variant="title">
+            {{ i18n.get('transactions.details.title') }}
+        </BentoTypography>
     </div>
 
     <div v-if="props.fetchingTransaction" :class="styles.loading">
@@ -85,5 +88,6 @@ watch(refundMeta.refundLocked, locked_ => {
         :set-active-view="(v: ActiveView) => (activeView = v)"
         :transaction="props.transaction"
         :transaction-navigator="props.transactionNavigator"
+        :on-dismiss="props.onDismiss"
     />
 </template>

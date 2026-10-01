@@ -20,10 +20,9 @@
 }
 
 .actions {
+    align-self: stretch;
     display: flex;
     justify-content: flex-end;
-    gap: style.token(spacer-040);
-    align-self: flex-end;
 }
 
 .title.title {

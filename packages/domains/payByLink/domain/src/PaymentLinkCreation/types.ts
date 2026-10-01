@@ -62,7 +62,7 @@ export interface PaymentLinkCreationProps {
     storeIds?: StoreIds;
     hideTitle?: boolean;
     onPaymentLinkCreated?: (paymentLink: PaymentLinkCreationFormValues) => void;
-    onCreationDismiss?: () => void;
+    onDismiss?: () => void;
     onContactSupport?: () => void;
     onShowDetails?: (data: { id: string; url: string }) => void;
 }

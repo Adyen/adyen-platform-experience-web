@@ -67,7 +67,6 @@
     "transactions.details.fields.refundReason": "Motivo del rimborso",
     "transactions.details.refund.actions.back": "Torna indietro",
     "transactions.details.refund.actions.refund.labels.amount": "Rimborso %{amount}",
-    "transactions.details.refund.actions.refund.labels.inProgress": "In corso",
     "transactions.details.refund.actions.refund.labels.payment": "Rimborsa pagamento",
     "transactions.details.refund.alerts.inProgress": "Il rimborso è in fase di elaborazione.",
     "transactions.details.refund.alerts.inProgressAmount": "Il rimborso parziale di %{amount} è in elaborazione.",

@@ -53,7 +53,7 @@ describe('useConfigController', () => {
 
         let controller: ReturnType<typeof useConfigController> | undefined;
 
-        const ConfigControllerHarness = () => {
+        const configControllerHarness = () => {
             controller = useConfigController({
                 getSession: () => session.value,
                 getType: () => type.value,
@@ -62,7 +62,7 @@ describe('useConfigController', () => {
         };
 
         target = document.createElement('div');
-        app = createApp({ setup: ConfigControllerHarness });
+        app = createApp({ setup: configControllerHarness });
         app.mount(target);
 
         await vi.waitFor(() => {
@@ -102,7 +102,7 @@ describe('useConfigController', () => {
         const { context, session, emit } = createSessionStub(true);
         let controller: ReturnType<typeof useConfigController> | undefined;
 
-        const ConfigControllerHarness = () => {
+        const configControllerHarness = () => {
             controller = useConfigController({
                 getSession: () => session,
                 getType: () => 'transactions',
@@ -111,7 +111,7 @@ describe('useConfigController', () => {
         };
 
         target = document.createElement('div');
-        app = createApp({ setup: ConfigControllerHarness });
+        app = createApp({ setup: configControllerHarness });
         app.mount(target);
 
         await vi.waitFor(() => {

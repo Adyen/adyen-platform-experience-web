@@ -222,9 +222,7 @@ const getRowActions: BentoDataGridRowActionsProp = (item: BentoDatagridDataItem)
     const isDownloading = isDownloadingReport(reportKey);
     const ButtonIcon = failedReportKeys.value.has(reportKey) ? DownloadErrorIcon : DownloadIcon;
 
-    const label = isDownloading
-        ? `${i18n.get('reports.common.actions.download.labels.inProgress')}..`
-        : i18n.get('reports.overview.list.controls.downloadReport.label');
+   const label = i18n.get('reports.overview.list.controls.downloadReport.label');
 
     return [
         {
@@ -277,8 +275,6 @@ function formatDate(dateStr: string): string {
 
 <template>
     <div :class="styles.root">
-        <BentoToast />
-
         <DataOverviewError
             v-if="props.error"
             :error="props.error"
@@ -312,7 +308,9 @@ function formatDate(dateStr: string): string {
             </template>
             <template #item-dateAndReportType="{ item }">
                 <div :class="styles.dateReportType">
-                    <BentoTypography v-if="item.reportType" variant="body" stronger>{{ item.reportType }}</BentoTypography>
+                    <BentoTypography v-if="item.reportType" variant="body" stronger>
+                        {{ item.reportType }}
+                    </BentoTypography>
                     <time v-if="item.createdAt" :datetime="item.createdAt">
                         <BentoTypography variant="body" :class="styles.date">{{ formatDate(item.createdAt) }}</BentoTypography>
                     </time>
@@ -323,4 +321,5 @@ function formatDate(dateStr: string): string {
             </template>
         </BentoDataGrid>
     </div>
+    <BentoToast />
 </template>
