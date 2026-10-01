@@ -367,7 +367,7 @@ module.exports = [
     // Decision-heavy code belongs in composables or domain/src, where unit coverage measures it, not in components.
     {
         files: ['packages/domains/*/vue/src/**/*.vue'],
-        // Known exceptions, above the limit before it was introduced. Extract their logic, then remove them here.
+        // TODO: Known exceptions, above the limit before it was introduced. Extract their logic, then remove them here.
         ignores: [
             'packages/domains/transactions/vue/src/TransactionDetails/components/PaymentDetails/PaymentDetailsProperties.vue',
             'packages/domains/disputes/vue/src/DisputeManagement/components/DisputeDataProperties.vue',
@@ -381,7 +381,7 @@ module.exports = [
     // domain/src stays framework-neutral: business rules are unit-tested there without Vue.
     {
         files: ['packages/domains/*/domain/src/**/*.ts'],
-        // Known exception: the payment link schema types its translator with the Vue-layer `I18n` type.
+        // TODO: Known exception: the payment link schema types its translator with the Vue-layer `I18n` type.
         // Move that type to the framework-neutral core, then remove this entry.
         ignores: ['packages/domains/payByLink/domain/src/PaymentLinkCreation/schema{,.test}.ts'],
         rules: {

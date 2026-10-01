@@ -5,9 +5,7 @@ on:
         branches:
             - main
             - develop
-            - version/v1.x
             - group/*
-            - bot/translations
         types: [opened, synchronize, reopened]
         paths-ignore:
             - README.md
@@ -32,7 +30,6 @@ jobs:
              github.event.review.state == 'approved' &&
              (github.event.pull_request.base.ref == 'main' ||
               github.event.pull_request.base.ref == 'develop' ||
-              github.event.pull_request.base.ref == 'version/v1.x' ||
               startsWith(github.event.pull_request.base.ref, 'group/')))
         runs-on: ubuntu-latest
         timeout-minutes: 15
