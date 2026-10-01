@@ -36,10 +36,20 @@ if git diff-index --cached --quiet HEAD; then
   # there are no changes to commit
   echo "No translations updates"
 else
-  # Create a commit for staged files and push
+  # Create a commit for staged files and push. The branch is recreated from the base branch on
+  # every run and is written only by this workflow (dispatches are serialized by the workflow
+  # concurrency group), so a plain force push is intended. --force-with-lease is not usable
+  # here: actions/checkout never fetches the bot branch, so there is no remote-tracking ref to
+  # lease against, and the push would be rejected as stale info on every refresh run.
   git commit -m "${COMMIT_TITLE}"
-  git push -u origin "${BRANCH_NAME}"
+  git push --force origin "${BRANCH_NAME}"
 
-  # Create a PR on the default branch (using GitHub CLI)
-  gh pr create --base "${BASE_REF}" --head "${BRANCH_NAME}" --fill
+  # Create a PR on the base branch (using GitHub CLI). When a PR is already open for the branch,
+  # the force push above has refreshed it, so a new PR is only needed when none exists yet.
+  pr_count=$(gh pr list --head "${BRANCH_NAME}" --json number --jq 'length') || exit 1
+  if [ "$pr_count" -eq 0 ]; then
+    gh pr create --base "${BASE_REF}" --head "${BRANCH_NAME}" --fill
+  else
+    echo "Open pull request for ${BRANCH_NAME} already exists; it has been refreshed"
+  fi
 fi
