@@ -14,6 +14,7 @@ const { refresh, refreshCount } = createRefreshContext();
             :key="refreshCount"
             :data-customization="props.dataCustomization"
             :on-contact-support="props.onContactSupport"
+            :on-dismiss="props.onDismiss"
             :hide-title="props.hideTitle"
         />
     </UIElementProvider>

@@ -20,9 +20,8 @@
 }
 
 .actions {
-    align-self: flex-end;
+    align-self: stretch;
     display: flex;
-    gap: style.token(spacer-040);
     justify-content: flex-end;
 }
 

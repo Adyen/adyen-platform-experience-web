@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { ErrorMessageDisplay } from '@integration-components/composables-vue';
-import { BentoTypography, BentoDataGrid, BentoDivider } from '@adyen/bento-vue3';
+import { BentoDivider, BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { getTransactionCategory } from '@integration-components/transactions/domain';
 import type { CurrencyLookupRecord } from '../../composables/useCurrenciesLookup';

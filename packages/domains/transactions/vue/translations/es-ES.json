@@ -67,7 +67,6 @@
     "transactions.details.fields.refundReason": "Motivo de la devolución",
     "transactions.details.refund.actions.back": "Volver",
     "transactions.details.refund.actions.refund.labels.amount": "Devuelve %{amount}",
-    "transactions.details.refund.actions.refund.labels.inProgress": "En curso",
     "transactions.details.refund.actions.refund.labels.payment": "Pago de la devolución",
     "transactions.details.refund.alerts.inProgress": "La devolución se está procesando.",
     "transactions.details.refund.alerts.inProgressAmount": "Se está procesando la devolución parcial de %{amount}.",
