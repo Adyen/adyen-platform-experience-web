@@ -88,7 +88,6 @@ jobs:
         name: Unit-test coverage for changed code
         needs: unit-tests
         if: >-
-            always() &&
             github.event_name == 'pull_request' &&
             github.event.pull_request.head.repo.full_name == github.repository &&
             (github.event.pull_request.base.ref == 'develop' ||
@@ -167,7 +166,6 @@ jobs:
         name: Analyze
         needs: unit-tests
         if: >-
-            always() &&
             github.event_name == 'pull_request' &&
             github.event.pull_request.base.ref == 'develop' &&
             github.actor != 'dependabot[bot]' &&

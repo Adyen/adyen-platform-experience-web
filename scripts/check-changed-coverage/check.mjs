@@ -19,14 +19,14 @@ const isRuntimeTypeScript = file =>
     !/(?:^|\/)(?:index|constants|types)\.ts$/.test(file) &&
     !/\.(?:test|spec|stories|d)\.ts$/.test(file);
 
-const normalizePath = file => (isAbsolute(file) ? relative(process.cwd(), file) : file.replace(/^\.\//, ''));
+const normalizePath = file => (isAbsolute(file) ? relative(process.cwd(), file) : file.replace(/^\.\//, '')).replace(/\\/g, '/');
 
 const changedLines = diff => {
     const files = new Map();
     let file;
     let lineNumber;
 
-    for (const line of diff.split('\n')) {
+    for (const line of diff.split(/\r?\n/)) {
         if (line.startsWith('diff --git ')) {
             file = undefined;
             lineNumber = undefined;
@@ -52,7 +52,7 @@ const measuredLines = lcov => {
     const files = new Map();
     let file;
 
-    for (const line of lcov.split('\n')) {
+    for (const line of lcov.split(/\r?\n/)) {
         if (line.startsWith('SF:')) {
             file = normalizePath(line.slice(3));
             files.set(file, { hits: new Map(), branches: new Map() });

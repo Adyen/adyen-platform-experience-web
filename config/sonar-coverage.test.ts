@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { expect, test } from 'vitest';
 
-const readProjectFile = (path: string) => readFileSync(resolve(__dirname, '..', path), 'utf8');
+const readProjectFile = (path: string) => readFileSync(resolve(__dirname, '..', path), 'utf8').replace(/\r\n/g, '\n');
 
 test('Sonar measures unit TypeScript without excluding Vue from issue analysis', () => {
     const properties = readProjectFile('sonar-project.properties');
