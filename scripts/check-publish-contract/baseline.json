@@ -83,7 +83,7 @@
         "TranslationKey"
     ],
     "esFileCount": 1195,
-    "cssHash": "02ec4aa04eb3b5bb9559463057e19b3638250d5d008200c00e67cbbf4e28bcd6",
+    "cssHash": "c1ba32bdfbb07d7e60936f5ee5570a7ef01cf66901326e410d30a7eb0a973676",
     "typeFiles": [
         "packages/domains/capital/domain/src/CapitalOffer/constants.d.ts",
         "packages/domains/capital/domain/src/CapitalOffer/index.d.ts",
