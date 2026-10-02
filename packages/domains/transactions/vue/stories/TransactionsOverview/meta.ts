@@ -10,13 +10,11 @@ export const transactionsOverviewMeta: Meta<ElementProps<TransactionsOverviewExt
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
         preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
         hideTitle: { control: 'boolean' },
-        showDetails: { control: 'boolean' },
         allowLimitSelection: { control: 'boolean' },
     },
     args: {
         component: TransactionsOverviewElement,
         allowLimitSelection: true,
-        showDetails: true,
     },
     parameters: {
         controls: {

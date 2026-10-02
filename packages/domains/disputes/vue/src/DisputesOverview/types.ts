@@ -11,7 +11,6 @@ export interface DisputesOverviewExternalProps extends UIElementProps {
     balanceAccountId?: string;
     preferredLimit?: 10 | 20;
     hideTitle?: boolean;
-    showDetails?: boolean;
     onContactSupport?: () => void;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
     dataCustomization?: {

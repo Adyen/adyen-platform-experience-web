@@ -23,7 +23,6 @@ const props = defineProps<{
     allowLimitSelection?: boolean;
     hideTitle?: boolean;
     preferredLimit?: number;
-    showDetails?: boolean;
     storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
     onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
     onContactSupport?: () => void;
@@ -135,17 +134,18 @@ const isDetailsModalOpen = ref(false);
 const selectedPaymentLink = ref<IPaymentLinkItem | null>(null);
 const hasDetailsToRefresh = ref(false);
 
-function showDetailsModal() {
+function showDetailsModal(paymentLink: IPaymentLinkItem) {
+    selectedPaymentLink.value = paymentLink;
     isDetailsModalOpen.value = true;
 }
 
 function onRowClick(paymentLink: IPaymentLinkItem) {
-    selectedPaymentLink.value = paymentLink;
+    const showPaymentLinkDetailsModal = () => showDetailsModal(paymentLink);
 
     if (props.onRecordSelection) {
-        props.onRecordSelection({ id: paymentLink.paymentLinkId, showModal: showDetailsModal });
-    } else if (props.showDetails !== false) {
-        showDetailsModal();
+        props.onRecordSelection({ id: paymentLink.paymentLinkId, showModal: showPaymentLinkDetailsModal });
+    } else {
+        showPaymentLinkDetailsModal();
     }
 }
 

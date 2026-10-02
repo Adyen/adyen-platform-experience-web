@@ -122,8 +122,13 @@ function showModal(id: string) {
 
 function onRowClick(dispute: IDisputeListItem) {
     const id = dispute.disputePspReference;
-    if (props.showDetails !== false) showModal(id);
-    props.onRecordSelection?.({ id, showModal: () => showModal(id) });
+    const showDisputeModal = () => showModal(id);
+
+    if (props.onRecordSelection) {
+        props.onRecordSelection({ id, showModal: showDisputeModal });
+    } else {
+        showDisputeModal();
+    }
 }
 
 function refreshDisputesList(gotoStatusGroup?: IDisputeStatusGroup) {

@@ -12,7 +12,6 @@ const props = withDefaults(
         allowLimitSelection?: boolean;
         preferredLimit?: number;
         hideTitle?: boolean;
-        showDetails?: boolean;
         onContactSupport?: () => void;
         onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
         dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
@@ -43,7 +42,6 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
             :allow-limit-selection="props.allowLimitSelection"
             :preferred-limit="props.preferredLimit"
             :hide-title="props.hideTitle"
-            :show-details="props.showDetails"
             :on-contact-support="props.onContactSupport"
             :on-record-selection="props.onRecordSelection"
             :data-customization="props.dataCustomization"
