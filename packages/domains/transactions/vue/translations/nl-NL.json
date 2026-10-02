@@ -67,7 +67,6 @@
     "transactions.details.fields.refundReason": "Reden voor terugstorting",
     "transactions.details.refund.actions.back": "Terug",
     "transactions.details.refund.actions.refund.labels.amount": "%{amount} terugbetalen",
-    "transactions.details.refund.actions.refund.labels.inProgress": "Wordt aan gewerkt",
     "transactions.details.refund.actions.refund.labels.payment": "Betaling terugbetalen",
     "transactions.details.refund.alerts.inProgress": "De terugbetaling wordt verwerkt.",
     "transactions.details.refund.alerts.inProgressAmount": "De gedeeltelijke terugbetaling van %{amount} wordt verwerkt.",

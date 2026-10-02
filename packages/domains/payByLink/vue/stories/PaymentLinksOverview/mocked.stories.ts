@@ -45,6 +45,7 @@ export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternal
     name: 'With props to sub-components',
     args: {
         mockedApi: true,
+        hideTitle: true,
         paymentLinkCreation: {
             fieldsConfig: {
                 data: {
@@ -53,7 +54,7 @@ export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternal
             },
         },
         paymentLinkSettings: {
-            hideTitle: true,
+            onDismiss: () => {},
         },
     },
 };

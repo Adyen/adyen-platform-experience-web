@@ -20,6 +20,7 @@ export type TransactionDetails = ITransactionWithDetails & {
 export type TransactionDetailsProps = ExternalUIComponentProps<{
     dataCustomization?: { details?: TransactionDetailsCustomization };
     id: string;
+    onDismiss?: () => void;
 }>;
 
 export type TransactionDetailsFields =
