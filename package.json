@@ -73,6 +73,7 @@
     "test": "cross-env TEST_ENV=1 nx run @adyen/adyen-platform-experience-web:unit",
     "test:contract": "cross-env NODE_OPTIONS='--no-experimental-strip-types' playwright test --project contract",
     "test:coverage": "vitest run --config vite.config.ts --coverage",
+    "test:coverage:unit": "cross-env UNIT_LOGIC_COVERAGE=true vitest run --config vite.config.ts --coverage",
     "test:integration": "cross-env TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --project local-chrome",
     "test:integration:vue": "pnpm run test:integration",
     "test:integration:ui": "pnpm run test:integration --ui",
