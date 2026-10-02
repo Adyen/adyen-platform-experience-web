@@ -20,7 +20,6 @@ const props = defineProps<{
     hideTitle?: boolean;
     showDetails?: boolean;
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
     onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
     dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
     balanceAccounts: IBalanceAccountBase[] | undefined;
@@ -61,7 +60,6 @@ const payoutsListResult = usePayoutsList(() => ({
     createdUntil: filterParams.value.createdUntil,
     allowLimitSelection: props.allowLimitSelection,
     preferredLimit: props.preferredLimit,
-    onFiltersChanged: props.onFiltersChanged,
 }));
 
 const isLoading = computed(

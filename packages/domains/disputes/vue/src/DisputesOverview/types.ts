@@ -1,6 +1,6 @@
 import type { UIElementProps } from '@integration-components/core/vue';
 import type { IBalanceAccountBase } from '@integration-components/types';
-import type { DisputeDetailsCustomization, DisputesListCustomization, DisputesOverviewFilters } from '@integration-components/disputes/domain';
+import type { DisputeDetailsCustomization, DisputesListCustomization } from '@integration-components/disputes/domain';
 
 export type DisputeStatusGroup = 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_CLOSED';
 
@@ -13,7 +13,6 @@ export interface DisputesOverviewExternalProps extends UIElementProps {
     hideTitle?: boolean;
     showDetails?: boolean;
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: DisputesOverviewFilters) => any;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
     dataCustomization?: {
         list?: DisputesListCustomization;

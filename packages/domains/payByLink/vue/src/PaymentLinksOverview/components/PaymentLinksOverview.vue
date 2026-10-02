@@ -25,7 +25,6 @@ const props = defineProps<{
     preferredLimit?: number;
     showDetails?: boolean;
     storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
-    onFiltersChanged?: PaymentLinksOverviewExternalProps['onFiltersChanged'];
     onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
     onContactSupport?: () => void;
     paymentLinkCreation?: PaymentLinksOverviewExternalProps['paymentLinkCreation'];
@@ -100,7 +99,6 @@ const paymentLinksListResult = usePaymentLinksList(() => ({
     createdUntil: filtersValue.value.createdUntil,
     allowLimitSelection: props.allowLimitSelection,
     preferredLimit: props.preferredLimit,
-    onFiltersChanged: props.onFiltersChanged,
     lastRefreshTimestamp: lastRefreshTimestamp.value,
 }));
 

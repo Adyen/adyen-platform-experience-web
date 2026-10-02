@@ -103,7 +103,6 @@ const disputesListResult = useDisputesList(() => ({
     allowLimitSelection: props.allowLimitSelection,
     preferredLimit: props.preferredLimit,
     refreshToken: refreshToken.value,
-    onFiltersChanged: props.onFiltersChanged,
 }));
 
 const isLoading = computed(

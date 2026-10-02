@@ -12,7 +12,6 @@ const props = withDefaults(
         preferredLimit?: 10 | 20;
         showDetails?: boolean;
         storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
-        onFiltersChanged?: PaymentLinksOverviewExternalProps['onFiltersChanged'];
         onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
         onContactSupport?: () => void;
         paymentLinkCreation?: PaymentLinksOverviewExternalProps['paymentLinkCreation'];
@@ -34,7 +33,6 @@ const { filters: filterOptions, isFetching: isFilterOptionsLoading, error: filte
         :preferred-limit="props.preferredLimit"
         :show-details="props.showDetails"
         :store-ids="props.storeIds"
-        :on-filters-changed="props.onFiltersChanged"
         :on-record-selection="props.onRecordSelection"
         :on-contact-support="props.onContactSupport"
         :payment-link-creation="props.paymentLinkCreation"
