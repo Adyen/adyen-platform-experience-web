@@ -28,5 +28,10 @@ providePaymentLinkSettings({
 </script>
 
 <template>
-    <PaymentLinkSettings :hide-title="props.hideTitle" :on-contact-support="props.onContactSupport" :navigate-back="props.navigateBack" />
+    <PaymentLinkSettings
+        :hide-title="props.hideTitle"
+        :on-contact-support="props.onContactSupport"
+        :navigate-back="props.navigateBack"
+        :on-dismiss="props.onDismiss"
+    />
 </template>

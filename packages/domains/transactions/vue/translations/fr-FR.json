@@ -67,7 +67,6 @@
     "transactions.details.fields.refundReason": "Motif du remboursement",
     "transactions.details.refund.actions.back": "Retour",
     "transactions.details.refund.actions.refund.labels.amount": "Rembourser %{amount}",
-    "transactions.details.refund.actions.refund.labels.inProgress": "En cours",
     "transactions.details.refund.actions.refund.labels.payment": "Remboursement de la transaction",
     "transactions.details.refund.alerts.inProgress": "Le remboursement est en cours de traitement.",
     "transactions.details.refund.alerts.inProgressAmount": "Le remboursement partiel de %{amount} est en cours de traitement.",

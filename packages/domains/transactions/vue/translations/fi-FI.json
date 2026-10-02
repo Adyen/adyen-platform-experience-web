@@ -67,7 +67,6 @@
     "transactions.details.fields.refundReason": "Palautuksen syy",
     "transactions.details.refund.actions.back": "Palaa takaisin",
     "transactions.details.refund.actions.refund.labels.amount": "Palautus %{amount}",
-    "transactions.details.refund.actions.refund.labels.inProgress": "Käynnissä",
     "transactions.details.refund.actions.refund.labels.payment": "Palautusmaksu",
     "transactions.details.refund.alerts.inProgress": "Palautusta käsitellään parhaillaan.",
     "transactions.details.refund.alerts.inProgressAmount": "Summan (%{amount}) osittaista hyvitystä käsitellään.",

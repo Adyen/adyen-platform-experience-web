@@ -53,6 +53,26 @@ test.describe('Payment Links Overview', () => {
             await expect(page.getByRole('button', { name: 'Payment Link ID' })).toBeVisible();
         });
 
+        test('should only show Clear all while a link type or status is selected', async ({ page }) => {
+            const clearAll = page.getByRole('button', { name: 'Clear all', exact: true });
+            await expect(page.getByRole('button', { name: 'Status', exact: true })).toBeVisible();
+            await expect(clearAll).toHaveCount(0);
+
+            for (const { filter, option } of [
+                { filter: 'Type', option: 'Single use' },
+                { filter: 'Status', option: 'Payment pending' },
+            ]) {
+                await page.getByRole('button', { name: filter, exact: true }).click();
+                const filterDialog = page.getByRole('dialog');
+                await filterDialog.getByRole('checkbox', { name: option, exact: true }).click();
+                await filterDialog.getByRole('button', { name: 'Apply', exact: true }).click();
+
+                await expect(clearAll).toBeVisible();
+                await clearAll.click();
+                await expect(clearAll).toHaveCount(0);
+            }
+        });
+
         test('should render Stores before the other filters when stores load', async ({ page }) => {
             const filterButtons = page.getByRole('button', {
                 name: /^(?:Stores|Date range|Type|Status|Merchant reference|Payment Link ID)/,

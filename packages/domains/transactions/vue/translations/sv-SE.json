@@ -67,7 +67,6 @@
     "transactions.details.fields.refundReason": "Orsak till återbetalning",
     "transactions.details.refund.actions.back": "Tillbaka",
     "transactions.details.refund.actions.refund.labels.amount": "Återbetalning %{amount}",
-    "transactions.details.refund.actions.refund.labels.inProgress": "Pågående",
     "transactions.details.refund.actions.refund.labels.payment": "Utför återbetalning",
     "transactions.details.refund.alerts.inProgress": "Återbetalningen bearbetas.",
     "transactions.details.refund.alerts.inProgressAmount": "Den delvisa återbetalningen av %{amount} behandlas.",

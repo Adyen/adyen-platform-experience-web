@@ -4,7 +4,6 @@
     "reports.common.actions.copy.labels.default": "Copiar",
     "reports.common.actions.copy.labels.done": "Copiado",
     "reports.common.actions.copy.labels.errorCode": "Copiar código de erro",
-    "reports.common.actions.download.labels.inProgress": "Baixando",
     "reports.common.actions.refresh.labels.default": "Atualizar",
     "reports.common.errors.componentUnavailable": "Ocorreu algum erro.",
     "reports.common.errors.contactSupport": "Procure o suporte para obter ajuda.",

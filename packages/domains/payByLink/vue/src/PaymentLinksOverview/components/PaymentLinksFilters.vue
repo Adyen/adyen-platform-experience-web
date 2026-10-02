@@ -167,9 +167,9 @@ function getFilterValue(field: string) {
         case 'dateRange':
             return selectedDateRange.value;
         case 'linkTypes':
-            return selectedLinkTypes.value;
+            return selectedLinkTypes.value.length ? selectedLinkTypes.value : undefined;
         case 'statuses':
-            return selectedStatuses.value;
+            return selectedStatuses.value.length ? selectedStatuses.value : undefined;
         case 'merchantReference':
             return selectedMerchantReference.value;
         case 'paymentLinkId':
