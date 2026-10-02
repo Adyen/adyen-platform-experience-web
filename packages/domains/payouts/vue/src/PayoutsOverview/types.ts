@@ -1,13 +1,11 @@
 import type { UIElementProps } from '@integration-components/core/vue';
-import type { IBalanceAccountBase } from '@integration-components/types';
+import type { IBalanceAccountBase, PaginationProps } from '@integration-components/types';
 import type { PayoutDetailsCustomization, PayoutsListCustomization } from '@integration-components/payouts/domain';
 
 // ── Component prop types ──
 
-export interface PayoutsOverviewExternalProps extends UIElementProps {
+export interface PayoutsOverviewExternalProps extends UIElementProps, PaginationProps {
     balanceAccountId?: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: number;
     hideTitle?: boolean;
     showDetails?: boolean;
     onContactSupport?: () => void;

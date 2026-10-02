@@ -1,10 +1,11 @@
 import { computed, watch } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
-import { isFunction, listFrom } from '@integration-components/utils';
+import { usePageLimit } from '@integration-components/composables-vue/usePageLimit';
+import { DEFAULT_PAGE_LIMITS, isFunction, listFrom } from '@integration-components/utils';
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 import type { DisputesOverviewFilters } from '../../../../domain/src';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
+import type { DisputesOverviewExternalProps } from '../types';
 
 interface UseDisputesListProps {
     fetchEnabled: boolean;
@@ -15,7 +16,7 @@ interface UseDisputesListProps {
     createdSince: string | undefined;
     createdUntil: string | undefined;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: DisputesOverviewExternalProps['preferredLimit'];
     refreshToken?: number;
     onFiltersChanged?: (filters: DisputesOverviewFilters) => any;
 }
@@ -42,6 +43,12 @@ export function useDisputesList(props: () => UseDisputesListProps) {
         },
         { immediate: true }
     );
+
+    const pageLimit = usePageLimit({
+        options: DEFAULT_PAGE_LIMITS,
+        preferredLimit: () => props().preferredLimit,
+        allowLimitSelection: () => props().allowLimitSelection,
+    });
 
     return useCursorPaginatedRecords<IDisputeListItem>({
         getFetchKey: () => {
@@ -74,7 +81,7 @@ export function useDisputesList(props: () => UseDisputesListProps) {
                 previousCursor: json?._links?.prev?.cursor,
             };
         },
-        preferredLimit: props().preferredLimit ?? DEFAULT_PAGE_LIMIT,
-        limitOptions: () => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined),
+        preferredLimit: pageLimit.initialLimit,
+        limitOptions: pageLimit.limitOptions,
     });
 }

@@ -1,4 +1,4 @@
-import { computed, onScopeDispose, ref, watch } from 'vue';
+import { computed, onScopeDispose, ref, toValue, watch, type MaybeRefOrGetter } from 'vue';
 
 export interface CursorPaginatedResponse<T> {
     records: T[] | undefined;
@@ -23,7 +23,7 @@ interface UseCursorPaginatedRecordsOptions<T> {
     getFetchKey: () => string | null;
     fetchPage: (request: CursorPageRequest) => Promise<CursorPaginatedResponse<T>>;
     preferredLimit: number;
-    limitOptions?: () => readonly number[] | undefined;
+    limitOptions?: MaybeRefOrGetter<readonly number[] | undefined>;
     onSuccess?: (response: CursorPaginatedResponse<T>) => void;
     onError?: (error: unknown) => CursorPageError<T>;
 }
@@ -149,7 +149,7 @@ export function useCursorPaginatedRecords<T>({
         records,
         page,
         limit,
-        limitOptions: computed(() => limitOptions?.()),
+        limitOptions: computed(() => toValue(limitOptions)),
         hasNext,
         hasPrevious,
         hasFetchedOnce,

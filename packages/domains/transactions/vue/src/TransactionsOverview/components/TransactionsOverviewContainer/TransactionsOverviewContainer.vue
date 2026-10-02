@@ -10,7 +10,7 @@ const props = withDefaults(
     defineProps<{
         balanceAccountId?: string;
         allowLimitSelection?: boolean;
-        preferredLimit?: number;
+        preferredLimit?: TransactionsOverviewExternalProps['preferredLimit'];
         hideTitle?: boolean;
         showDetails?: boolean;
         onContactSupport?: () => void;

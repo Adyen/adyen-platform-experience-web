@@ -22,7 +22,7 @@ import styles from './PaymentLinksOverview.module.scss';
 const props = defineProps<{
     allowLimitSelection?: boolean;
     hideTitle?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
     showDetails?: boolean;
     storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
     onFiltersChanged?: PaymentLinksOverviewExternalProps['onFiltersChanged'];
