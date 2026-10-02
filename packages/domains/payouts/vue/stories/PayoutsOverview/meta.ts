@@ -6,7 +6,6 @@ import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration
 export const payoutsOverviewMeta: Meta<ElementProps<PayoutsOverviewExternalProps>> = {
     title: 'Components/Payouts/Payouts Overview',
     argTypes: {
-        onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
         preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
