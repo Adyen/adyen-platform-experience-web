@@ -14,7 +14,6 @@ const props = defineProps<{
     id: string;
     date: string;
     balanceAccountDescription?: string;
-    hideTitle?: boolean;
     onContactSupport?: () => void;
     onDismiss?: () => void;
     dataCustomization?: { details?: PayoutDetailsCustomization };
@@ -100,7 +99,6 @@ const showLoadingPlaceholder = computed(() => isFetching.value && !data.value &&
             :balance-account-description="resolvedBalanceAccountDescription"
             :extra-fields="extraFields"
             :data-customization="props.dataCustomization"
-            :hide-title="props.hideTitle"
             :on-dismiss="props.onDismiss"
         />
     </div>

@@ -17,7 +17,6 @@ const props = defineProps<{
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
     preferredLimit?: number;
-    hideTitle?: boolean;
     onContactSupport?: () => void;
     onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
     dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
@@ -106,7 +105,7 @@ function closeModal() {
 
 <template>
     <div :class="styles.root">
-        <div v-if="!props.hideTitle && !hideTitles" :class="styles.header">
+        <div v-if="!hideTitles" :class="styles.header">
             <BentoTypography variant="title">
                 {{ i18n.get('payouts.overview.title') }}
             </BentoTypography>

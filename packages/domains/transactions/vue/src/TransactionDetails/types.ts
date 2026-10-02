@@ -6,5 +6,4 @@ export interface TransactionDetailsExternalProps extends UIElementProps {
     dataCustomization?: { details?: TransactionDetailsCustomization };
     onContactSupport?: () => void;
     onDismiss?: () => void;
-    hideTitle?: boolean;
 }

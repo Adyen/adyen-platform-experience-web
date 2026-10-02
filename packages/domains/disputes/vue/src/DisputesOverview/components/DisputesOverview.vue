@@ -153,7 +153,7 @@ onUnmounted(() => {
 <template>
     <div :class="[styles.root, isMobile ? styles.rootXs : '']">
         <div :class="styles.header">
-            <BentoTypography v-if="!props.hideTitle && !hideTitles" el="h2" variant="title" stronger>
+            <BentoTypography v-if="!hideTitles" el="h2" variant="title" stronger>
                 {{ i18n.get('disputes.overview.common.title') }}
             </BentoTypography>
             <div v-if="isMobile" role="toolbar" :class="[styles.toolbar, styles.toolbarCompact]">

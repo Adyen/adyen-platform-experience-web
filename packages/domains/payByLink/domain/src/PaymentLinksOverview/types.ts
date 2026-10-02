@@ -24,7 +24,6 @@ export interface PaymentLinksOverviewFilters {
 export interface PaymentLinksOverviewProps {
     allowLimitSelection?: boolean;
     balanceAccountId?: string;
-    hideTitle?: boolean;
     preferredLimit?: 10 | 20;
     storeIds?: StoreIds;
     onContactSupport?: () => void;

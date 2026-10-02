@@ -15,7 +15,6 @@ const props = defineProps<{
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
     preferredLimit?: number;
-    hideTitle?: boolean;
     onContactSupport?: () => void;
     dataCustomization?: any;
     balanceAccounts: IBalanceAccountBase[] | undefined;
@@ -68,7 +67,7 @@ const listError = computed(() => reportsListResult.error.value as Error | undefi
 
 <template>
     <div :class="styles.root">
-        <div v-if="!props.hideTitle && !hideTitles" :class="styles.header">
+        <div v-if="!hideTitles" :class="styles.header">
             <BentoTypography variant="title">
                 {{ i18n.get('reports.overview.title') }}
             </BentoTypography>

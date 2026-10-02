@@ -10,7 +10,6 @@ export const paymentLinkCreationMeta: Meta<ElementProps<PaymentLinkCreationExter
         onPaymentLinkCreated: enabledDisabledCallbackRadioControls('onPaymentLinkCreated'),
         onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
         onShowDetails: enabledDisabledCallbackRadioControls('onShowDetails'),
-        hideTitle: { control: 'boolean' },
     },
     args: {
         component: PaymentLinkCreationElement,
