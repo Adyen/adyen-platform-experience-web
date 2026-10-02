@@ -67,7 +67,6 @@
     "transactions.details.fields.refundReason": "Grund für den Refund",
     "transactions.details.refund.actions.back": "Zurück",
     "transactions.details.refund.actions.refund.labels.amount": "Rückerstattung (%{amount})",
-    "transactions.details.refund.actions.refund.labels.inProgress": "In Bearbeitung",
     "transactions.details.refund.actions.refund.labels.payment": "Zahlung erstatten",
     "transactions.details.refund.alerts.inProgress": "Die Erstattung wird bearbeitet.",
     "transactions.details.refund.alerts.inProgressAmount": "Die Teilrückerstattung von %{amount} wird bearbeitet.",

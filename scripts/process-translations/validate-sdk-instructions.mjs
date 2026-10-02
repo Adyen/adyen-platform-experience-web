@@ -1,13 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-
-// Child processes run in a fully pinned environment: the only PATH they see is a literal list of
-// fixed, unwriteable system directories, and nothing is inherited from process.env, so neither a
-// substituted binary nor variables such as GIT_* can influence the child.
-const SAFE_ENV = { PATH: '/usr/bin:/bin' };
-
-// Git is invoked through its absolute system path, so the binary is never resolved via PATH.
-const GIT_BIN = '/usr/bin/git';
+import { GIT_BIN, SAFE_ENV } from './safe-env.mjs';
 
 const SDK_CATALOGS = [
     {

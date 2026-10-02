@@ -42,12 +42,11 @@ export interface PaymentLinksOverviewProps extends PaginationProps {
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => void;
     paymentLinkCreation?: {
         onPaymentLinkCreated?: (paymentLink: PaymentLinkCreationFormValues) => void;
-        onCreationDismiss?: () => void;
+        onDismiss?: () => void;
         fieldsConfig?: PaymentLinkCreationFieldsConfig;
     };
     paymentLinkSettings?: {
-        hideTitle?: boolean;
-        storeIds?: StoreIds;
+        onDismiss: () => void;
     };
 }
 

@@ -7,6 +7,10 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
 }
 
+.dropdown {
+    justify-content: end;
+}
+
 .root {
     display: flex;
     flex-direction: column;

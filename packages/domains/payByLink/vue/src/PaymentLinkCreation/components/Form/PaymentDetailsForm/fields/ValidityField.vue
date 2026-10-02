@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { BentoDropdown, BentoInputField } from '@adyen/bento-vue3';
+import { BentoDropdown, BentoFormLayoutGroup, BentoInputField } from '@adyen/bento-vue3';
 import FieldWrapper from '../../../fields/FieldWrapper.vue';
 import { useWizard } from '../../../../composables/wizardContext';
 import { FLEXIBLE_VALIDITY_ID, LINK_VALIDITY_DURATION_UNITS } from '../../../../../../../domain/src';
@@ -110,7 +110,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
             />
         </FieldWrapper>
         <FieldWrapper v-if="selection === FLEXIBLE_VALIDITY_ID" name="linkValidity.quantity">
-            <div :class="styles.custom">
+            <BentoFormLayoutGroup layout="33-66">
                 <BentoInputField
                     :label="i18n.get('payByLink.creation.fields.validity.customDuration.label')"
                     type="number"
@@ -126,9 +126,11 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                     :model-value="unit"
                     :readonly="config.readOnly"
                     :error-message="unitError"
+                    :error="!!error"
+                    :class="styles.dropdown"
                     @update:model-value="onUnitUpdate"
                 />
-            </div>
+            </BentoFormLayoutGroup>
         </FieldWrapper>
     </div>
 </template>

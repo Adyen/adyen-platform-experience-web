@@ -15,5 +15,3 @@ export class CapitalOfferElement extends UIElement<CapitalOfferExternalProps> {
         return await getExternalCapitalState(this.core.session, this.core.getCdnConfig);
     }
 }
-
-export default CapitalOfferElement;
