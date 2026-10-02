@@ -9,7 +9,6 @@ export interface PayoutsOverviewExternalProps extends UIElementProps {
     allowLimitSelection?: boolean;
     preferredLimit?: number;
     hideTitle?: boolean;
-    showDetails?: boolean;
     onContactSupport?: () => void;
     onRecordSelection?: (selection: { balanceAccountId: string; date: string; showModal: () => void }) => any;
     dataCustomization?: {

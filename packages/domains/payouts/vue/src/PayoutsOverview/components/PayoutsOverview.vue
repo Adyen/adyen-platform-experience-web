@@ -18,7 +18,6 @@ const props = defineProps<{
     allowLimitSelection?: boolean;
     preferredLimit?: number;
     hideTitle?: boolean;
-    showDetails?: boolean;
     onContactSupport?: () => void;
     onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
     dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
@@ -71,15 +70,18 @@ const payoutsError = computed(() => payoutsListResult.error.value as Error | und
 // ── Details modal ──
 const isModalOpen = ref(false);
 const selectedPayout = ref<IPayout | null>(null);
+const selectedBalanceAccount = ref<IBalanceAccountBase | null>(null);
 
-function showModal() {
+function showModal(payout: IPayout, balanceAccount: IBalanceAccountBase | undefined) {
+    selectedPayout.value = payout;
+    selectedBalanceAccount.value = balanceAccount ?? null;
     isModalOpen.value = true;
 }
 
 function onRowClick(payout: IPayout) {
-    if (props.showDetails === false && !props.onRecordSelection) return;
-    selectedPayout.value = payout;
-    const balanceAccountId = activeBalanceAccount.value?.id ?? '';
+    const balanceAccount = activeBalanceAccount.value;
+    const balanceAccountId = balanceAccount?.id ?? '';
+    const showPayoutDetailsModal = () => showModal(payout, balanceAccount);
 
     // Notify the consumer first so they can intercept and decide whether to
     // call `showModal` themselves. If no consumer callback is provided we open
@@ -88,16 +90,17 @@ function onRowClick(payout: IPayout) {
         props.onRecordSelection({
             balanceAccountId,
             date: payout.createdAt ?? '',
-            showModal,
+            showModal: showPayoutDetailsModal,
         });
-    } else if (props.showDetails !== false) {
-        showModal();
+    } else {
+        showPayoutDetailsModal();
     }
 }
 
 function closeModal() {
     isModalOpen.value = false;
     selectedPayout.value = null;
+    selectedBalanceAccount.value = null;
 }
 </script>
 
@@ -121,7 +124,6 @@ function closeModal() {
             :loading="isLoading"
             :data="payoutsListResult.records.value"
             :show-pagination="true"
-            :show-details="props.showDetails"
             :error="payoutsError"
             :on-row-click="onRowClick"
             :on-contact-support="props.onContactSupport"
@@ -138,9 +140,9 @@ function closeModal() {
         />
 
         <PayoutDetailsModal
-            v-if="isModalOpen && selectedPayout && activeBalanceAccount"
-            :id="activeBalanceAccount.id"
-            :balance-account-description="activeBalanceAccount.description"
+            v-if="isModalOpen && selectedPayout && selectedBalanceAccount"
+            :id="selectedBalanceAccount.id"
+            :balance-account-description="selectedBalanceAccount.description"
             :date="selectedPayout.createdAt ?? ''"
             :data-customization="props.dataCustomization"
             :on-contact-support="props.onContactSupport"

@@ -10,16 +10,13 @@ const props = withDefaults(
         balanceAccountId?: string;
         hideTitle?: boolean;
         preferredLimit?: 10 | 20;
-        showDetails?: boolean;
         storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
         onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
         onContactSupport?: () => void;
         paymentLinkCreation?: PaymentLinksOverviewExternalProps['paymentLinkCreation'];
         paymentLinkSettings?: PaymentLinksOverviewExternalProps['paymentLinkSettings'];
     }>(),
-    {
-        showDetails: true,
-    }
+    {}
 );
 
 const { allStores, filteredStores, isFetching: isStoresLoading, error: storeError } = useStores(() => props.storeIds);
@@ -31,7 +28,6 @@ const { filters: filterOptions, isFetching: isFilterOptionsLoading, error: filte
         :allow-limit-selection="props.allowLimitSelection"
         :hide-title="props.hideTitle"
         :preferred-limit="props.preferredLimit"
-        :show-details="props.showDetails"
         :store-ids="props.storeIds"
         :on-record-selection="props.onRecordSelection"
         :on-contact-support="props.onContactSupport"

@@ -19,7 +19,6 @@ const props = defineProps<{
     allowLimitSelection?: boolean;
     preferredLimit?: number;
     hideTitle?: boolean;
-    showDetails?: boolean;
     hideInsights?: boolean;
     onContactSupport?: () => void;
     onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
@@ -35,7 +34,8 @@ const state = useTransactionsOverviewState(() => props as any);
 const isModalOpen = ref(false);
 const selectedTransactionId = ref<string | null>(null);
 
-function showModal() {
+function showModal(transactionId: string) {
+    selectedTransactionId.value = transactionId;
     isModalOpen.value = true;
 }
 
@@ -45,8 +45,6 @@ function closeModal() {
 }
 
 function onRowClick(transaction: ITransaction) {
-    selectedTransactionId.value = transaction.id;
-
     if (transaction.category) {
         userEvents.addEvent?.('Viewed transaction details', {
             category: TRANSACTION_ANALYTICS_CATEGORY,
@@ -55,13 +53,15 @@ function onRowClick(transaction: ITransaction) {
         });
     }
 
+    const showTransactionModal = () => showModal(transaction.id);
+
     if (props.onRecordSelection) {
         props.onRecordSelection({
             id: transaction.id,
-            showModal,
+            showModal: showTransactionModal,
         });
-    } else if (props.showDetails !== false) {
-        showModal();
+    } else {
+        showTransactionModal();
     }
 }
 
@@ -81,7 +81,6 @@ const canExport = computed(() => state.transactionsListResult.records.value.leng
             :is-loading-balance-account="props.isLoadingBalanceAccount ?? false"
             :on-contact-support="props.onContactSupport"
             :on-record-selection="props.onRecordSelection"
-            :show-details="props.showDetails"
             :data-customization="props.dataCustomization"
             :on-row-click="onRowClick"
         />

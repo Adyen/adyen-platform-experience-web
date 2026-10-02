@@ -16,7 +16,6 @@ export interface DisputesOverviewProps extends UIElementProps {
         list?: DisputesListCustomization;
         details?: DisputeDetailsCustomization;
     };
-    showDetails?: boolean;
 }
 
 export type DisputeOverviewComponentProps = DisputesOverviewProps;

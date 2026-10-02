@@ -12,7 +12,6 @@ export interface PayoutsOverviewProps extends UIElementProps {
     allowLimitSelection?: boolean;
     balanceAccountId?: string;
     preferredLimit?: 10 | 20;
-    showDetails?: boolean;
     onRecordSelection?: (selection: { balanceAccountId: string; date: string; showModal: () => void }) => any;
     dataCustomization?: {
         list?: PayoutsListCustomization;

@@ -26,7 +26,6 @@ export interface PaymentLinksOverviewProps {
     balanceAccountId?: string;
     hideTitle?: boolean;
     preferredLimit?: 10 | 20;
-    showDetails?: boolean;
     storeIds?: StoreIds;
     onContactSupport?: () => void;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => void;

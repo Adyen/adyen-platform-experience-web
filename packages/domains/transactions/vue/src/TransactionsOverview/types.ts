@@ -19,7 +19,6 @@ export interface TransactionsOverviewExternalProps extends UIElementProps {
     allowLimitSelection?: boolean;
     preferredLimit?: number;
     hideTitle?: boolean;
-    showDetails?: boolean;
     onContactSupport?: () => void;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
     dataCustomization?: {
