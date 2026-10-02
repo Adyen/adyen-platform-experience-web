@@ -7,7 +7,6 @@ import type { PaymentLinksOverviewExternalProps } from '../types';
 
 const props = defineProps<{
     modalType: PaymentLinksOverviewModalType;
-    hideTitle?: boolean;
     storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
     paymentLinkCreation?: PaymentLinksOverviewExternalProps['paymentLinkCreation'];
     paymentLinkSettings?: PaymentLinksOverviewExternalProps['paymentLinkSettings'];
@@ -34,7 +33,6 @@ const PaymentLinkSettings = defineAsyncComponent({
         <template #content>
             <PaymentLinkCreation
                 v-if="props.modalType === 'Creation'"
-                :hide-title="props.hideTitle"
                 :fields-config="props.paymentLinkCreation?.fieldsConfig"
                 :store-ids="props.storeIds"
                 :on-payment-link-created="props.onPaymentLinkCreated"
@@ -45,7 +43,6 @@ const PaymentLinkSettings = defineAsyncComponent({
             <PaymentLinkSettings
                 v-else
                 v-bind="props.paymentLinkSettings"
-                :hide-title="props.hideTitle"
                 :store-ids="props.storeIds"
                 :on-contact-support="props.onContactSupport"
                 embedded-in-overview

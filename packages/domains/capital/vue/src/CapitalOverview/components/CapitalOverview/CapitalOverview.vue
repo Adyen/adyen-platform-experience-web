@@ -12,7 +12,7 @@ import GrantList from '../GrantList/GrantList.vue';
 import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
 import OfferAlert from '../OfferAlert/OfferAlert.vue';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
-import { useLandedPageEvent } from '@integration-components/composables-vue';
+import { useLandedPageEvent, useShouldHideTitles } from '@integration-components/composables-vue';
 import styles from './CapitalOverview.module.scss';
 import OfferModal from '../OfferModal.vue';
 
@@ -24,6 +24,7 @@ const { capitalState, error, isLoading } = useEnhancedCapitalState(() => true, r
 const isEarlyRenewal = computed(() => !!capitalState.value?.renewableGrants.length);
 const isOfferModalOpen = ref(false);
 const shouldTrackOfferClose = ref(true);
+const hideTitles = useShouldHideTitles();
 
 useLandedPageEvent(
     // TODO: Verify
@@ -72,7 +73,7 @@ const handleFundsRequest: OnFundsRequestCallback = (data, renewsGrantId) => {
 <template>
     <BentoLoadingIndicator v-if="isLoading" />
     <template v-else>
-        <CapitalHeader :hide-title="props.hideTitle" :region="capitalState?.region" title-key="capital.common.title" />
+        <CapitalHeader :hide-title="hideTitles" :region="capitalState?.region" title-key="capital.common.title" />
         <CapitalError v-if="error" :error="error" :on-contact-support="props.onContactSupport" />
         <template v-else-if="capitalState">
             <CapitalError v-if="!capitalState.isRegionSupported" unsupported-region />

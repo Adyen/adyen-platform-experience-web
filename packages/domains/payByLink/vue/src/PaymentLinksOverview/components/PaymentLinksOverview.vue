@@ -21,7 +21,6 @@ import styles from './PaymentLinksOverview.module.scss';
 
 const props = defineProps<{
     allowLimitSelection?: boolean;
-    hideTitle?: boolean;
     preferredLimit?: number;
     storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
     onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
@@ -237,7 +236,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 <template>
     <div :class="[styles.root, isMobile ? styles.rootXs : '']">
         <div :class="styles.header">
-            <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title">
+            <BentoTypography v-if="!hideTitles" variant="title">
                 {{ i18n.get('payByLink.overview.title') }}
             </BentoTypography>
             <div v-else />
@@ -310,7 +309,6 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
         <PaymentLinkOverviewModal
             v-if="isModalVisible && modalType"
             :modal-type="modalType"
-            :hide-title="props.hideTitle"
             :store-ids="props.storeIds"
             :payment-link-creation="props.paymentLinkCreation"
             :payment-link-settings="props.paymentLinkSettings"

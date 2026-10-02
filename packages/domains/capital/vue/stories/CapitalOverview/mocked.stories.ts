@@ -35,7 +35,6 @@ const createConditionalMountDecorator = (guardedState: GuardedCapitalState, moun
                     });
                     const element = new CapitalOverviewElement({
                         core,
-                        hideTitle: context.args.hideTitle,
                     });
                     const { state } = await element.getState();
 
@@ -52,7 +51,7 @@ const createConditionalMountDecorator = (guardedState: GuardedCapitalState, moun
 
                 onMounted(() => {
                     watch(
-                        () => [context.args.hideTitle, context.args[mountIfFlag]],
+                        () => [context.args[mountIfFlag]],
                         () => void mountCapitalOverview(),
                         { immediate: true }
                     );
