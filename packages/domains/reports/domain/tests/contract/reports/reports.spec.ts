@@ -37,7 +37,7 @@ sessionAwareTest('/reports endpoint should return reports with the expected stru
     await getRecentReports(requestContext, headers);
 });
 
-sessionAwareTest('/reports/download endpoint should return a CSV with the expected columns', async ({ requestContext, headers }) => {
+sessionAwareTest('/reports/download endpoint should return a CSV with the expected columns and data', async ({ requestContext, headers }) => {
     const [report] = await getRecentReports(requestContext, headers);
 
     const download = await requestContext.get(
@@ -51,7 +51,7 @@ sessionAwareTest('/reports/download endpoint should return a CSV with the expect
     );
 
     const responseHeaders = download.headers();
-    const [csvColumnRow = ''] = (await download.body()).toString().split('\n');
+    const [csvColumnRow = '', ...csvDataRows] = (await download.body()).toString().split('\n');
 
     expect(download.status()).toBe(200);
     expect(responseHeaders['content-type']).toMatch(/^text\/csv/);
@@ -59,4 +59,8 @@ sessionAwareTest('/reports/download endpoint should return a CSV with the expect
         new RegExp(`^attachment; filename=balanceaccount_${REPORT_TYPE}_report_\\d{4}_\\d{2}_\\d{2}\\.csv$`)
     );
     expect(csvColumnRow.trim()).toBe(REPORT_CSV_COLUMNS);
+    expect(
+        csvDataRows.some(row => row.trim()),
+        'the downloaded report has no data rows'
+    ).toBe(true);
 });
