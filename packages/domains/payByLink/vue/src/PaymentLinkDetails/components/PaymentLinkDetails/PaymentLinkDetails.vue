@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { ErrorMessageDisplay, useShouldHideTitles } from '@integration-components/composables-vue';
 import { getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';
@@ -14,7 +14,6 @@ import styles from './PaymentLinkDetails.module.scss';
 
 const props = defineProps<{
     id: string;
-    hideTitle?: boolean;
     onContactSupport?: () => void;
     onDismiss?: () => void;
     onUpdate?: () => void;
@@ -22,6 +21,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
 const { paymentLink, error, isFetching, refetch } = usePaymentLinkDetails(() => ({ id: props.id }));
 
@@ -64,7 +64,7 @@ function handleNavigationToDetailsAfterExpiration() {
 <template>
     <div :class="styles.root">
         <div :class="activeScreen !== 'details' ? accessibilityStyles.visuallyHidden : undefined">
-            <BentoTypography v-if="!props.hideTitle && !hideTitles" el="h1" variant="title" large stronger>
+            <BentoTypography v-if="!withinModal && !hideTitles" el="h1" variant="title" large stronger>
                 {{ i18n.get('payByLink.details.title') }}
             </BentoTypography>
         </div>

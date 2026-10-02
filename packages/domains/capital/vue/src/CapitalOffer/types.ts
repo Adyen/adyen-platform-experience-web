@@ -12,5 +12,6 @@ export type CapitalOfferExternalProps = Omit<UIElementProps, 'ref'> & {
 export type CapitalOfferProps = Omit<CapitalOfferExternalProps, 'core'> & {
     capitalState?: EnhancedCapitalState;
     hideSubtitle?: boolean;
+    hideTitle?: boolean;
     onTitleChange?: (title: TranslationKey) => void;
 };

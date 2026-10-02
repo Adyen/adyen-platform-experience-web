@@ -22,7 +22,7 @@ import FormStepRenderer from './FormStepRenderer.vue';
 import ArrowRightIcon from '@adyen/ui-assets-icons-16/vue/arrow-right';
 import styles from './PaymentLinkCreationForm.module.scss';
 
-type PaymentLinkCreationFormProps = Pick<PaymentLinkCreationProps, 'fieldsConfig' | 'storeIds' | 'hideTitle' | 'onDismiss' | 'onContactSupport'> & {
+type PaymentLinkCreationFormProps = Pick<PaymentLinkCreationProps, 'fieldsConfig' | 'storeIds' | 'onDismiss' | 'onContactSupport'> & {
     embeddedInOverview?: boolean;
 };
 
@@ -189,7 +189,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
     />
     <div v-else :class="styles.root">
         <div v-if="!data.isFirstLoadDone.value" :class="styles.header">
-            <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title" stronger>
+            <BentoTypography v-if="!hideTitles" variant="title" stronger>
                 {{ i18n.get('payByLink.creation.form.title') }}
             </BentoTypography>
             <div :class="styles.skeleton">
@@ -201,7 +201,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
 
         <template v-else>
             <div :class="styles.header">
-                <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title" stronger>
+                <BentoTypography v-if="!hideTitles" variant="title" stronger>
                     {{ i18n.get('payByLink.creation.form.title') }}
                 </BentoTypography>
                 <BentoStepper

@@ -9,7 +9,6 @@ export const payoutsOverviewMeta: Meta<ElementProps<PayoutsOverviewExternalProps
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
         preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
-        hideTitle: { control: 'boolean' },
         allowLimitSelection: { control: 'boolean' },
     },
     args: {
