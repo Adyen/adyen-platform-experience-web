@@ -31,7 +31,6 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
             :hide-title="props.hideTitle"
             :show-details="props.showDetails"
             :on-contact-support="props.onContactSupport"
-            :on-filters-changed="props.onFiltersChanged"
             :on-record-selection="props.onRecordSelection"
             :data-customization="props.dataCustomization"
             :balance-accounts="balanceAccounts"

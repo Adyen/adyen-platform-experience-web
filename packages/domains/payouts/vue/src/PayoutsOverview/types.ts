@@ -11,7 +11,6 @@ export interface PayoutsOverviewExternalProps extends UIElementProps {
     hideTitle?: boolean;
     showDetails?: boolean;
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
     onRecordSelection?: (selection: { balanceAccountId: string; date: string; showModal: () => void }) => any;
     dataCustomization?: {
         details?: PayoutDetailsCustomization;

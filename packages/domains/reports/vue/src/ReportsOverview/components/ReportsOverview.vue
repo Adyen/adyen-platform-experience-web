@@ -17,7 +17,6 @@ const props = defineProps<{
     preferredLimit?: number;
     hideTitle?: boolean;
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
     dataCustomization?: any;
     balanceAccounts: IBalanceAccountBase[] | undefined;
     isLoadingBalanceAccount: boolean;
@@ -57,7 +56,6 @@ const reportsListResult = useReportsList(() => ({
     createdUntil: filterParams.value.createdUntil,
     allowLimitSelection: props.allowLimitSelection,
     preferredLimit: props.preferredLimit,
-    onFiltersChanged: props.onFiltersChanged,
 }));
 
 const isLoading = computed(

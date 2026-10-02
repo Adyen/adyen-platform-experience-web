@@ -6,7 +6,6 @@ import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration
 export const paymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExternalProps>> = {
     title: 'Components/Pay by Link/Payment Links Overview',
     argTypes: {
-        onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         hideTitle: { control: 'boolean' },

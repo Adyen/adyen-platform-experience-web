@@ -22,7 +22,6 @@ const props = defineProps<{
     showDetails?: boolean;
     hideInsights?: boolean;
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
     onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
     dataCustomization?: TransactionsOverviewExternalProps['dataCustomization'];
     balanceAccounts?: IBalanceAccountBase[];

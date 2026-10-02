@@ -11,7 +11,6 @@ const props = withDefaults(
         preferredLimit?: number;
         hideTitle?: boolean;
         onContactSupport?: () => void;
-        onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
         dataCustomization?: any;
     }>(),
     {}
@@ -41,7 +40,6 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
             :preferred-limit="props.preferredLimit"
             :hide-title="props.hideTitle"
             :on-contact-support="props.onContactSupport"
-            :on-filters-changed="props.onFiltersChanged"
             :data-customization="props.dataCustomization"
             :balance-accounts="balanceAccounts"
             :is-loading-balance-account="isFetching"
