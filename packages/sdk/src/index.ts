@@ -4,6 +4,7 @@ export {
     CapitalOverview,
     type CapitalOfferProps,
     type CapitalOverviewProps,
+    type CapitalState,
 } from '../../domains/capital/publish/src';
 
 // prettier-ignore

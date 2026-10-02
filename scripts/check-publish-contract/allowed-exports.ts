@@ -24,6 +24,7 @@ export const ALLOWED_DECLARATION_EXPORTS = [
     'CapitalOfferProps',
     'CapitalOverview',
     'CapitalOverviewProps',
+    'CapitalState',
     'CoreOptions',
     'CustomTheme',
     'CustomTranslations',
