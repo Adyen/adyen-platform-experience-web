@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { realApiProxies } from './endpoints/realApiProxies';
 import { getBuildEnvDefines } from './config/defines/build-env';
+import { copyCodemods } from './config/vite/copyCodemods';
 import { rewriteBentoCssVariables } from './config/vite/rewriteBentoCssVariables';
 import { getEnvironment } from './envs/getEnvs';
 import packageJson from './package.json';
@@ -112,6 +113,7 @@ export default defineConfig(({ mode }) => {
             root: resolve(__dirname, '.'),
             include: [
                 'src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'codemods/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'config/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'scripts/check-publish-contract/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'scripts/process-translations/**/*.{test,spec}.?(c|m)[jt]s?(x)',
@@ -160,6 +162,7 @@ export default defineConfig(({ mode }) => {
                 },
             }),
             rewriteBentoCssVariables(),
+            copyCodemods(__dirname),
             isAnalyseMode &&
                 visualizer({
                     title: 'Adyen Platform bundle visualizer',
