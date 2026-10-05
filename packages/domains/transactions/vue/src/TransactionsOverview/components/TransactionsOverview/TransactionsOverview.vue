@@ -18,7 +18,6 @@ const props = defineProps<{
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
     preferredLimit?: number;
-    hideTitle?: boolean;
     hideInsights?: boolean;
     onContactSupport?: () => void;
     onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
@@ -70,7 +69,7 @@ const canExport = computed(() => state.transactionsListResult.records.value.leng
 </script>
 
 <template>
-    <TransactionsOverviewShell :hide-title="props.hideTitle">
+    <TransactionsOverviewShell>
         <div role="toolbar" :class="styles.toolbar">
             <TransactionsFilters :balance-accounts="props.balanceAccounts" />
             <TransactionsExport v-if="showExport" :disabled="!canExport" />

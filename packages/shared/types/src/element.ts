@@ -25,7 +25,6 @@ export type BaseElementState = {
 export type UIElementStatus = 'ready' | 'loading' | 'error' | 'success';
 
 export interface UIElementProps {
-    hideTitle?: boolean;
     onContactSupport?: () => void;
     onError?: OnErrorHandler;
     ref?: any;

@@ -9,7 +9,6 @@ const props = withDefaults(
         balanceAccountId?: string;
         allowLimitSelection?: boolean;
         preferredLimit?: number;
-        hideTitle?: boolean;
         onContactSupport?: () => void;
         dataCustomization?: any;
     }>(),
@@ -38,7 +37,6 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
             :balance-account-id="props.balanceAccountId"
             :allow-limit-selection="props.allowLimitSelection"
             :preferred-limit="props.preferredLimit"
-            :hide-title="props.hideTitle"
             :on-contact-support="props.onContactSupport"
             :data-customization="props.dataCustomization"
             :balance-accounts="balanceAccounts"

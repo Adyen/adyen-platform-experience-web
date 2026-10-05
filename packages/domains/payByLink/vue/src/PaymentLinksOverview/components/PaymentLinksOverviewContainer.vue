@@ -8,7 +8,6 @@ const props = withDefaults(
     defineProps<{
         allowLimitSelection?: boolean;
         balanceAccountId?: string;
-        hideTitle?: boolean;
         preferredLimit?: 10 | 20;
         storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
         onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
@@ -26,7 +25,6 @@ const { filters: filterOptions, isFetching: isFilterOptionsLoading, error: filte
 <template>
     <PaymentLinksOverview
         :allow-limit-selection="props.allowLimitSelection"
-        :hide-title="props.hideTitle"
         :preferred-limit="props.preferredLimit"
         :store-ids="props.storeIds"
         :on-record-selection="props.onRecordSelection"
