@@ -2,7 +2,7 @@ import { UIElement } from '@integration-components/core/vue';
 import CapitalOverview from './components/CapitalOverview/CapitalOverview.vue';
 import type { CapitalOverviewExternalProps } from './types';
 import { ExternalComponentType } from '@integration-components/types';
-import { ExternalCapitalState, getExternalCapitalState } from '@integration-components/capital/domain';
+import { getExternalCapitalState, type ExternalCapitalState } from '@integration-components/capital/domain';
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewExternalProps> {
     public static readonly type: ExternalComponentType = 'capitalOverview';
