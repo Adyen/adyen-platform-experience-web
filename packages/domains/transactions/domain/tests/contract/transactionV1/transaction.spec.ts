@@ -1,5 +1,5 @@
 import { getRequestURL } from '@integration-components/testing/playwright/contract-utils';
-import { expectStructure } from '@integration-components/testing/playwright/contract-structure';
+import { expectStructure, LIVE_SMOKE_TAG } from '@integration-components/testing/playwright/contract-structure';
 import { sessionAwareTest } from '@integration-components/testing/playwright/session-request-function';
 import { ExtractResponseType } from '@integration-components/types/api/endpoints';
 import { operations } from '@integration-components/types/api/resources/TransactionsResourceV1';
@@ -63,11 +63,16 @@ const expectTransactionStructure = async (
 
 sessionAwareTest(
     '/transactions/{transactionId} endpoint for refunded payment should return the expected structure',
+    { tag: LIVE_SMOKE_TAG },
     async ({ requestContext, headers }) => {
         await expectTransactionStructure(ENV.transactionId, REFUNDED_PAYMENT, requestContext, headers);
     }
 );
 
-sessionAwareTest('/transactions/{transactionId} endpoint for refund should return the expected structure', async ({ requestContext, headers }) => {
-    await expectTransactionStructure(ENV.refundTransactionId, REFUND, requestContext, headers);
-});
+sessionAwareTest(
+    '/transactions/{transactionId} endpoint for refund should return the expected structure',
+    { tag: LIVE_SMOKE_TAG },
+    async ({ requestContext, headers }) => {
+        await expectTransactionStructure(ENV.refundTransactionId, REFUND, requestContext, headers);
+    }
+);

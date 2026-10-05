@@ -1,5 +1,11 @@
 import { expect } from '@playwright/test';
 
+/**
+ * Tag for the live smoke set: the only contract tests that run against the live environment, where data cannot be controlled.
+ * The live job in `.github/workflows/contract-tests.yml` runs `--grep @live-smoke`; everything else runs in the test environment only.
+ */
+export const LIVE_SMOKE_TAG = '@live-smoke';
+
 const kindOf = (value: unknown) => (value === null ? 'null' : Array.isArray(value) ? 'array' : typeof value);
 
 /**
