@@ -15,9 +15,7 @@ const props = defineProps<{
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
     preferredLimit?: number;
-    hideTitle?: boolean;
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
     dataCustomization?: any;
     balanceAccounts: IBalanceAccountBase[] | undefined;
     isLoadingBalanceAccount: boolean;
@@ -57,7 +55,6 @@ const reportsListResult = useReportsList(() => ({
     createdUntil: filterParams.value.createdUntil,
     allowLimitSelection: props.allowLimitSelection,
     preferredLimit: props.preferredLimit,
-    onFiltersChanged: props.onFiltersChanged,
 }));
 
 const isLoading = computed(
@@ -70,7 +67,7 @@ const listError = computed(() => reportsListResult.error.value as Error | undefi
 
 <template>
     <div :class="styles.root">
-        <div v-if="!props.hideTitle && !hideTitles" :class="styles.header">
+        <div v-if="!hideTitles" :class="styles.header">
             <BentoTypography variant="title">
                 {{ i18n.get('reports.overview.title') }}
             </BentoTypography>

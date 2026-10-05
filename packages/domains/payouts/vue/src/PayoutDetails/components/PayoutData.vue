@@ -27,7 +27,6 @@ const props = defineProps<{
     balanceAccountDescription?: string;
     extraFields?: Record<string, any> | undefined;
     dataCustomization?: { details?: PayoutDetailsCustomization };
-    hideTitle?: boolean;
     onDismiss?: () => void;
 }>();
 
@@ -37,7 +36,7 @@ const hideTitles = useShouldHideTitles();
 const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
 
 const payoutInner = computed(() => props.payout?.payout);
-const shouldHideTitle = computed(() => props.hideTitle || withinModal || hideTitles.value);
+const shouldHideTitle = computed(() => withinModal || hideTitles.value);
 
 // Adjustments: split into additions/subtractions, each sorted alphabetically by translation key.
 type ListItem = { key: string; value: string };

@@ -6,7 +6,9 @@ import { MENU_ITEMS } from '../constants';
 import type { PaymentLinkSettingsProps } from '../types';
 import PaymentLinkSettings from './PaymentLinkSettings.vue';
 
-const props = defineProps<PaymentLinkSettingsProps>();
+// `hideTitle` is an internal embedding flag (used by the payment link creation terms step),
+// not part of the public API: consumers hide titles through the appearance config.
+const props = defineProps<PaymentLinkSettingsProps & { hideTitle?: boolean }>();
 
 const { i18n } = useCoreContext();
 

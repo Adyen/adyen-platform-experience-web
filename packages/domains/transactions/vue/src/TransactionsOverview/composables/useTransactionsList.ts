@@ -1,4 +1,4 @@
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
 import { useCustomColumnsData } from '@integration-components/composables-vue';
@@ -14,7 +14,6 @@ interface UseTransactionsListProps {
     allowLimitSelection?: boolean;
     preferredLimit?: number;
     dataCustomization?: { list?: TransactionsListCustomization };
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
 }
 
 export function useTransactionsList(props: () => UseTransactionsListProps) {
@@ -42,26 +41,6 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
     };
 
     const getFetchKey = () => (canFetch.value ? getFiltersKey() : null);
-
-    watch(
-        getFiltersKey,
-        () => {
-            const { onFiltersChanged, filters } = props();
-
-            if (isFunction(onFiltersChanged)) {
-                onFiltersChanged({
-                    balanceAccountId: filters.balanceAccountId,
-                    createdSince: filters.createdSince,
-                    createdUntil: filters.createdUntil,
-                    categories: filters.categories.join(',') || undefined,
-                    currencies: filters.currencies.join(',') || undefined,
-                    statuses: filters.statuses.join(',') || undefined,
-                    paymentPspReference: filters.paymentPspReference,
-                });
-            }
-        },
-        { immediate: true }
-    );
 
     const pagination = useCursorPaginatedRecords<ITransaction>({
         getFetchKey,

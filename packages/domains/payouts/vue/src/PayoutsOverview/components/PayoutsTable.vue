@@ -27,7 +27,6 @@ const props = defineProps<{
     error?: Error;
     onContactSupport?: () => void;
     onRowClick?: (payout: IPayout) => void;
-    showDetails?: boolean;
     showPagination: boolean;
     data: IPayout[] | undefined;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<PayoutsTableFields>>[];
