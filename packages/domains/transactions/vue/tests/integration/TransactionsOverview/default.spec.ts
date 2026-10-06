@@ -194,8 +194,8 @@ test.describe('Default', () => {
 
         test('should render period totals', async ({ page }) => {
             await expect(page.getByText('Period result', { exact: true })).toBeVisible();
-            await expect(page.getByText('Total incoming', { exact: true })).toBeVisible();
-            await expect(page.getByText('Total outgoing', { exact: true })).toBeVisible();
+            await expect(page.getByText('Total incoming', { exact: true }).first()).toBeVisible();
+            await expect(page.getByText('Total outgoing', { exact: true }).first()).toBeVisible();
             await expect(page.getByText('USD', { exact: true }).first()).toBeVisible();
         });
 
