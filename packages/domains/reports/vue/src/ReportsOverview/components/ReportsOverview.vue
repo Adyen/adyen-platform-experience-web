@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { getTimezoneAwareDateRangeQueryParams, useShouldHideTitles } from '@integration-components/composables-vue';
+import {
+    containerQueries,
+    getTimezoneAwareDateRangeQueryParams,
+    useResponsiveContainer,
+    useShouldHideTitles,
+} from '@integration-components/composables-vue';
 import ReportsFilters from './ReportsFilters.vue';
 import ReportsTable from './ReportsTable.vue';
 import { useReportsList } from '../composables/useReportsList';
@@ -23,6 +28,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
+const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
 const initialDateRangeQueryParams = getTimezoneAwareDateRangeQueryParams({
     dateRange: quickSelectDateRanges.last30Days,
@@ -76,7 +82,7 @@ const listError = computed(() => reportsListResult.error.value as Error | undefi
             </BentoTypography>
         </div>
 
-        <ReportsFilters :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />
+        <ReportsFilters :compact="isMobile" :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />
 
         <ReportsTable
             :balance-account-id="activeBalanceAccount?.id"

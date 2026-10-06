@@ -156,9 +156,6 @@ onUnmounted(() => {
             <BentoTypography v-if="!hideTitles" el="h2" variant="title" stronger>
                 {{ i18n.get('disputes.overview.common.title') }}
             </BentoTypography>
-            <div v-if="isMobile" role="toolbar" :class="[styles.toolbar, styles.toolbarCompact]">
-                <DisputesFilters :compact="true" :balance-accounts="props.balanceAccounts" :status-group="statusGroup" :on-change="onFiltersChange" />
-            </div>
         </div>
 
         <div :class="styles.tabsContainer">
@@ -173,6 +170,14 @@ onUnmounted(() => {
                     <div v-if="!isMobile" role="toolbar" :class="styles.toolbar">
                         <DisputesFilters
                             :compact="false"
+                            :balance-accounts="props.balanceAccounts"
+                            :status-group="statusGroup"
+                            :on-change="onFiltersChange"
+                        />
+                    </div>
+                    <div v-else role="toolbar" :class="[styles.toolbar, styles.toolbarCompact]">
+                        <DisputesFilters
+                            :compact="true"
                             :balance-accounts="props.balanceAccounts"
                             :status-group="statusGroup"
                             :on-change="onFiltersChange"
