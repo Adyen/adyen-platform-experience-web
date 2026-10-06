@@ -1,4 +1,5 @@
-import type { CustomDataRetrieved, DataCustomizationObject, IReport, PaginationProps, UIElementProps } from '@integration-components/types';
+import type { CustomDataRetrieved, DataCustomizationObject, IReport, UIElementProps } from '@integration-components/types';
+import type { PaginationProps } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 
 type ReportsTableCols = 'createdAt' | 'dateAndReportType' | 'reportType' | 'reportFile';

@@ -1,4 +1,5 @@
-import type { CustomDataRetrieved, DataCustomizationObject, IPayout, PaginationProps, UIElementProps } from '@integration-components/types';
+import type { CustomDataRetrieved, DataCustomizationObject, IPayout, UIElementProps } from '@integration-components/types';
+import type { PaginationProps } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { PayoutDetailsCustomization } from '../PayoutDetails/types';
 

@@ -1,5 +1,6 @@
 import type { UIElementProps } from '@integration-components/core/vue';
-import type { IBalanceAccountBase, PaginationProps } from '@integration-components/types';
+import type { IBalanceAccountBase } from '@integration-components/types';
+import type { PaginationProps } from '@integration-components/utils';
 import type { PayoutDetailsCustomization, PayoutsListCustomization } from '@integration-components/payouts/domain';
 
 // ── Component prop types ──

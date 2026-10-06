@@ -1,4 +1,4 @@
-import type { DEFAULT_PAGE_LIMITS } from '@integration-components/utils';
+import type { DEFAULT_PAGE_LIMITS } from './constants';
 
 export type DefaultPageLimit = (typeof DEFAULT_PAGE_LIMITS)[number];
 

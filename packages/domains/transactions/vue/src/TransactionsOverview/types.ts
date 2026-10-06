@@ -1,13 +1,7 @@
 import type { UIElementProps } from '@integration-components/core/vue';
 import type { TransactionDetailsCustomization, TransactionsListCustomization } from '../../../domain/src';
-import type {
-    IAmount,
-    IBalanceAccountBase,
-    ITransaction,
-    ITransactionCategory,
-    ITransactionStatus,
-    PaginationProps,
-} from '@integration-components/types';
+import type { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus } from '@integration-components/types';
+import type { PaginationProps } from '@integration-components/utils';
 
 export type { TransactionsCustomColumn, TransactionsListCustomization, TransactionsTableFields } from '../../../domain/src';
 

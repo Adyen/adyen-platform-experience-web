@@ -2,9 +2,9 @@ import { computed, watch } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
 import { usePageLimit } from '@integration-components/composables-vue/usePageLimit';
-import { DEFAULT_PAGE_LIMITS, isFunction, listFrom } from '@integration-components/utils';
+import { isFunction, listFrom } from '@integration-components/utils';
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
-import type { DisputesOverviewFilters } from '../../../../domain/src';
+import { DISPUTES_PAGE_LIMITS, type DisputesOverviewFilters } from '../../../../domain/src';
 import type { DisputesOverviewExternalProps } from '../types';
 
 interface UseDisputesListProps {
@@ -45,7 +45,7 @@ export function useDisputesList(props: () => UseDisputesListProps) {
     );
 
     const pageLimit = usePageLimit({
-        options: DEFAULT_PAGE_LIMITS,
+        options: DISPUTES_PAGE_LIMITS,
         preferredLimit: () => props().preferredLimit,
         allowLimitSelection: () => props().allowLimitSelection,
     });

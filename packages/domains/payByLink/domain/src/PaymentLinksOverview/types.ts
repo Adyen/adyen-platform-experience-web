@@ -1,4 +1,5 @@
-import type { IPaymentLinkStatusGroup, IStore, PaginationProps } from '@integration-components/types';
+import type { IPaymentLinkStatusGroup, IStore } from '@integration-components/types';
+import type { PaginationProps } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { PaymentLinkCreationFieldsConfig, PaymentLinkCreationFormValues } from '../PaymentLinkCreation';
 import type { StoreIds } from '../types';

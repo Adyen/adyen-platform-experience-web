@@ -2,7 +2,6 @@ import type { Meta } from '@storybook/vue3';
 import type { PaymentLinksOverviewExternalProps } from '../../src';
 import PaymentLinksOverviewElement from '../../src/PaymentLinksOverview/PaymentLinksOverviewElement';
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
-import { DEFAULT_PAGE_LIMITS } from '@integration-components/utils';
 
 export const paymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExternalProps>> = {
     title: 'Components/Pay by Link/Payment Links Overview',
@@ -13,7 +12,7 @@ export const paymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExt
         hideTitle: { control: 'boolean' },
         showDetails: { control: 'boolean' },
         storeIds: { control: 'object' },
-        preferredLimit: { control: 'select', options: DEFAULT_PAGE_LIMITS },
+        preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
         allowLimitSelection: { control: 'boolean' },
     },
     args: {

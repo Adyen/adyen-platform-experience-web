@@ -1,12 +1,18 @@
 import type { UIElementProps } from '@integration-components/core/vue';
-import type { IBalanceAccountBase, PaginationProps } from '@integration-components/types';
-import type { DisputeDetailsCustomization, DisputesListCustomization, DisputesOverviewFilters } from '@integration-components/disputes/domain';
+import type { IBalanceAccountBase } from '@integration-components/types';
+import type { PaginationProps } from '@integration-components/utils';
+import type {
+    DisputeDetailsCustomization,
+    DisputesListCustomization,
+    DisputesOverviewFilters,
+    DisputesPageLimit,
+} from '@integration-components/disputes/domain';
 
 export type DisputeStatusGroup = 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_CLOSED';
 
 export type { DisputesListCustomization };
 
-export interface DisputesOverviewExternalProps extends UIElementProps, PaginationProps {
+export interface DisputesOverviewExternalProps extends UIElementProps, PaginationProps<DisputesPageLimit> {
     balanceAccountId?: string;
     hideTitle?: boolean;
     showDetails?: boolean;
