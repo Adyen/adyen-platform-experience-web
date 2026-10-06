@@ -167,17 +167,9 @@ onUnmounted(() => {
         <BentoCard :class="styles.card">
             <template #content>
                 <div :class="styles.content">
-                    <div v-if="!isMobile" role="toolbar" :class="styles.toolbar">
+                    <div role="toolbar" :class="[styles.toolbar, isMobile ? styles.toolbarCompact : '']">
                         <DisputesFilters
-                            :compact="false"
-                            :balance-accounts="props.balanceAccounts"
-                            :status-group="statusGroup"
-                            :on-change="onFiltersChange"
-                        />
-                    </div>
-                    <div v-else role="toolbar" :class="[styles.toolbar, styles.toolbarCompact]">
-                        <DisputesFilters
-                            :compact="true"
+                            :compact="isMobile"
                             :balance-accounts="props.balanceAccounts"
                             :status-group="statusGroup"
                             :on-change="onFiltersChange"
