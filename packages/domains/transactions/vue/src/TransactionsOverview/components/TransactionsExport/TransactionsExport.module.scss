@@ -4,7 +4,7 @@
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-040);
-    margin-bottom: style.token(spacer-040);
+    margin-bottom: style.token(spacer-070);
 }
 
 .filters {
@@ -20,5 +20,12 @@
 .columns {
     display: flex;
     flex-direction: column;
-    gap: style.token(spacer-030);
+    gap: style.token(spacer-060);
+}
+
+.infoAlert {
+    :global(.b-alert__description.b-typography) {
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-strongest-font-weight);
+    }
 }
