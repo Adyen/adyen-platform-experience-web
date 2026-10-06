@@ -23,8 +23,9 @@ jobs:
         with:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
+      # Live data cannot be controlled, so live runs only the tests tagged @live-smoke.
       - name: Run contract tests
-        run: pnpm run test:contract
+        run: pnpm run test:contract ${{ matrix.environment == 'contract-live' && '--grep @live-smoke' || '' }}
         env:
           SESSION_ACCOUNT_HOLDER: ${{ secrets.SESSION_ACCOUNT_HOLDER }}
           SESSION_API_URL: ${{ secrets.SESSION_API_URL }}
