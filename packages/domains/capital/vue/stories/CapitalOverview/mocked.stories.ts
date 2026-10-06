@@ -5,6 +5,7 @@ import { capitalOverviewHandlers } from '../../../mocks/mock-server';
 import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import type { Decorator, Meta, StoryObj } from '@storybook/vue3';
 import { CapitalOverviewElement, type CapitalOverviewExternalProps } from '../../src/CapitalOverview';
+import type { ExternalCapitalState } from '@integration-components/capital/domain';
 
 type ElementStory<ExtraProps = object> = StoryObj<CapitalOverviewExternalProps & ExtraProps & { mockedApi?: boolean; skipDecorators?: boolean }>;
 type ConditionalMountFlag = 'mountIfInUnsupportedRegion' | 'mountIfIneligible';
@@ -12,6 +13,12 @@ type ConditionalMountArgs = CapitalOverviewExternalProps &
     Pick<ElementProps<typeof CapitalOverviewElement>, 'compact'> &
     Partial<Record<ConditionalMountFlag, boolean>>;
 type GuardedCapitalState = 'isInUnsupportedRegion' | 'isUnqualified';
+
+const isGuardedCapitalState = (capitalState: ExternalCapitalState, guardedState: GuardedCapitalState): boolean => {
+    if (!capitalState.isAvailable) return false;
+    if (guardedState === 'isInUnsupportedRegion') return !capitalState.isRegionSupported;
+    return capitalState.isRegionSupported && !capitalState.hasGrants && !capitalState.dynamicOfferConfig;
+};
 
 const meta: Meta<ElementProps<typeof CapitalOverviewElement>> = {
     ...capitalOverviewMeta,
@@ -35,9 +42,8 @@ const createConditionalMountDecorator = (guardedState: GuardedCapitalState, moun
                     });
                     const element = new CapitalOverviewElement({
                         core,
-                        hideTitle: context.args.hideTitle,
                     });
-                    const { state } = await element.getState();
+                    const capitalState = await element.getState();
 
                     if (currentRequestId !== requestId) {
                         element.unmount();
@@ -45,14 +51,14 @@ const createConditionalMountDecorator = (guardedState: GuardedCapitalState, moun
                     }
 
                     capitalOverview = element;
-                    if (state !== guardedState || context.args[mountIfFlag]) {
+                    if (!isGuardedCapitalState(capitalState, guardedState) || context.args[mountIfFlag]) {
                         element.mount(componentRoot.value!);
                     }
                 };
 
                 onMounted(() => {
                     watch(
-                        () => [context.args.hideTitle, context.args[mountIfFlag]],
+                        () => [context.args[mountIfFlag]],
                         () => void mountCapitalOverview(),
                         { immediate: true }
                     );

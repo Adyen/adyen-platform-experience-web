@@ -133,8 +133,6 @@ const createSnapshot = (overrides: Partial<Snapshot>): Snapshot => ({
     jsExports: [],
     cjsExports: [],
     declarationExports: [],
-    esFileCount: 0,
-    cssHash: null,
     typeFiles: [],
     typeTreeHash: null,
     missingPackageEntrypoints: [],

@@ -22,24 +22,10 @@ export interface PaymentLinksOverviewFilters {
     createdUntil: string;
 }
 
-export interface PaymentLinksOverviewFiltersChangedEvent {
-    balanceAccountId?: string;
-    linkTypes?: string;
-    statuses?: string;
-    createdSince?: string;
-    createdUntil?: string;
-    storeIds?: string;
-    merchantReference?: string;
-    paymentLinkId?: string;
-}
-
 export interface PaymentLinksOverviewProps extends PaginationProps {
     balanceAccountId?: string;
-    hideTitle?: boolean;
-    showDetails?: boolean;
     storeIds?: StoreIds;
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: PaymentLinksOverviewFiltersChangedEvent) => void;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => void;
     paymentLinkCreation?: {
         onPaymentLinkCreated?: (paymentLink: PaymentLinkCreationFormValues) => void;

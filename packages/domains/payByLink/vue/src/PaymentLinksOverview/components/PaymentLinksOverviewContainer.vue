@@ -8,19 +8,14 @@ const props = withDefaults(
     defineProps<{
         allowLimitSelection?: boolean;
         balanceAccountId?: string;
-        hideTitle?: boolean;
         preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
-        showDetails?: boolean;
         storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
-        onFiltersChanged?: PaymentLinksOverviewExternalProps['onFiltersChanged'];
         onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
         onContactSupport?: () => void;
         paymentLinkCreation?: PaymentLinksOverviewExternalProps['paymentLinkCreation'];
         paymentLinkSettings?: PaymentLinksOverviewExternalProps['paymentLinkSettings'];
     }>(),
-    {
-        showDetails: true,
-    }
+    {}
 );
 
 const { allStores, filteredStores, isFetching: isStoresLoading, error: storeError } = useStores(() => props.storeIds);
@@ -30,11 +25,8 @@ const { filters: filterOptions, isFetching: isFilterOptionsLoading, error: filte
 <template>
     <PaymentLinksOverview
         :allow-limit-selection="props.allowLimitSelection"
-        :hide-title="props.hideTitle"
         :preferred-limit="props.preferredLimit"
-        :show-details="props.showDetails"
         :store-ids="props.storeIds"
-        :on-filters-changed="props.onFiltersChanged"
         :on-record-selection="props.onRecordSelection"
         :on-contact-support="props.onContactSupport"
         :payment-link-creation="props.paymentLinkCreation"

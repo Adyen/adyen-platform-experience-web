@@ -21,11 +21,8 @@ import styles from './PaymentLinksOverview.module.scss';
 
 const props = defineProps<{
     allowLimitSelection?: boolean;
-    hideTitle?: boolean;
     preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
-    showDetails?: boolean;
     storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
-    onFiltersChanged?: PaymentLinksOverviewExternalProps['onFiltersChanged'];
     onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
     onContactSupport?: () => void;
     paymentLinkCreation?: PaymentLinksOverviewExternalProps['paymentLinkCreation'];
@@ -100,7 +97,6 @@ const paymentLinksListResult = usePaymentLinksList(() => ({
     createdUntil: filtersValue.value.createdUntil,
     allowLimitSelection: props.allowLimitSelection,
     preferredLimit: props.preferredLimit,
-    onFiltersChanged: props.onFiltersChanged,
     lastRefreshTimestamp: lastRefreshTimestamp.value,
 }));
 
@@ -137,17 +133,18 @@ const isDetailsModalOpen = ref(false);
 const selectedPaymentLink = ref<IPaymentLinkItem | null>(null);
 const hasDetailsToRefresh = ref(false);
 
-function showDetailsModal() {
+function showDetailsModal(paymentLink: IPaymentLinkItem) {
+    selectedPaymentLink.value = paymentLink;
     isDetailsModalOpen.value = true;
 }
 
 function onRowClick(paymentLink: IPaymentLinkItem) {
-    selectedPaymentLink.value = paymentLink;
+    const showPaymentLinkDetailsModal = () => showDetailsModal(paymentLink);
 
     if (props.onRecordSelection) {
-        props.onRecordSelection({ id: paymentLink.paymentLinkId, showModal: showDetailsModal });
-    } else if (props.showDetails !== false) {
-        showDetailsModal();
+        props.onRecordSelection({ id: paymentLink.paymentLinkId, showModal: showPaymentLinkDetailsModal });
+    } else {
+        showPaymentLinkDetailsModal();
     }
 }
 
@@ -239,7 +236,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 <template>
     <div :class="[styles.root, isMobile ? styles.rootXs : '']">
         <div :class="styles.header">
-            <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title">
+            <BentoTypography v-if="!hideTitles" variant="title">
                 {{ i18n.get('payByLink.overview.title') }}
             </BentoTypography>
             <div v-else />
@@ -312,7 +309,6 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
         <PaymentLinkOverviewModal
             v-if="isModalVisible && modalType"
             :modal-type="modalType"
-            :hide-title="props.hideTitle"
             :store-ids="props.storeIds"
             :payment-link-creation="props.paymentLinkCreation"
             :payment-link-settings="props.paymentLinkSettings"

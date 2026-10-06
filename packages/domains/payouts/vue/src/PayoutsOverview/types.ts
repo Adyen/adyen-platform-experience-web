@@ -7,10 +7,7 @@ import type { PayoutDetailsCustomization, PayoutsListCustomization } from '@inte
 
 export interface PayoutsOverviewExternalProps extends UIElementProps, PaginationProps {
     balanceAccountId?: string;
-    hideTitle?: boolean;
-    showDetails?: boolean;
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
     onRecordSelection?: (selection: { balanceAccountId: string; date: string; showModal: () => void }) => any;
     dataCustomization?: {
         details?: PayoutDetailsCustomization;

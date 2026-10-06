@@ -17,10 +17,7 @@ export interface TransactionsFilters {
 
 export interface TransactionsOverviewExternalProps extends UIElementProps, PaginationProps {
     balanceAccountId?: string;
-    hideTitle?: boolean;
-    showDetails?: boolean;
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
     dataCustomization?: {
         list?: TransactionsListCustomization;

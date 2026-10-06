@@ -14,7 +14,7 @@ const hideTitles = useShouldHideTitles();
 const { flowState, getDisputesConfig } = useDisputeFlow();
 
 const { withinModal } = useModalContext();
-const shouldHideTitle = computed(() => props.hideTitle || withinModal || hideTitles.value);
+const shouldHideTitle = computed(() => withinModal || hideTitles.value);
 
 const AcceptDisputeFlow = defineAsyncComponent({
     loader: () => import('./AcceptDisputeFlow.vue'),

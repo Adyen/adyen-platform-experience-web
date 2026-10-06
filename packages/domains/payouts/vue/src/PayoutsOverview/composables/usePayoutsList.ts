@@ -1,4 +1,4 @@
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
 import { usePageLimit } from '@integration-components/composables-vue/usePageLimit';
@@ -13,30 +13,12 @@ interface UsePayoutsListProps {
     createdUntil: string;
     allowLimitSelection?: boolean;
     preferredLimit?: PayoutsOverviewExternalProps['preferredLimit'];
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
 }
 
 export function usePayoutsList(props: () => UsePayoutsListProps) {
     const config = useConfigContext();
     const getPayouts = computed(() => config.endpoints.getPayouts);
     const canFetch = computed(() => isFunction(getPayouts.value) && props().fetchEnabled);
-
-    const getFiltersKey = () => {
-        const { balanceAccountId, createdSince, createdUntil } = props();
-        return JSON.stringify({ balanceAccountId, createdSince, createdUntil });
-    };
-
-    watch(
-        getFiltersKey,
-        () => {
-            const { onFiltersChanged, balanceAccountId, createdSince, createdUntil } = props();
-
-            if (isFunction(onFiltersChanged)) {
-                onFiltersChanged({ balanceAccountId, createdSince, createdUntil });
-            }
-        },
-        { immediate: true }
-    );
 
     const pageLimit = usePageLimit({
         options: DEFAULT_PAGE_LIMITS,

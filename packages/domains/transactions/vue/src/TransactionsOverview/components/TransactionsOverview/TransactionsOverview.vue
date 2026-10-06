@@ -18,11 +18,8 @@ const props = defineProps<{
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
     preferredLimit?: TransactionsOverviewExternalProps['preferredLimit'];
-    hideTitle?: boolean;
-    showDetails?: boolean;
     hideInsights?: boolean;
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
     onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
     dataCustomization?: TransactionsOverviewExternalProps['dataCustomization'];
     balanceAccounts?: IBalanceAccountBase[];
@@ -36,7 +33,8 @@ const state = useTransactionsOverviewState(() => props as any);
 const isModalOpen = ref(false);
 const selectedTransactionId = ref<string | null>(null);
 
-function showModal() {
+function showModal(transactionId: string) {
+    selectedTransactionId.value = transactionId;
     isModalOpen.value = true;
 }
 
@@ -46,8 +44,6 @@ function closeModal() {
 }
 
 function onRowClick(transaction: ITransaction) {
-    selectedTransactionId.value = transaction.id;
-
     if (transaction.category) {
         userEvents.addEvent?.('Viewed transaction details', {
             category: TRANSACTION_ANALYTICS_CATEGORY,
@@ -56,13 +52,15 @@ function onRowClick(transaction: ITransaction) {
         });
     }
 
+    const showTransactionModal = () => showModal(transaction.id);
+
     if (props.onRecordSelection) {
         props.onRecordSelection({
             id: transaction.id,
-            showModal,
+            showModal: showTransactionModal,
         });
-    } else if (props.showDetails !== false) {
-        showModal();
+    } else {
+        showTransactionModal();
     }
 }
 
@@ -71,7 +69,7 @@ const canExport = computed(() => state.transactionsListResult.records.value.leng
 </script>
 
 <template>
-    <TransactionsOverviewShell :hide-title="props.hideTitle">
+    <TransactionsOverviewShell>
         <div role="toolbar" :class="styles.toolbar">
             <TransactionsFilters :balance-accounts="props.balanceAccounts" />
             <TransactionsExport v-if="showExport" :disabled="!canExport" />
@@ -82,7 +80,6 @@ const canExport = computed(() => state.transactionsListResult.records.value.leng
             :is-loading-balance-account="props.isLoadingBalanceAccount ?? false"
             :on-contact-support="props.onContactSupport"
             :on-record-selection="props.onRecordSelection"
-            :show-details="props.showDetails"
             :data-customization="props.dataCustomization"
             :on-row-click="onRowClick"
         />

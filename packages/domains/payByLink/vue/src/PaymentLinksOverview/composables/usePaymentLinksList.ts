@@ -1,4 +1,4 @@
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
 import { usePageLimit } from '@integration-components/composables-vue/usePageLimit';
@@ -21,7 +21,6 @@ interface UsePaymentLinksListProps {
     createdUntil: string;
     allowLimitSelection?: boolean;
     preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
-    onFiltersChanged?: PaymentLinksOverviewExternalProps['onFiltersChanged'];
     lastRefreshTimestamp: number;
 }
 
@@ -39,39 +38,6 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
     const config = useConfigContext();
     const getPaymentLinks = computed(() => config.endpoints.getPaymentLinks);
     const canFetch = computed(() => isFunction(getPaymentLinks.value) && props().fetchEnabled);
-
-    const getFiltersKey = () => {
-        const { statuses, linkTypes, filterStoreIds, merchantReference, paymentLinkId, createdSince, createdUntil } = props();
-        return JSON.stringify({
-            statuses: [...statuses].sort(compareStrings),
-            linkTypes: [...linkTypes].sort(compareStrings),
-            storeIds: [...filterStoreIds].sort(compareStrings),
-            merchantReference,
-            paymentLinkId,
-            createdSince,
-            createdUntil,
-        });
-    };
-
-    watch(
-        getFiltersKey,
-        () => {
-            const { onFiltersChanged, linkTypes, statuses, createdSince, createdUntil, filterStoreIds, merchantReference, paymentLinkId } = props();
-
-            if (isFunction(onFiltersChanged)) {
-                onFiltersChanged({
-                    linkTypes: linkTypes.length ? linkTypes.join(',') : undefined,
-                    statuses: statuses.length ? statuses.join(',') : undefined,
-                    createdSince,
-                    createdUntil,
-                    storeIds: filterStoreIds.length ? filterStoreIds.join(',') : undefined,
-                    merchantReference,
-                    paymentLinkId,
-                });
-            }
-        },
-        { immediate: true }
-    );
 
     const pageLimit = usePageLimit({
         options: DEFAULT_PAGE_LIMITS,

@@ -10,7 +10,6 @@ export type ReportsListCustomization = DataCustomizationObject<ReportsTableField
 
 export interface ReportsOverviewProps extends UIElementProps, PaginationProps {
     balanceAccountId?: string;
-    onFiltersChanged?: (filters: { balanceAccountId?: string; reportType?: string; createdSince?: string; createdUntil?: string }) => any;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
     dataCustomization?: {
         list?: ReportsListCustomization;
