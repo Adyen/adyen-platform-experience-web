@@ -72,7 +72,12 @@
 }
 
 .card {
+    /* Bento's rich-text table pads its cells inline, which offsets the breakdown rows from the
+       card header. Drop that padding and indent instead by the header's expand toggle width. */
+    --b-text-rich-text-table-padding: #{style.token(spacer-050)} 0;
+
     margin-bottom: style.token(spacer-060);
+    margin-left: style.token(spacer-100);
 
     &:not(:first-child) {
         margin-top: style.token(spacer-060);
