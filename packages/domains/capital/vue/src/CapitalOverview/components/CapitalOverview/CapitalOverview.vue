@@ -3,7 +3,6 @@ import { computed, ref } from 'vue';
 import { useEventDispatcherContext } from '@integration-components/core/vue';
 import { OnFundsRequestCallback } from '@integration-components/capital/domain';
 import { BentoLoadingIndicator } from '@adyen/bento-vue3';
-import '@adyen/bento-vue3/styles/bento-light';
 import { IGrant } from '@integration-components/types';
 import { CapitalOverviewProps } from '../../types';
 import { useEnhancedCapitalState } from '../../../shared/composables/useEnhancedCapitalState';
