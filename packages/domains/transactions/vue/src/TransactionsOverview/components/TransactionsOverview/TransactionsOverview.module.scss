@@ -53,6 +53,15 @@
     }
 }
 
+.summaryReservedWidth {
+    // Keeps the card in the layout while its alert is shown, so the section stays as wide as the
+    // card instead of collapsing onto its min-width. The alert itself contributes no width, since
+    // it always fills its parent. Zero height means only the width is reserved.
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+}
+
 .summaryGroup {
     display: flex;
     flex-direction: column;
