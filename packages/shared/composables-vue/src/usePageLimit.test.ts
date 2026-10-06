@@ -17,6 +17,7 @@ describe('usePageLimit', () => {
 
         expect(initialLimit).toBe(10);
         expect(warn).toHaveBeenCalledOnce();
+        expect(warn).toHaveBeenCalledWith('preferredLimit "25" is not supported. Falling back to 10. Supported values: 10, 20, 30.');
         warn.mockRestore();
     });
 

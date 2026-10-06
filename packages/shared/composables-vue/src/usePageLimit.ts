@@ -7,6 +7,8 @@ export interface UsePageLimitOptions<Limit extends number> {
     allowLimitSelection: () => boolean | undefined;
 }
 
+const isOption = <Limit extends number>(options: readonly Limit[], limit: number | undefined): limit is Limit => options.includes(limit as Limit);
+
 /**
  * Resolves the initial page limit and the selectable limit options for a paginated list.
  * Falls back to `DEFAULT_PAGE_LIMIT` (or the first option) when the preferred limit is not one of the options.
@@ -30,16 +32,15 @@ export interface UsePageLimitOptions<Limit extends number> {
  * });
  */
 export function usePageLimit<Limit extends number>({ options, preferredLimit, allowLimitSelection }: UsePageLimitOptions<Limit>) {
-    const isOption = (limit: number | undefined): limit is Limit => options.includes(limit as Limit);
     const preferred = preferredLimit();
-    const fallback = isOption(DEFAULT_PAGE_LIMIT) ? DEFAULT_PAGE_LIMIT : options[0];
+    const fallback = isOption(options, DEFAULT_PAGE_LIMIT) ? DEFAULT_PAGE_LIMIT : options[0];
 
-    if (preferred !== undefined && !isOption(preferred)) {
+    if (preferred !== undefined && !isOption(options, preferred)) {
         console.warn(`preferredLimit "${preferred}" is not supported. Falling back to ${fallback}. Supported values: ${options.join(', ')}.`);
     }
 
     return {
-        initialLimit: isOption(preferred) ? preferred : fallback,
+        initialLimit: isOption(options, preferred) ? preferred : fallback,
         limitOptions: computed(() => (allowLimitSelection() !== false ? options : undefined)),
     } as const;
 }
