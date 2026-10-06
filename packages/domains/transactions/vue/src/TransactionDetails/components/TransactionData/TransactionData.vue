@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import { BentoLoadingIndicator, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { useShouldHideTitles } from '@integration-components/composables-vue';
 import PaymentDetails from '../PaymentDetails/PaymentDetails.vue';
-import PaymentRefund from '../PaymentRefund/PaymentRefund.vue';
 import { ActiveView } from '../../../../../domain/src';
 import { EMPTY_ARRAY } from '@integration-components/utils';
 import type { TransactionDetails, TransactionDetailsCustomization } from '../../../../../domain/src';
@@ -19,7 +18,7 @@ const props = defineProps<{
     extraFields: Record<string, any> | undefined;
     dataCustomization?: { details?: TransactionDetailsCustomization };
     fetchingTransaction: boolean;
-    hideTitle?: boolean;
+    onDismiss?: () => void;
     refreshTransaction: () => void;
     transaction: TransactionDetails;
     transactionNavigator: TransactionNavigatorState;
@@ -28,8 +27,13 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
-const shouldHideTitle = computed(() => props.hideTitle || withinModal || hideTitles.value);
+const shouldHideTitle = computed(() => withinModal || hideTitles.value);
 
+const PaymentRefund = defineAsyncComponent({
+    loader: () => import('../PaymentRefund/PaymentRefund.vue'),
+    loadingComponent: BentoLoadingIndicator,
+    delay: 0,
+});
 const activeView = ref<ActiveView>(ActiveView.DETAILS);
 const locked = ref(false);
 
@@ -39,6 +43,10 @@ const refundIsLocked = computed(() => refundMeta.refundLocked.value || locked.va
 const refundIsDisabled = computed(() => refundMeta.refundDisabled.value || refundIsLocked.value);
 
 const lineItems = computed<readonly ILineItem[]>(() => Object.freeze(props.transaction.lineItems ?? EMPTY_ARRAY));
+
+function setActiveView(view: ActiveView) {
+    activeView.value = view;
+}
 
 watch(refundMeta.refundLocked, isLocked => {
     if (isLocked) locked.value = false;
@@ -66,7 +74,7 @@ watch(refundMeta.refundLocked, isLocked => {
         :refresh-transaction="props.refreshTransaction"
         :refunded-amount="refundMeta.refundedAmount.value"
         :refunding-amounts="refundMeta.refundAmounts.value.in_progress ?? EMPTY_ARRAY"
-        :set-active-view="(v: ActiveView) => (activeView = v)"
+        :set-active-view="setActiveView"
         :set-locked="(v: boolean) => (locked = v)"
         :transaction="props.transaction"
     />
@@ -84,8 +92,9 @@ watch(refundMeta.refundLocked, isLocked => {
         :refunded-amount="refundMeta.refundedAmount.value"
         :refunded-state="refundMeta.refundedState.value"
         :refund-locked="refundIsLocked"
-        :set-active-view="(v: ActiveView) => (activeView = v)"
+        :set-active-view="setActiveView"
         :transaction="props.transaction"
         :transaction-navigator="props.transactionNavigator"
+        :on-dismiss="props.onDismiss"
     />
 </template>

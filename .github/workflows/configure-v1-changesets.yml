@@ -35,7 +35,6 @@ jobs:
                 scripts/release/version.mjs
                 scripts/release-v1/release-v1.mjs
                 scripts/release-v1/release-v1.test.mjs
-                scripts/release-v1/workflow-contract.test.mjs
                 scripts/upload-assets/generate-umd-file.sh
                 scripts/upload-assets/package-assets.sh
         steps:

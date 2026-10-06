@@ -7,7 +7,7 @@ export const payoutDetailsMeta: Meta<ElementProps<PayoutDetailsExternalProps>> =
     title: 'Components/Payouts/Payout Details',
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        hideTitle: { control: 'boolean' },
+        onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
     },
     args: {
         component: PayoutDetailsElement,

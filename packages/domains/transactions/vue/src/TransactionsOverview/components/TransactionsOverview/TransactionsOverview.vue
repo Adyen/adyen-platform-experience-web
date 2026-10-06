@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { ModalContextProvider, useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import { BentoModal, BentoToast } from '@adyen/bento-vue3';
+import { useEventDispatcherContext } from '@integration-components/core/vue';
+import { BentoToast } from '@adyen/bento-vue3';
 import TransactionsOverviewShell from './TransactionsOverviewShell.vue';
 import TransactionsOverviewList from '../TransactionsList/TransactionsOverviewList.vue';
 import TransactionsOverviewInsights from './TransactionsOverviewInsights.vue';
-import TransactionDetailsContainer from '../../../TransactionDetails/components/TransactionDetailsContainer.vue';
+import TransactionDetailsModal from './TransactionDetailsModal.vue';
 import { useTransactionsOverviewState } from '../../composables/useTransactionsOverviewState';
 import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_DETAILS } from '@integration-components/transactions/domain';
 import type { ITransaction } from '@integration-components/types';
@@ -18,18 +18,14 @@ const props = defineProps<{
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
     preferredLimit?: number;
-    hideTitle?: boolean;
-    showDetails?: boolean;
     hideInsights?: boolean;
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
     onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
     dataCustomization?: TransactionsOverviewExternalProps['dataCustomization'];
     balanceAccounts?: IBalanceAccountBase[];
     isLoadingBalanceAccount?: boolean;
 }>();
 
-const { i18n } = useCoreContext();
 const userEvents = useEventDispatcherContext();
 
 const state = useTransactionsOverviewState(() => props as any);
@@ -37,7 +33,8 @@ const state = useTransactionsOverviewState(() => props as any);
 const isModalOpen = ref(false);
 const selectedTransactionId = ref<string | null>(null);
 
-function showModal() {
+function showModal(transactionId: string) {
+    selectedTransactionId.value = transactionId;
     isModalOpen.value = true;
 }
 
@@ -47,8 +44,6 @@ function closeModal() {
 }
 
 function onRowClick(transaction: ITransaction) {
-    selectedTransactionId.value = transaction.id;
-
     if (transaction.category) {
         userEvents.addEvent?.('Viewed transaction details', {
             category: TRANSACTION_ANALYTICS_CATEGORY,
@@ -57,13 +52,15 @@ function onRowClick(transaction: ITransaction) {
         });
     }
 
+    const showTransactionModal = () => showModal(transaction.id);
+
     if (props.onRecordSelection) {
         props.onRecordSelection({
             id: transaction.id,
-            showModal,
+            showModal: showTransactionModal,
         });
-    } else if (props.showDetails !== false) {
-        showModal();
+    } else {
+        showTransactionModal();
     }
 }
 
@@ -72,7 +69,7 @@ const canExport = computed(() => state.transactionsListResult.records.value.leng
 </script>
 
 <template>
-    <TransactionsOverviewShell :hide-title="props.hideTitle">
+    <TransactionsOverviewShell>
         <div role="toolbar" :class="styles.toolbar">
             <TransactionsFilters :balance-accounts="props.balanceAccounts" />
             <TransactionsExport v-if="showExport" :disabled="!canExport" />
@@ -83,34 +80,19 @@ const canExport = computed(() => state.transactionsListResult.records.value.leng
             :is-loading-balance-account="props.isLoadingBalanceAccount ?? false"
             :on-contact-support="props.onContactSupport"
             :on-record-selection="props.onRecordSelection"
-            :show-details="props.showDetails"
             :data-customization="props.dataCustomization"
             :on-row-click="onRowClick"
         />
         <TransactionsOverviewInsights v-else />
     </TransactionsOverviewShell>
 
-    <ModalContextProvider>
-        <BentoModal
-            size="medium"
-            :is-open="isModalOpen"
-            :is-dismissible="true"
-            :aria-label="i18n.get('transactions.details.title')"
-            @close-modal="closeModal"
-        >
-            <!-- Keep this default slot empty — needed for no padding -->
-            <template #default />
-            <template #content>
-                <TransactionDetailsContainer
-                    v-if="selectedTransactionId"
-                    :id="selectedTransactionId"
-                    :data-customization="props.dataCustomization"
-                    :on-contact-support="props.onContactSupport"
-                    from-record-selection
-                />
-            </template>
-        </BentoModal>
-    </ModalContextProvider>
+    <TransactionDetailsModal
+        v-if="isModalOpen && selectedTransactionId"
+        :id="selectedTransactionId"
+        :data-customization="props.dataCustomization"
+        :on-contact-support="props.onContactSupport"
+        :on-close="closeModal"
+    />
 
     <BentoToast />
 </template>

@@ -13,7 +13,7 @@ const props = defineProps<{
     id: string;
     dataCustomization?: { details?: TransactionDetailsCustomization };
     onContactSupport?: () => void;
-    hideTitle?: boolean;
+    onDismiss?: () => void;
     fromRecordSelection?: boolean;
 }>();
 
@@ -83,7 +83,7 @@ useLandedPageEvent(
             :extra-fields="extraFields"
             :data-customization="props.dataCustomization"
             :fetching-transaction="fetchingTransaction"
-            :hide-title="props.hideTitle"
+            :on-dismiss="props.onDismiss"
             :refresh-transaction="refreshTransaction"
             :transaction="transaction ?? initialTransaction"
             :transaction-navigator="transactionNavigator"
@@ -99,6 +99,8 @@ useLandedPageEvent(
                 :error-message="'transactions.details.errors.unavailable'"
                 :not-found-message="'transactions.details.errors.notFound'"
                 :on-contact-support="props.onContactSupport"
+                :on-dismiss="props.onDismiss"
+                :dismiss-label="'transactions.details.common.actions.goBack'"
                 with-image
                 :outlined="false"
                 :absolute-position="false"

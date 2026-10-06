@@ -28,6 +28,7 @@ const props = defineProps<{
     refundedAmount: number;
     refundedState: RefundedState;
     refundLocked: boolean;
+    onDismiss?: () => void;
     setActiveView: (view: ActiveView) => void;
     transaction: TransactionDetails;
     transactionNavigator: TransactionNavigatorState;
@@ -112,6 +113,7 @@ const onTabChange = (newIndex: number) => {
             :extra-fields="props.extraFields"
             :refund-available="props.refundAvailable"
             :refund-disabled="props.refundDisabled"
+            :on-dismiss="props.onDismiss"
             :set-active-view="props.setActiveView"
             :transaction="props.transaction"
             :transaction-navigator="props.transactionNavigator"

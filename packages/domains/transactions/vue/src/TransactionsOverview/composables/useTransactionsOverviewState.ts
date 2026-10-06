@@ -75,7 +75,6 @@ export function useTransactionsOverviewState(componentProps: () => TransactionsO
         allowLimitSelection: componentProps().allowLimitSelection,
         preferredLimit: componentProps().preferredLimit,
         dataCustomization: componentProps().dataCustomization,
-        onFiltersChanged: componentProps().onFiltersChanged,
     }));
 
     const activeTotals = computed(() => (isTransactionsView.value ? transactionsTotalsResult.totals.value : insightsTotalsResult.totals.value));

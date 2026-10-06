@@ -39,7 +39,6 @@ const props = defineProps<{
     loading: boolean;
     onContactSupport?: () => void;
     onRowClick?: (transaction: ITransaction) => void;
-    showDetails?: boolean;
     transactions?: ITransaction[];
     customColumns?: CustomColumn<StringWithAutocompleteOptions<TransactionsTableFields>>[];
     hasNext?: boolean;
@@ -47,7 +46,7 @@ const props = defineProps<{
     goToNextPage?: () => void;
     goToPreviousPage?: () => void;
     limit?: number;
-    limitOptions?: number[];
+    limitOptions?: readonly number[];
     updateLimit?: (limit: number) => void;
     currentPage?: number;
 }>();

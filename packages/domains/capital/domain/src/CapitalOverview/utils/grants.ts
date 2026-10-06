@@ -1,4 +1,4 @@
-import type { IGrant, IGrantsResponseDTO } from '@integration-components/types';
+import type { IGrant } from '@integration-components/types';
 import type { EnhancedCapitalState } from '../../shared';
 
 type GroupedGrants = {
@@ -8,11 +8,10 @@ type GroupedGrants = {
 
 export const getAdjustedGrants = (
     state: EnhancedCapitalState | undefined,
-    grants: IGrantsResponseDTO | undefined,
+    grants: IGrant[] | undefined,
     requestedGrant: IGrant | undefined
 ): IGrant[] | undefined => {
-    const extractedGrants = grants?.data;
-    const adjustedGrants = requestedGrant ? [requestedGrant, ...(extractedGrants ?? [])] : extractedGrants;
+    const adjustedGrants = requestedGrant && !grants?.some(grant => grant.id === requestedGrant.id) ? [requestedGrant, ...(grants ?? [])] : grants;
     return adjustedGrants?.filter(grant => !(grant.status === 'Active' && state?.renewsGrantIds.has(grant.id)));
 };
 

@@ -1,4 +1,4 @@
-import { effectScope, nextTick } from 'vue';
+import { effectScope } from 'vue';
 import { expect, test, vi } from 'vitest';
 import { useReportsList } from './useReportsList';
 
@@ -12,7 +12,7 @@ vi.mock('@integration-components/core/vue', () => ({
     }),
 }));
 
-test('does not report filter changes when paginating', async () => {
+test('fetches the next page when paginating', async () => {
     getReports.mockReset();
     getReports.mockResolvedValue({
         data: [],
@@ -21,7 +21,6 @@ test('does not report filter changes when paginating', async () => {
         },
     });
 
-    const onFiltersChanged = vi.fn();
     const scope = effectScope();
     const reports = scope.run(() =>
         useReportsList(() => ({
@@ -29,39 +28,13 @@ test('does not report filter changes when paginating', async () => {
             balanceAccountId: 'balance-account-id',
             createdSince: '2024-01-01T00:00:00.000Z',
             createdUntil: '2024-01-31T23:59:59.999Z',
-            onFiltersChanged,
         }))
     )!;
 
-    await vi.waitFor(() => expect(onFiltersChanged).toHaveBeenCalledTimes(1));
     await vi.waitFor(() => expect(reports.hasNext.value).toBe(true));
 
     reports.goToNextPage();
 
     await vi.waitFor(() => expect(getReports).toHaveBeenCalledTimes(2));
-    await nextTick();
-
-    expect(onFiltersChanged).toHaveBeenCalledTimes(1);
-    scope.stop();
-});
-
-test('reports filter changes when the request fails', async () => {
-    getReports.mockReset();
-    getReports.mockRejectedValue(new Error('Network error'));
-
-    const onFiltersChanged = vi.fn();
-    const scope = effectScope();
-
-    scope.run(() =>
-        useReportsList(() => ({
-            fetchEnabled: true,
-            balanceAccountId: 'balance-account-id',
-            createdSince: '2024-01-01T00:00:00.000Z',
-            createdUntil: '2024-01-31T23:59:59.999Z',
-            onFiltersChanged,
-        }))
-    );
-
-    await vi.waitFor(() => expect(onFiltersChanged).toHaveBeenCalledTimes(1));
     scope.stop();
 });

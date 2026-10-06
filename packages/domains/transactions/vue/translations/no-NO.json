@@ -67,7 +67,6 @@
     "transactions.details.fields.refundReason": "Årsak til refusjon",
     "transactions.details.refund.actions.back": "Gå tilbake",
     "transactions.details.refund.actions.refund.labels.amount": "Refunder %{amount}",
-    "transactions.details.refund.actions.refund.labels.inProgress": "Pågår",
     "transactions.details.refund.actions.refund.labels.payment": "Refunder betaling",
     "transactions.details.refund.alerts.inProgress": "Refusjonen er under behandling.",
     "transactions.details.refund.alerts.inProgressAmount": "Den delvise refunderingen av %{amount} er under behandling.",

@@ -1,7 +1,6 @@
 /**
  * @vitest-environment jsdom
  */
-/* eslint-disable vue/no-deprecated-data-object-declaration, vue/no-shared-component-data */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createApp, defineComponent, h } from 'vue';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
@@ -46,12 +45,13 @@ describe('PayoutsTable', () => {
         } as unknown as ReturnType<typeof useCoreContext>);
 
         const target = document.createElement('div');
-        const app = createApp(PayoutsTable, {
+        const rootProps = {
             balanceAccountId: 'BA123',
             loading: false,
             showPagination: false,
             data: [],
-        });
+        };
+        const app = createApp(PayoutsTable, rootProps);
         app.mount(target);
 
         expect(lastDataGridProps.condensed).toBe(true);

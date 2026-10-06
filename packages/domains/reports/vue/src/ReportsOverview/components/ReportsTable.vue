@@ -56,7 +56,7 @@ const props = defineProps<{
     goToNextPage?: () => void;
     goToPreviousPage?: () => void;
     limit?: number;
-    limitOptions?: number[];
+    limitOptions?: readonly number[];
     updateLimit?: (limit: number) => void;
     currentPage?: number;
 }>();
@@ -224,9 +224,7 @@ const getRowActions: BentoDataGridRowActionsProp = (item: BentoDatagridDataItem)
     const isDownloading = isDownloadingReport(reportKey);
     const ButtonIcon = failedReportKeys.value.has(reportKey) ? DownloadErrorIcon : DownloadIcon;
 
-    const label = isDownloading
-        ? `${i18n.get('reports.common.actions.download.labels.inProgress')}..`
-        : i18n.get('reports.overview.list.controls.downloadReport.label');
+    const label = i18n.get('reports.overview.list.controls.downloadReport.label');
 
     return [
         {
@@ -279,8 +277,6 @@ function formatDate(dateStr: string): string {
 
 <template>
     <div :class="styles.root">
-        <BentoToast />
-
         <DataOverviewError
             v-if="props.error"
             :error="props.error"
@@ -328,4 +324,5 @@ function formatDate(dateStr: string): string {
             </template>
         </BentoDataGrid>
     </div>
+    <BentoToast />
 </template>

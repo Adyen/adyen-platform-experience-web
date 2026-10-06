@@ -103,7 +103,6 @@ const disputesListResult = useDisputesList(() => ({
     allowLimitSelection: props.allowLimitSelection,
     preferredLimit: props.preferredLimit,
     refreshToken: refreshToken.value,
-    onFiltersChanged: props.onFiltersChanged,
 }));
 
 const isLoading = computed(
@@ -123,8 +122,13 @@ function showModal(id: string) {
 
 function onRowClick(dispute: IDisputeListItem) {
     const id = dispute.disputePspReference;
-    if (props.showDetails !== false) showModal(id);
-    props.onRecordSelection?.({ id, showModal: () => showModal(id) });
+    const showDisputeModal = () => showModal(id);
+
+    if (props.onRecordSelection) {
+        props.onRecordSelection({ id, showModal: showDisputeModal });
+    } else {
+        showDisputeModal();
+    }
 }
 
 function refreshDisputesList(gotoStatusGroup?: IDisputeStatusGroup) {
@@ -149,7 +153,7 @@ onUnmounted(() => {
 <template>
     <div :class="[styles.root, isMobile ? styles.rootXs : '']">
         <div :class="styles.header">
-            <BentoTypography v-if="!props.hideTitle && !hideTitles" el="h2" variant="title" stronger>
+            <BentoTypography v-if="!hideTitles" el="h2" variant="title" stronger>
                 {{ i18n.get('disputes.overview.common.title') }}
             </BentoTypography>
             <div v-if="isMobile" role="toolbar" :class="[styles.toolbar, styles.toolbarCompact]">
@@ -200,6 +204,7 @@ onUnmounted(() => {
         </BentoCard>
 
         <DisputeManagementModal
+            v-if="selectedDisputeId"
             :dispute-id="selectedDisputeId"
             :data-customization="props.dataCustomization?.details"
             :on-contact-support="props.onContactSupport"

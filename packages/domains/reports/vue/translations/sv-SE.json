@@ -4,7 +4,6 @@
     "reports.common.actions.copy.labels.default": "Kopiera",
     "reports.common.actions.copy.labels.done": "Kopierat",
     "reports.common.actions.copy.labels.errorCode": "Kopiera felkod",
-    "reports.common.actions.download.labels.inProgress": "Nedladdning pågår",
     "reports.common.actions.refresh.labels.default": "Uppdatera",
     "reports.common.errors.componentUnavailable": "Något gick fel.",
     "reports.common.errors.contactSupport": "Kontakta support för hjälp.",

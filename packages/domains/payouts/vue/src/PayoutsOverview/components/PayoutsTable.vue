@@ -28,7 +28,6 @@ const props = defineProps<{
     error?: Error;
     onContactSupport?: () => void;
     onRowClick?: (payout: IPayout) => void;
-    showDetails?: boolean;
     showPagination: boolean;
     data: IPayout[] | undefined;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<PayoutsTableFields>>[];
@@ -38,7 +37,7 @@ const props = defineProps<{
     goToNextPage?: () => void;
     goToPreviousPage?: () => void;
     limit?: number;
-    limitOptions?: number[];
+    limitOptions?: readonly number[];
     updateLimit?: (limit: number) => void;
     currentPage?: number;
 }>();
