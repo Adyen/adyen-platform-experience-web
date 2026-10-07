@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
-import { useBalanceAccounts } from '@integration-components/composables-vue';
-import { BentoButton } from '@adyen/bento-vue3';
+import { ComponentShell, useBalanceAccounts, type ErrorMessageInfo } from '@integration-components/composables-vue';
 import TransactionsOverview from '../TransactionsOverview/TransactionsOverview.vue';
 import type { TransactionsOverviewExternalProps } from '../../types';
 
@@ -18,19 +16,20 @@ const props = withDefaults(
     {}
 );
 
-const { i18n } = useCoreContext();
 const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(() => props.balanceAccountId);
 const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
+
+const errorInfo = computed<ErrorMessageInfo>(() => ({
+    title: 'transactions.common.errors.somethingWentWrong',
+    messages: ['transactions.overview.errors.unavailable'],
+    onContactSupport: props.onContactSupport,
+}));
 </script>
 
 <template>
     <div>
-        <div v-if="hasError">
-            <p>{{ i18n.get('transactions.overview.errors.unavailable') }}</p>
-            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('transactions.common.actions.contactSupport.labels.default') }}
-            </BentoButton>
-        </div>
+        <ComponentShell v-if="hasError" state="error" :error-info="errorInfo" />
+
         <TransactionsOverview
             v-else
             :balance-account-id="props.balanceAccountId"

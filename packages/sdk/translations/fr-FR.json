@@ -921,7 +921,7 @@
     "payByLink.settings.common.alerts.saveError": "Les modifications n'ont pas été enregistrées. Veuillez réessayer.",
     "payByLink.settings.common.alerts.saveSuccess": "Les modifications ont bien été enregistrées.",
     "payByLink.settings.common.alerts.validationError": "Il y a une erreur. Veuillez corriger le champ en surbrillance.",
-    "payByLink.settings.errors.couldNotLoadSettings": "Nous n'avons pas pu charger les paramètres de vos liens de paiement.",
+    "payByLink.settings.errors.unavailable": "Nous n'avons pas pu charger les paramètres de vos liens de paiement.",
     "payByLink.settings.inputs.file.errors.default": "Une erreur s'est produite, veuillez vérifier que vos documents répondent aux exigences indiquées.",
     "payByLink.settings.inputs.file.errors.disallowedType": "Ce type de fichier n'est pas accepté",
     "payByLink.settings.inputs.file.errors.tooLarge": "La taille du fichier dépasse la taille maximale autorisée",

@@ -57,9 +57,8 @@ export const createRefreshContext = () => {
  *     reportsOverview.unmount();
  */
 export class UIElement<Props extends Record<string, any>> {
-    public static type: ExternalComponentType;
+    public static readonly type: ExternalComponentType;
 
-    public customClassNames: string | undefined;
     public readonly _id = `${(this.constructor as typeof UIElement)?.type}-${uuid()}`;
 
     protected _app: App | null = null;
@@ -130,7 +129,6 @@ export class UIElement<Props extends Record<string, any>> {
             const component = this._component;
             const componentName = this._componentName;
             const globalAppearance = this._globalAppearance;
-            const customClassNames = this.customClassNames;
 
             const localization = core.localization;
             const customTranslations = core.options.translations as CustomTranslations | undefined;
@@ -159,7 +157,6 @@ export class UIElement<Props extends Record<string, any>> {
                             bentoOverrides,
                             componentName,
                             componentAppearance: appearance,
-                            customClassNames,
                             globalAppearance: globalAppearance.value,
                             refreshComponent: refresh,
                         },

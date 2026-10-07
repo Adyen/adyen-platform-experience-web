@@ -236,7 +236,7 @@
     "payByLink.settings.common.alerts.saveError": "The changes have not been saved. Please try again.",
     "payByLink.settings.common.alerts.saveSuccess": "The changes have been saved successfully.",
     "payByLink.settings.common.alerts.validationError": "There is an error. Correct the highlighted field.",
-    "payByLink.settings.errors.couldNotLoadSettings": "We couldn’t load your payment links settings.",
+    "payByLink.settings.errors.unavailable": "We couldn’t load your payment links settings.",
     "payByLink.settings.inputs.file.errors.default": "Something went wrong, please check that your documents are meeting requirements.",
     "payByLink.settings.inputs.file.errors.disallowedType": "File type not accepted",
     "payByLink.settings.inputs.file.errors.tooLarge": "File size exceeds the maximum file size",

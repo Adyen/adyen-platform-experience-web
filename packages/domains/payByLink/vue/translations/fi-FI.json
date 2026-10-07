@@ -236,7 +236,7 @@
     "payByLink.settings.common.alerts.saveError": "Muutoksia ei ole tallennettu. Yritä uudelleen.",
     "payByLink.settings.common.alerts.saveSuccess": "Muutokset on tallennettu.",
     "payByLink.settings.common.alerts.validationError": "Tapahtui virhe. Korjaa korostettu kenttä.",
-    "payByLink.settings.errors.couldNotLoadSettings": "Maksulinkkiesi asetusten lataaminen ei onnistunut.",
+    "payByLink.settings.errors.unavailable": "Maksulinkkiesi asetusten lataaminen ei onnistunut.",
     "payByLink.settings.inputs.file.errors.default": "Jokin meni pieleen. Tarkista, että asiakirjasi täyttävät vaatimukset.",
     "payByLink.settings.inputs.file.errors.disallowedType": "Tiedostotyyppiä ei hyväksytä",
     "payByLink.settings.inputs.file.errors.tooLarge": "Tiedosto on liian suuri",

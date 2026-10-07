@@ -1,10 +1,15 @@
 import { computed, defineComponent, h, ref, type Component, type PropType, type VNode } from 'vue';
 import { BentoEmptyState } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
-import { getDomainTranslationKey, type DomainTranslationKey } from '@integration-components/core/vue';
-import { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from './getErrorMessage';
+import {
+    getDomainTranslationKey,
+    getErrorMessage,
+    useCoreContext,
+    useShouldHideIllustrations,
+    type DomainTranslationKey,
+    type ErrorMessageInfo,
+    type ErrorWithCode,
+} from '@integration-components/core/vue';
 import { useLiveAnnouncement } from './useLiveAnnouncement';
-import { useShouldHideIllustrations } from './customization';
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 
 export const DataOverviewError = defineComponent({

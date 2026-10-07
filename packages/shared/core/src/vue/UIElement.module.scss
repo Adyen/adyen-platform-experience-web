@@ -1,0 +1,13 @@
+@use '@integration-components/style';
+@use '@integration-components/style/breakpoints' as *;
+
+.container {
+    background: style.token(color-background-primary);
+    padding: var(--adyen-pe-content-padding);
+
+    // stylelint-disable-next-line media-query-no-invalid
+    @media (min-width: #{$adyen-pe-breakpoint-sm}) {
+        border: style.token(border-width-s) solid style.token(color-outline-secondary);
+        border-radius: style.token(spacer-040);
+    }
+}

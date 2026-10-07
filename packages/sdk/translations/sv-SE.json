@@ -921,7 +921,7 @@
     "payByLink.settings.common.alerts.saveError": "Ändringarna har inte sparats. Försök igen.",
     "payByLink.settings.common.alerts.saveSuccess": "Ändringarna har sparats.",
     "payByLink.settings.common.alerts.validationError": "Det finns ett fel. Korrigera det markerade fältet.",
-    "payByLink.settings.errors.couldNotLoadSettings": "Vi kunde inte läsa in dina inställningar för betalningslänkar.",
+    "payByLink.settings.errors.unavailable": "Vi kunde inte läsa in dina inställningar för betalningslänkar.",
     "payByLink.settings.inputs.file.errors.default": "Något gick fel. Kontrollera att dina dokument uppfyller kraven.",
     "payByLink.settings.inputs.file.errors.disallowedType": "Filtypen accepteras inte",
     "payByLink.settings.inputs.file.errors.tooLarge": "Filstorleken överskrider maximal tillåten filstorlek",

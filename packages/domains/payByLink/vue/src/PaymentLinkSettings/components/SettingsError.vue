@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { ErrorMessageDisplay } from '@integration-components/composables-vue';
+import { ComponentShell } from '@integration-components/composables-vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import type { DomainTranslationKey } from '@integration-components/core/vue';
 import { getSettingsErrorMessage } from '../utils/getSettingsErrorMessage';
@@ -25,7 +25,5 @@ const errorInfo = computed(() =>
 </script>
 
 <template>
-    <div v-if="errorInfo">
-        <ErrorMessageDisplay :error-info="errorInfo" with-image :absolute-position="false" />
-    </div>
+    <ComponentShell v-if="errorInfo" state="error" :error-info="errorInfo" />
 </template>

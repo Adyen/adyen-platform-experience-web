@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import ReportsOverview from './ReportsOverview.vue';
-import { useCoreContext } from '@integration-components/core/vue';
-import { useBalanceAccounts } from '@integration-components/composables-vue';
+import { ComponentShell, useBalanceAccounts, type ErrorMessageInfo } from '@integration-components/composables-vue';
 
 const props = withDefaults(
     defineProps<{
@@ -15,21 +14,19 @@ const props = withDefaults(
     {}
 );
 
-const { i18n } = useCoreContext();
-
 const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(() => props.balanceAccountId);
 const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
+
+const errorInfo = computed<ErrorMessageInfo>(() => ({
+    title: 'reports.common.errors.somethingWentWrong',
+    messages: ['reports.overview.errors.unavailable'],
+    onContactSupport: props.onContactSupport,
+}));
 </script>
 
 <template>
     <div>
-        <!-- Error state -->
-        <div v-if="hasError">
-            <p>{{ i18n.get('reports.overview.errors.unavailable') }}</p>
-            <button v-if="props.onContactSupport" @click="props.onContactSupport">
-                {{ i18n.get('reports.common.actions.contactSupport.labels.default') }}
-            </button>
-        </div>
+        <ComponentShell v-if="hasError" state="error" :error-info="errorInfo" />
 
         <!-- Main content -->
         <ReportsOverview

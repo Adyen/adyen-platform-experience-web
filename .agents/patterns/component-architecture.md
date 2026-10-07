@@ -30,20 +30,44 @@ Provides session, i18n, CDN assets, analytics, and error handling to all descend
 
 ### 3. {Name}Element (`external/{Name}/{Name}Element.tsx`)
 
-Concrete element class. Sets `static type`, assigns `componentToRender`, and applies
-`customClassNames`. Example: `CapitalOverviewElement`, `TransactionsOverviewElement`.
+Concrete element class. Sets `static type` and assigns `componentToRender`.
+Example: `CapitalOverviewElement`, `TransactionsOverviewElement`.
 
-```typescript
+```tsx
 // ✅ Pattern: see src/components/external/CapitalOverview/CapitalOverviewElement.tsx
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
     public static type: ExternalComponentType = 'capitalOverview';
     constructor(props) {
         super(props);
         this.componentToRender = () => <CapitalOverview {...this.props} />;
-        this.customClassNames = 'adyen-pe-capital-overview-component';
     }
 }
 ```
+
+**Component availability:** `UIElementProvider` wraps every component's slot in `ComponentAvailabilityGate`
+(`core/src/vue/componentAvailability/`), so no Element wires it up itself. The gate keeps the component
+unmounted until it is known to be available, and renders the shared `ComponentShell` in the meantime:
+
+| Config context state | Gate renders |
+|----------------------|--------------|
+| `permissionPending` | shell `loading` state |
+| `componentUnavailable` | shell `error` state (shared error message display, domain-specific message) |
+| available | the component itself |
+
+Titles belong to the components and only render once the gate has been crossed. Because the component stays
+unmounted, it fires no requests it has no permission for; the session's `endpoints` object is empty until
+`/setup` resolves, and every call site guards with `isFunction`. `ConfigProvider` always renders its slot
+and only exposes these states — it never renders loading or error markup itself.
+
+**`ComponentShell`** (`core/src/vue/componentShell/`, re-exported from `@integration-components/composables-vue`
+together with `ErrorMessageDisplay` and `getErrorMessage`) owns the loading / error / content states, so
+a change to any of them is made once for every flow. The loading state renders a centered `BentoLoadingIndicator`
+(its wrapper carries `aria-busy`, since the spinner itself is `aria-hidden`), unless the component fills the
+`#loading` slot with its own placeholder — `PaymentLinkDetails` passes `PaymentLinkSkeleton` that way, and slot
+content is left to lay itself out. Errors go through the shared `ErrorMessageDisplay`, rendered flush inside
+the component box. That box is the scoped `styles.container` class in `UIElementProvider`
+(`UIElement.module.scss`), which already draws the border and padding around every component, so the shell
+adds no box of its own.
 
 ### 4. Container Components
 

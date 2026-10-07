@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useLandedPageEvent, ErrorMessageDisplay } from '@integration-components/composables-vue';
-import { BentoLoadingIndicator } from '@adyen/bento-vue3';
+import { computed, ref, watch } from 'vue';
+import { useLandedPageEvent, ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
 import TransactionData from './TransactionData/TransactionData.vue';
 import { useTransaction } from '../composables/useTransaction';
 import { normalizeCustomFields } from '@integration-components/utils';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET, sharedTransactionDetailsEventProperties } from '../../../../domain/src';
 import type { TransactionDetailsCustomization, TransactionDetails } from '../../../../domain/src';
-import styles from './TransactionDetailsContainer.module.scss';
 
 const props = defineProps<{
     id: string;
@@ -18,6 +16,12 @@ const props = defineProps<{
 }>();
 
 const { error, fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(() => props.id);
+
+const shellState = computed<ComponentShellState>(() => {
+    if (initialTransaction.value) return 'ready';
+    if (fetchingTransaction.value) return 'loading';
+    return error.value ? 'error' : 'ready';
+});
 
 const extraFields = ref<Record<string, any> | undefined>(undefined);
 const initialTransaction = ref<TransactionDetails | undefined>(undefined);
@@ -77,7 +81,15 @@ useLandedPageEvent(
 </script>
 
 <template>
-    <div>
+    <ComponentShell
+        :state="shellState"
+        :error="error"
+        :error-message="'transactions.details.errors.unavailable'"
+        :not-found-message="'transactions.details.errors.notFound'"
+        :on-contact-support="props.onContactSupport"
+        :on-dismiss="props.onDismiss"
+        :dismiss-label="'transactions.details.common.actions.goBack'"
+    >
         <TransactionData
             v-if="initialTransaction"
             :extra-fields="extraFields"
@@ -88,24 +100,5 @@ useLandedPageEvent(
             :transaction="transaction ?? initialTransaction"
             :transaction-navigator="transactionNavigator"
         />
-
-        <div v-else-if="fetchingTransaction" :class="styles.loading">
-            <BentoLoadingIndicator />
-        </div>
-
-        <div v-else-if="error">
-            <ErrorMessageDisplay
-                :error="error"
-                :error-message="'transactions.details.errors.unavailable'"
-                :not-found-message="'transactions.details.errors.notFound'"
-                :on-contact-support="props.onContactSupport"
-                :on-dismiss="props.onDismiss"
-                :dismiss-label="'transactions.details.common.actions.goBack'"
-                with-image
-                :outlined="false"
-                :absolute-position="false"
-                :with-background="false"
-            />
-        </div>
-    </div>
+    </ComponentShell>
 </template>

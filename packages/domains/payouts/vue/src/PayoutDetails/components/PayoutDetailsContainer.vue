@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useBalanceAccounts, ErrorMessageDisplay } from '@integration-components/composables-vue';
+import { useBalanceAccounts, ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
 import { isFunction } from '@integration-components/utils';
-import { BentoLoadingIndicator } from '@adyen/bento-vue3';
 import PayoutData from './PayoutData.vue';
 import { usePayoutDetails } from '../composables/usePayoutDetails';
 import { PAYOUT_TABLE_FIELDS } from '../../PayoutsOverview/constants';
 import type { PayoutDetailsCustomization } from '../types';
 import type { CustomDataRetrieved } from '@integration-components/types';
-import styles from './PayoutDetailsContainer.module.scss';
 
 const props = defineProps<{
     id: string;
@@ -68,32 +66,23 @@ watch(
     { immediate: true }
 );
 
-const showError = computed(() => !!error.value);
-const showLoadingPlaceholder = computed(() => isFetching.value && !data.value && !error.value);
+const shellState = computed<ComponentShellState>(() => {
+    if (error.value) return 'error';
+    return isFetching.value && !data.value ? 'loading' : 'ready';
+});
 </script>
 
 <template>
-    <div>
-        <div v-if="showError">
-            <ErrorMessageDisplay
-                :error="error"
-                :error-message="'payouts.details.errors.unavailable'"
-                :on-contact-support="props.onContactSupport"
-                :on-dismiss="props.onDismiss"
-                :dismiss-label="'payouts.details.common.actions.goBack'"
-                with-image
-                :outlined="false"
-                :absolute-position="false"
-                :with-background="false"
-            />
-        </div>
-
-        <div v-else-if="showLoadingPlaceholder" :class="styles.loading" aria-busy="true">
-            <BentoLoadingIndicator />
-        </div>
-
+    <ComponentShell
+        :state="shellState"
+        :error="error"
+        :error-message="'payouts.details.errors.unavailable'"
+        :on-contact-support="props.onContactSupport"
+        :on-dismiss="props.onDismiss"
+        :dismiss-label="'payouts.details.common.actions.goBack'"
+    >
         <PayoutData
-            v-else-if="data"
+            v-if="data"
             :payout="data"
             :balance-account-id="props.id"
             :balance-account-description="resolvedBalanceAccountDescription"
@@ -101,5 +90,5 @@ const showLoadingPlaceholder = computed(() => isFetching.value && !data.value &&
             :data-customization="props.dataCustomization"
             :on-dismiss="props.onDismiss"
         />
-    </div>
+    </ComponentShell>
 </template>
