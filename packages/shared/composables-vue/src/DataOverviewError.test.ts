@@ -36,6 +36,7 @@ describe('DataOverviewError', () => {
             setup: (props: Record<string, unknown>) => () => VNode;
         };
         return component.setup({
+            allowCopyErrorCode: true,
             copyIcon: undefined,
             error: undefined,
             errorInfo,
@@ -94,6 +95,13 @@ describe('DataOverviewError', () => {
 
         action.event();
         expect(refreshComponent).toHaveBeenCalledOnce();
+    });
+
+    test('does not offer the copy action when allowCopyErrorCode is false', () => {
+        Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: vi.fn() } });
+        const view = renderWithInfo({ messages: ['transactions.common.errors.errorCode'], requestId: 'REQUEST-3' }, { allowCopyErrorCode: false });
+
+        expect(view().props?.action).toBeUndefined();
     });
 
     test('copies the request ID and updates the accessible action state', async () => {

@@ -20,6 +20,7 @@ export const DataOverviewError = defineComponent({
         image: { type: String as PropType<'wrong-environment' | 'no-results-found'>, default: 'wrong-environment' },
         refreshIcon: { type: [Object, Function] as PropType<Component>, default: undefined },
         copyIcon: { type: [Object, Function] as PropType<Component>, default: undefined },
+        allowCopyErrorCode: { type: Boolean, default: true },
     },
 
     setup(props) {
@@ -87,7 +88,7 @@ export const DataOverviewError = defineComponent({
                 };
             }
 
-            if (requestId && typeof navigator !== 'undefined' && navigator.clipboard) {
+            if (props.allowCopyErrorCode && requestId && typeof navigator !== 'undefined' && navigator.clipboard) {
                 return {
                     title: i18n.get(
                         getDomainTranslationKey(

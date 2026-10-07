@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 import { BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import {
     useCustomColumnsData,
@@ -171,7 +170,7 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
             :error-message="'payouts.overview.errors.listUnavailable'"
             :on-contact-support="props.onContactSupport"
             :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
+            :allow-copy-error-code="false"
         />
 
         <BentoDataGrid
