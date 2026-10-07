@@ -921,7 +921,7 @@
     "payByLink.settings.common.alerts.saveError": "Ændringerne er ikke blevet gemt. Prøv igen.",
     "payByLink.settings.common.alerts.saveSuccess": "Ændringerne er blevet gemt.",
     "payByLink.settings.common.alerts.validationError": "Der er en fejl. Ret det markerede felt.",
-    "payByLink.settings.errors.couldNotLoadSettings": "Vi kunne ikke indlæse indstillingerne for dine betalingslinks.",
+    "payByLink.settings.errors.unavailable": "Vi kunne ikke indlæse indstillingerne for dine betalingslinks.",
     "payByLink.settings.inputs.file.errors.default": "Noget gik galt. Kontroller, at dine dokumenter opfylder kravene.",
     "payByLink.settings.inputs.file.errors.disallowedType": "Filtypen accepteres ikke",
     "payByLink.settings.inputs.file.errors.tooLarge": "Filstørrelsen overstiger den maksimalt tilladte grænse",

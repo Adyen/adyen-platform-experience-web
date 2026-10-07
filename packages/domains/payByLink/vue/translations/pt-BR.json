@@ -236,7 +236,7 @@
     "payByLink.settings.common.alerts.saveError": "As alterações não foram salvas. Tente novamente.",
     "payByLink.settings.common.alerts.saveSuccess": "As alterações foram salvas.",
     "payByLink.settings.common.alerts.validationError": "Ocorreu um erro Corrija o campo destacado.",
-    "payByLink.settings.errors.couldNotLoadSettings": "Não foi possível carregar as configurações dos deus links de pagamento.",
+    "payByLink.settings.errors.unavailable": "Não foi possível carregar as configurações dos deus links de pagamento.",
     "payByLink.settings.inputs.file.errors.default": "Algo deu errado. Verifique se seus documentos estão atendendo aos requisitos.",
     "payByLink.settings.inputs.file.errors.disallowedType": "Tipo de arquivo não aceito",
     "payByLink.settings.inputs.file.errors.tooLarge": "O tamanho do arquivo excede o tamanho máximo do arquivo",

@@ -921,7 +921,7 @@
     "payByLink.settings.common.alerts.saveError": "Die Änderungen wurden nicht gespeichert. Bitte versuchen Sie es erneut.",
     "payByLink.settings.common.alerts.saveSuccess": "Ihre Änderungen wurden erfolgreich gespeichert!",
     "payByLink.settings.common.alerts.validationError": "Es ist ein Fehler aufgetreten. Korrigieren Sie das markierte Feld.",
-    "payByLink.settings.errors.couldNotLoadSettings": "Ihre Einstellungen für Zahlungslinks konnten nicht geladen werden.",
+    "payByLink.settings.errors.unavailable": "Ihre Einstellungen für Zahlungslinks konnten nicht geladen werden.",
     "payByLink.settings.inputs.file.errors.default": "Etwas ist schiefgelaufen, bitte überprüfen Sie, ob Ihre Dokumente die Anforderungen erfüllen.",
     "payByLink.settings.inputs.file.errors.disallowedType": "Dateityp nicht akzeptiert",
     "payByLink.settings.inputs.file.errors.tooLarge": "Die Dateigröße überschreitet die maximal zulässige Größe",

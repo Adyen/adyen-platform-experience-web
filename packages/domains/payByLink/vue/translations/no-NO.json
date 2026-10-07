@@ -236,7 +236,7 @@
     "payByLink.settings.common.alerts.saveError": "Endringene er ikke lagret. Prøv på nytt.",
     "payByLink.settings.common.alerts.saveSuccess": "Endringene er lagret.",
     "payByLink.settings.common.alerts.validationError": "Det er oppstått en feil. Korriger det uthevede feltet.",
-    "payByLink.settings.errors.couldNotLoadSettings": "Vi kunne ikke laste innstillingene for betalingslenker.",
+    "payByLink.settings.errors.unavailable": "Vi kunne ikke laste innstillingene for betalingslenker.",
     "payByLink.settings.inputs.file.errors.default": "Noe gikk galt. Kontroller at dokumentene dine oppfyller kravene.",
     "payByLink.settings.inputs.file.errors.disallowedType": "Filtypen godtas ikke",
     "payByLink.settings.inputs.file.errors.tooLarge": "Filstørrelsen overskrider den maksimale tillatte filstørrelsen",

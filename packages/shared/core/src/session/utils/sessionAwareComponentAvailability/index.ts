@@ -1,3 +1,7 @@
 export { default } from './sessionAwareComponentAvailability';
-export { default as componentAvailabilityErrors } from './helpers/componentAvailabilityErrors';
+export {
+    default as componentAvailabilityErrors,
+    getComponentAvailabilityErrorMessages,
+    getComponentAvailabilityErrorTitle,
+} from './helpers/componentAvailabilityErrors';
 export * from './types';

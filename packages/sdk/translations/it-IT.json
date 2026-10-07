@@ -921,7 +921,7 @@
     "payByLink.settings.common.alerts.saveError": "Modifiche non salvate. Riprova.",
     "payByLink.settings.common.alerts.saveSuccess": "Modifiche salvate.",
     "payByLink.settings.common.alerts.validationError": "Si è verificato un errore. Correggi il campo evidenziato.",
-    "payByLink.settings.errors.couldNotLoadSettings": "Impossibile caricare le impostazioni dei link di pagamento.",
+    "payByLink.settings.errors.unavailable": "Impossibile caricare le impostazioni dei link di pagamento.",
     "payByLink.settings.inputs.file.errors.default": "Si è verificato un errore, controlla che i tuoi documenti soddisfino i requisiti.",
     "payByLink.settings.inputs.file.errors.disallowedType": "Tipo di file non accettato",
     "payByLink.settings.inputs.file.errors.tooLarge": "La dimensione del file supera la dimensione massima consentita",

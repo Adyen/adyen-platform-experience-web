@@ -921,7 +921,7 @@
     "payByLink.settings.common.alerts.saveError": "Los cambios no se han guardado. Inténtalo de nuevo.",
     "payByLink.settings.common.alerts.saveSuccess": "Los cambios se han guardado correctamente.",
     "payByLink.settings.common.alerts.validationError": "Ha ocurrido un error. Corrige el campo resaltado.",
-    "payByLink.settings.errors.couldNotLoadSettings": "No hemos podido cargar las configuraciones de tus enlaces de pago.",
+    "payByLink.settings.errors.unavailable": "No hemos podido cargar las configuraciones de tus enlaces de pago.",
     "payByLink.settings.inputs.file.errors.default": "Se ha producido un error. Comprueba que tus documentos cumplen con los requisitos.",
     "payByLink.settings.inputs.file.errors.disallowedType": "Tipo de archivo no permitido",
     "payByLink.settings.inputs.file.errors.tooLarge": "El tamaño del archivo supera el tamaño máximo permitido",

@@ -921,7 +921,7 @@
     "payByLink.settings.common.alerts.saveError": "De wijzigingen zijn niet opgeslagen. Probeer het opnieuw.",
     "payByLink.settings.common.alerts.saveSuccess": "De wijzigingen zijn opgeslagen.",
     "payByLink.settings.common.alerts.validationError": "Er is een fout opgetreden. Corrigeer het gemarkeerde veld.",
-    "payByLink.settings.errors.couldNotLoadSettings": "We konden de instellingen van je betalingslinks niet laden.",
+    "payByLink.settings.errors.unavailable": "We konden de instellingen van je betalingslinks niet laden.",
     "payByLink.settings.inputs.file.errors.default": "Er is iets misgegaan, controleer of je documenten aan de vereisten voldoen.",
     "payByLink.settings.inputs.file.errors.disallowedType": "Bestandstype niet geaccepteerd",
     "payByLink.settings.inputs.file.errors.tooLarge": "De grootte van het bestand overschrijdt de maximale bestandsgrootte",
