@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import {
     useTimezoneAwareDateFormatting,
     useResponsiveContainer,
     containerQueries,
     CustomDataCell,
+    useCustomColumnWidths,
     DataOverviewError,
     useTableColumns,
     useShouldHideIllustrations,
@@ -76,14 +77,15 @@ const { columns: desktopColumns, customFieldKeys } = useTableColumns({
     customColumns: () => props.customColumns,
     fieldsKeys: FIELDS_KEYS,
     columnConfig: () => ({
-        createdAt: { flex: 1, minWidth: 140, overflow: BentoColumnOverflow.WRAP },
-        paymentMethod: { flex: 1.2, minWidth: 150 },
-        transactionType: { flex: 1, minWidth: 130 },
-        currency: { flex: 0.7, minWidth: 90, visible: props.hasMultipleCurrencies },
-        netAmount: { flex: 1, minWidth: 120, numeric: true },
-        grossAmount: { flex: 1, minWidth: 120, numeric: true },
+        createdAt: { flex: 1, overflow: BentoColumnOverflow.WRAP },
+        paymentMethod: { flex: 1.2 },
+        transactionType: { flex: 1 },
+        currency: { flex: 0.7, visible: props.hasMultipleCurrencies },
+        netAmount: { flex: 1, numeric: true },
+        grossAmount: { flex: 1, numeric: true },
     }),
-    customColumnDefaults: () => ({ flex: 1, minWidth: 120 }),
+    customColumnDefaults: () => ({ flex: 1 }),
+    customColumnWidths: () => customColumnWidths.value,
     resolveStandardColumnLabel: (field, defaultLabel) =>
         field === 'netAmount' || field === 'grossAmount' ? amountLabel(field, defaultLabel) : defaultLabel,
     resolveCustomColumnLabel: key => {
@@ -99,8 +101,13 @@ const columns = computed<BentoColumn[]>(() => {
 
     if (isMobile.value) {
         return [
-            { field: 'paymentMethodAndDate', label: i18n.get(FIELDS_KEYS.paymentMethod as any), flex: 2, minWidth: 150 },
-            { field: 'grossAmount', label: grossAmountLabel, flex: 1, minWidth: 120, numeric: true },
+            {
+                field: 'paymentMethodAndDate',
+                label: i18n.get(FIELDS_KEYS.paymentMethod as any),
+                flex: 2,
+                minWidth: customColumnWidths.value.paymentMethodAndDate,
+            },
+            { field: 'grossAmount', label: grossAmountLabel, flex: 1, minWidth: customColumnWidths.value.grossAmount, numeric: true },
         ];
     }
 
@@ -129,6 +136,13 @@ const gridData = computed<BentoDatagridDataItem[]>(() => {
         return row;
     });
 });
+
+const tableRef = ref<HTMLElement | null>(null);
+const customColumnWidths = useCustomColumnWidths(
+    tableRef,
+    () => [gridData.value, isLoading.value, isMobile.value],
+    () => columns.value
+);
 
 const paginationProps = computed(() => ({
     page: props.currentPage ?? 1,
@@ -174,7 +188,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
 </script>
 
 <template>
-    <div>
+    <div ref="tableRef">
         <DataOverviewError
             v-if="props.error"
             :error="props.error"
@@ -256,7 +270,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
             </template>
 
             <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">
-                <CustomDataCell :value="item[key]" />
+                <CustomDataCell :value="item[key]" :field="key" />
             </template>
         </BentoDataGrid>
     </div>

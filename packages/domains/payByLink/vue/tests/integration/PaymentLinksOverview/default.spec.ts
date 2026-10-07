@@ -108,6 +108,49 @@ test.describe('Payment Links Overview', () => {
             await expect(grid.getByRole('columnheader', { name: /status/i })).toBeVisible();
         });
 
+        test('should fill the available horizontal width in wide containers', async ({ page }) => {
+            await page.setViewportSize({ width: 2560, height: 900 });
+
+            const grid = page.getByRole('grid');
+            await expect(grid.getByRole('columnheader')).toHaveCount(10);
+            await expect(grid.getByRole('rowgroup').nth(1).getByRole('row')).toHaveCount(10);
+
+            for (const width of [2560, 1600, 2560]) {
+                await page.setViewportSize({ width, height: 900 });
+
+                await expect
+                    .poll(async () => {
+                        const gridBounds = await grid.boundingBox();
+                        const lastHeaderBounds = await grid.getByRole('columnheader').last().boundingBox();
+                        const lastCellBounds = await grid
+                            .getByRole('rowgroup')
+                            .nth(1)
+                            .getByRole('row')
+                            .first()
+                            .getByRole('gridcell')
+                            .last()
+                            .boundingBox();
+                        if (!gridBounds || !lastHeaderBounds || !lastCellBounds) return Infinity;
+
+                        const rightEdge = gridBounds.x + gridBounds.width;
+                        return Math.max(
+                            Math.abs(rightEdge - lastHeaderBounds.x - lastHeaderBounds.width),
+                            Math.abs(rightEdge - lastCellBounds.x - lastCellBounds.width)
+                        );
+                    })
+                    .toBeLessThanOrEqual(2);
+            }
+        });
+
+        test('should display the two-column layout in small containers', async ({ page }) => {
+            await page.setViewportSize({ width: 480, height: 800 });
+
+            const grid = page.getByRole('grid');
+            await expect(grid.getByRole('columnheader')).toHaveCount(2);
+            await expect(grid.getByRole('columnheader', { name: 'Payment link ID', exact: true })).toBeVisible();
+            await expect(grid.getByRole('columnheader', { name: 'Amount', exact: true })).toBeVisible();
+        });
+
         test('should display multiple rows in the payment links grid', async ({ page }) => {
             const grid = page.getByRole('grid');
             const rows = grid.getByRole('rowgroup').nth(1).getByRole('row');

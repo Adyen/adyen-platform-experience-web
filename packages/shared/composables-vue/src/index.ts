@@ -10,6 +10,9 @@ export { default as useCustomColumnsData } from './useCustomColumnsData';
 export * from './useTableColumns';
 export { default as useTableColumns } from './useTableColumns';
 
+export * from './useCustomColumnWidths';
+export { default as useCustomColumnWidths } from './useCustomColumnWidths';
+
 export * from './useCustomDataCells';
 export { default as useCustomDataCells } from './useCustomDataCells';
 

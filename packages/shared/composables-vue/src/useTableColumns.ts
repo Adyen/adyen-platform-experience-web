@@ -1,7 +1,7 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { CustomColumn } from '@integration-components/types';
-import { hasCustomField } from '@integration-components/utils';
+import { hasCustomField, hasOwnProperty } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 
 /**
@@ -31,11 +31,17 @@ type NormalizedCustomColumn = {
     visibility?: 'hidden' | 'visible';
 };
 
-function addAutoWidth<TExtra extends object>(column: TableColumn<TExtra>): TableColumn<TExtra> {
+function addAutoWidth<TExtra extends object>(column: TableColumn<TExtra>, measured = false): TableColumn<TExtra> {
     if (column.flex === undefined && column.autoWidth === undefined) {
-        column.autoWidth = true;
+        if (measured) column.flex = 1;
+        else column.autoWidth = true;
     }
     return column;
+}
+
+function getContentWidth(contentWidths: Readonly<Record<string, number>> | undefined, field: string) {
+    const width = contentWidths && hasOwnProperty(contentWidths, field) ? contentWidths[field] : undefined;
+    return width && width > 0 ? width : undefined;
 }
 
 function createStandardColumns<T extends string, TExtra extends object>(
@@ -43,6 +49,7 @@ function createStandardColumns<T extends string, TExtra extends object>(
     fieldsKeys: { [k in T]?: string },
     customColumns: ReadonlyMap<string, NormalizedCustomColumn>,
     configuredColumns: Partial<Record<T, TableColumnOptions<TExtra>>>,
+    contentWidths: Readonly<Record<string, number>> | undefined,
     getLabel: (key: string) => string,
     resolveLabel?: (field: T, defaultLabel: string) => string
 ): TableColumn<TExtra>[] {
@@ -54,16 +61,21 @@ function createStandardColumns<T extends string, TExtra extends object>(
 
         const override = customColumns.get(field);
         const defaultLabel = getLabel(translationKey);
+        const contentWidth = getContentWidth(contentWidths, field);
 
         columns.push(
-            addAutoWidth({
-                field,
-                label: resolveLabel?.(field, defaultLabel) ?? defaultLabel,
-                ...configuredColumns[field],
-                ...(override?.visibility === 'hidden' ? { visible: false } : {}),
-                ...(override?.flex !== undefined ? { flex: override.flex } : {}),
-                ...(override?.align === 'right' ? { numeric: true } : {}),
-            } as TableColumn<TExtra>)
+            addAutoWidth(
+                {
+                    field,
+                    label: resolveLabel?.(field, defaultLabel) ?? defaultLabel,
+                    ...configuredColumns[field],
+                    ...(contentWidth !== undefined ? { minWidth: Math.max(configuredColumns[field]?.minWidth ?? 0, contentWidth) } : {}),
+                    ...(override?.visibility === 'hidden' ? { visible: false } : {}),
+                    ...(override?.flex !== undefined ? { flex: override.flex } : {}),
+                    ...(override?.align === 'right' ? { numeric: true } : {}),
+                } as TableColumn<TExtra>,
+                contentWidths !== undefined
+            )
         );
     }
 
@@ -74,21 +86,27 @@ function createCustomColumns<TExtra extends object>(
     customColumns: NormalizedCustomColumn[],
     standardFields: ReadonlySet<string>,
     defaults: CustomTableColumnOptions<TExtra> | undefined,
+    contentWidths: Readonly<Record<string, number>> | undefined,
     resolveLabel?: (key: string) => string
 ): TableColumn<TExtra>[] {
     const columns: TableColumn<TExtra>[] = [];
 
     for (const column of customColumns) {
         if (standardFields.has(column.key) || column.visibility === 'hidden') continue;
+        const contentWidth = getContentWidth(contentWidths, column.key);
 
         columns.push(
-            addAutoWidth({
-                field: column.key,
-                label: resolveLabel ? resolveLabel(column.key) : column.key,
-                ...defaults,
-                ...(column.flex !== undefined ? { flex: column.flex } : {}),
-                ...(column.align === 'right' ? { numeric: true } : {}),
-            } as TableColumn<TExtra>)
+            addAutoWidth(
+                {
+                    field: column.key,
+                    label: resolveLabel ? resolveLabel(column.key) : column.key,
+                    ...defaults,
+                    ...(contentWidth !== undefined ? { minWidth: Math.max(defaults?.minWidth ?? 0, contentWidth) } : {}),
+                    ...(column.flex !== undefined ? { flex: column.flex } : {}),
+                    ...(column.align === 'right' ? { numeric: true } : {}),
+                } as TableColumn<TExtra>,
+                contentWidths !== undefined
+            )
         );
     }
 
@@ -113,6 +131,8 @@ export interface UseTableColumnsOptions<T extends string, TExtra extends object 
     columnConfig?: () => Partial<Record<T, TableColumnOptions<TExtra>>>;
     /** Optional defaults applied to non-standard custom columns. */
     customColumnDefaults?: () => CustomTableColumnOptions<TExtra>;
+    /** Optional measured content widths (in px) of custom columns; used as their minimum width. */
+    customColumnWidths?: () => Readonly<Record<string, number>>;
     /** Optional resolver for labels of standard fields. */
     resolveStandardColumnLabel?: (field: T, defaultLabel: string) => string;
     /**
@@ -133,6 +153,7 @@ export function useTableColumns<T extends string, TExtra extends object = object
     fieldsKeys,
     columnConfig,
     customColumnDefaults,
+    customColumnWidths,
     resolveStandardColumnLabel,
     resolveCustomColumnLabel,
 }: UseTableColumnsOptions<T, TExtra>) {
@@ -162,6 +183,7 @@ export function useTableColumns<T extends string, TExtra extends object = object
         const customMap = new Map(normalizedCustomColumns.value.map(column => [column.key, column] as const));
         const configuredColumns: Partial<Record<T, TableColumnOptions<TExtra>>> = columnConfig?.() ?? {};
         const configuredCustomColumnDefaults = customColumnDefaults?.();
+        const contentWidths = customColumnWidths?.();
 
         return [
             ...createStandardColumns(
@@ -169,10 +191,17 @@ export function useTableColumns<T extends string, TExtra extends object = object
                 fieldsKeys,
                 customMap,
                 configuredColumns,
+                contentWidths,
                 translationKey => i18n.get(translationKey as Parameters<typeof i18n.get>[0]),
                 resolveStandardColumnLabel
             ),
-            ...createCustomColumns(normalizedCustomColumns.value, standardFields, configuredCustomColumnDefaults, resolveCustomColumnLabel),
+            ...createCustomColumns(
+                normalizedCustomColumns.value,
+                standardFields,
+                configuredCustomColumnDefaults,
+                contentWidths,
+                resolveCustomColumnLabel
+            ),
         ];
     });
 
