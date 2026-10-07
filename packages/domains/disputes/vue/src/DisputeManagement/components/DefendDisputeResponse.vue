@@ -41,7 +41,7 @@ function goBackToFileUploadView() {
             <BentoTypography variant="title">
                 {{ i18n.get('disputes.management.defend.common.errors.somethingWentWrong') }}
             </BentoTypography>
-            <BentoTypography variant="body">
+            <BentoTypography :class="flowStyles.errorDescription" variant="body">
                 {{ i18n.get('disputes.management.defend.common.errors.defenseFailed') }}
             </BentoTypography>
             <BentoButton variant="secondary" @click="goBackToFileUploadView">

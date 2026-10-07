@@ -44,9 +44,11 @@
     flex-direction: column;
     gap: style.token(spacer-070);
     justify-content: center;
+    text-align: center;
 }
 
-.successDescription {
+.successDescription,
+.errorDescription {
     max-width: 350px;
 }
 
