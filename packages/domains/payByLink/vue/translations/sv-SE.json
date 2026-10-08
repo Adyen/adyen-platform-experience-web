@@ -195,7 +195,6 @@
     "payByLink.overview.common.actionNeeded.expiresAt": "Förfaller: %{date}",
     "payByLink.overview.common.actionNeeded.expiresDays": "%{days} dagar kvar till förfallodatum (%{date})",
     "payByLink.overview.common.actionNeeded.expiresToday": "Förfaller idag (%{date})",
-    "payByLink.overview.common.filters.types.date.label": "Datumintervall",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.custom": "Anpassat",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last30Days": "Senaste 30 dagarna",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last7Days": "Senaste 7 dagarna",

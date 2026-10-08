@@ -109,7 +109,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
     config.push({
         field: 'dateRange',
-        label: i18n.get('payByLink.overview.common.filters.types.date.label'),
+        label: i18n.get('payByLink.overview.filters.types.creationDate.label'),
         type: BentoFilterItemType.DATE_RANGE,
         defaultValue: defaultDateRange,
         options: {

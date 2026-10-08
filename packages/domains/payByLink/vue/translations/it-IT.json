@@ -195,7 +195,6 @@
     "payByLink.overview.common.actionNeeded.expiresAt": "Scade: %{date}",
     "payByLink.overview.common.actionNeeded.expiresDays": "%{days} giorni alla scadenza (%{date})",
     "payByLink.overview.common.actionNeeded.expiresToday": "Scade oggi (%{date})",
-    "payByLink.overview.common.filters.types.date.label": "Intervallo di date",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.custom": "Personalizzato",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last30Days": "Ultimi 30 giorni",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last7Days": "Ultimi 7 giorni",

@@ -195,7 +195,6 @@
     "payByLink.overview.common.actionNeeded.expiresAt": "Utløper: %{date}",
     "payByLink.overview.common.actionNeeded.expiresDays": "%{days} dager igjen til utløpsdato (%{date})",
     "payByLink.overview.common.actionNeeded.expiresToday": "Utløper i dag (%{date})",
-    "payByLink.overview.common.filters.types.date.label": "Datointervall",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.custom": "Tilpasset",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last30Days": "Siste 30 dager",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last7Days": "Siste 7 dager",

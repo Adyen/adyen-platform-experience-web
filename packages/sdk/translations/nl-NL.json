@@ -880,7 +880,6 @@
     "payByLink.overview.common.actionNeeded.expiresAt": "Verloopt: %{date}",
     "payByLink.overview.common.actionNeeded.expiresDays": "%{days} dagen tot vervaldatum (%{date})",
     "payByLink.overview.common.actionNeeded.expiresToday": "Verloopt vandaag (%{date})",
-    "payByLink.overview.common.filters.types.date.label": "Periode",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.custom": "Aangepast",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last30Days": "Laatste 30 dagen",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last7Days": "Laatste 7 dagen",

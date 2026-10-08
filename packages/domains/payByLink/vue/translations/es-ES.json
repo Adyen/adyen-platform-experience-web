@@ -195,7 +195,6 @@
     "payByLink.overview.common.actionNeeded.expiresAt": "Caducidad: %{date}",
     "payByLink.overview.common.actionNeeded.expiresDays": "%{days} días para caducar (%{date})",
     "payByLink.overview.common.actionNeeded.expiresToday": "Caduca hoy (%{date}).",
-    "payByLink.overview.common.filters.types.date.label": "Intervalo de fechas",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.custom": "Personalizadas",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last30Days": "Últimos 30 días",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last7Days": "Últimos 7 días",

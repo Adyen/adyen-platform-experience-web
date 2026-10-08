@@ -46,7 +46,7 @@ test.describe('Payment Links Overview', () => {
         });
 
         test('should display all filter options', async ({ page }) => {
-            await expect(page.getByRole('button', { name: /^Date range/ })).toBeVisible();
+            await expect(page.getByRole('button', { name: /^Creation date/ })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Type' })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Status' })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Merchant reference' })).toBeVisible();
@@ -75,11 +75,11 @@ test.describe('Payment Links Overview', () => {
 
         test('should render Stores before the other filters when stores load', async ({ page }) => {
             const filterButtons = page.getByRole('button', {
-                name: /^(?:Stores|Date range|Type|Status|Merchant reference|Payment Link ID)/,
+                name: /^(?:Stores|Creation date|Type|Status|Merchant reference|Payment Link ID)/,
             });
 
             await expect(filterButtons.first()).toHaveText('Stores');
-            await expect(filterButtons.nth(1)).toHaveText('Date range:Last 30 days');
+            await expect(filterButtons.nth(1)).toHaveText('Creation date:Last 30 days');
         });
 
         test('should display Create Payment Link and Settings buttons', async ({ page }) => {
