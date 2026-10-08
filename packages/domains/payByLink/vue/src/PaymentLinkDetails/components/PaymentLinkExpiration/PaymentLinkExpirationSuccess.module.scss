@@ -13,6 +13,11 @@
 .actions {
     display: flex;
     justify-content: center;
+    width: 100%;
+}
+
+.actionsStacked {
+    display: block;
 }
 
 .icon {

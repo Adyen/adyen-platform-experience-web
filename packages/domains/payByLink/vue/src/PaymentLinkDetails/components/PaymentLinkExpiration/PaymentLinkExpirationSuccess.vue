@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { BentoButtonActions, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import SuccessIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
 import { useCoreContext } from '@integration-components/core/vue';
+import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
 import styles from './PaymentLinkExpirationSuccess.module.scss';
 
 const props = defineProps<{
@@ -11,6 +12,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
 const actionButtons = computed<BentoButtonActionsList>(() => [
     ...(props.onDismiss
@@ -33,6 +35,10 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
         <BentoTypography variant="body">
             {{ i18n.get('payByLink.details.expirationSuccess.description') }}
         </BentoTypography>
-        <BentoButtonActions :actions="actionButtons" layout="space-between" :class="styles.actions" />
+        <BentoButtonActions
+            :actions="actionButtons"
+            :layout="isMobile ? 'stacked-buttons' : 'fill-container'"
+            :class="[styles.actions, isMobile ? styles.actionsStacked : undefined]"
+        />
     </div>
 </template>
