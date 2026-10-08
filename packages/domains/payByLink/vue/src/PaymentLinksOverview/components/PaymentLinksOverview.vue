@@ -21,7 +21,7 @@ import styles from './PaymentLinksOverview.module.scss';
 
 const props = defineProps<{
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
     storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
     onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
     onContactSupport?: () => void;

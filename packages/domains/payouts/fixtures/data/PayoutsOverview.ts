@@ -44,12 +44,7 @@ export const DATA_CUSTOMIZATION_DETAILS: PayoutDetailsCustomization = {
 };
 
 export const DATA_CUSTOMIZATION_LIST: PayoutsListCustomization = {
-    fields: [
-        { key: 'adjustmentAmount', visibility: 'hidden' },
-        { key: '_summary' },
-        { key: '_country', flex: 0.5 },
-        { key: '_sendEmail', align: 'right' },
-    ],
+    fields: [{ key: 'adjustmentAmount', visibility: 'hidden' }, { key: '_summary' }, { key: '_country', flex: 0.5 }, { key: '_sendEmail' }],
 
     onDataRetrieve: async data => {
         await sleep(200);

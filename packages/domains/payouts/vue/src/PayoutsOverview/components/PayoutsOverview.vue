@@ -21,7 +21,7 @@ import styles from './PayoutsOverview.module.scss';
 const props = defineProps<{
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: PayoutsOverviewExternalProps['preferredLimit'];
     onContactSupport?: () => void;
     onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
     dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];

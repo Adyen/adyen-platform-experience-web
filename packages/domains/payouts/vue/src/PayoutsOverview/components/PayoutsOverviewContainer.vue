@@ -10,7 +10,7 @@ const props = withDefaults(
     defineProps<{
         balanceAccountId?: string;
         allowLimitSelection?: boolean;
-        preferredLimit?: number;
+        preferredLimit?: PayoutsOverviewExternalProps['preferredLimit'];
         onContactSupport?: () => void;
         onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
         dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
