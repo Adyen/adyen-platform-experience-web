@@ -1,0 +1,11 @@
+.filtersContainer {
+    min-width: 0;
+}
+
+.filtersContainerCompact {
+    :global(.b-filter-bar-button__counter),
+    :global(.b-filter-bar__clear-all),
+    :global(.b-filter-bar__reset-all) {
+        display: none;
+    }
+}
