@@ -1,18 +1,18 @@
 import { computed } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
+import { usePageLimit } from '@integration-components/composables-vue/usePageLimit';
 import { useCustomColumnsData } from '@integration-components/composables-vue';
-import { isFunction, normalizeCustomFields, hasCustomField, mergeRecords } from '@integration-components/utils';
+import { DEFAULT_PAGE_LIMITS, isFunction, normalizeCustomFields, hasCustomField, mergeRecords } from '@integration-components/utils';
 import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '@integration-components/transactions/domain';
 import type { ITransaction, CustomDataRetrieved } from '@integration-components/types';
-import type { TransactionsFilters, TransactionsListCustomization, TransactionsListResponse } from '../types';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
+import type { TransactionsFilters, TransactionsListCustomization, TransactionsListResponse, TransactionsOverviewExternalProps } from '../types';
 
 interface UseTransactionsListProps {
     filters: TransactionsFilters;
     fetchEnabled: boolean;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: TransactionsOverviewExternalProps['preferredLimit'];
     dataCustomization?: { list?: TransactionsListCustomization };
 }
 
@@ -41,6 +41,12 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
     };
 
     const getFetchKey = () => (canFetch.value ? getFiltersKey() : null);
+
+    const pageLimit = usePageLimit({
+        options: DEFAULT_PAGE_LIMITS,
+        preferredLimit: () => props().preferredLimit,
+        allowLimitSelection: () => props().allowLimitSelection,
+    });
 
     const pagination = useCursorPaginatedRecords<ITransaction>({
         getFetchKey,
@@ -72,8 +78,8 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
                 previousCursor: json?._links?.prev?.cursor,
             };
         },
-        preferredLimit: props().preferredLimit ?? DEFAULT_PAGE_LIMIT,
-        limitOptions: () => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined),
+        preferredLimit: pageLimit.initialLimit,
+        limitOptions: pageLimit.limitOptions,
     });
 
     const { customRecords, loadingCustomRecords } = useCustomColumnsData<ITransaction>({

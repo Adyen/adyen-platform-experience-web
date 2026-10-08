@@ -27,8 +27,8 @@ type CustomTableColumnOptions<TExtra extends object> = BaseTableColumnOptions & 
 type NormalizedCustomColumn = {
     key: string;
     flex?: number;
-    align?: 'center' | 'left' | 'right';
     visibility?: 'hidden' | 'visible';
+    align?: 'left' | 'right';
 };
 
 function addAutoWidth<TExtra extends object>(column: TableColumn<TExtra>, measured = false): TableColumn<TExtra> {
@@ -166,7 +166,7 @@ export function useTableColumns<T extends string, TExtra extends object = object
         for (const column of customColumns() ?? []) {
             if (!column || typeof column.key !== 'string') continue;
             const key = column.key.trim();
-            if (key) columnsByKey.set(key, { key, flex: column.flex, align: column.align, visibility: column.visibility });
+            if (key) columnsByKey.set(key, { key, flex: column.flex, visibility: column.visibility });
         }
 
         return Array.from(columnsByKey.values());

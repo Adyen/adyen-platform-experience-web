@@ -361,6 +361,8 @@
         "packages/shared/utils/src/file/upload.d.ts",
         "packages/shared/utils/src/index.d.ts",
         "packages/shared/utils/src/layout/breakpoints.d.ts",
+        "packages/shared/utils/src/pagination/constants.d.ts",
+        "packages/shared/utils/src/pagination/types.d.ts",
         "packages/shared/utils/src/paymentMethod/paymentMethod.d.ts",
         "packages/shared/utils/src/primitives/async/abortable/index.d.ts",
         "packages/shared/utils/src/primitives/async/abortable/main.d.ts",
@@ -423,7 +425,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "61cedc40a63d175829ceb21e3f2cc6ce0672c9ff570363a4c14a7789078b318f",
+    "typeTreeHash": "e958f96f39d4519303c5c144d93fe8f2fb0b35fc8c2221c21a97ec540a6cf8c7",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",

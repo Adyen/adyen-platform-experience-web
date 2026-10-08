@@ -19,8 +19,8 @@ describe('useTableColumns', () => {
     test('normalizes custom columns and applies their overrides to standard columns', () => {
         const customColumns = ref<CustomColumn<StringWithAutocompleteOptions<Field>>[]>([
             { key: ' amount ', visibility: 'hidden' },
-            { key: ' summary ', flex: 2, align: 'right' },
-            { key: 'summary', flex: 3, align: 'left' },
+            { key: ' summary ', flex: 2 },
+            { key: 'summary', flex: 3 },
         ]);
         const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
             fields: FIELDS,

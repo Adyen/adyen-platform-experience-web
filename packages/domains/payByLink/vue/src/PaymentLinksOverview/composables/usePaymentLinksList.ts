@@ -1,10 +1,11 @@
 import { computed } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
-import { isFunction, listFrom } from '@integration-components/utils';
+import { usePageLimit } from '@integration-components/composables-vue/usePageLimit';
+import { DEFAULT_PAGE_LIMITS, isFunction, listFrom } from '@integration-components/utils';
 import type { IPaymentLinkItem, IPaymentLinkStatusGroup } from '@integration-components/types';
 import type { StoreIds } from '../../../../domain/src';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
+import type { PaymentLinksOverviewExternalProps } from '../types';
 import { getPaymentLinksErrorMetadata, toError } from '../utils/error';
 
 interface UsePaymentLinksListProps {
@@ -19,7 +20,7 @@ interface UsePaymentLinksListProps {
     createdSince: string;
     createdUntil: string;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
     lastRefreshTimestamp: number;
 }
 
@@ -37,6 +38,12 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
     const config = useConfigContext();
     const getPaymentLinks = computed(() => config.endpoints.getPaymentLinks);
     const canFetch = computed(() => isFunction(getPaymentLinks.value) && props().fetchEnabled);
+
+    const pageLimit = usePageLimit({
+        options: DEFAULT_PAGE_LIMITS,
+        preferredLimit: () => props().preferredLimit,
+        allowLimitSelection: () => props().allowLimitSelection,
+    });
 
     return useCursorPaginatedRecords<IPaymentLinkItem>({
         getFetchKey: () => {
@@ -97,8 +104,8 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
                 previousCursor: json?._links?.prev?.cursor,
             };
         },
-        preferredLimit: props().preferredLimit ?? DEFAULT_PAGE_LIMIT,
-        limitOptions: () => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined),
+        preferredLimit: pageLimit.initialLimit,
+        limitOptions: pageLimit.limitOptions,
         onError: reason => {
             const error = toError(reason);
             const { errorCode, invalidFields } = getPaymentLinksErrorMetadata(error);
