@@ -5,19 +5,20 @@ import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { getBankAccountDetails, type CapitalBankAccount } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
 import styles from './AccountDetails.module.scss';
+import { useLiveAnnouncement } from '@integration-components/composables-vue';
+import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 
 const props = defineProps<{
     bankAccount: CapitalBankAccount;
 }>();
 
 const { i18n } = useCoreContext();
-
+const { announcement, announce } = useLiveAnnouncement();
 const accountDetails = computed(() => getBankAccountDetails(props.bankAccount));
 
-const copyValue = (value: string) => {
-    void navigator.clipboard?.writeText(value).catch(() => {
-        // Silently ignore or handle copy failure
-    });
+const copyValue = async (value: string) => {
+    await navigator.clipboard?.writeText(value);
+    announce(() => i18n.get('capital.common.actions.copy.labels.done'));
 };
 </script>
 
@@ -36,6 +37,7 @@ const copyValue = (value: string) => {
                 >
                     <CopyIcon />
                 </BentoButton>
+                <span :class="accessibilityStyles.visuallyHidden" aria-atomic="true" aria-live="polite">{{ announcement }}</span>
             </div>
         </BentoStructuredListItem>
     </BentoStructuredList>
