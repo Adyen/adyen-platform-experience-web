@@ -1,4 +1,5 @@
 import type { IPaymentLinkStatusGroup, IStore } from '@integration-components/types';
+import type { PaginationProps } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { PaymentLinkCreationFieldsConfig, PaymentLinkCreationFormValues } from '../PaymentLinkCreation';
 import type { StoreIds } from '../types';
@@ -21,10 +22,8 @@ export interface PaymentLinksOverviewFilters {
     createdUntil: string;
 }
 
-export interface PaymentLinksOverviewProps {
-    allowLimitSelection?: boolean;
+export interface PaymentLinksOverviewProps extends PaginationProps {
     balanceAccountId?: string;
-    preferredLimit?: 10 | 20;
     storeIds?: StoreIds;
     onContactSupport?: () => void;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => void;

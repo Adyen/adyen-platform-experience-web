@@ -9,6 +9,7 @@ import type {
     ITransactionStatus,
     WithDataGridAppearance,
 } from '@integration-components/types';
+import type { PaginationProps } from '@integration-components/utils';
 
 export type { TransactionsCustomColumn, TransactionsListCustomization, TransactionsTableFields } from '../../../domain/src';
 
@@ -24,11 +25,9 @@ export interface TransactionsFilters {
     paymentPspReference?: string;
 }
 
-export interface TransactionsOverviewExternalProps extends UIElementProps {
+export interface TransactionsOverviewExternalProps extends UIElementProps, PaginationProps {
     appearance?: TransactionsOverviewAppearance;
     balanceAccountId?: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: number;
     onContactSupport?: () => void;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
     dataCustomization?: {
