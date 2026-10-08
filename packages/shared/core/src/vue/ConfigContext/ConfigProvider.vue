@@ -5,8 +5,8 @@ import { useConfigController } from './useConfigController';
 import { getDomainTranslationKey } from '../Context/types';
 import componentAvailabilityErrors from '../../session/utils/sessionAwareComponentAvailability/helpers/componentAvailabilityErrors';
 import ErrorMessageDisplay from '../components/ErrorMessageDisplay/ErrorMessageDisplay.vue';
+import LoadingIndicator from '../components/LoadingIndicator/LoadingIndicator.vue';
 import type { ConfigProviderProps } from './types';
-import './Spinner.scss';
 
 const props = defineProps<ConfigProviderProps>();
 const errorTitle = getDomainTranslationKey(props.translationDomain, 'common.errors.somethingWentWrong');
@@ -32,9 +32,6 @@ provide(CONFIG_CONTEXT_KEY, configContextValue);
     <ErrorMessageDisplay v-if="hasPermission === false" centered :title="errorTitle" :message="errorMessages" />
     <slot v-else-if="hasPermission === true" />
     <slot v-else name="loading">
-        <div class="adyen-pe-spinner__wrapper">
-            <!-- TODO: Replace with actual loading indicator -->
-            <div class="adyen-pe-spinner" />
-        </div>
+        <LoadingIndicator />
     </slot>
 </template>
