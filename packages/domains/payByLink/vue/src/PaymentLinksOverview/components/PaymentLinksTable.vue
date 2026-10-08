@@ -164,7 +164,6 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             :image="errorInfo?.imageName ?? 'wrong-environment'"
             :variant="isMobile ? 'condensed' : 'embedded'"
             :refresh-icon="RefreshIcon"
-            :allow-copy-error-code="false"
         />
 
         <BentoDataGrid

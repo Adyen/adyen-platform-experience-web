@@ -36,8 +36,6 @@ describe('DataOverviewError', () => {
             setup: (props: Record<string, unknown>) => () => VNode;
         };
         return component.setup({
-            allowCopyErrorCode: true,
-            copyIcon: undefined,
             error: undefined,
             errorInfo,
             errorMessage: undefined,
@@ -97,33 +95,12 @@ describe('DataOverviewError', () => {
         expect(refreshComponent).toHaveBeenCalledOnce();
     });
 
-    test('does not offer the copy action when allowCopyErrorCode is false', () => {
-        Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: vi.fn() } });
-        const view = renderWithInfo({ messages: ['transactions.common.errors.errorCode'], requestId: 'REQUEST-3' }, { allowCopyErrorCode: false });
-
-        expect(view().props?.action).toBeUndefined();
-    });
-
-    test('copies the request ID and updates the accessible action state', async () => {
-        const writeText = vi.fn().mockResolvedValue(undefined);
-        Object.defineProperty(navigator, 'clipboard', {
-            configurable: true,
-            value: { writeText },
-        });
+    test('does not offer an action when the error has only a request ID', () => {
         const view = renderWithInfo({
             messages: ['transactions.common.errors.errorCode'],
             requestId: 'REQUEST-2',
         });
 
-        const action = view().props?.action;
-        expect(action).toMatchObject({
-            title: 'transactions.common.actions.copy.labels.errorCode',
-            variant: 'secondary',
-        });
-
-        await action.event();
-
-        expect(writeText).toHaveBeenCalledWith('REQUEST-2');
-        expect(view().props?.action.title).toBe('transactions.common.actions.copy.labels.done');
+        expect(view().props?.action).toBeUndefined();
     });
 });

@@ -281,7 +281,6 @@ function formatDate(dateStr: string): string {
             :error-message="'reports.overview.errors.listUnavailable'"
             :on-contact-support="props.onContactSupport"
             :refresh-icon="RefreshIcon"
-            :allow-copy-error-code="false"
         />
 
         <BentoDataGrid

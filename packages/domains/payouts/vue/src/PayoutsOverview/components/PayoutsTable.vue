@@ -171,7 +171,6 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
             :error-message="'payouts.overview.errors.listUnavailable'"
             :on-contact-support="props.onContactSupport"
             :refresh-icon="RefreshIcon"
-            :allow-copy-error-code="false"
         />
 
         <BentoDataGrid
