@@ -195,7 +195,6 @@
     "payByLink.overview.common.actionNeeded.expiresAt": "Vencimento: %{date}",
     "payByLink.overview.common.actionNeeded.expiresDays": "%{days} dias para expirar (%{date})",
     "payByLink.overview.common.actionNeeded.expiresToday": "Vence hoje (%{date})",
-    "payByLink.overview.common.filters.types.date.label": "Intervalo de datas",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.custom": "Personalizado",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last30Days": "Últimos 30 dias",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last7Days": "Últimos 7 dias",

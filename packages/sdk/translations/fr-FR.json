@@ -880,7 +880,6 @@
     "payByLink.overview.common.actionNeeded.expiresAt": "Expire le : %{date}",
     "payByLink.overview.common.actionNeeded.expiresDays": "%{days} jours avant expiration (%{date})",
     "payByLink.overview.common.actionNeeded.expiresToday": "Expire aujourd'hui (%{date})",
-    "payByLink.overview.common.filters.types.date.label": "Plage de dates",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.custom": "Personnalisé",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last30Days": "30 derniers jours",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last7Days": "7 derniers jours",
