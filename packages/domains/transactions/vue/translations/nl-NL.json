@@ -3,7 +3,6 @@
     "transactions.common.actions.contactSupport.labels.reachOut": "Neem contact met support",
     "transactions.common.actions.copy.labels.default": "Kopiëren",
     "transactions.common.actions.copy.labels.done": "Gekopieerd",
-    "transactions.common.actions.copy.labels.errorCode": "Foutcode kopiëren",
     "transactions.common.actions.refresh.labels.default": "Vernieuwen",
     "transactions.common.errors.componentUnavailable": "Er is iets fout gegaan.",
     "transactions.common.errors.contactSupport": "Neem contact op met support voor hulp.",

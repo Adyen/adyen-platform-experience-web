@@ -15,7 +15,6 @@ import {
 import { DATE_FORMAT_REPORTS, downloadBlob } from '@integration-components/utils';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import type { BentoDatagridDataItem, BentoDataGridRowActionsProp } from '@adyen/bento-vue3';
 import type { CustomColumn, IReport, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
@@ -282,7 +281,6 @@ function formatDate(dateStr: string): string {
             :error-message="'reports.overview.errors.listUnavailable'"
             :on-contact-support="props.onContactSupport"
             :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
         />
 
         <BentoDataGrid
