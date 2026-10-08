@@ -175,15 +175,15 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
 
         <BentoDataGrid
             v-else
+            allow-row-clicks
+            has-resizable-columns
             outline
             :columns="columns"
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
-            :has-resizable-columns="false"
             :allow-column-drag-and-drop="false"
-            :allow-row-clicks="true"
             @row-click="handleRowClick"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"

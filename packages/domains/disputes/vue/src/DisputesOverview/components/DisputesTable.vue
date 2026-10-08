@@ -274,14 +274,14 @@ function handleListItemClick(dispute: IDisputeListItem) {
 
         <BentoDataGrid
             v-else
+            allow-row-clicks
+            has-resizable-columns
             :columns="columns"
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
-            :has-resizable-columns="false"
             :allow-column-drag-and-drop="false"
-            :allow-row-clicks="true"
             @row-click="handleRowClick"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"
