@@ -6,6 +6,7 @@ import CoreProvider from './Context/CoreProvider.vue';
 import { resolveAppearance } from './customization';
 import ConfigProvider from './ConfigContext/ConfigProvider.vue';
 import EventDispatcherProvider from './Context/eventDispatcher/EventDispatcherProvider.vue';
+import LoadingIndicator from './components/LoadingIndicator/LoadingIndicator.vue';
 import type { ExternalComponentType } from '@integration-components/types';
 import { COMPONENT_REF_KEY, DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
 import './UIElement.scss';
@@ -52,6 +53,14 @@ useBentoTranslationOverrides(props.bentoOverrides);
                     </div>
                 </section>
             </EventDispatcherProvider>
+            <template #loading>
+                <!-- Renders the frame up front so the component does not jump into place once permissions resolve -->
+                <section :class="['adyen-pe-component', props.customClassNames]" aria-busy="true" data-testid="component-root-loading">
+                    <div class="adyen-pe-component__container">
+                        <LoadingIndicator />
+                    </div>
+                </section>
+            </template>
         </ConfigProvider>
     </CoreProvider>
 </template>
