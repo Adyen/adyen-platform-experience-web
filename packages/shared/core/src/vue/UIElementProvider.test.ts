@@ -6,10 +6,10 @@ import { createApp, h, nextTick, ref, type App } from 'vue';
 import UIElementProvider from './UIElementProvider.vue';
 import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
 
-const hasPermission = ref<boolean | undefined>(undefined);
+const mockHasPermission = ref<boolean | undefined>(undefined);
 
 vi.mock('./ConfigContext/useConfigController', () => ({
-    useConfigController: () => ({ configContextValue: {}, hasPermission }),
+    useConfigController: () => ({ configContextValue: {}, hasPermission: mockHasPermission }),
 }));
 
 vi.mock('./Context/CoreProvider.vue', async () => {
@@ -75,7 +75,7 @@ describe('UIElementProvider', () => {
         target?.remove();
         app = undefined;
         target = undefined;
-        hasPermission.value = undefined;
+        mockHasPermission.value = undefined;
     });
 
     test('shows the loading indicator inside a busy component frame until permission is granted', async () => {
@@ -85,7 +85,7 @@ describe('UIElementProvider', () => {
         expect(getFrame()?.getAttribute('aria-busy')).toBe('true');
         expect(getFrame()?.querySelector('.adyen-pe-component__container [data-testid="bento-loading-indicator"]')).not.toBeNull();
 
-        hasPermission.value = true;
+        mockHasPermission.value = true;
         await nextTick();
 
         expect(getFrame()?.hasAttribute('aria-busy')).toBe(false);
