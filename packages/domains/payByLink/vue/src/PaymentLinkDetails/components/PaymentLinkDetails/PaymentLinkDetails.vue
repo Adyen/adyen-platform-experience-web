@@ -63,8 +63,8 @@ function handleNavigationToDetailsAfterExpiration() {
 
 <template>
     <div :class="styles.root">
-        <div :class="activeScreen !== 'details' ? accessibilityStyles.visuallyHidden : undefined">
-            <BentoTypography v-if="!withinModal && !hideTitles" el="h1" variant="title" large stronger>
+        <div v-if="!withinModal && !hideTitles" :class="activeScreen !== 'details' ? accessibilityStyles.visuallyHidden : undefined">
+            <BentoTypography el="h1" variant="title" large stronger>
                 {{ i18n.get('payByLink.details.title') }}
             </BentoTypography>
         </div>
