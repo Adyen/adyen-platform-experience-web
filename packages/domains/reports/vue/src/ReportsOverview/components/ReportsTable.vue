@@ -222,7 +222,7 @@ const getRowActions: BentoDataGridRowActionsProp = (item: BentoDatagridDataItem)
     const isDownloading = isDownloadingReport(reportKey);
     const ButtonIcon = failedReportKeys.value.has(reportKey) ? DownloadErrorIcon : DownloadIcon;
 
-   const label = i18n.get('reports.overview.list.controls.downloadReport.label');
+    const label = i18n.get('reports.overview.list.controls.downloadReport.label');
 
     return [
         {
@@ -287,6 +287,7 @@ function formatDate(dateStr: string): string {
 
         <BentoDataGrid
             v-else
+            has-resizable-columns
             outline
             :columns="columns"
             :data="gridData"
@@ -294,7 +295,6 @@ function formatDate(dateStr: string): string {
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
             :row-actions="getRowActions"
-            :has-resizable-columns="false"
             :allow-column-drag-and-drop="false"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"
