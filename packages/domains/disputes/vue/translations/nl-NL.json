@@ -3,7 +3,6 @@
     "disputes.common.actions.contactSupport.labels.reachOut": "Neem contact met support",
     "disputes.common.actions.copy.labels.default": "Kopiëren",
     "disputes.common.actions.copy.labels.done": "Gekopieerd",
-    "disputes.common.actions.copy.labels.errorCode": "Foutcode kopiëren",
     "disputes.common.actions.refresh.labels.default": "Vernieuwen",
     "disputes.common.errors.componentUnavailable": "Er is iets fout gegaan.",
     "disputes.common.errors.contactSupport": "Neem contact op met support voor hulp.",
