@@ -2,7 +2,6 @@
     "payByLink.common.actions.contactSupport.labels.reachOut": "Ta kontakt med brukerstøtten",
     "payByLink.common.actions.copy.labels.default": "Kopier",
     "payByLink.common.actions.copy.labels.done": "Kopiert",
-    "payByLink.common.actions.copy.labels.errorCode": "Kopier feilkode",
     "payByLink.common.actions.goBack": "Gå tilbake",
     "payByLink.common.actions.refresh.labels.default": "Oppdater",
     "payByLink.common.errors.accountConfiguration": "Det ser ut til at det har oppstått et problem med kontokonfigurasjonen din.",

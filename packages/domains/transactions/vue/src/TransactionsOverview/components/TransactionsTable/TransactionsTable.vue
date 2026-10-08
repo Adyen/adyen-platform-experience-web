@@ -19,7 +19,6 @@ import {
     BentoTooltipDirective as vBentoTooltip,
 } from '@adyen/bento-vue3';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { getTransactionCategoryDescription, getTransactionCategory, TRANSACTION_FIELDS } from '../../../../../domain/src';
 import { getCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
@@ -182,18 +181,17 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
             :error-message="'transactions.overview.errors.listUnavailable'"
             :on-contact-support="props.onContactSupport"
             :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
         />
 
         <BentoDataGrid
             v-else
+            allow-row-clicks
+            has-resizable-columns
             :columns="columns"
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
-            :allow-row-clicks="true"
-            :has-resizable-columns="false"
             :allow-column-drag-and-drop="false"
             @row-click="handleRowClick"
             @navigate="handleNavigate"

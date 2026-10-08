@@ -2,7 +2,6 @@
     "payByLink.common.actions.contactSupport.labels.reachOut": "Ræk ud efter støtte",
     "payByLink.common.actions.copy.labels.default": "Kopiér",
     "payByLink.common.actions.copy.labels.done": "Kopieret",
-    "payByLink.common.actions.copy.labels.errorCode": "Kopiér fejlkode",
     "payByLink.common.actions.goBack": "Gå tilbage",
     "payByLink.common.actions.refresh.labels.default": "Opdater",
     "payByLink.common.errors.accountConfiguration": "Det ser ud til, at der er et problem med konfigurationen af din konto.",

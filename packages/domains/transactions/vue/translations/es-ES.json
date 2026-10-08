@@ -3,7 +3,6 @@
     "transactions.common.actions.contactSupport.labels.reachOut": "Ponte en contacto con soporte",
     "transactions.common.actions.copy.labels.default": "Texto",
     "transactions.common.actions.copy.labels.done": "Copiado",
-    "transactions.common.actions.copy.labels.errorCode": "Copiar código de error",
     "transactions.common.actions.refresh.labels.default": "Actualizar",
     "transactions.common.errors.componentUnavailable": "Se ha producido un error.",
     "transactions.common.errors.contactSupport": "Contacta con el servicio de soporte para obtener ayuda.",

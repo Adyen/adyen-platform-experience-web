@@ -14,7 +14,6 @@ import {
 } from '@adyen/bento-vue3';
 import WarningFilledIcon from '@adyen/ui-assets-icons-16/vue/warning-filled';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import type { BentoCurrencyISOCode, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import {
@@ -214,7 +213,6 @@ function handleListItemClick(dispute: IDisputeListItem) {
             :on-contact-support="props.onContactSupport"
             :variant="isMobile ? 'condensed' : 'embedded'"
             :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
         />
 
         <template v-else-if="isMobile">
@@ -276,14 +274,14 @@ function handleListItemClick(dispute: IDisputeListItem) {
 
         <BentoDataGrid
             v-else
+            allow-row-clicks
+            has-resizable-columns
             :columns="columns"
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
-            :has-resizable-columns="false"
             :allow-column-drag-and-drop="false"
-            :allow-row-clicks="true"
             @row-click="handleRowClick"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"

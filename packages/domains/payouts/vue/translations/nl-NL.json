@@ -3,7 +3,6 @@
     "payouts.common.actions.contactSupport.labels.reachOut": "Neem contact met support",
     "payouts.common.actions.copy.labels.default": "Kopiëren",
     "payouts.common.actions.copy.labels.done": "Gekopieerd",
-    "payouts.common.actions.copy.labels.errorCode": "Foutcode kopiëren",
     "payouts.common.actions.refresh.labels.default": "Vernieuwen",
     "payouts.common.errors.componentUnavailable": "Er is iets fout gegaan.",
     "payouts.common.errors.contactSupport": "Neem contact op met support voor hulp.",

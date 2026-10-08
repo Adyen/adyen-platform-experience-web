@@ -3,7 +3,6 @@
     "payouts.common.actions.contactSupport.labels.reachOut": "Entre em contato com o suporte",
     "payouts.common.actions.copy.labels.default": "Copiar",
     "payouts.common.actions.copy.labels.done": "Copiado",
-    "payouts.common.actions.copy.labels.errorCode": "Copiar código de erro",
     "payouts.common.actions.refresh.labels.default": "Atualizar",
     "payouts.common.errors.componentUnavailable": "Ocorreu algum erro.",
     "payouts.common.errors.contactSupport": "Procure o suporte para obter ajuda.",

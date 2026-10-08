@@ -3,7 +3,6 @@
     "payouts.common.actions.contactSupport.labels.reachOut": "Kontakta supporten",
     "payouts.common.actions.copy.labels.default": "Kopiera",
     "payouts.common.actions.copy.labels.done": "Kopierat",
-    "payouts.common.actions.copy.labels.errorCode": "Kopiera felkod",
     "payouts.common.actions.refresh.labels.default": "Uppdatera",
     "payouts.common.errors.componentUnavailable": "Något gick fel.",
     "payouts.common.errors.contactSupport": "Kontakta support för hjälp.",

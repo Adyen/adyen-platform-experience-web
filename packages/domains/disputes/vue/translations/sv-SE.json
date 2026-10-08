@@ -3,7 +3,6 @@
     "disputes.common.actions.contactSupport.labels.reachOut": "Kontakta supporten",
     "disputes.common.actions.copy.labels.default": "Kopiera",
     "disputes.common.actions.copy.labels.done": "Kopierat",
-    "disputes.common.actions.copy.labels.errorCode": "Kopiera felkod",
     "disputes.common.actions.refresh.labels.default": "Uppdatera",
     "disputes.common.errors.componentUnavailable": "Något gick fel.",
     "disputes.common.errors.contactSupport": "Kontakta support för hjälp.",
