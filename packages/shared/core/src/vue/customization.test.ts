@@ -27,6 +27,17 @@ test('component appearance overrides global appearance', () => {
     });
 });
 
+test('resolves component data grid appearance', () => {
+    expect(resolveAppearance({ illustrations: 'hidden' }, { dataGrid: { density: 'condensed' } })).toEqual({
+        illustrations: 'hidden',
+        dataGrid: { density: 'condensed' },
+    });
+});
+
+test('ignores empty data grid appearance', () => {
+    expect(resolveAppearance(undefined, { dataGrid: {} })).toBeUndefined();
+});
+
 test('returns no appearance without global or component options', () => {
     expect(resolveAppearance(undefined, undefined)).toBeUndefined();
 });

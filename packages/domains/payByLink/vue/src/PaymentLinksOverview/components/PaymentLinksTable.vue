@@ -3,7 +3,13 @@ import { computed } from 'vue';
 import { BentoDataGrid, BentoTag, BentoTypography, BentoTooltipDirective as vBentoTooltip } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem, BentoTagVariant } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import { containerQueries, DataOverviewError, useResponsiveContainer, useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
+import {
+    containerQueries,
+    DataOverviewError,
+    useCondensedDataGrid,
+    useResponsiveContainer,
+    useTimezoneAwareDateFormatting,
+} from '@integration-components/composables-vue';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import { isActionNeededUrgently, BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '../../../../domain/src';
@@ -40,6 +46,7 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const { dateFormat } = useTimezoneAwareDateFormatting();
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
+const isCondensed = useCondensedDataGrid();
 
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 const errorInfo = computed(() => getPaymentLinksErrorMessage(props.error, 'payByLink.overview.errors.couldNotLoadLinks', props.onContactSupport));
@@ -176,6 +183,7 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             :loading="props.loading"
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
+            :condensed="isCondensed"
             :has-resizable-columns="false"
             :allow-column-drag-and-drop="false"
             :allow-row-clicks="true"

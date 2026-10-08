@@ -11,6 +11,7 @@ import {
     containerQueries,
     DataOverviewError,
     useShouldHideIllustrations,
+    useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import { DATE_FORMAT_REPORTS, downloadBlob } from '@integration-components/utils';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
@@ -62,6 +63,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const hideIllustrations = useShouldHideIllustrations();
+const isCondensed = useCondensedDataGrid();
 // Keep the reactive proxy here — destructuring `useConfigContext()` would unwrap
 // the `refreshing` primitive into a one-time snapshot and capture a stale
 // `endpoints` reference, breaking reactivity when the session is refreshed.
@@ -222,7 +224,7 @@ const getRowActions: BentoDataGridRowActionsProp = (item: BentoDatagridDataItem)
     const isDownloading = isDownloadingReport(reportKey);
     const ButtonIcon = failedReportKeys.value.has(reportKey) ? DownloadErrorIcon : DownloadIcon;
 
-   const label = i18n.get('reports.overview.list.controls.downloadReport.label');
+    const label = i18n.get('reports.overview.list.controls.downloadReport.label');
 
     return [
         {
@@ -288,6 +290,7 @@ function formatDate(dateStr: string): string {
         <BentoDataGrid
             v-else
             outline
+            :condensed="isCondensed"
             :columns="columns"
             :data="gridData"
             :loading="isLoading"

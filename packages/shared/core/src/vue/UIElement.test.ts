@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createApp, type Component, type VNode } from 'vue';
 import { createI18n } from 'vue-i18n';
 import { UIElement } from './UIElement';
-import type { Appearance, CoreOptions } from './types';
+import type { CoreOptions, GlobalAppearance } from './types';
 import deDE from '../../../../sdk/translations/de-DE.json' with { type: 'json' };
 import { SDK_BENTO_TRANSLATION_SOURCES, SDK_TRANSLATION_SOURCES } from '../../../../sdk/src/translations';
 import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
@@ -280,7 +280,7 @@ describe('UIElement', () => {
 
     test('applies a direct appearance update to the component appearance, never to the global', () => {
         const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
-        const appearance: Appearance = { illustrations: 'visible' };
+        const appearance: GlobalAppearance = { illustrations: 'visible' };
         const component = { render: () => null } as Component;
         const element = new UIElement(component, { core, appearance }, 'transactions');
 
@@ -299,7 +299,7 @@ describe('UIElement', () => {
 
     test('clears the component appearance when a direct update provides an explicit undefined appearance', () => {
         const core = new Core({ locale: 'en-US', appearance: { illustrations: 'hidden' }, onSessionCreate: vi.fn() });
-        const componentAppearance: Appearance = { titles: 'hidden' };
+        const componentAppearance: GlobalAppearance = { titles: 'hidden' };
         const component = { render: () => null } as Component;
         const element = new UIElement(component, { core, appearance: componentAppearance }, 'transactions');
 

@@ -1,9 +1,19 @@
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { CustomColumn } from './dataGrid';
 
-export type Appearance = {
+export type DensityMode = 'default' | 'condensed';
+
+export type GlobalAppearance = {
     illustrations?: 'hidden' | 'visible';
     titles?: 'hidden' | 'visible';
+};
+
+export type DataGridAppearance = {
+    density?: DensityMode;
+};
+
+export type WithDataGridAppearance = {
+    dataGrid?: DataGridAppearance;
 };
 
 interface BaseCustomObject {
