@@ -2,7 +2,6 @@ import '../theme/styles';
 
 export type {
     AnalyticsConfig,
-    Appearance,
     CoreInstance,
     CoreOptions,
     CustomTheme,

@@ -1,6 +1,11 @@
-import type { Appearance } from '@integration-components/types';
+import type { GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
 
-export const resolveAppearance = (globalAppearance: Appearance | undefined, componentAppearance: Appearance | undefined): Appearance | undefined => {
+type ComponentAppearance = GlobalAppearance & WithDataGridAppearance;
+
+export const resolveAppearance = (
+    globalAppearance: GlobalAppearance | undefined,
+    componentAppearance: ComponentAppearance | undefined
+): ComponentAppearance | undefined => {
     const illustrations = componentAppearance?.illustrations ?? globalAppearance?.illustrations;
     const titles = componentAppearance?.titles ?? globalAppearance?.titles;
     const dataGrid = componentAppearance?.dataGrid?.density ? componentAppearance.dataGrid : undefined;

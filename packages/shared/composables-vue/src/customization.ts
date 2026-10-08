@@ -13,6 +13,5 @@ export const useShouldHideTitles = () => {
 
 export const useCondensedDataGrid = () => {
     const coreContext = useCoreContext();
-
     return computed(() => coreContext.appearance?.dataGrid?.density === 'condensed');
 };
