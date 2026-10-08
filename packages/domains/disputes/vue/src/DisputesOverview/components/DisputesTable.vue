@@ -20,6 +20,7 @@ import { useCoreContext, useConfigContext } from '@integration-components/core/v
 import {
     useCustomColumnsData,
     CustomDataCell,
+    useCustomColumnWidths,
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
@@ -70,19 +71,20 @@ const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
     fields: DISPUTES_TABLE_FIELDS,
     customColumns: () => props.customColumns,
     fieldsKeys: FIELD_KEYS,
-    customColumnDefaults: () => ({ flex: 1, minWidth: 0 }),
+    customColumnDefaults: () => ({ flex: 1 }),
+    customColumnWidths: () => customColumnWidths.value,
     columnConfig: () => {
         const statusGroup = props.statusGroup;
         return {
-            status: { visible: statusGroup === 'ONGOING_AND_CLOSED', flex: 1, minWidth: 130 },
-            respondBy: { visible: statusGroup === 'CHARGEBACKS', flex: 1, minWidth: 120 },
-            createdAt: { visible: true, flex: 1, minWidth: 120 },
-            paymentMethod: { visible: true, flex: 1.2, minWidth: 150 },
-            disputeReason: { visible: statusGroup !== 'FRAUD_ALERTS', flex: 1.5, minWidth: 180 },
-            reason: { visible: statusGroup === 'FRAUD_ALERTS', flex: 2, minWidth: 220 },
-            currency: { visible: hasMultipleCurrencies.value, flex: 0.7, minWidth: 90 },
-            disputedAmount: { visible: statusGroup !== 'FRAUD_ALERTS', flex: 1, minWidth: 140, numeric: true },
-            totalPaymentAmount: { visible: statusGroup === 'FRAUD_ALERTS', flex: 1, minWidth: 140, numeric: true },
+            status: { visible: statusGroup === 'ONGOING_AND_CLOSED', flex: 1 },
+            respondBy: { visible: statusGroup === 'CHARGEBACKS', flex: 1 },
+            createdAt: { visible: true, flex: 1 },
+            paymentMethod: { visible: true, flex: 1.2 },
+            disputeReason: { visible: statusGroup !== 'FRAUD_ALERTS', flex: 1.5 },
+            reason: { visible: statusGroup === 'FRAUD_ALERTS', flex: 2 },
+            currency: { visible: hasMultipleCurrencies.value, flex: 0.7 },
+            disputedAmount: { visible: statusGroup !== 'FRAUD_ALERTS', flex: 1, numeric: true },
+            totalPaymentAmount: { visible: statusGroup === 'FRAUD_ALERTS', flex: 1, numeric: true },
         };
     },
     resolveStandardColumnLabel: (field, defaultLabel) =>
@@ -132,6 +134,13 @@ const gridData = computed<BentoDatagridDataItem[]>(() => {
         return row;
     });
 });
+
+const tableRef = ref<HTMLElement | null>(null);
+const customColumnWidths = useCustomColumnWidths(
+    tableRef,
+    () => [gridData.value, isLoading.value, isMobile.value],
+    () => columns.value
+);
 
 const paginationProps = computed(() => {
     if (!props.showPagination) return undefined;
@@ -206,7 +215,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
 </script>
 
 <template>
-    <div :class="styles.root">
+    <div ref="tableRef" :class="styles.root">
         <DataOverviewError
             v-if="props.error"
             :error="props.error"
@@ -350,7 +359,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
             </template>
 
             <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">
-                <CustomDataCell :value="item[key]" />
+                <CustomDataCell :value="item[key]" :field="key" />
             </template>
         </BentoDataGrid>
     </div>
