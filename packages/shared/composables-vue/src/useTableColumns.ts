@@ -27,7 +27,6 @@ type CustomTableColumnOptions<TExtra extends object> = BaseTableColumnOptions & 
 type NormalizedCustomColumn = {
     key: string;
     flex?: number;
-    align?: 'center' | 'left' | 'right';
     visibility?: 'hidden' | 'visible';
 };
 
@@ -62,7 +61,6 @@ function createStandardColumns<T extends string, TExtra extends object>(
                 ...configuredColumns[field],
                 ...(override?.visibility === 'hidden' ? { visible: false } : {}),
                 ...(override?.flex !== undefined ? { flex: override.flex } : {}),
-                ...(override?.align === 'right' ? { numeric: true } : {}),
             } as TableColumn<TExtra>)
         );
     }
@@ -87,7 +85,6 @@ function createCustomColumns<TExtra extends object>(
                 label: resolveLabel ? resolveLabel(column.key) : column.key,
                 ...defaults,
                 ...(column.flex !== undefined ? { flex: column.flex } : {}),
-                ...(column.align === 'right' ? { numeric: true } : {}),
             } as TableColumn<TExtra>)
         );
     }
@@ -145,7 +142,7 @@ export function useTableColumns<T extends string, TExtra extends object = object
         for (const column of customColumns() ?? []) {
             if (!column || typeof column.key !== 'string') continue;
             const key = column.key.trim();
-            if (key) columnsByKey.set(key, { key, flex: column.flex, align: column.align, visibility: column.visibility });
+            if (key) columnsByKey.set(key, { key, flex: column.flex, visibility: column.visibility });
         }
 
         return Array.from(columnsByKey.values());

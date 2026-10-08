@@ -23,7 +23,7 @@ export const DATA_CUSTOMIZATION: ReportsListCustomization = {
         { key: 'createdAt' },
         { key: 'reportType', visibility: 'hidden' },
         { key: '_summary' },
-        { key: '_sendEmail', align: 'right' },
+        { key: '_sendEmail' },
         { key: 'reportFile', flex: 0.8 },
     ],
 

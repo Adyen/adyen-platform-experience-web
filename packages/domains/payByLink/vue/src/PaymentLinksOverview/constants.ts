@@ -8,6 +8,3 @@ export {
     PAYMENT_LINK_TYPES,
     PAYMENT_LINKS_TABLE_FIELDS,
 } from '../../../domain/src';
-
-export const DEFAULT_PAGE_LIMIT = 10;
-export const LIMIT_OPTIONS = [10, 20];
