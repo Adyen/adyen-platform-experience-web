@@ -76,7 +76,7 @@ test.describe('Default', () => {
 
     test('should render expiration screen when expiration button is clicked', async ({ page }) => {
         await page.getByRole('button', { name: 'Expire now' }).click();
-        await expect(page.getByText('Expire this link')).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Expire this link', level: 2 })).toBeVisible();
         await expect(
             page.getByText(
                 "Deactivating this link will immediately prevent your shopper from making new payments. You'll need to create a new payment link or reissue the deactivated one for the shopper to pay."

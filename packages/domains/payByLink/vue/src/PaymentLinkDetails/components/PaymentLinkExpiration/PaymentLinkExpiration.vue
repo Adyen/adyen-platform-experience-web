@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { BentoAlert, BentoButtonActions, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
-import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
+import { useConfigContext, useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { isFunction } from '@integration-components/utils';
 import type { IPaymentLinkDetails } from '@integration-components/types';
 import styles from './PaymentLinkExpiration.module.scss';
@@ -13,6 +13,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { withinModal } = useModalContext();
 const config = useConfigContext();
 
 const isLoading = ref(false);
@@ -53,7 +54,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
 
 <template>
     <div :class="styles.root">
-        <BentoTypography el="h2" variant="subtitle" stronger>
+        <BentoTypography v-if="!withinModal" el="h2" variant="subtitle" stronger>
             {{ i18n.get('payByLink.details.expiration.title') }}
         </BentoTypography>
 
