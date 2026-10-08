@@ -21,3 +21,5 @@ export const EMPTY_TABLE_MESSAGE_KEYS = {
         message: 'disputes.overview.ongoingAndClosed.errors.updateFilters',
     },
 } as const satisfies Record<IDisputeStatusGroup, { title: TranslationKey; message: TranslationKey }>;
+
+export const DISPUTES_PAGE_LIMITS = [10, 20] as const;

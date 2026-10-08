@@ -37,8 +37,8 @@ test.describe('Default', () => {
 
             await expect(dataGrid.getByRole('columnheader')).toHaveCount(4);
             await expect(dataGrid.getByRole('rowgroup')).toHaveCount(2);
-            await expect(dataGrid.getByRole('row')).toHaveCount(10);
-            await expect(dataGrid.getByRole('gridcell')).toHaveCount(36);
+            await expect(dataGrid.getByRole('row')).toHaveCount(11);
+            await expect(dataGrid.getByRole('gridcell')).toHaveCount(40);
 
             // (4) Pagination controls
             await expect(limitSelect).toBeVisible();
@@ -46,7 +46,7 @@ test.describe('Default', () => {
             await expect(pagination.getByText('items')).toBeVisible();
 
             await expect(pagination.getByRole('button', { name: /Previous page/i, disabled: true })).toBeVisible();
-            await expect(pagination.getByRole('button', { name: /Next page/i, disabled: true })).toBeVisible();
+            await expect(pagination.getByRole('button', { name: /Next page/i, disabled: false })).toBeVisible();
         });
     });
 
@@ -84,6 +84,6 @@ test.describe('Filters', () => {
 });
 
 test('should reset pagination when selecting another balance account', async ({ page }) => {
-    await goToStory(page, { id: STORY_ID, args: { allowLimitSelection: 'false', preferredLimit: '5' } });
+    await goToStory(page, { id: STORY_ID, args: { allowLimitSelection: 'false' } });
     await expectBalanceAccountPaginationReset({ endpointPath: '/payouts', page, variant: 'Bento' });
 });
