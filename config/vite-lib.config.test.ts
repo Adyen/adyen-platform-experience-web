@@ -3,6 +3,8 @@
  */
 import { expect, test } from 'vitest';
 import { getViteLibConfig } from './vite-lib.config';
+import sdkConfig from '../packages/sdk/vite.config';
+import rootPkgJson from '../package.json';
 
 const expectedBuildEnvDefineKeys = [
     'process.env.SESSION_ACCOUNT_HOLDER',
@@ -39,4 +41,26 @@ test('getViteLibConfig injects build environment defines', async () => {
         : configExport);
 
     expect(Object.keys(config.define ?? {}).sort()).toEqual(expectedBuildEnvDefineKeys);
+});
+
+test('SDK build filenames normalize Windows separators', async () => {
+    const config = await (typeof sdkConfig === 'function'
+        ? sdkConfig({
+              command: 'build',
+              mode: 'production',
+              isPreview: false,
+              isSsrBuild: false,
+          })
+        : sdkConfig);
+    const fileName = config.build?.lib && config.build.lib.fileName;
+
+    if (typeof fileName !== 'function') {
+        throw new TypeError('Expected SDK build to define a filename function');
+    }
+
+    expect(fileName('es', 'packages\\sdk\\src\\index')).toBe('es/packages/sdk/src/index.js');
+    expect(fileName('es', 'node_modules\\@adyen\\bento-vue3\\dist\\index')).toBe('es/external/@adyen/bento-vue3/dist/index.js');
+    expect(fileName('cjs', 'node_modules\\vue\\index')).toBe('cjs/external/vue/index.cjs');
+    expect(`./dist/${fileName('cjs', 'index')}`).toBe(rootPkgJson.exports['.'].require.default);
+    expect(`./dist/${fileName('es', 'packages/sdk/src/index')}`).toBe(rootPkgJson.exports['.'].import.default);
 });
