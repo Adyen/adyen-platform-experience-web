@@ -11,6 +11,10 @@
     position: relative;
     width: var(--adyen-pe-datepicker-max-width);
 
+    &--with-timezone {
+        margin-bottom: 0;
+    }
+
     &__controls {
         --adyen-pe-datepicker-control-vertical-offset: calc(var(--adyen-pe-datepicker-tap-target-size) / 2 - 50%);
 
@@ -61,7 +65,7 @@
         font-weight: style.token(text-body-stronger-font-weight);
         line-height: style.token(text-caption-line-height);
         margin: calc(var(--adyen-pe-datepicker-vertical-offset) * 2 - var(--adyen-pe-datepicker-margin)) calc(var(--adyen-pe-datepicker-margin) * -1)
-            calc(var(--adyen-pe-datepicker-margin) * -1);
+            0;
         min-height: var(--adyen-pe-datepicker-tap-target-size);
         padding: 0 var(--adyen-pe-datepicker-margin);
         position: relative;
