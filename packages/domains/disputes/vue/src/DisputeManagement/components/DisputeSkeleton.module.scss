@@ -17,8 +17,9 @@
     gap: style.token(spacer-020);
 }
 
+// Same as BentoTag: caption line-height plus spacer-010 vertical padding on each side.
 .tag {
-    height: calc(#{style.token(text-caption-line-height)} + #{style.token(spacer-020)});
+    height: calc(#{style.token(text-caption-line-height)} + #{style.token(spacer-010)} * 2);
     max-width: 100%;
 }
 

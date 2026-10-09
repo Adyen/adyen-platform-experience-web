@@ -7,7 +7,7 @@ const FIELD_COUNT = 8;
 </script>
 
 <template>
-    <BentoLoadingSkeleton :class="styles.root">
+    <BentoLoadingSkeleton :class="styles.root" aria-hidden="true">
         <BentoCard>
             <template #content>
                 <div :class="styles.summary">
