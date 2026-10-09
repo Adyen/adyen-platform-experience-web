@@ -8,7 +8,6 @@ import { useActionsAlertTitles } from '../composables/useActionsAlertTitles';
 import { useHostedAction } from '../composables/useHostedAction';
 
 const props = defineProps<{
-    className?: string;
     expirationDate?: string;
     missingActions: IMissingAction[];
 }>();
@@ -21,7 +20,7 @@ const alertTitle = computed(() => (props.missingActions.length > 1 ? alertTitles
 </script>
 
 <template>
-    <BentoAlert v-if="error" :class="props.className" type="critical">
+    <BentoAlert v-if="error" type="critical">
         {{ i18n.get('capital.overview.grants.item.alerts.somethingWentWrong') }}
         <template #actions>
             <BentoButton variant="tertiary" @click="refreshComponent">
@@ -29,8 +28,7 @@ const alertTitle = computed(() => (props.missingActions.length > 1 ? alertTitles
             </BentoButton>
         </template>
     </BentoAlert>
-
-    <BentoAlert v-else :class="props.className" type="warning">
+    <BentoAlert v-else type="warning">
         {{ alertTitle }}
         <template #actions>
             <BentoButton
