@@ -1,0 +1,66 @@
+@use '@integration-components/style';
+
+.root {
+    // The disabled expandable cards would otherwise show a `not-allowed` cursor.
+    pointer-events: none;
+}
+
+.summary {
+    display: grid;
+    gap: style.token(spacer-020);
+}
+
+.summaryLabel {
+    max-width: calc(#{style.token(spacer-120)} * 1.5);
+}
+
+.amount {
+    max-width: calc(#{style.token(spacer-120)} * 2.5);
+}
+
+// Long weekday date format, e.g. "Thursday, October 9, 2026"
+.date {
+    max-width: calc(#{style.token(spacer-120)} * 3.5);
+}
+
+.accountDescription {
+    max-width: calc(#{style.token(spacer-120)} * 3);
+}
+
+// Balance account IDs have a fixed length, e.g. "BA0000000000000000000000"
+.accountId {
+    max-width: calc(#{style.token(spacer-120)} * 4);
+}
+
+.breakdowns {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-030);
+    padding: style.token(spacer-070) 0;
+}
+
+.row {
+    display: flex;
+    flex: 1;
+    gap: style.token(spacer-070);
+    justify-content: space-between;
+}
+
+// Aligns with the header text of the expandable cards, which is offset by the toggle icon.
+.rowSummary {
+    margin-left: style.token(spacer-100);
+    padding: style.token(spacer-020) 0;
+}
+
+.rowLabel,
+.rowValue {
+    flex: 1;
+}
+
+.rowLabel {
+    max-width: calc(#{style.token(spacer-120)} * 2);
+}
+
+.rowValue {
+    max-width: calc(#{style.token(spacer-120)} * 1.5);
+}
