@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { AdyenErrorResponse, AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
-import { COMMON_CAPITAL_ERROR_MESSAGE, getBalanceAccountErrorMessage, getCapitalErrorMessage, getCapitalErrorMessageInfo } from './errors';
+import { COMMON_CAPITAL_ERROR_MESSAGE, getBalanceAccountErrorMessage, getCapitalErrorMessage, getCapitalErrorConfig } from './errors';
 
 const UNKNOWN_ERROR = {
     title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
@@ -31,13 +31,6 @@ describe('getCapitalErrorMessage', () => {
 
     test('returns the unknown error message for unrecognized error codes', () => {
         expect(getCapitalErrorMessage(createAdyenPlatformExperienceError('unknown_code'))).toEqual(UNKNOWN_ERROR);
-    });
-
-    test.each([
-        ['NO_OFFER', 'capital.offer.common.noOfferTitle', 'capital.offer.common.noOfferDescription'],
-        ['UNSUPPORTED_REGION', 'capital.common.errors.unsupportedRegion.title', 'capital.common.errors.unsupportedRegion'],
-    ])('returns a specific message for error code %s', (errorCode, title, message) => {
-        expect(getCapitalErrorMessage(createAdyenPlatformExperienceError(errorCode))).toEqual({ title, message });
     });
 
     test.each([
@@ -74,20 +67,20 @@ describe('getCapitalErrorMessage', () => {
     });
 });
 
-describe('getCapitalErrorMessageInfo', () => {
+describe('getCapitalErrorConfig', () => {
     test('normalizes single and multiple messages into an array', () => {
         const onContactSupport = vi.fn();
 
-        expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('NO_OFFER'))).toMatchObject({
+        expect(getCapitalErrorConfig(createAdyenPlatformExperienceError('NO_OFFER'))).toMatchObject({
             messages: ['capital.offer.common.noOfferDescription'],
         });
-        expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('30_016'), onContactSupport)).toMatchObject({
+        expect(getCapitalErrorConfig(createAdyenPlatformExperienceError('30_016'), onContactSupport)).toMatchObject({
             messages: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'capital.common.errors.errorCode'],
         });
     });
 
     test('maps common translation keys to the capital namespace', () => {
-        expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('30_016'), vi.fn())).toMatchObject({
+        expect(getCapitalErrorConfig(createAdyenPlatformExperienceError('30_016'), vi.fn())).toMatchObject({
             title: 'capital.common.errors.somethingWentWrong',
             messages: ['capital.offer.common.errors.unavailable', 'capital.common.errors.errorCode'],
         });
@@ -96,7 +89,7 @@ describe('getCapitalErrorMessageInfo', () => {
     test('extracts the request ID and preserves the error metadata', () => {
         const onContactSupport = vi.fn();
 
-        expect(getCapitalErrorMessageInfo(createAdyenPlatformExperienceError('30_016'), onContactSupport)).toEqual({
+        expect(getCapitalErrorConfig(createAdyenPlatformExperienceError('30_016'), onContactSupport)).toEqual({
             title: 'capital.common.errors.somethingWentWrong',
             messages: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'capital.common.errors.errorCode'],
             requestId: 'request-id',

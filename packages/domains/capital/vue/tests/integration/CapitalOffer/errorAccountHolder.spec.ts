@@ -9,9 +9,8 @@ test.describe('Error - Account holder', () => {
     });
 
     test('should render an error message', async ({ page }) => {
-        await expect(
-            page.getByText("We couldn't load financial offers. Contact support for help and share error code 769ac4ce59f0f159ad672d38d3291e92")
-        ).toBeVisible();
+        await expect(page.getByText("We couldn't load financial offers.")).toBeVisible();
+        await expect(page.getByText('Contact support for help and share error code 769ac4ce59f0f159ad672d38d3291e92')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeHidden();
     });
 });
