@@ -35,10 +35,12 @@ const highlights = computed(() => [
         label: i18n.get('capital.common.fields.financing'),
         value: offerAmount.value,
     },
+    { value: '+' },
     {
         label: i18n.get('capital.common.fields.fees'),
         value: i18n.amount(props.offer.feesAmount.value, props.offer.feesAmount.currency, { minimumFractionDigits: 0 }),
     },
+    { value: '=' },
     {
         label: i18n.get('capital.common.fields.totalRepaymentAmount'),
         value: i18n.amount(props.offer.totalAmount.value, props.offer.totalAmount.currency, { minimumFractionDigits: 0 }),
