@@ -1,6 +1,5 @@
-.loading {
-    align-items: center;
-    display: flex;
-    height: 100%;
-    justify-content: center;
+@use '@integration-components/style';
+
+.pageTitle {
+    margin-bottom: style.token(spacer-060);
 }

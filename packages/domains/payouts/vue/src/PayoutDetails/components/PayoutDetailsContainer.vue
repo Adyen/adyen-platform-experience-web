@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useBalanceAccounts, ErrorMessageDisplay } from '@integration-components/composables-vue';
+import { useBalanceAccounts, useShouldHideTitles, ErrorMessageDisplay } from '@integration-components/composables-vue';
+import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { isFunction } from '@integration-components/utils';
-import { BentoLoadingIndicator } from '@adyen/bento-vue3';
+import { BentoTypography } from '@adyen/bento-vue3';
 import PayoutData from './PayoutData.vue';
+import PayoutSkeleton from './PayoutSkeleton.vue';
 import { usePayoutDetails } from '../composables/usePayoutDetails';
 import { PAYOUT_TABLE_FIELDS } from '../../PayoutsOverview/constants';
 import type { PayoutDetailsCustomization } from '../types';
@@ -18,6 +20,10 @@ const props = defineProps<{
     onDismiss?: () => void;
     dataCustomization?: { details?: PayoutDetailsCustomization };
 }>();
+
+const { i18n } = useCoreContext();
+const { withinModal } = useModalContext();
+const hideTitles = useShouldHideTitles();
 
 const { data, error, isFetching } = usePayoutDetails(() => ({
     fetchEnabled: !!props.id && !!props.date,
@@ -70,10 +76,17 @@ watch(
 
 const showError = computed(() => !!error.value);
 const showLoadingPlaceholder = computed(() => isFetching.value && !data.value && !error.value);
+const showTitle = computed(() => !withinModal && !hideTitles.value && !showError.value && (showLoadingPlaceholder.value || !!data.value));
 </script>
 
 <template>
     <div>
+        <div v-if="showTitle" :class="styles.pageTitle">
+            <BentoTypography variant="title">
+                {{ i18n.get('payouts.details.title') }}
+            </BentoTypography>
+        </div>
+
         <div v-if="showError">
             <ErrorMessageDisplay
                 :error="error"
@@ -88,8 +101,8 @@ const showLoadingPlaceholder = computed(() => isFetching.value && !data.value &&
             />
         </div>
 
-        <div v-else-if="showLoadingPlaceholder" :class="styles.loading" aria-busy="true">
-            <BentoLoadingIndicator />
+        <div v-else-if="showLoadingPlaceholder" aria-busy="true">
+            <PayoutSkeleton />
         </div>
 
         <PayoutData
