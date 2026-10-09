@@ -6,7 +6,7 @@ import { OnFundsRequestCallback } from '@integration-components/capital/domain';
 import { BentoModal } from '@adyen/bento-vue3';
 import { IGrant } from '@integration-components/types';
 import { useEnhancedCapitalState } from '../../shared/composables/useEnhancedCapitalState';
-import CapitalOffer from '../../CapitalOffer/components/CapitalOffer.vue';
+import CapitalOffer from '../../CapitalOffer/components/CapitalOffer/CapitalOffer.vue';
 const props = defineProps<{
     isOpen: boolean;
     onClose: () => void;
