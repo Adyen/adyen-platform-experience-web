@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoDivider, BentoModal, BentoTypography } from '@adyen/bento-vue3';
+import { BentoCard, BentoDivider, BentoModal, BentoTypography } from '@adyen/bento-vue3';
 import { getBankAccount, getTransferInstrumentIds } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IGrant } from '@integration-components/types';
@@ -15,14 +15,17 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const bankAccount = computed(() => getBankAccount(props.grant));
-const transferInstrumentIds = computed(() => getTransferInstrumentIds(props.grant));
-const addingBeneficiaryInstruction = computed(() =>
+const transferInstrumentItems = computed(() => getTransferInstrumentIds(props.grant));
+
+const instructionItems = computed(() => [
     bankAccount.value
         ? i18n.get('capital.overview.repayment.instructions.addingBeneficiary', {
               values: { beneficiaryName: bankAccount.value.beneficiaryName },
           })
-        : undefined
-);
+        : undefined,
+    i18n.get('capital.overview.repayment.instructions.sendingPayment'),
+    i18n.get('capital.overview.repayment.instructions.waiting'),
+]);
 </script>
 
 <template>
@@ -33,25 +36,23 @@ const addingBeneficiaryInstruction = computed(() =>
                 <BentoTypography>
                     {{ i18n.get('capital.overview.repayment.subtitle') }}
                 </BentoTypography>
-                <div :class="styles.repaymentAccount">
-                    <BentoTypography variant="body" stronger>
-                        {{ i18n.get('capital.overview.repayment.accountDetails.title') }}
-                    </BentoTypography>
-                    <AccountDetails :bank-account="bankAccount" />
-                </div>
-
+                <BentoCard>
+                    {{ i18n.get('capital.overview.repayment.accountDetails.title') }}
+                    <template #description>
+                        <AccountDetails :bank-account="bankAccount" />
+                    </template>
+                </BentoCard>
                 <div :class="styles.notice">
-                    <template v-if="transferInstrumentIds.length">
+                    <template v-if="transferInstrumentItems.length">
                         <div>
                             <BentoTypography el="span" variant="caption" stronger>
                                 {{ i18n.get('capital.overview.repayment.transferInstruments') }}
                             </BentoTypography>
-
                             <ul :class="styles.transferInstrumentList">
                                 <li
-                                    v-for="transferInstrumentId in transferInstrumentIds"
+                                    v-for="transferInstrumentId in transferInstrumentItems"
                                     :key="transferInstrumentId"
-                                    :class="styles.transferInstrumentItem"
+                                    :class="styles.transferInstrumentListItem"
                                 >
                                     <BentoTypography el="span" variant="caption">
                                         {{ transferInstrumentId }}
@@ -66,26 +67,16 @@ const addingBeneficiaryInstruction = computed(() =>
                         <BentoTypography el="span" variant="caption" stronger>
                             {{ i18n.get('capital.overview.repayment.instructions.title') }}
                         </BentoTypography>
-                        <ol :class="styles.instructionList">
-                            <li>
+                        <ul :class="styles.list">
+                            <li v-for="item in instructionItems" :key="item" :class="styles.instructionListItem">
                                 <BentoTypography el="span" variant="caption">
-                                    {{ addingBeneficiaryInstruction }}
+                                    {{ item }}
                                 </BentoTypography>
                             </li>
-                            <li>
-                                <BentoTypography el="span" variant="caption">
-                                    {{ i18n.get('capital.overview.repayment.instructions.sendingPayment') }}
-                                </BentoTypography>
-                            </li>
-                            <li>
-                                <BentoTypography el="span" variant="caption">
-                                    {{ i18n.get('capital.overview.repayment.instructions.waiting') }}
-                                </BentoTypography>
-                            </li>
-                        </ol>
+                        </ul>
                     </div>
 
-                    <BentoTypography el="span" variant="caption" :class="styles.verifiedBankAccountDetails">
+                    <BentoTypography el="span" variant="caption" :class="styles.verifiedBankAccountNotice">
                         {{ i18n.get('capital.overview.repayment.instructions.verifiedAccount') }}
                     </BentoTypography>
                 </div>

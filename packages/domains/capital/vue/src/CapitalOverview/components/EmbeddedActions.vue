@@ -6,8 +6,8 @@ import { getMissingActionsMetadata } from '@integration-components/capital/domai
 import { useConfigContext, useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IMissingAction, IMissingActionType } from '@integration-components/types';
 import { EMPTY_OBJECT } from '@integration-components/utils';
-import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
-import { useActionsAlertTitles } from '../../composables/useActionsAlertTitles';
+import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../domain/src/CapitalOverview/constants';
+import { useActionsAlertTitles } from '../composables/useActionsAlertTitles';
 
 const props = defineProps<{
     className?: string;
@@ -41,8 +41,8 @@ const alertTitle = computed(() => {
 
     return props.missingActions.length > 1 ? alertTitles.value.multiple : alertTitles.value.single;
 });
-const actionButtons = computed<BentoButtonActionsList>(() =>
-    props.missingActions.map(action => {
+const actions = computed<BentoButtonActionsList>(() =>
+    [...props.missingActions].reverse().map(action => {
         const actionConfig = GRANT_ACTION_CONFIGS[action.type];
         const isCompleted = completedActions.value.includes(action.type);
 
@@ -177,42 +177,31 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div>
-        <BentoAlert :class="props.className" :type="areActionsCompleted ? 'highlight' : 'warning'">
-            {{ alertTitle }}
-            <template #actions>
-                <BentoButtonActions layout="buttons-start" :actions="actionButtons" />
-            </template>
-        </BentoAlert>
-        <BentoModal
-            v-if="!!activeAction"
-            :is-open="!!activeAction"
-            :is-dismissible="false"
-            :header-with-border="false"
-            size="large"
-            @close-modal="close"
-        >
-            <template #content>
-                <adyen-business-financing
-                    v-if="activeAction === 'AnaCredit'"
-                    :locale.prop="i18n.locale"
-                    :environment.prop="environment"
-                    :fetchToken.prop="fetchToken"
-                    :rootlegalentityid.prop="props.legalEntityId"
-                    @complete="handleBusinessFinancingComplete"
-                    @close="handleBusinessFinancingClose"
-                />
-                <adyen-terms-of-service-management
-                    v-if="activeAction === 'signToS'"
-                    :locale.prop="i18n.locale"
-                    :environment.prop="environment"
-                    :fetchToken.prop="fetchToken"
-                    :rootlegalentityid.prop="props.legalEntityId"
-                    @accept="handleTermsOfServiceAccept"
-                    @complete="handleTermsOfServiceComplete"
-                    @close="handleTermsOfServiceClose"
-                />
-            </template>
-        </BentoModal>
-    </div>
+    <BentoAlert :class="props.className" :type="areActionsCompleted ? 'highlight' : 'warning'">
+        {{ alertTitle }}
+    </BentoAlert>
+    <BentoButtonActions :actions="actions" layout="fill-container" />
+    <BentoModal v-if="!!activeAction" :is-open="!!activeAction" :is-dismissible="false" :header-with-border="false" size="large" @close-modal="close">
+        <template #content>
+            <adyen-business-financing
+                v-if="activeAction === 'AnaCredit'"
+                :locale.prop="i18n.locale"
+                :environment.prop="environment"
+                :fetchToken.prop="fetchToken"
+                :rootlegalentityid.prop="props.legalEntityId"
+                @complete="handleBusinessFinancingComplete"
+                @close="handleBusinessFinancingClose"
+            />
+            <adyen-terms-of-service-management
+                v-if="activeAction === 'signToS'"
+                :locale.prop="i18n.locale"
+                :environment.prop="environment"
+                :fetchToken.prop="fetchToken"
+                :rootlegalentityid.prop="props.legalEntityId"
+                @accept="handleTermsOfServiceAccept"
+                @complete="handleTermsOfServiceComplete"
+                @close="handleTermsOfServiceClose"
+            />
+        </template>
+    </BentoModal>
 </template>
