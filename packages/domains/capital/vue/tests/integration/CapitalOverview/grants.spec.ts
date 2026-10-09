@@ -5,7 +5,7 @@ import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../fixtu
 
 const STORY_ID = 'mocked-capital-capital-overview--grants';
 
-const getGrantDetailsToggle = (page: Page) => page.getByRole('button', { name: 'Show grant details' }).first();
+const getGrantDetailsToggle = (page: Page) => page.getByLabel('Show grant details').first();
 
 test.describe('Grants', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
@@ -33,14 +33,15 @@ test.describe('Grants', () => {
             expect(page.getByTestId('grant-amount-label').first()).toHaveText('Remaining'),
             expect(page.getByText('€8,220.00').first()).toBeVisible(),
             expect(page.getByText('Term ends: May 16, 2025').first()).toBeVisible(),
-            expect(progressBar).toHaveAttribute('value', '1200000'),
-            expect(progressBar).toHaveAttribute('max', '2022000'),
+            expect(page.getByText('€12,000.00 of €20,220.00 repaid')).toBeVisible(),
+            expect(progressBar).toHaveAttribute('aria-valuenow', '59.34718100890207'),
+            expect(progressBar).toHaveAttribute('aria-valuemax', '100'),
             expect(page.getByRole('button', { name: 'Send repayment', exact: true }).first()).toBeHidden(),
             expect(getGrantDetailsToggle(page)).toBeVisible(),
         ]);
     });
 
-    test('should show grant details when button for expanding is clicked', async ({ page }) => {
+    test('should show grant details when grant card is expanded', async ({ page }) => {
         await getGrantDetailsToggle(page).click();
 
         await Promise.all([
@@ -60,7 +61,7 @@ test.describe('Grants', () => {
             expect(page.getByText('Expected repayment period')).toBeVisible(),
             expect(page.getByText('180 days (135 days left)')).toBeVisible(),
             expect(page.getByText('Total repayment amount')).toBeVisible(),
-            expect(page.getByText('€20,220.00')).toBeVisible(),
+            expect(page.getByText('€20,220.00', { exact: true })).toBeVisible(),
             expect(page.getByText('30-day repayment minimum')).toBeVisible(),
             expect(page.getByText('€800.00')).toBeVisible(),
             expect(page.getByText('Grant ID').first()).toBeVisible(),
@@ -72,7 +73,7 @@ test.describe('Grants', () => {
         ]);
     });
 
-    test('should hide grant details when button for collapsing is clicked', async ({ page }) => {
+    test('should hide grant details when grant card is collapsed', async ({ page }) => {
         await getGrantDetailsToggle(page).click();
         await getGrantDetailsToggle(page).click();
 

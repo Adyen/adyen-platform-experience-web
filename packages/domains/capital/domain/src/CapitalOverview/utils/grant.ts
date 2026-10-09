@@ -6,13 +6,14 @@ export type GrantStatusVariant = 'Default' | 'Warning' | 'Error' | 'Light';
 export type GrantConfig = {
     amount: IGrant['grantAmount'];
     amountLabelKey: TranslationKey;
-    hasAlerts: boolean;
-    hasDetails: boolean;
-    hasUnscheduledRepaymentDetails: boolean;
+    areActionsVisible: boolean;
+    areDetailsVisible: boolean;
+    areRepaymentDetailsVisible: boolean;
     isAmountColorSecondary: boolean;
     isBackgroundFilled: boolean;
     isGrantIdVisible: boolean;
     isLabelColorSecondary: boolean;
+    isPendingAlertVisible: boolean;
     isProgressBarVisible: boolean;
     repaymentPeriodEndDate: Date;
     statusKey?: TranslationKey;
@@ -84,18 +85,19 @@ const getStatusTooltipKey = ({ status, missingActions }: IGrant, areActionsLocal
 
 export const getGrantConfig = (grant: IGrant, areActionsLocallyCompleted?: boolean): GrantConfig => {
     const isGrantActive = grant.status === 'Active';
-    const isGrantPending = grant.status === 'Pending';
+    const hasActions = !!grant.missingActions?.length;
 
     return {
         amount: isGrantActive ? grant.remainingTotalAmount : grant.grantAmount,
         amountLabelKey: isGrantActive ? 'capital.overview.grants.item.amounts.remaining' : 'capital.overview.grants.item.amounts.requestedFunds',
-        hasAlerts: isGrantPending,
-        hasDetails: isGrantActive,
-        hasUnscheduledRepaymentDetails: isGrantActive && !!grant.unscheduledRepaymentAccounts?.length,
+        areActionsVisible: hasActions,
+        areDetailsVisible: isGrantActive,
+        areRepaymentDetailsVisible: isGrantActive && !!grant.unscheduledRepaymentAccounts?.length,
         isAmountColorSecondary: !isGrantActive,
         isBackgroundFilled: grant.status === 'Repaid',
         isGrantIdVisible: !isGrantActive,
         isLabelColorSecondary: isGrantActive,
+        isPendingAlertVisible: grant.status === 'Pending' && !hasActions,
         isProgressBarVisible: isGrantActive,
         repaymentPeriodEndDate: getRepaymentPeriodEndDate(grant.repaymentPeriodLeft),
         statusKey: getStatusKey(grant, areActionsLocallyCompleted),
