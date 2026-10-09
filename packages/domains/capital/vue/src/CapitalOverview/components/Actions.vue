@@ -8,7 +8,6 @@ import { useMissingActionsPolling } from '../composables/useMissingActionsPollin
 import { useOnboardingConfig } from '../composables/useOnboardingConfig';
 
 const props = defineProps<{
-    className?: string;
     grantId: string;
     missingActions: IMissingAction[];
     offerExpiresAt?: string;
@@ -31,12 +30,11 @@ const { isFetchingOnboardingConfiguration, onboardingConfiguration } = useOnboar
         <BentoLoadingIndicator v-if="!isPollingComplete || isFetchingOnboardingConfiguration" />
         <EmbeddedActions
             v-else-if="onboardingConfiguration"
-            :class-name="props.className"
             :expiration-date="props.offerExpiresAt"
             :legal-entity-id="onboardingConfiguration.legalEntityId"
             :missing-actions="missingActions"
             @complete="emit('complete')"
         />
-        <HostedActions v-else :class-name="props.className" :expiration-date="props.offerExpiresAt" :missing-actions="missingActions" />
+        <HostedActions v-else :expiration-date="props.offerExpiresAt" :missing-actions="missingActions" />
     </template>
 </template>
