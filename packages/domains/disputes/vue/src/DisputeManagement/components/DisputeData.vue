@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { BentoButtonActions, BentoCard, BentoLoadingIndicator, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
+import { BentoButtonActions, BentoCard, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
 import { useConfigContext, useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { ErrorMessageDisplay } from '@integration-components/composables-vue';
 import {
@@ -16,6 +16,7 @@ import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow'
 import DisputeDataAlert from './DisputeDataAlert.vue';
 import DisputeDataProperties from './DisputeDataProperties.vue';
 import DisputeIssuerComments from './DisputeIssuerComments.vue';
+import DisputeSkeleton from './DisputeSkeleton.vue';
 import DisputeStatusTag from './DisputeStatusTag.vue';
 import type { DisputeDataAlertMode, DisputeManagementProps } from '../types';
 import flowStyles from './DisputeFlow.module.scss';
@@ -195,7 +196,7 @@ const paymentMethodDetail = computed(() =>
 <template>
     <div :class="styles.root">
         <div v-if="showLoadingPlaceholder" aria-busy="true">
-            <BentoLoadingIndicator />
+            <DisputeSkeleton />
         </div>
 
         <div v-else-if="error" :class="styles.errorContainer">

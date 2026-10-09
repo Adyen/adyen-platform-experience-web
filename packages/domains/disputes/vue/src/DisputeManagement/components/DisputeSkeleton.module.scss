@@ -1,0 +1,91 @@
+@use '@integration-components/style';
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+}
+
+.summary {
+    display: grid;
+    gap: style.token(spacer-020);
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: style.token(spacer-020);
+}
+
+.tag {
+    height: calc(#{style.token(text-caption-line-height)} + #{style.token(spacer-020)});
+    max-width: 100%;
+}
+
+// The dispute type is always shown
+.typeTag {
+    width: calc(#{style.token(spacer-120)} * 2);
+}
+
+// Statuses range from "Won" to "Unresponded", so this targets a typical length
+.statusTag {
+    width: calc(#{style.token(spacer-120)} * 1.5);
+}
+
+.amount {
+    max-width: calc(#{style.token(spacer-120)} * 3);
+}
+
+.paymentMethod {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-030);
+}
+
+.paymentMethodLogo {
+    height: style.token(spacer-090);
+    width: style.token(spacer-100);
+}
+
+// Card payments (the typical dispute) always render "•••• •••• •••• xxxx", so the width is fixed to roughly that.
+// BentoLoadingSkeletonTypography sets an inline `width: 100%`, so only `max-width` can constrain it.
+.paymentMethodDetail {
+    flex: 1;
+    max-width: calc(#{style.token(spacer-120)} * 3);
+}
+
+.field {
+    margin-bottom: style.token(spacer-060);
+}
+
+.fieldLabel,
+.fieldValue {
+    padding: style.token(spacer-010) 0;
+}
+
+// BentoStructuredListItem switches from stacked to side-by-side at this viewport width (a media query, not a container query).
+@media (min-width: 500px) {
+    .field {
+        display: flex;
+        margin-bottom: 0;
+        padding: style.token(spacer-030) 0;
+    }
+
+    .fieldLabel {
+        flex: 0 0 33%;
+        padding: 0 style.token(spacer-040) 0 0;
+    }
+
+    .fieldValue {
+        flex: 1;
+        padding: 0;
+    }
+}
+
+.fieldLabelSkeleton {
+    max-width: calc(#{style.token(spacer-120)} * 2);
+}
+
+.fieldValueSkeleton {
+    max-width: calc(#{style.token(spacer-120)} * 4);
+}
