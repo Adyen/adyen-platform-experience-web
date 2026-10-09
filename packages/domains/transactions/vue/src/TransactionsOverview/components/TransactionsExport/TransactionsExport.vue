@@ -242,8 +242,8 @@ const popoverActions = computed(() => [
                 </div>
             </div>
 
-            <BentoAlert type="highlight">
-                <template #default>
+            <BentoAlert :class="styles.infoAlert" type="highlight" variant="tip">
+                <template #description>
                     {{ i18n.get('transactions.overview.export.actions.download.info') }}
                 </template>
             </BentoAlert>

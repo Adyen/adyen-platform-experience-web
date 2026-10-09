@@ -24,7 +24,7 @@
     margin-top: style.token(spacer-070);
 }
 
-.root :global(.b-form-layout__actions) {
+.root :global(.b-form-layout__actions:last-child) {
     width: 100%;
 }
 

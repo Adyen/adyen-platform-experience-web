@@ -228,9 +228,7 @@ const paymentMethodDetail = computed(() =>
                                 {{ dispute.dispute.amount.currency }}
                             </BentoTypography>
                             <div v-if="paymentMethodType" :class="styles.paymentMethod">
-                                <div :class="styles.paymentMethodLogoContainer">
-                                    <BentoPaymentMethod :type="paymentMethodType" />
-                                </div>
+                                <BentoPaymentMethod :type="paymentMethodType" />
                                 <BentoTypography v-if="paymentMethodDetail" variant="title">
                                     {{ paymentMethodDetail }}
                                 </BentoTypography>

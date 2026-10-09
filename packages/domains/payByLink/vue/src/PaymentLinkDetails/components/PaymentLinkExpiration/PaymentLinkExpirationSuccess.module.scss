@@ -11,8 +11,11 @@
 }
 
 .actions {
-    display: flex;
-    justify-content: center;
+    width: 100%;
+
+    :global(.b-button-actions__container-wrapper) {
+        justify-content: center;
+    }
 }
 
 .icon {

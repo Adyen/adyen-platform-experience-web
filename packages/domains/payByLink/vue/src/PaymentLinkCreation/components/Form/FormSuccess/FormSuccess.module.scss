@@ -21,8 +21,10 @@
 
 .actions {
     align-self: stretch;
-    display: flex;
-    justify-content: flex-end;
+
+    :global(.b-button-actions__container-wrapper) {
+        justify-content: center;
+    }
 }
 
 .title.title {
