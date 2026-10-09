@@ -1,0 +1,65 @@
+@use '@integration-components/style';
+
+// Same as BentoTag: caption line-height plus spacer-010 vertical padding on each side.
+// Sized for the category tag, e.g. "Payment".
+.tag {
+    height: calc(#{style.token(text-caption-line-height)} + #{style.token(spacer-010)} * 2);
+    max-width: 100%;
+    width: calc(#{style.token(spacer-120)} * 1.5);
+}
+
+.amount {
+    max-width: calc(#{style.token(spacer-120)} * 3);
+}
+
+.paymentMethodLogo {
+    height: style.token(spacer-090);
+}
+
+// Card payments render "•••• •••• •••• xxxx"
+.paymentMethodDetail {
+    flex: 1;
+    max-width: calc(#{style.token(spacer-120)} * 3);
+}
+
+// Long date-time format, e.g. "Monday, August 29, 2022 at 09:47 AM GMT-3"
+.date {
+    max-width: calc(#{style.token(spacer-120)} * 6);
+}
+
+.field {
+    margin-bottom: style.token(spacer-060);
+}
+
+.fieldLabel,
+.fieldValue {
+    padding: style.token(spacer-010) 0;
+}
+
+// BentoStructuredListItem switches from stacked to side-by-side at this viewport width (a media query, not a container query).
+@media (min-width: 500px) {
+    .field {
+        display: flex;
+        margin-bottom: 0;
+        padding: style.token(spacer-030) 0;
+    }
+
+    .fieldLabel {
+        flex: 0 0 33%;
+        padding: 0 style.token(spacer-040) 0 0;
+    }
+
+    .fieldValue {
+        flex: 1;
+        padding: 0;
+    }
+}
+
+.fieldLabelSkeleton {
+    max-width: calc(#{style.token(spacer-120)} * 2);
+}
+
+// Reference IDs
+.fieldValueSkeleton {
+    max-width: calc(#{style.token(spacer-120)} * 3);
+}

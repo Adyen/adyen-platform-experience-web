@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useLandedPageEvent, ErrorMessageDisplay } from '@integration-components/composables-vue';
-import { BentoLoadingIndicator } from '@adyen/bento-vue3';
+import { computed, ref, watch } from 'vue';
+import { useLandedPageEvent, useShouldHideTitles, ErrorMessageDisplay } from '@integration-components/composables-vue';
+import { useCoreContext, useModalContext } from '@integration-components/core/vue';
+import { BentoTypography } from '@adyen/bento-vue3';
 import TransactionData from './TransactionData/TransactionData.vue';
+import TransactionSkeleton from './TransactionSkeleton/TransactionSkeleton.vue';
 import { useTransaction } from '../composables/useTransaction';
 import { normalizeCustomFields } from '@integration-components/utils';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET, sharedTransactionDetailsEventProperties } from '../../../../domain/src';
@@ -16,6 +18,10 @@ const props = defineProps<{
     onDismiss?: () => void;
     fromRecordSelection?: boolean;
 }>();
+
+const { i18n } = useCoreContext();
+const { withinModal } = useModalContext();
+const hideTitles = useShouldHideTitles();
 
 const { error, fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(() => props.id);
 
@@ -74,10 +80,18 @@ useLandedPageEvent(
     },
     () => !!initialTransaction.value
 );
+
+const showTitle = computed(() => !withinModal && !hideTitles.value && (!!initialTransaction.value || fetchingTransaction.value));
 </script>
 
 <template>
     <div>
+        <div v-if="showTitle" :class="styles.title">
+            <BentoTypography variant="title">
+                {{ i18n.get('transactions.details.title') }}
+            </BentoTypography>
+        </div>
+
         <TransactionData
             v-if="initialTransaction"
             :extra-fields="extraFields"
@@ -89,8 +103,8 @@ useLandedPageEvent(
             :transaction-navigator="transactionNavigator"
         />
 
-        <div v-else-if="fetchingTransaction" :class="styles.loading">
-            <BentoLoadingIndicator />
+        <div v-else-if="fetchingTransaction" aria-busy="true">
+            <TransactionSkeleton />
         </div>
 
         <div v-else-if="error">
