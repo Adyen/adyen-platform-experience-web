@@ -73,7 +73,14 @@ const handleFundsRequest: OnFundsRequestCallback = (data, renewsGrantId) => {
 
 const headerActions = computed<BentoButtonActionsList | undefined>(() => {
     if (error.value || !capitalState.value?.isRegionSupported || !capitalState.value.dynamicOfferConfig) return undefined;
-    return [{ title: i18n.get('capital.overview.grants.newGrant.actions.newGrant'), event: openOfferModal }];
+    return [
+        {
+            title: i18n.get(
+                capitalState.value.hasGrants ? 'capital.overview.grants.newGrant.actions.newGrant' : 'capital.overview.grants.newGrant.actions.grant'
+            ),
+            event: openOfferModal,
+        },
+    ];
 });
 </script>
 
