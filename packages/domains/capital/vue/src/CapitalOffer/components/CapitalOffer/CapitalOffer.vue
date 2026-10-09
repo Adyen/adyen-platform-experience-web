@@ -52,12 +52,7 @@ const handleSummaryBack = () => {
 <template>
     <div :class="styles.root">
         <CapitalHeader :hide-subtitle="props.hideSubtitle" :hide-title="isTitleHidden" :region="capitalState?.region" :title-key="titleKey" />
-        <CapitalError
-            v-if="capitalStateError"
-            :error="capitalStateError"
-            :on-back="props.onOfferDismiss"
-            :on-contact-support="props.onContactSupport"
-        />
+        <CapitalError v-if="capitalStateError" :error="capitalStateError" :on-back="props.onDismiss" :on-contact-support="props.onContactSupport" />
         <template v-else-if="capitalState">
             <UnsupportedRegionState v-if="!capitalState.isRegionSupported" />
             <EmptyOfferState v-else-if="!dynamicOfferConfig" />
@@ -68,7 +63,7 @@ const handleSummaryBack = () => {
                     :created-offer="createdOffer"
                     :dynamic-offer-config="dynamicOfferConfig"
                     :on-contact-support="props.onContactSupport"
-                    :on-dismiss="props.onOfferDismiss"
+                    :on-dismiss="props.onDismiss"
                     :on-offer-create="handleOfferSelect"
                 />
                 <OfferSummary
