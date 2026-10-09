@@ -14,7 +14,7 @@ import type { Page } from '@playwright/test';
 
 const STORY_ID = 'mocked-capital-capital-overview--first-time-eligible';
 
-const getOfferButton = (page: Page) => page.getByTestId('capital-header').getByRole('button', { name: 'Request a new loan' });
+const getOfferButton = (page: Page) => page.getByTestId('capital-header').getByRole('button', { name: 'Request a loan' });
 
 const getOfferModal = (page: Page) => page.getByRole('dialog');
 
@@ -70,7 +70,7 @@ test.describe('First-time eligible', () => {
         await expect(getOfferModal(page).getByText('Business financing request')).toBeVisible();
     });
 
-    test('should close offer modal and track dismissal when close button is clicked', async ({ page, analyticsEvents }) => {
+    test('should close offer modal when close button is clicked', async ({ page, analyticsEvents }) => {
         await openOfferAndExpectAnalytics(page, analyticsEvents);
         await getOfferModal(page).getByRole('button', { name: 'Close', exact: true }).click();
 
@@ -81,7 +81,7 @@ test.describe('First-time eligible', () => {
         await expect(getOfferModal(page)).toBeHidden();
     });
 
-    test('should close offer modal without tracking dismissal when request submit button in offer summary screen is clicked', async ({
+    test('should close offer modal and show grant in progress when request submit button in offer summary screen is clicked', async ({
         page,
         analyticsEvents,
     }) => {
@@ -94,6 +94,6 @@ test.describe('First-time eligible', () => {
 
         await expect(getOfferModal(page)).toBeHidden();
         await expect(page.getByText('Pending')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'See options' })).toBeHidden();
+        await expect(page.getByRole('button', { name: "'Request a loan'" })).toBeHidden();
     });
 });
