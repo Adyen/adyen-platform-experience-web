@@ -10,7 +10,7 @@ import {
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
 import { useRequestFunds } from '../../composables/useRequestFunds';
-import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
+import CapitalError from '../../../shared/CapitalError.vue';
 import Highlights from '../Highlights/Highlights.vue';
 import LegalNotice from '../LegalNotice/LegalNotice.vue';
 import RenewalHighlights from '../RenewalHighlights.vue';

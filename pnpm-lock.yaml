@@ -12,6 +12,9 @@ catalogs:
     '@adyen/ui-assets-icons-16':
       specifier: 7.9.3
       version: 7.9.3
+    '@adyen/ui-assets-icons-24':
+      specifier: 6.9.4
+      version: 6.9.4
     '@adyen/ui-assets-icons-40':
       specifier: 4.9.2
       version: 4.9.2
@@ -305,6 +308,9 @@ importers:
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.43(typescript@5.8.3))
+      '@adyen/ui-assets-icons-24':
+        specifier: 'catalog:'
+        version: 6.9.4(vue@3.5.43(typescript@5.8.3))
       '@integration-components/composables-vue':
         specifier: workspace:*
         version: link:../../shared/composables-vue
@@ -830,6 +836,14 @@ packages:
     engines: {node: '>=18'}
 
   '@adyen/ui-assets-icons-16@7.9.3':
+    resolution: {}
+    peerDependencies:
+      vue: ~2.7 || ~3
+    peerDependenciesMeta:
+      vue:
+        optional: true
+
+  '@adyen/ui-assets-icons-24@6.9.4':
     resolution: {}
     peerDependencies:
       vue: ~2.7 || ~3
@@ -6264,6 +6278,10 @@ snapshots:
   '@adyen/openbankingsdk@0.2.3': {}
 
   '@adyen/ui-assets-icons-16@7.9.3(vue@3.5.43(typescript@5.8.3))':
+    optionalDependencies:
+      vue: 3.5.43(typescript@5.8.3)
+
+  '@adyen/ui-assets-icons-24@6.9.4(vue@3.5.43(typescript@5.8.3))':
     optionalDependencies:
       vue: 3.5.43(typescript@5.8.3)
 
