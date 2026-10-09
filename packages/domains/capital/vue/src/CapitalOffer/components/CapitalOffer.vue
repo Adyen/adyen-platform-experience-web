@@ -8,7 +8,9 @@ import OfferSummary from './OfferSummary/OfferSummary.vue';
 import type { CapitalOfferProps } from '../types';
 import { useEnhancedCapitalState } from '../../shared/composables/useEnhancedCapitalState';
 import CapitalHeader from '../../shared/CapitalHeader/CapitalHeader.vue';
-import CapitalError from '../../shared/CapitalError/CapitalError.vue';
+import CapitalError from '../../shared/CapitalError.vue';
+import EmptyOfferState from '../../shared/EmptyOfferState.vue';
+import UnsupportedRegionState from '../../shared/UnsupportedRegionState.vue';
 
 const props = defineProps<CapitalOfferProps>();
 
@@ -50,11 +52,8 @@ const handleSummaryBack = () => {
     <CapitalHeader :hide-subtitle="props.hideSubtitle" :hide-title="isTitleHidden" :region="capitalState?.region" :title-key="titleKey" />
     <CapitalError v-if="capitalStateError" :error="capitalStateError" :on-back="props.onOfferDismiss" :on-contact-support="props.onContactSupport" />
     <template v-else-if="capitalState">
-        <CapitalError
-            v-if="!capitalState.isRegionSupported || !dynamicOfferConfig"
-            :empty-grant-offer="!dynamicOfferConfig"
-            :unsupported-region="!capitalState.isRegionSupported"
-        />
+        <UnsupportedRegionState v-if="!capitalState.isRegionSupported" />
+        <EmptyOfferState v-else-if="!dynamicOfferConfig" />
         <template v-else>
             <OfferSelection
                 v-show="activeStep === 'selection'"
