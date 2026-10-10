@@ -33,6 +33,7 @@ const variant = computed(() => (currencyConfig.value.visible ? 'dropdown' : 'def
 const dropdownProps = computed<BentoInputDropdownProps>(() => ({
     items: currencyItems.value,
     modelValue: currencyValue.value,
+    dynamicFiltering: true,
     readonly: currencyConfig.value.readOnly,
     'aria-label': i18n.get('payByLink.creation.fields.amount.currency.ariaLabel'),
     placeholder: i18n.get('payByLink.creation.inputs.select.placeholder'),
