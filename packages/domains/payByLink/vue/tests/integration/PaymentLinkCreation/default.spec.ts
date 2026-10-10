@@ -34,7 +34,7 @@ test.describe('Payment link creation - Link creation success', () => {
         await page.getByRole('option', { name: 'hours' }).click();
 
         // Set amount to CNY 3000
-        await page.getByRole('combobox', { name: 'Amount currency' }).click();
+        await page.getByTestId('form-field-amount.value').getByRole('combobox').click();
         await page.getByRole('option', { name: 'CNY' }).click();
         await page.getByTestId('form-field-amount.value').getByRole('spinbutton').fill('3000');
 
@@ -158,7 +158,7 @@ test.describe('Payment link creation - Link creation validation', () => {
         await page.getByRole('button', { name: 'Continue' }).click();
 
         // Step 2: Payment Details
-        await page.getByRole('combobox', { name: 'Amount currency' }).click();
+        await page.getByTestId('form-field-amount.value').getByRole('combobox').click();
         await page.getByRole('option', { name: 'CNY' }).click();
 
         const amountField = page.getByTestId('form-field-amount.value').getByRole('spinbutton');
@@ -208,7 +208,7 @@ test.describe('Payment link creation - Link creation validation', () => {
         const amountField = page.getByTestId('form-field-amount.value').getByRole('spinbutton');
         await expect(getFieldError(page, 'amount.value')).toContainText('Please select a currency');
 
-        await page.getByRole('combobox', { name: 'Amount currency' }).click();
+        await page.getByTestId('form-field-amount.value').getByRole('combobox').click();
         await page.getByRole('option', { name: 'CNY' }).click();
         await expect(getFieldError(page, 'amount.value')).toContainText('This field is required');
 
