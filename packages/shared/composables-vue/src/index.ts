@@ -15,11 +15,13 @@ export { default as useCustomDataCells } from './useCustomDataCells';
 
 export { CustomDataCell } from './CustomDataCell';
 
-export * from './getErrorMessage';
-export { default as getErrorMessage } from './getErrorMessage';
+export { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from '@integration-components/core/vue';
 export { DataOverviewError } from './DataOverviewError';
-export { ErrorMessageDisplay } from './ErrorMessageDisplay';
-export { useShouldHideIllustrations, useShouldHideTitles } from './customization';
+export { ErrorMessageDisplay } from '@integration-components/core/vue';
+export { ComponentShell } from '@integration-components/core/vue';
+export type { ComponentShellState } from '@integration-components/core/vue';
+export { ComponentAvailabilityGate } from '@integration-components/core/vue';
+export { useShouldHideIllustrations, useShouldHideTitles } from '@integration-components/core/vue';
 export { CopyText } from './CopyText';
 
 export { default as useTimezoneAwareDateFormatting } from './useTimezoneAwareDateFormatting';

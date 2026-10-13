@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { OnFundsRequestCallback } from '@integration-components/capital/domain';
-import { BentoLoadingIndicator, type BentoButtonActionsList } from '@adyen/bento-vue3';
+import type { BentoButtonActionsList } from '@adyen/bento-vue3';
 import { IGrant } from '@integration-components/types';
 import { CapitalOverviewProps } from '../../types';
 import { useEnhancedCapitalState } from '../../../shared/composables/useEnhancedCapitalState';
@@ -11,7 +11,7 @@ import GrantList from '../GrantList/GrantList.vue';
 import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
 import OfferAlert from '../OfferAlert.vue';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
-import { useLandedPageEvent, useShouldHideTitles } from '@integration-components/composables-vue';
+import { ComponentShell, useLandedPageEvent, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
 import styles from './CapitalOverview.module.scss';
 import OfferModal from '../OfferModal.vue';
 
@@ -25,6 +25,7 @@ const isEarlyRenewal = computed(() => !!capitalState.value?.renewableGrants.leng
 const isOfferModalOpen = ref(false);
 const shouldTrackOfferClose = ref(true);
 const hideTitles = useShouldHideTitles();
+const shellState = computed<ComponentShellState>(() => (isLoading.value ? 'loading' : 'ready'));
 
 useLandedPageEvent(
     // TODO: Verify
@@ -77,8 +78,7 @@ const headerActions = computed<BentoButtonActionsList | undefined>(() => {
 
 <template>
     <div :class="styles.root">
-        <BentoLoadingIndicator v-if="isLoading" />
-        <template v-else>
+        <ComponentShell :state="shellState">
             <CapitalHeader :actions="headerActions" :hide-title="hideTitles" :region="capitalState?.region" title-key="capital.common.title" />
             <CapitalError v-if="error" :error="error" :on-contact-support="props.onContactSupport" />
             <template v-else-if="capitalState">
@@ -93,7 +93,7 @@ const headerActions = computed<BentoButtonActionsList | undefined>(() => {
                     <GrantList :capital-state="capitalState" :requested-grant="requestedGrant" :on-contact-support="props.onContactSupport" />
                 </template>
             </template>
-        </template>
+        </ComponentShell>
     </div>
     <OfferModal
         :is-open="isOfferModalOpen"

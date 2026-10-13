@@ -295,9 +295,14 @@
         "packages/shared/core/src/vue/Context/modal/useModalContext.d.ts",
         "packages/shared/core/src/vue/Context/types.d.ts",
         "packages/shared/core/src/vue/Context/useCoreContext.d.ts",
+        "packages/shared/core/src/vue/ErrorMessageDisplay.d.ts",
         "packages/shared/core/src/vue/UIElement.d.ts",
         "packages/shared/core/src/vue/bentoTranslationTemplate.d.ts",
         "packages/shared/core/src/vue/bentoTranslations.d.ts",
+        "packages/shared/core/src/vue/componentAvailability/ComponentAvailabilityGate.d.ts",
+        "packages/shared/core/src/vue/componentShell/ComponentShell.d.ts",
+        "packages/shared/core/src/vue/customization.d.ts",
+        "packages/shared/core/src/vue/getErrorMessage.d.ts",
         "packages/shared/core/src/vue/index.d.ts",
         "packages/shared/core/src/vue/types.d.ts",
         "packages/shared/lib/src/index.d.ts",
@@ -425,7 +430,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "ef8ed43f24bce18beaf187bb6c4d6324d487f1053f205c730d3e7478bc480389",
+    "typeTreeHash": "f1198ec2e37af31477bb89ede1b548da3d61887163d5d30af6d05052daf44f16",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",
