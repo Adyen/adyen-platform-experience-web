@@ -10,6 +10,7 @@ catalog:
   '@adyen/ui-assets-icons-40': 4.9.2
   "@playwright/test": ^1.61.0
   "@storybook/vue3": 10.6.2
+  "@storybook/vue3-vite": 10.6.2
   "@vitest/coverage-v8": 4.1.11
   dotenv: ^17.2.3
   msw: ^2.7.3

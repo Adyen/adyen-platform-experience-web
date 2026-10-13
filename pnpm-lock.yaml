@@ -21,6 +21,9 @@ catalogs:
     '@storybook/vue3':
       specifier: 10.6.2
       version: 10.6.2
+    '@storybook/vue3-vite':
+      specifier: 10.6.2
+      version: 10.6.2
     '@vitest/coverage-v8':
       specifier: 4.1.11
       version: 4.1.11
@@ -766,7 +769,7 @@ importers:
         specifier: 'catalog:'
         version: 10.6.2(storybook@10.6.2(prettier@3.6.2)(react@19.2.0))(typescript@5.8.3)(vue@3.5.43(typescript@5.8.3))
       '@storybook/vue3-vite':
-        specifier: 10.6.2
+        specifier: 'catalog:'
         version: 10.6.2(storybook@10.6.2(prettier@3.6.2)(react@19.2.0))(typescript@5.8.3)(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))(vue@3.5.43(typescript@5.8.3))
       '@vitejs/plugin-vue':
         specifier: ^6.0.5

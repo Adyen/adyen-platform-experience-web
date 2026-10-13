@@ -20,7 +20,7 @@
     },
     "devDependencies": {
         "@storybook/vue3": "catalog:",
-        "@storybook/vue3-vite": "10.6.2",
+        "@storybook/vue3-vite": "catalog:",
         "@vitejs/plugin-vue": "^6.0.5",
         "concurrently": "^7.0.0",
         "cross-env": "^7.0.3",
