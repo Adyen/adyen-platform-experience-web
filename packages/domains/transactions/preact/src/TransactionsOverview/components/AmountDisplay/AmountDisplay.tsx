@@ -19,16 +19,10 @@ export interface AmountDisplayProps {
 const AmountDisplay = ({ amount, currency, description, label, large }: AmountDisplayProps) => {
     const { i18n } = useCoreContext();
 
-    const [amountTypographyProps, currencyTypographyProps] = useMemo(() => {
-        const amountTypographyProps = large
+    const amountTypographyProps = useMemo(() => {
+        return large
             ? ({ variant: TypographyVariant.TITLE, large: true } as const)
             : ({ variant: TypographyVariant.SUBTITLE, stronger: true } as const);
-
-        const currencyTypographyProps = large
-            ? ({ variant: TypographyVariant.SUBTITLE, stronger: true } as const)
-            : ({ variant: TypographyVariant.CAPTION, stronger: true } as const);
-
-        return [amountTypographyProps, currencyTypographyProps] as const;
     }, [large]);
 
     const formattedAmount = useMemo(() => i18n.amount(amount, currency), [i18n, amount, currency]);
@@ -52,10 +46,6 @@ const AmountDisplay = ({ amount, currency, description, label, large }: AmountDi
             <div className={cx(classes.amount, { [classes.amountLarge]: large })}>
                 <Typography el={TypographyElement.SPAN} {...amountTypographyProps}>
                     {formattedAmount}
-                </Typography>
-
-                <Typography el={TypographyElement.SPAN} className={classes.currency} {...currencyTypographyProps}>
-                    {currency}
                 </Typography>
             </div>
         </div>

@@ -111,7 +111,7 @@ const InsightsTotalsBreakdown = ({ ariaLabel, breakdown, ...amountDisplayProps }
             breakdown.map(
                 ({ category, value }): StructuredListItem => ({
                     key: getTransactionCategory(i18n, category) as TranslationKey,
-                    value: `${i18n.amount(value, currency)} ${currency}`,
+                    value: `${i18n.amount(value, currency)}`,
                 })
             ),
         [i18n, breakdown, currency]
