@@ -14,7 +14,7 @@ import PaymentLinkSettingsContent from './PaymentLinkSettingsContent.vue';
 import SettingsActionButtons from './SettingsActionButtons.vue';
 import styles from './PaymentLinkSettings.module.scss';
 
-const ERROR_MESSAGE_KEY: TranslationKey = 'payByLink.settings.errors.couldNotLoadSettings';
+const ERROR_MESSAGE_KEY: TranslationKey = 'payByLink.settings.errors.unavailable';
 
 const props = defineProps<{
     hideTitle?: boolean;

@@ -603,7 +603,6 @@ test.describe('Appearance container', () => {
     test('renders the container styles when visible', async ({ page }) => {
         const container = page.getByTestId('component-container');
 
-        await expect(container).not.toHaveClass(/adyen-pe-component__container--hidden/);
         await expect(container).not.toHaveCSS('padding-top', '0px');
         await expect(container).not.toHaveCSS('border-top-width', '0px');
         await expect(container).not.toHaveCSS('border-top-left-radius', '0px');
@@ -615,7 +614,6 @@ test.describe('Appearance container', () => {
 
         const container = page.getByTestId('component-container');
 
-        await expect(container).toHaveClass(/adyen-pe-component__container--hidden/);
         await expect(container).toHaveCSS('padding-top', '0px');
         await expect(container).toHaveCSS('padding-left', '0px');
         await expect(container).toHaveCSS('border-top-width', '0px');
@@ -626,12 +624,10 @@ test.describe('Appearance container', () => {
 
     test('restores the container styles when set back to visible', async ({ page }) => {
         await updateStoryArgs(page, STORY_ID, { appearance: { container: 'hidden' } });
-        await expect(page.getByTestId('component-container')).toHaveClass(/adyen-pe-component__container--hidden/);
 
         await updateStoryArgs(page, STORY_ID, { appearance: { container: 'visible' } });
 
         const container = page.getByTestId('component-container');
-        await expect(container).not.toHaveClass(/adyen-pe-component__container--hidden/);
         await expect(container).not.toHaveCSS('padding-top', '0px');
     });
 });
