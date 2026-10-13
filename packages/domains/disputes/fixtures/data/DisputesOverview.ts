@@ -54,7 +54,7 @@ export const DATA_CUSTOMIZATION_LIST: DisputesListCustomization = {
         { key: 'reason', visibility: 'hidden' },
         { key: '_summary' },
         { key: '_sendEmail' },
-        { key: 'disputedAmount', align: 'left' },
+        { key: 'disputedAmount' },
     ],
 
     onDataRetrieve: async data => {

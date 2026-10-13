@@ -1,8 +1,5 @@
 import { ITransaction, ITransactionCategory, ITransactionStatus } from '@integration-components/types';
 
-export const DEFAULT_PAGE_LIMIT = 10;
-export const LIMIT_OPTIONS = [10, 20, 50];
-
 export const TRANSACTION_STATUSES: readonly ITransactionStatus[] = ['Booked', 'Pending', 'Reversed'] as const;
 
 export const TRANSACTION_CATEGORIES: readonly ITransactionCategory[] = [

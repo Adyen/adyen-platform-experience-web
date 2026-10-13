@@ -729,4 +729,88 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
             ],
         },
     },
+    {
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
+        payout: {
+            fundsCapturedAmount: {
+                value: 45000,
+                currency: 'EUR',
+            },
+            adjustmentAmount: {
+                value: -2000,
+                currency: 'EUR',
+            },
+            payoutAmount: {
+                value: 43000,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
+                value: 0,
+                currency: 'EUR',
+            },
+            createdAt: getCreatedAt(-15),
+        },
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: 45000,
+                        currency: 'EUR',
+                    },
+                    category: 'capture',
+                },
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -2000,
+                        currency: 'EUR',
+                    },
+                    category: 'fee',
+                },
+            ],
+        },
+    },
+    {
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
+        payout: {
+            fundsCapturedAmount: {
+                value: 18000,
+                currency: 'EUR',
+            },
+            adjustmentAmount: {
+                value: -1500,
+                currency: 'EUR',
+            },
+            payoutAmount: {
+                value: 16500,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
+                value: 0,
+                currency: 'EUR',
+            },
+            createdAt: getCreatedAt(-20),
+        },
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: 18000,
+                        currency: 'EUR',
+                    },
+                    category: 'capture',
+                },
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1500,
+                        currency: 'EUR',
+                    },
+                    category: 'fee',
+                },
+            ],
+        },
+    },
 ];

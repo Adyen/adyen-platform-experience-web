@@ -18,6 +18,9 @@ export * from './file/upload';
 
 export * from './layout/breakpoints';
 
+export * from './pagination/constants';
+export * from './pagination/types';
+
 export * from './primitives/async/abortable';
 export * from './primitives/async/deferred';
 export * from './primitives/async/promisor';

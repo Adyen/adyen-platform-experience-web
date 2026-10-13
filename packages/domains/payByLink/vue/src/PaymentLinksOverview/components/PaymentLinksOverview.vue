@@ -21,7 +21,7 @@ import styles from './PaymentLinksOverview.module.scss';
 
 const props = defineProps<{
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
     storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
     onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
     onContactSupport?: () => void;
@@ -257,6 +257,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 
         <div :class="styles.filtersContainer">
             <PaymentLinksFilters
+                :compact="isMobile"
                 :stores="props.stores"
                 :store-error="props.storeError"
                 :filter-error="props.filterOptionsError"

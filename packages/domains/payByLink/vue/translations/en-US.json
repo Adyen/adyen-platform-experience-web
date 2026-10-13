@@ -2,7 +2,6 @@
     "payByLink.common.actions.contactSupport.labels.reachOut": "Reach out to support",
     "payByLink.common.actions.copy.labels.default": "Copy",
     "payByLink.common.actions.copy.labels.done": "Copied",
-    "payByLink.common.actions.copy.labels.errorCode": "Copy error code",
     "payByLink.common.actions.goBack": "Go back",
     "payByLink.common.actions.refresh.labels.default": "Refresh",
     "payByLink.common.errors.accountConfiguration": "Looks like there is a problem with your account configuration.",

@@ -2,12 +2,13 @@
 import { computed } from 'vue';
 import ReportsOverview from './ReportsOverview.vue';
 import { ComponentShell, useBalanceAccounts, type ErrorMessageInfo } from '@integration-components/composables-vue';
+import type { ReportsOverviewExternalProps } from '../types';
 
 const props = withDefaults(
     defineProps<{
         balanceAccountId?: string;
         allowLimitSelection?: boolean;
-        preferredLimit?: number;
+        preferredLimit?: ReportsOverviewExternalProps['preferredLimit'];
         onContactSupport?: () => void;
         dataCustomization?: any;
     }>(),

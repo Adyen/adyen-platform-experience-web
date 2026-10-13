@@ -13,11 +13,12 @@ import type { TransactionsOverviewExternalProps, IBalanceAccountBase } from '../
 import TransactionsFilters from '../TransactionFilters/TransactionsFilters.vue';
 import TransactionsExport from '../TransactionsExport/TransactionsExport.vue';
 import styles from './TransactionsOverview.module.scss';
+import { containerQueries, useResponsiveContainer } from '@integration-components/composables-vue';
 
 const props = defineProps<{
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    preferredLimit?: TransactionsOverviewExternalProps['preferredLimit'];
     hideInsights?: boolean;
     onContactSupport?: () => void;
     onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
@@ -27,6 +28,7 @@ const props = defineProps<{
 }>();
 
 const userEvents = useEventDispatcherContext();
+const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
 const state = useTransactionsOverviewState(() => props as any);
 
@@ -71,7 +73,7 @@ const canExport = computed(() => state.transactionsListResult.records.value.leng
 <template>
     <TransactionsOverviewShell>
         <div role="toolbar" :class="styles.toolbar">
-            <TransactionsFilters :balance-accounts="props.balanceAccounts" />
+            <TransactionsFilters :compact="isMobile" :balance-accounts="props.balanceAccounts" />
             <TransactionsExport v-if="showExport" :disabled="!canExport" />
         </div>
         <TransactionsOverviewList

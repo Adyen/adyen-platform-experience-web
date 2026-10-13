@@ -8,7 +8,7 @@ const props = withDefaults(
     defineProps<{
         allowLimitSelection?: boolean;
         balanceAccountId?: string;
-        preferredLimit?: 10 | 20;
+        preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
         storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
         onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
         onContactSupport?: () => void;

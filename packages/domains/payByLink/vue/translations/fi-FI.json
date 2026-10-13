@@ -2,7 +2,6 @@
     "payByLink.common.actions.contactSupport.labels.reachOut": "Ota yhteyttä tukeen",
     "payByLink.common.actions.copy.labels.default": "Kopioi",
     "payByLink.common.actions.copy.labels.done": "Kopioitu",
-    "payByLink.common.actions.copy.labels.errorCode": "Kopioi virhekoodi",
     "payByLink.common.actions.goBack": "Palaa takaisin",
     "payByLink.common.actions.refresh.labels.default": "Lataa uudelleen",
     "payByLink.common.errors.accountConfiguration": "Ilmeisesti tilisi asetuksissa on ongelma.",
