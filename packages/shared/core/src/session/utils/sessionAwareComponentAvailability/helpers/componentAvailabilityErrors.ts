@@ -1,11 +1,9 @@
-import { ExternalComponentType } from '@integration-components/types';
-import type { TranslationKey } from '../../../../translations';
+import { getDomainTranslationKey } from '../../../../translations';
+import type { DomainTranslationKey, TranslationDomain } from '../../../../translations';
+import type { ExternalComponentType } from '@integration-components/types';
 
-function componentAvailabilityErrors<Fallback extends TranslationKey>(
-    type: ExternalComponentType | undefined,
-    fallback: Fallback
-): TranslationKey | Fallback;
-function componentAvailabilityErrors(type: ExternalComponentType | undefined, fallback: TranslationKey): TranslationKey {
+/** Maps a component type to its "unavailable" message, falling back for types that have none. */
+function componentAvailabilityErrors(type: ExternalComponentType | undefined, fallback: DomainTranslationKey): DomainTranslationKey {
     switch (type) {
         case 'transactions':
             return 'transactions.overview.errors.unavailable';
@@ -23,9 +21,30 @@ function componentAvailabilityErrors(type: ExternalComponentType | undefined, fa
             return 'disputes.management.common.errors.unavailable';
         case 'paymentLinksOverview':
             return 'payByLink.overview.errors.unavailable';
+        case 'paymentLinkCreation':
+            return 'payByLink.creation.errors.unavailable';
+        case 'paymentLinkDetails':
+            return 'payByLink.details.errors.unavailable';
+        case 'capitalOffer':
+            return 'capital.offer.common.errors.unavailable';
+        case 'capitalOverview':
+            return 'capital.overview.common.errors.unavailable';
+        case 'paymentLinkSettings':
+            return 'payByLink.settings.errors.unavailable';
         default:
             return fallback;
     }
+}
+
+export function getComponentAvailabilityErrorTitle(domain: TranslationDomain): DomainTranslationKey {
+    return getDomainTranslationKey(domain, 'common.errors.somethingWentWrong');
+}
+
+export function getComponentAvailabilityErrorMessages(type: ExternalComponentType | undefined, domain: TranslationDomain): DomainTranslationKey[] {
+    return [
+        componentAvailabilityErrors(type, getDomainTranslationKey(domain, 'common.errors.componentUnavailable')),
+        getDomainTranslationKey(domain, 'common.errors.contactSupport'),
+    ];
 }
 
 export default componentAvailabilityErrors;
