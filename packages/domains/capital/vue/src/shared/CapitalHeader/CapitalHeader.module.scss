@@ -1,7 +1,10 @@
 @use '@integration-components/style' as style;
 
-.root {
-    margin-bottom: style.token(spacer-070);
+.titlelessContent {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-060);
+    justify-content: space-between;
 }
 
 .description {

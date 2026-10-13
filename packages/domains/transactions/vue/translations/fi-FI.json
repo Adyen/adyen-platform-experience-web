@@ -3,7 +3,6 @@
     "transactions.common.actions.contactSupport.labels.reachOut": "Ota yhteyttä tukeen",
     "transactions.common.actions.copy.labels.default": "Kopioi",
     "transactions.common.actions.copy.labels.done": "Kopioitu",
-    "transactions.common.actions.copy.labels.errorCode": "Kopioi virhekoodi",
     "transactions.common.actions.refresh.labels.default": "Lataa uudelleen",
     "transactions.common.errors.componentUnavailable": "Jokin meni pieleen.",
     "transactions.common.errors.contactSupport": "Pyydä apua ottamalla yhteyttä tukeen.",

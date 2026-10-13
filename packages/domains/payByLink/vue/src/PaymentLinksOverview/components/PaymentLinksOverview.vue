@@ -257,6 +257,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 
         <div :class="styles.filtersContainer">
             <PaymentLinksFilters
+                :compact="isMobile"
                 :stores="props.stores"
                 :store-error="props.storeError"
                 :filter-error="props.filterOptionsError"

@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, ref, type Component, type PropType, type VNode } from 'vue';
+import { computed, defineComponent, h, type Component, type PropType, type VNode } from 'vue';
 import { BentoEmptyState } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { getDomainTranslationKey, type DomainTranslationKey } from '@integration-components/core/vue';
@@ -19,14 +19,12 @@ export const DataOverviewError = defineComponent({
         variant: { type: String as PropType<'embedded' | 'condensed'>, default: 'embedded' },
         image: { type: String as PropType<'wrong-environment' | 'no-results-found'>, default: 'wrong-environment' },
         refreshIcon: { type: [Object, Function] as PropType<Component>, default: undefined },
-        copyIcon: { type: [Object, Function] as PropType<Component>, default: undefined },
     },
 
     setup(props) {
         const { i18n, refreshComponent: refreshCurrentComponent, translationDomain } = useCoreContext();
-        const { announce, announcement } = useLiveAnnouncement();
+        const { announcement } = useLiveAnnouncement();
         const hideIllustrations = useShouldHideIllustrations();
-        const isErrorCodeCopied = ref(false);
 
         const errorInfo = computed(
             () =>
@@ -62,11 +60,11 @@ export const DataOverviewError = defineComponent({
                   title: string;
                   event: () => void;
                   icon?: Component;
-                  variant: 'primary' | 'secondary';
+                  variant: 'primary';
               }
             | undefined
         >(() => {
-            const { onContactSupport, refreshComponent, requestId, contactSupportLabel } = errorInfo.value;
+            const { onContactSupport, refreshComponent, contactSupportLabel } = errorInfo.value;
 
             if (onContactSupport) {
                 return {
@@ -84,24 +82,6 @@ export const DataOverviewError = defineComponent({
                     event: () => refreshCurrentComponent?.(),
                     icon: props.refreshIcon,
                     variant: 'primary' as const,
-                };
-            }
-
-            if (requestId && typeof navigator !== 'undefined' && navigator.clipboard) {
-                return {
-                    title: i18n.get(
-                        getDomainTranslationKey(
-                            translationDomain,
-                            isErrorCodeCopied.value ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.errorCode'
-                        )
-                    ),
-                    event: async () => {
-                        await navigator.clipboard.writeText(requestId);
-                        isErrorCodeCopied.value = true;
-                        announce(() => i18n.get(getDomainTranslationKey(translationDomain, 'common.actions.copy.labels.done')));
-                    },
-                    icon: props.copyIcon,
-                    variant: 'secondary' as const,
                 };
             }
 

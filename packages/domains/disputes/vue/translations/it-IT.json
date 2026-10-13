@@ -3,7 +3,6 @@
     "disputes.common.actions.contactSupport.labels.reachOut": "Contatta il supporto",
     "disputes.common.actions.copy.labels.default": "Copia",
     "disputes.common.actions.copy.labels.done": "Copiato",
-    "disputes.common.actions.copy.labels.errorCode": "Copia codice di errore",
     "disputes.common.actions.refresh.labels.default": "Aggiorna",
     "disputes.common.errors.componentUnavailable": "Si è verificato un errore.",
     "disputes.common.errors.contactSupport": "Contatta il supporto per assistenza.",

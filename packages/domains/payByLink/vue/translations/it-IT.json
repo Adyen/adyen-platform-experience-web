@@ -2,7 +2,6 @@
     "payByLink.common.actions.contactSupport.labels.reachOut": "Contatta il supporto",
     "payByLink.common.actions.copy.labels.default": "Copia",
     "payByLink.common.actions.copy.labels.done": "Copiato",
-    "payByLink.common.actions.copy.labels.errorCode": "Copia codice di errore",
     "payByLink.common.actions.goBack": "Torna indietro",
     "payByLink.common.actions.refresh.labels.default": "Aggiorna",
     "payByLink.common.errors.accountConfiguration": "Sembra esserci un problema con la configurazione del tuo account.",

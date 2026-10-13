@@ -2,7 +2,6 @@
     "payByLink.common.actions.contactSupport.labels.reachOut": "Neem contact met support",
     "payByLink.common.actions.copy.labels.default": "Kopiëren",
     "payByLink.common.actions.copy.labels.done": "Gekopieerd",
-    "payByLink.common.actions.copy.labels.errorCode": "Foutcode kopiëren",
     "payByLink.common.actions.goBack": "Terug",
     "payByLink.common.actions.refresh.labels.default": "Vernieuwen",
     "payByLink.common.errors.accountConfiguration": "Er is mogelijk een probleem met de configuratie van je account.",

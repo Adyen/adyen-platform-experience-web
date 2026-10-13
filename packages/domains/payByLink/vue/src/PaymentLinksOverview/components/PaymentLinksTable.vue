@@ -10,7 +10,6 @@ import {
     useResponsiveContainer,
     useTimezoneAwareDateFormatting,
 } from '@integration-components/composables-vue';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import { isActionNeededUrgently, BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '../../../../domain/src';
 import {
@@ -172,11 +171,12 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             :image="errorInfo?.imageName ?? 'wrong-environment'"
             :variant="isMobile ? 'condensed' : 'embedded'"
             :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
         />
 
         <BentoDataGrid
             v-else
+            allow-row-clicks
+            has-resizable-columns
             outline
             :columns="columns"
             :data="gridData"
@@ -184,9 +184,7 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
             :condensed="isCondensed"
-            :has-resizable-columns="false"
             :allow-column-drag-and-drop="false"
-            :allow-row-clicks="true"
             @row-click="handleRowClick"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"
