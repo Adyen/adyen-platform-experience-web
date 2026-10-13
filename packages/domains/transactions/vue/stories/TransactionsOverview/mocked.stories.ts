@@ -21,7 +21,13 @@ const sharedArgs = { mockedApi: true } as const;
 
 export const Default: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Default',
-    args: sharedArgs,
+    args: { ...sharedArgs, appearance: { container: 'visible' } },
+    argTypes: {
+        appearance: {
+            description: 'Component appearance. Overrides the global appearance for this component.',
+            control: { type: 'object' },
+        },
+    },
 };
 
 export const SingleBalanceAccount: ElementStory<TransactionsOverviewExternalProps> = {

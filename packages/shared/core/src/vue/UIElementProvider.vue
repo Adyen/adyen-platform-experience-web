@@ -47,7 +47,10 @@ useBentoTranslationOverrides(props.bentoOverrides);
         <ConfigProvider :session="props.core.session" :type="props.componentName" :translation-domain="domainTranslations.translationDomain">
             <EventDispatcherProvider :component-name="props.componentName" :analytics-enabled="props.core.analyticsEnabled ?? true">
                 <section ref="componentRef" :class="['adyen-pe-component', props.customClassNames]" data-testid="component-root">
-                    <div class="adyen-pe-component__container">
+                    <div
+                        data-testid="component-container"
+                        :class="['adyen-pe-component__container', { 'adyen-pe-component__container--hidden': appearance?.container === 'hidden' }]"
+                    >
                         <slot />
                     </div>
                 </section>

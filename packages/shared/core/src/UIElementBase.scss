@@ -35,4 +35,15 @@
         border: style.token(border-width-s) solid style.token(color-outline-secondary);
         border-radius: style.token(spacer-040);
     }
+
+    &--hidden {
+        background: none;
+        padding: 0;
+
+        // stylelint-disable-next-line media-query-no-invalid
+        @media (min-width: #{$adyen-pe-breakpoint-sm}) {
+            border: 0;
+            border-radius: 0;
+        }
+    }
 }

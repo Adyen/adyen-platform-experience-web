@@ -19,6 +19,7 @@ const props = defineProps<{
     componentProps?: Record<string, any>;
     locale?: SupportedLocales;
     fontFamily?: string;
+    container?: Appearance['container'];
     illustrations?: Appearance['illustrations'];
     titles?: Appearance['titles'];
     theme?: ThemeMode | 'story';
@@ -46,6 +47,7 @@ const configuredThemeMode = computed<ThemeMode>(() => {
 
 const configuredAppearance = computed<Appearance>(() => ({
     ...storyCoreOptions.value.appearance,
+    ...(props.container && { container: props.container }),
     ...(props.illustrations && { illustrations: props.illustrations }),
     ...(props.titles && { titles: props.titles }),
 }));

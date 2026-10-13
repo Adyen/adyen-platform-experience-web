@@ -2,6 +2,7 @@ import type { StringWithAutocompleteOptions } from '@integration-components/util
 import type { CustomColumn } from './dataGrid';
 
 export type Appearance = {
+    container?: 'hidden' | 'visible';
     illustrations?: 'hidden' | 'visible';
     titles?: 'hidden' | 'visible';
 };

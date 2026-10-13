@@ -10,7 +10,12 @@ import {
 } from './shared/utils';
 import type { Locator, Page } from '@playwright/test';
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
-import { expectAnalyticsEvents, expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
+import {
+    expectAnalyticsEvents,
+    expectBalanceAccountPaginationReset,
+    goToStory,
+    updateStoryArgs,
+} from '@integration-components/testing/playwright/utils';
 import { BALANCE_ACCOUNTS } from '@integration-components/testing/fixtures/balanceAccounts';
 import { testBalanceAccountFilter, testDateRangeFilter } from '../../../../fixtures/integration/filters';
 import { sharedTransactionsListAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionsOverview';
@@ -585,5 +590,48 @@ test.describe('Filters', () => {
 
     test('should reset pagination when selecting another balance account', async ({ page }) => {
         await expectBalanceAccountPaginationReset({ endpointPath: '/transactions', page, variant });
+    });
+});
+
+test.describe('Appearance container', () => {
+    test.beforeEach(async ({ page }) => {
+        await page.setViewportSize({ width: 1280, height: 800 });
+        await goToStory(page, { id: STORY_ID });
+        await expect(page.getByRole('columnheader').first()).toBeVisible();
+    });
+
+    test('renders the container styles when visible', async ({ page }) => {
+        const container = page.getByTestId('component-container');
+
+        await expect(container).not.toHaveClass(/adyen-pe-component__container--hidden/);
+        await expect(container).not.toHaveCSS('padding-top', '0px');
+        await expect(container).not.toHaveCSS('border-top-width', '0px');
+        await expect(container).not.toHaveCSS('border-top-left-radius', '0px');
+        await expect(container).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+    });
+
+    test('removes background, padding, border and border radius when hidden', async ({ page }) => {
+        await updateStoryArgs(page, STORY_ID, { appearance: { container: 'hidden' } });
+
+        const container = page.getByTestId('component-container');
+
+        await expect(container).toHaveClass(/adyen-pe-component__container--hidden/);
+        await expect(container).toHaveCSS('padding-top', '0px');
+        await expect(container).toHaveCSS('padding-left', '0px');
+        await expect(container).toHaveCSS('border-top-width', '0px');
+        await expect(container).toHaveCSS('border-top-left-radius', '0px');
+        await expect(container).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+        await expect(page.getByRole('columnheader').first()).toBeVisible();
+    });
+
+    test('restores the container styles when set back to visible', async ({ page }) => {
+        await updateStoryArgs(page, STORY_ID, { appearance: { container: 'hidden' } });
+        await expect(page.getByTestId('component-container')).toHaveClass(/adyen-pe-component__container--hidden/);
+
+        await updateStoryArgs(page, STORY_ID, { appearance: { container: 'visible' } });
+
+        const container = page.getByTestId('component-container');
+        await expect(container).not.toHaveClass(/adyen-pe-component__container--hidden/);
+        await expect(container).not.toHaveCSS('padding-top', '0px');
     });
 });
