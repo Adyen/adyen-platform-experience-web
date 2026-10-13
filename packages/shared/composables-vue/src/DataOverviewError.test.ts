@@ -2,19 +2,49 @@
  * @vitest-environment jsdom
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { createApp } from 'vue';
 import type { VNode } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { DataOverviewError } from './DataOverviewError';
-import type { ErrorMessageInfo } from './getErrorMessage';
+import type { ErrorMessageInfo } from '@integration-components/core/vue';
 
-vi.mock('@integration-components/core/vue', () => ({
-    getDomainTranslationKey: (domain: string, key: string) => `${domain}.${key}`,
-    useCoreContext: vi.fn(),
-}));
+vi.mock('@integration-components/core/vue', async () => {
+    const { computed } = await import('vue');
+    const useCoreContext = vi.fn();
 
-vi.mock('@adyen/bento-vue3', () => ({
-    BentoEmptyState: { name: 'BentoEmptyState' },
-}));
+    return {
+        getDomainTranslationKey: (domain: string, key: string) => `${domain}.${key}`,
+        getErrorMessage: vi.fn(),
+        useCoreContext,
+        useShouldHideIllustrations: () => {
+            const coreContext = useCoreContext() as { appearance?: { illustrations?: string } };
+            return computed(() => coreContext.appearance?.illustrations === 'hidden');
+        },
+    };
+});
+
+vi.mock('@adyen/bento-vue3', async () => {
+    const { h } = await import('vue');
+    return {
+        BentoEmptyState: (props: { image?: string }) => h('div', { 'data-image': props.image }),
+    };
+});
+
+test('does not pass an image to data overview errors when illustrations are hidden globally', () => {
+    vi.mocked(useCoreContext).mockReturnValue({
+        i18n: { get: vi.fn() } as unknown as ReturnType<typeof useCoreContext>['i18n'],
+        appearance: { illustrations: 'hidden' },
+        translationDomain: 'transactions',
+    });
+
+    const target = document.createElement('div');
+    const app = createApp(DataOverviewError, { errorInfo: { messages: [] } });
+    app.mount(target);
+
+    expect(target.firstElementChild?.getAttribute('data-image')).toBeNull();
+
+    app.unmount();
+});
 
 describe('DataOverviewError', () => {
     const i18n = {

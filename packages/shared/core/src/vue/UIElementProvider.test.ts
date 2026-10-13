@@ -2,93 +2,173 @@
  * @vitest-environment jsdom
  */
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { createApp, h, nextTick, ref, type App } from 'vue';
-import UIElementProvider from './UIElementProvider.vue';
+import { createApp, defineComponent, h, type App } from 'vue';
+import { useCoreContext } from './Context';
+import { useConfigContext } from './ConfigContext';
 import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
-
-const mockHasPermission = ref<boolean | undefined>(undefined);
-
-vi.mock('./ConfigContext/useConfigController', () => ({
-    useConfigController: () => ({ configContextValue: {}, hasPermission: mockHasPermission }),
-}));
-
-vi.mock('./Context/CoreProvider.vue', async () => {
-    const { defineComponent } = await import('vue');
-    return {
-        default: defineComponent({
-            inheritAttrs: false,
-            setup:
-                (_, { slots }) =>
-                () =>
-                    slots.default?.(),
-        }),
-    };
-});
-
-vi.mock('./Context/eventDispatcher/EventDispatcherProvider.vue', async () => {
-    const { defineComponent } = await import('vue');
-    return {
-        default: defineComponent({
-            inheritAttrs: false,
-            setup:
-                (_, { slots }) =>
-                () =>
-                    slots.default?.(),
-        }),
-    };
-});
+import type { DomainTranslationBinding } from './Context/types';
+import type { CoreInstance } from './types';
+import styles from './UIElement.module.scss';
+import UIElementProvider from './UIElementProvider.vue';
 
 vi.mock('@adyen/bento-vue3', async () => {
-    const { h } = await import('vue');
+    const { defineComponent, h } = await import('vue');
     return {
-        BentoLoadingIndicator: () => h('span', { 'data-testid': 'bento-loading-indicator' }),
         useBentoTranslationOverrides: vi.fn(),
+        BentoButton: defineComponent({
+            name: 'BentoButton',
+            setup:
+                (_props, { slots }) =>
+                () =>
+                    h('button', slots.default?.()),
+        }),
+        BentoTypography: defineComponent({
+            name: 'BentoTypography',
+            setup:
+                (_props, { slots }) =>
+                () =>
+                    h('div', slots.default?.()),
+        }),
+        BentoLoadingIndicator: defineComponent({
+            name: 'BentoLoadingIndicator',
+            setup: () => () => h('div', { 'data-testid': 'loading-indicator', 'aria-hidden': 'true' }),
+        }),
     };
 });
 
-describe('UIElementProvider', () => {
-    let app: App | undefined;
-    let target: HTMLDivElement | undefined;
+vi.mock('./Context', () => ({
+    useCoreContext: vi.fn(),
+}));
 
-    const mount = () => {
-        target = document.createElement('div');
-        app = createApp({
+vi.mock('./ConfigContext', () => ({
+    useConfigContext: vi.fn(),
+}));
+
+vi.mock('./Context/CoreProvider.vue', () => ({
+    default: defineComponent({
+        name: 'CoreProvider',
+        setup:
+            (_props, { slots }) =>
+            () =>
+                slots.default?.(),
+    }),
+}));
+vi.mock('./ConfigContext/ConfigProvider.vue', () => ({
+    default: defineComponent({
+        name: 'ConfigProvider',
+        setup:
+            (_props, { slots }) =>
+            () =>
+                slots.default?.(),
+    }),
+}));
+vi.mock('./Context/eventDispatcher/EventDispatcherProvider.vue', () => ({
+    default: defineComponent({
+        name: 'EventDispatcherProvider',
+        setup:
+            (_props, { slots }) =>
+            () =>
+                slots.default?.(),
+    }),
+}));
+
+const CONTENT_TEST_ID = 'gated-content';
+
+const i18n = { get: vi.fn((key: string) => key) };
+
+const setContext = ({ componentUnavailable = false, permissionPending = false } = {}) => {
+    vi.mocked(useConfigContext).mockReturnValue({ componentUnavailable, permissionPending } as unknown as ReturnType<typeof useConfigContext>);
+    vi.mocked(useCoreContext).mockReturnValue({
+        i18n,
+        translationDomain: 'transactions',
+        getImageAsset: vi.fn(() => 'error.svg'),
+    } as unknown as ReturnType<typeof useCoreContext>);
+};
+
+const createCoreStub = () =>
+    ({
+        loadingContext: {},
+        getCdnConfig: vi.fn(),
+        getCdnDataset: vi.fn(),
+        getImageAsset: vi.fn(() => 'error.svg'),
+        session: {},
+        analyticsEnabled: true,
+        options: { appearance: undefined, onError: vi.fn(), environment: 'test' },
+    }) as unknown as CoreInstance;
+
+describe('UIElementProvider', () => {
+    let mounted: Array<{ app: App; target: HTMLDivElement }> = [];
+
+    afterEach(() => {
+        mounted.forEach(({ app, target }) => {
+            app.unmount();
+            target.remove();
+        });
+        mounted = [];
+    });
+
+    const mountProvider = (slotProps: Record<string, unknown> = {}) => {
+        const SlotComponent = defineComponent({
+            name: 'SlotComponent',
+            props: { onContactSupport: { type: Function, default: undefined } },
+            setup: () => () => h('div', { 'data-testid': CONTENT_TEST_ID }, 'domain component'),
+        });
+
+        const target = document.createElement('div');
+        const app = createApp({
             setup: () => () =>
                 h(
                     UIElementProvider,
-                    {
-                        core: { session: {}, options: {} } as any,
-                        bentoOverrides: {},
-                        componentName: 'transactions',
-                        refreshComponent: vi.fn(),
-                    },
-                    { default: () => h('span', { 'data-testid': 'content' }, 'content') }
+                    { core: createCoreStub(), bentoOverrides: {}, componentName: 'transactions', refreshComponent: vi.fn() },
+                    { default: () => h(SlotComponent, slotProps) }
                 ),
         });
-        app.provide(DOMAIN_TRANSLATION_BINDING_KEY, { i18n: {}, translationDomain: 'transactions' } as any);
+        app.provide(DOMAIN_TRANSLATION_BINDING_KEY, { i18n, translationDomain: 'transactions' } as unknown as DomainTranslationBinding);
         app.mount(target);
+        mounted.push({ app, target });
         return target;
     };
 
-    afterEach(() => {
-        app?.unmount();
-        target?.remove();
-        app = undefined;
-        target = undefined;
-        mockHasPermission.value = undefined;
+    test('renders the component when it is available', () => {
+        setContext({});
+
+        const target = mountProvider();
+
+        expect(target.querySelector(`[data-testid="${CONTENT_TEST_ID}"]`)).toBeTruthy();
+        expect(target.querySelector('[data-testid="error-message-display"]')).toBeNull();
     });
 
-    test('shows the loading indicator inside a busy component frame until permission is granted', async () => {
-        const root = mount();
-        const getFrame = () => root.querySelector('section.adyen-pe-component');
+    test('renders the availability error inside the component container when the component is unavailable', () => {
+        setContext({ componentUnavailable: true });
 
-        expect(getFrame()?.getAttribute('aria-busy')).toBe('true');
-        expect(getFrame()?.querySelector('.adyen-pe-component__container [data-testid="bento-loading-indicator"]')).not.toBeNull();
+        const target = mountProvider();
 
-        mockHasPermission.value = true;
-        await nextTick();
+        const errorDisplay = target.querySelector('[data-testid="error-message-display"]');
+        expect(errorDisplay).toBeTruthy();
+        expect(target.querySelector(`[data-testid="${CONTENT_TEST_ID}"]`)).toBeNull();
+        expect(errorDisplay?.closest(`.${styles.container}`)).toBe(target.querySelector(`.${styles.container}`));
+    });
 
-        expect(getFrame()?.hasAttribute('aria-busy')).toBe(false);
-        expect(getFrame()?.querySelector('.adyen-pe-component__container [data-testid="content"]')).not.toBeNull();
+    test('renders the loading state while the permission check is pending', () => {
+        setContext({ permissionPending: true });
+
+        const target = mountProvider();
+
+        expect(target.querySelector('[data-testid="loading-indicator"]')).toBeTruthy();
+        expect(target.querySelector(`[data-testid="${CONTENT_TEST_ID}"]`)).toBeNull();
+        expect(target.querySelector('[data-testid="error-message-display"]')).toBeNull();
+    });
+
+    test('forwards onContactSupport from the component to the availability error', () => {
+        setContext({ componentUnavailable: true });
+        const onContactSupport = vi.fn();
+
+        const target = mountProvider({ onContactSupport });
+        const supportButton = target.querySelector<HTMLButtonElement>('button');
+
+        expect(supportButton?.textContent).toBe('transactions.common.actions.contactSupport.labels.reachOut');
+
+        supportButton?.click();
+        expect(onContactSupport).toHaveBeenCalledOnce();
     });
 });
