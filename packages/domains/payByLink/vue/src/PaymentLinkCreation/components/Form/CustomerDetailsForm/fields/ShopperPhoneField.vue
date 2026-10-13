@@ -38,7 +38,6 @@ const parsedPhone = computed<readonly [string, string]>(() => {
     return [code ?? '', rest.join(' ')];
 });
 
-const phoneCode = computed(() => parsedPhone.value[0]);
 const phoneNumber = computed(() => parsedPhone.value[1]);
 
 // Seed the space-separated display value from a prefilled default value on first render.
@@ -77,12 +76,13 @@ const phoneDropdownProps = computed<BentoInputDropdownProps>(() => ({
 // prefix (e.g. +1 for the US and Canada) we remember the explicitly selected country id instead
 // of re-deriving it from the prefix, which would always resolve to the same (first-matching) country.
 const selectedCountryId = ref('');
+const phoneCode = computed(() => parsedPhone.value[0] || phones.value.find(phone => phone.id === selectedCountryId.value)?.prefix || '');
 
 watch(
     [phones, phoneCode],
     ([phoneList, code]) => {
         if (!phoneList.length || !code) {
-            selectedCountryId.value = '';
+            selectedCountryId.value = config.value.visible && phoneList.length === 1 ? (phoneList[0]?.id ?? '') : '';
             return;
         }
         const current = phoneList.find(p => p.id === selectedCountryId.value);
