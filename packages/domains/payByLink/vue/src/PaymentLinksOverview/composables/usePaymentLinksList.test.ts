@@ -1,4 +1,4 @@
-import { effectScope, nextTick, ref } from 'vue';
+import { effectScope, ref } from 'vue';
 import { expect, test, vi } from 'vitest';
 import { usePaymentLinksList } from './usePaymentLinksList';
 
@@ -62,7 +62,7 @@ test('uses the updated external store IDs and resets pagination when the selecte
     scope.stop();
 });
 
-test('does not report filter changes when paginating', async () => {
+test('fetches the next page when paginating', async () => {
     getPaymentLinks.mockReset();
     getPaymentLinks.mockResolvedValue({
         data: [],
@@ -71,7 +71,6 @@ test('does not report filter changes when paginating', async () => {
         },
     });
 
-    const onFiltersChanged = vi.fn();
     const scope = effectScope();
     const paymentLinks = scope.run(() =>
         usePaymentLinksList(() => ({
@@ -83,43 +82,13 @@ test('does not report filter changes when paginating', async () => {
             createdSince: '2024-01-01T00:00:00.000Z',
             createdUntil: '2024-01-31T23:59:59.999Z',
             lastRefreshTimestamp: 0,
-            onFiltersChanged,
         }))
     )!;
 
-    await vi.waitFor(() => expect(onFiltersChanged).toHaveBeenCalledTimes(1));
     await vi.waitFor(() => expect(paymentLinks.hasNext.value).toBe(true));
 
     paymentLinks.goToNextPage();
 
     await vi.waitFor(() => expect(getPaymentLinks).toHaveBeenCalledTimes(2));
-    await nextTick();
-
-    expect(onFiltersChanged).toHaveBeenCalledTimes(1);
-    scope.stop();
-});
-
-test('reports filter changes even when the request fails', async () => {
-    getPaymentLinks.mockReset();
-    getPaymentLinks.mockRejectedValue(new Error('Network error'));
-
-    const onFiltersChanged = vi.fn();
-    const scope = effectScope();
-
-    scope.run(() =>
-        usePaymentLinksList(() => ({
-            fetchEnabled: true,
-            statusGroup: 'active',
-            statuses: [],
-            linkTypes: [],
-            filterStoreIds: [],
-            createdSince: '2024-01-01T00:00:00.000Z',
-            createdUntil: '2024-01-31T23:59:59.999Z',
-            lastRefreshTimestamp: 0,
-            onFiltersChanged,
-        }))
-    );
-
-    await vi.waitFor(() => expect(onFiltersChanged).toHaveBeenCalledTimes(1));
     scope.stop();
 });

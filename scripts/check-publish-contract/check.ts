@@ -34,7 +34,6 @@ export function run() {
         console.log(`  JS exports: ${snapshot.jsExports.length}`);
         console.log(`  CommonJS exports: ${snapshot.cjsExports.length}`);
         console.log(`  Declaration exports: ${snapshot.declarationExports.length}`);
-        console.log(`  ES modules: ${snapshot.esFileCount}`);
         console.log(`  Type files: ${snapshot.typeFiles.length}`);
         process.exit(0);
     }

@@ -8,7 +8,6 @@ export const paymentLinkDetailsMeta: Meta<ElementProps<PaymentLinkDetailsExterna
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
-        hideTitle: { control: 'boolean' },
         id: { control: 'text' },
     },
     args: {

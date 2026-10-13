@@ -59,9 +59,28 @@ test.describe('Single balance currency', () => {
 
         test('should render period totals', async ({ page }) => {
             await expect(page.getByText('Period result', { exact: true })).toBeVisible();
-            await expect(page.getByText('Total incoming', { exact: true })).toBeVisible();
-            await expect(page.getByText('Total outgoing', { exact: true })).toBeVisible();
+            await expect(page.getByText('Total incoming', { exact: true }).first()).toBeVisible();
+            await expect(page.getByText('Total outgoing', { exact: true }).first()).toBeVisible();
             await expect(page.getByText('USD', { exact: true }).first()).toBeVisible();
+        });
+
+        test('should render incoming and outgoing breakdowns as tables', async ({ page }) => {
+            const incoming = page.getByRole('table', { name: 'Total incoming', exact: true });
+            const outgoing = page.getByRole('table', { name: 'Total outgoing', exact: true });
+
+            await expect(incoming).toBeVisible();
+            await expect(outgoing).toBeVisible();
+            await expect(incoming.getByRole('rowgroup').last().getByRole('row')).toHaveCount(2);
+            await expect(outgoing.getByRole('rowgroup').last().getByRole('row')).toHaveCount(1);
+            await expect(incoming.getByRole('cell', { name: 'Transfer', exact: true }).locator('..').getByRole('cell')).toHaveText([
+                'Transfer',
+                '1,333.50 USD',
+            ]);
+            await expect(incoming.getByRole('cell', { name: 'Payment', exact: true }).locator('..').getByRole('cell')).toHaveText([
+                'Payment',
+                '40.00 USD',
+            ]);
+            await expect(outgoing.getByRole('cell', { name: 'Fee', exact: true }).locator('..').getByRole('cell')).toHaveText(['Fee', '- 3.50 USD']);
         });
     });
 });

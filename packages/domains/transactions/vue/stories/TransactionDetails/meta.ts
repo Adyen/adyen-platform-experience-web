@@ -8,7 +8,6 @@ export const transactionDetailsMeta: Meta<ElementProps<TransactionDetailsExterna
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
-        hideTitle: { control: 'boolean' },
         id: { control: 'text' },
     },
     args: {

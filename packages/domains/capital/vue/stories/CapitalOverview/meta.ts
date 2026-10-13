@@ -4,7 +4,6 @@ import { CapitalOverviewElement } from '../../src';
 
 export const capitalOverviewMeta: Meta<ElementProps<typeof CapitalOverviewElement>> = {
     argTypes: {
-        hideTitle: { type: 'boolean' },
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
     },
     args: {

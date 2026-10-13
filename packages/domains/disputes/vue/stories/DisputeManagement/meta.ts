@@ -9,7 +9,6 @@ export const disputeManagementMeta: Meta<ElementProps<DisputeManagementExternalP
         id: { type: 'string' },
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
-        hideTitle: { control: 'boolean' },
     },
     args: {
         component: DisputeManagementElement,

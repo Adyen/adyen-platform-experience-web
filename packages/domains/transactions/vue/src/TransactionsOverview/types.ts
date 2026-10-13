@@ -1,6 +1,7 @@
 import type { UIElementProps } from '@integration-components/core/vue';
 import type { TransactionDetailsCustomization, TransactionsListCustomization } from '../../../domain/src';
 import type { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus } from '@integration-components/types';
+import type { PaginationProps } from '@integration-components/utils';
 
 export type { TransactionsCustomColumn, TransactionsListCustomization, TransactionsTableFields } from '../../../domain/src';
 
@@ -14,14 +15,9 @@ export interface TransactionsFilters {
     paymentPspReference?: string;
 }
 
-export interface TransactionsOverviewExternalProps extends UIElementProps {
+export interface TransactionsOverviewExternalProps extends UIElementProps, PaginationProps {
     balanceAccountId?: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: number;
-    hideTitle?: boolean;
-    showDetails?: boolean;
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
     dataCustomization?: {
         list?: TransactionsListCustomization;

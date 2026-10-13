@@ -50,7 +50,7 @@
 
 .rootXs .toolbarCompact {
     flex-shrink: 0;
-    margin-inline-start: auto;
+    margin-bottom: style.token(spacer-090);
     width: calc(#{style.token(spacer-140)} + #{style.token(spacer-110)});
 
     :global(.b-filter-bar-button__counter),

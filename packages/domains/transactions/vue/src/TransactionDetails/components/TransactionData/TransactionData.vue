@@ -18,7 +18,6 @@ const props = defineProps<{
     extraFields: Record<string, any> | undefined;
     dataCustomization?: { details?: TransactionDetailsCustomization };
     fetchingTransaction: boolean;
-    hideTitle?: boolean;
     onDismiss?: () => void;
     refreshTransaction: () => void;
     transaction: TransactionDetails;
@@ -28,7 +27,7 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
-const shouldHideTitle = computed(() => props.hideTitle || withinModal || hideTitles.value);
+const shouldHideTitle = computed(() => withinModal || hideTitles.value);
 
 const PaymentRefund = defineAsyncComponent({
     loader: () => import('../PaymentRefund/PaymentRefund.vue'),

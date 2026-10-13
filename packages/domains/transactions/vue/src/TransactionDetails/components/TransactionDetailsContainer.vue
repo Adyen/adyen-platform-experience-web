@@ -14,7 +14,6 @@ const props = defineProps<{
     dataCustomization?: { details?: TransactionDetailsCustomization };
     onContactSupport?: () => void;
     onDismiss?: () => void;
-    hideTitle?: boolean;
     fromRecordSelection?: boolean;
 }>();
 
@@ -84,7 +83,6 @@ useLandedPageEvent(
             :extra-fields="extraFields"
             :data-customization="props.dataCustomization"
             :fetching-transaction="fetchingTransaction"
-            :hide-title="props.hideTitle"
             :on-dismiss="props.onDismiss"
             :refresh-transaction="refreshTransaction"
             :transaction="transaction ?? initialTransaction"

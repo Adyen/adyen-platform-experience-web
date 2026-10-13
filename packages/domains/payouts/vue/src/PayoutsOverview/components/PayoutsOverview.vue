@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { getTimezoneAwareDateRangeQueryParams, useShouldHideTitles } from '@integration-components/composables-vue';
+import {
+    containerQueries,
+    getTimezoneAwareDateRangeQueryParams,
+    useResponsiveContainer,
+    useShouldHideTitles,
+} from '@integration-components/composables-vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
 import PayoutsFilters from './PayoutsFilters.vue';
@@ -16,11 +21,8 @@ import styles from './PayoutsOverview.module.scss';
 const props = defineProps<{
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
-    hideTitle?: boolean;
-    showDetails?: boolean;
+    preferredLimit?: PayoutsOverviewExternalProps['preferredLimit'];
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
     onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
     dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
     balanceAccounts: IBalanceAccountBase[] | undefined;
@@ -29,6 +31,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
+const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
 const initialDateRangeQueryParams = getTimezoneAwareDateRangeQueryParams({
     dateRange: quickSelectDateRanges.last30Days,
@@ -61,7 +64,6 @@ const payoutsListResult = usePayoutsList(() => ({
     createdUntil: filterParams.value.createdUntil,
     allowLimitSelection: props.allowLimitSelection,
     preferredLimit: props.preferredLimit,
-    onFiltersChanged: props.onFiltersChanged,
 }));
 
 const isLoading = computed(
@@ -73,15 +75,18 @@ const payoutsError = computed(() => payoutsListResult.error.value as Error | und
 // ── Details modal ──
 const isModalOpen = ref(false);
 const selectedPayout = ref<IPayout | null>(null);
+const selectedBalanceAccount = ref<IBalanceAccountBase | null>(null);
 
-function showModal() {
+function showModal(payout: IPayout, balanceAccount: IBalanceAccountBase | undefined) {
+    selectedPayout.value = payout;
+    selectedBalanceAccount.value = balanceAccount ?? null;
     isModalOpen.value = true;
 }
 
 function onRowClick(payout: IPayout) {
-    if (props.showDetails === false && !props.onRecordSelection) return;
-    selectedPayout.value = payout;
-    const balanceAccountId = activeBalanceAccount.value?.id ?? '';
+    const balanceAccount = activeBalanceAccount.value;
+    const balanceAccountId = balanceAccount?.id ?? '';
+    const showPayoutDetailsModal = () => showModal(payout, balanceAccount);
 
     // Notify the consumer first so they can intercept and decide whether to
     // call `showModal` themselves. If no consumer callback is provided we open
@@ -90,22 +95,23 @@ function onRowClick(payout: IPayout) {
         props.onRecordSelection({
             balanceAccountId,
             date: payout.createdAt ?? '',
-            showModal,
+            showModal: showPayoutDetailsModal,
         });
-    } else if (props.showDetails !== false) {
-        showModal();
+    } else {
+        showPayoutDetailsModal();
     }
 }
 
 function closeModal() {
     isModalOpen.value = false;
     selectedPayout.value = null;
+    selectedBalanceAccount.value = null;
 }
 </script>
 
 <template>
     <div :class="styles.root">
-        <div v-if="!props.hideTitle && !hideTitles" :class="styles.header">
+        <div v-if="!hideTitles" :class="styles.header">
             <BentoTypography variant="title">
                 {{ i18n.get('payouts.overview.title') }}
             </BentoTypography>
@@ -115,7 +121,7 @@ function closeModal() {
         </div>
 
         <div role="toolbar" :class="styles.toolbar">
-            <PayoutsFilters :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />
+            <PayoutsFilters :compact="isMobile" :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />
         </div>
 
         <PayoutsTable
@@ -123,7 +129,6 @@ function closeModal() {
             :loading="isLoading"
             :data="payoutsListResult.records.value"
             :show-pagination="true"
-            :show-details="props.showDetails"
             :error="payoutsError"
             :on-row-click="onRowClick"
             :on-contact-support="props.onContactSupport"
@@ -140,9 +145,9 @@ function closeModal() {
         />
 
         <PayoutDetailsModal
-            v-if="isModalOpen && selectedPayout && activeBalanceAccount"
-            :id="activeBalanceAccount.id"
-            :balance-account-description="activeBalanceAccount.description"
+            v-if="isModalOpen && selectedPayout && selectedBalanceAccount"
+            :id="selectedBalanceAccount.id"
+            :balance-account-description="selectedBalanceAccount.description"
             :date="selectedPayout.createdAt ?? ''"
             :data-customization="props.dataCustomization"
             :on-contact-support="props.onContactSupport"

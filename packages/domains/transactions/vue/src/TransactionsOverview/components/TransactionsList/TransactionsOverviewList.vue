@@ -18,7 +18,6 @@ const props = defineProps<{
     isLoadingBalanceAccount: boolean;
     onContactSupport?: () => void;
     onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
-    showDetails?: boolean;
     dataCustomization?: TransactionsOverviewExternalProps['dataCustomization'];
     onRowClick: (transaction: ITransaction) => void;
 }>();
@@ -125,7 +124,6 @@ onMounted(() => {
         :loading="loadingTable"
         :on-contact-support="props.onContactSupport"
         :on-row-click="props.onRowClick"
-        :show-details="props.showDetails"
         :transactions="transactionsListResult.records.value"
         :custom-columns="transactionsListResult.fields.value"
         :has-next="transactionsListResult.hasNext.value"

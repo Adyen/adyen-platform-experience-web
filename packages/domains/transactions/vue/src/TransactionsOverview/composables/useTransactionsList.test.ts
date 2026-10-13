@@ -1,4 +1,4 @@
-import { effectScope, nextTick, ref } from 'vue';
+import { effectScope, ref } from 'vue';
 import { expect, test, vi } from 'vitest';
 import { useTransactionsList } from './useTransactionsList';
 
@@ -19,7 +19,7 @@ vi.mock('@integration-components/composables-vue', () => ({
     }),
 }));
 
-test('does not report filter changes when paginating', async () => {
+test('fetches the next page when paginating', async () => {
     getTransactions.mockResolvedValue({
         data: [],
         _links: {
@@ -27,7 +27,6 @@ test('does not report filter changes when paginating', async () => {
         },
     });
 
-    const onFiltersChanged = vi.fn();
     const scope = effectScope();
 
     const transactions = scope.run(() =>
@@ -41,50 +40,13 @@ test('does not report filter changes when paginating', async () => {
                 createdSince: '2024-01-01T00:00:00.000Z',
                 createdUntil: '2024-01-31T23:59:59.999Z',
             },
-            onFiltersChanged,
         }))
     )!;
 
-    await vi.waitFor(() => expect(onFiltersChanged).toHaveBeenCalledTimes(1));
     await vi.waitFor(() => expect(transactions.hasNext.value).toBe(true));
 
     transactions.goToNextPage();
 
     await vi.waitFor(() => expect(getTransactions).toHaveBeenCalledTimes(2));
-    await nextTick();
-
-    expect(onFiltersChanged).toHaveBeenCalledTimes(1);
-    scope.stop();
-});
-
-test('does not report filter changes when fetch availability changes', async () => {
-    const fetchEnabled = ref(true);
-    const onFiltersChanged = vi.fn();
-    const scope = effectScope();
-
-    scope.run(() =>
-        useTransactionsList(() => ({
-            fetchEnabled: fetchEnabled.value,
-            filters: {
-                balanceAccountId: 'balance-account-id',
-                categories: [],
-                statuses: [],
-                currencies: [],
-                createdSince: '2024-01-01T00:00:00.000Z',
-                createdUntil: '2024-01-31T23:59:59.999Z',
-            },
-            onFiltersChanged,
-        }))
-    );
-
-    await vi.waitFor(() => expect(onFiltersChanged).toHaveBeenCalledTimes(1));
-
-    fetchEnabled.value = false;
-    await nextTick();
-
-    fetchEnabled.value = true;
-    await nextTick();
-
-    expect(onFiltersChanged).toHaveBeenCalledTimes(1);
     scope.stop();
 });

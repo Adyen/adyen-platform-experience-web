@@ -8,8 +8,7 @@ import { useTransactionsOverviewContext } from '../../composables/useTransaction
 import type { IBalanceAccountBase } from '../../types';
 import styles from './TransactionsOverview.module.scss';
 
-const props = defineProps<{
-    hideTitle?: boolean;
+defineProps<{
     balanceAccounts?: IBalanceAccountBase[];
 }>();
 
@@ -24,7 +23,7 @@ const bentoViewTabs = computed<BentoSegmentedControlItem[]>(() => viewTabs.value
 <template>
     <div>
         <div :class="styles.header">
-            <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title">
+            <BentoTypography v-if="!hideTitles" variant="title">
                 {{ i18n.get('transactions.overview.title') }}
             </BentoTypography>
             <!-- Empty div for space between -->

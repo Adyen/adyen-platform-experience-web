@@ -24,7 +24,6 @@ watch(
     <div :class="styles.root">
         <DisputeDetails
             :id="props.id"
-            :hide-title="props.hideTitle"
             :data-customization="props.dataCustomization"
             :on-contact-support="props.onContactSupport"
             :on-dispute-accept="props.onDisputeAccept"

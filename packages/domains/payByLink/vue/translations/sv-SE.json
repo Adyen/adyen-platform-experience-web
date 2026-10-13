@@ -2,7 +2,6 @@
     "payByLink.common.actions.contactSupport.labels.reachOut": "Kontakta supporten",
     "payByLink.common.actions.copy.labels.default": "Kopiera",
     "payByLink.common.actions.copy.labels.done": "Kopierat",
-    "payByLink.common.actions.copy.labels.errorCode": "Kopiera felkod",
     "payByLink.common.actions.goBack": "Tillbaka",
     "payByLink.common.actions.refresh.labels.default": "Uppdatera",
     "payByLink.common.errors.accountConfiguration": "Det verkar som att det är ett problem med din kontokonfiguration.",

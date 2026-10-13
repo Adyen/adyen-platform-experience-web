@@ -6,10 +6,8 @@ import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration
 export const reportsOverviewMeta: Meta<ElementProps<ReportsOverviewExternalProps>> = {
     title: 'Components/Reports/Reports Overview',
     argTypes: {
-        onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
-        hideTitle: { control: 'boolean' },
         allowLimitSelection: { control: 'boolean' },
     },
     args: {

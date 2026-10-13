@@ -1,14 +1,14 @@
 import { UIElement } from '@integration-components/core/vue';
 import { getExternalCapitalState, type ExternalCapitalState } from '@integration-components/capital/domain';
 import type { ExternalComponentType } from '@integration-components/types';
-import CapitalOffer from './components/CapitalOffer.vue';
+import CapitalOfferContainer from './components/CapitalOfferContainer.vue';
 import type { CapitalOfferExternalProps } from './types';
 
 export class CapitalOfferElement extends UIElement<CapitalOfferExternalProps> {
     public static readonly type: ExternalComponentType = 'capitalOffer' as const;
 
     constructor(props: CapitalOfferExternalProps) {
-        super(CapitalOffer, props, 'capitalOffer');
+        super(CapitalOfferContainer, props, 'capitalOffer');
     }
 
     public async getState(): Promise<ExternalCapitalState> {

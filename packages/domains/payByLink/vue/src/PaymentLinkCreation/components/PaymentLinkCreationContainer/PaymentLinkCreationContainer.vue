@@ -40,7 +40,6 @@ function handleShowDetails() {
             v-if="state === 'Creation'"
             :fields-config="props.fieldsConfig"
             :store-ids="props.storeIds"
-            :hide-title="props.hideTitle"
             :on-dismiss="props.onDismiss"
             :on-contact-support="props.onContactSupport"
             :embedded-in-overview="props.embeddedInOverview"

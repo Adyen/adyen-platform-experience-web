@@ -1,4 +1,5 @@
 @use '@integration-components/style';
+@use '@integration-components/style/accessibility' as accessibility;
 @use '@integration-components/style/breakpoints' as breakpoints;
 
 .breakdowns {
@@ -31,17 +32,22 @@
     overflow: hidden;
 }
 
-.breakdowns .breakdownList {
-    @include breakpoints.adyen-pe-screen-md-and-up {
-        margin-inline: unset;
-    }
+.breakdowns .breakdownTable {
+    width: 100%;
+}
+
+.visuallyHidden {
+    @include accessibility.adyen-pe-visually-hidden;
+}
+
+.amount {
+    text-align: right;
 }
 
 .amountDisplay {
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-020);
-    margin-bottom: style.token(spacer-070);
 }
 
 .amountDisplayAmount {

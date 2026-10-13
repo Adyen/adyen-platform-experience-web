@@ -1,11 +1,20 @@
 @use '@integration-components/style' as style;
+@use '@integration-components/style/accessibility' as accessibility;
 
 .root {
     --adyen-pe-data-details-padding: #{style.token(spacer-070)};
 }
 
-.breakdownList {
-    overflow: hidden;
+.root .breakdownTable {
+    width: 100%;
+}
+
+.visuallyHidden {
+    @include accessibility.adyen-pe-visually-hidden;
+}
+
+.amount {
+    text-align: right;
 }
 
 .titleContainer {

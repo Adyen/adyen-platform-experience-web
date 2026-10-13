@@ -3,15 +3,14 @@ import { computed } from 'vue';
 import ReportsOverview from './ReportsOverview.vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useBalanceAccounts } from '@integration-components/composables-vue';
+import type { ReportsOverviewExternalProps } from '../types';
 
 const props = withDefaults(
     defineProps<{
         balanceAccountId?: string;
         allowLimitSelection?: boolean;
-        preferredLimit?: number;
-        hideTitle?: boolean;
+        preferredLimit?: ReportsOverviewExternalProps['preferredLimit'];
         onContactSupport?: () => void;
-        onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
         dataCustomization?: any;
     }>(),
     {}
@@ -39,9 +38,7 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
             :balance-account-id="props.balanceAccountId"
             :allow-limit-selection="props.allowLimitSelection"
             :preferred-limit="props.preferredLimit"
-            :hide-title="props.hideTitle"
             :on-contact-support="props.onContactSupport"
-            :on-filters-changed="props.onFiltersChanged"
             :data-customization="props.dataCustomization"
             :balance-accounts="balanceAccounts"
             :is-loading-balance-account="isFetching"

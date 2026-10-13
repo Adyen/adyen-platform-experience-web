@@ -103,7 +103,6 @@ const disputesListResult = useDisputesList(() => ({
     allowLimitSelection: props.allowLimitSelection,
     preferredLimit: props.preferredLimit,
     refreshToken: refreshToken.value,
-    onFiltersChanged: props.onFiltersChanged,
 }));
 
 const isLoading = computed(
@@ -123,8 +122,13 @@ function showModal(id: string) {
 
 function onRowClick(dispute: IDisputeListItem) {
     const id = dispute.disputePspReference;
-    if (props.showDetails !== false) showModal(id);
-    props.onRecordSelection?.({ id, showModal: () => showModal(id) });
+    const showDisputeModal = () => showModal(id);
+
+    if (props.onRecordSelection) {
+        props.onRecordSelection({ id, showModal: showDisputeModal });
+    } else {
+        showDisputeModal();
+    }
 }
 
 function refreshDisputesList(gotoStatusGroup?: IDisputeStatusGroup) {
@@ -149,12 +153,9 @@ onUnmounted(() => {
 <template>
     <div :class="[styles.root, isMobile ? styles.rootXs : '']">
         <div :class="styles.header">
-            <BentoTypography v-if="!props.hideTitle && !hideTitles" el="h2" variant="title" stronger>
+            <BentoTypography v-if="!hideTitles" el="h2" variant="title" stronger>
                 {{ i18n.get('disputes.overview.common.title') }}
             </BentoTypography>
-            <div v-if="isMobile" role="toolbar" :class="[styles.toolbar, styles.toolbarCompact]">
-                <DisputesFilters :compact="true" :balance-accounts="props.balanceAccounts" :status-group="statusGroup" :on-change="onFiltersChange" />
-            </div>
         </div>
 
         <div :class="styles.tabsContainer">
@@ -166,9 +167,9 @@ onUnmounted(() => {
         <BentoCard :class="styles.card">
             <template #content>
                 <div :class="styles.content">
-                    <div v-if="!isMobile" role="toolbar" :class="styles.toolbar">
+                    <div role="toolbar" :class="[styles.toolbar, isMobile ? styles.toolbarCompact : '']">
                         <DisputesFilters
-                            :compact="false"
+                            :compact="isMobile"
                             :balance-accounts="props.balanceAccounts"
                             :status-group="statusGroup"
                             :on-change="onFiltersChange"

@@ -1,9 +1,10 @@
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
-import { isFunction } from '@integration-components/utils';
+import { usePageLimit } from '@integration-components/composables-vue/usePageLimit';
+import { DEFAULT_PAGE_LIMITS, isFunction } from '@integration-components/utils';
 import type { IPayout } from '@integration-components/types';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
+import type { PayoutsOverviewExternalProps } from '../types';
 
 interface UsePayoutsListProps {
     fetchEnabled: boolean;
@@ -11,8 +12,7 @@ interface UsePayoutsListProps {
     createdSince: string;
     createdUntil: string;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
+    preferredLimit?: PayoutsOverviewExternalProps['preferredLimit'];
 }
 
 export function usePayoutsList(props: () => UsePayoutsListProps) {
@@ -20,22 +20,11 @@ export function usePayoutsList(props: () => UsePayoutsListProps) {
     const getPayouts = computed(() => config.endpoints.getPayouts);
     const canFetch = computed(() => isFunction(getPayouts.value) && props().fetchEnabled);
 
-    const getFiltersKey = () => {
-        const { balanceAccountId, createdSince, createdUntil } = props();
-        return JSON.stringify({ balanceAccountId, createdSince, createdUntil });
-    };
-
-    watch(
-        getFiltersKey,
-        () => {
-            const { onFiltersChanged, balanceAccountId, createdSince, createdUntil } = props();
-
-            if (isFunction(onFiltersChanged)) {
-                onFiltersChanged({ balanceAccountId, createdSince, createdUntil });
-            }
-        },
-        { immediate: true }
-    );
+    const pageLimit = usePageLimit({
+        options: DEFAULT_PAGE_LIMITS,
+        preferredLimit: () => props().preferredLimit,
+        allowLimitSelection: () => props().allowLimitSelection,
+    });
 
     return useCursorPaginatedRecords<IPayout>({
         getFetchKey: () => {
@@ -65,7 +54,7 @@ export function usePayoutsList(props: () => UsePayoutsListProps) {
                 previousCursor: json?._links?.prev?.cursor,
             };
         },
-        preferredLimit: props().preferredLimit ?? DEFAULT_PAGE_LIMIT,
-        limitOptions: () => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined),
+        preferredLimit: pageLimit.initialLimit,
+        limitOptions: pageLimit.limitOptions,
     });
 }

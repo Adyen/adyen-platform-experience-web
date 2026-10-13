@@ -7,7 +7,6 @@ import { action } from 'storybook/actions';
 export const CapitalOfferMeta: Meta<ElementProps<CapitalOfferExternalProps>> = {
     title: 'Components/Capital/Capital Offer',
     argTypes: {
-        hideTitle: { control: 'boolean' },
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         onFundsRequest: enabledDisabledCallbackRadioControls('onFundsRequest'),
         onOfferDismiss: enabledDisabledCallbackRadioControls('onOfferDismiss'),

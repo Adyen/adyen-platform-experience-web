@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 import { BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import {
     useCustomColumnsData,
@@ -27,7 +26,6 @@ const props = defineProps<{
     error?: Error;
     onContactSupport?: () => void;
     onRowClick?: (payout: IPayout) => void;
-    showDetails?: boolean;
     showPagination: boolean;
     data: IPayout[] | undefined;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<PayoutsTableFields>>[];
@@ -128,6 +126,7 @@ const paginationProps = computed(() => {
         size: props.limit ?? 10,
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
+        pageSizeItems: props.limitOptions,
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
         hideFirstLastPageButtons: true,
     };
@@ -172,20 +171,19 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
             :error-message="'payouts.overview.errors.listUnavailable'"
             :on-contact-support="props.onContactSupport"
             :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
         />
 
         <BentoDataGrid
             v-else
+            allow-row-clicks
+            has-resizable-columns
             outline
             :columns="columns"
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
-            :has-resizable-columns="false"
             :allow-column-drag-and-drop="false"
-            :allow-row-clicks="true"
             @row-click="handleRowClick"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"

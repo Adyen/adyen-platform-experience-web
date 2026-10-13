@@ -1,23 +1,26 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { getTimezoneAwareDateRangeQueryParams, useShouldHideTitles } from '@integration-components/composables-vue';
+import {
+    containerQueries,
+    getTimezoneAwareDateRangeQueryParams,
+    useResponsiveContainer,
+    useShouldHideTitles,
+} from '@integration-components/composables-vue';
 import ReportsFilters from './ReportsFilters.vue';
 import ReportsTable from './ReportsTable.vue';
 import { useReportsList } from '../composables/useReportsList';
 import { EARLIEST_REPORT_SINCE_DATE } from '../../../../domain/src';
 import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
-import type { IBalanceAccountBase } from '../types';
+import type { IBalanceAccountBase, ReportsOverviewExternalProps } from '../types';
 import { BentoTypography } from '@adyen/bento-vue3';
 import styles from './ReportsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccountId?: string;
     allowLimitSelection?: boolean;
-    preferredLimit?: number;
-    hideTitle?: boolean;
+    preferredLimit?: ReportsOverviewExternalProps['preferredLimit'];
     onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
     dataCustomization?: any;
     balanceAccounts: IBalanceAccountBase[] | undefined;
     isLoadingBalanceAccount: boolean;
@@ -25,6 +28,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
+const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
 const initialDateRangeQueryParams = getTimezoneAwareDateRangeQueryParams({
     dateRange: quickSelectDateRanges.last30Days,
@@ -57,7 +61,6 @@ const reportsListResult = useReportsList(() => ({
     createdUntil: filterParams.value.createdUntil,
     allowLimitSelection: props.allowLimitSelection,
     preferredLimit: props.preferredLimit,
-    onFiltersChanged: props.onFiltersChanged,
 }));
 
 const isLoading = computed(
@@ -70,7 +73,7 @@ const listError = computed(() => reportsListResult.error.value as Error | undefi
 
 <template>
     <div :class="styles.root">
-        <div v-if="!props.hideTitle && !hideTitles" :class="styles.header">
+        <div v-if="!hideTitles" :class="styles.header">
             <BentoTypography variant="title">
                 {{ i18n.get('reports.overview.title') }}
             </BentoTypography>
@@ -79,7 +82,7 @@ const listError = computed(() => reportsListResult.error.value as Error | undefi
             </BentoTypography>
         </div>
 
-        <ReportsFilters :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />
+        <ReportsFilters :compact="isMobile" :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />
 
         <ReportsTable
             :balance-account-id="activeBalanceAccount?.id"

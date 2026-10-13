@@ -6,9 +6,6 @@ export { EMPTY_TABLE_MESSAGE_KEYS, FIELD_KEYS, type DisputesTableFields } from '
 
 export const EARLIEST_DISPUTES_SINCE_DATE = '2025-05-22T00:00:00.000Z';
 
-export const DEFAULT_PAGE_LIMIT = 10;
-export const LIMIT_OPTIONS = [10, 20];
-
 export const DEFAULT_DISPUTE_STATUS_GROUP: IDisputeStatusGroup = 'CHARGEBACKS';
 
 export const DISPUTES_TABLE_FIELDS = Object.keys(FIELD_KEYS) as DisputesTableFields[];
