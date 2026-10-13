@@ -40,7 +40,7 @@ export const DataCustomization: ElementStory<ReportsOverviewExternalProps> = {
         coreOptions: {
             translations: { en_US: CUSTOM_TRANSLATIONS },
         },
-        dataCustomization: { list: DATA_CUSTOMIZATION },
+        dataCustomization: { dataGrid: DATA_CUSTOMIZATION },
     },
     parameters: {
         msw: {

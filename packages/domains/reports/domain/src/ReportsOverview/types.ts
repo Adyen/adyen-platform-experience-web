@@ -6,13 +6,13 @@ type ReportsTableCols = 'createdAt' | 'dateAndReportType' | 'reportType' | 'repo
 
 export type ReportsTableFields = StringWithAutocompleteOptions<ReportsTableCols>;
 
-export type ReportsListCustomization = DataCustomizationObject<ReportsTableFields, IReport[], CustomDataRetrieved[]>;
+export type ReportsDataGridCustomization = DataCustomizationObject<ReportsTableFields, IReport[], CustomDataRetrieved[]>;
 
 export interface ReportsOverviewProps extends UIElementProps, PaginationProps {
     balanceAccountId?: string;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
     dataCustomization?: {
-        list?: ReportsListCustomization;
+        dataGrid?: ReportsDataGridCustomization;
     };
 }
 
