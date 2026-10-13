@@ -1,5 +1,6 @@
 import { onBeforeUnmount, onMounted, ref, shallowReactive, watch } from 'vue';
 import type { ExternalComponentType } from '@integration-components/types';
+import type { ConfigControllerSnapshot } from '../../setupConfig';
 import { createConfigController } from '../../setupConfig';
 import type { AuthSession } from '../../session/AuthSession';
 import type { ConfigContextValue } from './types';
@@ -9,17 +10,24 @@ interface UseConfigControllerOptions {
     getType: () => ExternalComponentType | undefined;
 }
 
+const updateConfigContextValueFromSnapshot = (configContextValue: Partial<ConfigContextValue>, snapshot: ConfigControllerSnapshot) => {
+    return Object.assign(configContextValue, snapshot.contextValue, {
+        componentUnavailable: snapshot.hasPermission === false,
+        permissionPending: snapshot.hasPermission === undefined,
+    });
+};
+
 export function useConfigController({ getSession, getType }: UseConfigControllerOptions) {
     let controller = createConfigController(getSession(), getType());
     let disconnect: (() => void) | undefined;
 
     const snapshot = controller.getSnapshot();
     const hasPermission = ref(snapshot.hasPermission);
-    const configContextValue = shallowReactive<ConfigContextValue>(snapshot.contextValue);
+    const configContextValue = shallowReactive<ConfigContextValue>(updateConfigContextValueFromSnapshot({}, snapshot));
 
     const updateSnapshot = () => {
         const snapshot = controller.getSnapshot();
-        Object.assign(configContextValue, snapshot.contextValue);
+        updateConfigContextValueFromSnapshot(configContextValue, snapshot);
         hasPermission.value = snapshot.hasPermission;
     };
 
