@@ -20,10 +20,17 @@ vi.mock('@adyen/bento-vue3', () => ({
     BentoTypography: { name: 'BentoTypography' },
 }));
 
-vi.mock('@integration-components/core/vue', () => ({
-    useCoreContext: vi.fn(),
-    useConfigContext: vi.fn(),
-}));
+vi.mock('@integration-components/core/vue', async () => {
+    const { computed } = await import('vue');
+    const useCoreContext = vi.fn();
+    return {
+        useCoreContext,
+        useConfigContext: vi.fn(),
+        useShouldHideIllustrations: () => computed(() => useCoreContext().appearance?.illustrations === 'hidden'),
+        useShouldHideTitles: () => computed(() => useCoreContext().appearance?.titles === 'hidden'),
+        useCondensedDataGrid: () => computed(() => useCoreContext().appearance?.dataGrid?.density === 'condensed'),
+    };
+});
 
 describe('PayoutsTable', () => {
     const i18n = {

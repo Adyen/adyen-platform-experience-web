@@ -56,3 +56,17 @@ test('exposes reactive appearance through the core context value', () => {
     expect(illustrationsHidden.value).toBe(true);
     expect(titlesHidden.value).toBe(true);
 });
+
+test('useCondensedDataGrid reflects the data grid density', () => {
+    const props = shallowReactive<CoreProviderProps>({ translationDomain: 'transactions' });
+    const coreContext = createCoreContextValue(props);
+    const condensed = computed(() => coreContext.appearance?.dataGrid?.density === 'condensed');
+
+    expect(condensed.value).toBe(false);
+
+    props.appearance = { dataGrid: { density: 'condensed' } };
+    expect(condensed.value).toBe(true);
+
+    props.appearance = { dataGrid: { density: 'default' } };
+    expect(condensed.value).toBe(false);
+});
