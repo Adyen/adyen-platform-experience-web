@@ -17,8 +17,7 @@ import { containerQueries, useResponsiveContainer } from '@integration-component
 
 const props = defineProps<{
     balanceAccountId?: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: TransactionsOverviewExternalProps['preferredLimit'];
+    pagination?: TransactionsOverviewExternalProps['pagination'];
     hideInsights?: boolean;
     onContactSupport?: () => void;
     onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];

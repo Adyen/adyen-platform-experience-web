@@ -9,12 +9,11 @@ export const paymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExt
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         storeIds: { control: 'object' },
-        preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
-        allowLimitSelection: { control: 'boolean' },
+        pagination: { control: 'object' },
     },
     args: {
         component: PaymentLinksOverviewElement,
-        allowLimitSelection: true,
+        pagination: { initialPageSize: 10, allowPageSizeSelection: true },
     },
     parameters: {
         controls: {

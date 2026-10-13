@@ -8,8 +8,7 @@ import type { ReportsOverviewExternalProps } from '../types';
 const props = withDefaults(
     defineProps<{
         balanceAccountId?: string;
-        allowLimitSelection?: boolean;
-        preferredLimit?: ReportsOverviewExternalProps['preferredLimit'];
+        pagination?: ReportsOverviewExternalProps['pagination'];
         onContactSupport?: () => void;
         dataCustomization?: any;
     }>(),
@@ -36,8 +35,7 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
         <ReportsOverview
             v-else
             :balance-account-id="props.balanceAccountId"
-            :allow-limit-selection="props.allowLimitSelection"
-            :preferred-limit="props.preferredLimit"
+            :pagination="props.pagination"
             :on-contact-support="props.onContactSupport"
             :data-customization="props.dataCustomization"
             :balance-accounts="balanceAccounts"

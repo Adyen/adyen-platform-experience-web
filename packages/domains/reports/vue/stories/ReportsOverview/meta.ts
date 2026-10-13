@@ -7,12 +7,11 @@ export const reportsOverviewMeta: Meta<ElementProps<ReportsOverviewExternalProps
     title: 'Components/Reports/Reports Overview',
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
-        allowLimitSelection: { control: 'boolean' },
+        pagination: { control: 'object' },
     },
     args: {
         component: ReportsOverviewElement,
-        allowLimitSelection: true,
+        pagination: { initialPageSize: 10, allowPageSizeSelection: true },
     },
     parameters: {
         controls: {

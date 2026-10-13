@@ -9,8 +9,7 @@ import type { PayoutsOverviewExternalProps } from '../types';
 const props = withDefaults(
     defineProps<{
         balanceAccountId?: string;
-        allowLimitSelection?: boolean;
-        preferredLimit?: PayoutsOverviewExternalProps['preferredLimit'];
+        pagination?: PayoutsOverviewExternalProps['pagination'];
         onContactSupport?: () => void;
         onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
         dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
@@ -38,8 +37,7 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
         <PayoutsOverview
             v-else
             :balance-account-id="props.balanceAccountId"
-            :allow-limit-selection="props.allowLimitSelection"
-            :preferred-limit="props.preferredLimit"
+            :pagination="props.pagination"
             :on-contact-support="props.onContactSupport"
             :on-record-selection="props.onRecordSelection"
             :data-customization="props.dataCustomization"

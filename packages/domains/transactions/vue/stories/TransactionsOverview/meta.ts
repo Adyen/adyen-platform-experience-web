@@ -8,12 +8,11 @@ export const transactionsOverviewMeta: Meta<ElementProps<TransactionsOverviewExt
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
-        preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
-        allowLimitSelection: { control: 'boolean' },
+        pagination: { control: 'object' },
     },
     args: {
         component: TransactionsOverviewElement,
-        allowLimitSelection: true,
+        pagination: { initialPageSize: 10, allowPageSizeSelection: true },
     },
     parameters: {
         controls: {

@@ -100,8 +100,7 @@ const disputesListResult = useDisputesList(() => ({
     reasonCategories: filterParams.value.reasonCategories,
     createdSince: filterParams.value.createdSince,
     createdUntil: filterParams.value.createdUntil,
-    allowLimitSelection: props.allowLimitSelection,
-    preferredLimit: props.preferredLimit,
+    pagination: props.pagination,
     refreshToken: refreshToken.value,
 }));
 
