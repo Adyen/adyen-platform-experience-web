@@ -3,7 +3,7 @@ import { DEFAULT_PAGE_LIMIT, type PaginationConfig } from '@integration-componen
 
 export interface UsePageLimitOptions<Limit extends number> {
     options: readonly [Limit, ...Limit[]];
-    pagination: () => PaginationConfig<number> | undefined;
+    pagination: () => PaginationConfig<NoInfer<Limit>> | undefined;
 }
 
 const isOption = <Limit extends number>(options: readonly Limit[], limit: number | undefined): limit is Limit => options.includes(limit as Limit);

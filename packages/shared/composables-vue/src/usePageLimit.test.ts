@@ -13,6 +13,7 @@ describe('usePageLimit', () => {
 
     test('falls back to the default page size when the initial page size is not one of the options', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        // @ts-expect-error unsupported page sizes are rejected at compile time; this covers untyped callers
         const { initialLimit } = usePageLimit({ options, pagination: () => ({ initialPageSize: 25 }) });
 
         expect(initialLimit).toBe(10);
