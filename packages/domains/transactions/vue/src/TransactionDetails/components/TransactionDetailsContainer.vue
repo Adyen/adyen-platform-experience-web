@@ -89,6 +89,7 @@ useLandedPageEvent(
         :on-contact-support="props.onContactSupport"
         :on-dismiss="props.onDismiss"
         :dismiss-label="'transactions.details.common.actions.goBack'"
+        :on-refresh="refreshTransaction"
     >
         <TransactionData
             v-if="initialTransaction"
