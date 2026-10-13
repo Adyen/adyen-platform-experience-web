@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { useLandedPageEvent, useShouldHideTitles, ErrorMessageDisplay } from '@integration-components/composables-vue';
-import { useCoreContext, useModalContext } from '@integration-components/core/vue';
-import { BentoTypography } from '@adyen/bento-vue3';
+import { useLandedPageEvent, ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
 import TransactionData from './TransactionData/TransactionData.vue';
 import TransactionSkeleton from './TransactionSkeleton/TransactionSkeleton.vue';
 import { useTransaction } from '../composables/useTransaction';
 import { normalizeCustomFields } from '@integration-components/utils';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET, sharedTransactionDetailsEventProperties } from '../../../../domain/src';
 import type { TransactionDetailsCustomization, TransactionDetails } from '../../../../domain/src';
-import styles from './TransactionDetailsContainer.module.scss';
 
 const props = defineProps<{
     id: string;
@@ -19,11 +16,13 @@ const props = defineProps<{
     fromRecordSelection?: boolean;
 }>();
 
-const { i18n } = useCoreContext();
-const { withinModal } = useModalContext();
-const hideTitles = useShouldHideTitles();
-
 const { error, fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(() => props.id);
+
+const shellState = computed<ComponentShellState>(() => {
+    if (initialTransaction.value) return 'ready';
+    if (fetchingTransaction.value) return 'loading';
+    return error.value ? 'error' : 'ready';
+});
 
 const extraFields = ref<Record<string, any> | undefined>(undefined);
 const initialTransaction = ref<TransactionDetails | undefined>(undefined);
@@ -80,18 +79,19 @@ useLandedPageEvent(
     },
     () => !!initialTransaction.value
 );
-
-const showTitle = computed(() => !withinModal && !hideTitles.value && (!!initialTransaction.value || fetchingTransaction.value));
 </script>
 
 <template>
-    <div>
-        <div v-if="showTitle" :class="styles.title">
-            <BentoTypography variant="title">
-                {{ i18n.get('transactions.details.title') }}
-            </BentoTypography>
-        </div>
-
+    <ComponentShell
+        :state="shellState"
+        :error="error"
+        :error-message="'transactions.details.errors.unavailable'"
+        :not-found-message="'transactions.details.errors.notFound'"
+        :on-contact-support="props.onContactSupport"
+        :on-dismiss="props.onDismiss"
+        :dismiss-label="'transactions.details.common.actions.goBack'"
+        :on-refresh="refreshTransaction"
+    >
         <TransactionData
             v-if="initialTransaction"
             :extra-fields="extraFields"
@@ -103,23 +103,8 @@ const showTitle = computed(() => !withinModal && !hideTitles.value && (!!initial
             :transaction-navigator="transactionNavigator"
         />
 
-        <div v-else-if="fetchingTransaction" aria-busy="true">
+        <template #loading>
             <TransactionSkeleton />
-        </div>
-
-        <div v-else-if="error">
-            <ErrorMessageDisplay
-                :error="error"
-                :error-message="'transactions.details.errors.unavailable'"
-                :not-found-message="'transactions.details.errors.notFound'"
-                :on-contact-support="props.onContactSupport"
-                :on-dismiss="props.onDismiss"
-                :dismiss-label="'transactions.details.common.actions.goBack'"
-                with-image
-                :outlined="false"
-                :absolute-position="false"
-                :with-background="false"
-            />
-        </div>
-    </div>
+        </template>
+    </ComponentShell>
 </template>
