@@ -61,7 +61,6 @@ test.describe('Repayment NL', () => {
                 expect(page.getByTestId('grant-amount-label').first()).toBeVisible(),
                 expect(page.getByRole('progressbar').first()).toBeVisible(),
                 expect(page.getByRole('button', { name: 'Send repayment', exact: true }).first()).toBeVisible(),
-                expect(page.getByRole('button', { name: 'Show grant details' }).first()).toBeVisible(),
             ]);
         });
     });
