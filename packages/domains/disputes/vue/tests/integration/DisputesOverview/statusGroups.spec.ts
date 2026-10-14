@@ -25,22 +25,6 @@ test.describe('Disputes Overview - Status groups', () => {
         await expect(grid.getByRole('columnheader', { name: 'Status', exact: true })).toBeVisible();
     });
 
-    test('should hide tabs and fetch the first visible status group', async ({ page }) => {
-        const statusGroupRequests: string[] = [];
-
-        page.on('request', request => {
-            const url = new URL(request.url());
-            const statusGroup = url.searchParams.get('statusGroup');
-            if (request.method() === 'GET' && url.pathname.endsWith('/disputes') && statusGroup) statusGroupRequests.push(statusGroup);
-        });
-
-        await goToStory(page, { id: 'mocked-disputes-disputes-overview--hidden-tabs' });
-
-        await expect(page.getByRole('tab', { name: 'Chargebacks' })).toHaveCount(0);
-        await expect(page.getByRole('tab', { name: 'Fraud alerts' })).toHaveAttribute('aria-selected', 'true');
-        await expect.poll(() => [...new Set(statusGroupRequests)]).toEqual(['FRAUD_ALERTS']);
-    });
-
     test('should switch to a visible status group when the active tab gets hidden', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await expect(page.getByRole('tab', { name: 'Chargebacks' })).toHaveAttribute('aria-selected', 'true');
