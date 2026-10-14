@@ -2290,11 +2290,11 @@ export const TRANSACTIONS: ITransaction[] = [
         },
         id: 'J268DIH2343N6B2T',
         amountBeforeDeductions: {
-            currency: 'USD',
+            currency: 'CAD',
             value: 8000,
         },
         netAmount: {
-            currency: 'USD',
+            currency: 'CAD',
             value: 8000,
         },
         category: 'Payment',
@@ -2309,11 +2309,11 @@ export const TRANSACTIONS: ITransaction[] = [
         },
         id: 'SRZ2J8AND6K2W3YF',
         amountBeforeDeductions: {
-            currency: 'USD',
+            currency: 'CAD',
             value: -39050,
         },
         netAmount: {
-            currency: 'USD',
+            currency: 'CAD',
             value: -39050,
         },
         category: 'Refund',
@@ -2345,11 +2345,11 @@ export const TRANSACTIONS: ITransaction[] = [
         },
         id: 'D92L69449PJX0KMT',
         amountBeforeDeductions: {
-            currency: 'EUR',
+            currency: 'CAD',
             value: 58700,
         },
         netAmount: {
-            currency: 'EUR',
+            currency: 'CAD',
             value: 58700,
         },
         category: 'Transfer',
