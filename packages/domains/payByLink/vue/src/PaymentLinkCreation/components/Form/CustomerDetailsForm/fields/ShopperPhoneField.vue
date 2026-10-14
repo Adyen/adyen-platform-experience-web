@@ -79,10 +79,10 @@ const selectedCountryId = ref('');
 const phoneCode = computed(() => parsedPhone.value[0] || phones.value.find(phone => phone.id === selectedCountryId.value)?.prefix || '');
 
 watch(
-    [phones, phoneCode],
-    ([phoneList, code]) => {
+    [phones, phoneCode, () => config.value.visible],
+    ([phoneList, code, visible]) => {
         if (!phoneList.length || !code) {
-            selectedCountryId.value = config.value.visible && phoneList.length === 1 ? (phoneList[0]?.id ?? '') : '';
+            selectedCountryId.value = visible && phoneList.length === 1 ? (phoneList[0]?.id ?? '') : '';
             return;
         }
         const current = phoneList.find(p => p.id === selectedCountryId.value);

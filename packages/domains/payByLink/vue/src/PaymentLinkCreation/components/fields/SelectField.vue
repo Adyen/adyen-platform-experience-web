@@ -23,9 +23,9 @@ const modelValue = computed(() => (wizard.values.value[props.name] as string | u
 const dropdownItems = computed(() => props.items.map(item => ({ label: item.name, description: item.description || undefined, value: item.id })));
 
 watch(
-    () => props.items,
-    items => {
-        if (config.value.visible && items.length === 1 && items[0] && !modelValue.value) {
+    [() => props.items, () => props.loading, () => config.value.visible],
+    ([items, loading, visible]) => {
+        if (visible && !loading && items.length === 1 && items[0] && !modelValue.value) {
             onUpdate(items[0].id);
         }
     },
