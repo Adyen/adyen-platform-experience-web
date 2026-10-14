@@ -27,16 +27,16 @@ const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
 const ALL_DISPUTE_STATUS_GROUPS = Object.keys(DISPUTE_STATUS_GROUPS) as IDisputeStatusGroup[];
 
-const DISPUTE_STATUS_GROUP_VALUES = computed(() => {
+const visibleStatusGroups = computed(() => {
     const hidden = props.tabs?.hidden;
     const visible = hidden?.length ? ALL_DISPUTE_STATUS_GROUPS.filter(group => !hidden.includes(group)) : ALL_DISPUTE_STATUS_GROUPS;
     return visible.length ? visible : ALL_DISPUTE_STATUS_GROUPS;
 });
 
 const getFallbackStatusGroup = () =>
-    DISPUTE_STATUS_GROUP_VALUES.value.includes(DEFAULT_DISPUTE_STATUS_GROUP)
+    visibleStatusGroups.value.includes(DEFAULT_DISPUTE_STATUS_GROUP)
         ? DEFAULT_DISPUTE_STATUS_GROUP
-        : (DISPUTE_STATUS_GROUP_VALUES.value[0] ?? DEFAULT_DISPUTE_STATUS_GROUP);
+        : (visibleStatusGroups.value[0] ?? DEFAULT_DISPUTE_STATUS_GROUP);
 
 const statusGroup = ref<IDisputeStatusGroup>(getFallbackStatusGroup());
 
@@ -69,15 +69,15 @@ function onFiltersChange(params: {
     filtersInitialized.value = true;
 }
 
-const statusGroupItems = computed(() => DISPUTE_STATUS_GROUP_VALUES.value.map(value => ({ label: i18n.get(DISPUTE_STATUS_GROUPS[value]), value })));
-const activeStatusGroupIndex = computed(() => DISPUTE_STATUS_GROUP_VALUES.value.indexOf(statusGroup.value));
+const statusGroupItems = computed(() => visibleStatusGroups.value.map(value => ({ label: i18n.get(DISPUTE_STATUS_GROUPS[value]), value })));
+const activeStatusGroupIndex = computed(() => visibleStatusGroups.value.indexOf(statusGroup.value));
 const statusGroupAriaLabel = computed(() => i18n.get('disputes.overview.common.filters.types.statusGroup'));
 
 function onStatusGroupChange(index: number) {
-    statusGroup.value = DISPUTE_STATUS_GROUP_VALUES.value[index] ?? getFallbackStatusGroup();
+    statusGroup.value = visibleStatusGroups.value[index] ?? getFallbackStatusGroup();
 }
 
-watch(DISPUTE_STATUS_GROUP_VALUES, groups => {
+watch(visibleStatusGroups, groups => {
     if (!groups.includes(statusGroup.value)) statusGroup.value = getFallbackStatusGroup();
 });
 
@@ -121,7 +121,7 @@ function onRowClick(dispute: IDisputeListItem) {
 }
 
 function refreshDisputesList(gotoStatusGroup?: IDisputeStatusGroup) {
-    if (gotoStatusGroup && DISPUTE_STATUS_GROUP_VALUES.value.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup.value) {
+    if (gotoStatusGroup && visibleStatusGroups.value.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup.value) {
         statusGroup.value = gotoStatusGroup;
     } else {
         refreshToken.value = performance.now();
