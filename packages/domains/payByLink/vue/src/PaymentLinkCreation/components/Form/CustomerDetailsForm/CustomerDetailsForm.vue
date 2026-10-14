@@ -71,7 +71,11 @@ function toggleSameAddress(value: boolean) {
     ADDRESS_FIELDS.forEach(field => {
         const sourceName = `${source}.${field}` as PaymentLinkFieldName;
         const targetName = `${target}.${field}` as PaymentLinkFieldName;
-        wizard.setValue(targetName, value ? wizard.getValue(sourceName) : '');
+        if (value) {
+            wizard.setValue(targetName, wizard.getValue(sourceName), wizard.displayValues.value[sourceName]);
+        } else {
+            wizard.setValue(targetName, '');
+        }
     });
     emit('update:isSameAddress', value);
 }
