@@ -10,16 +10,6 @@
     text-align: center;
 }
 
-.actions {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.actionsStacked {
-    display: block;
-}
-
 .icon {
     color: style.token(color-background-success-strong);
     margin: style.token(spacer-040);
