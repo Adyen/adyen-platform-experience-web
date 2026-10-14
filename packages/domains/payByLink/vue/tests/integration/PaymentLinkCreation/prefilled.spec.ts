@@ -44,7 +44,7 @@ test.describe('Payment link creation - Link creation success', () => {
         await expect(page.getByTestId('form-field-deliveryAddress.city').getByRole('textbox')).toHaveValue('Madrid');
         await expect(page.getByTestId('form-field-deliveryAddress.postalCode').getByRole('textbox')).toHaveValue('28001');
 
-        await expect(page.getByTestId('form-field-shopperLocale').getByRole('combobox')).toHaveText('en-US');
+        await expect(page.getByTestId('form-field-shopperLocale').getByRole('combobox')).toHaveText('English');
 
         await continueButton.click();
 
