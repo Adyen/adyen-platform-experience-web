@@ -104,5 +104,6 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
         goToNextPage: pagination.goToNextPage,
         goToPreviousPage: pagination.goToPreviousPage,
         updateLimit: pagination.updateLimit,
+        refresh: pagination.refresh,
     } as const;
 }
