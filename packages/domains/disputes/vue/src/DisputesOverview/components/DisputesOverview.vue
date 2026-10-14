@@ -77,12 +77,20 @@ const statusGroupItems = computed(() => DISPUTE_STATUS_GROUP_VALUES.value.map(va
 const activeStatusGroupIndex = computed(() => DISPUTE_STATUS_GROUP_VALUES.value.indexOf(statusGroup.value));
 const statusGroupAriaLabel = computed(() => i18n.get('disputes.overview.common.filters.types.statusGroup'));
 
-function updateStatusGroup(statusGroupToFetch: IDisputeStatusGroup) {
+function updateStatusGroup(statusGroupToFetch: IDisputeStatusGroup, { immediate = false } = {}) {
     if (statusGroupDebounceTimer) {
         clearTimeout(statusGroupDebounceTimer);
+        statusGroupDebounceTimer = undefined;
     }
 
     statusGroup.value = statusGroupToFetch;
+
+    if (immediate) {
+        fetchStatusGroup.value = statusGroupToFetch;
+        statusGroupFetchPending.value = false;
+        return;
+    }
+
     statusGroupFetchPending.value = true;
 
     statusGroupDebounceTimer = setTimeout(() => {
@@ -92,23 +100,12 @@ function updateStatusGroup(statusGroupToFetch: IDisputeStatusGroup) {
     }, 500);
 }
 
-function switchStatusGroupImmediately(statusGroupToFetch: IDisputeStatusGroup) {
-    if (statusGroupDebounceTimer) {
-        clearTimeout(statusGroupDebounceTimer);
-        statusGroupDebounceTimer = undefined;
-    }
-
-    statusGroup.value = statusGroupToFetch;
-    fetchStatusGroup.value = statusGroupToFetch;
-    statusGroupFetchPending.value = false;
-}
-
 function onStatusGroupChange(index: number) {
     updateStatusGroup(DISPUTE_STATUS_GROUP_VALUES.value[index] ?? getFallbackStatusGroup());
 }
 
 watch(DISPUTE_STATUS_GROUP_VALUES, groups => {
-    if (!groups.includes(statusGroup.value)) switchStatusGroupImmediately(getFallbackStatusGroup());
+    if (!groups.includes(statusGroup.value)) updateStatusGroup(getFallbackStatusGroup(), { immediate: true });
 });
 
 const activeBalanceAccount = computed(() => {
