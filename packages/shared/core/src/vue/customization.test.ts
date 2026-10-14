@@ -1,8 +1,12 @@
-import { computed, shallowReactive } from 'vue';
+import { computed, createApp, shallowReactive } from 'vue';
 import { expect, test } from 'vitest';
+import type { GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
+import { CORE_CONTEXT_KEY } from './Context/constants';
 import { createCoreContextValue } from './Context/createCoreContextValue';
 import type { CoreProviderProps } from './Context/types';
-import { resolveAppearance } from './customization';
+import { hasDataGridAppearance, resolveAppearance, useCondensedDataGrid } from './customization';
+
+type DataGridComponentAppearance = GlobalAppearance & WithDataGridAppearance;
 
 test.each([
     [{ illustrations: 'hidden' }, undefined, { illustrations: 'hidden' }],
@@ -28,14 +32,14 @@ test('component appearance overrides global appearance', () => {
 });
 
 test('resolves component data grid appearance', () => {
-    expect(resolveAppearance({ illustrations: 'hidden' }, { dataGrid: { density: 'condensed' } })).toEqual({
+    expect(resolveAppearance<DataGridComponentAppearance>({ illustrations: 'hidden' }, { dataGrid: { density: 'condensed' } })).toEqual({
         illustrations: 'hidden',
         dataGrid: { density: 'condensed' },
     });
 });
 
 test('ignores empty data grid appearance', () => {
-    expect(resolveAppearance(undefined, { dataGrid: {} })).toBeUndefined();
+    expect(resolveAppearance<DataGridComponentAppearance>(undefined, { dataGrid: {} })).toBeUndefined();
 });
 
 test('returns no appearance without global or component options', () => {
@@ -57,16 +61,32 @@ test('exposes reactive appearance through the core context value', () => {
     expect(titlesHidden.value).toBe(true);
 });
 
+test.each<[DataGridComponentAppearance | undefined, boolean]>([
+    [undefined, false],
+    [{ illustrations: 'hidden' }, false],
+    [{ dataGrid: {} }, true],
+    [{ titles: 'hidden', dataGrid: { density: 'condensed' } }, true],
+])('detects data grid appearance', (appearance, expected) => {
+    expect(hasDataGridAppearance(appearance)).toBe(expected);
+});
+
 test('useCondensedDataGrid reflects the data grid density', () => {
     const props = shallowReactive<CoreProviderProps>({ translationDomain: 'transactions' });
     const coreContext = createCoreContextValue(props);
-    const condensed = computed(() => coreContext.appearance?.dataGrid?.density === 'condensed');
+    const app = createApp({ render: () => null });
+    app.provide(CORE_CONTEXT_KEY, coreContext);
+    const condensed = app.runWithContext(() => useCondensedDataGrid());
 
     expect(condensed.value).toBe(false);
 
-    props.appearance = { dataGrid: { density: 'condensed' } };
+    const condensedAppearance: DataGridComponentAppearance = { dataGrid: { density: 'condensed' } };
+    props.appearance = condensedAppearance;
     expect(condensed.value).toBe(true);
 
-    props.appearance = { dataGrid: { density: 'default' } };
+    const defaultAppearance: DataGridComponentAppearance = { dataGrid: { density: 'default' } };
+    props.appearance = defaultAppearance;
+    expect(condensed.value).toBe(false);
+
+    props.appearance = { illustrations: 'hidden' };
     expect(condensed.value).toBe(false);
 });

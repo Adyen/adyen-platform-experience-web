@@ -28,6 +28,6 @@ export { default as UIElementProvider } from './UIElementProvider.vue';
 export { ComponentAvailabilityGate } from './componentAvailability/ComponentAvailabilityGate';
 export { ComponentShell } from './componentShell/ComponentShell';
 export type { ComponentShellState } from './componentShell/ComponentShell';
-export { useShouldHideIllustrations, useShouldHideTitles, useCondensedDataGrid } from './customization';
+export { hasDataGridAppearance, useShouldHideIllustrations, useShouldHideTitles, useCondensedDataGrid } from './customization';
 export { ErrorMessageDisplay } from './ErrorMessageDisplay';
 export * from './getErrorMessage';

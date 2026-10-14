@@ -56,7 +56,7 @@ export const createRefreshContext = () => {
  *     reportsOverview.update({ balanceAccountId: 'BA_NEW' });
  *     reportsOverview.unmount();
  */
-export class UIElement<Props extends Record<string, any>> {
+export class UIElement<Props extends Record<string, any> & { appearance?: GlobalAppearance }> {
     public static readonly type: ExternalComponentType;
 
     public readonly _id = `${(this.constructor as typeof UIElement)?.type}-${uuid()}`;

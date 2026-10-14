@@ -1,7 +1,7 @@
 import type { Ref } from 'vue';
 import type Localization from '../../Localization';
 import type { DevEnvironment } from '../../types';
-import type { GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
+import type { GlobalAppearance } from '@integration-components/types';
 import type { TranslationDomain, TranslationKey, TranslationOptions } from '../../translations';
 
 export type { DomainCustomTranslations, DomainTranslationKey, TranslationDomain } from '../../translations';
@@ -31,7 +31,12 @@ export type OnErrorHandler = (error: Error) => void;
 
 export interface CoreProviderProps {
     commonProps?: CommonPropsTypes;
-    appearance?: GlobalAppearance & WithDataGridAppearance;
+    /**
+     * The resolved appearance of the mounted component. Typed as the base shape because each
+     * component opts in to its own extensions (e.g. `dataGrid`); read those through type guards
+     * such as `hasDataGridAppearance`.
+     */
+    appearance?: GlobalAppearance;
     i18n?: I18n;
     translationDomain: TranslationDomain;
     loadingContext?: string;

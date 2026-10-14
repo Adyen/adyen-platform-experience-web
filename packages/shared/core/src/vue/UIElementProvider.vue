@@ -1,6 +1,6 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="TComponentAppearance extends GlobalAppearance = GlobalAppearance">
 import { computed, inject, provide, ref, useSlots } from 'vue';
-import type { CoreInstance, GlobalAppearance, WithDataGridAppearance } from './types';
+import type { CoreInstance, GlobalAppearance } from './types';
 import { useBentoTranslationOverrides } from '@adyen/bento-vue3';
 import CoreProvider from './Context/CoreProvider.vue';
 import { resolveAppearance } from './customization';
@@ -16,7 +16,7 @@ interface Props {
     core: CoreInstance;
     bentoOverrides: Record<string, string>;
     componentName: ExternalComponentType;
-    componentAppearance?: GlobalAppearance & WithDataGridAppearance;
+    componentAppearance?: TComponentAppearance;
     globalAppearance?: GlobalAppearance;
     refreshComponent: () => void;
 }
