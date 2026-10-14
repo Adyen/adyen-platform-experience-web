@@ -37,7 +37,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
         </BentoTypography>
         <BentoButtonActions
             :actions="actionButtons"
-            :layout="isMobile ? 'stacked-buttons' : 'fill-container'"
+            :layout="isMobile ? 'stacked-buttons' : 'space-between'"
             :class="[styles.actions, isMobile ? styles.actionsStacked : undefined]"
         />
     </div>
