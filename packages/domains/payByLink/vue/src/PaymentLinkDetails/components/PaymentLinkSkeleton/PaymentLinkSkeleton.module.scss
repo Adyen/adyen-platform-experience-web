@@ -1,5 +1,4 @@
 @use '@integration-components/style';
-@use '@integration-components/style/skeleton';
 
 @use '@integration-components/style/breakpoints' as *;
 
@@ -19,25 +18,16 @@
 }
 
 .status {
-    border-radius: style.token(border-radius-s);
-    height: 22px;
-    width: 60px;
-    @include skeleton.adyen-pe-skeleton-animation();
+    height: style.token(spacer-080);
+    max-width: style.token(spacer-120);
 }
 
 .amount {
-    border-radius: style.token(border-radius-s);
-    height: 34px;
-    width: 180px;
-    @include skeleton.adyen-pe-skeleton-animation();
+    max-width: calc(#{style.token(spacer-120)} * 3);
 }
 
 .expirationDate {
-    border-radius: style.token(border-radius-s);
-    height: 20px;
-    max-width: 100%;
-    width: 390px;
-    @include skeleton.adyen-pe-skeleton-animation();
+    max-width: calc(#{style.token(spacer-120)} * 6);
 }
 
 .tabsContainer {
@@ -51,10 +41,7 @@
 }
 
 .tabLabel {
-    border-radius: style.token(border-radius-s);
-    height: 26px;
-    width: 120px;
-    @include skeleton.adyen-pe-skeleton-animation();
+    max-width: calc(#{style.token(spacer-120)} * 2);
 }
 
 .fieldsContainer {
@@ -76,15 +63,9 @@
 }
 
 .fieldLabel {
-    border-radius: style.token(border-radius-s);
-    height: 20px;
-    width: 180px;
-    @include skeleton.adyen-pe-skeleton-animation();
+    max-width: calc(#{style.token(spacer-120)} * 3);
 }
 
 .fieldValue {
-    border-radius: style.token(border-radius-s);
-    height: 20px;
-    width: 300px;
-    @include skeleton.adyen-pe-skeleton-animation();
+    max-width: calc(#{style.token(spacer-120)} * 5);
 }

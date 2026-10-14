@@ -52,6 +52,7 @@ export function usePaymentLinkWizard({ i18n, steps, defaults }: UsePaymentLinkWi
     const setValue = (name: PaymentLinkFieldName, value: unknown, displayValue?: string) => {
         values.value[name] = value;
         if (displayValue !== undefined) displayValues.value[name] = displayValue;
+        else delete displayValues.value[name];
         if (errors.value[name]) {
             const next = { ...errors.value };
             delete next[name];
