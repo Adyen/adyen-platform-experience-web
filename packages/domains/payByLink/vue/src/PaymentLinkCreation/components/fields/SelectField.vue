@@ -12,6 +12,7 @@ const props = defineProps<{
     filterable?: boolean;
     placeholder?: string;
     disabled?: boolean;
+    loading?: boolean;
 }>();
 
 const wizard = useWizard();
@@ -37,12 +38,13 @@ function onUpdate(value: string | number | { value?: string | number } | Array<u
             :items="dropdownItems"
             :label="props.label"
             :placeholder="props.placeholder ?? props.label"
-            :model-value="modelValue"
+            :model-value="props.loading ? undefined : modelValue"
             :optional="!config.required"
             :readonly="config.readOnly"
             :disabled="props.disabled"
             :dynamic-filtering="props.filterable"
             :error-message="error"
+            :loading="props.loading"
             @update:model-value="onUpdate"
         />
     </FieldWrapper>
