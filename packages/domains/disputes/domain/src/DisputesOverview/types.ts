@@ -9,9 +9,15 @@ export type DisputesPageLimit = (typeof DISPUTES_PAGE_LIMITS)[number];
 export type DisputesTableFields = keyof typeof FIELD_KEYS;
 export type DisputesListCustomization = DataCustomizationObject<DisputesTableFields, IDisputeListItem[], CustomDataRetrieved[]>;
 
+export interface DisputesOverviewTabsConfig {
+    /** Tabs to hide. If every tab is hidden, the setting is ignored. */
+    hidden?: DisputeStatusGroup[];
+}
+
 export interface DisputesOverviewProps extends UIElementProps, PaginationProps<DisputesPageLimit> {
     balanceAccountId?: string;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
+    tabs?: DisputesOverviewTabsConfig;
     dataCustomization?: {
         list?: DisputesListCustomization;
         details?: DisputeDetailsCustomization;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from 'vue';
+import { ref, computed, onUnmounted, watch } from 'vue';
 import { BentoCard, BentoTab, BentoTabs, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
@@ -25,9 +25,20 @@ const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
-const DISPUTE_STATUS_GROUP_VALUES = Object.keys(DISPUTE_STATUS_GROUPS) as IDisputeStatusGroup[];
+const ALL_DISPUTE_STATUS_GROUPS = Object.keys(DISPUTE_STATUS_GROUPS) as IDisputeStatusGroup[];
 
-const statusGroup = ref<IDisputeStatusGroup>(DEFAULT_DISPUTE_STATUS_GROUP);
+const DISPUTE_STATUS_GROUP_VALUES = computed(() => {
+    const hidden = props.tabs?.hidden;
+    const visible = hidden?.length ? ALL_DISPUTE_STATUS_GROUPS.filter(group => !hidden.includes(group)) : ALL_DISPUTE_STATUS_GROUPS;
+    return visible.length ? visible : ALL_DISPUTE_STATUS_GROUPS;
+});
+
+const getFallbackStatusGroup = () =>
+    DISPUTE_STATUS_GROUP_VALUES.value.includes(DEFAULT_DISPUTE_STATUS_GROUP)
+        ? DEFAULT_DISPUTE_STATUS_GROUP
+        : (DISPUTE_STATUS_GROUP_VALUES.value[0] ?? DEFAULT_DISPUTE_STATUS_GROUP);
+
+const statusGroup = ref<IDisputeStatusGroup>(getFallbackStatusGroup());
 const fetchStatusGroup = ref<IDisputeStatusGroup>(statusGroup.value);
 const statusGroupFetchPending = ref(false);
 
@@ -62,10 +73,8 @@ function onFiltersChange(params: {
     filtersInitialized.value = true;
 }
 
-const statusGroupItems = computed(() =>
-    Object.entries(DISPUTE_STATUS_GROUPS).map(([value, labelKey]) => ({ label: i18n.get(labelKey), value: value as IDisputeStatusGroup }))
-);
-const activeStatusGroupIndex = computed(() => DISPUTE_STATUS_GROUP_VALUES.indexOf(statusGroup.value));
+const statusGroupItems = computed(() => DISPUTE_STATUS_GROUP_VALUES.value.map(value => ({ label: i18n.get(DISPUTE_STATUS_GROUPS[value]), value })));
+const activeStatusGroupIndex = computed(() => DISPUTE_STATUS_GROUP_VALUES.value.indexOf(statusGroup.value));
 const statusGroupAriaLabel = computed(() => i18n.get('disputes.overview.common.filters.types.statusGroup'));
 
 function updateStatusGroup(statusGroupToFetch: IDisputeStatusGroup) {
@@ -84,8 +93,12 @@ function updateStatusGroup(statusGroupToFetch: IDisputeStatusGroup) {
 }
 
 function onStatusGroupChange(index: number) {
-    updateStatusGroup(DISPUTE_STATUS_GROUP_VALUES[index] ?? DEFAULT_DISPUTE_STATUS_GROUP);
+    updateStatusGroup(DISPUTE_STATUS_GROUP_VALUES.value[index] ?? getFallbackStatusGroup());
 }
+
+watch(DISPUTE_STATUS_GROUP_VALUES, groups => {
+    if (!groups.includes(statusGroup.value)) updateStatusGroup(getFallbackStatusGroup());
+});
 
 const activeBalanceAccount = computed(() => {
     const id = filterParams.value.balanceAccountId;
@@ -132,7 +145,7 @@ function onRowClick(dispute: IDisputeListItem) {
 }
 
 function refreshDisputesList(gotoStatusGroup?: IDisputeStatusGroup) {
-    if (gotoStatusGroup && DISPUTE_STATUS_GROUP_VALUES.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup.value) {
+    if (gotoStatusGroup && DISPUTE_STATUS_GROUP_VALUES.value.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup.value) {
         updateStatusGroup(gotoStatusGroup);
     } else {
         refreshToken.value = performance.now();

@@ -27,6 +27,7 @@ const errorInfo = computed<ErrorMessageInfo>(() => ({
             :preferred-limit="props.preferredLimit"
             :on-contact-support="props.onContactSupport"
             :on-record-selection="props.onRecordSelection"
+            :tabs="props.tabs"
             :data-customization="props.dataCustomization"
             :balance-accounts="balanceAccounts"
             :is-loading-balance-account="isFetching"

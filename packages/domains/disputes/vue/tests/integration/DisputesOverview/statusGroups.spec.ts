@@ -44,4 +44,20 @@ test.describe('Disputes Overview - Status groups', () => {
         await page.getByRole('tab', { name: 'Ongoing & closed' }).click();
         await expect.poll(() => statusGroupRequests.filter(statusGroup => statusGroup !== 'CHARGEBACKS')).toEqual(['ONGOING_AND_CLOSED']);
     });
+
+    test('should hide tabs and fetch the first visible status group', async ({ page }) => {
+        const statusGroupRequests: string[] = [];
+
+        page.on('request', request => {
+            const url = new URL(request.url());
+            const statusGroup = url.searchParams.get('statusGroup');
+            if (request.method() === 'GET' && url.pathname.endsWith('/disputes') && statusGroup) statusGroupRequests.push(statusGroup);
+        });
+
+        await goToStory(page, { id: 'mocked-disputes-disputes-overview--hidden-tabs' });
+
+        await expect(page.getByRole('tab', { name: 'Chargebacks' })).toHaveCount(0);
+        await expect(page.getByRole('tab', { name: 'Fraud alerts' })).toHaveAttribute('aria-selected', 'true');
+        await expect.poll(() => statusGroupRequests).toEqual(['FRAUD_ALERTS']);
+    });
 });
