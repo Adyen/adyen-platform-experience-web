@@ -427,6 +427,7 @@ const insightsFilterConfig = computed<BentoFilterBarModel>(() => {
             label: i18n.get('transactions.overview.filters.types.currency.label'),
             type: BentoFilterItemType.SELECT_CURRENCY,
             defaultValue: insightsCurrency.value,
+            visible: !props.compact,
             options: {
                 listboxItems: availableCurrencies.value.map(c => ({ label: c, value: c })),
             },
