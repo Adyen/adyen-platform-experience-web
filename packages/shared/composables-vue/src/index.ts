@@ -23,6 +23,7 @@ export type { ComponentShellState } from '@integration-components/core/vue';
 export { ComponentAvailabilityGate } from '@integration-components/core/vue';
 export { useShouldHideIllustrations, useShouldHideTitles } from '@integration-components/core/vue';
 export { CopyText } from './CopyText';
+export { default as ResponsiveButtonActions } from './ResponsiveButtonActions.vue';
 
 export { default as useTimezoneAwareDateFormatting } from './useTimezoneAwareDateFormatting';
 
