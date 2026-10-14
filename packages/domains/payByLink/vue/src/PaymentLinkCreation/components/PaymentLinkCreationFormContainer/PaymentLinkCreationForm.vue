@@ -12,7 +12,7 @@ import {
     BentoTypography,
     type BentoButtonActionsList,
 } from '@adyen/bento-vue3';
-import { useShouldHideTitles } from '@integration-components/composables-vue';
+import { containerQueries, useResponsiveContainer, useShouldHideTitles } from '@integration-components/composables-vue';
 import type { PaymentLinkCreationProps, PaymentLinkSettingsItem } from '../../../../../domain/src';
 import { usePaymentLinkFormData } from './usePaymentLinkFormData';
 import { usePaymentLinkWizard } from './usePaymentLinkWizard';
@@ -31,6 +31,7 @@ const emit = defineEmits<{ 'payment-link-created': [data: any] }>();
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
+const isMobile = useResponsiveContainer(containerQueries.down.xs);
 const TERMS_AND_CONDITIONS_SETTINGS_ITEMS: PaymentLinkSettingsItem[] = ['termsAndConditions'];
 
 const data = usePaymentLinkFormData(() => ({ storeIds: props.storeIds, fieldsConfig: props.fieldsConfig }));
@@ -266,9 +267,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
                     </template>
                 </BentoAlert>
 
-                <template #actions-right>
-                    <BentoButtonActions :actions="buttonActions" layout="buttons-end" />
-                </template>
+                <BentoButtonActions :actions="buttonActions" :layout="isMobile ? 'stacked' : 'buttons-end'" />
             </BentoFormLayout>
         </template>
     </div>
