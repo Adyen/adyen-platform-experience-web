@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onUnmounted, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { BentoCard, BentoTab, BentoTabs, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
@@ -39,10 +39,6 @@ const getFallbackStatusGroup = () =>
         : (DISPUTE_STATUS_GROUP_VALUES.value[0] ?? DEFAULT_DISPUTE_STATUS_GROUP);
 
 const statusGroup = ref<IDisputeStatusGroup>(getFallbackStatusGroup());
-const fetchStatusGroup = ref<IDisputeStatusGroup>(statusGroup.value);
-const statusGroupFetchPending = ref(false);
-
-let statusGroupDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 
 const refreshToken = ref(0);
 const selectedDisputeId = ref<string | undefined>(undefined);
@@ -77,35 +73,12 @@ const statusGroupItems = computed(() => DISPUTE_STATUS_GROUP_VALUES.value.map(va
 const activeStatusGroupIndex = computed(() => DISPUTE_STATUS_GROUP_VALUES.value.indexOf(statusGroup.value));
 const statusGroupAriaLabel = computed(() => i18n.get('disputes.overview.common.filters.types.statusGroup'));
 
-function updateStatusGroup(statusGroupToFetch: IDisputeStatusGroup, { immediate = false } = {}) {
-    if (statusGroupDebounceTimer) {
-        clearTimeout(statusGroupDebounceTimer);
-        statusGroupDebounceTimer = undefined;
-    }
-
-    statusGroup.value = statusGroupToFetch;
-
-    if (immediate) {
-        fetchStatusGroup.value = statusGroupToFetch;
-        statusGroupFetchPending.value = false;
-        return;
-    }
-
-    statusGroupFetchPending.value = true;
-
-    statusGroupDebounceTimer = setTimeout(() => {
-        fetchStatusGroup.value = statusGroupToFetch;
-        statusGroupFetchPending.value = false;
-        statusGroupDebounceTimer = undefined;
-    }, 500);
-}
-
 function onStatusGroupChange(index: number) {
-    updateStatusGroup(DISPUTE_STATUS_GROUP_VALUES.value[index] ?? getFallbackStatusGroup());
+    statusGroup.value = DISPUTE_STATUS_GROUP_VALUES.value[index] ?? getFallbackStatusGroup();
 }
 
 watch(DISPUTE_STATUS_GROUP_VALUES, groups => {
-    if (!groups.includes(statusGroup.value)) updateStatusGroup(getFallbackStatusGroup(), { immediate: true });
+    if (!groups.includes(statusGroup.value)) statusGroup.value = getFallbackStatusGroup();
 });
 
 const activeBalanceAccount = computed(() => {
@@ -114,9 +87,9 @@ const activeBalanceAccount = computed(() => {
 });
 
 const disputesListResult = useDisputesList(() => ({
-    fetchEnabled: filtersInitialized.value && !statusGroupFetchPending.value,
+    fetchEnabled: filtersInitialized.value,
     balanceAccountId: filterParams.value.balanceAccountId,
-    statusGroup: fetchStatusGroup.value,
+    statusGroup: statusGroup.value,
     schemeCodes: filterParams.value.schemeCodes,
     reasonCategories: filterParams.value.reasonCategories,
     createdSince: filterParams.value.createdSince,
@@ -127,12 +100,7 @@ const disputesListResult = useDisputesList(() => ({
 }));
 
 const isLoading = computed(
-    () =>
-        statusGroupFetchPending.value ||
-        disputesListResult.fetching.value ||
-        props.isLoadingBalanceAccount ||
-        !props.balanceAccounts ||
-        !filtersInitialized.value
+    () => disputesListResult.fetching.value || props.isLoadingBalanceAccount || !props.balanceAccounts || !filtersInitialized.value
 );
 
 const disputesError = computed(() => disputesListResult.error.value as Error | undefined);
@@ -154,7 +122,7 @@ function onRowClick(dispute: IDisputeListItem) {
 
 function refreshDisputesList(gotoStatusGroup?: IDisputeStatusGroup) {
     if (gotoStatusGroup && DISPUTE_STATUS_GROUP_VALUES.value.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup.value) {
-        updateStatusGroup(gotoStatusGroup);
+        statusGroup.value = gotoStatusGroup;
     } else {
         refreshToken.value = performance.now();
     }
@@ -163,12 +131,6 @@ function refreshDisputesList(gotoStatusGroup?: IDisputeStatusGroup) {
 function closeModal() {
     selectedDisputeId.value = undefined;
 }
-
-onUnmounted(() => {
-    if (statusGroupDebounceTimer) {
-        clearTimeout(statusGroupDebounceTimer);
-    }
-});
 </script>
 
 <template>
