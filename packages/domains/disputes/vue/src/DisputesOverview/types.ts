@@ -9,7 +9,7 @@ export type { DisputesListCustomization };
 
 export type DisputesOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
 
-export interface DisputesOverviewExternalProps extends UIElementProps<WithDataGridAppearance>, PaginationProps<DisputesPageLimit> {
+export interface DisputesOverviewExternalProps extends UIElementProps<DisputesOverviewAppearance>, PaginationProps<DisputesPageLimit> {
     balanceAccountId?: string;
     onContactSupport?: () => void;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;

@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="TAppearanceExtension extends object = object">
+<script setup lang="ts" generic="TComponentAppearance extends GlobalAppearance = GlobalAppearance">
 import { computed, inject, provide, ref, useSlots } from 'vue';
 import type { CoreInstance, GlobalAppearance } from './types';
 import { useBentoTranslationOverrides } from '@adyen/bento-vue3';
@@ -16,7 +16,7 @@ interface Props {
     core: CoreInstance;
     bentoOverrides: Record<string, string>;
     componentName: ExternalComponentType;
-    componentAppearance?: GlobalAppearance & TAppearanceExtension;
+    componentAppearance?: TComponentAppearance;
     globalAppearance?: GlobalAppearance;
     refreshComponent: () => void;
 }

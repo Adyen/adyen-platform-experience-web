@@ -32,14 +32,38 @@ test('component appearance overrides global appearance', () => {
 });
 
 test('resolves component data grid appearance', () => {
-    expect(resolveAppearance<WithDataGridAppearance>({ illustrations: 'hidden' }, { dataGrid: { density: 'condensed' } })).toEqual({
+    expect(resolveAppearance<DataGridComponentAppearance>({ illustrations: 'hidden' }, { dataGrid: { density: 'condensed' } })).toEqual({
         illustrations: 'hidden',
         dataGrid: { density: 'condensed' },
     });
 });
 
-test('ignores empty data grid appearance', () => {
-    expect(resolveAppearance<WithDataGridAppearance>(undefined, { dataGrid: {} })).toBeUndefined();
+test('passes any component appearance extension through as-is', () => {
+    type FutureExtensionAppearance = GlobalAppearance & { filters?: { layout?: 'inline' | 'stacked' } };
+
+    expect(resolveAppearance<FutureExtensionAppearance>({ titles: 'hidden' }, { filters: { layout: 'stacked' } })).toEqual({
+        titles: 'hidden',
+        filters: { layout: 'stacked' },
+    });
+    expect(resolveAppearance<DataGridComponentAppearance>(undefined, { dataGrid: {} })).toEqual({ dataGrid: {} });
+});
+
+test('skips undefined component appearance extensions', () => {
+    expect(resolveAppearance<DataGridComponentAppearance>(undefined, { dataGrid: undefined })).toBeUndefined();
+});
+
+test('never copies extensions from the global appearance', () => {
+    // Simulates an untyped integration passing a component-only field through Core.
+    const globalWithExtension: DataGridComponentAppearance = { titles: 'hidden', dataGrid: { density: 'condensed' } };
+
+    expect(resolveAppearance(globalWithExtension, undefined)).toEqual({ titles: 'hidden' });
+});
+
+test('falls back to global appearance when a component field is explicitly undefined', () => {
+    expect(resolveAppearance({ titles: 'hidden', illustrations: 'hidden' }, { titles: undefined, illustrations: 'visible' })).toEqual({
+        titles: 'hidden',
+        illustrations: 'visible',
+    });
 });
 
 test('returns no appearance without global or component options', () => {

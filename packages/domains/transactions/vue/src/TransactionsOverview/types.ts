@@ -25,7 +25,7 @@ export interface TransactionsFilters {
     paymentPspReference?: string;
 }
 
-export interface TransactionsOverviewExternalProps extends UIElementProps<WithDataGridAppearance>, PaginationProps {
+export interface TransactionsOverviewExternalProps extends UIElementProps<TransactionsOverviewAppearance>, PaginationProps {
     balanceAccountId?: string;
     onContactSupport?: () => void;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
