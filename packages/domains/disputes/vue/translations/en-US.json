@@ -3,7 +3,6 @@
     "disputes.common.actions.contactSupport.labels.reachOut": "Reach out to support",
     "disputes.common.actions.copy.labels.default": "Copy",
     "disputes.common.actions.copy.labels.done": "Copied",
-    "disputes.common.actions.copy.labels.errorCode": "Copy error code",
     "disputes.common.actions.refresh.labels.default": "Refresh",
     "disputes.common.errors.componentUnavailable": "Something went wrong.",
     "disputes.common.errors.contactSupport": "Contact support for help.",

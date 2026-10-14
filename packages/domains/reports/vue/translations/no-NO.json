@@ -3,7 +3,6 @@
     "reports.common.actions.contactSupport.labels.reachOut": "Ta kontakt med brukerstøtten",
     "reports.common.actions.copy.labels.default": "Kopier",
     "reports.common.actions.copy.labels.done": "Kopiert",
-    "reports.common.actions.copy.labels.errorCode": "Kopier feilkode",
     "reports.common.actions.refresh.labels.default": "Oppdater",
     "reports.common.errors.componentUnavailable": "Noe gikk galt.",
     "reports.common.errors.contactSupport": "Kontakt brukerstøtten for å få hjelp.",

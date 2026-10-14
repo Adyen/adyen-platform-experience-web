@@ -3,7 +3,6 @@
     "payouts.common.actions.contactSupport.labels.reachOut": "Ræk ud efter støtte",
     "payouts.common.actions.copy.labels.default": "Kopiér",
     "payouts.common.actions.copy.labels.done": "Kopieret",
-    "payouts.common.actions.copy.labels.errorCode": "Kopiér fejlkode",
     "payouts.common.actions.refresh.labels.default": "Opdater",
     "payouts.common.errors.componentUnavailable": "Noget gik galt.",
     "payouts.common.errors.contactSupport": "Kontakt support for at få hjælp.",
