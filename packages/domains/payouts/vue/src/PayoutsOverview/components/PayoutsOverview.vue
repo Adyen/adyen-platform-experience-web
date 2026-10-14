@@ -130,6 +130,7 @@ function closeModal() {
             :error="payoutsError"
             :on-row-click="onRowClick"
             :on-contact-support="props.onContactSupport"
+            :on-refresh="payoutsListResult.refresh"
             :custom-columns="props.dataCustomization?.dataGrid?.fields"
             :on-data-retrieve="props.dataCustomization?.dataGrid?.onDataRetrieve"
             :has-next="payoutsListResult.hasNext.value"

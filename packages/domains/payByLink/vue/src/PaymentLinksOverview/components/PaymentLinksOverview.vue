@@ -283,6 +283,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
             :error="paymentLinksError"
             :loading="statusGroupFetchPending || paymentLinksListResult.fetching.value || props.isFiltersLoading"
             :on-contact-support="props.onContactSupport"
+            :on-refresh="paymentLinksListResult.refresh"
             :on-row-click="onRowClick"
             :show-pagination="true"
             :payment-links="paymentLinksListResult.records.value"
