@@ -3,7 +3,6 @@
     "reports.common.actions.contactSupport.labels.reachOut": "Kontakta supporten",
     "reports.common.actions.copy.labels.default": "Kopiera",
     "reports.common.actions.copy.labels.done": "Kopierat",
-    "reports.common.actions.copy.labels.errorCode": "Kopiera felkod",
     "reports.common.actions.refresh.labels.default": "Uppdatera",
     "reports.common.errors.componentUnavailable": "Något gick fel.",
     "reports.common.errors.contactSupport": "Kontakta support för hjälp.",

@@ -14,10 +14,12 @@ import {
 
 const STORY_ID = 'mocked-capital-capital-overview--eligible';
 
+const getOfferButton = (page: Page) => page.getByTestId('capital-header').getByRole('button', { name: 'Request a new loan' });
+
 const getOfferModal = (page: Page) => page.getByRole('dialog');
 
 const openOfferAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
-    await page.getByRole('button', { name: 'Request a new loan' }).click();
+    await getOfferButton(page).click();
     await expectAnalyticsEvents(
         analyticsEvents,
         [
@@ -58,7 +60,7 @@ test.describe('Eligible', () => {
         await Promise.all([
             expect(page.getByText('Business financing', { exact: true })).toBeVisible(),
             expect(page.getByText('You are now eligible to request a new loan up to €25,000')).toBeVisible(),
-            expect(page.getByRole('button', { name: 'Request a new loan' })).toBeVisible(),
+            expect(getOfferButton(page)).toBeVisible(),
         ]);
     });
 

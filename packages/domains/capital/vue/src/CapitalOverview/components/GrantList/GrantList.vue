@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { BentoList, BentoListItem, BentoLoadingIndicator, BentoSegmentedControl, type BentoSegmentedControlItem } from '@adyen/bento-vue3';
+import { BentoLoadingIndicator, BentoSegmentedControl, type BentoSegmentedControlItem } from '@adyen/bento-vue3';
 import { getGroupedGrants, getHasGrantGroups, type EnhancedCapitalState } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
 import GrantItem from '../GrantItem/GrantItem.vue';
-import styles from './GrantList.module.scss';
 import { useAdjustedGrants } from '../../composables/useAdjustedGrants';
 import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
 import { IGrant } from '@integration-components/types';
+import styles from './GrantList.module.scss';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
@@ -44,22 +44,20 @@ const displayedGrants = computed(() => {
 <template>
     <BentoLoadingIndicator v-if="isLoading" />
     <CapitalError v-else-if="error" :error="error" :on-contact-support="props.onContactSupport" />
-    <div v-else :class="styles.root">
+    <template v-else>
         <CapitalError v-if="!grants?.length && !dynamicOfferConfig" empty-grant-offer />
-        <template v-else>
+        <template v-else-if="grants?.length">
             <BentoSegmentedControl
                 v-if="hasGrantGroups"
                 v-model="selectedGrantGroup"
                 :aria-label="i18n.get('capital.overview.grants.list.tabs.a11y.label')"
                 :items="grantGroupItems"
             />
-            <BentoList :class="styles.items">
-                <BentoListItem v-for="grant in displayedGrants" :key="grant.id">
-                    <template #content>
-                        <GrantItem :grant="grant" />
-                    </template>
-                </BentoListItem>
-            </BentoList>
+            <ul :class="styles.list">
+                <li v-for="grant in displayedGrants" :key="grant.id" :class="styles.listItem">
+                    <GrantItem :grant="grant" />
+                </li>
+            </ul>
         </template>
-    </div>
+    </template>
 </template>
