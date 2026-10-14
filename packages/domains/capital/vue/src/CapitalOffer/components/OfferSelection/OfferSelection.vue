@@ -137,10 +137,10 @@ const actions = computed<BentoButtonActionsList>(() => {
         <CapitalError
             v-if="offersError || createOfferError"
             :error="createOfferError ?? offersError"
-            :on-back="props.onDismiss"
+            :on-dismiss="props.onDismiss"
             :on-contact-support="props.onContactSupport"
         />
-        <EmptyOfferState v-else-if="hasNoOffers" />
+        <EmptyOfferState v-else-if="hasNoOffers" :on-dismiss="props.onDismiss" />
         <template v-else-if="amountValue">
             <AmountSelector
                 :amount-value="amountValue"

@@ -8,7 +8,7 @@ import EmptyState from './EmptyState/EmptyState.vue';
 
 const props = defineProps<{
     error: AdyenErrorResponse | undefined;
-    onBack?: () => void;
+    onDismiss?: () => void;
     onContactSupport?: () => void;
 }>();
 
@@ -40,8 +40,8 @@ const actions = computed<BentoButtonActionsList>(() => {
         });
     }
 
-    if (props.onBack) {
-        actionsList.push({ title: i18n.get('capital.common.actions.goBack'), event: props.onBack, variant: 'secondary' });
+    if (props.onDismiss) {
+        actionsList.push({ title: i18n.get('capital.common.actions.goBack'), event: props.onDismiss, variant: 'secondary' });
     }
 
     return actionsList;

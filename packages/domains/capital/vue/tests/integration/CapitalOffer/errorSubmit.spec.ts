@@ -14,14 +14,14 @@ test.describe('Error - Submit', () => {
         await expect(page.getByText('Something went wrong.')).toBeVisible();
         await expect(page.getByText("We couldn't load financial offers.")).toBeVisible();
         await expect(page.getByText('Try refreshing the page or come back later.')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();
     });
+});
 
-    test('should go back to offer selection screen when back button is clicked', async ({ page }) => {
-        await page.getByRole('button', { name: 'Go back' }).click();
-        await expect(page.getByText('Business financing request')).toBeVisible();
-        await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
-        await expect(page.getByText('Select the amount for the loan')).toBeVisible();
+test.describe('onDismiss prop', () => {
+    test('should render dismiss button when prop is set', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID, args: { onDismiss: 'Enabled' } });
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 });
