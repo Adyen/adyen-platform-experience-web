@@ -71,6 +71,7 @@ function onPresetUpdate(value: string | number | { value?: string | number } | A
     if (Array.isArray(value)) return;
     const next = typeof value === 'object' && value !== null ? value.value : value;
     const stringValue = next == null ? '' : String(next);
+    if (selection.value === stringValue) return;
     selection.value = stringValue;
     if (stringValue && stringValue !== FLEXIBLE_VALIDITY_ID) {
         const [qty, durationUnit] = stringValue.split(' ');
