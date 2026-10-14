@@ -92,12 +92,23 @@ function updateStatusGroup(statusGroupToFetch: IDisputeStatusGroup) {
     }, 500);
 }
 
+function switchStatusGroupImmediately(statusGroupToFetch: IDisputeStatusGroup) {
+    if (statusGroupDebounceTimer) {
+        clearTimeout(statusGroupDebounceTimer);
+        statusGroupDebounceTimer = undefined;
+    }
+
+    statusGroup.value = statusGroupToFetch;
+    fetchStatusGroup.value = statusGroupToFetch;
+    statusGroupFetchPending.value = false;
+}
+
 function onStatusGroupChange(index: number) {
     updateStatusGroup(DISPUTE_STATUS_GROUP_VALUES.value[index] ?? getFallbackStatusGroup());
 }
 
 watch(DISPUTE_STATUS_GROUP_VALUES, groups => {
-    if (!groups.includes(statusGroup.value)) updateStatusGroup(getFallbackStatusGroup());
+    if (!groups.includes(statusGroup.value)) switchStatusGroupImmediately(getFallbackStatusGroup());
 });
 
 const activeBalanceAccount = computed(() => {

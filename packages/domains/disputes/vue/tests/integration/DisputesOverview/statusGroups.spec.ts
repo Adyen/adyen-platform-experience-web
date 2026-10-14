@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { goToStory, updateStoryArgs } from '@integration-components/testing/playwright/utils';
 
 const STORY_ID = 'mocked-disputes-disputes-overview--default';
 
@@ -58,6 +58,27 @@ test.describe('Disputes Overview - Status groups', () => {
 
         await expect(page.getByRole('tab', { name: 'Chargebacks' })).toHaveCount(0);
         await expect(page.getByRole('tab', { name: 'Fraud alerts' })).toHaveAttribute('aria-selected', 'true');
-        await expect.poll(() => statusGroupRequests).toEqual(['FRAUD_ALERTS']);
+        await expect.poll(() => [...new Set(statusGroupRequests)]).toEqual(['FRAUD_ALERTS']);
+    });
+
+    test('should immediately switch to a visible status group when the active tab gets hidden', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID });
+        await expect(page.getByRole('tab', { name: 'Chargebacks' })).toHaveAttribute('aria-selected', 'true');
+        await page.waitForLoadState('networkidle');
+
+        const statusGroupRequests: string[] = [];
+
+        page.on('request', request => {
+            const url = new URL(request.url());
+            const statusGroup = url.searchParams.get('statusGroup');
+            if (request.method() === 'GET' && url.pathname.endsWith('/disputes') && statusGroup) statusGroupRequests.push(statusGroup);
+        });
+
+        await updateStoryArgs(page, STORY_ID, { tabs: { hidden: ['CHARGEBACKS'] } });
+
+        await expect(page.getByRole('tab', { name: 'Chargebacks' })).toHaveCount(0);
+        await expect(page.getByRole('tab', { name: 'Fraud alerts' })).toHaveAttribute('aria-selected', 'true');
+        // the status group debounce is 500ms, so the request must not wait for it
+        await expect.poll(() => [...new Set(statusGroupRequests)], { timeout: 400 }).toEqual(['FRAUD_ALERTS']);
     });
 });
