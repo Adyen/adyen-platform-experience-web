@@ -32,14 +32,14 @@ test('component appearance overrides global appearance', () => {
 });
 
 test('resolves component data grid appearance', () => {
-    expect(resolveAppearance<DataGridComponentAppearance>({ illustrations: 'hidden' }, { dataGrid: { density: 'condensed' } })).toEqual({
+    expect(resolveAppearance<WithDataGridAppearance>({ illustrations: 'hidden' }, { dataGrid: { density: 'condensed' } })).toEqual({
         illustrations: 'hidden',
         dataGrid: { density: 'condensed' },
     });
 });
 
 test('ignores empty data grid appearance', () => {
-    expect(resolveAppearance<DataGridComponentAppearance>(undefined, { dataGrid: {} })).toBeUndefined();
+    expect(resolveAppearance<WithDataGridAppearance>(undefined, { dataGrid: {} })).toBeUndefined();
 });
 
 test('returns no appearance without global or component options', () => {

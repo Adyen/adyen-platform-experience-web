@@ -20,9 +20,9 @@ export type {
 };
 export type { SessionObject, SessionRequest } from '../ConfigContext.types';
 
-export interface UIElementProps {
+export interface UIElementProps<TAppearanceExtension extends object = object> {
     core: CoreInstance;
-    appearance?: GlobalAppearance;
+    appearance?: GlobalAppearance & TAppearanceExtension;
 }
 
 export interface CoreInstance {

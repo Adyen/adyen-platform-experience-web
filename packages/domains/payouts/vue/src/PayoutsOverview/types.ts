@@ -7,8 +7,7 @@ export type PayoutsOverviewAppearance = GlobalAppearance & WithDataGridAppearanc
 
 // ── Component prop types ──
 
-export interface PayoutsOverviewExternalProps extends UIElementProps, PaginationProps {
-    appearance?: PayoutsOverviewAppearance;
+export interface PayoutsOverviewExternalProps extends UIElementProps<WithDataGridAppearance>, PaginationProps {
     balanceAccountId?: string;
     onContactSupport?: () => void;
     onRecordSelection?: (selection: { balanceAccountId: string; date: string; showModal: () => void }) => any;

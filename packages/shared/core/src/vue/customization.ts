@@ -6,9 +6,9 @@ export const hasDataGridAppearance = <TAppearance extends GlobalAppearance>(
     appearance: TAppearance | undefined
 ): appearance is TAppearance & WithDataGridAppearance => !!appearance && 'dataGrid' in appearance;
 
-export const resolveAppearance = <TComponentAppearance extends GlobalAppearance = GlobalAppearance>(
+export const resolveAppearance = <TAppearanceExtension extends object = object>(
     globalAppearance: GlobalAppearance | undefined,
-    componentAppearance: TComponentAppearance | undefined
+    componentAppearance: (GlobalAppearance & TAppearanceExtension) | undefined
 ): GlobalAppearance | undefined => {
     const illustrations = componentAppearance?.illustrations ?? globalAppearance?.illustrations;
     const titles = componentAppearance?.titles ?? globalAppearance?.titles;

@@ -18,7 +18,7 @@ export interface DataCustomizationList<Fields extends string> {
 export type ReportsOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
 
 // ── Component prop types ──
-export type ReportsOverviewExternalProps = Omit<ReportsOverviewProps, 'ref'> & UIElementProps & { appearance?: ReportsOverviewAppearance };
+export type ReportsOverviewExternalProps = Omit<ReportsOverviewProps, 'ref'> & UIElementProps<WithDataGridAppearance>;
 
 export type { IBalanceAccountBase };
 
