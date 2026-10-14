@@ -40,6 +40,7 @@ const shouldHide = computed(() => !isFetching.value && localeItems.value.length 
         name="shopperLocale"
         :label="i18n.get('payByLink.creation.fields.language.label')"
         :items="localeItems"
+        :loading="isFetching"
         filterable
     />
 </template>
