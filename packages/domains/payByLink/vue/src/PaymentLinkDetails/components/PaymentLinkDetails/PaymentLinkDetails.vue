@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
-import { ErrorMessageDisplay, useShouldHideTitles } from '@integration-components/composables-vue';
+import { ComponentShell, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
 import { getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';
 import PaymentLinkDetailsContent from './PaymentLinkDetailsContent.vue';
@@ -24,6 +24,11 @@ const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
 const { paymentLink, error, isFetching, refetch } = usePaymentLinkDetails(() => ({ id: props.id }));
+
+const shellState = computed<ComponentShellState>(() => {
+    if (isFetching.value) return 'loading';
+    return !paymentLink.value || error.value ? 'error' : 'ready';
+});
 
 const errorInfo = computed(() => {
     const content = getPaymentLinkErrorMessageContent(error.value, 'payByLink.details.errors.unavailable', !!props.onContactSupport);
@@ -70,41 +75,38 @@ function handleNavigationToDetailsAfterExpiration() {
         </div>
 
         <div :class="styles.content">
-            <PaymentLinkSkeleton v-if="isFetching" />
+            <ComponentShell
+                :state="shellState"
+                :error-info="errorInfo"
+                :on-dismiss="props.onDismiss"
+                dismiss-label="payByLink.common.actions.goBack"
+                :on-refresh="refetch"
+            >
+                <template #loading>
+                    <PaymentLinkSkeleton />
+                </template>
 
-            <div v-else-if="!paymentLink || error">
-                <ErrorMessageDisplay
-                    :error-info="errorInfo"
-                    :on-dismiss="props.onDismiss"
-                    dismiss-label="payByLink.common.actions.goBack"
-                    :on-refresh="refetch"
-                    :outlined="false"
-                    :absolute-position="false"
-                    :with-background="false"
-                    with-image
+                <PaymentLinkExpiration
+                    v-if="activeScreen === 'expirationConfirmation' && paymentLink"
+                    :payment-link="paymentLink"
+                    :on-cancel="() => (activeScreen = 'details')"
+                    :on-expiration-success="handleExpirationSuccess"
                 />
-            </div>
 
-            <PaymentLinkExpiration
-                v-else-if="activeScreen === 'expirationConfirmation' && paymentLink"
-                :payment-link="paymentLink"
-                :on-cancel="() => (activeScreen = 'details')"
-                :on-expiration-success="handleExpirationSuccess"
-            />
+                <PaymentLinkExpirationSuccess
+                    v-else-if="activeScreen === 'expirationSuccess'"
+                    :on-dismiss="props.onDismiss"
+                    :on-show-details="handleNavigationToDetailsAfterExpiration"
+                />
 
-            <PaymentLinkExpirationSuccess
-                v-else-if="activeScreen === 'expirationSuccess'"
-                :on-dismiss="props.onDismiss"
-                :on-show-details="handleNavigationToDetailsAfterExpiration"
-            />
-
-            <PaymentLinkDetailsContent
-                v-else-if="paymentLink"
-                :payment-link="paymentLink"
-                :on-dismiss="props.onDismiss"
-                :on-expire="handleExpireNow"
-                :is-dismiss-button-hidden="props.isDismissButtonHidden"
-            />
+                <PaymentLinkDetailsContent
+                    v-else-if="paymentLink"
+                    :payment-link="paymentLink"
+                    :on-dismiss="props.onDismiss"
+                    :on-expire="handleExpireNow"
+                    :is-dismiss-button-hidden="props.isDismissButtonHidden"
+                />
+            </ComponentShell>
         </div>
     </div>
 </template>
