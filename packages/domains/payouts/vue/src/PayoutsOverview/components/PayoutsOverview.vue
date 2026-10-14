@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { getTimezoneAwareDateRangeQueryParams, useShouldHideTitles } from '@integration-components/composables-vue';
+import {
+    containerQueries,
+    getTimezoneAwareDateRangeQueryParams,
+    useResponsiveContainer,
+    useShouldHideTitles,
+} from '@integration-components/composables-vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
 import PayoutsFilters from './PayoutsFilters.vue';
@@ -26,6 +31,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
+const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
 const initialDateRangeQueryParams = getTimezoneAwareDateRangeQueryParams({
     dateRange: quickSelectDateRanges.last30Days,
@@ -115,7 +121,7 @@ function closeModal() {
         </div>
 
         <div role="toolbar" :class="styles.toolbar">
-            <PayoutsFilters :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />
+            <PayoutsFilters :compact="isMobile" :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />
         </div>
 
         <PayoutsTable

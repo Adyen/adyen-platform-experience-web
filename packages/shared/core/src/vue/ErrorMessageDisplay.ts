@@ -1,7 +1,7 @@
 import { defineComponent, computed, h, type PropType, type VNode } from 'vue';
 import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
-import { getDomainTranslationKey, type DomainTranslationKey } from '@integration-components/core/vue';
+import { useCoreContext } from './Context';
+import { getDomainTranslationKey, type DomainTranslationKey } from '../translations';
 import { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from './getErrorMessage';
 import { useShouldHideIllustrations } from './customization';
 import styles from './ErrorMessageDisplay.module.scss';

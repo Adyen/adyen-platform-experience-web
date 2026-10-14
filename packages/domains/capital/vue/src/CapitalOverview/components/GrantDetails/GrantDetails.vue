@@ -89,7 +89,7 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
                 </BentoTypography>
             </div>
 
-            <BentoStructuredList>
+            <BentoStructuredList layout="50-50">
                 <BentoStructuredListItem v-for="item in structuredListItems" :key="item.key" :label="i18n.get(item.key)" :label-info="item.labelInfo">
                     <BentoTypography el="span" variant="caption" stronger>
                         {{ item.value }}

@@ -2,19 +2,49 @@
  * @vitest-environment jsdom
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { createApp } from 'vue';
 import type { VNode } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { DataOverviewError } from './DataOverviewError';
-import type { ErrorMessageInfo } from './getErrorMessage';
+import type { ErrorMessageInfo } from '@integration-components/core/vue';
 
-vi.mock('@integration-components/core/vue', () => ({
-    getDomainTranslationKey: (domain: string, key: string) => `${domain}.${key}`,
-    useCoreContext: vi.fn(),
-}));
+vi.mock('@integration-components/core/vue', async () => {
+    const { computed } = await import('vue');
+    const useCoreContext = vi.fn();
 
-vi.mock('@adyen/bento-vue3', () => ({
-    BentoEmptyState: { name: 'BentoEmptyState' },
-}));
+    return {
+        getDomainTranslationKey: (domain: string, key: string) => `${domain}.${key}`,
+        getErrorMessage: vi.fn(),
+        useCoreContext,
+        useShouldHideIllustrations: () => {
+            const coreContext = useCoreContext() as { appearance?: { illustrations?: string } };
+            return computed(() => coreContext.appearance?.illustrations === 'hidden');
+        },
+    };
+});
+
+vi.mock('@adyen/bento-vue3', async () => {
+    const { h } = await import('vue');
+    return {
+        BentoEmptyState: (props: { image?: string }) => h('div', { 'data-image': props.image }),
+    };
+});
+
+test('does not pass an image to data overview errors when illustrations are hidden globally', () => {
+    vi.mocked(useCoreContext).mockReturnValue({
+        i18n: { get: vi.fn() } as unknown as ReturnType<typeof useCoreContext>['i18n'],
+        appearance: { illustrations: 'hidden' },
+        translationDomain: 'transactions',
+    });
+
+    const target = document.createElement('div');
+    const app = createApp(DataOverviewError, { errorInfo: { messages: [] } });
+    app.mount(target);
+
+    expect(target.firstElementChild?.getAttribute('data-image')).toBeNull();
+
+    app.unmount();
+});
 
 describe('DataOverviewError', () => {
     const i18n = {
@@ -36,7 +66,6 @@ describe('DataOverviewError', () => {
             setup: (props: Record<string, unknown>) => () => VNode;
         };
         return component.setup({
-            copyIcon: undefined,
             error: undefined,
             errorInfo,
             errorMessage: undefined,
@@ -96,26 +125,12 @@ describe('DataOverviewError', () => {
         expect(refreshComponent).toHaveBeenCalledOnce();
     });
 
-    test('copies the request ID and updates the accessible action state', async () => {
-        const writeText = vi.fn().mockResolvedValue(undefined);
-        Object.defineProperty(navigator, 'clipboard', {
-            configurable: true,
-            value: { writeText },
-        });
+    test('does not offer an action when the error has only a request ID', () => {
         const view = renderWithInfo({
             messages: ['transactions.common.errors.errorCode'],
             requestId: 'REQUEST-2',
         });
 
-        const action = view().props?.action;
-        expect(action).toMatchObject({
-            title: 'transactions.common.actions.copy.labels.errorCode',
-            variant: 'secondary',
-        });
-
-        await action.event();
-
-        expect(writeText).toHaveBeenCalledWith('REQUEST-2');
-        expect(view().props?.action.title).toBe('transactions.common.actions.copy.labels.done');
+        expect(view().props?.action).toBeUndefined();
     });
 });

@@ -3,7 +3,6 @@
     "payouts.common.actions.contactSupport.labels.reachOut": "Ota yhteyttä tukeen",
     "payouts.common.actions.copy.labels.default": "Kopioi",
     "payouts.common.actions.copy.labels.done": "Kopioitu",
-    "payouts.common.actions.copy.labels.errorCode": "Kopioi virhekoodi",
     "payouts.common.actions.refresh.labels.default": "Lataa uudelleen",
     "payouts.common.errors.componentUnavailable": "Jokin meni pieleen.",
     "payouts.common.errors.contactSupport": "Pyydä apua ottamalla yhteyttä tukeen.",
