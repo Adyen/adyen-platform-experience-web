@@ -19,6 +19,10 @@ const PaymentLinkDetails = defineAsyncComponent({
     loadingComponent: BentoLoadingIndicator,
     delay: 0,
 });
+
+function handleTitleChange(title: TranslationKey | undefined) {
+    modalTitleKey.value = title;
+}
 </script>
 
 <template>
@@ -37,7 +41,7 @@ const PaymentLinkDetails = defineAsyncComponent({
                     :on-contact-support="props.onContactSupport"
                     :on-dismiss="props.onClose"
                     :on-update="props.onUpdate"
-                    :on-title-change="title => (modalTitleKey = title)"
+                    :on-title-change="handleTitleChange"
                     is-dismiss-button-hidden
                 />
             </ModalContextProvider>
