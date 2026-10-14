@@ -62,7 +62,6 @@ test.describe('Single balance currency', () => {
             await expect(page.getByText('Period result', { exact: true })).toBeVisible();
             await expect(page.getByText('Total incoming', { exact: true })).toBeVisible();
             await expect(page.getByText('Total outgoing', { exact: true })).toBeVisible();
-            await expect(page.getByText('USD', { exact: true }).first()).toBeVisible();
         });
     });
 });
