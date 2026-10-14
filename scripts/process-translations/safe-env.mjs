@@ -3,7 +3,10 @@
 // substituted binary nor variables such as GIT_* can influence the child. Windows has no fixed
 // binary locations and cannot load node without SystemRoot (needed for the system DLLs), so there
 // the inherited SystemRoot and PATH are passed through instead.
-export const SAFE_ENV = process.platform === 'win32' ? { SystemRoot: process.env.SystemRoot, PATH: process.env.PATH } : { PATH: '/usr/bin:/bin' };
+export const SAFE_ENV =
+    process.platform === 'win32'
+        ? { SystemRoot: process.env.SystemRoot, PATH: process.env.PATH, HOME: process.env.HOME }
+        : { PATH: '/usr/bin:/bin', HOME: process.env.HOME };
 
 // Git is invoked through its absolute system path on POSIX, so the binary is never resolved via
 // PATH; Windows has no fixed location, so there it is resolved through the inherited PATH.
