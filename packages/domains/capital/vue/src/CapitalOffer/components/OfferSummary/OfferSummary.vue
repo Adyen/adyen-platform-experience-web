@@ -21,6 +21,7 @@ const props = defineProps<{
     capitalState: EnhancedCapitalState;
     offer: IGrantOfferResponseDTO;
     onBack: () => void;
+    onDismiss?: () => void;
     onContactSupport?: () => void;
     onFundsRequest: OnFundsRequestCallback;
 }>();
@@ -98,7 +99,7 @@ const actions = computed<BentoButtonActionsList>(() => [
         <CapitalError
             v-if="requestFundsError && !balanceAccountError"
             :error="requestFundsError"
-            :on-back="handleBack"
+            :on-dismiss="props.onDismiss"
             :on-contact-support="props.onContactSupport"
         />
         <template v-else>
