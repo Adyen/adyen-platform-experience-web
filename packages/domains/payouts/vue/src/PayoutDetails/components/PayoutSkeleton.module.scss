@@ -5,6 +5,16 @@
     pointer-events: none;
 }
 
+// Mirrors the real title's bottom margin.
+.pageTitle {
+    margin-bottom: style.token(spacer-060);
+}
+
+// "Payout details"
+.pageTitleText {
+    max-width: calc(#{style.token(spacer-120)} * 2);
+}
+
 .summary {
     display: grid;
     gap: style.token(spacer-020);

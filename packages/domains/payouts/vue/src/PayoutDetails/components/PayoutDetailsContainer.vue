@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useBalanceAccounts, useShouldHideTitles, ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
-import { useCoreContext, useModalContext } from '@integration-components/core/vue';
+import { useBalanceAccounts, ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
 import { isFunction } from '@integration-components/utils';
-import { BentoTypography } from '@adyen/bento-vue3';
 import PayoutData from './PayoutData.vue';
 import PayoutSkeleton from './PayoutSkeleton.vue';
-import styles from './PayoutDetailsContainer.module.scss';
 import { usePayoutDetails } from '../composables/usePayoutDetails';
 import { PAYOUT_TABLE_FIELDS } from '../../PayoutsOverview/constants';
 import type { PayoutDetailsCustomization } from '../types';
@@ -20,10 +17,6 @@ const props = defineProps<{
     onDismiss?: () => void;
     dataCustomization?: { details?: PayoutDetailsCustomization };
 }>();
-
-const { i18n } = useCoreContext();
-const { withinModal } = useModalContext();
-const hideTitles = useShouldHideTitles();
 
 const { data, error, isFetching } = usePayoutDetails(() => ({
     fetchEnabled: !!props.id && !!props.date,
@@ -78,39 +71,28 @@ const shellState = computed<ComponentShellState>(() => {
     if (error.value) return 'error';
     return isFetching.value && !data.value ? 'loading' : 'ready';
 });
-const showTitle = computed(
-    () => !withinModal && !hideTitles.value && shellState.value !== 'error' && (shellState.value === 'loading' || !!data.value)
-);
 </script>
 
 <template>
-    <div>
-        <div v-if="showTitle" :class="styles.pageTitle">
-            <BentoTypography variant="title">
-                {{ i18n.get('payouts.details.title') }}
-            </BentoTypography>
-        </div>
-
-        <ComponentShell
-            :state="shellState"
-            :error="error"
-            :error-message="'payouts.details.errors.unavailable'"
-            :on-contact-support="props.onContactSupport"
+    <ComponentShell
+        :state="shellState"
+        :error="error"
+        :error-message="'payouts.details.errors.unavailable'"
+        :on-contact-support="props.onContactSupport"
+        :on-dismiss="props.onDismiss"
+        :dismiss-label="'payouts.details.common.actions.goBack'"
+    >
+        <template #loading>
+            <PayoutSkeleton />
+        </template>
+        <PayoutData
+            v-if="data"
+            :payout="data"
+            :balance-account-id="props.id"
+            :balance-account-description="resolvedBalanceAccountDescription"
+            :extra-fields="extraFields"
+            :data-customization="props.dataCustomization"
             :on-dismiss="props.onDismiss"
-            :dismiss-label="'payouts.details.common.actions.goBack'"
-        >
-            <template #loading>
-                <PayoutSkeleton />
-            </template>
-            <PayoutData
-                v-if="data"
-                :payout="data"
-                :balance-account-id="props.id"
-                :balance-account-description="resolvedBalanceAccountDescription"
-                :extra-fields="extraFields"
-                :data-customization="props.dataCustomization"
-                :on-dismiss="props.onDismiss"
-            />
-        </ComponentShell>
-    </div>
+        />
+    </ComponentShell>
 </template>
