@@ -10,7 +10,6 @@ import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import GrantList from '../GrantList/GrantList.vue';
 import CapitalError from '../../../shared/CapitalError.vue';
 import OfferAlert from '../OfferAlert.vue';
-import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
 import { ComponentShell, useLandedPageEvent, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
 import styles from './CapitalOverview.module.scss';
 import OfferModal from '../OfferModal.vue';
@@ -29,14 +28,12 @@ const hideTitles = useShouldHideTitles();
 const shellState = computed<ComponentShellState>(() => (isLoading.value ? 'loading' : 'ready'));
 
 useLandedPageEvent(
-    // TODO: Verify
     () => ({
-        ...sharedCapitalOverviewAnalyticsEventProperties,
-        label: 'Capital overview',
+        category: 'Capital overview component',
         subCategory: 'Grants overview',
+        hasGrants: capitalState.value?.hasGrants,
         hasOffer: !!capitalState.value?.dynamicOfferConfig,
         isEarlyRenewal: isEarlyRenewal.value,
-        hasGrants: capitalState.value?.hasGrants,
     }),
     () => !error.value && !!capitalState.value?.isRegionSupported
 );
@@ -44,11 +41,13 @@ useLandedPageEvent(
 const openOfferModal = () => {
     isOfferModalOpen.value = true;
     shouldTrackOfferClose.value = true;
-    // TODO: Verify
     userEvents.addEvent?.('Clicked button', {
-        ...sharedCapitalOverviewAnalyticsEventProperties,
-        label: 'Open offer',
+        category: 'Capital overview component',
         subCategory: 'Grants overview',
+        label: 'Open offer',
+        hasGrants: capitalState.value?.hasGrants,
+        hasOffer: !!capitalState.value?.dynamicOfferConfig,
+        isEarlyRenewal: isEarlyRenewal.value,
     });
 };
 
@@ -57,11 +56,10 @@ const closeOfferModal = () => {
 
     if (!shouldTrackOfferClose.value) return;
 
-    // TODO: Verify
     userEvents.addEvent?.('Clicked button', {
-        ...sharedCapitalOverviewAnalyticsEventProperties,
+        category: 'Capital overview component',
+        subCategory: 'Offer',
         label: 'Dismiss offer',
-        subCategory: 'Grants overview',
     });
 };
 

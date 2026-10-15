@@ -6,7 +6,7 @@ import { getMissingActionsMetadata } from '@integration-components/capital/domai
 import { useConfigContext, useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IMissingAction, IMissingActionType } from '@integration-components/types';
 import { EMPTY_OBJECT } from '@integration-components/utils';
-import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../domain/src/CapitalOverview/constants';
+import { GRANT_ACTION_CONFIGS } from '../../../../domain/src/CapitalOverview/constants';
 import { useActionsAlertTitles } from '../composables/useActionsAlertTitles';
 
 const props = defineProps<{
@@ -89,8 +89,8 @@ const handleActionButtonClick = async (actionType: IMissingActionType) => {
     await loadKycComponent(actionType);
     activeAction.value = actionType;
     userEvents.addEvent?.('Clicked button', {
-        ...sharedCapitalOverviewAnalyticsEventProperties,
-        subCategory: 'Missing action',
+        category: 'Capital overview component',
+        subCategory: 'Grant item',
         label: GRANT_ACTION_CONFIGS[actionType].eventLabel,
     });
 };
@@ -111,8 +111,7 @@ const handleClose = (actionType: IMissingActionType, analyticsProperties: { labe
         setTimeout(() => {
             if (!completedActionsWithoutDelay.has(actionType)) {
                 userEvents.addEvent?.('Clicked button', {
-                    ...sharedCapitalOverviewAnalyticsEventProperties,
-                    category: 'Missing action modal',
+                    category: 'Capital overview component',
                     ...analyticsProperties,
                 });
                 close();
@@ -125,30 +124,34 @@ const handleClose = (actionType: IMissingActionType, analyticsProperties: { labe
 };
 
 const handleBusinessFinancingClose = () => {
-    handleClose('AnaCredit', { label: 'Dismissed AnaCredit information', subCategory: 'Information' });
+    handleClose('AnaCredit', {
+        subCategory: 'AnaCredit information',
+        label: 'Dismiss AnaCredit information',
+    });
 };
 
 const handleBusinessFinancingComplete = () => {
     completedActionsWithoutDelay.add('AnaCredit');
     completeAction();
     userEvents.addEvent?.('Clicked button', {
-        ...sharedCapitalOverviewAnalyticsEventProperties,
-        category: 'Missing action modal',
-        label: 'Submitted AnaCredit information',
-        subCategory: 'Information',
+        category: 'Capital overview component',
+        subCategory: 'AnaCredit information',
+        label: 'Submit AnaCredit information',
     });
 };
 
 const handleTermsOfServiceClose = () => {
-    handleClose('signToS', { label: 'Dismissed terms & conditions', subCategory: 'Terms & conditions' });
+    handleClose('signToS', {
+        subCategory: 'ToS',
+        label: 'Dismiss ToS',
+    });
 };
 
 const handleTermsOfServiceAccept = () => {
     userEvents.addEvent?.('Clicked button', {
-        ...sharedCapitalOverviewAnalyticsEventProperties,
-        category: 'Missing action modal',
-        label: 'Signed terms & conditions',
-        subCategory: 'Terms & conditions',
+        category: 'Capital overview component',
+        subCategory: 'ToS',
+        label: 'Sign ToS',
     });
 };
 
@@ -156,10 +159,9 @@ const handleTermsOfServiceComplete = () => {
     completedActionsWithoutDelay.add('signToS');
     completeAction();
     userEvents.addEvent?.('Clicked button', {
-        ...sharedCapitalOverviewAnalyticsEventProperties,
-        category: 'Missing action modal',
-        label: 'Finished terms & conditions',
-        subCategory: 'Terms & conditions',
+        category: 'Capital overview component',
+        subCategory: 'ToS',
+        label: 'Finish ToS',
     });
 };
 
