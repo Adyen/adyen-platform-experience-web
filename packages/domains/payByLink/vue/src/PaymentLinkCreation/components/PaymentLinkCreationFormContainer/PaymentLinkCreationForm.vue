@@ -266,9 +266,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
                     </template>
                 </BentoAlert>
 
-                <template #actions-right>
-                    <BentoButtonActions :actions="buttonActions" layout="buttons-end" />
-                </template>
+                <BentoButtonActions :actions="buttonActions" layout="buttons-end" />
             </BentoFormLayout>
         </template>
     </div>
