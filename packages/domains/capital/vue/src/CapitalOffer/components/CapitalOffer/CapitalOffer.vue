@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
 import { getDynamicOfferConfig, sharedCapitalOfferAnalyticsEventProperties } from '@integration-components/capital/domain';
-import { useLandedPageEvent, useShouldHideTitles } from '@integration-components/composables-vue';
+import { useLandedPageEvent } from '@integration-components/composables-vue';
 import OfferSelection from '../OfferSelection/OfferSelection.vue';
 import OfferSummary from '../OfferSummary/OfferSummary.vue';
 import type { CapitalOfferProps } from '../../types';
@@ -14,11 +14,6 @@ import UnsupportedRegionState from '../../../shared/UnsupportedRegionState.vue';
 import styles from './CapitalOffer.module.scss';
 
 const props = defineProps<CapitalOfferProps>();
-
-const hideTitles = useShouldHideTitles();
-// `hideTitles` comes from the external appearance config.
-// `hideTitle` is an internal flag used by the offer modal in Capital overview.
-const isTitleHidden = computed(() => props.hideTitle || hideTitles.value);
 
 const { capitalState: backendCapitalState, error: capitalStateError } = useEnhancedCapitalState(() => !props.capitalState);
 const capitalState = computed(() => props.capitalState ?? backendCapitalState.value);
@@ -51,7 +46,7 @@ const handleSummaryBack = () => {
 
 <template>
     <div :class="styles.root">
-        <CapitalHeader :hide-subtitle="props.hideSubtitle" :hide-title="isTitleHidden" :region="capitalState?.region" :title-key="titleKey" />
+        <CapitalHeader :hide-subtitle="props.hideSubtitle" :region="capitalState?.region" :title-key="titleKey" />
         <CapitalError
             v-if="capitalStateError"
             :error="capitalStateError"

@@ -23,7 +23,7 @@ $adyen-pe-slider-border-radius: style.token(border-radius-l);
     // stylelint-disable nesting-selector-no-missing-scoping-root
     &:hover,
     &:active {
-        background-color: style.token(color-background-primary);
+        background-color: $adyen-pe-slider-thumb-background-color;
     }
     // stylelint-enable nesting-selector-no-missing-scoping-root
 }
@@ -40,11 +40,11 @@ $adyen-pe-slider-border-radius: style.token(border-radius-l);
 
     &:focus {
         &::-webkit-slider-thumb {
-            background-color: style.token(color-background-primary);
+            background-color: $adyen-pe-slider-thumb-background-color;
         }
 
         &::-moz-range-thumb {
-            background-color: style.token(color-background-primary);
+            background-color: $adyen-pe-slider-thumb-background-color;
         }
     }
 

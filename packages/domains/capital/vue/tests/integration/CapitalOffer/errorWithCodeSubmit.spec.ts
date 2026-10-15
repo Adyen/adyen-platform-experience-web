@@ -15,7 +15,12 @@ test.describe('Error (with code) - Submit', () => {
         await expect(page.getByText("We couldn't continue with the offer.")).toBeVisible();
         await expect(page.getByText('Contact support for help and share error code 226ac4ce59f0f159ad672d38d3291e93')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeHidden();
-        await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
+    });
+
+    test('should render offer summary screen when back button is clicked', async ({ page }) => {
+        await page.getByRole('button', { name: 'Go back' }).click();
+        await expect(page.getByTestId('capital-offer-summary')).toBeVisible();
     });
 });
 
@@ -25,12 +30,5 @@ test.describe('onContactSupport prop', () => {
         await page.getByRole('button', { name: 'Review request' }).click();
         await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
-    });
-});
-
-test.describe('onDismiss prop', () => {
-    test('should render dismiss button when prop is set', async ({ page }) => {
-        await goToStory(page, { id: STORY_ID, args: { onDismiss: 'Enabled' } });
-        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 });

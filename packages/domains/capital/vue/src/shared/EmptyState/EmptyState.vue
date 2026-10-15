@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoButtonActions, BentoEmptyState, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
+import { BentoButtonActions, BentoEmptyState, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import ErrorIcon from '@adyen/ui-assets-icons-24/vue/cross-circle';
 import HighlightIcon from '@adyen/ui-assets-icons-24/vue/info';
 import styles from './EmptyState.module.scss';
@@ -19,9 +19,7 @@ const iconClass = computed(() => (props.type === 'error' ? styles.iconCritical :
     <div :class="styles.root">
         <component :is="iconComponent" aria-hidden="true" :class="iconClass" />
         <BentoEmptyState variant="basic" :title="title">
-            <BentoTypography>
-                <slot />
-            </BentoTypography>
+            <slot />
         </BentoEmptyState>
         <BentoButtonActions v-if="actions?.length" :actions="actions" :class="styles.actions" />
     </div>

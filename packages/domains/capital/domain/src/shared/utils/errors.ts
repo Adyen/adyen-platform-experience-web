@@ -1,22 +1,24 @@
-import { AdyenErrorResponse, AdyenPlatformExperienceError, type TranslationKey } from '@integration-components/core';
+import { AdyenErrorResponse, AdyenPlatformExperienceError } from '@integration-components/core';
+
+type CapitalTranslationKey = `capital.${string}`;
 
 export type CapitalErrorMessage = {
-    title: TranslationKey;
-    message: TranslationKey | TranslationKey[];
+    title: CapitalTranslationKey;
+    message: CapitalTranslationKey | CapitalTranslationKey[];
     refreshComponent?: boolean;
     onContactSupport?: () => void;
-    translationValues?: { [key in TranslationKey]?: string };
+    translationValues?: { [key in CapitalTranslationKey]?: string };
 };
 
 export type CapitalErrorMessageInfo = Omit<CapitalErrorMessage, 'title' | 'message' | 'translationValues'> & {
-    title: TranslationKey;
-    messages: TranslationKey[];
+    title: CapitalTranslationKey;
+    messages: CapitalTranslationKey[];
     requestId?: string;
 };
 
 export type BalanceAccountErrorMessage = {
-    title: TranslationKey;
-    message: TranslationKey;
+    title: CapitalTranslationKey;
+    message: CapitalTranslationKey;
 };
 
 const BALANCE_ACCOUNT_ERROR_CODE = '30_013';

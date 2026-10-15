@@ -70,10 +70,6 @@ describe('getCapitalErrorMessage', () => {
 describe('getCapitalErrorConfig', () => {
     test('normalizes single and multiple messages into an array', () => {
         const onContactSupport = vi.fn();
-
-        expect(getCapitalErrorConfig(createAdyenPlatformExperienceError('NO_OFFER'))).toMatchObject({
-            messages: ['capital.offer.common.noOfferDescription'],
-        });
         expect(getCapitalErrorConfig(createAdyenPlatformExperienceError('30_016'), onContactSupport)).toMatchObject({
             messages: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'capital.common.errors.errorCode'],
         });
