@@ -45,7 +45,11 @@ const errorInfo = computed(() => {
 
 type Screen = 'details' | 'expirationConfirmation' | 'expirationSuccess';
 const activeScreen = ref<Screen>('details');
-const modalTitleKey = computed<TranslationKey | undefined>(() => (activeScreen.value === 'details' ? 'payByLink.details.title' : undefined));
+const modalTitleKey = computed<TranslationKey | undefined>(() => {
+    if (activeScreen.value === 'details') return 'payByLink.details.title';
+    if (activeScreen.value === 'expirationConfirmation') return 'payByLink.details.expiration.title';
+    return undefined;
+});
 
 watch(modalTitleKey, title => props.onTitleChange?.(title), { immediate: true });
 

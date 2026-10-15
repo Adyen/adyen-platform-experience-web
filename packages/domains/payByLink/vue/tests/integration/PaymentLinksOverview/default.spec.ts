@@ -199,6 +199,27 @@ test.describe('Payment Links Overview', () => {
             ]);
         });
 
+        test('should display the expiration title in the modal header and restore the details title when going back', async ({ page }) => {
+            const grid = page.getByRole('grid');
+            await grid.getByRole('rowgroup').nth(1).getByRole('row').first().click();
+
+            const detailsModal = page.getByRole('dialog', { name: 'Payment link details' });
+            await detailsModal.getByRole('button', { name: 'Expire now' }).click();
+
+            const expirationModal = page.getByRole('dialog', { name: 'Expire this link', exact: true });
+            await Promise.all([
+                expect(expirationModal.locator('.b-modal-page__title')).toHaveText('Expire this link'),
+                expect(expirationModal.getByText('Expire this link', { exact: true })).toBeVisible(),
+                expect(expirationModal.getByText('Expire this link', { exact: true })).toHaveCount(1),
+            ]);
+            await expirationModal.getByRole('button', { name: 'Go back', exact: true }).click();
+
+            await expect(detailsModal).toBeVisible();
+            await expect(detailsModal.locator('.b-modal-page__title')).toHaveText('Payment link details');
+            await expect(detailsModal.getByText('Expire this link', { exact: true })).toHaveCount(0);
+            await expect(detailsModal.getByRole('button', { name: 'Expire now' })).toBeVisible();
+        });
+
         test('should refresh the current-day date range after expiring a payment link', async ({ page }) => {
             const grid = page.getByRole('grid');
             const firstRow = grid.getByRole('rowgroup').nth(1).getByRole('row').first();
@@ -206,8 +227,10 @@ test.describe('Payment Links Overview', () => {
 
             const detailsModal = page.getByRole('dialog');
             await detailsModal.getByRole('button', { name: 'Expire now' }).click();
-            await detailsModal.getByRole('button', { name: 'Expire link' }).click();
+            const expirationModal = page.getByRole('dialog', { name: 'Expire this link', exact: true });
+            await expirationModal.getByRole('button', { name: 'Expire link' }).click();
             await expect(detailsModal.getByText('Link has been deactivated')).toBeVisible();
+            await expect(detailsModal.getByText('Expire this link', { exact: true })).toHaveCount(0);
 
             const refreshRequest = page.waitForRequest(request => {
                 const url = new URL(request.url());
