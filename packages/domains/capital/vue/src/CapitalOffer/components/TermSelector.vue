@@ -49,6 +49,7 @@ const items = computed(() =>
                       }),
             title: formatTermLabel(term),
             value: term,
+            fullyClickable: true,
         };
     })
 );

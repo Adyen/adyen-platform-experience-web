@@ -53,7 +53,13 @@ const highlights = computed(() => [
         value: i18n.amount(props.offer.totalAmount.value, props.offer.totalAmount.currency, { minimumFractionDigits: 0 }),
     },
 ]);
-const { data: requestedFunds, error: requestFundsError, isLoading: isRequestFundsLoading, requestFunds } = useRequestFunds();
+const {
+    data: requestedFunds,
+    error: requestFundsError,
+    isLoading: isRequestFundsLoading,
+    requestFunds,
+    reset: resetRequestedFunds,
+} = useRequestFunds();
 const balanceAccountError = computed(() => getBalanceAccountErrorMessage(requestFundsError.value));
 
 async function handleRequestFunds() {
@@ -99,7 +105,7 @@ const actions = computed<BentoButtonActionsList>(() => [
         <CapitalError
             v-if="requestFundsError && !balanceAccountError"
             :error="requestFundsError"
-            :on-dismiss="props.onDismiss"
+            :on-go-back="resetRequestedFunds"
             :on-contact-support="props.onContactSupport"
         />
         <template v-else>
