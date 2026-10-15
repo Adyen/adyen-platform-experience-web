@@ -88,6 +88,8 @@ test('exposes reactive appearance through the core context value', () => {
 test.each<[DataGridComponentAppearance | undefined, boolean]>([
     [undefined, false],
     [{ illustrations: 'hidden' }, false],
+    [{ dataGrid: undefined }, false],
+    [Object.create({ dataGrid: { density: 'condensed' } }), false],
     [{ dataGrid: {} }, true],
     [{ titles: 'hidden', dataGrid: { density: 'condensed' } }, true],
 ])('detects data grid appearance', (appearance, expected) => {
@@ -112,5 +114,9 @@ test('useCondensedDataGrid reflects the data grid density', () => {
     expect(condensed.value).toBe(false);
 
     props.appearance = { illustrations: 'hidden' };
+    expect(condensed.value).toBe(false);
+
+    const undefinedDataGridAppearance: DataGridComponentAppearance = { dataGrid: undefined };
+    props.appearance = undefinedDataGridAppearance;
     expect(condensed.value).toBe(false);
 });

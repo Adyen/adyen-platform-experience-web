@@ -1,10 +1,12 @@
 import { computed } from 'vue';
+import { hasOwnProperty } from '@integration-components/utils';
 import type { GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
 import { useCoreContext } from './Context';
 
 export const hasDataGridAppearance = <TAppearance extends GlobalAppearance>(
     appearance: TAppearance | undefined
-): appearance is TAppearance & WithDataGridAppearance => !!appearance && 'dataGrid' in appearance;
+): appearance is TAppearance & Required<WithDataGridAppearance> =>
+    !!appearance && hasOwnProperty(appearance, 'dataGrid') && (appearance as WithDataGridAppearance).dataGrid !== undefined;
 
 // Typed as a record over every GlobalAppearance key, so adding a global field fails to compile until it is listed here.
 const GLOBAL_APPEARANCE_FIELDS: Record<keyof GlobalAppearance, true> = {
@@ -14,11 +16,7 @@ const GLOBAL_APPEARANCE_FIELDS: Record<keyof GlobalAppearance, true> = {
 
 const GLOBAL_APPEARANCE_KEYS = Object.keys(GLOBAL_APPEARANCE_FIELDS) as (keyof GlobalAppearance)[];
 
-const isGlobalAppearanceKey = (key: string): key is keyof GlobalAppearance => Object.hasOwn(GLOBAL_APPEARANCE_FIELDS, key);
-
-const setAppearanceField = <K extends keyof GlobalAppearance>(target: GlobalAppearance, key: K, value: GlobalAppearance[K]) => {
-    target[key] = value;
-};
+const isGlobalAppearanceKey = (key: string): key is keyof GlobalAppearance => hasOwnProperty(GLOBAL_APPEARANCE_FIELDS, key);
 
 /**
  * Global fields fall back from the component to Core. Any other key is a component-only extension (e.g. `dataGrid`)
@@ -33,7 +31,7 @@ export const resolveAppearance = <TComponentAppearance extends GlobalAppearance 
 
     for (const key of GLOBAL_APPEARANCE_KEYS) {
         const value = componentAppearance?.[key] ?? globalAppearance?.[key];
-        if (value !== undefined) setAppearanceField(resolved, key, value);
+        if (value !== undefined) Object.assign(resolved, { [key]: value });
     }
 
     for (const [key, value] of Object.entries(componentAppearance ?? {})) {
@@ -57,6 +55,6 @@ export const useCondensedDataGrid = () => {
     const coreContext = useCoreContext();
     return computed(() => {
         const appearance = coreContext.appearance;
-        return hasDataGridAppearance(appearance) && appearance.dataGrid?.density === 'condensed';
+        return hasDataGridAppearance(appearance) && appearance.dataGrid.density === 'condensed';
     });
 };
