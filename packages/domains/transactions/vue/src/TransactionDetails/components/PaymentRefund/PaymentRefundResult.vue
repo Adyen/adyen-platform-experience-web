@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { BentoButtonActions, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
+import { ResponsiveButtonActions } from '@integration-components/composables-vue';
+import { BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
 import CrossCircleFillIcon from '@adyen/ui-assets-icons-40/vue/cross-circle-filled';
 import type { RefundResult } from '../../../../../domain/src';
@@ -43,6 +44,6 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
         <BentoTypography variant="body">
             {{ i18n.get(descriptionKey) }}
         </BentoTypography>
-        <BentoButtonActions :actions="actionButtons" layout="buttons-end" :class="styles.refundResponseActions" />
+        <ResponsiveButtonActions :actions="actionButtons" />
     </div>
 </template>

@@ -20,6 +20,8 @@ const PaymentLinkDetails = defineAsyncComponent({
 
 <template>
     <BentoModal :is-open="true" size="large" :is-dismissible="true" :aria-label="i18n.get('payByLink.details.title')" @close-modal="props.onClose">
+        <!-- Keep this default slot empty — needed for no padding -->
+        <template #default />
         <template #content>
             <ModalContextProvider>
                 <PaymentLinkDetails

@@ -194,7 +194,7 @@
     "payByLink.overview.common.actionNeeded.expiresAt": "Expires: %{date}",
     "payByLink.overview.common.actionNeeded.expiresDays": "%{days} days to expire (%{date})",
     "payByLink.overview.common.actionNeeded.expiresToday": "Expires today (%{date})",
-    "payByLink.overview.common.filters.types.date.label": "Date range",
+    "payByLink.overview.common.filters.types.date.label": "Creation date",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.custom": "Custom",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last30Days": "Last 30 days",
     "payByLink.overview.common.filters.types.date.rangeSelect.options.last7Days": "Last 7 days",
