@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { ComponentShell, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
+import type { TranslationKey } from '@integration-components/core';
 import { getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';
 import PaymentLinkDetailsContent from './PaymentLinkDetailsContent.vue';
@@ -17,6 +18,7 @@ const props = defineProps<{
     onContactSupport?: () => void;
     onDismiss?: () => void;
     onUpdate?: () => void;
+    onTitleChange?: (title: TranslationKey | undefined) => void;
     isDismissButtonHidden?: boolean;
 }>();
 
@@ -43,6 +45,11 @@ const errorInfo = computed(() => {
 
 type Screen = 'details' | 'expirationConfirmation' | 'expirationSuccess';
 const activeScreen = ref<Screen>('details');
+const modalTitleKey = computed<TranslationKey | undefined>(() =>
+    activeScreen.value === 'expirationConfirmation' ? 'payByLink.details.expiration.title' : undefined
+);
+
+watch(modalTitleKey, title => props.onTitleChange?.(title), { immediate: true });
 
 watch(
     () => props.id,
