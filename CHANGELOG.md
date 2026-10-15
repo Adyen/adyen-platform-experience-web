@@ -1,5 +1,12 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.14.3
+
+### Patch Changes
+
+- b24d239: In the date range filter, the timezone information now stays inside its footer when a longer translation, such as Spanish, wraps onto a second line.
+- 1afce24: Transactions insights now only displays the currency symbol instead of showing both currency as a text and currency symbol
+
 ## 1.14.2
 
 ### Patch Changes
