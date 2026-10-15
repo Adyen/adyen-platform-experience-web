@@ -110,7 +110,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
             />
         </FieldWrapper>
         <FieldWrapper v-if="selection === FLEXIBLE_VALIDITY_ID" name="linkValidity.quantity">
-            <BentoFormLayoutGroup layout="33-66">
+            <BentoFormLayoutGroup layout="33-66" :error-message="error">
                 <BentoInputField
                     :label="i18n.get('payByLink.creation.fields.validity.customDuration.label')"
                     type="number"
@@ -126,7 +126,6 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                     :model-value="unit"
                     :readonly="config.readOnly"
                     :error-message="unitError"
-                    :error="!!error"
                     :class="styles.dropdown"
                     @update:model-value="onUnitUpdate"
                 />
