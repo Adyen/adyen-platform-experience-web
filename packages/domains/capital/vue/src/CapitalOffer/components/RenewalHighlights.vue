@@ -21,7 +21,7 @@ const items = computed(() => {
             value: formatAmount(breakdown.newGrantAmountValue),
         },
         {
-            align: 'center',
+            align: 'center' as const,
             value: '-',
         },
         {
@@ -29,7 +29,7 @@ const items = computed(() => {
             value: formatAmount(breakdown.remainingGrantAmountValue),
         },
         {
-            align: 'center',
+            align: 'center' as const,
             value: '=',
         },
         {

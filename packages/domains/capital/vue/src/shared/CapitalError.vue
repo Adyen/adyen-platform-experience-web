@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
+import type { BentoButtonActionsList } from '@adyen/bento-vue3';
 import { AdyenPlatformExperienceError, AdyenErrorResponse } from '@integration-components/core';
 import { getCapitalErrorConfig } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
@@ -50,8 +50,9 @@ const actions = computed<BentoButtonActionsList>(() => {
 
 <template>
     <EmptyState type="error" :title="title" :actions="actions">
-        <template v-for="message in messages" :key="message.key">
-            <BentoTypography>{{ message.text }}</BentoTypography>
+        <template v-for="(message, index) in messages" :key="message.key">
+            <br v-if="index > 0" />
+            {{ message.text }}
         </template>
     </EmptyState>
 </template>

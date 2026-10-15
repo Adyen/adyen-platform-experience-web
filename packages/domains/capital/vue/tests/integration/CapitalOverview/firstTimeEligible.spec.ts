@@ -94,6 +94,6 @@ test.describe('First-time eligible', () => {
 
         await expect(getOfferModal(page)).toBeHidden();
         await expect(page.getByText('Pending')).toBeVisible();
-        await expect(page.getByRole('button', { name: "'Request a loan'" })).toBeHidden();
+        await expect(page.getByRole('button', { name: 'Request a loan' })).toBeHidden();
     });
 });
