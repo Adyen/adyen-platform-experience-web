@@ -12,7 +12,7 @@ export const transactionsOverviewMeta: Meta<ElementProps<TransactionsOverviewExt
     },
     args: {
         component: TransactionsOverviewElement,
-        pagination: { initialPageSize: 10, allowPageSizeSelection: true },
+        pagination: { defaultLimit: 10, disableLimitSelection: false },
     },
     parameters: {
         controls: {

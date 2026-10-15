@@ -9,8 +9,8 @@ export interface UsePageLimitOptions<Limit extends number> {
 const isOption = <Limit extends number>(options: readonly Limit[], limit: number | undefined): limit is Limit => options.includes(limit as Limit);
 
 /**
- * Resolves the initial page size and the selectable page size options for a paginated list.
- * Falls back to `DEFAULT_PAGE_LIMIT` (or the first option) when `pagination.initialPageSize` is not one of the options.
+ * Resolves the initial limit and the selectable limit options for a paginated list.
+ * Falls back to `DEFAULT_PAGE_LIMIT` (or the first option) when `pagination.defaultLimit` is not one of the options.
  *
  * Domains use `DEFAULT_PAGE_LIMITS` unless they need a different set (e.g. due to backend limits).
  * To override, define the set in the domain layer and use it for both the public prop type and this composable:
@@ -27,18 +27,18 @@ const isOption = <Limit extends number>(options: readonly Limit[], limit: number
  * const pageLimit = usePageLimit({ options: TRANSACTIONS_PAGE_LIMITS, pagination: () => props().pagination });
  */
 export function usePageLimit<Limit extends number>({ options, pagination }: UsePageLimitOptions<Limit>) {
-    const initialPageSize = pagination()?.initialPageSize;
+    const defaultLimit = pagination()?.defaultLimit;
     const fallback = isOption(options, DEFAULT_PAGE_LIMIT) ? DEFAULT_PAGE_LIMIT : options[0];
 
-    if (initialPageSize !== undefined && !isOption(options, initialPageSize)) {
+    if (defaultLimit !== undefined && !isOption(options, defaultLimit)) {
         console.warn(
-            `pagination.initialPageSize "${initialPageSize}" is not supported. Falling back to ${fallback}. Supported values: ${options.join(', ')}.`
+            `pagination.defaultLimit "${defaultLimit}" is not supported. Falling back to ${fallback}. Supported values: ${options.join(', ')}.`
         );
     }
 
     return {
-        initialLimit: isOption(options, initialPageSize) ? initialPageSize : fallback,
-        limitOptions: computed(() => (pagination()?.allowPageSizeSelection !== false ? options : undefined)),
+        initialLimit: isOption(options, defaultLimit) ? defaultLimit : fallback,
+        limitOptions: computed(() => (pagination()?.disableLimitSelection ? undefined : options)),
     } as const;
 }
 

@@ -12,7 +12,7 @@ export const disputesOverviewMeta: Meta<ElementProps<DisputesOverviewExternalPro
     },
     args: {
         component: DisputesOverviewElement,
-        pagination: { initialPageSize: 10, allowPageSizeSelection: true },
+        pagination: { defaultLimit: 10, disableLimitSelection: false },
     },
     parameters: {
         controls: {

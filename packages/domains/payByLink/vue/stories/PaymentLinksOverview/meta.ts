@@ -13,7 +13,7 @@ export const paymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExt
     },
     args: {
         component: PaymentLinksOverviewElement,
-        pagination: { initialPageSize: 10, allowPageSizeSelection: true },
+        pagination: { defaultLimit: 10, disableLimitSelection: false },
     },
     parameters: {
         controls: {

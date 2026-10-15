@@ -54,7 +54,7 @@ test.describe('Default', () => {
         });
 
         test('should apply the pagination config', async ({ page }) => {
-            await goToStory(page, { id: STORY_ID, args: { 'pagination.initialPageSize': '20', 'pagination.allowPageSizeSelection': '!false' } });
+            await goToStory(page, { id: STORY_ID, args: { 'pagination.defaultLimit': '20', 'pagination.disableLimitSelection': '!true' } });
 
             await expect(getReportRows(page)).toHaveCount(20);
             await expect(page.getByRole('navigation', { name: /Pagination/i }).getByRole('combobox', { name: /Items/i })).toHaveCount(0);

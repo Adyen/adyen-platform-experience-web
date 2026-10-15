@@ -84,6 +84,6 @@ test.describe('Filters', () => {
 });
 
 test('should reset pagination when selecting another balance account', async ({ page }) => {
-    await goToStory(page, { id: STORY_ID, args: { 'pagination.allowPageSizeSelection': '!false' } });
+    await goToStory(page, { id: STORY_ID, args: { 'pagination.disableLimitSelection': '!true' } });
     await expectBalanceAccountPaginationReset({ endpointPath: '/payouts', page, variant: 'Bento' });
 });

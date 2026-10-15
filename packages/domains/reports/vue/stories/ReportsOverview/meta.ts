@@ -11,7 +11,7 @@ export const reportsOverviewMeta: Meta<ElementProps<ReportsOverviewExternalProps
     },
     args: {
         component: ReportsOverviewElement,
-        pagination: { initialPageSize: 10, allowPageSizeSelection: true },
+        pagination: { defaultLimit: 10, disableLimitSelection: false },
     },
     parameters: {
         controls: {

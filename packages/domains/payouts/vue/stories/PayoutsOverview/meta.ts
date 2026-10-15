@@ -12,7 +12,7 @@ export const payoutsOverviewMeta: Meta<ElementProps<PayoutsOverviewExternalProps
     },
     args: {
         component: PayoutsOverviewElement,
-        pagination: { initialPageSize: 10, allowPageSizeSelection: true },
+        pagination: { defaultLimit: 10, disableLimitSelection: false },
     },
     parameters: {
         controls: {
