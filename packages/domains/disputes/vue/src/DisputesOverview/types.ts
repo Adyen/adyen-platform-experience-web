@@ -1,5 +1,5 @@
 import type { UIElementProps } from '@integration-components/core/vue';
-import type { IBalanceAccountBase } from '@integration-components/types';
+import type { GlobalAppearance, IBalanceAccountBase, WithDataGridAppearance } from '@integration-components/types';
 import type { PaginationProps } from '@integration-components/utils';
 import type {
     DisputeDetailsCustomization,
@@ -11,7 +11,9 @@ import type {
 
 export type { DisputeStatusGroup, DisputesListCustomization, DisputesOverviewTabsConfig };
 
-export interface DisputesOverviewExternalProps extends UIElementProps, PaginationProps<DisputesPageLimit> {
+export type DisputesOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
+
+export interface DisputesOverviewExternalProps extends UIElementProps<DisputesOverviewAppearance>, PaginationProps<DisputesPageLimit> {
     balanceAccountId?: string;
     onContactSupport?: () => void;
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
