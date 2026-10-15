@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
+import type { TranslationKey } from '@integration-components/core';
 import { ComponentShell, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
 import { getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';
@@ -17,6 +18,7 @@ const props = defineProps<{
     onContactSupport?: () => void;
     onDismiss?: () => void;
     onUpdate?: () => void;
+    onTitleChange?: (title: TranslationKey | undefined) => void;
     isDismissButtonHidden?: boolean;
 }>();
 
@@ -43,6 +45,9 @@ const errorInfo = computed(() => {
 
 type Screen = 'details' | 'expirationConfirmation' | 'expirationSuccess';
 const activeScreen = ref<Screen>('details');
+const modalTitleKey = computed<TranslationKey | undefined>(() => (activeScreen.value === 'details' ? 'payByLink.details.title' : undefined));
+
+watch(modalTitleKey, title => props.onTitleChange?.(title), { immediate: true });
 
 watch(
     () => props.id,
@@ -69,7 +74,7 @@ function handleNavigationToDetailsAfterExpiration() {
 <template>
     <div :class="styles.root">
         <div v-if="!withinModal && !hideTitles" :class="activeScreen !== 'details' ? accessibilityStyles.visuallyHidden : undefined">
-            <BentoTypography el="h1" variant="title" large stronger>
+            <BentoTypography el="h1" variant="title">
                 {{ i18n.get('payByLink.details.title') }}
             </BentoTypography>
         </div>
