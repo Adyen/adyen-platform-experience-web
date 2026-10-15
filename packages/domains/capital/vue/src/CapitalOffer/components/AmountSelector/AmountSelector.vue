@@ -6,12 +6,7 @@ import { useUniqueId } from '@integration-components/composables-vue';
 import type { IDynamicOffersConfig } from '@integration-components/types';
 import Slider from '../Slider/Slider.vue';
 import styles from './AmountSelector.module.scss';
-import {
-    getDefaultAmountValue,
-    getPercentageOfRange,
-    getRelativeToDefault,
-    sharedCapitalOfferAnalyticsEventProperties,
-} from '@integration-components/capital/domain';
+import { getDefaultAmountValue, getPercentageOfRange, getRelativeToDefault } from '@integration-components/capital/domain';
 
 const props = defineProps<{
     dynamicOfferConfig: IDynamicOffersConfig;
@@ -35,17 +30,17 @@ const getValue = (event: Event) => Number((event.target as HTMLInputElement).val
 const emitChangeEvent = (amountValue: number) => {
     const config = props.dynamicOfferConfig;
 
-    userEvents.addEvent?.('Changed capital offer slider', {
-        ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing offer',
+    userEvents.addEvent?.('Custom event', {
+        category: 'Capital offer component',
+        subCategory: 'Offer selection',
         label: 'Slider changed',
         currency: config.minAmount.currency,
+        isEarlyRenewal: props.isEarlyRenewal,
+        max: config.maxAmount.value,
+        min: config.minAmount.value,
+        relativeToDefault: getRelativeToDefault(amountValue, getDefaultAmountValue(config)),
         value: amountValue,
         valuePercentage: getPercentageOfRange(amountValue, config.minAmount.value, config.maxAmount.value),
-        min: config.minAmount.value,
-        max: config.maxAmount.value,
-        relativeToDefault: getRelativeToDefault(amountValue, getDefaultAmountValue(config)),
-        isEarlyRenewal: props.isEarlyRenewal,
     });
 };
 

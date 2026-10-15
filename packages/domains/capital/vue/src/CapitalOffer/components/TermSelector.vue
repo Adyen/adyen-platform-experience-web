@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoSelectionCardGroup } from '@adyen/bento-vue3';
-import {
-    calculatePercentageFromBasisPoints,
-    getAvailableTerms,
-    getRelativeToDefault,
-    sharedCapitalOfferAnalyticsEventProperties,
-} from '@integration-components/capital/domain';
+import { calculatePercentageFromBasisPoints, getAvailableTerms, getRelativeToDefault } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
 import { useFormatTermLabel } from '../composables/useFormatTermLabel';
@@ -63,15 +58,15 @@ const emitChangeEvent = (term: number) => {
     const availableRates = availableTerms.value.map(availableTerm => props.offersByTerm[availableTerm]?.repaymentRate);
 
     userEvents.addEvent?.('Selected repayment term', {
-        ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing offer',
+        category: 'Capital offer component',
+        subCategory: 'Offer selection',
         allTerms: props.estimatedTerms,
-        availableTerms: availableTerms.value,
-        selectedTerm: term,
-        relativeToDefault: getRelativeToDefault(term, 180),
         availableRates,
-        selectedRate,
+        availableTerms: availableTerms.value,
         isEarlyRenewal: props.isEarlyRenewal,
+        relativeToDefault: getRelativeToDefault(term, 180),
+        selectedRate,
+        selectedTerm: term,
     });
 };
 

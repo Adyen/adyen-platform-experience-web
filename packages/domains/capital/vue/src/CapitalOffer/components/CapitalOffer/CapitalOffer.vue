@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
-import { getDynamicOfferConfig, sharedCapitalOfferAnalyticsEventProperties } from '@integration-components/capital/domain';
+import { getDynamicOfferConfig } from '@integration-components/capital/domain';
 import { useLandedPageEvent, useShouldHideTitles } from '@integration-components/composables-vue';
 import OfferSelection from '../OfferSelection/OfferSelection.vue';
 import OfferSummary from '../OfferSummary/OfferSummary.vue';
@@ -29,9 +29,8 @@ const createdOffer = ref<IGrantOfferResponseDTO>();
 
 useLandedPageEvent(
     () => ({
-        ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Capital offer',
-        label: 'Capital offer',
+        category: 'Capital offer component',
+        subCategory: 'Offer selection',
         isEarlyRenewal: !!capitalState.value?.renewableGrants.length,
     }),
     () => !!capitalState.value

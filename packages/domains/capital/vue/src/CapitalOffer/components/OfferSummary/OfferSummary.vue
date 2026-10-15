@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoAlert, BentoButton, BentoButtonActions, type BentoButtonActionsList } from '@adyen/bento-vue3';
-import {
-    getBalanceAccountErrorMessage,
-    sharedCapitalOfferAnalyticsEventProperties,
-    type EnhancedCapitalState,
-    type OnFundsRequestCallback,
-} from '@integration-components/capital/domain';
+import { getBalanceAccountErrorMessage, type EnhancedCapitalState, type OnFundsRequestCallback } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
 import { useRequestFunds } from '../../composables/useRequestFunds';
@@ -63,8 +58,8 @@ async function handleRequestFunds() {
     }
 
     userEvents.addEvent?.('Clicked button', {
-        ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing summary',
+        category: 'Capital offer component',
+        subCategory: 'Offer summary',
         label: 'Request funds',
         isEarlyRenewal: isEarlyRenewal.value,
     });
@@ -73,9 +68,9 @@ async function handleRequestFunds() {
 function handleBack() {
     props.onBack();
     userEvents.addEvent?.('Clicked button', {
-        ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing summary',
-        label: 'Back to slider view',
+        category: 'Capital offer component',
+        subCategory: 'Offer summary',
+        label: 'Go back to offer selection',
         isEarlyRenewal: isEarlyRenewal.value,
     });
 }

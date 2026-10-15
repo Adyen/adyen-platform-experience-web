@@ -2,7 +2,7 @@ import { ref } from 'vue';
 import { useConfigContext, useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IMissingActionType } from '@integration-components/types';
 import { EMPTY_OBJECT } from '@integration-components/utils';
-import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../domain/src/CapitalOverview/constants';
+import { GRANT_ACTION_CONFIGS } from '../../../../domain/src/CapitalOverview/constants';
 
 const getTopWindowHref = () => window.top?.location.href || window.location.href;
 
@@ -53,8 +53,8 @@ export const useHostedAction = () => {
             void redirectToHostedAction(actionType);
         } finally {
             userEvents.addEvent?.('Clicked link', {
-                ...sharedCapitalOverviewAnalyticsEventProperties,
-                subCategory: 'Missing action',
+                category: 'Capital overview component',
+                subCategory: 'Grant item',
                 label: GRANT_ACTION_CONFIGS[actionType].eventLabel,
             });
         }

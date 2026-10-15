@@ -4,7 +4,6 @@ import {
     getEstimatedTerms,
     getOfferForTerm,
     getOffersByTerm,
-    sharedCapitalOfferAnalyticsEventProperties,
     type EnhancedCapitalState,
     getDefaultAmountValue,
     getDefaultTerm,
@@ -104,9 +103,9 @@ const handleReview = async () => {
         }
     } finally {
         userEvents.addEvent?.('Clicked button', {
-            ...sharedCapitalOfferAnalyticsEventProperties,
-            subCategory: 'Business financing offer',
-            label: 'Review offer',
+            category: 'Capital offer component',
+            subCategory: 'Offer selection',
+            label: 'Review',
             isEarlyRenewal: isEarlyRenewal.value,
         });
     }
