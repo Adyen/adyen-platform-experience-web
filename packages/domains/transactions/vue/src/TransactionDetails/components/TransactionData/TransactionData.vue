@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
-import { BentoLoadingIndicator } from '@adyen/bento-vue3';
+import { BentoLoadingIndicator, BentoTypography } from '@adyen/bento-vue3';
+import { useCoreContext, useModalContext } from '@integration-components/core/vue';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import PaymentDetails from '../PaymentDetails/PaymentDetails.vue';
 import TransactionSkeleton from '../TransactionSkeleton/TransactionSkeleton.vue';
 import { ActiveView } from '../../../../../domain/src';
@@ -9,6 +11,7 @@ import type { TransactionDetails, TransactionDetailsCustomization } from '../../
 import type { ILineItem } from '@integration-components/types';
 import type { useTransaction } from '../../composables/useTransaction';
 import { useRefundMetadata } from '../../composables/useRefundMetadata';
+import styles from './TransactionData.module.scss';
 
 type TransactionNavigatorState = ReturnType<typeof useTransaction>['transactionNavigator']['value'];
 
@@ -21,6 +24,11 @@ const props = defineProps<{
     transaction: TransactionDetails;
     transactionNavigator: TransactionNavigatorState;
 }>();
+
+const { i18n } = useCoreContext();
+const { withinModal } = useModalContext();
+const hideTitles = useShouldHideTitles();
+const shouldHideTitle = computed(() => withinModal || hideTitles.value);
 
 const PaymentRefund = defineAsyncComponent({
     loader: () => import('../PaymentRefund/PaymentRefund.vue'),
@@ -47,8 +55,14 @@ watch(refundMeta.refundLocked, isLocked => {
 </script>
 
 <template>
+    <div v-if="!shouldHideTitle" :class="styles.title">
+        <BentoTypography variant="title">
+            {{ i18n.get('transactions.details.title') }}
+        </BentoTypography>
+    </div>
+
     <div v-if="props.fetchingTransaction" aria-busy="true">
-        <TransactionSkeleton />
+        <TransactionSkeleton :with-title="false" />
     </div>
 
     <PaymentRefund

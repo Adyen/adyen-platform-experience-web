@@ -1,0 +1,5 @@
+@use '@integration-components/style' as style;
+
+.title {
+    margin-bottom: style.token(spacer-060);
+}

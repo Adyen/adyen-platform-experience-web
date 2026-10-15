@@ -1,5 +1,15 @@
 @use '@integration-components/style';
 
+// Mirrors the real title's bottom margin.
+.title {
+    margin-bottom: style.token(spacer-060);
+}
+
+// "Transaction details"
+.titleText {
+    max-width: calc(#{style.token(spacer-120)} * 2.5);
+}
+
 // Same as BentoTag: caption line-height plus spacer-010 vertical padding on each side.
 // Sized for the category tag, e.g. "Payment".
 .tag {
