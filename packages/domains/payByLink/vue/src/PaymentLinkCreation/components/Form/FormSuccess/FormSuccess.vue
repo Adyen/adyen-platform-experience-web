@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { BentoButtonActions, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
+import { ResponsiveButtonActions } from '@integration-components/composables-vue';
+import { BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
 import styles from './FormSuccess.module.scss';
 
@@ -59,8 +60,6 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
                 {{ i18n.get('payByLink.creation.success.description') }}
             </BentoTypography>
         </div>
-        <div :class="styles.actions">
-            <BentoButtonActions :actions="actionButtons" layout="buttons-end" />
-        </div>
+        <ResponsiveButtonActions :actions="actionButtons" />
     </section>
 </template>

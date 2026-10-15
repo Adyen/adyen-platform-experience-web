@@ -18,7 +18,7 @@ test.describe('Compact filters', () => {
 
         await expect(filterBar.getByRole('button', { name: /^All filters/ })).toBeVisible();
         await expect(filterBar.getByRole('button', { name: /^Stores/ })).toBeHidden();
-        await expect(filterBar.getByRole('button', { name: /^Date range/ })).toBeHidden();
+        await expect(filterBar.getByRole('button', { name: /^Creation date/ })).toBeHidden();
         await expect(filterBar.getByRole('button', { name: /^Type/ })).toBeHidden();
         await expect(filterBar.getByRole('button', { name: /^Status/ })).toBeHidden();
         await expect(filterBar.getByRole('button', { name: /^Merchant reference/ })).toBeHidden();
@@ -34,7 +34,7 @@ test.describe('Compact filters', () => {
         const modal = page.getByRole('dialog');
         await expect(modal).toBeVisible();
         await expect(modal.getByText('Stores', { exact: true })).toBeVisible();
-        await expect(modal.getByText('Date range', { exact: true })).toBeVisible();
+        await expect(modal.getByText('Creation date', { exact: true })).toBeVisible();
         await expect(modal.getByText('Type', { exact: true })).toBeVisible();
         await expect(modal.getByText('Status', { exact: true })).toBeVisible();
         await expect(modal.getByText('Merchant reference', { exact: true })).toBeVisible();
