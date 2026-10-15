@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useLandedPageEvent, useDurationEvent } from '@integration-components/composables-vue';
 import { BentoAlert, BentoButton } from '@adyen/bento-vue3';
@@ -84,8 +84,21 @@ watch([totalsError, balancesError, totalsRetrying, balancesRetrying], () => {
     nextTick(updateSummaryLayout);
 });
 
+// The sections are absolutely positioned on wider screens, so the summary height has to follow their
+// size changes (loaded figures, a horizontal scrollbar appearing), not just the error state.
+let summaryResizeObserver: ResizeObserver | undefined;
+
 onMounted(() => {
     updateSummaryLayout();
+
+    if (typeof ResizeObserver === 'undefined') return;
+    summaryResizeObserver = new ResizeObserver(updateSummaryLayout);
+    if (totalsSectionEl.value) summaryResizeObserver.observe(totalsSectionEl.value);
+    if (balancesSectionEl.value) summaryResizeObserver.observe(balancesSectionEl.value);
+});
+
+onBeforeUnmount(() => {
+    summaryResizeObserver?.disconnect();
 });
 </script>
 
