@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { BentoAlert, BentoButton, BentoButtonActions, BentoCheckbox, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
+import { BentoAlert, BentoButtonActions, BentoCheckbox, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import SuccessIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
+import { ResponsiveButtonActions } from '@integration-components/composables-vue';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { DISPUTE_TYPE } from '@integration-components/disputes/domain';
 import { isFunction } from '@integration-components/utils';
@@ -75,6 +76,13 @@ const actionButtons = computed(() => [
         variant: 'secondary',
     },
 ]);
+const resultActionButtons = computed<BentoButtonActionsList>(() => [
+    {
+        title: i18n.get('disputes.management.common.actions.showDetails'),
+        event: goBack,
+        variant: 'secondary',
+    },
+]);
 
 const acceptError = ref(false);
 
@@ -111,9 +119,7 @@ watch(disputeAccepted, accepted => {
             <BentoTypography variant="title">
                 {{ acceptedLabel }}
             </BentoTypography>
-            <BentoButton variant="secondary" @click="goBack">
-                {{ i18n.get('disputes.management.common.actions.showDetails') }}
-            </BentoButton>
+            <ResponsiveButtonActions :actions="resultActionButtons" />
         </div>
         <template v-else>
             <BentoTypography el="h2" variant="title">
