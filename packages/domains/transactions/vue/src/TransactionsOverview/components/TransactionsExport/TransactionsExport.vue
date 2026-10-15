@@ -242,9 +242,11 @@ const popoverActions = computed(() => [
                 </div>
             </div>
 
-            <BentoAlert type="highlight">
-                <template #default>
-                    {{ i18n.get('transactions.overview.export.actions.download.info') }}
+            <BentoAlert type="highlight" variant="tip">
+                <template #description>
+                    <BentoTypography variant="body" el="span" strongest>
+                        {{ i18n.get('transactions.overview.export.actions.download.info') }}
+                    </BentoTypography>
                 </template>
             </BentoAlert>
         </BentoPopover>
