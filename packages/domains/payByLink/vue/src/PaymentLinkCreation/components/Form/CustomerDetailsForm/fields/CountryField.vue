@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { BentoDropdown } from '@adyen/bento-vue3';
 import FieldWrapper from '../../../fields/FieldWrapper.vue';
 import { useWizard } from '../../../../composables/wizardContext';
@@ -21,6 +21,16 @@ const config = computed(() => wizard.getFieldConfig(props.name));
 const error = computed(() => wizard.getError(props.name));
 const modelValue = computed(() => (wizard.values.value[props.name] as string | undefined) ?? '');
 const dropdownItems = computed(() => props.items.map(item => ({ label: item.name, value: item.id })));
+
+watch(
+    [() => props.items, () => props.loading, () => config.value.visible],
+    ([items, loading, visible]) => {
+        if (visible && !loading && items.length === 1 && items[0] && !modelValue.value) {
+            onUpdate(items[0].id);
+        }
+    },
+    { immediate: true }
+);
 
 function onUpdate(value: string | number | { value?: string | number } | Array<unknown> | undefined) {
     if (Array.isArray(value)) return;
