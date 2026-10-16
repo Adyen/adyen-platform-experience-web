@@ -4,6 +4,20 @@ import { goToStory } from '@integration-components/testing/playwright/utils';
 const STORY_ID = 'mocked-pay-by-link-payment-link-creation--default';
 const getFieldError = (page: Page, name: string) => page.getByTestId(`form-field-${name}`).locator('[aria-live="polite"]');
 
+test.describe('Payment link creation - Standalone title', () => {
+    test.beforeEach(async ({ page }) => {
+        await goToStory(page, { id: STORY_ID });
+    });
+
+    test('should keep the title in the standalone creation content', async ({ page }) => {
+        await expect(page.getByTestId('form-field-store')).toBeVisible();
+        await Promise.all([
+            expect(page.getByText('New payment link', { exact: true })).toBeVisible(),
+            expect(page.getByRole('dialog')).toHaveCount(0),
+        ]);
+    });
+});
+
 test('Shows the selected store description as selected value', async ({ page }) => {
     await goToStory(page, { id: STORY_ID });
 

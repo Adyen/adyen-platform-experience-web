@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, provide, ref, watch } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useCoreContext, useModalContext } from '@integration-components/core/vue';
+import type { TranslationKey } from '@integration-components/core';
 import {
     BentoAlert,
     BentoButton,
@@ -24,12 +25,14 @@ import styles from './PaymentLinkCreationForm.module.scss';
 
 type PaymentLinkCreationFormProps = Pick<PaymentLinkCreationProps, 'fieldsConfig' | 'storeIds' | 'onDismiss' | 'onContactSupport'> & {
     embeddedInOverview?: boolean;
+    onTitleChange?: (title: TranslationKey | undefined) => void;
 };
 
 const props = defineProps<PaymentLinkCreationFormProps>();
 const emit = defineEmits<{ 'payment-link-created': [data: any] }>();
 
 const { i18n } = useCoreContext();
+const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
 const TERMS_AND_CONDITIONS_SETTINGS_ITEMS: PaymentLinkSettingsItem[] = ['termsAndConditions'];
 
@@ -81,6 +84,10 @@ const submitError = ref<any>(null);
 const isSubmitError = ref(false);
 const selectedStoreNavigationCache = ref('');
 const showTermsAndConditions = ref(false);
+const titleKey = computed<TranslationKey>(() => (showTermsAndConditions.value ? 'payByLink.settings.title' : 'payByLink.creation.form.title'));
+
+watch(titleKey, title => props.onTitleChange?.(title), { immediate: true });
+
 const PaymentLinkSettingsContainer = defineAsyncComponent({
     loader: () => import('../../../PaymentLinkSettings/components/PaymentLinkSettingsContainer.vue'),
     loadingComponent: BentoLoadingIndicator,
@@ -189,7 +196,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
     />
     <div v-else :class="styles.root">
         <div v-if="!data.isFirstLoadDone.value" :class="styles.header">
-            <BentoTypography v-if="!hideTitles" variant="title" stronger>
+            <BentoTypography v-if="!withinModal && !hideTitles" variant="title" stronger>
                 {{ i18n.get('payByLink.creation.form.title') }}
             </BentoTypography>
             <div :class="styles.skeleton">
@@ -201,7 +208,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
 
         <template v-else>
             <div :class="styles.header">
-                <BentoTypography v-if="!hideTitles" variant="title" stronger>
+                <BentoTypography v-if="!withinModal && !hideTitles" variant="title" stronger>
                     {{ i18n.get('payByLink.creation.form.title') }}
                 </BentoTypography>
                 <BentoStepper

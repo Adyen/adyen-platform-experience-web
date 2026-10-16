@@ -12,7 +12,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const modalTitleKey = ref<TranslationKey>();
+const modalTitleKey = ref<TranslationKey | undefined>('payByLink.details.title');
 const modalTitle = computed(() => (modalTitleKey.value ? i18n.get(modalTitleKey.value) : undefined));
 const PaymentLinkDetails = defineAsyncComponent({
     loader: () => import('../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails.vue'),

@@ -16,6 +16,13 @@ test.describe('Default', () => {
         await goToStory(page, { id: STORY_ID });
     });
 
+    test('should keep the title in the standalone settings content', async ({ page }) => {
+        await Promise.all([
+            expect(page.getByRole('heading', { name: 'Settings', exact: true })).toBeVisible(),
+            expect(page.getByRole('dialog')).toHaveCount(0),
+        ]);
+    });
+
     test('should render the settings sections as accessible navigation items', async ({ page }) => {
         const navigation = page.getByRole('navigation', { name: 'Settings' });
 
