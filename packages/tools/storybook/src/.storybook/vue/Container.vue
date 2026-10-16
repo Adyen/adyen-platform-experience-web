@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import {
-    type Appearance,
+    type GlobalAppearance,
     type CoreInstance,
     type SupportedLocales,
     type CoreOptions,
@@ -19,9 +19,9 @@ const props = defineProps<{
     componentProps?: Record<string, any>;
     locale?: SupportedLocales;
     fontFamily?: string;
-    container?: Appearance['container'];
-    illustrations?: Appearance['illustrations'];
-    titles?: Appearance['titles'];
+    container?: GlobalAppearance['container'];
+    illustrations?: GlobalAppearance['illustrations'];
+    titles?: GlobalAppearance['titles'];
     theme?: ThemeMode | 'story';
     themeDark?: boolean;
     themeVariables?: ThemeVariables;
@@ -45,7 +45,7 @@ const configuredThemeMode = computed<ThemeMode>(() => {
     return storyCoreOptions.value.themeMode ?? 'light';
 });
 
-const configuredAppearance = computed<Appearance>(() => ({
+const configuredAppearance = computed<GlobalAppearance>(() => ({
     ...storyCoreOptions.value.appearance,
     ...(props.container && { container: props.container }),
     ...(props.illustrations && { illustrations: props.illustrations }),
@@ -53,8 +53,11 @@ const configuredAppearance = computed<Appearance>(() => ({
 }));
 
 const componentPropsWithoutCoreOptions = computed(() => {
-    const { coreOptions: _, ...rest } = props.componentProps ?? {};
-    return rest;
+    const { coreOptions: _, dataGridDensity, ...rest } = props.componentProps ?? {};
+    if (!dataGridDensity) return rest;
+    const dataGrid = { ...rest.appearance?.dataGrid, density: dataGridDensity };
+    const appearance = { ...rest.appearance, dataGrid };
+    return { ...rest, appearance };
 });
 
 const getThemeOptions = (): Pick<CoreOptions, 'themeMode' | 'customTheme'> => {

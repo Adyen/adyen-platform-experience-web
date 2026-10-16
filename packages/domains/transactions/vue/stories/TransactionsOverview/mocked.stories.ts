@@ -30,6 +30,14 @@ export const Default: ElementStory<TransactionsOverviewExternalProps> = {
     },
 };
 
+export const Condensed: ElementStory<TransactionsOverviewExternalProps> = {
+    name: 'Condensed',
+    args: {
+        ...sharedArgs,
+        dataGridDensity: 'condensed',
+    },
+};
+
 export const SingleBalanceAccount: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Single balance account',
     args: sharedArgs,
