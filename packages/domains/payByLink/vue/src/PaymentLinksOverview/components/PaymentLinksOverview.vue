@@ -142,7 +142,7 @@ function onRowClick(paymentLink: IPaymentLinkItem) {
     const showPaymentLinkDetailsModal = () => showDetailsModal(paymentLink);
 
     if (props.onRecordSelection) {
-        props.onRecordSelection({ id: paymentLink.paymentLinkId, showModal: showPaymentLinkDetailsModal });
+        props.onRecordSelection({ id: paymentLink.paymentLinkId, showDetails: showPaymentLinkDetailsModal });
     } else {
         showPaymentLinkDetailsModal();
     }

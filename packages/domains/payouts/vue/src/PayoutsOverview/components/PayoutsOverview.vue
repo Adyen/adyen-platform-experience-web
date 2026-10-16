@@ -89,13 +89,13 @@ function onRowClick(payout: IPayout) {
     const showPayoutDetailsModal = () => showModal(payout, balanceAccount);
 
     // Notify the consumer first so they can intercept and decide whether to
-    // call `showModal` themselves. If no consumer callback is provided we open
+    // call `showDetails` themselves. If no consumer callback is provided we open
     // the modal directly.
     if (props.onRecordSelection) {
         props.onRecordSelection({
             balanceAccountId,
             date: payout.createdAt ?? '',
-            showModal: showPayoutDetailsModal,
+            showDetails: showPayoutDetailsModal,
         });
     } else {
         showPayoutDetailsModal();

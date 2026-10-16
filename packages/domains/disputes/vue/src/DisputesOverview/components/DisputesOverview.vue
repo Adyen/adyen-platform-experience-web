@@ -114,7 +114,7 @@ function onRowClick(dispute: IDisputeListItem) {
     const showDisputeModal = () => showModal(id);
 
     if (props.onRecordSelection) {
-        props.onRecordSelection({ id, showModal: showDisputeModal });
+        props.onRecordSelection({ id, showDetails: showDisputeModal });
     } else {
         showDisputeModal();
     }

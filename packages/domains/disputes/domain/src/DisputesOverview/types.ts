@@ -16,7 +16,7 @@ export interface DisputesOverviewTabsConfig {
 
 export interface DisputesOverviewProps extends UIElementProps, PaginationProps<DisputesPageLimit> {
     balanceAccountId?: string;
-    onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
+    onRecordSelection?: (selection: { id: string; showDetails: () => void }) => any;
     tabs?: DisputesOverviewTabsConfig;
     dataCustomization?: {
         list?: DisputesListCustomization;
