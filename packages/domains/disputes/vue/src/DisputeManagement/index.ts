@@ -5,5 +5,4 @@ export type {
     DisputeDetailsFields,
     DisputeManagementComponentProps,
     DisputeManagementExternalProps,
-    DisputeManagementProps,
 } from './types';

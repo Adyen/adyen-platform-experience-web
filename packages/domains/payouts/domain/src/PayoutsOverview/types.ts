@@ -1,4 +1,4 @@
-import type { CustomDataRetrieved, DataCustomizationObject, IPayout, UIElementProps } from '@integration-components/types';
+import type { CustomDataRetrieved, DataCustomizationObject, IPayout, WithBalanceAccountId } from '@integration-components/types';
 import type { PaginationProps } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { PayoutDetailsCustomization } from '../PayoutDetails/types';
@@ -9,13 +9,10 @@ export type PayoutsTableFields = StringWithAutocompleteOptions<PayoutsTableCols>
 
 export type PayoutsDataGridCustomization = DataCustomizationObject<PayoutsTableFields, IPayout[], CustomDataRetrieved[]>;
 
-export interface PayoutsOverviewProps extends UIElementProps, PaginationProps {
-    balanceAccountId?: string;
+export interface PayoutsOverviewProps extends PaginationProps, WithBalanceAccountId {
     onRecordSelection?: (selection: { balanceAccountId: string; date: string; showDetails: () => void }) => any;
     dataCustomization?: {
         dataGrid?: PayoutsDataGridCustomization;
         details?: PayoutDetailsCustomization;
     };
 }
-
-export type PayoutsOverviewComponentProps = PayoutsOverviewProps;

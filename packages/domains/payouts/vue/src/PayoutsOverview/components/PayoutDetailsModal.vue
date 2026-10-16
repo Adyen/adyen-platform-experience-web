@@ -2,13 +2,13 @@
 import { defineAsyncComponent } from 'vue';
 import { BentoLoadingIndicator, BentoModal } from '@adyen/bento-vue3';
 import { ModalContextProvider, useCoreContext } from '@integration-components/core/vue';
-import type { PayoutsOverviewExternalProps } from '../types';
+import type { PayoutsOverviewComponentProps } from '../types';
 
 const props = defineProps<{
     id: string;
     date: string;
     balanceAccountDescription?: string;
-    dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
+    dataCustomization?: PayoutsOverviewComponentProps['dataCustomization'];
     onContactSupport?: () => void;
     onClose: () => void;
 }>();

@@ -93,6 +93,7 @@
         "packages/domains/capital/domain/src/CapitalOffer/utils/offers.d.ts",
         "packages/domains/capital/domain/src/CapitalOffer/utils/renewal.d.ts",
         "packages/domains/capital/domain/src/CapitalOverview/index.d.ts",
+        "packages/domains/capital/domain/src/CapitalOverview/types.d.ts",
         "packages/domains/capital/domain/src/CapitalOverview/utils/grant.d.ts",
         "packages/domains/capital/domain/src/CapitalOverview/utils/grants.d.ts",
         "packages/domains/capital/domain/src/CapitalOverview/utils/index.d.ts",
@@ -431,7 +432,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "76987decd7b021e4192ef91c0ea3226beac526869a057658bc6b45d4cc89aac4",
+    "typeTreeHash": "55d8f8f75465a454fc20e3876b7c6866442cb5395664377e6abc2eabbef34be8",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",

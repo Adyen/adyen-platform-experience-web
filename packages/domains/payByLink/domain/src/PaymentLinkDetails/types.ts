@@ -1,14 +1,10 @@
 import type { DomainTranslationKey } from '@integration-components/core/translations';
-import type { UIElementProps } from '@integration-components/types';
+import type { WithDismissCallback } from '@integration-components/types';
 
-export interface PaymentLinkDetailsProps extends UIElementProps {
+export interface PaymentLinkDetailsProps extends WithDismissCallback {
     id: string;
-    onContactSupport?: () => void;
-    onDismiss?: () => void;
     onUpdate?: () => void;
 }
-
-export type PaymentLinkDetailsComponentProps = PaymentLinkDetailsProps;
 
 export type PaymentLinkDetailsScreen = 'details' | 'expirationConfirmation' | 'expirationSuccess';
 

@@ -9,22 +9,19 @@ import TransactionDetailsModal from './TransactionDetailsModal.vue';
 import { useTransactionsOverviewState } from '../../composables/useTransactionsOverviewState';
 import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_DETAILS } from '@integration-components/transactions/domain';
 import type { ITransaction } from '@integration-components/types';
-import type { TransactionsOverviewExternalProps, IBalanceAccountBase } from '../../types';
+import type { TransactionsOverviewComponentProps, IBalanceAccountBase } from '../../types';
 import TransactionsFilters from '../TransactionFilters/TransactionsFilters.vue';
 import TransactionsExport from '../TransactionsExport/TransactionsExport.vue';
 import styles from './TransactionsOverview.module.scss';
 import { containerQueries, useResponsiveContainer } from '@integration-components/composables-vue';
 
-const props = defineProps<{
-    balanceAccountId?: string;
-    pagination?: TransactionsOverviewExternalProps['pagination'];
-    hideInsights?: boolean;
-    onContactSupport?: () => void;
-    onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
-    dataCustomization?: TransactionsOverviewExternalProps['dataCustomization'];
-    balanceAccounts?: IBalanceAccountBase[];
-    isLoadingBalanceAccount?: boolean;
-}>();
+const props = defineProps<
+    TransactionsOverviewComponentProps & {
+        hideInsights?: boolean;
+        balanceAccounts?: IBalanceAccountBase[];
+        isLoadingBalanceAccount?: boolean;
+    }
+>();
 
 const userEvents = useEventDispatcherContext();
 const isMobile = useResponsiveContainer(containerQueries.down.xs);

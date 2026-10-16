@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useShouldHideTitles } from '@integration-components/composables-vue';
-import type { CapitalOfferProps } from '../types';
+import type { CapitalOfferComponentProps } from '../types';
 import CapitalOffer from './CapitalOffer.vue';
 
-const props = defineProps<Omit<CapitalOfferProps, 'hideTitle'>>();
+const props = defineProps<Omit<CapitalOfferComponentProps, 'hideTitle'>>();
 const hideTitles = useShouldHideTitles();
 </script>
 

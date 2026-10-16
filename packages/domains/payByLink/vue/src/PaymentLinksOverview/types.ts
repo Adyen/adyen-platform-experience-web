@@ -4,4 +4,5 @@ import type { PaymentLinksOverviewProps } from '../../../domain/src';
 
 export type PaymentLinksOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
 
-export type PaymentLinksOverviewExternalProps = PaymentLinksOverviewProps & UIElementProps<PaymentLinksOverviewAppearance>;
+export type PaymentLinksOverviewExternalProps = UIElementProps<PaymentLinksOverviewAppearance> & PaymentLinksOverviewProps;
+export type PaymentLinksOverviewComponentProps = Omit<PaymentLinksOverviewExternalProps, 'core' | 'appearance'>;

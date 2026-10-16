@@ -7,12 +7,12 @@ import { useConfigContext, useCoreContext } from '@integration-components/core/v
 import { DISPUTE_TYPE } from '@integration-components/disputes/domain';
 import { isFunction } from '@integration-components/utils';
 import { useDisputeFlow } from '../composables/useDisputeFlow';
-import type { DisputeManagementProps } from '../types';
+import type { DisputeManagementComponentProps } from '../types';
 import flowStyles from './DisputeFlow.module.scss';
 import styles from './AcceptDisputeFlow.module.scss';
 
 const props = defineProps<{
-    onDisputeAccept?: DisputeManagementProps['onDisputeAccept'];
+    onDisputeAccept?: DisputeManagementComponentProps['onDisputeAccept'];
 }>();
 
 const config = useConfigContext();

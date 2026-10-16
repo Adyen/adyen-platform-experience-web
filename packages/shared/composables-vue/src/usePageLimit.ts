@@ -20,8 +20,11 @@ const isOption = <Limit extends number>(options: readonly Limit[], limit: number
  * export const TRANSACTIONS_PAGE_LIMITS = [10, 15, 20, 25, 30, 50, 100] as const;
  * export type TransactionsPageLimit = (typeof TRANSACTIONS_PAGE_LIMITS)[number];
  *
+ * // domain/src/TransactionsOverview/types.ts
+ * export interface TransactionsOverviewProps extends PaginationProps<TransactionsPageLimit> {}
+ *
  * // vue/src/TransactionsOverview/types.ts
- * export interface TransactionsOverviewExternalProps extends UIElementProps, PaginationProps<TransactionsPageLimit> {}
+ * export type TransactionsOverviewExternalProps = UIElementProps & TransactionsOverviewProps;
  *
  * // vue/src/TransactionsOverview/composables/useTransactionsList.ts
  * const pageLimit = usePageLimit({ options: TRANSACTIONS_PAGE_LIMITS, pagination: () => props().pagination });

@@ -25,7 +25,6 @@ export interface PaymentLinksOverviewFilters {
 export interface PaymentLinksOverviewProps extends PaginationProps {
     balanceAccountId?: string;
     storeIds?: StoreIds;
-    onContactSupport?: () => void;
     onRecordSelection?: (selection: { id: string; showDetails: () => void }) => void;
     paymentLinkCreation?: {
         onPaymentLinkCreated?: (paymentLink: PaymentLinkCreationFormValues) => void;

@@ -23,6 +23,9 @@ export type { SessionObject, SessionRequest } from '../ConfigContext.types';
 export interface UIElementProps<TComponentAppearance extends GlobalAppearance = GlobalAppearance> {
     core: CoreInstance;
     appearance?: TComponentAppearance;
+    onContactSupport?: () => void;
+    onError?: OnErrorHandler;
+    ref?: any;
 }
 
 export interface CoreInstance {

@@ -6,17 +6,14 @@ import PayoutData from './PayoutData.vue';
 import PayoutSkeleton from './PayoutSkeleton.vue';
 import { usePayoutDetails } from '../composables/usePayoutDetails';
 import { PAYOUT_TABLE_FIELDS } from '../../PayoutsOverview/constants';
-import type { PayoutDetailsCustomization } from '../types';
+import type { PayoutDetailsComponentProps } from '../types';
 import type { CustomDataRetrieved } from '@integration-components/types';
 
-const props = defineProps<{
-    id: string;
-    date: string;
-    balanceAccountDescription?: string;
-    onContactSupport?: () => void;
-    onDismiss?: () => void;
-    dataCustomization?: { details?: PayoutDetailsCustomization };
-}>();
+const props = defineProps<
+    PayoutDetailsComponentProps & {
+        balanceAccountDescription?: string;
+    }
+>();
 
 const { data, error, isFetching } = usePayoutDetails(() => ({
     fetchEnabled: !!props.id && !!props.date,

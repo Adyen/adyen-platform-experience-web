@@ -9,15 +9,15 @@ import TransactionsTable from '../TransactionsTable/TransactionsTable.vue';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
 import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '@integration-components/transactions/domain';
 import type { ITransaction } from '@integration-components/types';
-import type { IBalanceAccountBase, TransactionsOverviewExternalProps } from '../../types';
+import type { IBalanceAccountBase, TransactionsOverviewComponentProps } from '../../types';
 import styles from '../TransactionsOverview/TransactionsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccounts?: IBalanceAccountBase[];
     isLoadingBalanceAccount: boolean;
     onContactSupport?: () => void;
-    onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
-    dataCustomization?: TransactionsOverviewExternalProps['dataCustomization'];
+    onRecordSelection?: TransactionsOverviewComponentProps['onRecordSelection'];
+    dataCustomization?: TransactionsOverviewComponentProps['dataCustomization'];
     onRowClick: (transaction: ITransaction) => void;
 }>();
 

@@ -4,14 +4,14 @@ import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import type { IPaymentLinkConfiguration, IPaymentLinkCountry, IPaymentLinkSettings, IPaymentLinkStore } from '@integration-components/types';
 import { getFormSteps, type FormStepConfig } from '../../../../../domain/src';
 import type { TranslationKey } from '@integration-components/core';
-import type { PaymentLinkCreationExternalProps } from '../../types';
+import type { PaymentLinkCreationComponentProps } from '../../types';
 
 interface CountryDatasetItem {
     id: string;
     name: string;
 }
 
-export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExternalProps, 'storeIds' | 'fieldsConfig'>) {
+export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationComponentProps, 'storeIds' | 'fieldsConfig'>) {
     const { i18n, getCdnDataset } = useCoreContext();
     const config = useConfigContext();
     const endpoints = config.endpoints;
