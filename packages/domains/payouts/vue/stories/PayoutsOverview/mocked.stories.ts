@@ -6,7 +6,7 @@ import type { PayoutsOverviewExternalProps } from '../../src';
 import { PAYOUTS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/payouts';
 import { PAYOUTS_ENDPOINTS } from '../../../mocks/endpoints';
 import { DEFAULT_PAYOUT_DETAILS } from '../../../fixtures/data/PayoutDetails';
-import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION_DETAILS, DATA_CUSTOMIZATION_LIST } from '../../../fixtures/data/PayoutsOverview';
+import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION_DETAILS, DATA_CUSTOMIZATION_DATA_GRID } from '../../../fixtures/data/PayoutsOverview';
 
 const meta: Meta<ElementProps<PayoutsOverviewExternalProps>> = {
     ...payoutsOverviewMeta,
@@ -51,7 +51,7 @@ export const DataCustomization: ElementStory<PayoutsOverviewExternalProps> = {
         },
         dataCustomization: {
             details: DATA_CUSTOMIZATION_DETAILS,
-            list: DATA_CUSTOMIZATION_LIST,
+            dataGrid: DATA_CUSTOMIZATION_DATA_GRID,
         },
     },
     parameters: {
