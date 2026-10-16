@@ -44,8 +44,8 @@ const PaymentLinkSettings = defineAsyncComponent({
             />
             <PaymentLinkSettings
                 v-else
-                v-bind="props.paymentLinkSettings"
                 :store-ids="props.storeIds"
+                :on-dismiss="props.paymentLinkSettings?.onDismiss"
                 :on-contact-support="props.onContactSupport"
                 embedded-in-overview
             />

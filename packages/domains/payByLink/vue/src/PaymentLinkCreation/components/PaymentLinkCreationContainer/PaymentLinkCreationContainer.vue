@@ -7,11 +7,7 @@ import type { PaymentLinkCreationFormValues, CreatedPaymentLink } from '../../..
 import type { PaymentLinkCreationComponentProps } from '../../types';
 import styles from './PaymentLinkCreationContainer.module.scss';
 
-type PaymentLinkCreationContainerProps = PaymentLinkCreationComponentProps & {
-    embeddedInOverview?: boolean;
-};
-
-const props = defineProps<PaymentLinkCreationContainerProps>();
+const props = defineProps<PaymentLinkCreationComponentProps>();
 
 type CreationState = 'Creation' | 'Success' | 'Details';
 
