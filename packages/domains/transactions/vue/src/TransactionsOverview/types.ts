@@ -3,7 +3,6 @@ import type { TransactionDetailsCustomization, TransactionsDataGridCustomization
 import type {
     GlobalAppearance,
     IAmount,
-    IBalanceAccountBase,
     ITransaction,
     ITransactionCategory,
     ITransactionStatus,
@@ -11,6 +10,7 @@ import type {
 } from '@integration-components/types';
 import type { PaginationProps } from '@integration-components/utils';
 
+export type { IBalanceAccountBase } from '@integration-components/types';
 export type { TransactionsCustomColumn, TransactionsDataGridCustomization, TransactionsTableFields } from '../../../domain/src';
 
 export type TransactionsOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
@@ -28,7 +28,7 @@ export interface TransactionsFilters {
 export interface TransactionsOverviewExternalProps extends UIElementProps<TransactionsOverviewAppearance>, PaginationProps {
     balanceAccountId?: string;
     onContactSupport?: () => void;
-    onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
+    onRecordSelection?: (selection: { id: string; showDetails: () => void }) => any;
     dataCustomization?: {
         dataGrid?: TransactionsDataGridCustomization;
         details?: TransactionDetailsCustomization;
@@ -42,5 +42,3 @@ export interface TransactionsListResponse {
         prev?: { cursor: string };
     };
 }
-
-export type { IBalanceAccountBase };

@@ -11,7 +11,7 @@ export type PayoutsDataGridCustomization = DataCustomizationObject<PayoutsTableF
 
 export interface PayoutsOverviewProps extends UIElementProps, PaginationProps {
     balanceAccountId?: string;
-    onRecordSelection?: (selection: { balanceAccountId: string; date: string; showModal: () => void }) => any;
+    onRecordSelection?: (selection: { balanceAccountId: string; date: string; showDetails: () => void }) => any;
     dataCustomization?: {
         dataGrid?: PayoutsDataGridCustomization;
         details?: PayoutDetailsCustomization;

@@ -10,7 +10,6 @@ export type ReportsDataGridCustomization = DataCustomizationObject<ReportsTableF
 
 export interface ReportsOverviewProps extends UIElementProps, PaginationProps {
     balanceAccountId?: string;
-    onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
     dataCustomization?: {
         dataGrid?: ReportsDataGridCustomization;
     };

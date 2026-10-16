@@ -11,7 +11,7 @@ export type DisputesDataGridCustomization = DataCustomizationObject<DisputesTabl
 
 export interface DisputesOverviewProps extends UIElementProps, PaginationProps<DisputesPageLimit> {
     balanceAccountId?: string;
-    onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
+    onRecordSelection?: (selection: { id: string; showDetails: () => void }) => any;
     dataCustomization?: {
         dataGrid?: DisputesDataGridCustomization;
         details?: DisputeDetailsCustomization;
