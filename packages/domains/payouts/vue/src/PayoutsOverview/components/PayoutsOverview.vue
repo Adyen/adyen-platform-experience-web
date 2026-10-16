@@ -20,8 +20,7 @@ import styles from './PayoutsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccountId?: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: PayoutsOverviewExternalProps['preferredLimit'];
+    pagination?: PayoutsOverviewExternalProps['pagination'];
     onContactSupport?: () => void;
     onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
     dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
@@ -62,8 +61,7 @@ const payoutsListResult = usePayoutsList(() => ({
     balanceAccountId: filterParams.value.balanceAccountId,
     createdSince: filterParams.value.createdSince,
     createdUntil: filterParams.value.createdUntil,
-    allowLimitSelection: props.allowLimitSelection,
-    preferredLimit: props.preferredLimit,
+    pagination: props.pagination,
 }));
 
 const isLoading = computed(

@@ -11,8 +11,7 @@ import type { TransactionsFilters, TransactionsDataGridCustomization, Transactio
 interface UseTransactionsListProps {
     filters: TransactionsFilters;
     fetchEnabled: boolean;
-    allowLimitSelection?: boolean;
-    preferredLimit?: TransactionsOverviewExternalProps['preferredLimit'];
+    pagination?: TransactionsOverviewExternalProps['pagination'];
     dataCustomization?: { dataGrid?: TransactionsDataGridCustomization };
 }
 
@@ -44,8 +43,7 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
 
     const pageLimit = usePageLimit({
         options: DEFAULT_PAGE_LIMITS,
-        preferredLimit: () => props().preferredLimit,
-        allowLimitSelection: () => props().allowLimitSelection,
+        pagination: () => props().pagination,
     });
 
     const pagination = useCursorPaginatedRecords<ITransaction>({

@@ -18,8 +18,7 @@ import styles from './ReportsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccountId?: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: ReportsOverviewExternalProps['preferredLimit'];
+    pagination?: ReportsOverviewExternalProps['pagination'];
     onContactSupport?: () => void;
     dataCustomization?: any;
     balanceAccounts: IBalanceAccountBase[] | undefined;
@@ -59,8 +58,7 @@ const reportsListResult = useReportsList(() => ({
     balanceAccountId: filterParams.value.balanceAccountId,
     createdSince: filterParams.value.createdSince,
     createdUntil: filterParams.value.createdUntil,
-    allowLimitSelection: props.allowLimitSelection,
-    preferredLimit: props.preferredLimit,
+    pagination: props.pagination,
 }));
 
 const isLoading = computed(

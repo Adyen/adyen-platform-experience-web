@@ -13,15 +13,14 @@ export const transactionsOverviewMeta: Meta<ElementProps<TransactionsOverviewExt
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
-        preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
-        allowLimitSelection: { control: 'boolean' },
+        pagination: { control: 'object' },
         container: containerControl(),
         dataGridDensity: dataGridDensityControl(),
         appearance: { table: { disable: true } },
     },
     args: {
         component: TransactionsOverviewElement,
-        allowLimitSelection: true,
+        pagination: { defaultLimit: 10, disableLimitSelection: false },
         dataGridDensity: 'default',
     },
     parameters: {
