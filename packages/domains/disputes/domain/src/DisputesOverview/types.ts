@@ -7,13 +7,13 @@ import { DISPUTES_PAGE_LIMITS, FIELD_KEYS } from './constants';
 export type DisputeStatusGroup = IDisputeStatusGroup;
 export type DisputesPageLimit = (typeof DISPUTES_PAGE_LIMITS)[number];
 export type DisputesTableFields = keyof typeof FIELD_KEYS;
-export type DisputesListCustomization = DataCustomizationObject<DisputesTableFields, IDisputeListItem[], CustomDataRetrieved[]>;
+export type DisputesDataGridCustomization = DataCustomizationObject<DisputesTableFields, IDisputeListItem[], CustomDataRetrieved[]>;
 
 export interface DisputesOverviewProps extends UIElementProps, PaginationProps<DisputesPageLimit> {
     balanceAccountId?: string;
     onRecordSelection?: (selection: { id: string; showDetails: () => void }) => any;
     dataCustomization?: {
-        list?: DisputesListCustomization;
+        dataGrid?: DisputesDataGridCustomization;
         details?: DisputeDetailsCustomization;
     };
 }

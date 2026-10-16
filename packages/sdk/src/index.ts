@@ -14,7 +14,7 @@ export {
     type DisputeManagementProps,
     type DisputesOverviewProps,
     type DisputeDetailsCustomization,
-    type DisputesListCustomization,
+    type DisputesDataGridCustomization,
 } from '../../domains/disputes/publish/src';
 
 // prettier-ignore
@@ -36,14 +36,14 @@ export {
     type PayoutDetailsProps,
     type PayoutsOverviewProps,
     type PayoutDetailsCustomization,
-    type PayoutsListCustomization,
+    type PayoutsDataGridCustomization,
 } from '../../domains/payouts/publish/src';
 
 // prettier-ignore
 export {
     ReportsOverview,
     type ReportsOverviewProps,
-    type ReportsListCustomization,
+    type ReportsDataGridCustomization,
 } from '../../domains/reports/publish/src';
 
 // prettier-ignore
@@ -53,7 +53,7 @@ export {
     type TransactionDetailsProps,
     type TransactionsOverviewProps,
     type TransactionDetailsCustomization,
-    type TransactionsListCustomization,
+    type TransactionsDataGridCustomization,
 } from '../../domains/transactions/publish/src';
 
 // prettier-ignore

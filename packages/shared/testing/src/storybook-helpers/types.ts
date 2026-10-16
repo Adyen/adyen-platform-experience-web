@@ -1,6 +1,6 @@
 import type { StoryObj } from '@storybook/vue3';
 import { CoreOptions } from '@integration-components/sdk-internal';
-import type { DensityMode } from '@integration-components/types';
+import type { DensityMode, GlobalAppearance } from '@integration-components/types';
 
 type GlobalStoriesProps = {
     mockedApi?: boolean;
@@ -9,6 +9,7 @@ type GlobalStoriesProps = {
     component: any;
     coreOptions?: Partial<CoreOptions>;
     skipDecorators?: boolean;
+    container?: GlobalAppearance['container'];
     dataGridDensity?: DensityMode;
 };
 

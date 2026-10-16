@@ -19,6 +19,7 @@ const props = defineProps<{
     componentProps?: Record<string, any>;
     locale?: SupportedLocales;
     fontFamily?: string;
+    container?: GlobalAppearance['container'];
     illustrations?: GlobalAppearance['illustrations'];
     titles?: GlobalAppearance['titles'];
     theme?: ThemeMode | 'story';
@@ -46,15 +47,22 @@ const configuredThemeMode = computed<ThemeMode>(() => {
 
 const configuredAppearance = computed<GlobalAppearance>(() => ({
     ...storyCoreOptions.value.appearance,
+    ...(props.container && { container: props.container }),
     ...(props.illustrations && { illustrations: props.illustrations }),
     ...(props.titles && { titles: props.titles }),
 }));
 
 const componentPropsWithoutCoreOptions = computed(() => {
-    const { coreOptions: _, dataGridDensity, ...rest } = props.componentProps ?? {};
-    if (!dataGridDensity) return rest;
-    const dataGrid = { ...rest.appearance?.dataGrid, density: dataGridDensity };
-    const appearance = { ...rest.appearance, dataGrid };
+    const { coreOptions: _, container, dataGridDensity, ...rest } = props.componentProps ?? {};
+    // `UIElement.update` merges props, so `appearance` must stay present (even as `undefined`) for a reset to take effect.
+    const appearance =
+        container || dataGridDensity
+            ? {
+                  ...rest.appearance,
+                  ...(container && { container }),
+                  ...(dataGridDensity && { dataGrid: { ...rest.appearance?.dataGrid, density: dataGridDensity } }),
+              }
+            : rest.appearance;
     return { ...rest, appearance };
 });
 
