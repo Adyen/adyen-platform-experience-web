@@ -311,6 +311,7 @@
         "packages/shared/types/src/api/index.d.ts",
         "packages/shared/types/src/api/models/balanceAccounts.d.ts",
         "packages/shared/types/src/api/models/capital.d.ts",
+        "packages/shared/types/src/api/models/cashOut.d.ts",
         "packages/shared/types/src/api/models/disputes.d.ts",
         "packages/shared/types/src/api/models/index.d.ts",
         "packages/shared/types/src/api/models/payByLink.d.ts",
@@ -324,6 +325,7 @@
         "packages/shared/types/src/api/resources/CapitalGrantsResourceV1.d.ts",
         "packages/shared/types/src/api/resources/CapitalMissingActionsResourceV1.d.ts",
         "packages/shared/types/src/api/resources/CapitalStateResourceV1.d.ts",
+        "packages/shared/types/src/api/resources/CashOutResourceV1.d.ts",
         "packages/shared/types/src/api/resources/DisputesResourceV1.d.ts",
         "packages/shared/types/src/api/resources/OnboardingConfigurationResourceV1.d.ts",
         "packages/shared/types/src/api/resources/PayByLinkResourceV1.d.ts",
@@ -430,7 +432,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "6afca6f94d8f99efe10870caea0b709917ae835f032d94ce020b76581da36eda",
+    "typeTreeHash": "97a7a80cba234639cc8a78cb187955915eacd9a057320a867fc6b88503016447",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",
