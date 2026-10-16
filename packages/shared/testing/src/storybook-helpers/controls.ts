@@ -17,3 +17,11 @@ export const dataGridDensityControl = () =>
         control: { type: 'inline-radio' },
         options: ['default', 'condensed'],
     }) as const;
+
+export const containerControl = () =>
+    ({
+        name: 'container',
+        description: 'Component-level `appearance.container`. Leave unset to inherit the global appearance.',
+        control: { type: 'inline-radio' },
+        options: ['visible', 'hidden'],
+    }) as const;

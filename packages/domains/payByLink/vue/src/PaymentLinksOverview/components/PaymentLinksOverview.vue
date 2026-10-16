@@ -20,8 +20,7 @@ import { createPaymentLinksError } from '../utils/error';
 import styles from './PaymentLinksOverview.module.scss';
 
 const props = defineProps<{
-    allowLimitSelection?: boolean;
-    preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
+    pagination?: PaymentLinksOverviewExternalProps['pagination'];
     storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
     onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
     onContactSupport?: () => void;
@@ -95,8 +94,7 @@ const paymentLinksListResult = usePaymentLinksList(() => ({
     paymentLinkId: filtersValue.value.paymentLinkId,
     createdSince: filtersValue.value.createdSince,
     createdUntil: filtersValue.value.createdUntil,
-    allowLimitSelection: props.allowLimitSelection,
-    preferredLimit: props.preferredLimit,
+    pagination: props.pagination,
     lastRefreshTimestamp: lastRefreshTimestamp.value,
 }));
 
