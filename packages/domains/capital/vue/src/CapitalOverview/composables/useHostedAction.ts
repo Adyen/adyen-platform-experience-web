@@ -54,7 +54,7 @@ export const useHostedAction = () => {
         } finally {
             userEvents.addEvent?.('Clicked link', {
                 ...sharedCapitalOverviewAnalyticsEventProperties,
-                subCategory: 'Missing action',
+                subCategory: 'Grant item',
                 label: GRANT_ACTION_CONFIGS[actionType].eventLabel,
             });
         }

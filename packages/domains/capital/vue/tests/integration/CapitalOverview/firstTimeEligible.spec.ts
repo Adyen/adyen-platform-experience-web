@@ -6,9 +6,9 @@ import {
     sharedCapitalOverviewAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
 import {
+    changedOfferAmountAnalyticsEventProperties,
+    changedOfferTermAnalyticsEventProperties,
     landedOnPageAnalyticsEventProperties,
-    selectedRepaymentTermAnalyticsEventProperties,
-    sliderChangedAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOffer/constants/analytics';
 import type { Page } from '@playwright/test';
 
@@ -23,10 +23,10 @@ const openOfferAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnal
     await expectAnalyticsEvents(
         analyticsEvents,
         [
-            ['Clicked button', { ...sharedCapitalOverviewAnalyticsEventProperties, label: 'Open offer' }],
+            ['Clicked button', { ...sharedCapitalOverviewAnalyticsEventProperties, label: 'Open offer', hasOffer: true, isEarlyRenewal: false }],
             ['Landed on page', landedOnPageAnalyticsEventProperties],
-            ['Changed capital offer slider', sliderChangedAnalyticsEventProperties],
-            ['Selected repayment term', selectedRepaymentTermAnalyticsEventProperties],
+            ['Changed offer amount', changedOfferAmountAnalyticsEventProperties],
+            ['Changed offer term', changedOfferTermAnalyticsEventProperties],
         ],
         { strictOrder: false }
     );
@@ -36,9 +36,7 @@ const goToOfferSummaryAndExpectAnalytics = async (page: Page, analyticsEvents: P
     await openOfferAndExpectAnalytics(page, analyticsEvents);
     await getOfferModal(page).getByRole('button', { name: 'Review request' }).click();
 
-    await expectAnalyticsEvents(analyticsEvents, [
-        ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review offer' }],
-    ]);
+    await expectAnalyticsEvents(analyticsEvents, [['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review' }]]);
 };
 
 test.describe('First-time eligible', () => {
@@ -75,7 +73,7 @@ test.describe('First-time eligible', () => {
         await getOfferModal(page).getByRole('button', { name: 'Close', exact: true }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
-            ['Clicked button', { ...sharedCapitalOverviewAnalyticsEventProperties, label: 'Dismiss offer' }],
+            ['Clicked button', { ...sharedCapitalOverviewAnalyticsEventProperties, subCategory: 'Offer', label: 'Dismiss offer' }],
         ]);
 
         await expect(getOfferModal(page)).toBeHidden();

@@ -2,25 +2,30 @@ import type { Page } from '@playwright/test';
 import { test, expect, type PageAnalyticsEvent } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
 import {
+    changedOfferAmountAnalyticsEventProperties,
+    changedOfferTermAnalyticsEventProperties,
     landedOnPageAnalyticsEventProperties,
-    selectedRepaymentTermAnalyticsEventProperties,
-    sliderChangedAnalyticsEventProperties,
+    sharedCapitalOfferSelectionAnalyticsEventProperties,
+    sharedCapitalOfferSummaryAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOffer/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-offer--early-renewal';
 
-const goToOfferSummary = async (page: Page) => {
+const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await page.getByRole('button', { name: 'Review request' }).click();
+    await expectAnalyticsEvents(analyticsEvents, [
+        ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review', isEarlyRenewal: true }],
+    ]);
 };
 
 const expectPageLoadAnalyticsEvents = (analyticsEvents: PageAnalyticsEvent[]) =>
     expectAnalyticsEvents(analyticsEvents, [
         ['Landed on page', { ...landedOnPageAnalyticsEventProperties, isEarlyRenewal: true }],
-        ['Changed capital offer slider', { ...sliderChangedAnalyticsEventProperties, min: 1220000, value: 1860000, isEarlyRenewal: true }],
+        ['Changed offer amount', { ...changedOfferAmountAnalyticsEventProperties, min: 1220000, value: 1860000, isEarlyRenewal: true }],
         [
-            'Selected repayment term',
+            'Changed offer term',
             {
-                ...selectedRepaymentTermAnalyticsEventProperties,
+                ...changedOfferTermAnalyticsEventProperties,
                 availableRates: [1100, 1500],
                 availableTerms: [180, 360],
                 isEarlyRenewal: true,
@@ -50,8 +55,8 @@ test.describe('Early renewal', () => {
         ]);
     });
 
-    test('should render early renewal info in offer summary screen', async ({ page }) => {
-        await goToOfferSummary(page);
+    test('should render early renewal info in offer summary screen', async ({ page, analyticsEvents }) => {
+        await goToOfferSummary(page, analyticsEvents);
         const offerSummary = page.getByTestId('capital-offer-summary');
         const newLoanField = offerSummary.getByText('New loan').first().locator('..');
         const currentLoanBalanceField = offerSummary.getByText('Current loan balance').locator('..');
@@ -95,21 +100,28 @@ test.describe('Early renewal', () => {
         ).toBeVisible();
     });
 
-    test('should switch to new loan tab when the latter is clicked', async ({ page }) => {
-        await goToOfferSummary(page);
+    test('should switch to new loan tab when the latter is clicked', async ({ page, analyticsEvents }) => {
+        await goToOfferSummary(page, analyticsEvents);
         const offerSummary = page.getByTestId('capital-offer-summary');
 
         await offerSummary.getByRole('tab', { name: 'Current loan' }).click();
         await offerSummary.getByRole('tab', { name: 'New loan' }).click();
+        await expectAnalyticsEvents(analyticsEvents, [
+            ['Moved tabs', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, selectedTab: 'Current loan' }],
+            ['Moved tabs', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, selectedTab: 'New loan' }],
+        ]);
         await expect(offerSummary.getByText('Financing', { exact: true })).toHaveCount(2);
         await expect(offerSummary.getByText('€18,600.00')).toBeVisible();
     });
 
-    test('should switch to current loan tab when the latter is clicked', async ({ page }) => {
-        await goToOfferSummary(page);
+    test('should switch to current loan tab when the latter is clicked', async ({ page, analyticsEvents }) => {
+        await goToOfferSummary(page, analyticsEvents);
         const offerSummary = page.getByTestId('capital-offer-summary');
 
         await offerSummary.getByRole('tab', { name: 'Current loan' }).click();
+        await expectAnalyticsEvents(analyticsEvents, [
+            ['Moved tabs', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, selectedTab: 'Current loan' }],
+        ]);
         await expect(offerSummary.getByText('Financing', { exact: true })).toHaveCount(2);
         await expect(offerSummary.getByText('€20,000.00')).toBeVisible();
         await expect(offerSummary.getByText('Fees', { exact: true })).toHaveCount(2);
