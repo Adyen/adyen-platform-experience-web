@@ -63,16 +63,16 @@ const emitChangeEvent = (term: number) => {
     const selectedRate = props.offersByTerm[term]?.repaymentRate;
     const availableRates = availableTerms.value.map(availableTerm => props.offersByTerm[availableTerm]?.repaymentRate);
 
-    userEvents.addEvent?.('Selected repayment term', {
+    userEvents.addEvent?.('Changed offer term', {
         ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing offer',
+        subCategory: 'Offer selection',
         allTerms: props.estimatedTerms,
-        availableTerms: availableTerms.value,
-        selectedTerm: term,
-        relativeToDefault: getRelativeToDefault(term, 180),
         availableRates,
-        selectedRate,
+        availableTerms: availableTerms.value,
         isEarlyRenewal: props.isEarlyRenewal,
+        relativeToDefault: getRelativeToDefault(term, 180),
+        selectedRate,
+        selectedTerm: term,
     });
 };
 

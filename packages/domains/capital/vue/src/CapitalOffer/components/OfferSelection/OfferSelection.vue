@@ -105,8 +105,8 @@ const handleReview = async () => {
     } finally {
         userEvents.addEvent?.('Clicked button', {
             ...sharedCapitalOfferAnalyticsEventProperties,
-            subCategory: 'Business financing offer',
-            label: 'Review offer',
+            subCategory: 'Offer selection',
+            label: 'Review request',
             isEarlyRenewal: isEarlyRenewal.value,
         });
     }

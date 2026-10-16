@@ -35,17 +35,16 @@ const getValue = (event: Event) => Number((event.target as HTMLInputElement).val
 const emitChangeEvent = (amountValue: number) => {
     const config = props.dynamicOfferConfig;
 
-    userEvents.addEvent?.('Changed capital offer slider', {
+    userEvents.addEvent?.('Changed offer amount', {
         ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing offer',
-        label: 'Slider changed',
+        subCategory: 'Offer selection',
         currency: config.minAmount.currency,
+        isEarlyRenewal: props.isEarlyRenewal,
+        max: config.maxAmount.value,
+        min: config.minAmount.value,
+        relativeToDefault: getRelativeToDefault(amountValue, getDefaultAmountValue(config)),
         value: amountValue,
         valuePercentage: getPercentageOfRange(amountValue, config.minAmount.value, config.maxAmount.value),
-        min: config.minAmount.value,
-        max: config.maxAmount.value,
-        relativeToDefault: getRelativeToDefault(amountValue, getDefaultAmountValue(config)),
-        isEarlyRenewal: props.isEarlyRenewal,
     });
 };
 
