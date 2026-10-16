@@ -3,7 +3,6 @@ import type { WithDismissCallback } from '@integration-components/types';
 
 export interface PaymentLinkDetailsProps extends WithDismissCallback {
     id: string;
-    onUpdate?: () => void;
 }
 
 export type PaymentLinkDetailsScreen = 'details' | 'expirationConfirmation' | 'expirationSuccess';
