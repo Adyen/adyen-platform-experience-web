@@ -1,5 +1,5 @@
 import type { UIElementProps } from '@integration-components/core/vue';
-import type { TransactionDetailsCustomization, TransactionsListCustomization } from '../../../domain/src';
+import type { TransactionDetailsCustomization, TransactionsDataGridCustomization } from '../../../domain/src';
 import type {
     GlobalAppearance,
     IAmount,
@@ -11,7 +11,7 @@ import type {
 import type { PaginationProps } from '@integration-components/utils';
 
 export type { IBalanceAccountBase } from '@integration-components/types';
-export type { TransactionsCustomColumn, TransactionsListCustomization, TransactionsTableFields } from '../../../domain/src';
+export type { TransactionsCustomColumn, TransactionsDataGridCustomization, TransactionsTableFields } from '../../../domain/src';
 
 export type TransactionsOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
 
@@ -30,7 +30,7 @@ export interface TransactionsOverviewExternalProps extends UIElementProps<Transa
     onContactSupport?: () => void;
     onRecordSelection?: (selection: { id: string; showDetails: () => void }) => any;
     dataCustomization?: {
-        list?: TransactionsListCustomization;
+        dataGrid?: TransactionsDataGridCustomization;
         details?: TransactionDetailsCustomization;
     };
 }

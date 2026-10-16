@@ -5,6 +5,6 @@ export type { DisputeManagementExternalProps as DisputeManagementProps, DisputeD
 
 export type {
     DisputesOverviewExternalProps as DisputesOverviewProps,
-    DisputesListCustomization,
+    DisputesDataGridCustomization,
     DisputesOverviewTabsConfig,
 } from '../../vue/publish/src';

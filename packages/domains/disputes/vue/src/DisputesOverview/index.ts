@@ -2,7 +2,7 @@ export { DisputesOverviewElement } from './DisputesOverviewElement';
 export type {
     DisputesOverviewExternalProps,
     DisputesOverviewProps,
-    DisputesListCustomization,
+    DisputesDataGridCustomization,
     DisputesOverviewTabsConfig,
     DisputeStatusGroup,
 } from './types';

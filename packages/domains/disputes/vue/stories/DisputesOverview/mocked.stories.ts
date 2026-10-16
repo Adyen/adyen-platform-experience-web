@@ -3,7 +3,7 @@ import { ElementProps, ElementStory } from '@integration-components/testing/stor
 import type { DisputesOverviewExternalProps } from '../../src';
 import { disputesOverviewMeta } from './meta';
 import { DISPUTES_LIST_HANDLERS } from '../../../mocks/mock-server/disputes';
-import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION_DETAILS, DATA_CUSTOMIZATION_LIST } from '../../../fixtures/data/DisputesOverview';
+import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION_DETAILS, DATA_CUSTOMIZATION_DATA_GRID } from '../../../fixtures/data/DisputesOverview';
 
 const meta: Meta<ElementProps<DisputesOverviewExternalProps>> = {
     ...disputesOverviewMeta,
@@ -55,7 +55,7 @@ export const DataCustomization: ElementStory<DisputesOverviewExternalProps> = {
         },
         dataCustomization: {
             details: DATA_CUSTOMIZATION_DETAILS,
-            list: DATA_CUSTOMIZATION_LIST,
+            dataGrid: DATA_CUSTOMIZATION_DATA_GRID,
         },
     },
 };

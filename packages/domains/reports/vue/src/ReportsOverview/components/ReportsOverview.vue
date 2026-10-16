@@ -18,8 +18,7 @@ import styles from './ReportsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccountId?: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: ReportsOverviewExternalProps['preferredLimit'];
+    pagination?: ReportsOverviewExternalProps['pagination'];
     onContactSupport?: () => void;
     dataCustomization?: any;
     balanceAccounts: IBalanceAccountBase[] | undefined;
@@ -59,8 +58,7 @@ const reportsListResult = useReportsList(() => ({
     balanceAccountId: filterParams.value.balanceAccountId,
     createdSince: filterParams.value.createdSince,
     createdUntil: filterParams.value.createdUntil,
-    allowLimitSelection: props.allowLimitSelection,
-    preferredLimit: props.preferredLimit,
+    pagination: props.pagination,
 }));
 
 const isLoading = computed(
@@ -91,8 +89,8 @@ const listError = computed(() => reportsListResult.error.value as Error | undefi
             :show-pagination="true"
             :error="listError"
             :on-contact-support="props.onContactSupport"
-            :custom-columns="props.dataCustomization?.list?.fields"
-            :on-data-retrieve="props.dataCustomization?.list?.onDataRetrieve"
+            :custom-columns="props.dataCustomization?.dataGrid?.fields"
+            :on-data-retrieve="props.dataCustomization?.dataGrid?.onDataRetrieve"
             :has-next="reportsListResult.hasNext.value"
             :has-previous="reportsListResult.hasPrevious.value"
             :go-to-next-page="reportsListResult.goToNextPage"

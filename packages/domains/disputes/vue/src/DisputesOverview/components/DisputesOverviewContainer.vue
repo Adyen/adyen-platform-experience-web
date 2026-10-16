@@ -23,8 +23,7 @@ const errorInfo = computed<ErrorMessageInfo>(() => ({
         <DisputesOverview
             v-else
             :balance-account-id="props.balanceAccountId"
-            :allow-limit-selection="props.allowLimitSelection"
-            :preferred-limit="props.preferredLimit"
+            :pagination="props.pagination"
             :on-contact-support="props.onContactSupport"
             :on-record-selection="props.onRecordSelection"
             :tabs="props.tabs"

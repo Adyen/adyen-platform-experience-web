@@ -94,8 +94,7 @@ const disputesListResult = useDisputesList(() => ({
     reasonCategories: filterParams.value.reasonCategories,
     createdSince: filterParams.value.createdSince,
     createdUntil: filterParams.value.createdUntil,
-    allowLimitSelection: props.allowLimitSelection,
-    preferredLimit: props.preferredLimit,
+    pagination: props.pagination,
     refreshToken: refreshToken.value,
 }));
 
@@ -168,8 +167,8 @@ function closeModal() {
                         :error="disputesError"
                         :on-row-click="onRowClick"
                         :on-contact-support="props.onContactSupport"
-                        :custom-columns="props.dataCustomization?.list?.fields"
-                        :on-data-retrieve="props.dataCustomization?.list?.onDataRetrieve"
+                        :custom-columns="props.dataCustomization?.dataGrid?.fields"
+                        :on-data-retrieve="props.dataCustomization?.dataGrid?.onDataRetrieve"
                         :has-next="disputesListResult.hasNext.value"
                         :has-previous="disputesListResult.hasPrevious.value"
                         :go-to-next-page="disputesListResult.goToNextPage"
