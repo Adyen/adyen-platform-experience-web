@@ -18,7 +18,7 @@ import DisputeDataProperties from './DisputeDataProperties.vue';
 import DisputeIssuerComments from './DisputeIssuerComments.vue';
 import DisputeSkeleton from './DisputeSkeleton.vue';
 import DisputeStatusTag from './DisputeStatusTag.vue';
-import type { DisputeDataAlertMode, DisputeManagementProps } from '../types';
+import type { DisputeDataAlertMode, DisputeManagementComponentProps } from '../types';
 import flowStyles from './DisputeFlow.module.scss';
 import styles from './DisputeData.module.scss';
 
@@ -26,7 +26,7 @@ const props = defineProps<{
     disputeId: string;
     dataCustomization?: { details?: DisputeDetailsCustomization };
     onContactSupport?: () => void;
-    onDismiss?: DisputeManagementProps['onDismiss'];
+    onDismiss?: DisputeManagementComponentProps['onDismiss'];
 }>();
 
 const { i18n } = useCoreContext();

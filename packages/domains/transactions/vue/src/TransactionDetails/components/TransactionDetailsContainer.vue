@@ -5,15 +5,14 @@ import TransactionData from './TransactionData/TransactionData.vue';
 import { useTransaction } from '../composables/useTransaction';
 import { normalizeCustomFields } from '@integration-components/utils';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET, sharedTransactionDetailsEventProperties } from '../../../../domain/src';
-import type { TransactionDetailsCustomization, TransactionDetails } from '../../../../domain/src';
+import type { TransactionDetails } from '../../../../domain/src';
+import type { TransactionDetailsComponentProps } from '../types';
 
-const props = defineProps<{
-    id: string;
-    dataCustomization?: { details?: TransactionDetailsCustomization };
-    onContactSupport?: () => void;
-    onDismiss?: () => void;
-    fromRecordSelection?: boolean;
-}>();
+const props = defineProps<
+    TransactionDetailsComponentProps & {
+        fromRecordSelection?: boolean;
+    }
+>();
 
 const { error, fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(() => props.id);
 

@@ -3,10 +3,11 @@ import { ref } from 'vue';
 import PaymentLinkCreationForm from '../PaymentLinkCreationFormContainer/PaymentLinkCreationForm.vue';
 import PaymentLinkDetails from '../../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails.vue';
 import FormSuccess from '../Form/FormSuccess/FormSuccess.vue';
-import type { PaymentLinkCreationFormValues, CreatedPaymentLink, PaymentLinkCreationProps } from '../../../../../domain/src';
+import type { PaymentLinkCreationFormValues, CreatedPaymentLink } from '../../../../../domain/src';
+import type { PaymentLinkCreationComponentProps } from '../../types';
 import styles from './PaymentLinkCreationContainer.module.scss';
 
-type PaymentLinkCreationContainerProps = PaymentLinkCreationProps & {
+type PaymentLinkCreationContainerProps = PaymentLinkCreationComponentProps & {
     embeddedInOverview?: boolean;
 };
 

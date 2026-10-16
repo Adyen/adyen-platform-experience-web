@@ -1,4 +1,4 @@
-import type { PaymentLinkCreationComponentProps } from '../../../../domain/src';
+import type { PaymentLinkCreationProps } from '../../../../domain/src';
 
 export const PAYMENT_LINKS_FIELDS_CONFIG = {
     data: {
@@ -72,4 +72,4 @@ export const PAYMENT_LINKS_FIELDS_CONFIG = {
             quantity: 'readOnly',
         },
     },
-} satisfies PaymentLinkCreationComponentProps['fieldsConfig'];
+} satisfies PaymentLinkCreationProps['fieldsConfig'];

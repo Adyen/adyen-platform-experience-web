@@ -5,10 +5,10 @@ import { useCoreContext, useModalContext } from '@integration-components/core/vu
 import { useShouldHideTitles } from '@integration-components/composables-vue';
 import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import DisputeData from './DisputeData.vue';
-import type { DisputeManagementProps } from '../types';
+import type { DisputeManagementComponentProps } from '../types';
 import styles from './DisputeData.module.scss';
 
-const props = defineProps<DisputeManagementProps>();
+const props = defineProps<DisputeManagementComponentProps>();
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
 const { flowState, getDisputesConfig } = useDisputeFlow();

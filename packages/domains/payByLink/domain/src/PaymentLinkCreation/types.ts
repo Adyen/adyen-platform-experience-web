@@ -1,4 +1,4 @@
-import type { DeepPartial, IPaymentLinkCreateRequest } from '@integration-components/types';
+import type { DeepPartial, IPaymentLinkCreateRequest, WithDismissCallback } from '@integration-components/types';
 import type { SuccessResponse } from '@integration-components/types/api/endpoints';
 import type { StoreIds } from '../types';
 
@@ -57,13 +57,9 @@ export type CreatedPaymentLink = SuccessResponse<'createPBLPaymentLink'>;
 
 export type PaymentLinkCreatedData = PaymentLinkCreationFormValues & { paymentLink: CreatedPaymentLink };
 
-export interface PaymentLinkCreationProps {
+export interface PaymentLinkCreationProps extends WithDismissCallback {
     fieldsConfig?: PaymentLinkCreationFieldsConfig;
     storeIds?: StoreIds;
     onPaymentLinkCreated?: (paymentLink: PaymentLinkCreationFormValues) => void;
-    onDismiss?: () => void;
-    onContactSupport?: () => void;
     onShowDetails?: (data: { id: string; url: string }) => void;
 }
-
-export type PaymentLinkCreationComponentProps = PaymentLinkCreationProps;

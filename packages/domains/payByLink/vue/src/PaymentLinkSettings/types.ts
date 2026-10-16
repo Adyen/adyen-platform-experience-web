@@ -8,10 +8,10 @@ export type {
     PaymentLinkSettingsItem,
     PaymentLinkSettingsMenuItem,
     PaymentLinkSettingsPayload,
-    PaymentLinkSettingsProps,
     SettingsErrorContent,
     StoreItem,
     ThemeFormData,
 } from '../../../domain/src';
 
-export type PaymentLinkSettingsExternalProps = PaymentLinkSettingsProps & UIElementProps;
+export type PaymentLinkSettingsExternalProps = UIElementProps & PaymentLinkSettingsProps;
+export type PaymentLinkSettingsComponentProps = Omit<PaymentLinkSettingsExternalProps, 'core' | 'appearance'>;

@@ -1,15 +1,13 @@
-import type { CoreInstance } from '@integration-components/core/vue';
+import type { UIElementProps } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
 import type { EnhancedCapitalState, OnFundsRequestCallback } from '@integration-components/capital/domain';
-import type { UIElementProps } from '@integration-components/types';
 
-export type CapitalOfferExternalProps = Omit<UIElementProps, 'ref'> & {
-    core: CoreInstance;
+export type CapitalOfferExternalProps = UIElementProps & {
     onFundsRequest: OnFundsRequestCallback;
     onOfferDismiss?: () => void;
 };
 
-export type CapitalOfferProps = Omit<CapitalOfferExternalProps, 'core'> & {
+export type CapitalOfferComponentProps = Omit<CapitalOfferExternalProps, 'core' | 'appearance'> & {
     capitalState?: EnhancedCapitalState;
     hideSubtitle?: boolean;
     hideTitle?: boolean;

@@ -2,10 +2,9 @@
 import { computed } from 'vue';
 import { ComponentShell, useBalanceAccounts, type ErrorMessageInfo } from '@integration-components/composables-vue';
 import DisputesOverview from './DisputesOverview.vue';
-import type { DisputesOverviewProps } from '../types';
+import type { DisputesOverviewComponentProps } from '../types';
 
-const props = defineProps<DisputesOverviewProps>();
-
+const props = defineProps<DisputesOverviewComponentProps>();
 const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(() => props.balanceAccountId);
 const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
 

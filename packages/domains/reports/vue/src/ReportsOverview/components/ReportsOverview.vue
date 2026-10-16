@@ -12,13 +12,13 @@ import ReportsTable from './ReportsTable.vue';
 import { useReportsList } from '../composables/useReportsList';
 import { EARLIEST_REPORT_SINCE_DATE } from '../../../../domain/src';
 import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
-import type { IBalanceAccountBase, ReportsOverviewExternalProps } from '../types';
+import type { IBalanceAccountBase, ReportsOverviewComponentProps } from '../types';
 import { BentoTypography } from '@adyen/bento-vue3';
 import styles from './ReportsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccountId?: string;
-    pagination?: ReportsOverviewExternalProps['pagination'];
+    pagination?: ReportsOverviewComponentProps['pagination'];
     onContactSupport?: () => void;
     dataCustomization?: any;
     balanceAccounts: IBalanceAccountBase[] | undefined;
