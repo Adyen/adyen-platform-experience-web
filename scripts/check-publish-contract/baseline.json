@@ -52,6 +52,7 @@
         "DisputesDataGridCustomization",
         "DisputesOverview",
         "DisputesOverviewProps",
+        "DisputesOverviewTabsConfig",
         "ErrorHandler",
         "PaymentLinkCreation",
         "PaymentLinkCreationProps",
@@ -430,7 +431,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "dee6f14a447cb0ac30e7618500f8d9c157cfe4b0ebc0d4ed5adcbebfc0f2f304",
+    "typeTreeHash": "76987decd7b021e4192ef91c0ea3226beac526869a057658bc6b45d4cc89aac4",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",

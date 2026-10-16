@@ -17,6 +17,11 @@ export const Default: ElementStory<DisputesOverviewExternalProps> = {
     args: sharedArgs,
 };
 
+export const HiddenTabs: ElementStory<DisputesOverviewExternalProps> = {
+    name: 'Hidden tabs',
+    args: { ...sharedArgs, tabs: { hidden: ['CHARGEBACKS'] } },
+};
+
 export const EmptyList: ElementStory<DisputesOverviewExternalProps> = {
     name: 'Empty list',
     args: sharedArgs,

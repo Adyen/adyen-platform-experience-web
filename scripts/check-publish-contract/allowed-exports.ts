@@ -35,6 +35,7 @@ export const ALLOWED_DECLARATION_EXPORTS = [
     'DisputesDataGridCustomization',
     'DisputesOverview',
     'DisputesOverviewProps',
+    'DisputesOverviewTabsConfig',
     'ErrorHandler',
     'PaymentLinkCreation',
     'PaymentLinkCreationProps',

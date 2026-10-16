@@ -15,6 +15,7 @@ export {
     type DisputesOverviewProps,
     type DisputeDetailsCustomization,
     type DisputesDataGridCustomization,
+    type DisputesOverviewTabsConfig,
 } from '../../domains/disputes/publish/src';
 
 // prettier-ignore

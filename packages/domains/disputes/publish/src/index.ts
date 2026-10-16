@@ -3,4 +3,8 @@ export { DisputesOverviewElement as DisputesOverview } from '../../vue/publish/s
 
 export type { DisputeManagementExternalProps as DisputeManagementProps, DisputeDetailsCustomization } from '../../vue/publish/src';
 
-export type { DisputesOverviewExternalProps as DisputesOverviewProps, DisputesDataGridCustomization } from '../../vue/publish/src';
+export type {
+    DisputesOverviewExternalProps as DisputesOverviewProps,
+    DisputesDataGridCustomization,
+    DisputesOverviewTabsConfig,
+} from '../../vue/publish/src';

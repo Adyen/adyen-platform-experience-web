@@ -13,6 +13,7 @@ export type {
     DisputesOverviewExternalProps,
     DisputesOverviewProps,
     DisputesDataGridCustomization,
+    DisputesOverviewTabsConfig,
     DisputesTableFields,
     DisputeStatusGroup,
 } from './DisputesOverview';
