@@ -185,6 +185,7 @@ onUnmounted(() => {
                         :error="disputesError"
                         :on-row-click="onRowClick"
                         :on-contact-support="props.onContactSupport"
+                        :on-refresh="disputesListResult.refresh"
                         :custom-columns="props.dataCustomization?.list?.fields"
                         :on-data-retrieve="props.dataCustomization?.list?.onDataRetrieve"
                         :has-next="disputesListResult.hasNext.value"

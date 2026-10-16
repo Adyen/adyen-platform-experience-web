@@ -130,6 +130,7 @@ onMounted(() => {
         :has-multiple-currencies="availableCurrencies.length > 1"
         :loading="loadingTable"
         :on-contact-support="props.onContactSupport"
+        :on-refresh="transactionsListResult.refresh"
         :on-row-click="props.onRowClick"
         :transactions="transactionsListResult.records.value"
         :custom-columns="transactionsListResult.fields.value"

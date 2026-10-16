@@ -24,6 +24,8 @@ export const DataOverviewError = defineComponent({
         variant: { type: String as PropType<'embedded' | 'condensed'>, default: 'embedded' },
         image: { type: String as PropType<'wrong-environment' | 'no-results-found'>, default: 'wrong-environment' },
         refreshIcon: { type: [Object, Function] as PropType<Component>, default: undefined },
+        /** Re-fetches the data the error state belongs to. Falls back to remounting the component, which resets its filters. */
+        onRefresh: { type: Function as PropType<(() => void) | undefined>, default: undefined },
     },
 
     setup(props) {
@@ -84,7 +86,7 @@ export const DataOverviewError = defineComponent({
             if (refreshComponent) {
                 return {
                     title: i18n.get(getDomainTranslationKey(translationDomain, 'common.actions.refresh.labels.default')),
-                    event: () => refreshCurrentComponent?.(),
+                    event: () => (props.onRefresh ?? refreshCurrentComponent)?.(),
                     icon: props.refreshIcon,
                     variant: 'primary' as const,
                 };
