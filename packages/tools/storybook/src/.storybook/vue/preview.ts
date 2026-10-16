@@ -33,13 +33,14 @@ setup(app => {
 });
 
 // Storybook's Vue3 renderer does not force-remount on globals changes — it only
-// reactively updates args. To make globals (locale, fontFamily, theme, illustrations, titles)
+// reactively updates args. To make globals (locale, fontFamily, theme, container, illustrations, titles)
 // reactive we store them in a module-level reactive object that is mutated each time the
 // render function is called, and expose them via computed refs in setup().
 const storyGlobals = reactive({
     locale: 'en-US' as string,
     fontFamily: undefined as string | undefined,
     theme: 'story' as ThemeMode | 'story',
+    container: 'visible' as 'visible' | 'hidden',
     illustrations: 'visible' as 'visible' | 'hidden',
     titles: 'visible' as 'visible' | 'hidden',
 });
@@ -56,6 +57,17 @@ const preview: Preview = {
                     { title: 'Story', value: 'story' },
                     { title: 'Light', value: 'light' },
                     { title: 'Dark', value: 'dark' },
+                ],
+                dynamicTitle: true,
+            },
+        },
+        container: {
+            description: 'Global container visibility for components',
+            toolbar: {
+                title: 'Container',
+                items: [
+                    { title: 'Container visible', value: 'visible' },
+                    { title: 'Container hidden', value: 'hidden' },
                 ],
                 dynamicTitle: true,
             },
@@ -86,6 +98,7 @@ const preview: Preview = {
     initialGlobals: {
         ...sharedPreviewConfig.initialGlobals,
         theme: 'story',
+        container: 'visible',
         illustrations: 'visible',
         titles: 'visible',
     },
@@ -113,6 +126,7 @@ const preview: Preview = {
         storyGlobals.locale = context.globals.locale ?? 'en-US';
         storyGlobals.fontFamily = context.globals.fontFamily;
         storyGlobals.theme = context.globals.theme ?? 'story';
+        storyGlobals.container = context.globals.container ?? 'visible';
         storyGlobals.illustrations = context.globals.illustrations ?? 'visible';
         storyGlobals.titles = context.globals.titles ?? 'visible';
 
@@ -141,12 +155,13 @@ const preview: Preview = {
                 return {
                     containerKey: computed(
                         () =>
-                            `${storyGlobals.locale}-${storyGlobals.fontFamily}-${storyGlobals.illustrations}-${storyGlobals.titles}-${JSON.stringify(session)}`
+                            `${storyGlobals.locale}-${storyGlobals.fontFamily}-${storyGlobals.container}-${storyGlobals.illustrations}-${storyGlobals.titles}-${JSON.stringify(session)}`
                     ),
                     component: toRaw(component),
                     locale: computed(() => storyGlobals.locale),
                     fontFamily: computed(() => storyGlobals.fontFamily),
                     theme: computed(() => storyGlobals.theme),
+                    container: computed(() => storyGlobals.container),
                     illustrations: computed(() => storyGlobals.illustrations),
                     titles: computed(() => storyGlobals.titles),
                     session,
@@ -157,7 +172,7 @@ const preview: Preview = {
                     themeVariables,
                 };
             },
-            template: `<Container :key="containerKey" :component="component" :component-props="componentProps" :locale="locale" :font-family="fontFamily" :theme="theme" :theme-dark="themeDark" :theme-variables="themeVariables" :illustrations="illustrations" :titles="titles" :session="session" :mocked-api="mockedApi" :compact="compact" />`,
+            template: `<Container :key="containerKey" :component="component" :component-props="componentProps" :locale="locale" :font-family="fontFamily" :theme="theme" :theme-dark="themeDark" :theme-variables="themeVariables" :container="container" :illustrations="illustrations" :titles="titles" :session="session" :mocked-api="mockedApi" :compact="compact" />`,
         };
     },
 };
