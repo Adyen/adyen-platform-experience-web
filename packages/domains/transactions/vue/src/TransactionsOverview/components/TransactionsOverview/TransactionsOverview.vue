@@ -58,7 +58,7 @@ function onRowClick(transaction: ITransaction) {
     if (props.onRecordSelection) {
         props.onRecordSelection({
             id: transaction.id,
-            showModal: showTransactionModal,
+            showDetails: showTransactionModal,
         });
     } else {
         showTransactionModal();

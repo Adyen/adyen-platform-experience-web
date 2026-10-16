@@ -11,7 +11,7 @@ export type PayoutsListCustomization = DataCustomizationObject<PayoutsTableField
 
 export interface PayoutsOverviewProps extends UIElementProps, PaginationProps {
     balanceAccountId?: string;
-    onRecordSelection?: (selection: { balanceAccountId: string; date: string; showModal: () => void }) => any;
+    onRecordSelection?: (selection: { balanceAccountId: string; date: string; showDetails: () => void }) => any;
     dataCustomization?: {
         list?: PayoutsListCustomization;
         details?: PayoutDetailsCustomization;
