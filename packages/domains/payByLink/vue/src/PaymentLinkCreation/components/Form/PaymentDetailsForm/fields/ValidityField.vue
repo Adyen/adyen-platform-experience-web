@@ -92,6 +92,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
     const next = typeof value === 'object' && value !== null ? value.value : value;
     if (next === undefined) return;
     wizard.setValue('linkValidity.durationUnit', String(next));
+    if (error.value) wizard.validateField('linkValidity.quantity');
 }
 </script>
 
