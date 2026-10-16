@@ -4,9 +4,6 @@ import type { StoreIds } from '../types';
 
 export interface PaymentLinkSettingsProps extends WithDismissCallback {
     storeIds?: StoreIds;
-    settingsItems?: PaymentLinkSettingsItem[];
-    embeddedInOverview?: boolean;
-    navigateBack?: () => void;
 }
 
 export type PaymentLinkSettingsItem = 'theme' | 'termsAndConditions';

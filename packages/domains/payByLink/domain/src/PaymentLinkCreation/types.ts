@@ -61,5 +61,4 @@ export interface PaymentLinkCreationProps extends WithDismissCallback {
     fieldsConfig?: PaymentLinkCreationFieldsConfig;
     storeIds?: StoreIds;
     onCreate?: (paymentLink: PaymentLinkCreationFormValues) => void;
-    onShowDetails?: (data: { id: string; url: string }) => void;
 }
