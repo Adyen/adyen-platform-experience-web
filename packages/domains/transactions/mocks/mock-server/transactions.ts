@@ -39,6 +39,7 @@ interface _ITransactionDetailsMetadata {
 
 const DEFAULT_PAGINATION_LIMIT = 10;
 const DEFAULT_SORT_DIRECTION = 'desc';
+const DETAILS_RESPONSE_DELAY = 400;
 const TRANSACTIONS_CACHE = new Map<string, ITransaction[]>();
 const TRANSACTIONS_PERIOD_CACHE = new Map<string, ITransaction[]>();
 const TRANSACTIONS_TOTALS_CACHE = new Map<string, Map<string, _ITransactionTotals>>();
@@ -567,21 +568,18 @@ export const TRANSACTION_DETAILS_HANDLERS = (() => {
     const getTransactionJson = (() => {
         let currentHandlersIndex: number;
 
-        return (transaction: ITransactionWithDetails, handlersIndex: number) => {
+        return async (transaction: ITransactionWithDetails, handlersIndex: number) => {
             if (currentHandlersIndex !== handlersIndex) {
                 currentHandlersIndex = handlersIndex;
                 refundedTransactions.clear();
             }
-            if (refundedTransactions.has(transaction.id) && transaction.refundDetails) {
-                return HttpResponse.json({
-                    ...transaction,
-                    refundDetails: {
-                        ...transaction.refundDetails,
-                        refundLocked: true,
-                    },
-                });
-            }
-            return HttpResponse.json(transaction);
+            const response =
+                refundedTransactions.has(transaction.id) && transaction.refundDetails
+                    ? { ...transaction, refundDetails: { ...transaction.refundDetails, refundLocked: true } }
+                    : transaction;
+
+            await delay(DETAILS_RESPONSE_DELAY);
+            return HttpResponse.json(response);
         };
     })();
 
