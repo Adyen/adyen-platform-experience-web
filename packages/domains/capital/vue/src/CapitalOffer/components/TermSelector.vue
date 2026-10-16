@@ -41,7 +41,7 @@ const items = computed(() =>
 
         return {
             disabled: props.areAvailableTermsLoading || !isAvailable,
-            subtitle:
+            content:
                 props.areAvailableTermsLoading || !offer
                     ? undefined
                     : i18n.get('capital.offer.selection.termOptions.dailyRatePercentage', {
@@ -49,6 +49,7 @@ const items = computed(() =>
                       }),
             title: formatTermLabel(term),
             value: term,
+            fullyClickable: true,
         };
     })
 );
@@ -103,5 +104,9 @@ const handleChange = (term: number) => {
         :model-value="props.term"
         variant="radio"
         @update:model-value="handleChange"
-    />
+    >
+        <template #content="{ content }">
+            {{ content }}
+        </template>
+    </BentoSelectionCardGroup>
 </template>

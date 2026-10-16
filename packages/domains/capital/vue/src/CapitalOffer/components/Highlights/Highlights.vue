@@ -4,6 +4,7 @@ import styles from './Highlights.module.scss';
 
 defineProps<{
     items: {
+        align?: 'start' | 'center';
         label?: string;
         value: string;
     }[];
@@ -14,7 +15,11 @@ defineProps<{
     <BentoCard background="secondary">
         <template #content>
             <div :class="styles.content">
-                <div v-for="item in items" :key="item.label ?? item.value" :class="styles.item">
+                <div
+                    v-for="item in items"
+                    :key="item.label ?? item.value"
+                    :class="[styles.item, item.align === 'center' ? styles.itemCenter : undefined]"
+                >
                     <BentoTypography v-if="item.label" variant="caption" :class="styles.label">
                         {{ item.label }}
                     </BentoTypography>

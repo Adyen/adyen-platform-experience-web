@@ -1,24 +1,22 @@
-import { AdyenErrorResponse, AdyenPlatformExperienceError } from '@integration-components/core';
-
-type CapitalTranslationKey = `capital.${string}`;
+import { AdyenErrorResponse, AdyenPlatformExperienceError, type TranslationKey } from '@integration-components/core';
 
 export type CapitalErrorMessage = {
-    title: CapitalTranslationKey;
-    message: CapitalTranslationKey | CapitalTranslationKey[];
+    title: TranslationKey;
+    message: TranslationKey | TranslationKey[];
     refreshComponent?: boolean;
     onContactSupport?: () => void;
-    translationValues?: { [key in CapitalTranslationKey]?: string };
+    translationValues?: { [key in TranslationKey]?: string };
 };
 
 export type CapitalErrorMessageInfo = Omit<CapitalErrorMessage, 'title' | 'message' | 'translationValues'> & {
-    title: CapitalTranslationKey;
-    messages: CapitalTranslationKey[];
+    title: TranslationKey;
+    messages: TranslationKey[];
     requestId?: string;
 };
 
 export type BalanceAccountErrorMessage = {
-    title: CapitalTranslationKey;
-    message: CapitalTranslationKey;
+    title: TranslationKey;
+    message: TranslationKey;
 };
 
 const BALANCE_ACCOUNT_ERROR_CODE = '30_013';
@@ -71,16 +69,6 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
                 translationValues,
                 onContactSupport,
             };
-        case 'NO_OFFER':
-            return {
-                title: 'capital.offer.common.noOfferTitle',
-                message: 'capital.offer.common.noOfferDescription',
-            };
-        case 'UNSUPPORTED_REGION':
-            return {
-                title: 'capital.common.errors.unsupportedRegion.title',
-                message: 'capital.common.errors.unsupportedRegion',
-            };
         case undefined:
             return { ...UNKNOWN_ERROR, ...(onContactSupport ? { onContactSupport } : {}) };
         default:
@@ -88,10 +76,7 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
     }
 };
 
-export const getCapitalErrorMessageInfo = (
-    error: AdyenPlatformExperienceError | undefined,
-    onContactSupport?: () => void
-): CapitalErrorMessageInfo => {
+export const getCapitalErrorConfig = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): CapitalErrorMessageInfo => {
     const { title, message, translationValues, ...rest } = getCapitalErrorMessage(error, onContactSupport);
     const messages = Array.isArray(message) ? message : [message];
     const requestId = translationValues && Object.values(translationValues)[0];

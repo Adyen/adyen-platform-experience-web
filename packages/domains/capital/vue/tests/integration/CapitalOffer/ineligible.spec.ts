@@ -8,5 +8,13 @@ test.describe('Ineligible', () => {
         await goToStory(page, { id: STORY_ID });
         await expect(page.getByText('No offer available currently')).toBeVisible();
         await expect(page.getByText('We update our financial offers regularly, so be sure to check back again in the future.')).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();
+    });
+});
+
+test.describe('onDismiss prop', () => {
+    test('should render back button when prop is set', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID, args: { onDismiss: 'Enabled' } });
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 });
