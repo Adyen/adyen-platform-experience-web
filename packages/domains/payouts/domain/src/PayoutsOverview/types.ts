@@ -10,7 +10,7 @@ export type PayoutsTableFields = StringWithAutocompleteOptions<PayoutsTableCols>
 export type PayoutsDataGridCustomization = DataCustomizationObject<PayoutsTableFields, IPayout[], CustomDataRetrieved[]>;
 
 export interface PayoutsOverviewProps extends PaginationProps, WithBalanceAccountId {
-    onRecordSelection?: (selection: { balanceAccountId: string; date: string; showDetails: () => void }) => any;
+    onRecordSelection?: (selection: { id: string; date: string; showDetails: () => void }) => void;
     dataCustomization?: {
         dataGrid?: PayoutsDataGridCustomization;
         details?: PayoutDetailsCustomization;

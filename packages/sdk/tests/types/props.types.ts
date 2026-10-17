@@ -20,6 +20,7 @@ import type { UIElementProps } from '@integration-components/core/vue';
 type Assert<T extends true> = T;
 type Every<TChecks extends Record<string, boolean>, TExpected extends boolean> = TChecks[keyof TChecks] extends TExpected ? true : false;
 type HasKey<TProps, TKey extends string> = TKey extends keyof TProps ? true : false;
+type LacksKey<TProps, TKey extends string> = TKey extends keyof TProps ? false : true;
 type Same<T, U> = [T] extends [U] ? ([U] extends [T] ? true : false) : false;
 
 type AcceptsDataGridAppearance<TProps> = TProps extends { appearance?: infer TAppearance } ? HasKey<NonNullable<TAppearance>, 'dataGrid'> : false;
@@ -59,7 +60,13 @@ type NonDataGridComponents = Omit<PublishedProps, keyof DataGridComponents>;
 type BalanceAccountComponents = Pick<PublishedProps, 'DisputesOverview' | 'PayoutsOverview' | 'ReportsOverview' | 'TransactionsOverview'>;
 type DismissibleComponents = Pick<
     PublishedProps,
-    'DisputeManagement' | 'PaymentLinkCreation' | 'PaymentLinkDetails' | 'PaymentLinkSettings' | 'PayoutDetails' | 'TransactionDetails'
+    | 'CapitalOffer'
+    | 'DisputeManagement'
+    | 'PaymentLinkCreation'
+    | 'PaymentLinkDetails'
+    | 'PaymentLinkSettings'
+    | 'PayoutDetails'
+    | 'TransactionDetails'
 >;
 
 type PropPresence<TProps extends Record<string, unknown>, TKey extends string> = { [K in keyof TProps]: HasKey<TProps[K], TKey> };
@@ -78,6 +85,10 @@ export type _EveryComponentUsesUIElementProps = Assert<
 >;
 export type _BalanceAccountComponentsTakeBalanceAccountId = Assert<Every<PropPresence<BalanceAccountComponents, 'balanceAccountId'>, true>>;
 export type _DismissibleComponentsTakeOnDismiss = Assert<Every<PropPresence<DismissibleComponents, 'onDismiss'>, true>>;
+type ForbiddenProps = 'onError' | 'ref';
+export type _NoComponentTakesForbiddenProps = Assert<
+    Every<{ [K in keyof PublishedProps]: [Extract<keyof PublishedProps[K], ForbiddenProps>] extends [never] ? true : false }, true>
+>;
 
 export type _OverviewComponentsTakeDataGridAppearance = Assert<
     Every<{ [K in keyof DataGridComponents]: AcceptsDataGridAppearance<DataGridComponents[K]> }, true>
@@ -85,4 +96,31 @@ export type _OverviewComponentsTakeDataGridAppearance = Assert<
 
 export type _OtherComponentsRejectDataGridAppearance = Assert<
     Every<{ [K in keyof NonDataGridComponents]: AcceptsDataGridAppearance<NonDataGridComponents[K]> }, false>
+>;
+
+type RemovedProps = {
+    CapitalOffer: 'onOfferDismiss';
+    PaymentLinkCreation: 'onPaymentLinkCreated';
+    PaymentLinksOverview: 'balanceAccountId';
+};
+
+export type _NoComponentPublishesRemovedProps = Assert<Every<{ [K in keyof RemovedProps]: LacksKey<PublishedProps[K], RemovedProps[K]> }, true>>;
+export type _PaymentLinkCreationTakesOnCreate = Assert<HasKey<PaymentLinkCreationProps, 'onCreate'>>;
+export type _PayoutDetailsKeepsRequiredIdAndDate = Assert<Same<Pick<PayoutDetailsProps, 'id' | 'date'>, { id: string; date: string }>>;
+export type _CapitalOfferPropsDoNotRequireFundsRequest = Assert<
+    Pick<CapitalOfferProps, never> extends Pick<CapitalOfferProps, 'onFundsRequest'> ? true : false
+>;
+
+type SelectionPayload<TProps extends { onRecordSelection?: (...args: never[]) => void }> = Parameters<NonNullable<TProps['onRecordSelection']>>[0];
+type SelectionComponents = Pick<PublishedProps, 'TransactionsOverview' | 'PayoutsOverview' | 'DisputesOverview' | 'PaymentLinksOverview'>;
+
+export type _SelectionPayloadsCarryIdAndShowDetails = Assert<
+    Every<
+        { [K in keyof SelectionComponents]: SelectionPayload<SelectionComponents[K]> extends { id: string; showDetails: () => void } ? true : false },
+        true
+    >
+>;
+
+export type _PayoutsSelectionPayloadAlsoCarriesDate = Assert<
+    Same<SelectionPayload<PayoutsOverviewProps>, { id: string; date: string; showDetails: () => void }>
 >;

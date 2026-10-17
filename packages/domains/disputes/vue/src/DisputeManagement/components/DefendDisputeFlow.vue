@@ -11,7 +11,7 @@ import DefendReasonSelection from './DefendReasonSelection.vue';
 import flowStyles from './DisputeFlow.module.scss';
 
 const props = defineProps<{
-    onDisputeDefend?: DisputeManagementProps['onDisputeDefend'];
+    onDefend?: DisputeManagementProps['onDefend'];
 }>();
 
 const { i18n } = useCoreContext();
@@ -39,9 +39,9 @@ const callbackCalled = ref(false);
 
 watch(defendResponse, response => {
     const pspReference = disputePspReference.value;
-    if (response !== DefendResponse.Success || callbackCalled.value || !pspReference || !isFunction(props.onDisputeDefend)) return;
+    if (response !== DefendResponse.Success || callbackCalled.value || !pspReference || !isFunction(props.onDefend)) return;
     callbackCalled.value = true;
-    props.onDisputeDefend({ id: pspReference });
+    props.onDefend({ id: pspReference });
 });
 </script>
 

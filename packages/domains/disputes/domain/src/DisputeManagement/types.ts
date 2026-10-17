@@ -12,6 +12,6 @@ export type DisputeCallbackData = {
 
 export interface DisputeManagementProps extends DetailsWithExtraData<DisputeDetailsCustomization>, WithDismissCallback {
     id: string;
-    onDisputeAccept?: <T extends DisputeCallbackData>(dispute: T) => void;
-    onDisputeDefend?: <T extends DisputeCallbackData>(dispute: T) => void;
+    onAccept?: (dispute: DisputeCallbackData) => void;
+    onDefend?: (dispute: DisputeCallbackData) => void;
 }

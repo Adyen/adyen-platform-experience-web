@@ -44,13 +44,17 @@ vi.mock('./ConfigContext', () => ({
     useConfigContext: vi.fn(),
 }));
 
+const { coreProviderBindings } = vi.hoisted(() => ({ coreProviderBindings: [] as Record<string, unknown>[] }));
+
 vi.mock('./Context/CoreProvider.vue', () => ({
     default: defineComponent({
         name: 'CoreProvider',
-        setup:
-            (_props, { slots }) =>
-            () =>
-                slots.default?.(),
+        inheritAttrs: false,
+        props: { externalErrorHandler: { type: Function, default: undefined } },
+        setup(props, { slots }) {
+            coreProviderBindings.push(props);
+            return () => slots.default?.();
+        },
     }),
 }));
 vi.mock('./ConfigContext/ConfigProvider.vue', () => ({
@@ -98,6 +102,7 @@ const createCoreStub = () =>
 
 describe('UIElementProvider', () => {
     let mounted: Array<{ app: App; target: HTMLDivElement }> = [];
+    let core: CoreInstance;
 
     afterEach(() => {
         mounted.forEach(({ app, target }) => {
@@ -105,6 +110,7 @@ describe('UIElementProvider', () => {
             target.remove();
         });
         mounted = [];
+        coreProviderBindings.length = 0;
     });
 
     const mountProvider = (slotProps: Record<string, unknown> = {}) => {
@@ -114,12 +120,14 @@ describe('UIElementProvider', () => {
             setup: () => () => h('div', { 'data-testid': CONTENT_TEST_ID }, 'domain component'),
         });
 
+        core = createCoreStub();
+
         const target = document.createElement('div');
         const app = createApp({
             setup: () => () =>
                 h(
                     UIElementProvider,
-                    { core: createCoreStub(), bentoOverrides: {}, componentName: 'transactions', refreshComponent: vi.fn() },
+                    { core, bentoOverrides: {}, componentName: 'transactions', refreshComponent: vi.fn() },
                     { default: () => h(SlotComponent, slotProps) }
                 ),
         });
@@ -170,5 +178,11 @@ describe('UIElementProvider', () => {
 
         supportButton?.click();
         expect(onContactSupport).toHaveBeenCalledOnce();
+    });
+
+    test('wires the Core error handler into the provider', () => {
+        setContext({});
+        mountProvider();
+        expect(coreProviderBindings[0]?.externalErrorHandler).toBe(core.options.onError);
     });
 });
