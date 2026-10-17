@@ -1,0 +1,11 @@
+{
+    "name": "@integration-components/cashOut",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "packages/domains/cashOut",
+    "tags": ["scope:cashOut", "type:domain"],
+    "targets": {
+        "types:check": {},
+        "types:watch": {}
+    }
+}

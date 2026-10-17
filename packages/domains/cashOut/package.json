@@ -1,0 +1,37 @@
+{
+    "name": "@integration-components/cashOut",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "sideEffects": [
+        "**/*.css",
+        "**/*.scss"
+    ],
+    "exports": {
+        "./publish": "./publish/src/index.ts",
+        "./vue": "./vue/src/index.ts",
+        "./domain": "./domain/src/index.ts"
+    },
+    "dependencies": {
+        "@adyen/bento-vue3": "catalog:",
+        "@integration-components/composables-vue": "workspace:*",
+        "@integration-components/core": "workspace:*",
+        "@integration-components/sdk-internal": "workspace:*",
+        "@integration-components/style": "workspace:*",
+        "@integration-components/testing": "workspace:*",
+        "@integration-components/types": "workspace:*",
+        "@integration-components/utils": "workspace:*"
+    },
+    "peerDependencies": {
+        "vue": "catalog:"
+    },
+    "devDependencies": {
+        "@playwright/test": "catalog:",
+        "@storybook/vue3": "catalog:",
+        "dotenv": "catalog:",
+        "msw": "catalog:",
+        "msw-storybook-addon": "^2.0.2",
+        "storybook": "catalog:",
+        "vitest": "catalog:"
+    }
+}
