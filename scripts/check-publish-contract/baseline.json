@@ -87,6 +87,7 @@
     "typeFiles": [
         "packages/domains/capital/domain/src/CapitalOffer/constants.d.ts",
         "packages/domains/capital/domain/src/CapitalOffer/index.d.ts",
+        "packages/domains/capital/domain/src/CapitalOffer/types.d.ts",
         "packages/domains/capital/domain/src/CapitalOffer/utils/dynamicOfferConfig.d.ts",
         "packages/domains/capital/domain/src/CapitalOffer/utils/generic.d.ts",
         "packages/domains/capital/domain/src/CapitalOffer/utils/index.d.ts",
@@ -432,7 +433,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "55d8f8f75465a454fc20e3876b7c6866442cb5395664377e6abc2eabbef34be8",
+    "typeTreeHash": "c7c5502164e06e9197b41a5c4cc82443e36c1b8c0a8dd02366257820a88128fe",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",

@@ -60,6 +60,6 @@ export type PaymentLinkCreatedData = PaymentLinkCreationFormValues & { paymentLi
 export interface PaymentLinkCreationProps extends WithDismissCallback {
     fieldsConfig?: PaymentLinkCreationFieldsConfig;
     storeIds?: StoreIds;
-    onPaymentLinkCreated?: (paymentLink: PaymentLinkCreationFormValues) => void;
+    onCreate?: (paymentLink: PaymentLinkCreationFormValues) => void;
     onShowDetails?: (data: { id: string; url: string }) => void;
 }

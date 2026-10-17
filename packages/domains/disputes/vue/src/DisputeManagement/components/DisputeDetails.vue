@@ -44,6 +44,6 @@ onMounted(() => getDisputesConfig());
         :on-contact-support="props.onContactSupport"
         :on-dismiss="props.onDismiss"
     />
-    <AcceptDisputeFlow v-else-if="flowState === DisputeFlowState.Accept" :on-dispute-accept="props.onDisputeAccept" />
-    <DefendDisputeFlow v-else :on-dispute-defend="props.onDisputeDefend" />
+    <AcceptDisputeFlow v-else-if="flowState === DisputeFlowState.Accept" :on-accept="props.onAccept" />
+    <DefendDisputeFlow v-else :on-defend="props.onDefend" />
 </template>

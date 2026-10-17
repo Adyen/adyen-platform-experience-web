@@ -15,7 +15,7 @@ export type TransactionsCustomColumn = DataGridCustomColumnConfig<TransactionsTa
 export type TransactionsDataGridCustomization = DataCustomizationObject<TransactionsTableFields, ITransaction[], CustomDataRetrieved[]>;
 
 export interface TransactionsOverviewProps extends PaginationProps, WithBalanceAccountId {
-    onRecordSelection?: (selection: { id: string; showDetails: () => void }) => any;
+    onRecordSelection?: (selection: { id: string; showDetails: () => void }) => void;
     dataCustomization?: {
         dataGrid?: TransactionsDataGridCustomization;
         details?: TransactionDetailsCustomization;

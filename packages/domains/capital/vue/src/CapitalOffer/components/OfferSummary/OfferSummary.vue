@@ -22,7 +22,7 @@ const props = defineProps<{
     offer: IGrantOfferResponseDTO;
     onBack: () => void;
     onContactSupport?: () => void;
-    onFundsRequest: OnFundsRequestCallback;
+    onFundsRequest?: OnFundsRequestCallback;
 }>();
 
 const { i18n } = useCoreContext();
@@ -50,7 +50,7 @@ const balanceAccountError = computed(() => getBalanceAccountErrorMessage(request
 async function handleRequestFunds() {
     const grant = await requestFunds(props.offer.id, renewableGrant.value?.id);
     if (grant) {
-        props.onFundsRequest(grant, renewableGrant.value?.id);
+        props.onFundsRequest?.(grant, renewableGrant.value?.id);
     }
 
     userEvents.addEvent?.('Clicked button', {

@@ -88,7 +88,7 @@ function onRowClick(payout: IPayout) {
     // the modal directly.
     if (props.onRecordSelection) {
         props.onRecordSelection({
-            balanceAccountId,
+            id: balanceAccountId,
             date: payout.createdAt ?? '',
             showDetails: showPayoutDetailsModal,
         });

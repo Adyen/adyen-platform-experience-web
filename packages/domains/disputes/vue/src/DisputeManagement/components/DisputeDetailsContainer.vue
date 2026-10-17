@@ -26,8 +26,8 @@ watch(
             :id="props.id"
             :data-customization="props.dataCustomization"
             :on-contact-support="props.onContactSupport"
-            :on-dispute-accept="props.onDisputeAccept"
-            :on-dispute-defend="props.onDisputeDefend"
+            :on-accept="props.onAccept"
+            :on-defend="props.onDefend"
             :on-dismiss="props.onDismiss"
         />
     </div>
