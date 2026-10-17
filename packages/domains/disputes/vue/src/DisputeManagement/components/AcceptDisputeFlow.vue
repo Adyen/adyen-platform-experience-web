@@ -12,7 +12,7 @@ import flowStyles from './DisputeFlow.module.scss';
 import styles from './AcceptDisputeFlow.module.scss';
 
 const props = defineProps<{
-    onDisputeAccept?: DisputeManagementComponentProps['onDisputeAccept'];
+    onAccept?: DisputeManagementComponentProps['onAccept'];
 }>();
 
 const config = useConfigContext();
@@ -106,9 +106,9 @@ async function acceptDisputeCallback() {
 
 watch(disputeAccepted, accepted => {
     const pspReference = disputePspReference.value;
-    if (!accepted || callbackCalled.value || !pspReference || !isFunction(props.onDisputeAccept)) return;
+    if (!accepted || callbackCalled.value || !pspReference || !isFunction(props.onAccept)) return;
     callbackCalled.value = true;
-    props.onDisputeAccept({ id: pspReference });
+    props.onAccept({ id: pspReference });
 });
 </script>
 

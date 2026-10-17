@@ -1,9 +1,10 @@
 import type { Ref } from 'vue';
 import type Localization from '../../Localization';
-import type { DevEnvironment } from '../../types';
+import type { DevEnvironment, OnErrorHandler } from '../../types';
 import type { GlobalAppearance } from '@integration-components/types';
 import type { TranslationDomain, TranslationKey, TranslationOptions } from '../../translations';
 
+export type { OnErrorHandler } from '../../types';
 export type { DomainCustomTranslations, DomainTranslationKey, TranslationDomain } from '../../translations';
 export { getDomainTranslationKey } from '../../translations';
 
@@ -26,8 +27,6 @@ export interface AssetOptions {
     extension?: string;
     subFolder?: string;
 }
-
-export type OnErrorHandler = (error: Error) => void;
 
 export interface CoreProviderProps {
     commonProps?: CommonPropsTypes;

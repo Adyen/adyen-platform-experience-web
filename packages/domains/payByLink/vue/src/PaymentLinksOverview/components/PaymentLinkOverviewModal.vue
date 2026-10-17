@@ -10,8 +10,8 @@ const props = defineProps<{
     storeIds?: PaymentLinksOverviewComponentProps['storeIds'];
     paymentLinkCreation?: PaymentLinksOverviewComponentProps['paymentLinkCreation'];
     paymentLinkSettings?: PaymentLinksOverviewComponentProps['paymentLinkSettings'];
-    onPaymentLinkCreated: (paymentLink: PaymentLinkCreationFormValues) => void;
-    onContactSupport?: () => void;
+    onCreate: (paymentLink: PaymentLinkCreationFormValues) => void;
+    onContactSupport?: PaymentLinksOverviewComponentProps['onContactSupport'];
     onClose: () => void;
 }>();
 
@@ -37,7 +37,7 @@ const PaymentLinkSettings = defineAsyncComponent({
                 v-if="props.modalType === 'Creation'"
                 :fields-config="props.paymentLinkCreation?.fieldsConfig"
                 :store-ids="props.storeIds"
-                :on-payment-link-created="props.onPaymentLinkCreated"
+                :on-create="props.onCreate"
                 :on-dismiss="props.paymentLinkCreation?.onDismiss"
                 :on-contact-support="props.onContactSupport"
                 embedded-in-overview

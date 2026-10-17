@@ -1,13 +1,8 @@
 import type { UIElementProps } from '@integration-components/core/vue';
 import type { GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
-import type {
-    DisputeStatusGroup,
-    DisputesDataGridCustomization,
-    DisputesOverviewProps,
-    DisputesOverviewTabsConfig,
-} from '@integration-components/disputes/domain';
+import type { DisputesOverviewProps } from '@integration-components/disputes/domain';
 
-export type { DisputeStatusGroup, DisputesDataGridCustomization, DisputesOverviewTabsConfig };
+export type { DisputeStatusGroup, DisputesDataGridCustomization, DisputesOverviewTabsConfig } from '@integration-components/disputes/domain';
 export type { IBalanceAccountBase } from '@integration-components/types';
 
 export type DisputesOverviewAppearance = GlobalAppearance & WithDataGridAppearance;

@@ -15,7 +15,7 @@ import styles from '../TransactionsOverview/TransactionsOverview.module.scss';
 const props = defineProps<{
     balanceAccounts?: IBalanceAccountBase[];
     isLoadingBalanceAccount: boolean;
-    onContactSupport?: () => void;
+    onContactSupport?: TransactionsOverviewComponentProps['onContactSupport'];
     onRecordSelection?: TransactionsOverviewComponentProps['onRecordSelection'];
     dataCustomization?: TransactionsOverviewComponentProps['dataCustomization'];
     onRowClick: (transaction: ITransaction) => void;

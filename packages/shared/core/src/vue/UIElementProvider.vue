@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="TComponentAppearance extends GlobalAppearance = GlobalAppearance">
+<script setup lang="ts">
 import { computed, inject, provide, ref, useSlots } from 'vue';
 import type { CoreInstance, GlobalAppearance } from './types';
 import { useBentoTranslationOverrides } from '@adyen/bento-vue3';
@@ -12,7 +12,7 @@ import ComponentAvailabilityGate from './componentAvailability/ComponentAvailabi
 import styles from './UIElement.module.scss';
 import './UIElement.scss';
 
-interface Props {
+interface Props<TComponentAppearance extends GlobalAppearance = GlobalAppearance> {
     core: CoreInstance;
     bentoOverrides: Record<string, string>;
     componentName: ExternalComponentType;
@@ -59,7 +59,7 @@ useBentoTranslationOverrides(props.bentoOverrides);
                 <section ref="componentRef" class="adyen-pe-component" data-testid="component-root">
                     <div
                         data-testid="component-container"
-                        :class="[styles.container, { [styles.containerHidden]: appearance?.container === 'hidden' }]"
+                        :class="[styles.container, appearance?.container === 'hidden' ? styles.containerHidden : '']"
                     >
                         <ComponentAvailabilityGate :type="props.componentName" :on-contact-support="onContactSupport">
                             <slot />

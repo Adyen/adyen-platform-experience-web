@@ -192,8 +192,8 @@ function refreshPaymentLinkList() {
     lastRefreshTimestamp.value = performance.now();
 }
 
-function onPaymentLinkCreated(paymentLink: PaymentLinkCreationFormValues) {
-    props.paymentLinkCreation?.onPaymentLinkCreated?.(paymentLink);
+function onCreate(paymentLink: PaymentLinkCreationFormValues) {
+    props.paymentLinkCreation?.onCreate?.(paymentLink);
     hasToRefresh.value = true;
 }
 
@@ -307,7 +307,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
             :store-ids="props.storeIds"
             :payment-link-creation="props.paymentLinkCreation"
             :payment-link-settings="props.paymentLinkSettings"
-            :on-payment-link-created="onPaymentLinkCreated"
+            :on-create="onCreate"
             :on-contact-support="props.onContactSupport"
             :on-close="onCloseModal"
         />

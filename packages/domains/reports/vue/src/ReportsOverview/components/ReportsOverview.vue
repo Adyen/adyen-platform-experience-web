@@ -16,14 +16,12 @@ import type { IBalanceAccountBase, ReportsOverviewComponentProps } from '../type
 import { BentoTypography } from '@adyen/bento-vue3';
 import styles from './ReportsOverview.module.scss';
 
-const props = defineProps<{
-    balanceAccountId?: string;
-    pagination?: ReportsOverviewComponentProps['pagination'];
-    onContactSupport?: () => void;
-    dataCustomization?: any;
-    balanceAccounts: IBalanceAccountBase[] | undefined;
-    isLoadingBalanceAccount: boolean;
-}>();
+const props = defineProps<
+    ReportsOverviewComponentProps & {
+        balanceAccounts: IBalanceAccountBase[] | undefined;
+        isLoadingBalanceAccount: boolean;
+    }
+>();
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();

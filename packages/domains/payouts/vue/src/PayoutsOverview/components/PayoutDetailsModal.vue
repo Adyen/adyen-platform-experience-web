@@ -9,7 +9,7 @@ const props = defineProps<{
     date: string;
     balanceAccountDescription?: string;
     dataCustomization?: PayoutsOverviewComponentProps['dataCustomization'];
-    onContactSupport?: () => void;
+    onContactSupport?: PayoutsOverviewComponentProps['onContactSupport'];
     onClose: () => void;
 }>();
 

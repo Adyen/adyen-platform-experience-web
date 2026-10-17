@@ -3,12 +3,7 @@ import { computed, ref, watch } from 'vue';
 import { BentoButtonActions, BentoCard, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
 import { useConfigContext, useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
-import {
-    DISPUTE_DETAILS_RESERVED_FIELDS_SET,
-    getDisputeType,
-    isDisputeActionNeeded,
-    type DisputeDetailsCustomization,
-} from '@integration-components/disputes/domain';
+import { DISPUTE_DETAILS_RESERVED_FIELDS_SET, getDisputeType, isDisputeActionNeeded } from '@integration-components/disputes/domain';
 import { isFunction, parsePaymentMethodType } from '@integration-components/utils';
 import type { CustomButtonObject, CustomDataRetrieved } from '@integration-components/types';
 import { useDisputeDetails } from '../composables/useDisputeDetails';
@@ -24,8 +19,8 @@ import styles from './DisputeData.module.scss';
 
 const props = defineProps<{
     disputeId: string;
-    dataCustomization?: { details?: DisputeDetailsCustomization };
-    onContactSupport?: () => void;
+    dataCustomization?: DisputeManagementComponentProps['dataCustomization'];
+    onContactSupport?: DisputeManagementComponentProps['onContactSupport'];
     onDismiss?: DisputeManagementComponentProps['onDismiss'];
 }>();
 

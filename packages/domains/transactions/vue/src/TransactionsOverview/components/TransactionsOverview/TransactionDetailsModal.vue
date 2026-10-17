@@ -7,7 +7,7 @@ import type { TransactionsOverviewComponentProps } from '../../types';
 const props = defineProps<{
     id: string;
     dataCustomization?: TransactionsOverviewComponentProps['dataCustomization'];
-    onContactSupport?: () => void;
+    onContactSupport?: TransactionsOverviewComponentProps['onContactSupport'];
     onClose: () => void;
 }>();
 

@@ -20,7 +20,7 @@ const paymentLinkUrl = ref('');
 const paymentLinkId = ref('');
 
 function handleCreated(data: PaymentLinkCreationFormValues & { paymentLink: CreatedPaymentLink }) {
-    props.onPaymentLinkCreated?.(data);
+    props.onCreate?.(data);
     paymentLinkUrl.value = data.paymentLink?.url ?? '';
     paymentLinkId.value = data.paymentLink?.paymentLinkId ?? '';
     state.value = 'Success';
