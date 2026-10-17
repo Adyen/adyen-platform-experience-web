@@ -39,7 +39,7 @@ const workspacePackageDirs = getWorkspacePackageDirs();
 module.exports = [
     // Global ignores
     {
-        ignores: ['**/dist/**', '**/storybook-static/**', '**/coverage/**', '**/static/**'],
+        ignores: ['**/dist/**', '**/storybook-static/**', '**/coverage/**', '**/static/**', 'codemods/**'],
     },
 
     // eslint:recommended base rules

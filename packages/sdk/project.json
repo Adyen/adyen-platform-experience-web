@@ -6,7 +6,8 @@
     "tags": ["type:publish"],
     "targets": {
         "build": {
-            "outputs": ["{workspaceRoot}/dist"]
+            "outputs": ["{workspaceRoot}/dist"],
+            "inputs": ["default", "{workspaceRoot}/codemods/**", "{workspaceRoot}/config/vite/**"]
         },
         "types:check": {},
         "types:watch": {}
