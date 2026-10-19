@@ -48,7 +48,7 @@ function buildInitialPayload(): FormData {
 let themePayload: FormData = buildInitialPayload();
 setPayload(themePayload);
 
-watch(isValid, setIsValid, { immediate: true, flush: 'sync' });
+watch(isValid, setIsValid, { immediate: true });
 
 watch(saveActionCalled, value => {
     if (value) {

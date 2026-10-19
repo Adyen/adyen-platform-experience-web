@@ -160,8 +160,8 @@ describe('ThemeForm image submission', () => {
     test.each<LogoType>(['logo', 'fullWidthLogo'])('blocks saving when %s fails upload validation', async type => {
         selectFile(type, new File(['invalid image'], 'invalid.jpg', { type: 'image/jpeg' }));
         uploader(type)['onError:upload'](true);
-        await onSave();
         await nextTick();
+        await onSave();
 
         expect(updatePayByLinkTheme).not.toHaveBeenCalled();
         expect(target.querySelector('[role="alert"]')).toHaveTextContent('payByLink.settings.common.alerts.validationError');
@@ -192,8 +192,8 @@ describe('ThemeForm image submission', () => {
         await nextTick();
 
         selectFile('logo');
-        await onSave();
         await nextTick();
+        await onSave();
 
         expect(submittedPayload().has('logo')).toBe(false);
         expect(target.querySelector('[role="alert"]')).toBeNull();
