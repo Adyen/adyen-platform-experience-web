@@ -16,18 +16,18 @@ const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
 const title = computed(() => (hideTitles.value || withinModal ? undefined : i18n.get(props.titleKey)));
-const description = computed(() => {
+const subtitle = computed(() => {
     const key = `capital.common.loanProviderInfo.${props.region}`;
     return !props.hideSubtitle && i18n.has(key) ? i18n.get(key) : undefined;
 });
 </script>
 
 <template>
-    <div v-if="title || description || props.actions?.length" data-testid="capital-header">
-        <BentoHeader v-if="title" variant="component" :title="title" :description="description" :actions="props.actions" />
+    <div v-if="title || subtitle || props.actions?.length" data-testid="capital-header">
+        <BentoHeader v-if="title" variant="component" :title="title" :description="subtitle" :actions="props.actions" />
         <div v-else :class="styles.titlelessContent">
-            <BentoTypography v-if="description" el="div" :class="styles.description">
-                {{ description }}
+            <BentoTypography v-if="subtitle" el="div" :class="styles.description">
+                {{ subtitle }}
             </BentoTypography>
             <BentoButtonActions v-if="props.actions?.length" :actions="props.actions" />
         </div>
