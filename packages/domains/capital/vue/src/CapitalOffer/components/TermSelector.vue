@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { BentoSelectionCardGroup } from '@adyen/bento-vue3';
+import { BentoLoadingSkeletonTypography, BentoSelectionCardGroup } from '@adyen/bento-vue3';
 import {
     calculatePercentageFromBasisPoints,
     getAvailableTerms,
@@ -14,6 +14,7 @@ import useContainerQuery from '@integration-components/composables-vue/useContai
 import { BREAKPOINTS } from '@integration-components/utils';
 
 const MAX_ITEMS_PER_ROW = 3;
+const CONTENT_LOADING_SKELETON_PLACEHOLDER = 'CONTENT_LOADING_SKELETON_PLACEHOLDER';
 
 const props = defineProps<{
     areAvailableTermsLoading: boolean;
@@ -38,15 +39,19 @@ const items = computed(() =>
     props.estimatedTerms.map(term => {
         const offer = props.offersByTerm[term];
         const isAvailable = availableTerms.value.includes(term);
+        let content;
+
+        if (props.areAvailableTermsLoading) {
+            content = CONTENT_LOADING_SKELETON_PLACEHOLDER;
+        } else if (offer) {
+            content = i18n.get('capital.offer.selection.termOptions.dailyRatePercentage', {
+                values: { percentage: calculatePercentageFromBasisPoints(offer.repaymentRate) },
+            });
+        }
 
         return {
             disabled: props.areAvailableTermsLoading || !isAvailable,
-            content:
-                props.areAvailableTermsLoading || !offer
-                    ? undefined
-                    : i18n.get('capital.offer.selection.termOptions.dailyRatePercentage', {
-                          values: { percentage: calculatePercentageFromBasisPoints(offer.repaymentRate) },
-                      }),
+            content,
             title: formatTermLabel(term),
             value: term,
             fullyClickable: true,
@@ -96,6 +101,7 @@ const handleChange = (term: number) => {
 
 <template>
     <BentoSelectionCardGroup
+        :aria-busy="props.areAvailableTermsLoading"
         :hide-label="false"
         :items="items"
         :items-per-row="itemsPerRow"
@@ -106,7 +112,10 @@ const handleChange = (term: number) => {
         @update:model-value="handleChange"
     >
         <template #content="{ content }">
-            {{ content }}
+            <BentoLoadingSkeletonTypography v-if="content === CONTENT_LOADING_SKELETON_PLACEHOLDER" :lines="1" :last-line-width="70" />
+            <template v-else>
+                {{ content }}
+            </template>
         </template>
     </BentoSelectionCardGroup>
 </template>
