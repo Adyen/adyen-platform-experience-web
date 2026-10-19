@@ -146,10 +146,15 @@ describe.each([
 });
 
 describe('ShopperPhoneField single-option preselection', () => {
+    // The first tick resolves the dataset awaited in `onMounted`; the second flushes the resulting watcher and re-render.
+    const waitForPhoneDataset = async () => {
+        await nextTick();
+        await nextTick();
+    };
+
     test('preselects the single prefix without persisting an incomplete phone number', async () => {
         const { wizard } = mountField(ShopperPhoneField, 'telephoneNumber');
-        await nextTick();
-        await nextTick();
+        await waitForPhoneDataset();
 
         expect(target.textContent).toBe('ES');
         expect(wizard.getValue('telephoneNumber')).toBe('');
@@ -158,8 +163,7 @@ describe('ShopperPhoneField single-option preselection', () => {
 
     test('preselects when a hidden field becomes visible after the dataset loads', async () => {
         const { visible, wizard } = mountField(ShopperPhoneField, 'telephoneNumber', { visible: false });
-        await nextTick();
-        await nextTick();
+        await waitForPhoneDataset();
 
         expect(target.textContent).toBe('');
         visible.value = true;
@@ -171,8 +175,7 @@ describe('ShopperPhoneField single-option preselection', () => {
 
     test('preserves a prefilled phone number when visibility changes', async () => {
         const { visible, wizard } = mountField(ShopperPhoneField, 'telephoneNumber', { visible: false, value: '+34 3002119220' });
-        await nextTick();
-        await nextTick();
+        await waitForPhoneDataset();
 
         visible.value = true;
         await nextTick();
