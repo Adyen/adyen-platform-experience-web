@@ -19,6 +19,7 @@ import {
     containerQueries,
     DataOverviewError,
     useShouldHideIllustrations,
+    useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import { DATE_FORMAT_REPORTS, downloadBlob } from '@integration-components/utils';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
@@ -69,6 +70,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const hideIllustrations = useShouldHideIllustrations();
+const isCondensed = useCondensedDataGrid();
 // Keep the reactive proxy here — destructuring `useConfigContext()` would unwrap
 // the `refreshing` primitive into a one-time snapshot and capture a stale
 // `endpoints` reference, breaking reactivity when the session is refreshed.
@@ -300,6 +302,7 @@ function formatDate(dateStr: string): string {
             v-else
             has-resizable-columns
             outline
+            :condensed="isCondensed"
             :columns="columns"
             :data="gridData"
             :loading="isLoading"

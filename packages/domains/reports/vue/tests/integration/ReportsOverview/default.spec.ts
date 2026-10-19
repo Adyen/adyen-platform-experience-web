@@ -69,6 +69,13 @@ test.describe('Default', () => {
             await expect(page.getByRole('listbox').getByRole('option')).toHaveText([/^10(?!\d)/, /^20(?!\d)/, /^30(?!\d)/, /^40(?!\d)/, /^50(?!\d)/]);
         });
 
+        test('should apply the pagination config', async ({ page }) => {
+            await goToStory(page, { id: STORY_ID, args: { 'pagination.defaultLimit': '20', 'pagination.disableLimitSelection': '!true' } });
+
+            await expect(getReportRows(page)).toHaveCount(20);
+            await expect(page.getByRole('navigation', { name: /Pagination/i }).getByRole('combobox', { name: /Items/i })).toHaveCount(0);
+        });
+
         test('should disable downloading in desktop and small containers', async ({ page }) => {
             await goToStory(page, { id: STORY_ID, args: { enforceDownloadDelay: 'true' } });
 

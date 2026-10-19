@@ -46,7 +46,7 @@ test.describe('Payment Links Overview', () => {
         });
 
         test('should display all filter options', async ({ page }) => {
-            await expect(page.getByRole('button', { name: /^Date range/ })).toBeVisible();
+            await expect(page.getByRole('button', { name: /^Creation date/ })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Type' })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Status' })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Merchant reference' })).toBeVisible();
@@ -75,11 +75,11 @@ test.describe('Payment Links Overview', () => {
 
         test('should render Stores before the other filters when stores load', async ({ page }) => {
             const filterButtons = page.getByRole('button', {
-                name: /^(?:Stores|Date range|Type|Status|Merchant reference|Payment Link ID)/,
+                name: /^(?:Stores|Creation date|Type|Status|Merchant reference|Payment Link ID)/,
             });
 
             await expect(filterButtons.first()).toHaveText('Stores');
-            await expect(filterButtons.nth(1)).toHaveText('Date range:Last 30 days');
+            await expect(filterButtons.nth(1)).toHaveText('Creation date:Last 30 days');
         });
 
         test('should display Create Payment Link and Settings buttons', async ({ page }) => {
@@ -172,6 +172,25 @@ test.describe('Payment Links Overview', () => {
             await expect(detailsModal.getByRole('button', { name: 'Expire now' })).toBeVisible();
         });
 
+        test('should display the expiration title in the modal header and clear it when going back', async ({ page }) => {
+            const grid = page.getByRole('grid');
+            await grid.getByRole('rowgroup').nth(1).getByRole('row').first().click();
+
+            const detailsModal = page.getByRole('dialog', { name: 'Payment link details' });
+            await detailsModal.getByRole('button', { name: 'Expire now' }).click();
+
+            const expirationModal = page.getByRole('dialog', { name: 'Expire this link', exact: true });
+            await Promise.all([
+                expect(expirationModal.getByText('Expire this link', { exact: true })).toBeVisible(),
+                expect(expirationModal.getByText('Expire this link', { exact: true })).toHaveCount(1),
+            ]);
+            await expirationModal.getByRole('button', { name: 'Go back', exact: true }).click();
+
+            await expect(detailsModal).toBeVisible();
+            await expect(detailsModal.getByText('Expire this link', { exact: true })).toHaveCount(0);
+            await expect(detailsModal.getByRole('button', { name: 'Expire now' })).toBeVisible();
+        });
+
         test('should refresh the current-day date range after expiring a payment link', async ({ page }) => {
             const grid = page.getByRole('grid');
             const firstRow = grid.getByRole('rowgroup').nth(1).getByRole('row').first();
@@ -179,8 +198,10 @@ test.describe('Payment Links Overview', () => {
 
             const detailsModal = page.getByRole('dialog', { name: 'Payment link details' });
             await detailsModal.getByRole('button', { name: 'Expire now' }).click();
-            await detailsModal.getByRole('button', { name: 'Expire link' }).click();
+            const expirationModal = page.getByRole('dialog', { name: 'Expire this link', exact: true });
+            await expirationModal.getByRole('button', { name: 'Expire link' }).click();
             await expect(detailsModal.getByText('Link has been deactivated')).toBeVisible();
+            await expect(detailsModal.getByText('Expire this link', { exact: true })).toHaveCount(0);
 
             const refreshRequest = page.waitForRequest(request => {
                 const url = new URL(request.url());

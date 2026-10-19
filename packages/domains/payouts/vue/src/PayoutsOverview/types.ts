@@ -1,18 +1,19 @@
 import type { UIElementProps } from '@integration-components/core/vue';
-import type { IBalanceAccountBase } from '@integration-components/types';
+import type { GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
 import type { PaginationProps } from '@integration-components/utils';
-import type { PayoutDetailsCustomization, PayoutsListCustomization } from '@integration-components/payouts/domain';
+import type { PayoutDetailsCustomization, PayoutsDataGridCustomization } from '@integration-components/payouts/domain';
+
+export type { IBalanceAccountBase } from '@integration-components/types';
+export type PayoutsOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
 
 // ── Component prop types ──
 
-export interface PayoutsOverviewExternalProps extends UIElementProps, PaginationProps {
+export interface PayoutsOverviewExternalProps extends UIElementProps<PayoutsOverviewAppearance>, PaginationProps {
     balanceAccountId?: string;
     onContactSupport?: () => void;
-    onRecordSelection?: (selection: { balanceAccountId: string; date: string; showModal: () => void }) => any;
+    onRecordSelection?: (selection: { balanceAccountId: string; date: string; showDetails: () => void }) => any;
     dataCustomization?: {
         details?: PayoutDetailsCustomization;
-        list?: PayoutsListCustomization;
+        dataGrid?: PayoutsDataGridCustomization;
     };
 }
-
-export type { IBalanceAccountBase };

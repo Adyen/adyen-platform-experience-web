@@ -16,6 +16,7 @@ import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow'
 import DisputeDataAlert from './DisputeDataAlert.vue';
 import DisputeDataProperties from './DisputeDataProperties.vue';
 import DisputeIssuerComments from './DisputeIssuerComments.vue';
+import DisputeSkeleton from './DisputeSkeleton.vue';
 import DisputeStatusTag from './DisputeStatusTag.vue';
 import type { DisputeDataAlertMode, DisputeManagementProps } from '../types';
 import flowStyles from './DisputeFlow.module.scss';
@@ -211,6 +212,10 @@ const paymentMethodDetail = computed(() =>
             :dismiss-label="'disputes.management.common.actions.goBack'"
             :on-refresh="retryFetch"
         >
+            <template #loading>
+                <DisputeSkeleton />
+            </template>
+
             <template v-if="dispute">
                 <div :class="styles.statusBox">
                     <BentoCard>
@@ -225,9 +230,7 @@ const paymentMethodDetail = computed(() =>
                                     {{ dispute.dispute.amount.currency }}
                                 </BentoTypography>
                                 <div v-if="paymentMethodType" :class="styles.paymentMethod">
-                                    <div :class="styles.paymentMethodLogoContainer">
-                                        <BentoPaymentMethod :type="paymentMethodType" />
-                                    </div>
+                                    <BentoPaymentMethod :type="paymentMethodType" />
                                     <BentoTypography v-if="paymentMethodDetail" variant="title">
                                         {{ paymentMethodDetail }}
                                     </BentoTypography>

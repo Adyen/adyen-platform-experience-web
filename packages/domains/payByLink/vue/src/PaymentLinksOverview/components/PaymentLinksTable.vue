@@ -8,6 +8,7 @@ import {
     DataOverviewError,
     useCustomColumnWidths,
     useTableColumns,
+    useCondensedDataGrid,
     useResponsiveContainer,
     useTimezoneAwareDateFormatting,
 } from '@integration-components/composables-vue';
@@ -51,6 +52,7 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const { dateFormat } = useTimezoneAwareDateFormatting();
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
+const isCondensed = useCondensedDataGrid();
 
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 const errorInfo = computed(() => getPaymentLinksErrorMessage(props.error, 'payByLink.overview.errors.couldNotLoadLinks', props.onContactSupport));
@@ -206,6 +208,7 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             :loading="props.loading"
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
+            :condensed="isCondensed"
             :allow-column-drag-and-drop="false"
             @row-click="handleRowClick"
             @navigate="handleNavigate"
