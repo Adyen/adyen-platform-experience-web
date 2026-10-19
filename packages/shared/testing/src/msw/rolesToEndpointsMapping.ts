@@ -94,6 +94,34 @@ export const payoutsOverviewComponentView = {
     ...analyticsEndpoints,
 };
 
+export const cashOutComponentView = {
+    getBalanceAccounts: {
+        method: 'GET' as HttpMethod,
+        url: 'balanceAccounts',
+        versions: [1],
+    },
+    getCashOutEligibility: {
+        method: 'GET' as HttpMethod,
+        url: '{accountKey}/cashout/eligibility',
+        versions: [1],
+    },
+    getCashOutFees: {
+        method: 'GET' as HttpMethod,
+        url: '{accountKey}/cashout/fees',
+        versions: [1],
+    },
+    ...analyticsEndpoints,
+};
+
+export const cashOutComponentManage = {
+    ...cashOutComponentView,
+    instructCashOut: {
+        method: 'POST' as HttpMethod,
+        url: '{accountKey}/cashout',
+        versions: [1],
+    },
+};
+
 export const capitalComponentManage = {
     anaCreditActionDetails: {
         method: 'GET' as HttpMethod,

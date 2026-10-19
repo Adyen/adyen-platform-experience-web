@@ -1,9 +1,9 @@
-import { http, HttpResponse, type PathParams } from 'msw';
+import { http, HttpResponse } from 'msw';
 import type { ICashOutFees, ICashOutRequest, ICashOutResponse } from '@integration-components/types';
 import { delay } from '@integration-components/testing/msw';
 import { uuid } from '@integration-components/utils';
 import { ENDPOINTS } from '../endpoints';
-import { BALANCE_ACCOUNT_ID, ELIGIBILITY_AVAILABLE, ELIGIBILITY_UNAVAILABLE } from '../mock-data/cashOut';
+import { ELIGIBILITY_AVAILABLE, ELIGIBILITY_BY_BALANCE_ACCOUNT, ELIGIBILITY_UNAVAILABLE } from '../mock-data/cashOut';
 
 const REQUEST_ID = '769ac4ce59f0f159ad672d38d3291e93';
 const CURRENCY_CODE_PATTERN = /^[A-Z]{3}$/;
@@ -73,9 +73,9 @@ const getInternalServerErrorResponse = () =>
     );
 
 export const cashOutMocks = [
-    http.get(ENDPOINTS.eligibility, async () => {
+    http.get<{ accountKey: string }>(ENDPOINTS.eligibility, async ({ params }) => {
         await delay();
-        return HttpResponse.json(ELIGIBILITY_AVAILABLE.default);
+        return HttpResponse.json(ELIGIBILITY_BY_BALANCE_ACCOUNT[params.accountKey] ?? ELIGIBILITY_AVAILABLE.default);
     }),
     http.get(ENDPOINTS.fees, async ({ request }) => {
         const { searchParams } = new URL(request.url);
@@ -92,7 +92,7 @@ export const cashOutMocks = [
 
         return HttpResponse.json(calculateFees(amount, currency));
     }),
-    http.post<PathParams, Partial<ICashOutRequest>>(ENDPOINTS.instruct, async ({ request }) => {
+    http.post<{ accountKey: string }, Partial<ICashOutRequest>>(ENDPOINTS.instruct, async ({ params, request }) => {
         const { amount, counterparty, currency, description, referenceForBeneficiary } = await request.json();
         const transferInstrumentId = counterparty?.transferInstrumentId;
         const invalidFields = [...getAmountErrors(amount), ...getCurrencyErrors(currency), ...getTransferInstrumentIdErrors(transferInstrumentId)];
@@ -105,7 +105,7 @@ export const cashOutMocks = [
 
         const response: ICashOutResponse = {
             id: uuid(),
-            balanceAccount: BALANCE_ACCOUNT_ID,
+            balanceAccount: params.accountKey,
             amount: { currency, value: amount },
             fee: calculateFees(amount, currency).fee,
             counterparty: { transferInstrumentId },

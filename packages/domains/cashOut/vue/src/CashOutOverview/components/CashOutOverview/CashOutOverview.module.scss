@@ -1,0 +1,40 @@
+@use '@integration-components/style';
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+}
+
+.header {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-060);
+    justify-content: space-between;
+}
+
+.balanceAccountSelector {
+    margin-left: auto;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+}
+
+.availableForCashOut {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-040);
+}
+
+.availableForCashOutLabel {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-020);
+}
+
+.startButton {
+    width: 100%;
+}

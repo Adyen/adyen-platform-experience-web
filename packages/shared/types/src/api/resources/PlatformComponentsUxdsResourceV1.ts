@@ -50,6 +50,7 @@ export interface components {
             | 'reports'
             | 'capitalOverview'
             | 'capitalOffer'
+            | 'cashOutOverview'
             | 'disputes'
             | 'disputesManagement'
             | 'paymentLinkCreation'

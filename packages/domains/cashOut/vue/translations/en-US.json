@@ -1,0 +1,18 @@
+{
+    "cashOut.common.actions.contactSupport.labels.reachOut": "Reach out to support",
+    "cashOut.common.actions.refresh.labels.default": "Refresh",
+    "cashOut.common.errors.contactSupport": "Contact support for help.",
+    "cashOut.common.errors.errorCode": "The error code is %{requestId}",
+    "cashOut.common.errors.errorCodeSupport": "Contact support for help and share error code %{requestId}",
+    "cashOut.common.errors.notFound": "Entity was not found",
+    "cashOut.common.errors.requestInvalid": "The request is missing required fields or contains invalid data.",
+    "cashOut.common.errors.retry": "Try refreshing the page or come back later.",
+    "cashOut.common.errors.somethingWentWrong": "Something went wrong.",
+    "cashOut.common.errors.unexpected": "There was an unexpected error",
+    "cashOut.overview.actions.start": "Start instant CashOut",
+    "cashOut.overview.availableForCashOut.label": "Available to cash out",
+    "cashOut.overview.availableForCashOut.tooltip": "You can cash out up to your pending balance, subject to a cap per rolling 24-hour period.",
+    "cashOut.overview.balanceAccount.label": "Balance account",
+    "cashOut.overview.errors.unavailable": "We couldn't load the account balance.",
+    "cashOut.overview.title": "Instant CashOut"
+}
