@@ -48,7 +48,7 @@ const PaymentLinkSettings = defineAsyncComponent({
         :aria-label="modalTitle ?? i18n.get('payByLink.overview.title')"
         @close-modal="props.onClose"
     >
-        <template v-if="modalTitle" #default>{{ modalTitle }}</template>
+        <template #default>{{ modalTitle }}</template>
         <template #content>
             <ModalContextProvider>
                 <PaymentLinkCreation
