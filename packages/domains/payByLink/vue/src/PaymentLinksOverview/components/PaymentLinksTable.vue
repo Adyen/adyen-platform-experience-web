@@ -177,7 +177,6 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             v-else
             allow-row-clicks
             has-resizable-columns
-            outline
             :columns="columns"
             :data="gridData"
             :loading="props.loading"
