@@ -179,7 +179,6 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
             v-else
             allow-row-clicks
             has-resizable-columns
-            outline
             :condensed="isCondensed"
             :columns="columns"
             :data="gridData"

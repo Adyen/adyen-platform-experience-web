@@ -288,7 +288,6 @@ function formatDate(dateStr: string): string {
         <BentoDataGrid
             v-else
             has-resizable-columns
-            outline
             :condensed="isCondensed"
             :columns="columns"
             :data="gridData"
