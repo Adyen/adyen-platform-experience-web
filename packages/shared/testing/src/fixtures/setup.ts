@@ -2,6 +2,7 @@ import type { HttpMethod } from '@integration-components/core';
 import type { EndpointName } from '@integration-components/types/api/endpoints';
 import {
     capitalComponentManage,
+    cashOutComponentManage,
     disputesComponentManage,
     payByLinkComponentManageLinks,
     payByLinkComponentManageSettings,
@@ -19,6 +20,7 @@ export const setupBasicResponse = {
         ...reportsOverviewComponentView,
         ...payoutsOverviewComponentView,
         ...capitalComponentManage,
+        ...cashOutComponentManage,
         ...disputesComponentManage,
         ...payByLinkComponentView,
         ...payByLinkComponentManageLinks,

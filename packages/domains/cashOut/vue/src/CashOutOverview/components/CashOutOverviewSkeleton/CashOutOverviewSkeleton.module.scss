@@ -1,0 +1,17 @@
+@use '@integration-components/style';
+
+// Mirrors the CashOutOverview content layout so the content replaces it without changing height.
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+}
+
+.amount {
+    max-width: calc(#{style.token(spacer-120)} * 2.5);
+}
+
+// Bento buttons are 36px high.
+.startButton {
+    height: calc(#{style.token(spacer-100)} + #{style.token(spacer-020)});
+}

@@ -1,0 +1,65 @@
+@use '@integration-components/style';
+@use '@integration-components/style/breakpoints';
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+}
+
+// Stacked on small screens so the balance account name isn't truncated next to the title.
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+
+    @include breakpoints.adyen-pe-screen-sm-and-up {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+.summary {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-040);
+}
+
+// With titles hidden this row also holds the balance account selector: next to the label, or above it on small screens.
+.summaryHeader {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    @include breakpoints.adyen-pe-screen-sm-and-up {
+        align-items: center;
+        flex-direction: row;
+        gap: style.token(spacer-060);
+        justify-content: space-between;
+    }
+}
+
+.summaryHeaderSelector {
+    order: -1;
+
+    @include breakpoints.adyen-pe-screen-sm-and-up {
+        order: 0;
+    }
+}
+
+.availableForCashOutLabel {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-020);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+}
+
+.startButton {
+    width: 100%;
+}
