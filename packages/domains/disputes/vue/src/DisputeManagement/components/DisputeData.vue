@@ -2,9 +2,11 @@
 import { computed, ref, watch } from 'vue';
 import { BentoButtonActions, BentoCard, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
 import { useConfigContext, useCoreContext, useModalContext } from '@integration-components/core/vue';
-import { ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
+import { ComponentShell, useLandedPageEvent, type ComponentShellState } from '@integration-components/composables-vue';
 import {
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
+    DISPUTES_ANALYTICS_CATEGORY,
+    DISPUTES_ANALYTICS_SUBCATEGORY_DETAILS,
     getDisputeType,
     isDisputeActionNeeded,
     type DisputeDetailsCustomization,
@@ -44,6 +46,11 @@ watch(data, nextData => {
 });
 
 const dispute = computed(() => storedDispute.value || data.value);
+
+const analyticsProps = { category: DISPUTES_ANALYTICS_CATEGORY, subCategory: DISPUTES_ANALYTICS_SUBCATEGORY_DETAILS } as const;
+
+useLandedPageEvent(analyticsProps, () => !!dispute.value);
+
 const defensibility = computed(() => dispute.value?.dispute.defensibility);
 const acceptAuthorization = computed(() => isFunction(config.endpoints?.acceptDispute));
 const defendAuthorization = computed(() => isFunction(config.endpoints?.getApplicableDefenseDocuments));

@@ -4,13 +4,14 @@ import { useCoreContext } from '@integration-components/core/vue';
 import {
     containerQueries,
     getTimezoneAwareDateRangeQueryParams,
+    useLandedPageEvent,
     useResponsiveContainer,
     useShouldHideTitles,
 } from '@integration-components/composables-vue';
 import ReportsFilters from './ReportsFilters.vue';
 import ReportsTable from './ReportsTable.vue';
 import { useReportsList } from '../composables/useReportsList';
-import { EARLIEST_REPORT_SINCE_DATE } from '../../../../domain/src';
+import { EARLIEST_REPORT_SINCE_DATE, REPORTS_ANALYTICS_CATEGORY, REPORTS_ANALYTICS_SUBCATEGORY_OVERVIEW } from '../../../../domain/src';
 import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
 import type { IBalanceAccountBase, ReportsOverviewExternalProps } from '../types';
 import { BentoTypography } from '@adyen/bento-vue3';
@@ -28,6 +29,10 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
+
+const analyticsProps = { category: REPORTS_ANALYTICS_CATEGORY, subCategory: REPORTS_ANALYTICS_SUBCATEGORY_OVERVIEW } as const;
+
+useLandedPageEvent(analyticsProps);
 
 const initialDateRangeQueryParams = getTimezoneAwareDateRangeQueryParams({
     dateRange: quickSelectDateRanges.last30Days,

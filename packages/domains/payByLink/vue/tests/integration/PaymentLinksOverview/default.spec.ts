@@ -1,11 +1,19 @@
-import { test, expect, type Request } from '@playwright/test';
-import { expectPaginationReset, goToStory, updateStoryArgs } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import type { Request } from '@playwright/test';
+import { expectAnalyticsEvents, expectPaginationReset, goToStory, updateStoryArgs } from '@integration-components/testing/playwright/utils';
 import { applyTextFilter, goToTab, openCreatePaymentLinkModal, openSettingsModal } from '../../../../fixtures/integration/utils';
 import { DEFAULT_STORY_ID, INVALID_PAYMENT_LINK_ID, MERCHANT_REFERENCE, PAYMENT_LINK_ID } from '../../../../fixtures/constants/PaymentLinksOverview';
+import {
+    paymentLinkCreationAnalyticsEventProperties,
+    paymentLinkDetailsAnalyticsEventProperties,
+    paymentLinkSettingsAnalyticsEventProperties,
+    paymentLinksOverviewAnalyticsEventProperties,
+} from '../../../../fixtures/constants/analytics';
 
 test.describe('Payment Links Overview', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: DEFAULT_STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', paymentLinksOverviewAnalyticsEventProperties]]);
     });
 
     test.describe('Payment Links Overview - Validations', () => {
@@ -87,16 +95,18 @@ test.describe('Payment Links Overview', () => {
             await expect(page.getByRole('button', { name: /settings/i })).toBeVisible();
         });
 
-        test('should open Create Payment Link modal when clicking the create button', async ({ page }) => {
+        test('should open Create Payment Link modal when clicking the create button', async ({ page, analyticsEvents }) => {
             await openCreatePaymentLinkModal(page);
 
             await expect(page.getByText('New payment link', { exact: true })).toBeVisible();
+            await expectAnalyticsEvents(analyticsEvents, [['Landed on page', paymentLinkCreationAnalyticsEventProperties]]);
         });
 
-        test('should open Settings modal when clicking the settings button', async ({ page }) => {
+        test('should open Settings modal when clicking the settings button', async ({ page, analyticsEvents }) => {
             const dialog = await openSettingsModal(page);
 
             await expect(dialog.getByRole('heading', { name: 'Settings', exact: true })).toBeVisible();
+            await expectAnalyticsEvents(analyticsEvents, [['Landed on page', paymentLinkSettingsAnalyticsEventProperties]]);
         });
 
         test('should display payment link grid with expected columns', async ({ page }) => {
@@ -114,9 +124,7 @@ test.describe('Payment Links Overview', () => {
             await expect(rows).toHaveCount(10);
         });
 
-        test('should display payment link details when a row is clicked', async ({ page }) => {
-            await goToStory(page, { id: DEFAULT_STORY_ID });
-
+        test('should display payment link details when a row is clicked', async ({ page, analyticsEvents }) => {
             const grid = page.getByRole('grid');
             const firstRow = grid.getByRole('rowgroup').nth(1).getByRole('row').first();
 
@@ -127,6 +135,8 @@ test.describe('Payment Links Overview', () => {
             await expect(detailsModal.getByText(PAYMENT_LINK_ID)).toBeVisible();
             await expect(detailsModal.getByRole('tab', { name: 'Link information' })).toBeVisible();
             await expect(detailsModal.getByRole('button', { name: 'Expire now' })).toBeVisible();
+
+            await expectAnalyticsEvents(analyticsEvents, [['Landed on page', paymentLinkDetailsAnalyticsEventProperties]]);
         });
 
         test('should display the expiration title in the modal header and clear it when going back', async ({ page }) => {

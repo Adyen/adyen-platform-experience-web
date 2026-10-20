@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useLandedPageEvent } from '@integration-components/composables-vue';
 import PaymentLinkCreationForm from '../PaymentLinkCreationFormContainer/PaymentLinkCreationForm.vue';
 import PaymentLinkDetails from '../../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails.vue';
 import FormSuccess from '../Form/FormSuccess/FormSuccess.vue';
 import type { PaymentLinkCreationFormValues, CreatedPaymentLink, PaymentLinkCreationProps } from '../../../../../domain/src';
+import { PAYMENT_LINKS_ANALYTICS_CATEGORY, PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_CREATION } from '../../../../../domain/src';
 import styles from './PaymentLinkCreationContainer.module.scss';
 
 type PaymentLinkCreationContainerProps = PaymentLinkCreationProps & {
@@ -11,6 +13,10 @@ type PaymentLinkCreationContainerProps = PaymentLinkCreationProps & {
 };
 
 const props = defineProps<PaymentLinkCreationContainerProps>();
+
+const analyticsProps = { category: PAYMENT_LINKS_ANALYTICS_CATEGORY, subCategory: PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_CREATION } as const;
+
+useLandedPageEvent(analyticsProps);
 
 type CreationState = 'Creation' | 'Success' | 'Details';
 

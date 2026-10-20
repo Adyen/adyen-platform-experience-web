@@ -229,6 +229,8 @@
         "packages/shared/core/src/EventDispatcher/EventDispatcher.d.ts",
         "packages/shared/core/src/EventDispatcher/EventsQueue.d.ts",
         "packages/shared/core/src/EventDispatcher/eventDispatcher/collect-id.d.ts",
+        "packages/shared/core/src/EventDispatcher/eventDispatcher/component-data-capabilities.d.ts",
+        "packages/shared/core/src/EventDispatcher/eventDispatcher/core-events.d.ts",
         "packages/shared/core/src/EventDispatcher/eventDispatcher/customTranslations.d.ts",
         "packages/shared/core/src/EventDispatcher/eventDispatcher/log-event.d.ts",
         "packages/shared/core/src/EventDispatcher/eventDispatcher/post-telemetry.d.ts",
@@ -431,7 +433,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "76987decd7b021e4192ef91c0ea3226beac526869a057658bc6b45d4cc89aac4",
+    "typeTreeHash": "2b2da06be3c738c142025f310b5614310a160edc551a06f867731893b92e2485",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",
