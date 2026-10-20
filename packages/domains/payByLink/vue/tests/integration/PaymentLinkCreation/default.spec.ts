@@ -1,5 +1,7 @@
-import { test, expect, type Page } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import type { Page } from '@playwright/test';
+import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
+import { paymentLinkCreationAnalyticsEventProperties } from '../../../../fixtures/constants/analytics';
 
 const STORY_ID = 'mocked-pay-by-link-payment-link-creation--default';
 const getFieldError = (page: Page, name: string) =>
@@ -20,6 +22,12 @@ test.describe('Payment link creation - Standalone title', () => {
             expect(page.getByRole('dialog')).toHaveCount(0),
         ]);
     });
+});
+
+test('should track landing on the payment link creation page', async ({ page, analyticsEvents }) => {
+    await goToStory(page, { id: STORY_ID });
+
+    await expectAnalyticsEvents(analyticsEvents, [['Landed on page', paymentLinkCreationAnalyticsEventProperties]]);
 });
 
 test('Shows the selected store description as selected value', async ({ page }) => {

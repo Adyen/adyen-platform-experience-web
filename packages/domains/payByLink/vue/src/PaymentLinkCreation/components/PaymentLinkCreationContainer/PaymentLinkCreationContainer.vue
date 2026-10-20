@@ -4,12 +4,14 @@ import { BentoTypography } from '@adyen/bento-vue3';
 import type { TranslationKey } from '@integration-components/core';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { ComponentShell, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
+import { useLandedPageEvent } from '@integration-components/composables-vue';
 import PaymentLinkCreationForm from '../PaymentLinkCreationFormContainer/PaymentLinkCreationForm.vue';
 import PaymentLinkCreationFormSkeleton from '../PaymentLinkCreationFormContainer/PaymentLinkCreationFormSkeleton.vue';
 import { usePaymentLinkFormData } from '../PaymentLinkCreationFormContainer/usePaymentLinkFormData';
 import PaymentLinkDetails from '../../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails.vue';
 import FormSuccess from '../Form/FormSuccess/FormSuccess.vue';
-import type { PaymentLinkCreationFormValues, CreatedPaymentLink } from '../../../../../domain/src';
+import type { PaymentLinkCreationFormValues, CreatedPaymentLink, PaymentLinkCreationProps } from '../../../../../domain/src';
+import { PAYMENT_LINKS_ANALYTICS_CATEGORY, PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_CREATION } from '../../../../../domain/src';
 import type { PaymentLinkCreationComponentProps } from '../../types';
 import styles from './PaymentLinkCreationContainer.module.scss';
 
@@ -36,6 +38,10 @@ watch(
     },
     { immediate: true }
 );
+
+const analyticsProps = { category: PAYMENT_LINKS_ANALYTICS_CATEGORY, subCategory: PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_CREATION } as const;
+
+useLandedPageEvent(analyticsProps);
 
 type CreationState = 'Creation' | 'Success' | 'Details';
 
