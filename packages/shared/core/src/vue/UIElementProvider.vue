@@ -1,6 +1,6 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="TComponentAppearance extends GlobalAppearance = GlobalAppearance">
 import { computed, inject, provide, ref, useSlots } from 'vue';
-import type { Appearance, CoreInstance } from './types';
+import type { CoreInstance, GlobalAppearance } from './types';
 import { useBentoTranslationOverrides } from '@adyen/bento-vue3';
 import CoreProvider from './Context/CoreProvider.vue';
 import { resolveAppearance } from './customization';
@@ -16,8 +16,8 @@ interface Props {
     core: CoreInstance;
     bentoOverrides: Record<string, string>;
     componentName: ExternalComponentType;
-    componentAppearance?: Appearance;
-    globalAppearance?: Appearance;
+    componentAppearance?: TComponentAppearance;
+    globalAppearance?: GlobalAppearance;
     refreshComponent: () => void;
 }
 
@@ -57,7 +57,10 @@ useBentoTranslationOverrides(props.bentoOverrides);
         <ConfigProvider :session="props.core.session" :type="props.componentName">
             <EventDispatcherProvider :component-name="props.componentName" :analytics-enabled="props.core.analyticsEnabled ?? true">
                 <section ref="componentRef" class="adyen-pe-component" data-testid="component-root">
-                    <div :class="styles.container">
+                    <div
+                        data-testid="component-container"
+                        :class="[styles.container, { [styles.containerHidden]: appearance?.container === 'hidden' }]"
+                    >
                         <ComponentAvailabilityGate :type="props.componentName" :on-contact-support="onContactSupport">
                             <slot />
                         </ComponentAvailabilityGate>

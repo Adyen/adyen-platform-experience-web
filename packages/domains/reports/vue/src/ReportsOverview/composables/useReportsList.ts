@@ -11,8 +11,7 @@ interface UseReportsListProps {
     balanceAccountId: string | undefined;
     createdSince: string;
     createdUntil: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: ReportsOverviewExternalProps['preferredLimit'];
+    pagination?: ReportsOverviewExternalProps['pagination'];
 }
 
 export function useReportsList(props: () => UseReportsListProps) {
@@ -22,8 +21,7 @@ export function useReportsList(props: () => UseReportsListProps) {
 
     const pageLimit = usePageLimit({
         options: DEFAULT_PAGE_LIMITS,
-        preferredLimit: () => props().preferredLimit,
-        allowLimitSelection: () => props().allowLimitSelection,
+        pagination: () => props().pagination,
     });
 
     return useCursorPaginatedRecords<IReport>({

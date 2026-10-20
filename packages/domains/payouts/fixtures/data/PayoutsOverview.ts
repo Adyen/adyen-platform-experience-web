@@ -1,4 +1,4 @@
-import type { PayoutDetailsCustomization, PayoutsListCustomization } from '../../domain/src';
+import type { PayoutDetailsCustomization, PayoutsDataGridCustomization } from '../../domain/src';
 import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers/constants';
 import { sleep } from '@integration-components/testing/fixtures/utils';
 
@@ -43,7 +43,7 @@ export const DATA_CUSTOMIZATION_DETAILS: PayoutDetailsCustomization = {
     onDataRetrieve: async data => ({ ...data, ...customFields }),
 };
 
-export const DATA_CUSTOMIZATION_LIST: PayoutsListCustomization = {
+export const DATA_CUSTOMIZATION_DATA_GRID: PayoutsDataGridCustomization = {
     fields: [{ key: 'adjustmentAmount', visibility: 'hidden' }, { key: '_summary' }, { key: '_country', flex: 0.5 }, { key: '_sendEmail' }],
 
     onDataRetrieve: async data => {
