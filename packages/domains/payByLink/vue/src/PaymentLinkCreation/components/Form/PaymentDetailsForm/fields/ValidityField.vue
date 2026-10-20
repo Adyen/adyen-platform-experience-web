@@ -67,13 +67,13 @@ watch(
     { immediate: true }
 );
 
-function onPresetUpdate(value: string | number | { value?: string | number } | Array<unknown> | undefined) {
+function onPresetUpdate(value: string | number | { value?: string | number } | Array<unknown> | null | undefined) {
     if (Array.isArray(value)) return;
     const next = typeof value === 'object' && value !== null ? value.value : value;
-    if (next === undefined) return;
-    const stringValue = String(next);
+    const stringValue = next == null ? '' : String(next);
+    if (selection.value === stringValue) return;
     selection.value = stringValue;
-    if (stringValue !== FLEXIBLE_VALIDITY_ID) {
+    if (stringValue && stringValue !== FLEXIBLE_VALIDITY_ID) {
         const [qty, durationUnit] = stringValue.split(' ');
         wizard.setValue('linkValidity.quantity', qty);
         wizard.setValue('linkValidity.durationUnit', durationUnit);
@@ -87,11 +87,10 @@ function onQuantityInput(value: string | number) {
     wizard.setValue('linkValidity.quantity', value);
 }
 
-function onUnitUpdate(value: string | number | { value?: string | number } | Array<unknown> | undefined) {
+function onUnitUpdate(value: string | number | { value?: string | number } | Array<unknown> | null | undefined) {
     if (Array.isArray(value)) return;
     const next = typeof value === 'object' && value !== null ? value.value : value;
-    if (next === undefined) return;
-    wizard.setValue('linkValidity.durationUnit', String(next));
+    wizard.setValue('linkValidity.durationUnit', next == null ? '' : String(next));
     if (error.value) wizard.validateField('linkValidity.quantity');
 }
 </script>
@@ -106,6 +105,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                 :placeholder="i18n.get('payByLink.creation.inputs.select.placeholder')"
                 :model-value="selection"
                 :optional="!required"
+                :clearable="!required"
                 :readonly="config.readOnly"
                 @update:model-value="onPresetUpdate"
             />
@@ -125,6 +125,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                     :items="unitItems"
                     :placeholder="i18n.get('payByLink.creation.inputs.select.placeholder')"
                     :model-value="unit"
+                    :clearable="!required"
                     :readonly="config.readOnly"
                     :error-message="unitError"
                     :class="styles.dropdown"

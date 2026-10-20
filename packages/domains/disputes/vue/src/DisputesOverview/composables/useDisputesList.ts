@@ -15,8 +15,7 @@ interface UseDisputesListProps {
     schemeCodes: string | undefined;
     createdSince: string | undefined;
     createdUntil: string | undefined;
-    allowLimitSelection?: boolean;
-    preferredLimit?: DisputesOverviewExternalProps['preferredLimit'];
+    pagination?: DisputesOverviewExternalProps['pagination'];
     refreshToken?: number;
 }
 
@@ -27,8 +26,7 @@ export function useDisputesList(props: () => UseDisputesListProps) {
 
     const pageLimit = usePageLimit({
         options: DISPUTES_PAGE_LIMITS,
-        preferredLimit: () => props().preferredLimit,
-        allowLimitSelection: () => props().allowLimitSelection,
+        pagination: () => props().pagination,
     });
 
     return useCursorPaginatedRecords<IDisputeListItem>({

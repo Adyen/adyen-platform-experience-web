@@ -126,6 +126,20 @@ export const payByLinkOverviewMockedResponses = {
 };
 
 export const paymentLinkCreationMockedResponses = {
+    optionalSelectFields: {
+        handlers: [
+            http.get(mockPayByLinkEndpoints.configuration, () => {
+                const config = PAY_BY_LINK_CONFIGURATION.STORE_NY_001;
+                return HttpResponse.json({
+                    ...config,
+                    linkType: { ...config.linkType, required: false },
+                    linkValidity: { ...config.linkValidity, required: false },
+                    countryCode: { ...config.countryCode, required: false },
+                    shopperLocale: { ...config.shopperLocale, required: false },
+                });
+            }),
+        ],
+    },
     submitNetworkError: {
         handlers: [
             http.post(mockPayByLinkEndpoints.list, async () => {

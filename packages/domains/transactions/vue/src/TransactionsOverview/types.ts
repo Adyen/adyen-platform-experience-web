@@ -1,9 +1,8 @@
 import type { UIElementProps } from '@integration-components/core/vue';
-import type { TransactionDetailsCustomization, TransactionsListCustomization } from '../../../domain/src';
+import type { TransactionDetailsCustomization, TransactionsDataGridCustomization } from '../../../domain/src';
 import type {
     GlobalAppearance,
     IAmount,
-    IBalanceAccountBase,
     ITransaction,
     ITransactionCategory,
     ITransactionStatus,
@@ -11,7 +10,8 @@ import type {
 } from '@integration-components/types';
 import type { PaginationProps } from '@integration-components/utils';
 
-export type { TransactionsCustomColumn, TransactionsListCustomization, TransactionsTableFields } from '../../../domain/src';
+export type { IBalanceAccountBase } from '@integration-components/types';
+export type { TransactionsCustomColumn, TransactionsDataGridCustomization, TransactionsTableFields } from '../../../domain/src';
 
 export type TransactionsOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
 
@@ -28,9 +28,9 @@ export interface TransactionsFilters {
 export interface TransactionsOverviewExternalProps extends UIElementProps<TransactionsOverviewAppearance>, PaginationProps {
     balanceAccountId?: string;
     onContactSupport?: () => void;
-    onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
+    onRecordSelection?: (selection: { id: string; showDetails: () => void }) => any;
     dataCustomization?: {
-        list?: TransactionsListCustomization;
+        dataGrid?: TransactionsDataGridCustomization;
         details?: TransactionDetailsCustomization;
     };
 }
@@ -42,5 +42,3 @@ export interface TransactionsListResponse {
         prev?: { cursor: string };
     };
 }
-
-export type { IBalanceAccountBase };
