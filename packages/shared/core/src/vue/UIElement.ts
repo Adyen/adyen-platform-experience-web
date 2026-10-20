@@ -6,6 +6,8 @@ import UIElementProvider from './UIElementProvider.vue';
 import type { DomainTranslationBinding } from './Context/types';
 import { applyBentoDomainOverrides, getBentoLocaleMessages } from './bentoTranslations';
 import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
+import { resolveAppearance } from './customization';
+import { getCustomizedComponentEventPayloads } from '../EventDispatcher/eventDispatcher/core-events';
 import type { CustomTranslations, TranslationDomain } from '../translations';
 
 const getTranslationDomain = (componentName: ExternalComponentType): TranslationDomain => {
@@ -182,12 +184,36 @@ export class UIElement<Props extends Record<string, any> & { appearance?: Global
 
             this.configureApp(this._app, { i18n, translationDomain });
             this._app.mount(el);
+
+            this.#trackComponentConfiguration();
         } catch (error) {
             this.unmount();
             throw error;
         }
 
         return this;
+    }
+
+    /**
+     * Sends the 'Customized component style' and 'Customized component data' core events
+     * through the Core session analytics channel. They fire once per mount() call —
+     * update() never re-triggers them — reporting the appearance and data configuration
+     * the integrator actually passed for this component.
+     */
+    #trackComponentConfiguration(): void {
+        const core = this.core;
+        if (!core?.analyticsEnabled || typeof core.session?.sendAnalyticsEvent !== 'function') return;
+
+        const payloads = getCustomizedComponentEventPayloads({
+            componentName: this._componentName,
+            locale: core.options?.locale,
+            appearance: resolveAppearance(this._globalAppearance.value, this._props.appearance),
+            componentProps: this._props as Record<string, unknown>,
+        });
+
+        for (const payload of payloads) {
+            if (payload) core.session.sendAnalyticsEvent(payload);
+        }
     }
 
     public update(props: Partial<Props>): this {

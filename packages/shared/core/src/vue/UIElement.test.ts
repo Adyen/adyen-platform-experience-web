@@ -486,4 +486,101 @@ describe('UIElement', () => {
             consoleError.mockRestore();
         }
     });
+
+    describe('core component events', () => {
+        const decodeEvent = (payload: URLSearchParams) => {
+            const encodedData = payload.get('data');
+            if (!encodedData) throw new Error('Payload is missing its encoded data');
+
+            const decodedJson = atob(encodedData);
+            const decodedBytes = Uint8Array.from(decodedJson, character => character.codePointAt(0)!);
+            return JSON.parse(new TextDecoder().decode(decodedBytes)) as { event: string; properties: Record<string, any> };
+        };
+
+        test('sends the customized component style and data events once per mount, never on update', () => {
+            const core = new Core({
+                locale: 'en-US',
+                appearance: { titles: 'hidden' },
+                onSessionCreate: vi.fn(),
+            });
+            const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
+            const component = { render: () => null } as Component;
+            const element = new UIElement<{
+                core: Core;
+                onContactSupport?: () => void;
+                onDismiss?: () => void;
+                balanceAccountId?: string;
+                pagination?: { defaultLimit?: number; disableLimitSelection?: boolean };
+            }>(component, { core, onDismiss: () => {}, balanceAccountId: 'BA322KH22322DKGJ4' }, 'transactions');
+
+            element.mount(document.createElement('div'));
+
+            expect(sendAnalyticsEvent).toHaveBeenCalledTimes(2);
+
+            const events = sendAnalyticsEvent.mock.calls.map(([payload]) => decodeEvent(payload));
+            const styleEvent = events[0]!;
+            const dataEvent = events[1]!;
+
+            expect(styleEvent.event).toBe('Customized component style');
+            expect(styleEvent.properties).toMatchObject({
+                category: 'PIE',
+                subCategory: 'Overview',
+                label: 'transactions',
+                // The component falls back to the Core-level appearance.
+                appearance: ['titles'],
+                appearanceTitles: 'hidden',
+            });
+
+            expect(dataEvent.event).toBe('Customized component data');
+            expect(dataEvent.properties).toMatchObject({
+                category: 'PIE',
+                subCategory: 'Overview',
+                label: 'transactions',
+                hasOnContactSupport: false,
+                hasBalanceAccountId: true,
+                allowLimitSelection: true,
+                hasPreferredLimit: false,
+            });
+            expect(dataEvent.properties).not.toHaveProperty('appearance');
+            expect(dataEvent.properties).not.toHaveProperty('appearanceTitles');
+            expect(dataEvent.properties).not.toHaveProperty('appearanceIllustrations');
+            expect(dataEvent.properties).not.toHaveProperty('hasOnDismiss');
+            expect(dataEvent.properties).not.toHaveProperty('hasShowDetails');
+
+            element.update({ balanceAccountId: 'BA_NEW' });
+            expect(sendAnalyticsEvent).toHaveBeenCalledTimes(2);
+
+            // A remount is a new mount, so the events fire again.
+            element.unmount();
+            element.mount(document.createElement('div'));
+            expect(sendAnalyticsEvent).toHaveBeenCalledTimes(4);
+        });
+
+        test('reports the component-level appearance over the global one', () => {
+            const core = new Core({ locale: 'en-US', appearance: { titles: 'hidden' }, onSessionCreate: vi.fn() });
+            const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
+            const component = { render: () => null } as Component;
+            const element = new UIElement(component, { core, appearance: { titles: 'visible', illustrations: 'hidden' } }, 'transactions');
+
+            element.mount(document.createElement('div'));
+
+            const styleEvent = sendAnalyticsEvent.mock.calls.map(([payload]) => decodeEvent(payload))[0]!;
+            expect(styleEvent.properties).toMatchObject({
+                appearance: ['illustrations', 'titles'],
+                appearanceTitles: 'visible',
+                appearanceIllustrations: 'hidden',
+            });
+        });
+
+        test('does not send component events when analytics is disabled', () => {
+            const core = new Core({ locale: 'en-US', analytics: { enabled: false }, onSessionCreate: vi.fn() });
+            const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
+            const component = { render: () => null } as Component;
+            const element = new UIElement(component, { core }, 'capitalOverview');
+
+            element.mount(document.createElement('div'));
+
+            expect(sendAnalyticsEvent).not.toHaveBeenCalled();
+        });
+    });
 });
