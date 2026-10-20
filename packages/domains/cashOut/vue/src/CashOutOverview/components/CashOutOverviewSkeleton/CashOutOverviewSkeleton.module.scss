@@ -7,6 +7,16 @@
     gap: style.token(spacer-070);
 }
 
+.availableForCashOut {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-040);
+}
+
+.label {
+    max-width: calc(#{style.token(spacer-120)} * 3);
+}
+
 .amount {
     max-width: calc(#{style.token(spacer-120)} * 2.5);
 }

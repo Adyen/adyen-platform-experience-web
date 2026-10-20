@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import type { ICashOutFees, ICashOutRequest, ICashOutResponse } from '@integration-components/types';
-import { delay } from '@integration-components/testing/msw';
+import { BALANCE_ACCOUNTS_SINGLE } from '@integration-components/testing/fixtures';
+import { BALANCE_ACCOUNTS_ENDPOINT, delay } from '@integration-components/testing/msw';
 import { uuid } from '@integration-components/utils';
 import { ENDPOINTS } from '../endpoints';
 import { ELIGIBILITY_AVAILABLE, ELIGIBILITY_BY_BALANCE_ACCOUNT, ELIGIBILITY_UNAVAILABLE } from '../mock-data/cashOut';
@@ -119,6 +120,14 @@ export const cashOutMocks = [
 
 export const CASH_OUT_HANDLERS = {
     default: { handlers: cashOutMocks },
+    singleBalanceAccount: {
+        handlers: [
+            http.get(BALANCE_ACCOUNTS_ENDPOINT, async () => {
+                await delay(200);
+                return HttpResponse.json({ data: BALANCE_ACCOUNTS_SINGLE });
+            }),
+        ],
+    },
     singleTransferInstrument: {
         handlers: [
             http.get(ENDPOINTS.eligibility, async () => {
@@ -199,6 +208,7 @@ export const CASH_OUT_HANDLERS = {
             }),
         ],
     },
+    balanceAccountsInternalServerError: { handlers: [http.get(BALANCE_ACCOUNTS_ENDPOINT, getInternalServerErrorResponse)] },
     eligibilityInternalServerError: { handlers: [http.get(ENDPOINTS.eligibility, getInternalServerErrorResponse)] },
     eligibilityNetworkError: { handlers: [http.get(ENDPOINTS.eligibility, () => HttpResponse.error())] },
     feesInternalServerError: { handlers: [http.get(ENDPOINTS.fees, getInternalServerErrorResponse)] },
