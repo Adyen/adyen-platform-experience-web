@@ -13,6 +13,12 @@ import { expectAnalyticsEvents } from '../../../utils/utils';
 
 The fixture injects a live `analyticsEvents` array into every test via the `{ analyticsEvents }` destructured argument. Events accumulate in this array as the component emits them. After each assertion, `expectAnalyticsEvents` drains the array so subsequent assertions only see new events — keeping a clean slate between interaction steps.
 
+## Core Lifecycle Events
+
+Besides component interaction events, the SDK emits core events from the Mixpanel core-events data dictionary: `Initiated core` (once per core initialization), `Customized component style` and `Customized component data` (once per component mount), and `Updated theme (runtime)` (on each runtime theme change via `core.update()`). They share the `category: 'PIE'` base with `Customized translation`.
+
+These events are independent of any component interaction, so `expectAnalyticsEvents` skips them while counting and matching — unless a spec explicitly lists them in its expectations. Interaction specs therefore stay decoupled from SDK-internal telemetry, while dedicated specs (e.g. `TransactionsOverview/coreEvents.spec.ts` and `CapitalOverview/coreEvents.spec.ts`) assert them by listing them explicitly.
+
 ## Shared Constants
 
 Define shared property objects as `as const` in `shared/constants.ts` (or `constants/analytics.ts`) co-located with spec files. These reduce duplication across assertions.
