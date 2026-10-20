@@ -2,9 +2,13 @@
 import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
-import { ComponentShell, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
+import { ComponentShell, useLandedPageEvent, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
 import type { TranslationKey } from '@integration-components/core';
-import { getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
+import {
+    getPaymentLinkErrorMessageContent,
+    PAYMENT_LINKS_ANALYTICS_CATEGORY,
+    PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_DETAILS,
+} from '@integration-components/payByLink/domain';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';
 import PaymentLinkDetailsContent from './PaymentLinkDetailsContent.vue';
 import PaymentLinkExpiration from '../PaymentLinkExpiration/PaymentLinkExpiration.vue';
@@ -26,6 +30,10 @@ const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
 const { paymentLink, error, isFetching, refetch } = usePaymentLinkDetails(() => ({ id: props.id }));
+
+const analyticsProps = { category: PAYMENT_LINKS_ANALYTICS_CATEGORY, subCategory: PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_DETAILS } as const;
+
+useLandedPageEvent(analyticsProps, () => !!paymentLink.value);
 
 const shellState = computed<ComponentShellState>(() => {
     if (isFetching.value) return 'loading';

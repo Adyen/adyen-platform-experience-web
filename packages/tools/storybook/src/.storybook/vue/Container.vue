@@ -93,9 +93,9 @@ async function initializeCore() {
             environment: 'test',
             locale: props.locale || 'en-US',
             onSessionCreate: (_signal: AbortSignal) => getMySessionToken(props.session),
-            // ...storyCoreOptions.value,
-            // ...getThemeOptions(),
-            // appearance: configuredAppearance.value,
+            ...storyCoreOptions.value,
+            ...getThemeOptions(),
+            appearance: configuredAppearance.value,
         });
 
         core = await instance.initialize();

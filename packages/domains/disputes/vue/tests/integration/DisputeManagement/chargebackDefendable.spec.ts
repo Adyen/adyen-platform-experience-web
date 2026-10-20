@@ -1,11 +1,18 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
+import { disputeDetailsAnalyticsEventProperties } from '../../../../fixtures/constants/analytics';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
 const STORY_ID = 'mocked-disputes-dispute-management--chargeback-defendable';
 
 test.describe('Chargeback - Defendable', () => {
+    test('should track landing on the dispute details page', async ({ page, analyticsEvents }) => {
+        await goToStory(page, { id: STORY_ID });
+
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', disputeDetailsAnalyticsEventProperties]]);
+    });
+
     test('should render in the compact component container', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 

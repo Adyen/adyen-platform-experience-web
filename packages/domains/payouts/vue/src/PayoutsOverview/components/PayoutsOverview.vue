@@ -4,11 +4,13 @@ import { useCoreContext } from '@integration-components/core/vue';
 import {
     containerQueries,
     getTimezoneAwareDateRangeQueryParams,
+    useLandedPageEvent,
     useResponsiveContainer,
     useShouldHideTitles,
 } from '@integration-components/composables-vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
+import { PAYOUTS_ANALYTICS_CATEGORY, PAYOUTS_ANALYTICS_SUBCATEGORY_OVERVIEW } from '../../../../domain/src';
 import PayoutsFilters from './PayoutsFilters.vue';
 import PayoutsTable from './PayoutsTable.vue';
 import PayoutDetailsModal from './PayoutDetailsModal.vue';
@@ -31,6 +33,10 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
+
+const analyticsProps = { category: PAYOUTS_ANALYTICS_CATEGORY, subCategory: PAYOUTS_ANALYTICS_SUBCATEGORY_OVERVIEW } as const;
+
+useLandedPageEvent(analyticsProps);
 
 const initialDateRangeQueryParams = getTimezoneAwareDateRangeQueryParams({
     dateRange: quickSelectDateRanges.last30Days,

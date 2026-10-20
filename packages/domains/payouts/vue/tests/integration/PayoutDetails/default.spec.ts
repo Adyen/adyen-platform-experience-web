@@ -1,5 +1,6 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
+import { payoutDetailsAnalyticsEventProperties } from '../../../../fixtures/constants/analytics';
 import { BentoPayoutBreakdown } from '../../../../fixtures/utils/breakdown';
 import { getFormattedPayoutDate } from '../../../../fixtures/utils/dateFormat';
 
@@ -7,9 +8,10 @@ const STORY_ID = 'mocked-payouts-payout-details--default';
 const NOW = Date.now();
 
 test.describe('Default', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await page.clock.setFixedTime(NOW);
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', payoutDetailsAnalyticsEventProperties]]);
     });
 
     test('should render payout details', async ({ page }) => {
