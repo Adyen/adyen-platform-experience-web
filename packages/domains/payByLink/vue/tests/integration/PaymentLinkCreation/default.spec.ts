@@ -2,7 +2,11 @@ import { test, expect, type Page } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
 const STORY_ID = 'mocked-pay-by-link-payment-link-creation--default';
-const getFieldError = (page: Page, name: string) => page.getByTestId(`form-field-${name}`).locator('[aria-live="polite"]');
+const getFieldError = (page: Page, name: string) =>
+    page
+        .getByTestId('form-field-' + name)
+        .locator('[aria-live="polite"]')
+        .filter({ hasText: /.+/ });
 
 test('Shows the selected store description as selected value', async ({ page }) => {
     await goToStory(page, { id: STORY_ID });
@@ -15,7 +19,7 @@ test('Shows the selected store description as selected value', async ({ page }) 
 });
 
 test.describe('Payment link creation - Link creation success', () => {
-    test('Should successfully create a payment link after filling out all form fields', async ({ page }) => {
+    test('should successfully create a payment link after filling out all form fields', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
         await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
@@ -132,7 +136,7 @@ test.describe('Payment link creation - Link creation success', () => {
 });
 
 test.describe('Payment link creation - Link creation validation', () => {
-    test('Should retain the amount when currency validation fails', async ({ page }) => {
+    test('should retain the amount when currency validation fails', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
         // Step 1: Store Selection
@@ -149,7 +153,7 @@ test.describe('Payment link creation - Link creation validation', () => {
         await expect(amountField).toHaveValue('3000');
     });
 
-    test('Should prevent entering more decimals than the selected currency supports', async ({ page }) => {
+    test('should prevent entering more decimals than the selected currency supports', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
         // Step 1: Store Selection
@@ -168,7 +172,7 @@ test.describe('Payment link creation - Link creation validation', () => {
         await expect(amountField).toHaveValue('123.45');
     });
 
-    test('Should show custom validity errors on the field requiring attention', async ({ page }) => {
+    test('should show custom validity errors on the field requiring attention', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
         await page.getByTestId('form-field-store').getByRole('combobox').click();
@@ -192,13 +196,77 @@ test.describe('Payment link creation - Link creation validation', () => {
         await expect(customValidity).toContainText('Please select a duration unit');
 
         await unit.click();
-        await page.getByRole('option', { name: 'hours', exact: true }).click();
-        await page.getByRole('button', { name: 'Continue' }).click();
+        await page.getByRole('option', { name: 'days', exact: true }).click();
 
-        await expect(getFieldError(page, 'linkValidity.quantity')).toHaveCount(0);
+        await Promise.all([
+            expect(unit).not.toHaveAttribute('aria-invalid', 'true'),
+            expect(customValidity).not.toContainText('Please select a duration unit'),
+        ]);
     });
 
-    test('Should validate all required form fields', async ({ page }) => {
+    test.describe('Custom validity unit changes', () => {
+        test.beforeEach(async ({ page }) => {
+            await goToStory(page, { id: STORY_ID });
+            await page.getByTestId('form-field-store').getByRole('combobox').click();
+            await page.getByRole('option', { name: 'NY001' }).click();
+            await page.getByRole('button', { name: 'Continue' }).click();
+            await page.getByRole('combobox', { name: 'Validity' }).click();
+            await page.getByRole('option', { name: 'Custom' }).click();
+        });
+
+        test('should keep a missing duration value error on the quantity when the unit changes', async ({ page }) => {
+            const customValidity = page.getByTestId('form-field-linkValidity.quantity');
+            const quantity = customValidity.getByRole('spinbutton');
+            const unit = customValidity.getByRole('combobox');
+            const errorMessage = /Please enter a duration value/;
+
+            await page.getByRole('button', { name: 'Continue' }).click();
+            await expect(quantity).toHaveAccessibleDescription(errorMessage);
+
+            await unit.click();
+            await page.getByRole('option', { name: 'days', exact: true }).click();
+
+            await Promise.all([
+                expect(quantity).toHaveAttribute('aria-invalid', 'true'),
+                expect(quantity).toHaveAccessibleDescription(errorMessage),
+                expect(unit).not.toHaveAttribute('aria-invalid', 'true'),
+            ]);
+
+            await quantity.fill('1');
+
+            await Promise.all([expect(quantity).not.toHaveAttribute('aria-invalid', 'true'), expect(customValidity).not.toContainText(errorMessage)]);
+        });
+
+        test('should revalidate an existing duration error when the unit changes', async ({ page }) => {
+            const customValidity = page.getByTestId('form-field-linkValidity.quantity');
+            const quantity = customValidity.getByRole('spinbutton');
+            const unit = customValidity.getByRole('combobox');
+            const errorMessage = /Duration cannot exceed 70 days/;
+
+            await quantity.fill('71');
+            await unit.click();
+            await page.getByRole('option', { name: 'days', exact: true }).click();
+            await page.getByRole('button', { name: 'Continue' }).click();
+
+            await Promise.all([expect(quantity).toHaveAttribute('aria-invalid', 'true'), expect(quantity).toHaveAccessibleDescription(errorMessage)]);
+
+            await unit.click();
+            await page.getByRole('option', { name: 'weeks', exact: true }).click();
+
+            await Promise.all([expect(quantity).toHaveAttribute('aria-invalid', 'true'), expect(quantity).toHaveAccessibleDescription(errorMessage)]);
+
+            await unit.click();
+            await page.getByRole('option', { name: 'hours', exact: true }).click();
+
+            await Promise.all([
+                expect(quantity).toHaveValue('71'),
+                expect(quantity).not.toHaveAttribute('aria-invalid', 'true'),
+                expect(customValidity).not.toContainText(errorMessage),
+            ]);
+        });
+    });
+
+    test('should validate all required form fields', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
         await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
