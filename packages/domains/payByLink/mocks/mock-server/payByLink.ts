@@ -178,10 +178,6 @@ export const paymentLinkCreationMockedResponses = {
                 await delay(DELAY_TIME);
                 return HttpResponse.json([{ text: 'Español', value: 'es-ES' }]);
             }),
-            http.get('/datasets/phonenumbers.json', async () => {
-                await delay(DELAY_TIME);
-                return HttpResponse.json([{ id: 'ES', prefix: '+34' }]);
-            }),
         ],
     },
     submitNetworkError: {

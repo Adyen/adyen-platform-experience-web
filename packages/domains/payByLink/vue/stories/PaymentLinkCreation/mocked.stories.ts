@@ -81,8 +81,8 @@ export const OptionalSelectFields: ElementStory<PaymentLinkCreationExternalProps
     },
 };
 
-export const AmbiguousPrefilledPhone: ElementStory<PaymentLinkCreationExternalProps> = {
-    name: 'Ambiguous prefilled phone',
+export const CompactPrefilledPhone: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Compact prefilled phone',
     args: {
         ...defaultArgs,
         fieldsConfig: {

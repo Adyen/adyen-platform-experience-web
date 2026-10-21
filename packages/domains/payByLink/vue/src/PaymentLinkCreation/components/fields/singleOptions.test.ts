@@ -1,15 +1,13 @@
 // @vitest-environment jsdom
 
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import { computed, createApp, h, nextTick, provide, ref, type App, type Component } from 'vue';
 import { Localization } from '@integration-components/core';
-import { useCoreContext } from '@integration-components/core/vue';
 import type { FormStepConfig, PaymentLinkFieldName } from '../../../../../domain/src';
 import translations from '../../../../translations/en-US.json';
 import { PAYMENT_LINK_WIZARD_KEY } from '../../composables/wizardContext';
 import { usePaymentLinkWizard } from '../PaymentLinkCreationFormContainer/usePaymentLinkWizard';
 import CountryField from '../Form/CustomerDetailsForm/fields/CountryField.vue';
-import ShopperPhoneField from '../Form/CustomerDetailsForm/fields/ShopperPhoneField.vue';
 import SelectField from './SelectField.vue';
 
 vi.mock('@adyen/bento-vue3', async () => {
@@ -19,24 +17,12 @@ vi.mock('@adyen/bento-vue3', async () => {
             props: ['modelValue'],
             setup: (props: { modelValue?: string }) => () => h('span', props.modelValue ?? ''),
         },
-        BentoInputField: (props: { dropdown?: { modelValue?: string } }) => h('span', props.dropdown?.modelValue ?? ''),
     };
 });
-
-vi.mock('@integration-components/core/vue', () => ({ useCoreContext: vi.fn() }));
 
 const i18n = new Localization('en-US', '', { defaultTranslations: translations, localeTranslations: {} }).i18n;
 let app: App | undefined;
 let target: HTMLDivElement;
-
-beforeEach(() => {
-    vi.clearAllMocks();
-    vi.mocked(useCoreContext).mockReturnValue({
-        i18n,
-        translationDomain: 'payByLink',
-        getCdnDataset: vi.fn().mockResolvedValue([{ id: 'ES', prefix: '+34' }]),
-    });
-});
 
 afterEach(() => {
     app?.unmount();
@@ -143,45 +129,4 @@ describe.each([
             expect(wizard.getValue(name)).toBe('');
         }
     );
-});
-
-describe('ShopperPhoneField single-option preselection', () => {
-    // The first tick resolves the dataset awaited in `onMounted`; the second flushes the resulting watcher and re-render.
-    const waitForPhoneDataset = async () => {
-        await nextTick();
-        await nextTick();
-    };
-
-    test('preselects the single prefix without persisting an incomplete phone number', async () => {
-        const { wizard } = mountField(ShopperPhoneField, 'telephoneNumber');
-        await waitForPhoneDataset();
-
-        expect(target.textContent).toBe('ES');
-        expect(wizard.getValue('telephoneNumber')).toBe('');
-        expect(wizard.displayValues.value['telephoneNumber']).toBeUndefined();
-    });
-
-    test('preselects when a hidden field becomes visible after the dataset loads', async () => {
-        const { visible, wizard } = mountField(ShopperPhoneField, 'telephoneNumber', { visible: false });
-        await waitForPhoneDataset();
-
-        expect(target.textContent).toBe('');
-        visible.value = true;
-        await nextTick();
-
-        expect(target.textContent).toBe('ES');
-        expect(wizard.getValue('telephoneNumber')).toBe('');
-    });
-
-    test('preserves a prefilled phone number when visibility changes', async () => {
-        const { visible, wizard } = mountField(ShopperPhoneField, 'telephoneNumber', { visible: false, value: '+34 3002119220' });
-        await waitForPhoneDataset();
-
-        visible.value = true;
-        await nextTick();
-
-        expect(target.textContent).toBe('ES');
-        expect(wizard.getValue('telephoneNumber')).toBe('+343002119220');
-        expect(wizard.displayValues.value['telephoneNumber']).toBe('+34 3002119220');
-    });
 });

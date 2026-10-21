@@ -89,15 +89,6 @@ export function usePaymentLinkWizard({ i18n, steps, defaults }: UsePaymentLinkWi
     const isFirstStep = computed(() => currentIndex.value === 0);
     const isLastStep = computed(() => currentIndex.value === steps.value.length - 1);
 
-    const getTelephoneNumberError = (step: FormStepConfig): string | undefined => {
-        const telephoneNumberField = step.fields.find(({ fieldName }) => fieldName === 'telephoneNumber');
-        const telephoneNumber = values.value['telephoneNumber'];
-        if (!telephoneNumberField?.visible || !telephoneNumber) return;
-
-        const [, ...numberParts] = (displayValues.value['telephoneNumber'] ?? '').split(' ');
-        return numberParts.join(' ').trim() ? undefined : i18n.get('payByLink.creation.fields.phoneNumber.errors.requiredPhoneNumber');
-    };
-
     const validateStep = (index = currentIndex.value): boolean => {
         const step = steps.value[index];
         if (!step) return true;
@@ -116,11 +107,8 @@ export function usePaymentLinkWizard({ i18n, steps, defaults }: UsePaymentLinkWi
             });
         }
 
-        const telephoneNumberError = getTelephoneNumberError(step);
-        if (telephoneNumberError) next['telephoneNumber'] = telephoneNumberError;
-
         errors.value = next;
-        return result.success && !telephoneNumberError;
+        return result.success;
     };
 
     const validateField = (name: PaymentLinkFieldName): boolean => {
@@ -129,18 +117,15 @@ export function usePaymentLinkWizard({ i18n, steps, defaults }: UsePaymentLinkWi
 
         const result = buildStepSchema(step, i18n, validationMessages).safeParse(values.value);
         const issue = result.success ? undefined : result.error.issues.find(({ path }) => path.join('.') === name);
-        const telephoneNumberError = name === 'telephoneNumber' ? getTelephoneNumberError(step) : undefined;
         const next = { ...errors.value };
 
-        if (telephoneNumberError) {
-            next[name] = telephoneNumberError;
-        } else if (issue) {
+        if (issue) {
             next[name] = issue.message;
         } else {
             delete next[name];
         }
         errors.value = next;
-        return !issue && !telephoneNumberError;
+        return !issue;
     };
 
     const next = () => {

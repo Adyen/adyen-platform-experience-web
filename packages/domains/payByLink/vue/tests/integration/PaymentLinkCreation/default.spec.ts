@@ -81,8 +81,8 @@ test.describe('Payment link creation - Link creation success', () => {
 
         // Phone number with country code
         await page.getByTestId('form-field-telephoneNumber').getByRole('combobox').click();
-        await page.getByRole('combobox', { name: 'Phone prefix' }).fill('co');
-        await page.getByRole('option', { name: 'CO (+57)' }).click();
+        await page.getByRole('combobox', { name: 'Country selector dropdown' }).fill('colombia');
+        await page.getByRole('option', { name: 'Colombia +57' }).click();
         await page.getByTestId('form-field-telephoneNumber').getByRole('textbox').fill('3002119220');
 
         // Country/Region
@@ -374,12 +374,12 @@ test.describe('Payment link creation - Link creation validation', () => {
         await expect(getFieldError(page, 'telephoneNumber')).toContainText('You must select a phone prefix');
 
         await page.getByTestId('form-field-telephoneNumber').getByRole('combobox').click();
-        await page.getByRole('combobox', { name: 'Phone prefix' }).fill('co');
-        await page.getByRole('option', { name: 'CO (+57)' }).click();
+        await page.getByRole('combobox', { name: 'Country selector dropdown' }).fill('colombia');
+        await page.getByRole('option', { name: 'Colombia +57' }).click();
         await expect(page.getByRole('listbox')).toBeHidden();
         await shopperPhoneField.fill('');
         await page.getByRole('button', { name: 'Continue' }).click();
-        await expect(getFieldError(page, 'telephoneNumber')).toContainText('You must enter a phone number');
+        await expect(getFieldError(page, 'telephoneNumber')).toContainText('This field is required');
 
         await shopperPhoneField.fill('3002119220');
         await page.getByRole('button', { name: 'Continue' }).click();

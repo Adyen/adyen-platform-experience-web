@@ -24,19 +24,22 @@ test.describe('Payment link creation - Single options', () => {
                 expect(page.getByTestId('form-field-billingAddress.country').getByRole('combobox')).toHaveText('Spain'),
                 expect(page.getByTestId('form-field-deliveryAddress.country').getByRole('combobox')).toHaveText('Spain'),
                 expect(page.getByRole('combobox', { name: 'Language' })).toHaveText('Español'),
-                expect(page.getByRole('combobox', { name: 'Phone prefix' })).toHaveText('ES (+34)'),
                 expect(page.getByRole('textbox', { name: 'Shopper phone' })).toHaveValue(''),
             ]);
 
-            if (withPhoneNumber) await page.getByRole('textbox', { name: 'Shopper phone' }).fill('3002119220');
+            if (withPhoneNumber) {
+                await page.getByTestId('form-field-telephoneNumber').getByRole('combobox').click();
+                await page.getByRole('combobox', { name: 'Country selector dropdown' }).fill('spain');
+                await page.getByRole('option', { name: 'Spain +34' }).click();
+                await page.getByRole('textbox', { name: 'Shopper phone' }).fill('612345678');
+            }
 
             await page.getByRole('button', { name: 'Continue' }).click();
             await page.getByRole('button', { name: 'Go back', exact: true }).click();
             await Promise.all([
                 expect(page.getByRole('combobox', { name: 'Country/Region' })).toHaveText('Spain'),
                 expect(page.getByRole('combobox', { name: 'Language' })).toHaveText('Español'),
-                expect(page.getByRole('combobox', { name: 'Phone prefix' })).toHaveText('ES (+34)'),
-                expect(page.getByRole('textbox', { name: 'Shopper phone' })).toHaveValue(withPhoneNumber ? '3002119220' : ''),
+                expect(page.getByRole('textbox', { name: 'Shopper phone' })).toHaveValue(withPhoneNumber ? '612 34 56 78' : ''),
             ]);
             await page.getByRole('button', { name: 'Continue' }).click();
 
@@ -54,7 +57,7 @@ test.describe('Payment link creation - Single options', () => {
                 shopperLocale: 'es-ES',
             });
             if (withPhoneNumber) {
-                expect(payload).toHaveProperty('telephoneNumber', '+343002119220');
+                expect(payload).toHaveProperty('telephoneNumber', '+34612345678');
             } else {
                 expect(payload).not.toHaveProperty('telephoneNumber');
             }
