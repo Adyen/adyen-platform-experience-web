@@ -19,11 +19,8 @@ const onChange = (value: string | number | { value?: string | number } | Array<u
 </script>
 
 <template>
-    <!-- Always rendered: the account count is unknown until balance accounts load, so the selector's space is reserved
-         up front (and stays empty for a single account) to keep the component's size fixed. -->
-    <div :class="styles.root">
+    <div v-if="props.options.length > 1" :class="styles.root">
         <BentoDropdown
-            v-if="props.options.length > 1"
             :aria-label="i18n.get('cashOut.overview.balanceAccount.label')"
             :placeholder="i18n.get('cashOut.overview.balanceAccount.label')"
             :items="props.options"

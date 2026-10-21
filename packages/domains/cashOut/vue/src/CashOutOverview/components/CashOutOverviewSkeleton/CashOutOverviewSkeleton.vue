@@ -5,7 +5,10 @@ import styles from './CashOutOverviewSkeleton.module.scss';
 
 <template>
     <BentoLoadingSkeleton :class="styles.root" aria-hidden="true">
-        <BentoLoadingSkeletonTypography :class="styles.amount" :lines="1" :last-line-width="100" text-style="title-l" />
+        <div :class="styles.availableForCashOut">
+            <BentoLoadingSkeletonTypography :class="styles.label" :lines="1" :last-line-width="100" />
+            <BentoLoadingSkeletonTypography :class="styles.amount" :lines="1" :last-line-width="100" text-style="title-l" />
+        </div>
         <div :class="styles.startButton">
             <BentoLoadingSkeletonShape variant="rectangle" />
         </div>

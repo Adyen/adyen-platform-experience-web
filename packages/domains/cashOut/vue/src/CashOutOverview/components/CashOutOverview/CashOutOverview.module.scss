@@ -17,35 +17,15 @@
         align-items: center;
         flex-direction: row;
         justify-content: space-between;
+        // Matches the 36px Bento dropdown, so the row keeps its height when the selector appears after balance accounts load.
+        min-height: calc(#{style.token(spacer-100)} + #{style.token(spacer-020)});
     }
 }
 
-.summary {
+.availableForCashOut {
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-040);
-}
-
-// With titles hidden this row also holds the balance account selector: next to the label, or above it on small screens.
-.summaryHeader {
-    display: flex;
-    flex-direction: column;
-    gap: style.token(spacer-070);
-
-    @include breakpoints.adyen-pe-screen-sm-and-up {
-        align-items: center;
-        flex-direction: row;
-        gap: style.token(spacer-060);
-        justify-content: space-between;
-    }
-}
-
-.summaryHeaderSelector {
-    order: -1;
-
-    @include breakpoints.adyen-pe-screen-sm-and-up {
-        order: 0;
-    }
 }
 
 .availableForCashOutLabel {
