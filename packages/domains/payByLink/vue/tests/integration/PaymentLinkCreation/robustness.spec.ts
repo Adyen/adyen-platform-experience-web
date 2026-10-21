@@ -2,15 +2,12 @@ import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
 test.describe('Payment link creation - Robustness', () => {
-    test('Should reject an ambiguous prefilled phone when the field is required', async ({ page }) => {
-        await goToStory(page, { id: 'mocked-pay-by-link-payment-link-creation--ambiguous-prefilled-phone' });
+    test('Should infer the country of a prefilled phone without separators', async ({ page }) => {
+        await goToStory(page, { id: 'mocked-pay-by-link-payment-link-creation--compact-prefilled-phone' });
         await page.getByRole('button', { name: 'Continue' }).click();
 
-        await expect(page.getByRole('combobox', { name: 'Phone prefix' })).toHaveText('Phone prefix');
-        await expect(page.getByTestId('form-field-telephoneNumber').getByRole('textbox')).toHaveValue('');
-
-        await page.getByRole('button', { name: 'Continue' }).click();
-        await expect(page.getByTestId('form-field-telephoneNumber').locator('[aria-live="polite"]')).toContainText('This field is required');
+        await expect(page.getByRole('combobox', { name: 'Country selector dropdown' })).toHaveText('TT (+1-868)');
+        await expect(page.getByTestId('form-field-telephoneNumber').getByRole('textbox')).toHaveValue('410-6456');
     });
 
     test('Should ignore an invalid prefilled delivery date', async ({ page }) => {

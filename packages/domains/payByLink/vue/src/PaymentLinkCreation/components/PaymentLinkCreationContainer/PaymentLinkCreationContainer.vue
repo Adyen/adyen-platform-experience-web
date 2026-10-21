@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import type { TranslationKey } from '@integration-components/core';
+import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { ComponentShell, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
 import PaymentLinkCreationForm from '../PaymentLinkCreationFormContainer/PaymentLinkCreationForm.vue';
 import PaymentLinkCreationFormSkeleton from '../PaymentLinkCreationFormContainer/PaymentLinkCreationFormSkeleton.vue';
@@ -13,11 +14,13 @@ import styles from './PaymentLinkCreationContainer.module.scss';
 
 type PaymentLinkCreationContainerProps = PaymentLinkCreationProps & {
     embeddedInOverview?: boolean;
+    onTitleChange?: (title: TranslationKey | undefined) => void;
 };
 
 const props = defineProps<PaymentLinkCreationContainerProps>();
 
 const { i18n } = useCoreContext();
+const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
 const formData = usePaymentLinkFormData(() => ({ storeIds: props.storeIds, fieldsConfig: props.fieldsConfig }));
 const initialSkeletonStep = computed(() =>
@@ -37,6 +40,14 @@ watch(
 type CreationState = 'Creation' | 'Success' | 'Details';
 
 const state = ref<CreationState>('Creation');
+const titleKey = computed<TranslationKey | undefined>(() => {
+    if (state.value === 'Success') return undefined;
+    if (state.value === 'Details') return 'payByLink.details.title';
+    return 'payByLink.creation.form.title';
+});
+
+watch(titleKey, title => props.onTitleChange?.(title), { immediate: true });
+
 const paymentLinkUrl = ref('');
 const paymentLinkId = ref('');
 
@@ -66,14 +77,20 @@ function handleShowDetails() {
                 :on-dismiss="props.onDismiss"
                 :on-contact-support="props.onContactSupport"
                 :embedded-in-overview="props.embeddedInOverview"
+                :on-title-change="props.onTitleChange"
                 @payment-link-created="handleCreated"
             />
             <FormSuccess v-if="state === 'Success'" :payment-link-url="paymentLinkUrl" :on-show-details="handleShowDetails" />
-            <PaymentLinkDetails v-if="state === 'Details'" :id="paymentLinkId" :on-contact-support="props.onContactSupport" />
+            <PaymentLinkDetails
+                v-if="state === 'Details'"
+                :id="paymentLinkId"
+                :on-contact-support="props.onContactSupport"
+                :on-title-change="props.onTitleChange"
+            />
         </div>
         <template #loading>
             <div :class="styles.loading">
-                <BentoTypography v-if="!hideTitles" variant="title" stronger>
+                <BentoTypography v-if="!withinModal && !hideTitles" variant="title" stronger>
                     {{ i18n.get('payByLink.creation.form.title') }}
                 </BentoTypography>
                 <PaymentLinkCreationFormSkeleton

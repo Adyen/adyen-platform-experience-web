@@ -1,11 +1,27 @@
 @use '@integration-components/style' as style;
 
+.button,
+.iconLabel,
+.link,
+.text {
+    white-space: nowrap;
+}
+
+.text {
+    display: inline-block;
+}
+
+.link {
+    display: inline-flex;
+}
+
 .root {
     align-items: center;
-    display: flex;
+    display: inline-flex;
     gap: style.token(spacer-030);
 
     img {
+        flex-shrink: 0;
         height: style.token(spacer-090);
         max-width: style.token(spacer-100);
         object-fit: contain;
