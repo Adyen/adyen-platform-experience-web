@@ -1,6 +1,6 @@
 import { sleep } from '@integration-components/testing/fixtures/utils';
 import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
-import type { DisputeDetailsCustomization, DisputesListCustomization } from '../../domain/src';
+import type { DisputeDetailsCustomization, DisputesDataGridCustomization } from '../../domain/src';
 
 export const CUSTOM_TRANSLATIONS = {
     _country: 'Country',
@@ -48,7 +48,7 @@ export const DATA_CUSTOMIZATION_DETAILS: DisputeDetailsCustomization = {
     }),
 };
 
-export const DATA_CUSTOMIZATION_LIST: DisputesListCustomization = {
+export const DATA_CUSTOMIZATION_DATA_GRID: DisputesDataGridCustomization = {
     fields: [
         { key: 'disputeReason', visibility: 'hidden' },
         { key: 'reason', visibility: 'hidden' },

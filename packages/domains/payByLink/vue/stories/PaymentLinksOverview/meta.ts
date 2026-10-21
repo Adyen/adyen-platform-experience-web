@@ -9,14 +9,13 @@ export const paymentLinksOverviewMeta: Meta<ElementProps<PaymentLinksOverviewExt
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         storeIds: { control: 'object' },
-        preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
-        allowLimitSelection: { control: 'boolean' },
+        pagination: { control: 'object' },
         dataGridDensity: dataGridDensityControl(),
         appearance: { table: { disable: true } },
     },
     args: {
         component: PaymentLinksOverviewElement,
-        allowLimitSelection: true,
+        pagination: { defaultLimit: 10, disableLimitSelection: false },
         dataGridDensity: 'default',
     },
     parameters: {

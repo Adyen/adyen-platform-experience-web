@@ -11,8 +11,7 @@ interface UsePayoutsListProps {
     balanceAccountId: string | undefined;
     createdSince: string;
     createdUntil: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: PayoutsOverviewExternalProps['preferredLimit'];
+    pagination?: PayoutsOverviewExternalProps['pagination'];
 }
 
 export function usePayoutsList(props: () => UsePayoutsListProps) {
@@ -22,8 +21,7 @@ export function usePayoutsList(props: () => UsePayoutsListProps) {
 
     const pageLimit = usePageLimit({
         options: DEFAULT_PAGE_LIMITS,
-        preferredLimit: () => props().preferredLimit,
-        allowLimitSelection: () => props().allowLimitSelection,
+        pagination: () => props().pagination,
     });
 
     return useCursorPaginatedRecords<IPayout>({

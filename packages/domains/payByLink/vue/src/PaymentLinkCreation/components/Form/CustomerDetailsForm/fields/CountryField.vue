@@ -22,10 +22,10 @@ const error = computed(() => wizard.getError(props.name));
 const modelValue = computed(() => (wizard.values.value[props.name] as string | undefined) ?? '');
 const dropdownItems = computed(() => props.items.map(item => ({ label: item.name, value: item.id })));
 
-function onUpdate(value: string | number | { value?: string | number } | Array<unknown> | undefined) {
+function onUpdate(value: string | number | { value?: string | number } | Array<unknown> | null | undefined) {
     if (Array.isArray(value)) return;
     const next = typeof value === 'object' && value !== null ? value.value : value;
-    const stringValue = next === undefined ? '' : String(next);
+    const stringValue = next == null ? '' : String(next);
     const displayName = props.items.find(item => item.id === stringValue)?.name ?? stringValue;
     wizard.setValue(props.name, stringValue, displayName);
     if (props.copyEnabled && props.copyTo) wizard.setValue(props.copyTo, stringValue, displayName);
@@ -41,6 +41,7 @@ function onUpdate(value: string | number | { value?: string | number } | Array<u
             :model-value="modelValue"
             dynamic-filtering
             :optional="!config.required && !props.hideOptionalLabel"
+            :clearable="!config.required"
             :readonly="config.readOnly || props.loading"
             :error-message="error"
             @update:model-value="onUpdate"

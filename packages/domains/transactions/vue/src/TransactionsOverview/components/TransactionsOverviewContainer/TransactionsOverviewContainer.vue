@@ -7,8 +7,7 @@ import type { TransactionsOverviewExternalProps } from '../../types';
 const props = withDefaults(
     defineProps<{
         balanceAccountId?: string;
-        allowLimitSelection?: boolean;
-        preferredLimit?: TransactionsOverviewExternalProps['preferredLimit'];
+        pagination?: TransactionsOverviewExternalProps['pagination'];
         onContactSupport?: () => void;
         onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
         dataCustomization?: TransactionsOverviewExternalProps['dataCustomization'];
@@ -33,8 +32,7 @@ const errorInfo = computed<ErrorMessageInfo>(() => ({
         <TransactionsOverview
             v-else
             :balance-account-id="props.balanceAccountId"
-            :allow-limit-selection="props.allowLimitSelection"
-            :preferred-limit="props.preferredLimit"
+            :pagination="props.pagination"
             :on-contact-support="props.onContactSupport"
             :on-record-selection="props.onRecordSelection"
             :data-customization="props.dataCustomization"

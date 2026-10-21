@@ -94,6 +94,7 @@
     "capital.overview.grants.list.tabs.a11y.label": "Label for a group of tabs for navigating across different lists of grants",
     "capital.overview.grants.list.tabs.labels.closed": "Label for a list of grants that are closed (finalized)",
     "capital.overview.grants.list.tabs.labels.inProgress": "Label for a list of grants that are in progress",
+    "capital.overview.grants.newGrant.actions.grant": "Label for the action button that allows the user to request a loan",
     "capital.overview.grants.newGrant.actions.newGrant": "Label for the action button that allows the user to request a new loan",
     "capital.overview.grants.newGrant.earlyRenewalNotice": "Notice displayed when requesting a new loan while an existing loan is active",
     "capital.overview.grants.newGrant.title": "Title shown when the user is eligible to request a new loan. The %{amount} placeholder represents the maximum amount that can be requested.",
