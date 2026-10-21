@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import type { TranslationKey } from '@integration-components/core';
+import { type CapitalTranslationKey, OnFundsRequestCallback } from '@integration-components/capital/domain';
 import { ModalContextProvider, useCoreContext } from '@integration-components/core/vue';
-import { OnFundsRequestCallback } from '@integration-components/capital/domain';
 import { BentoModal } from '@adyen/bento-vue3';
 import { IGrant } from '@integration-components/types';
 import { useEnhancedCapitalState } from '../../shared/composables/useEnhancedCapitalState';
@@ -17,10 +16,10 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const requestedGrant = ref<IGrant>();
 const { capitalState } = useEnhancedCapitalState(() => true, requestedGrant);
-const offerTitleKey = ref<TranslationKey>('capital.offer.selection.title');
+const offerTitleKey = ref<CapitalTranslationKey>('capital.offer.selection.title');
 const offerTitle = computed(() => i18n.get(offerTitleKey.value));
 
-const handleOfferTitleChange = (title: TranslationKey) => {
+const handleOfferTitleChange = (title: CapitalTranslationKey) => {
     offerTitleKey.value = title;
 };
 </script>

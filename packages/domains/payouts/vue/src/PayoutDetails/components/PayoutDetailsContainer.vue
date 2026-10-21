@@ -5,7 +5,7 @@ import { isFunction } from '@integration-components/utils';
 import PayoutData from './PayoutData.vue';
 import PayoutSkeleton from './PayoutSkeleton.vue';
 import { usePayoutDetails } from '../composables/usePayoutDetails';
-import { PAYOUT_TABLE_FIELDS } from '../../PayoutsOverview/constants';
+import { PAYOUT_TABLE_FIELDS } from '@integration-components/payouts/domain';
 import type { PayoutDetailsComponentProps } from '../types';
 import type { CustomDataRetrieved } from '@integration-components/types';
 

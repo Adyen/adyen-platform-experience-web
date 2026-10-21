@@ -2,8 +2,7 @@ import { computed, ref, watch } from 'vue';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import type { IPaymentLinkConfiguration, IPaymentLinkCountry, IPaymentLinkSettings, IPaymentLinkStore } from '@integration-components/types';
-import { getFormSteps, type FormStepConfig } from '../../../../../domain/src';
-import type { TranslationKey } from '@integration-components/core';
+import { getFormSteps, type FormStepConfig, type PayByLinkTranslationKey } from '../../../../../domain/src';
 import type { PaymentLinkCreationComponentProps } from '../../types';
 
 interface CountryDatasetItem {
@@ -147,7 +146,7 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationComp
     const stepperItems = computed(() =>
         formSteps.value.map(step => ({
             id: step.id,
-            label: i18n.get(`payByLink.creation.form.steps.${step.id}` as TranslationKey),
+            label: i18n.get(`payByLink.creation.form.steps.${step.id}` as PayByLinkTranslationKey),
         }))
     );
 

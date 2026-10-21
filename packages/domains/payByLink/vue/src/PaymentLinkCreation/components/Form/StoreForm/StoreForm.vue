@@ -4,7 +4,7 @@ import { BentoAlert, BentoButtonActions, type BentoButtonActionsList } from '@ad
 import { useWizard } from '../../../composables/wizardContext';
 import StoreField from '../../fields/StoreField.vue';
 import type { IPaymentLinkSettings, IPaymentLinkStore } from '@integration-components/types';
-import type { DomainTranslationKey } from '@integration-components/core/vue';
+import type { PayByLinkTranslationKey } from '@integration-components/payByLink/domain';
 import layoutStyles from '../FormLayout.module.scss';
 
 const props = defineProps<{
@@ -24,7 +24,7 @@ const { i18n } = wizard;
 
 const selectedStoreId = computed(() => wizard.getValue('store'));
 const showTcAlert = computed(() => !!props.settingsData && !!props.storesData && !!selectedStoreId.value && !props.termsAndConditionsProvisioned);
-const alertDescriptionKey = computed<DomainTranslationKey>(() =>
+const alertDescriptionKey = computed<PayByLinkTranslationKey>(() =>
     props.canModifySettings
         ? 'payByLink.creation.storeForm.alerts.tcSetupRequired'
         : 'payByLink.creation.storeForm.alerts.tcSetupRequiredWithoutPermissions'

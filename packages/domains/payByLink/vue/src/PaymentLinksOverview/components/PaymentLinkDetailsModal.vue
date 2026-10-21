@@ -2,7 +2,7 @@
 import { computed, defineAsyncComponent, ref } from 'vue';
 import { BentoLoadingIndicator, BentoModal } from '@adyen/bento-vue3';
 import { ModalContextProvider, useCoreContext } from '@integration-components/core/vue';
-import type { TranslationKey } from '@integration-components/core';
+import type { PayByLinkTranslationKey } from '@integration-components/payByLink/domain';
 
 const props = defineProps<{
     id: string;
@@ -12,7 +12,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const modalTitleKey = ref<TranslationKey | undefined>('payByLink.details.title');
+const modalTitleKey = ref<PayByLinkTranslationKey | undefined>('payByLink.details.title');
 const modalTitle = computed(() => (modalTitleKey.value ? i18n.get(modalTitleKey.value) : undefined));
 const PaymentLinkDetails = defineAsyncComponent({
     loader: () => import('../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails.vue'),
@@ -20,7 +20,7 @@ const PaymentLinkDetails = defineAsyncComponent({
     delay: 0,
 });
 
-function handleTitleChange(title: TranslationKey | undefined) {
+function handleTitleChange(title: PayByLinkTranslationKey | undefined) {
     modalTitleKey.value = title;
 }
 </script>

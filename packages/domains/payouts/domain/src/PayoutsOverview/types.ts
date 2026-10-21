@@ -2,8 +2,7 @@ import type { CustomDataRetrieved, DataCustomizationObject, IPayout, WithBalance
 import type { PaginationProps } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { PayoutDetailsCustomization } from '../PayoutDetails/types';
-
-type PayoutsTableCols = 'createdAt' | 'payoutType' | 'netPayoutAmount' | 'fundingSource' | 'summary';
+import type { PayoutsTableCols } from './fields';
 
 export type PayoutsTableFields = StringWithAutocompleteOptions<PayoutsTableCols>;
 

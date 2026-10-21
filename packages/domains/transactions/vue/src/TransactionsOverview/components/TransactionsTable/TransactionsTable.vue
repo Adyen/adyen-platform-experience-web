@@ -12,6 +12,7 @@ import {
     useShouldHideIllustrations,
     useCondensedDataGrid,
 } from '@integration-components/composables-vue';
+import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
 import {
     BentoDataGrid,
     BentoTypography,
@@ -24,6 +25,8 @@ import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { getTransactionCategoryDescription, getTransactionCategory, TRANSACTION_FIELDS } from '../../../../../domain/src';
 import { getCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
+import type { TranslationKey } from '@integration-components/core';
+import type { TransactionsTranslationKey } from '@integration-components/transactions/domain';
 import type { ITransaction, CustomColumn } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { TransactionsTableFields, IBalanceAccountBase } from '../../types';
@@ -58,20 +61,22 @@ const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceA
 
 const isMobile = useResponsiveContainer(containerQueries.down.sm);
 
-const FIELDS_KEYS: Record<string, string> = {
+const FIELDS_KEYS = {
     createdAt: 'transactions.overview.list.fields.createdAt',
     currency: 'transactions.overview.list.fields.currency',
     grossAmount: 'transactions.overview.list.fields.grossAmount',
     netAmount: 'transactions.overview.list.fields.netAmount',
     paymentMethod: 'transactions.overview.list.fields.paymentMethod',
     transactionType: 'transactions.overview.list.fields.transactionType',
-};
+} satisfies Record<string, TransactionsTranslationKey>;
 
 function amountLabel(field: 'netAmount' | 'grossAmount', defaultLabel: string): string {
     const currency = props.availableCurrencies?.[0];
     const currencyCode = currency ? getCurrencyCode(currency) : undefined;
     return props.hasMultipleCurrencies || !currencyCode ? defaultLabel : `${defaultLabel} (${currencyCode})`;
 }
+
+const isAmountField = (field: string): field is 'netAmount' | 'grossAmount' => field === 'netAmount' || field === 'grossAmount';
 
 const { columns: desktopColumns, customFieldKeys } = useTableColumns({
     fields: TRANSACTION_FIELDS,
@@ -87,24 +92,23 @@ const { columns: desktopColumns, customFieldKeys } = useTableColumns({
     }),
     customColumnDefaults: () => ({ flex: 1 }),
     customColumnWidths: () => customColumnWidths.value,
-    resolveStandardColumnLabel: (field, defaultLabel) =>
-        field === 'netAmount' || field === 'grossAmount' ? amountLabel(field, defaultLabel) : defaultLabel,
+    resolveStandardColumnLabel: (field, defaultLabel) => (isAmountField(field) ? amountLabel(field, defaultLabel) : defaultLabel),
     resolveCustomColumnLabel: key => {
         const labelKey = `transactions.overview.list.fields.${key}`;
-        return i18n.has(labelKey as any) ? i18n.get(labelKey as any) : i18n.get(key as any);
+        return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
     },
 });
 
 const isLoading = computed(() => props.loading);
 
 const columns = computed<BentoColumn[]>(() => {
-    const grossAmountLabel = amountLabel('grossAmount', i18n.get(FIELDS_KEYS.grossAmount as any));
+    const grossAmountLabel = amountLabel('grossAmount', i18n.get(FIELDS_KEYS.grossAmount));
 
     if (isMobile.value) {
         return [
             {
                 field: 'paymentMethodAndDate',
-                label: i18n.get(FIELDS_KEYS.paymentMethod as any),
+                label: i18n.get(FIELDS_KEYS.paymentMethod),
                 flex: 2,
                 minWidth: customColumnWidths.value.paymentMethodAndDate,
             },
@@ -150,7 +154,7 @@ const paginationProps = computed(() => ({
     size: props.limit ?? 10,
     hasNext: props.hasNext ?? false,
     hasPrevious: props.hasPrevious ?? false,
-    pageSizeItems: props.limitOptions,
+    pageSizeItems: asPageSizeItems(props.limitOptions),
     hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
     hideFirstLastPageButtons: true,
 }));

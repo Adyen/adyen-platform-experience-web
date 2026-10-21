@@ -48,6 +48,9 @@ catalogs:
     vue:
       specifier: ^3.5.42
       version: 3.5.43
+    vue-tsc:
+      specifier: 3.3.11
+      version: 3.3.11
 
 overrides:
   '@babel/core': 7.29.6
@@ -293,6 +296,9 @@ importers:
       vue-eslint-parser:
         specifier: ^10.4.0
         version: 10.4.0(eslint@9.39.2)
+      vue-tsc:
+        specifier: 'catalog:'
+        version: 3.3.11(typescript@5.8.3)
       webpack:
         specifier: ^5.106.2
         version: 5.106.2
@@ -804,6 +810,9 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0)
+      vue-tsc:
+        specifier: 'catalog:'
+        version: 3.3.11(typescript@5.8.3)
 
 packages:
 
@@ -6030,6 +6039,12 @@ packages:
         optional: true
       pinia:
         optional: true
+
+  vue-tsc@3.3.11:
+    resolution: {}
+    hasBin: true
+    peerDependencies:
+      typescript: 5.8.3
 
   vue@3.5.43:
     resolution: {}
@@ -12047,6 +12062,12 @@ snapshots:
     optionalDependencies:
       '@vue/compiler-sfc': 3.5.43
     optional: true
+
+  vue-tsc@3.3.11(typescript@5.8.3):
+    dependencies:
+      '@volar/typescript': 2.4.28
+      '@vue/language-core': 3.3.11
+      typescript: 5.8.3
 
   vue@3.5.43(typescript@5.8.3):
     dependencies:

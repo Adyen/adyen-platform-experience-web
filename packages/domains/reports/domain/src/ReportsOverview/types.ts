@@ -1,8 +1,7 @@
 import type { CustomDataRetrieved, DataCustomizationObject, IReport, WithBalanceAccountId } from '@integration-components/types';
 import type { PaginationProps } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-
-type ReportsTableCols = 'createdAt' | 'dateAndReportType' | 'reportType' | 'reportFile';
+import type { ReportsTableCols } from './constants';
 
 export type ReportsTableFields = StringWithAutocompleteOptions<ReportsTableCols>;
 

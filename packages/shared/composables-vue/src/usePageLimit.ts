@@ -41,8 +41,15 @@ export function usePageLimit<Limit extends number>({ options, pagination }: UseP
 
     return {
         initialLimit: isOption(options, defaultLimit) ? defaultLimit : fallback,
-        limitOptions: computed(() => (pagination()?.disableLimitSelection ? undefined : options)),
+        limitOptions: computed<readonly number[] | undefined>(() => (pagination()?.disableLimitSelection ? undefined : options)),
     } as const;
 }
+
+/**
+ * Widens the readonly limit options to the mutable `number[]` that Bento's
+ * `BentoPaginationProps.pageSizeItems` declares. The datagrid only reads the array,
+ * so this stays an identity function instead of copying on every render.
+ */
+export const asPageSizeItems = (limitOptions: readonly number[] | undefined) => limitOptions as number[] | undefined;
 
 export default usePageLimit;

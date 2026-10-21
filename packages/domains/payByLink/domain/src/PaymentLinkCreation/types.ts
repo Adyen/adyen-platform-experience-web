@@ -1,6 +1,6 @@
 import type { DeepPartial, IPaymentLinkCreateRequest, WithDismissCallback } from '@integration-components/types';
 import type { SuccessResponse } from '@integration-components/types/api/endpoints';
-import type { StoreIds } from '../types';
+import type { StoreIds } from '../shared/types';
 
 export type LinkCreationFormStep = 'store' | 'payment' | 'customer' | 'summary';
 
