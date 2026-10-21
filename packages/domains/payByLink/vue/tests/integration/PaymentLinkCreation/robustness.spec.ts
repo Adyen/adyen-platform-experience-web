@@ -6,8 +6,8 @@ test.describe('Payment link creation - Robustness', () => {
         await goToStory(page, { id: 'mocked-pay-by-link-payment-link-creation--compact-prefilled-phone' });
         await page.getByRole('button', { name: 'Continue' }).click();
 
-        await expect(page.getByRole('combobox', { name: 'Country selector dropdown' })).toHaveText('CO (+57)');
-        await expect(page.getByTestId('form-field-telephoneNumber').getByRole('textbox')).toHaveValue('300 2119220');
+        await expect(page.getByRole('combobox', { name: 'Country selector dropdown' })).toHaveText('TT (+1-868)');
+        await expect(page.getByTestId('form-field-telephoneNumber').getByRole('textbox')).toHaveValue('410-6456');
     });
 
     test('Should ignore an invalid prefilled delivery date', async ({ page }) => {
