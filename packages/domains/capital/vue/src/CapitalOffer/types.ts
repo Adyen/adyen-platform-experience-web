@@ -6,12 +6,11 @@ import type { UIElementProps } from '@integration-components/types';
 export type CapitalOfferExternalProps = Omit<UIElementProps, 'ref'> & {
     core: CoreInstance;
     onFundsRequest: OnFundsRequestCallback;
-    onOfferDismiss?: () => void;
+    onDismiss?: () => void;
 };
 
 export type CapitalOfferProps = Omit<CapitalOfferExternalProps, 'core'> & {
     capitalState?: EnhancedCapitalState;
     hideSubtitle?: boolean;
-    hideTitle?: boolean;
     onTitleChange?: (title: TranslationKey) => void;
 };
