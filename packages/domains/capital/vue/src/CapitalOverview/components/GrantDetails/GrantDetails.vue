@@ -37,11 +37,20 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
         { key: 'capital.common.fields.remainingFees', value: formatAmount(enhancedGrant.remainingFeesAmount) },
         { key: 'capital.common.fields.repaidAmount', value: formatAmount(enhancedGrant.repaidGrantAmount) },
         { key: 'capital.common.fields.repaidFees', value: formatAmount(enhancedGrant.repaidFeesAmount) },
+        { key: 'capital.common.fields.totalRepaymentAmount', value: formatAmount(enhancedGrant.totalAmount) },
+        { key: 'capital.common.fields.totalFees', value: formatAmount(enhancedGrant.feesAmount) },
         {
             key: 'capital.common.fields.dailyRepaymentRate',
             value: i18n.get('capital.common.values.percentage', {
                 values: { percentage: calculatePercentageFromBasisPoints(enhancedGrant.repaymentRate) },
             }),
+        },
+        {
+            key: 'capital.common.fields.repaymentThreshold',
+            labelInfo: i18n.get('capital.common.fields.repaymentThreshold.description', {
+                values: { days: CAPITAL_REPAYMENT_FREQUENCY },
+            }),
+            value: formatAmount(enhancedGrant.thresholdAmount),
         },
         ...(enhancedGrant.maximumRepaymentPeriodMonths
             ? ([
@@ -61,15 +70,6 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
                     daysLeft: enhancedGrant.repaymentPeriodLeft,
                 },
             }),
-        },
-        { key: 'capital.common.fields.totalFees', value: formatAmount(enhancedGrant.feesAmount) },
-        { key: 'capital.common.fields.totalRepaymentAmount', value: formatAmount(enhancedGrant.totalAmount) },
-        {
-            key: 'capital.common.fields.repaymentThreshold',
-            labelInfo: i18n.get('capital.common.fields.repaymentThreshold.description', {
-                values: { days: CAPITAL_REPAYMENT_FREQUENCY },
-            }),
-            value: formatAmount(enhancedGrant.thresholdAmount),
         },
         { key: 'capital.common.fields.grantID', value: enhancedGrant.id },
         { key: 'capital.common.fields.accountDescription', value: enhancedGrant.balanceAccountDescription ?? '' },

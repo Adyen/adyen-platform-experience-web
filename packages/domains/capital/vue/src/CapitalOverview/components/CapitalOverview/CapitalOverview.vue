@@ -8,12 +8,13 @@ import { CapitalOverviewComponentProps } from '../../types';
 import { useEnhancedCapitalState } from '../../../shared/composables/useEnhancedCapitalState';
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import GrantList from '../GrantList/GrantList.vue';
-import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
+import CapitalError from '../../../shared/CapitalError.vue';
 import OfferAlert from '../OfferAlert.vue';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
 import { ComponentShell, useLandedPageEvent, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
 import styles from './CapitalOverview.module.scss';
 import OfferModal from '../OfferModal.vue';
+import UnsupportedRegionState from '../../../shared/UnsupportedRegionState.vue';
 
 const props = defineProps<CapitalOverviewComponentProps>();
 
@@ -72,7 +73,14 @@ const handleFundsRequest: OnFundsRequestCallback = (data, renewsGrantId) => {
 
 const headerActions = computed<BentoButtonActionsList | undefined>(() => {
     if (error.value || !capitalState.value?.isRegionSupported || !capitalState.value.dynamicOfferConfig) return undefined;
-    return [{ title: i18n.get('capital.overview.grants.newGrant.actions.newGrant'), event: openOfferModal }];
+    return [
+        {
+            title: i18n.get(
+                capitalState.value.hasGrants ? 'capital.overview.grants.newGrant.actions.newGrant' : 'capital.overview.grants.newGrant.actions.grant'
+            ),
+            event: openOfferModal,
+        },
+    ];
 });
 </script>
 
@@ -82,7 +90,7 @@ const headerActions = computed<BentoButtonActionsList | undefined>(() => {
             <CapitalHeader :actions="headerActions" :hide-title="hideTitles" :region="capitalState?.region" title-key="capital.common.title" />
             <CapitalError v-if="error" :error="error" :on-contact-support="props.onContactSupport" />
             <template v-else-if="capitalState">
-                <CapitalError v-if="!capitalState.isRegionSupported" unsupported-region />
+                <UnsupportedRegionState v-if="!capitalState.isRegionSupported" />
                 <template v-else>
                     <OfferAlert
                         v-if="capitalState.dynamicOfferConfig"

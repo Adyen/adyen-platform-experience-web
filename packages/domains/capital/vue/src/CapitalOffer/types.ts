@@ -7,6 +7,5 @@ export type CapitalOfferExternalProps = UIElementProps & CapitalOfferOptions;
 export type CapitalOfferComponentProps = Omit<CapitalOfferExternalProps, 'core' | 'appearance'> & {
     capitalState?: EnhancedCapitalState;
     hideSubtitle?: boolean;
-    hideTitle?: boolean;
     onTitleChange?: (title: TranslationKey) => void;
 };
