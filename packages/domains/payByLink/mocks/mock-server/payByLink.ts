@@ -14,7 +14,7 @@ import {
     transactionsOverviewComponentView,
 } from '@integration-components/testing/msw';
 import { PAY_BY_LINK_ENDPOINTS } from '../endpoints';
-import { IPaymentLinkSettingsRequest, IPaymentLinkStatusGroup } from '@integration-components/types';
+import { IPaymentLinkConfiguration, IPaymentLinkSettingsRequest, IPaymentLinkStatusGroup } from '@integration-components/types';
 import {
     PAY_BY_LINK_FILTERS,
     STORES,
@@ -157,6 +157,30 @@ export const paymentLinkCreationMockedResponses = {
                     countryCode: { ...config.countryCode, required: false },
                     shopperLocale: { ...config.shopperLocale, required: false },
                 });
+            }),
+        ],
+    },
+    singleOptions: {
+        handlers: [
+            http.get(mockPayByLinkEndpoints.configuration, () =>
+                HttpResponse.json<IPaymentLinkConfiguration>({
+                    ...PAY_BY_LINK_CONFIGURATION.STORE_NY_001,
+                    currency: { required: true, options: ['EUR'] },
+                    linkType: { required: false, options: ['singleUse'] },
+                    linkValidity: { required: true, options: [{ quantity: 24, durationUnit: 'hour', type: 'fixed' }] },
+                    countryCode: { required: true, options: ['ES'] },
+                    shopperLocale: { required: false, options: ['es-ES'] },
+                    phoneNumber: { required: false },
+                })
+            ),
+            http.get(mockPayByLinkEndpoints.countries, () => HttpResponse.json({ data: [{ countryCode: 'ES', countryName: 'Spain' }] })),
+            http.get('/datasets/languages.json', async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.json([{ text: 'Español', value: 'es-ES' }]);
+            }),
+            http.get('/datasets/phonenumbers.json', async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.json([{ id: 'ES', prefix: '+34' }]);
             }),
         ],
     },
