@@ -98,6 +98,19 @@ export type _OtherComponentsRejectDataGridAppearance = Assert<
     Every<{ [K in keyof NonDataGridComponents]: AcceptsDataGridAppearance<NonDataGridComponents[K]> }, false>
 >;
 
+type InternalOnlyProps = {
+    CapitalOffer: 'capitalState' | 'hideSubtitle' | 'hideTitle' | 'onTitleChange';
+    PaymentLinkCreation: 'embeddedInOverview' | 'onShowDetails';
+    PaymentLinkDetails: 'isDismissButtonHidden' | 'onTitleChange' | 'onUpdate';
+    PaymentLinkSettings: 'embeddedInOverview' | 'hideTitle' | 'navigateBack' | 'settingsItems';
+    PayoutDetails: 'balanceAccountDescription';
+    PaymentLinksOverview: 'paymentLinkCreation' | 'paymentLinkSettings';
+};
+
+export type _NoComponentPublishesInternalOnlyProps = Assert<
+    Every<{ [K in keyof InternalOnlyProps]: LacksKey<PublishedProps[K], InternalOnlyProps[K]> }, true>
+>;
+
 type RemovedProps = {
     CapitalOffer: 'onOfferDismiss';
     PaymentLinkCreation: 'onPaymentLinkCreated';
