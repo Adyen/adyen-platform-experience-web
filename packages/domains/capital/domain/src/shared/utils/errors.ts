@@ -71,16 +71,6 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
                 translationValues,
                 onContactSupport,
             };
-        case 'NO_OFFER':
-            return {
-                title: 'capital.offer.common.noOfferTitle',
-                message: 'capital.offer.common.noOfferDescription',
-            };
-        case 'UNSUPPORTED_REGION':
-            return {
-                title: 'capital.common.errors.unsupportedRegion.title',
-                message: 'capital.common.errors.unsupportedRegion',
-            };
         case undefined:
             return { ...UNKNOWN_ERROR, ...(onContactSupport ? { onContactSupport } : {}) };
         default:
@@ -88,10 +78,7 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
     }
 };
 
-export const getCapitalErrorMessageInfo = (
-    error: AdyenPlatformExperienceError | undefined,
-    onContactSupport?: () => void
-): CapitalErrorMessageInfo => {
+export const getCapitalErrorConfig = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): CapitalErrorMessageInfo => {
     const { title, message, translationValues, ...rest } = getCapitalErrorMessage(error, onContactSupport);
     const messages = Array.isArray(message) ? message : [message];
     const requestId = translationValues && Object.values(translationValues)[0];

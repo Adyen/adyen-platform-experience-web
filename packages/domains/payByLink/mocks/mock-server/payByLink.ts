@@ -126,6 +126,40 @@ export const payByLinkOverviewMockedResponses = {
 };
 
 export const paymentLinkCreationMockedResponses = {
+    loading: {
+        handlers: [
+            http.get(CROSS_DOMAIN_ENDPOINTS.stores, async () => {
+                await delay(1500);
+                return HttpResponse.json({ data: STORES });
+            }),
+            http.get(mockPayByLinkEndpoints.configuration, async ({ params }) => {
+                await delay(1500);
+                return HttpResponse.json(PAY_BY_LINK_CONFIGURATION[params.storeId as keyof typeof PAY_BY_LINK_CONFIGURATION]);
+            }),
+            http.post(mockPayByLinkEndpoints.list, async () => {
+                await delay(1500);
+                return HttpResponse.json({
+                    url: 'https://pay.adyen/links/12345',
+                    expireAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    paymentLinkId: 'PLTEST001',
+                });
+            }),
+        ],
+    },
+    optionalSelectFields: {
+        handlers: [
+            http.get(mockPayByLinkEndpoints.configuration, () => {
+                const config = PAY_BY_LINK_CONFIGURATION.STORE_NY_001;
+                return HttpResponse.json({
+                    ...config,
+                    linkType: { ...config.linkType, required: false },
+                    linkValidity: { ...config.linkValidity, required: false },
+                    countryCode: { ...config.countryCode, required: false },
+                    shopperLocale: { ...config.shopperLocale, required: false },
+                });
+            }),
+        ],
+    },
     submitNetworkError: {
         handlers: [
             http.post(mockPayByLinkEndpoints.list, async () => {
@@ -310,7 +344,7 @@ export const payByLinkMocks = [
 
         const now = new Date();
         const expiration = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-        const url = 'http://pay.adyen/links/12345';
+        const url = 'https://pay.adyen/links/12345';
 
         return HttpResponse.json({
             url,

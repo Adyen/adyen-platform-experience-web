@@ -6,21 +6,20 @@ import { useCustomColumnsData } from '@integration-components/composables-vue';
 import { DEFAULT_PAGE_LIMITS, isFunction, normalizeCustomFields, hasCustomField, mergeRecords } from '@integration-components/utils';
 import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '@integration-components/transactions/domain';
 import type { ITransaction, CustomDataRetrieved } from '@integration-components/types';
-import type { TransactionsFilters, TransactionsListCustomization, TransactionsListResponse, TransactionsOverviewExternalProps } from '../types';
+import type { TransactionsFilters, TransactionsDataGridCustomization, TransactionsListResponse, TransactionsOverviewExternalProps } from '../types';
 
 interface UseTransactionsListProps {
     filters: TransactionsFilters;
     fetchEnabled: boolean;
-    allowLimitSelection?: boolean;
-    preferredLimit?: TransactionsOverviewExternalProps['preferredLimit'];
-    dataCustomization?: { list?: TransactionsListCustomization };
+    pagination?: TransactionsOverviewExternalProps['pagination'];
+    dataCustomization?: { dataGrid?: TransactionsDataGridCustomization };
 }
 
 export function useTransactionsList(props: () => UseTransactionsListProps) {
     const config = useConfigContext();
     const getTransactions = computed(() => config.endpoints.getTransactions);
     const canFetch = computed(() => isFunction(getTransactions.value) && props().fetchEnabled);
-    const normalizedFields = computed(() => normalizeCustomFields(props().dataCustomization?.list?.fields, TRANSACTION_FIELDS_REMAPS));
+    const normalizedFields = computed(() => normalizeCustomFields(props().dataCustomization?.dataGrid?.fields, TRANSACTION_FIELDS_REMAPS));
     const hasCustomColumn = computed(() => hasCustomField(normalizedFields.value, TRANSACTION_FIELDS));
 
     const mergeCustomData = ({ records, retrievedData }: { records: ITransaction[]; retrievedData: CustomDataRetrieved[] }) =>
@@ -44,8 +43,7 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
 
     const pageLimit = usePageLimit({
         options: DEFAULT_PAGE_LIMITS,
-        preferredLimit: () => props().preferredLimit,
-        allowLimitSelection: () => props().allowLimitSelection,
+        pagination: () => props().pagination,
     });
 
     const pagination = useCursorPaginatedRecords<ITransaction>({
@@ -85,7 +83,7 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
     const { customRecords, loadingCustomRecords } = useCustomColumnsData<ITransaction>({
         records: () => pagination.records.value ?? [],
         hasCustomColumn: () => hasCustomColumn.value,
-        onDataRetrieve: () => props().dataCustomization?.list?.onDataRetrieve,
+        onDataRetrieve: () => props().dataCustomization?.dataGrid?.onDataRetrieve,
         mergeCustomData,
     });
 

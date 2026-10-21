@@ -29,6 +29,26 @@ export const Prefilled: ElementStory<PaymentLinkCreationExternalProps> = {
     },
 };
 
+export const Loading: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Loading',
+    args: Prefilled.args,
+    parameters: {
+        msw: { ...paymentLinkCreationMockedResponses.loading },
+    },
+};
+
+export const OptionalSelectFields: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Optional select fields',
+    args: {
+        ...defaultArgs,
+        fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
+        storeIds: ['STORE_NY_001'],
+    },
+    parameters: {
+        msw: { ...paymentLinkCreationMockedResponses.optionalSelectFields },
+    },
+};
+
 export const AmbiguousPrefilledPhone: ElementStory<PaymentLinkCreationExternalProps> = {
     name: 'Ambiguous prefilled phone',
     args: {

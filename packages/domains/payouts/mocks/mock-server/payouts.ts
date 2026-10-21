@@ -9,6 +9,7 @@ const mockEndpoints = PAYOUTS_ENDPOINTS;
 const networkError = false;
 const defaultPaginationLimit = 20;
 const DEFAULT_SORT_DIRECTION = 'desc';
+const DETAILS_RESPONSE_DELAY = 400;
 
 const getPayouts = (balanceAccountId: string) => {
     // prettier-ignore
@@ -54,7 +55,7 @@ export const payoutsMocks = [
         return HttpResponse.json({ data, _links: getPaginationLinks(cursor, limit, payouts.length) });
     }),
 
-    http.get(mockEndpoints.payout, ({ request }) => {
+    http.get(mockEndpoints.payout, async ({ request }) => {
         if (networkError) {
             return HttpResponse.error();
         }
@@ -68,6 +69,7 @@ export const payoutsMocks = [
             return;
         }
 
+        await delay(DETAILS_RESPONSE_DELAY);
         return HttpResponse.json(matchingMock);
     }),
 ];
@@ -80,7 +82,8 @@ export const PAYOUT_DETAILS_HANDLERS = (() => {
     return {
         default: {
             handlers: [
-                http.get(mockEndpoints.payout, () => {
+                http.get(mockEndpoints.payout, async () => {
+                    await delay(DETAILS_RESPONSE_DELAY);
                     return HttpResponse.json(DEFAULT_PAYOUT_DETAILS);
                 }),
             ],
@@ -111,7 +114,8 @@ export const PAYOUT_DETAILS_HANDLERS = (() => {
         },
         sumOfSameDayPayouts: {
             handlers: [
-                http.get(mockEndpoints.payout, () => {
+                http.get(mockEndpoints.payout, async () => {
+                    await delay(DETAILS_RESPONSE_DELAY);
                     const payoutDetails = DEFAULT_PAYOUT_DETAILS;
                     return HttpResponse.json({ ...payoutDetails, payout: { ...payoutDetails.payout, isSumOfSameDayPayouts: true } });
                 }),

@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue';
 import { useBalanceAccounts, ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
 import { isFunction } from '@integration-components/utils';
 import PayoutData from './PayoutData.vue';
+import PayoutSkeleton from './PayoutSkeleton.vue';
 import { usePayoutDetails } from '../composables/usePayoutDetails';
 import { PAYOUT_TABLE_FIELDS } from '../../PayoutsOverview/constants';
 import type { PayoutDetailsCustomization } from '../types';
@@ -81,6 +82,9 @@ const shellState = computed<ComponentShellState>(() => {
         :on-dismiss="props.onDismiss"
         :dismiss-label="'payouts.details.common.actions.goBack'"
     >
+        <template #loading>
+            <PayoutSkeleton />
+        </template>
         <PayoutData
             v-if="data"
             :payout="data"

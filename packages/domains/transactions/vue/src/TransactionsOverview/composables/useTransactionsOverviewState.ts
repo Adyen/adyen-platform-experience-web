@@ -72,8 +72,7 @@ export function useTransactionsOverviewState(componentProps: () => TransactionsO
     const transactionsListResult = useTransactionsList(() => ({
         filters: filters.value,
         fetchEnabled: isTransactionsView.value && hasActiveBalanceAccount.value,
-        allowLimitSelection: componentProps().allowLimitSelection,
-        preferredLimit: componentProps().preferredLimit,
+        pagination: componentProps().pagination,
         dataCustomization: componentProps().dataCustomization,
     }));
 

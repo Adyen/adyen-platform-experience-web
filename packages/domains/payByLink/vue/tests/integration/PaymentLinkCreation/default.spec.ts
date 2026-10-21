@@ -124,7 +124,7 @@ test.describe('Payment link creation - Link creation success', () => {
         await expect(page.getByRole('button', { name: 'Copied to clipboard' })).toBeVisible();
 
         const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
-        expect(clipboardText).toBe('http://pay.adyen/links/12345');
+        expect(clipboardText).toBe('https://pay.adyen/links/12345');
 
         // Verify show details button is present
         await expect(page.getByRole('button', { name: 'Show details' })).toBeVisible();
@@ -183,13 +183,19 @@ test.describe('Payment link creation - Link creation validation', () => {
         const quantity = customValidity.getByRole('spinbutton');
         const unit = customValidity.getByRole('combobox');
         await expect(quantity).toHaveAttribute('aria-invalid', 'true');
-        await expect(getFieldError(page, 'linkValidity.quantity')).toContainText('Please enter a duration value');
+        await expect(customValidity).toContainText('Please enter a duration value');
 
         await quantity.fill('1');
         await page.getByRole('button', { name: 'Continue' }).click();
 
         await expect(unit).toHaveAttribute('aria-invalid', 'true');
-        await expect(getFieldError(page, 'linkValidity.quantity')).toContainText('Please select a duration unit');
+        await expect(customValidity).toContainText('Please select a duration unit');
+
+        await unit.click();
+        await page.getByRole('option', { name: 'hours', exact: true }).click();
+        await page.getByRole('button', { name: 'Continue' }).click();
+
+        await expect(getFieldError(page, 'linkValidity.quantity')).toHaveCount(0);
     });
 
     test('Should validate all required form fields', async ({ page }) => {

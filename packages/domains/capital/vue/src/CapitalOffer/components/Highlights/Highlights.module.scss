@@ -3,12 +3,13 @@
 
 .content {
     align-items: center;
-    display: flex;
-    gap: style.token(spacer-100);
-    justify-content: space-between;
+    display: grid;
+    gap: style.token(spacer-070);
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 3fr) minmax(0, 1fr) minmax(0, 3fr);
 
     @include adyen-pe-screen-sm-and-down {
         align-items: flex-start;
+        display: flex;
         flex-direction: column;
         gap: style.token(spacer-060);
     }
@@ -17,6 +18,10 @@
 .item {
     display: flex;
     flex-direction: column;
+}
+
+.itemCenter {
+    justify-self: center;
 }
 
 .label {

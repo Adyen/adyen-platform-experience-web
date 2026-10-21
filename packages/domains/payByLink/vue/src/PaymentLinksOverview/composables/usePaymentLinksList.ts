@@ -19,8 +19,7 @@ interface UsePaymentLinksListProps {
     paymentLinkId?: string;
     createdSince: string;
     createdUntil: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
+    pagination?: PaymentLinksOverviewExternalProps['pagination'];
     lastRefreshTimestamp: number;
 }
 
@@ -41,8 +40,7 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
 
     const pageLimit = usePageLimit({
         options: DEFAULT_PAGE_LIMITS,
-        preferredLimit: () => props().preferredLimit,
-        allowLimitSelection: () => props().allowLimitSelection,
+        pagination: () => props().pagination,
     });
 
     return useCursorPaginatedRecords<IPaymentLinkItem>({
