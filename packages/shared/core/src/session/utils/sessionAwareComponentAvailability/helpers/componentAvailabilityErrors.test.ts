@@ -39,6 +39,8 @@ describe('componentAvailabilityErrors', () => {
         expect(componentAvailabilityErrors('capitalOffer', 'capital.common.errors.componentUnavailable')).toBe(
             'capital.offer.common.errors.unavailable'
         );
+        expect(componentAvailabilityErrors('cashOutOverview', 'cashOut.common.errors.unexpected')).toBe('cashOut.overview.errors.unavailable');
+        expect(componentAvailabilityErrors('cashOutRequest', 'cashOut.common.errors.unexpected')).toBe('cashOut.request.errors.unavailable');
     });
 
     test('falls back to the provided message when the component type is unknown', () => {

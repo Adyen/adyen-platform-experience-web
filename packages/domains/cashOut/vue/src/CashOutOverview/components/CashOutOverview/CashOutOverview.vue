@@ -1,22 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { BentoAlert, BentoButton, BentoHeader, BentoInfoIcon, BentoTypography } from '@adyen/bento-vue3';
-import type { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
+import { computed, ref } from 'vue';
+import { BentoAlert, BentoButton, BentoInfoIcon, BentoTypography } from '@adyen/bento-vue3';
+import type { TranslationKey } from '@integration-components/core';
 import { useCoreContext } from '@integration-components/core/vue';
-import { getCashOutErrorMessage } from '@integration-components/cashOut/domain';
-import {
-    ComponentShell,
-    useBalanceAccountFilterState,
-    useBalanceAccounts,
-    useShouldHideTitles,
-    type ComponentShellState,
-    type ErrorMessageInfo,
-} from '@integration-components/composables-vue';
+import { ComponentShell, useShouldHideTitles } from '@integration-components/composables-vue';
 import type { ICashOutUnavailableReason } from '@integration-components/types';
 import { CashOutOverviewProps } from '../../types';
-import { useCashOutEligibility } from '../../composables/useCashOutEligibility';
-import BalanceAccountSelector from '../BalanceAccountSelector/BalanceAccountSelector.vue';
+import { useCashOutState } from '../../../shared/composables/useCashOutState';
+import CashOutHeader from '../../../shared/CashOutHeader/CashOutHeader.vue';
 import CashOutOverviewSkeleton from '../CashOutOverviewSkeleton/CashOutOverviewSkeleton.vue';
+import CashOutRequestModal from '../CashOutRequestModal/CashOutRequestModal.vue';
 import styles from './CashOutOverview.module.scss';
 
 // A zero balance already shows as an amount of 0, so it gets no alert.
@@ -41,46 +34,40 @@ const props = defineProps<CashOutOverviewProps>();
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
 
-const { balanceAccounts, error: balanceAccountsError, isFetching: isFetchingBalanceAccounts } = useBalanceAccounts();
-const { balanceAccountOptions, selectedBalanceAccountId } = useBalanceAccountFilterState({
-    balanceAccounts: () => balanceAccounts.value,
-});
-const { eligibility, eligibilityError, isFetchingEligibility } = useCashOutEligibility(selectedBalanceAccountId);
-
-// The HTTP layer throws AdyenPlatformExperienceError at runtime, whatever type the request composables declare.
-const error = computed(() => (balanceAccountsError.value ?? eligibilityError.value) as AdyenPlatformExperienceError | undefined);
-
-// Without a balance account there is nothing to request eligibility for, so the shell would otherwise stay loading.
-const hasNoBalanceAccounts = computed(() => !isFetchingBalanceAccounts.value && !balanceAccountsError.value && !balanceAccounts.value?.length);
-
-const errorInfo = computed<ErrorMessageInfo>(() => getCashOutErrorMessage(error.value));
-
-const shellState = computed<ComponentShellState>(() => {
-    if (error.value || hasNoBalanceAccounts.value) return 'error';
-    if (isFetchingBalanceAccounts.value || isFetchingEligibility.value || !eligibility.value) return 'loading';
-    return 'ready';
-});
+const { balanceAccountOptions, eligibility, errorInfo, selectedBalanceAccountId, shellState } = useCashOutState();
 
 const unavailableReasonMessage = computed<UnavailableReasonMessage | undefined>(() => {
     if (!eligibility.value || eligibility.value.isCashoutAvailable) return undefined;
     const [reason] = eligibility.value.unavailableReasons;
-    // The backend always sends a reason when cashOut is unavailable; the generic message covers it if it doesn't.
-    return reason ? UNAVAILABLE_REASON_MESSAGES[reason] : 'cashOut.overview.unavailableReasons.notAllowed';
+    if (reason === 'zeroBalance') return undefined;
+    // The generic message covers a missing reason, and one added to the API that the component doesn't know yet.
+    return (reason && UNAVAILABLE_REASON_MESSAGES[reason]) || 'cashOut.overview.unavailableReasons.notAllowed';
 });
 
-const showUnavailableReasonContactSupport = computed(() =>
-    Boolean(unavailableReasonMessage.value && SUPPORT_REASON_MESSAGES.has(unavailableReasonMessage.value) && props.onContactSupport)
-);
+const showUnavailableReasonContactSupport = computed(() => {
+    const message = unavailableReasonMessage.value;
+    return Boolean(message && SUPPORT_REASON_MESSAGES.has(message) && props.onContactSupport);
+});
+
+const isRequestModalOpen = ref(false);
+
+const openRequestModal = () => {
+    isRequestModalOpen.value = true;
+};
+
+const closeRequestModal = () => {
+    isRequestModalOpen.value = false;
+};
 </script>
 
 <template>
     <div :class="styles.root">
-        <div v-if="!hideTitles" :class="styles.header">
-            <BentoHeader variant="component" :title="i18n.get('cashOut.overview.title')" />
-            <BalanceAccountSelector v-model="selectedBalanceAccountId" :options="balanceAccountOptions" />
-        </div>
-        <!-- Outside the shell so another balance account can still be selected when one fails to load. -->
-        <BalanceAccountSelector v-else v-model="selectedBalanceAccountId" :options="balanceAccountOptions" />
+        <CashOutHeader
+            v-model:selected-balance-account-id="selectedBalanceAccountId"
+            :balance-account-options="balanceAccountOptions"
+            :hide-title="hideTitles"
+            title-key="cashOut.overview.title"
+        />
         <ComponentShell :state="shellState" :error-info="errorInfo">
             <template #loading>
                 <CashOutOverviewSkeleton />
@@ -103,10 +90,16 @@ const showUnavailableReasonContactSupport = computed(() =>
                         </BentoButton>
                     </template>
                 </BentoAlert>
-                <BentoButton :class="styles.startButton" :disabled="!eligibility.isCashoutAvailable">
+                <BentoButton :class="styles.startButton" :disabled="!eligibility.isCashoutAvailable" @click="openRequestModal">
                     {{ i18n.get('cashOut.overview.actions.start') }}
                 </BentoButton>
             </div>
         </ComponentShell>
+        <CashOutRequestModal
+            :balance-account-id="selectedBalanceAccountId"
+            :eligibility="eligibility"
+            :is-open="isRequestModalOpen"
+            :on-close="closeRequestModal"
+        />
     </div>
 </template>

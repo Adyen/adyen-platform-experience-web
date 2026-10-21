@@ -1,6 +1,7 @@
 {
     "cashOut.common.actions.contactSupport.labels.reachOut": "Reach out to support",
     "cashOut.common.actions.refresh.labels.default": "Refresh",
+    "cashOut.common.balanceAccount.label": "Balance account",
     "cashOut.common.errors.contactSupport": "Contact support for help.",
     "cashOut.common.errors.errorCode": "The error code is %{requestId}",
     "cashOut.common.errors.errorCodeSupport": "Contact support for help and share error code %{requestId}",
@@ -12,12 +13,13 @@
     "cashOut.overview.actions.start": "Start instant CashOut",
     "cashOut.overview.availableForCashOut.label": "Available to cash out",
     "cashOut.overview.availableForCashOut.tooltip": "You can cash out up to your pending balance, subject to a cap per rolling 24-hour period.",
-    "cashOut.overview.balanceAccount.label": "Balance account",
     "cashOut.overview.errors.unavailable": "We couldn't load Instant CashOut.",
     "cashOut.overview.title": "Instant CashOut",
     "cashOut.overview.unavailableReasons.cashOutInProgress": "Instant CashOut isn't available because a previous CashOut is still being processed. Try again once it's complete.",
     "cashOut.overview.unavailableReasons.dailyLimitReached": "You've reached the instant CashOut limit for the last 24 hours. Try again later.",
     "cashOut.overview.unavailableReasons.noInstantReachableTransferInstruments": "Instant CashOut isn't available because you don't have a bank account that can receive instant payouts. Please onboard an additional bank account.",
     "cashOut.overview.unavailableReasons.notAllowed": "Instant CashOut isn't available for this account. Contact support for help.",
-    "cashOut.overview.unavailableReasons.riskRestricted": "Instant CashOut isn't available for this account due to risk restrictions."
+    "cashOut.overview.unavailableReasons.riskRestricted": "Instant CashOut isn't available for this account due to risk restrictions.",
+    "cashOut.request.errors.unavailable": "We couldn't load Instant CashOut.",
+    "cashOut.request.title": "Instant CashOut request"
 }

@@ -1,6 +1,6 @@
 import { computed, toValue, watch, type MaybeRefOrGetter } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
-import { useAsyncRequest } from '@integration-components/composables-vue';
+import { useAsyncRequest } from '@integration-components/composables-vue/useAsyncRequest';
 import type { ICashOutEligibility } from '@integration-components/types';
 
 export const useCashOutEligibility = (balanceAccountId: MaybeRefOrGetter<string | undefined>) => {
