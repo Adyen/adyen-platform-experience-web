@@ -29,6 +29,14 @@ export const Prefilled: ElementStory<PaymentLinkCreationExternalProps> = {
     },
 };
 
+export const Loading: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Loading',
+    args: Prefilled.args,
+    parameters: {
+        msw: { ...paymentLinkCreationMockedResponses.loading },
+    },
+};
+
 export const OptionalSelectFields: ElementStory<PaymentLinkCreationExternalProps> = {
     name: 'Optional select fields',
     args: {

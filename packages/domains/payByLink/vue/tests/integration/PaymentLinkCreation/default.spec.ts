@@ -138,7 +138,7 @@ test.describe('Payment link creation - Link creation success', () => {
         await expect(page.getByRole('button', { name: 'Copied to clipboard' })).toBeVisible();
 
         const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
-        expect(clipboardText).toBe('http://pay.adyen/links/12345');
+        expect(clipboardText).toBe('https://pay.adyen/links/12345');
 
         // Verify show details button is present
         await expect(page.getByRole('button', { name: 'Show details' })).toBeVisible();
