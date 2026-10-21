@@ -36,9 +36,22 @@ export const EmptyList: ElementStory<PayoutsOverviewExternalProps> = {
 
 export const ErrorList: ElementStory<PayoutsOverviewExternalProps> = {
     name: 'Error - List',
-    args: { mockedApi: true },
+    args: {
+        mockedApi: true,
+        onContactSupport: () => {
+            console.log('Contact support clicked');
+        },
+    },
     parameters: {
         msw: { ...PAYOUTS_OVERVIEW_HANDLERS.errorList },
+    },
+};
+
+export const ErrorListServerError: ElementStory<PayoutsOverviewExternalProps> = {
+    name: 'Error - List (server error)',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...PAYOUTS_OVERVIEW_HANDLERS.errorListServerError },
     },
 };
 
