@@ -83,6 +83,17 @@ test.describe('Default', () => {
         await expect(page.getByText('The changes have been saved successfully.')).toBeVisible();
     });
 
+    test('should save the existing terms and conditions URL without changes', async ({ page }) => {
+        await page.getByRole('button', { name: 'Terms and conditions' }).click();
+        await expect(page.getByRole('textbox', { name: 'Your terms and conditions URL' })).toHaveValue('https://example.com/terms-and-conditions');
+
+        const saveRequest = page.waitForRequest(request => request.method() === 'POST' && request.url().includes('/paybylink/settings/'));
+        await page.getByRole('button', { name: 'Save' }).click();
+
+        expect((await saveRequest).postDataJSON()).toEqual({ termsOfServiceUrl: 'https://example.com/terms-and-conditions' });
+        await expect(page.getByText('The changes have been saved successfully.')).toBeVisible();
+    });
+
     test('should validate fields for theme changes', async ({ page }) => {
         const saveButton = page.getByRole('button', { name: 'Save' });
         await saveButton.click();

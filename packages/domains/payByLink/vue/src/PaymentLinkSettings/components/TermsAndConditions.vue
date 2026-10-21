@@ -40,9 +40,21 @@ const disabled = ref(false);
 const requirementsOpenedOnce = ref(false);
 let userRequirementsInput = false;
 
-watch([isRequirementsChecked, termsAndConditionsURL], () => {
-    setIsValid(!!isRequirementsChecked.value && isValidURL(termsAndConditionsURL.value));
-});
+watch(
+    [isRequirementsChecked, termsAndConditionsURL],
+    () => {
+        setIsValid(!!isRequirementsChecked.value && isValidURL(termsAndConditionsURL.value));
+    },
+    { immediate: true }
+);
+
+watch(
+    termsAndConditionsURL,
+    url => {
+        if (isValidURL(url)) setPayload({ termsOfServiceUrl: url });
+    },
+    { immediate: true }
+);
 
 watch(savedData, () => {
     userRequirementsInput = false;
@@ -167,7 +179,6 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
                     <BentoCheckbox
                         :model-value="isRequirementsChecked ?? false"
                         :disabled="disabled || !!isSaving"
-                        required
                         :error-message="
                             showNotCheckedRequirementsError
                                 ? i18n.get('payByLink.settings.termsAndConditions.error.requirementsNotChecked')
