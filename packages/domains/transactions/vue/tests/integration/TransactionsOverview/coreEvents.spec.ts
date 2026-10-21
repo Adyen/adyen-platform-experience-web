@@ -16,9 +16,6 @@ test.describe('Core events', () => {
         await expectAnalyticsEvents(
             analyticsEvents,
             [
-                // The storybook container initializes Core without theme or appearance options,
-                // so Initiated core omits them. The story configures only the data grid,
-                // so the style event lists that alone.
                 [
                     'Initiated core',
                     {
@@ -67,8 +64,6 @@ test.describe('Core events', () => {
                 {
                     category: 'PIE',
                     subCategory: 'Core',
-                    // Core is initialized without an explicit theme, so the theme it
-                    // had before the first runtime switch is reported as 'default'.
                     theme: 'dark',
                     previousTheme: 'default',
                     components: ['transactions'],
@@ -76,7 +71,6 @@ test.describe('Core events', () => {
             ],
         ]);
 
-        // Switching back is another runtime theme change.
         await updateStoryArgs(page, STORY_ID, { themeDark: false });
 
         await expectAnalyticsEvents(analyticsEvents, [
@@ -96,10 +90,8 @@ test.describe('Core events', () => {
     test('does not send mount events again when only component props update', async ({ page, analyticsEvents }) => {
         await updateStoryArgs(page, STORY_ID, { allowLimitSelection: false });
 
-        // The component still renders and reacts to the new props...
         await expect(page.getByRole('grid')).toBeVisible();
 
-        // ...but the mount events never repeat on update().
         await expectAnalyticsEvents(analyticsEvents, []);
     });
 });

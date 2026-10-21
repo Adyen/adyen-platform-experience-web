@@ -8,7 +8,6 @@ import { COMPONENT_DATA_EVENT_CAPABILITIES } from './component-data-capabilities
 
 /**
  * Core events from the Mixpanel core-events data dictionary. They complement
- * 'Customized translation' and share its base properties
  * (category: PIE / subCategory: Core), sent through the session analytics channel.
  */
 export const CORE_EVENT_NAMES = {
@@ -70,8 +69,7 @@ const getAppearanceEventProperties = (appearance: GlobalAppearance | undefined):
 };
 
 /**
- * Token names of the per-mode custom theme, without their values: the distribution tells us
- * which tokens to document or expose, and it keeps integrator brand colors out of analytics.
+ * Keys of the per-mode custom theme, without their values
  */
 const getCustomThemeVariables = (customTheme: CoreOptions<any>['customTheme']): string[] => {
     const variableNames = new Set<string>();
@@ -86,7 +84,7 @@ const getCustomThemeVariables = (customTheme: CoreOptions<any>['customTheme']): 
 };
 
 /**
- * Properties of the 'Initiated core' event: a full snapshot of the v2 configuration
+ * Properties of the 'Initiated core' event
  * surface (theme mode, custom theme tokens, appearance), fired once per core initialization.
  */
 export const getInitiatedCoreEventProperties = (options: CoreOptions<any>): Record<string, MixpanelProperty> => {
@@ -144,11 +142,6 @@ const getHiddenDetailFieldNames = (fields: unknown): string[] =>
               .map(field => String((field as Record<string, unknown>).key))
         : [];
 
-/**
- * Flattens a PBL `fieldsConfig.visibility` map into hidden/readOnly field names.
- * Parent fields configured per sub-field (e.g. `amount: { currency: 'hidden' }`)
- * are reported as `amount.currency`.
- */
 const getFieldVisibility = (visibility: unknown): { hidden: string[]; readOnly: string[] } => {
     const hidden: string[] = [];
     const readOnly: string[] = [];
@@ -174,7 +167,6 @@ const getPropertyAtPath = (record: Record<string, unknown>, path: string): unkno
 
 /**
  * Properties of the 'Customized component data' event: supported component props for
- * callbacks, custom columns, hidden detail fields, PBL field configuration, and pagination.
  */
 export const getCustomizedComponentDataEventProperties = ({
     componentName,
@@ -267,8 +259,7 @@ export const getUpdatedThemeEventProperties = ({
 });
 
 /**
- * Encodes a core event with the base properties shared by the core-event family,
- * mirroring the payload shape of 'Customized translation'.
+ * Encodes a core event with the base properties
  */
 const createCoreEventPayload = (
     event: CoreEventName,
