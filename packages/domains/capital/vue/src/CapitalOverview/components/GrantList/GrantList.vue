@@ -5,9 +5,10 @@ import { getGroupedGrants, getHasGrantGroups, type EnhancedCapitalState } from '
 import { useCoreContext } from '@integration-components/core/vue';
 import GrantItem from '../GrantItem/GrantItem.vue';
 import { useAdjustedGrants } from '../../composables/useAdjustedGrants';
-import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
+import CapitalError from '../../../shared/CapitalError.vue';
 import { IGrant } from '@integration-components/types';
 import styles from './GrantList.module.scss';
+import EmptyOfferState from '../../../shared/EmptyOfferState.vue';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
@@ -45,7 +46,7 @@ const displayedGrants = computed(() => {
     <BentoLoadingIndicator v-if="isLoading" />
     <CapitalError v-else-if="error" :error="error" :on-contact-support="props.onContactSupport" />
     <template v-else>
-        <CapitalError v-if="!grants?.length && !dynamicOfferConfig" empty-grant-offer />
+        <EmptyOfferState v-if="!grants?.length && !dynamicOfferConfig" />
         <template v-else-if="grants?.length">
             <BentoSegmentedControl
                 v-if="hasGrantGroups"

@@ -14,7 +14,7 @@ import {
     transactionsOverviewComponentView,
 } from '@integration-components/testing/msw';
 import { PAY_BY_LINK_ENDPOINTS } from '../endpoints';
-import { IPaymentLinkSettingsRequest, IPaymentLinkStatusGroup } from '@integration-components/types';
+import { IPaymentLinkConfiguration, IPaymentLinkSettingsRequest, IPaymentLinkStatusGroup } from '@integration-components/types';
 import {
     PAY_BY_LINK_FILTERS,
     STORES,
@@ -126,6 +126,26 @@ export const payByLinkOverviewMockedResponses = {
 };
 
 export const paymentLinkCreationMockedResponses = {
+    loading: {
+        handlers: [
+            http.get(CROSS_DOMAIN_ENDPOINTS.stores, async () => {
+                await delay(1500);
+                return HttpResponse.json({ data: STORES });
+            }),
+            http.get(mockPayByLinkEndpoints.configuration, async ({ params }) => {
+                await delay(1500);
+                return HttpResponse.json(PAY_BY_LINK_CONFIGURATION[params.storeId as keyof typeof PAY_BY_LINK_CONFIGURATION]);
+            }),
+            http.post(mockPayByLinkEndpoints.list, async () => {
+                await delay(1500);
+                return HttpResponse.json({
+                    url: 'https://pay.adyen/links/12345',
+                    expireAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    paymentLinkId: 'PLTEST001',
+                });
+            }),
+        ],
+    },
     optionalSelectFields: {
         handlers: [
             http.get(mockPayByLinkEndpoints.configuration, () => {
@@ -137,6 +157,30 @@ export const paymentLinkCreationMockedResponses = {
                     countryCode: { ...config.countryCode, required: false },
                     shopperLocale: { ...config.shopperLocale, required: false },
                 });
+            }),
+        ],
+    },
+    singleOptions: {
+        handlers: [
+            http.get(mockPayByLinkEndpoints.configuration, () =>
+                HttpResponse.json<IPaymentLinkConfiguration>({
+                    ...PAY_BY_LINK_CONFIGURATION.STORE_NY_001,
+                    currency: { required: true, options: ['EUR'] },
+                    linkType: { required: false, options: ['singleUse'] },
+                    linkValidity: { required: true, options: [{ quantity: 24, durationUnit: 'hour', type: 'fixed' }] },
+                    countryCode: { required: true, options: ['ES'] },
+                    shopperLocale: { required: false, options: ['es-ES'] },
+                    phoneNumber: { required: false },
+                })
+            ),
+            http.get(mockPayByLinkEndpoints.countries, () => HttpResponse.json({ data: [{ countryCode: 'ES', countryName: 'Spain' }] })),
+            http.get('/datasets/languages.json', async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.json([{ text: 'Español', value: 'es-ES' }]);
+            }),
+            http.get('/datasets/phonenumbers.json', async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.json([{ id: 'ES', prefix: '+34' }]);
             }),
         ],
     },
@@ -324,7 +368,7 @@ export const payByLinkMocks = [
 
         const now = new Date();
         const expiration = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-        const url = 'http://pay.adyen/links/12345';
+        const url = 'https://pay.adyen/links/12345';
 
         return HttpResponse.json({
             url,

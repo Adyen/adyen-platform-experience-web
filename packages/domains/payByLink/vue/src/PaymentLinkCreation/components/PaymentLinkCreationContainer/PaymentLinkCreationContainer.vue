@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { BentoTypography } from '@adyen/bento-vue3';
+import { useCoreContext } from '@integration-components/core/vue';
+import { ComponentShell, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
 import PaymentLinkCreationForm from '../PaymentLinkCreationFormContainer/PaymentLinkCreationForm.vue';
+import PaymentLinkCreationFormSkeleton from '../PaymentLinkCreationFormContainer/PaymentLinkCreationFormSkeleton.vue';
+import { usePaymentLinkFormData } from '../PaymentLinkCreationFormContainer/usePaymentLinkFormData';
 import PaymentLinkDetails from '../../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails.vue';
 import FormSuccess from '../Form/FormSuccess/FormSuccess.vue';
 import type { PaymentLinkCreationFormValues, CreatedPaymentLink, PaymentLinkCreationProps } from '../../../../../domain/src';
@@ -11,6 +16,23 @@ type PaymentLinkCreationContainerProps = PaymentLinkCreationProps & {
 };
 
 const props = defineProps<PaymentLinkCreationContainerProps>();
+
+const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
+const formData = usePaymentLinkFormData(() => ({ storeIds: props.storeIds, fieldsConfig: props.fieldsConfig }));
+const initialSkeletonStep = computed(() =>
+    formData.storesSelectorItems.value.length === 1 || typeof props.storeIds === 'string' || props.storeIds?.length === 1 ? 'payment' : 'store'
+);
+const shellState = ref<ComponentShellState>('loading');
+
+// Only gate the first load; later requests must not reset the wizard.
+watch(
+    formData.isFirstLoadDone,
+    isReady => {
+        if (isReady) shellState.value = 'ready';
+    },
+    { immediate: true }
+);
 
 type CreationState = 'Creation' | 'Success' | 'Details';
 
@@ -35,17 +57,31 @@ function handleShowDetails() {
 </script>
 
 <template>
-    <div :class="styles.root">
-        <PaymentLinkCreationForm
-            v-if="state === 'Creation'"
-            :fields-config="props.fieldsConfig"
-            :store-ids="props.storeIds"
-            :on-dismiss="props.onDismiss"
-            :on-contact-support="props.onContactSupport"
-            :embedded-in-overview="props.embeddedInOverview"
-            @payment-link-created="handleCreated"
-        />
-        <FormSuccess v-if="state === 'Success'" :payment-link-url="paymentLinkUrl" :on-show-details="handleShowDetails" />
-        <PaymentLinkDetails v-if="state === 'Details'" :id="paymentLinkId" :on-contact-support="props.onContactSupport" />
-    </div>
+    <ComponentShell :state="shellState">
+        <div :class="styles.root">
+            <PaymentLinkCreationForm
+                v-if="state === 'Creation'"
+                :form-data="formData"
+                :fields-config="props.fieldsConfig"
+                :on-dismiss="props.onDismiss"
+                :on-contact-support="props.onContactSupport"
+                :embedded-in-overview="props.embeddedInOverview"
+                @payment-link-created="handleCreated"
+            />
+            <FormSuccess v-if="state === 'Success'" :payment-link-url="paymentLinkUrl" :on-show-details="handleShowDetails" />
+            <PaymentLinkDetails v-if="state === 'Details'" :id="paymentLinkId" :on-contact-support="props.onContactSupport" />
+        </div>
+        <template #loading>
+            <div :class="styles.loading">
+                <BentoTypography v-if="!hideTitles" variant="title" stronger>
+                    {{ i18n.get('payByLink.creation.form.title') }}
+                </BentoTypography>
+                <PaymentLinkCreationFormSkeleton
+                    :step="initialSkeletonStep"
+                    :step-count="initialSkeletonStep === 'payment' ? 3 : 4"
+                    show-navigation
+                />
+            </div>
+        </template>
+    </ComponentShell>
 </template>
