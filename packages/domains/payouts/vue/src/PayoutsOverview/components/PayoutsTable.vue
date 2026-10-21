@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import {
     useCustomColumnsData,
     CustomDataCell,
+    useCustomColumnWidths,
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
@@ -77,6 +78,7 @@ const {
         payoutAmount: { flex: 1, numeric: true },
     }),
     customColumnDefaults: () => ({ flex: 1 }),
+    customColumnWidths: () => customColumnWidths.value,
     resolveCustomColumnLabel: key => {
         const labelKey = `payouts.overview.list.fields.${key}`;
         return i18n.has(labelKey as any) ? i18n.get(labelKey as any) : i18n.get(key as any);
@@ -120,6 +122,13 @@ const gridData = computed<BentoDatagridDataItem[]>(() => {
         return row;
     });
 });
+
+const tableRef = ref<HTMLElement | null>(null);
+const customColumnWidths = useCustomColumnWidths(
+    tableRef,
+    () => [gridData.value, isLoading.value, isMobile.value],
+    () => columns.value
+);
 
 const paginationProps = computed(() => {
     if (!props.showPagination) return undefined;
@@ -165,7 +174,7 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
 </script>
 
 <template>
-    <div :class="styles.root">
+    <div ref="tableRef" :class="styles.root">
         <!-- Error state -->
         <DataOverviewError
             v-if="props.error"
@@ -213,7 +222,7 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
                 </BentoTypography>
             </template>
             <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">
-                <CustomDataCell :value="item[key]" />
+                <CustomDataCell :value="item[key]" :field="key" />
             </template>
         </BentoDataGrid>
     </div>

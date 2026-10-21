@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { useLandedPageEvent, ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
 import TransactionData from './TransactionData/TransactionData.vue';
+import TransactionSkeleton from './TransactionSkeleton/TransactionSkeleton.vue';
 import { useTransaction } from '../composables/useTransaction';
 import { normalizeCustomFields } from '@integration-components/utils';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET, sharedTransactionDetailsEventProperties } from '../../../../domain/src';
@@ -100,5 +101,9 @@ useLandedPageEvent(
             :transaction="transaction ?? initialTransaction"
             :transaction-navigator="transactionNavigator"
         />
+
+        <template #loading>
+            <TransactionSkeleton />
+        </template>
     </ComponentShell>
 </template>

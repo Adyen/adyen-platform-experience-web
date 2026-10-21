@@ -7,6 +7,7 @@
     flex-direction: column;
     gap: style.token(spacer-060);
     justify-content: space-between;
+    overflow-x: auto;
     width: 100%;
 
     @include adyen-pe-screen-sm-and-up {
@@ -20,6 +21,7 @@
     align-items: center;
     display: flex;
     gap: style.token(spacer-060);
+    white-space: nowrap;
 }
 
 .tooltipPlaceholder {
