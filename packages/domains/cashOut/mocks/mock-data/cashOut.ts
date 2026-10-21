@@ -8,7 +8,6 @@ import type {
 } from '@integration-components/types';
 import { BALANCE_ACCOUNTS } from '@integration-components/testing/fixtures';
 
-export const BALANCE_ACCOUNT_ID = BALANCE_ACCOUNTS[1].id;
 const CURRENCY = 'EUR';
 
 const getAmount = (value: number): ICashOutAmount => ({ currency: CURRENCY, value });
@@ -80,6 +79,20 @@ export const ELIGIBILITY_AVAILABLE = {
         transferInstruments: [...Object.values(ELIGIBLE_TRANSFER_INSTRUMENTS), ...Object.values(INELIGIBLE_TRANSFER_INSTRUMENTS)],
     },
 } satisfies Record<string, ICashOutEligibility>;
+
+export const ELIGIBILITY_BY_BALANCE_ACCOUNT: Record<string, ICashOutEligibility> = {
+    [BALANCE_ACCOUNTS[0].id]: {
+        ...baseEligibility,
+        availableBalance: { currency: 'USD', value: 332500 },
+        availableForCashOutBalance: { currency: 'USD', value: 22000 },
+    },
+    [BALANCE_ACCOUNTS[1].id]: baseEligibility,
+    [BALANCE_ACCOUNTS[2].id]: {
+        ...baseEligibility,
+        availableBalance: { currency: 'USD', value: 5250 },
+        availableForCashOutBalance: { currency: 'USD', value: 5250 },
+    },
+};
 
 const getUnavailableEligibility = (
     reason: ICashOutUnavailableReason,

@@ -13,6 +13,8 @@ const getTranslationDomain = (componentName: ExternalComponentType): Translation
         case 'capitalOverview':
         case 'capitalOffer':
             return 'capital';
+        case 'cashOutOverview':
+            return 'cashOut';
         case 'disputes':
         case 'disputesManagement':
             return 'disputes';

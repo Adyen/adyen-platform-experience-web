@@ -3,6 +3,7 @@ import { getMockHandlers } from '@integration-components/testing/msw';
 import { analyticsMock } from './eventDispatcher';
 import { balanceAccountMock } from './balanceAccounts';
 import { capitalDefaultHandlers as capitalMock } from '../../packages/domains/capital/mocks/mock-server';
+import { cashOutMocks } from '../../packages/domains/cashOut/mocks/mock-server/cashOut';
 import { disputesMocks } from '../../packages/domains/disputes/mocks/mock-server/disputes';
 import { onboardingMocks } from './onboarding';
 import { payByLinkMocks } from '../../packages/domains/payByLink/mocks/mock-server/payByLink';
@@ -16,6 +17,7 @@ export const mocks = [
     analyticsMock,
     balanceAccountMock,
     capitalMock,
+    cashOutMocks,
     disputesMocks,
     onboardingMocks,
     payByLinkMocks,

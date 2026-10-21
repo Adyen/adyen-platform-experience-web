@@ -3,6 +3,7 @@ export type DeepPartial<T> = T extends object ? { [K in keyof T]?: DeepPartial<T
 export type ExternalComponentType =
     | 'capitalOverview'
     | 'capitalOffer'
+    | 'cashOutOverview'
     | 'disputes'
     | 'disputesManagement'
     | 'paymentLinkCreation'
