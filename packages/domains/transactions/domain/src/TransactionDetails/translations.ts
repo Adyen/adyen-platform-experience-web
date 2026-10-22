@@ -1,5 +1,10 @@
-import { createDynamicTranslationFactory, createKeyFactoryFromConfig } from '@integration-components/core';
-import type { KeyFactoryFunction, TranslationFallbackFunction, TranslationKey } from '@integration-components/core';
+import {
+    createDynamicTranslationFactory,
+    createKeyFactoryFromConfig,
+    type KeyFactoryFunction,
+    type TranslationFallbackFunction,
+} from '@integration-components/core';
+import type { TransactionsTranslationKey } from '../shared/types';
 import type { IRefundReason } from '@integration-components/types';
 
 const originalValueFallback: TranslationFallbackFunction = (_, value) => value;
@@ -34,7 +39,7 @@ export const REFUND_REASONS_KEYS = Object.freeze({
     fraudulent: 'transactions.details.common.refundReasons.fraudulent',
     duplicate: 'transactions.details.common.refundReasons.duplicate',
     other: 'transactions.details.common.refundReasons.other',
-} as const) satisfies Readonly<Record<IRefundReason, TranslationKey>>;
+} as const) satisfies Readonly<Record<IRefundReason, TransactionsTranslationKey>>;
 
 const txRefundReasonKey = createKeyFactoryFromConfig({ prefix: 'transactions.details.common.refundReasons.' });
 const txRefundReasonKeyFactory: KeyFactoryFunction = reason => reason && (REFUND_REASONS_KEYS[reason as IRefundReason] ?? txRefundReasonKey(reason));

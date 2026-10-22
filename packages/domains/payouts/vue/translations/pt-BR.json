@@ -31,6 +31,7 @@
     "payouts.details.breakdown.fundsCaptured.types.chargeback": "Chargebacks",
     "payouts.details.breakdown.fundsCaptured.types.correction": "Correções",
     "payouts.details.breakdown.fundsCaptured.types.refund": "Reembolsos",
+    "payouts.details.common.actions.goBack": "voltar",
     "payouts.details.errors.unavailable": "Não foi possível enviar as informações sobre o repasse do pagamento.",
     "payouts.details.tags.netPayout": "Repasse do pagamento líquido",
     "payouts.details.tags.sameDaySum": "Soma dos pagamentos do mesmo dia",

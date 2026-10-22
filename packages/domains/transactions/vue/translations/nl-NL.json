@@ -42,6 +42,7 @@
     "transactions.details.actions.copyReferenceID": "Referentie-ID kopiëren",
     "transactions.details.actions.goToPayment": "Ga naar de betaling",
     "transactions.details.actions.refund": "Betaling terugbetalen",
+    "transactions.details.common.actions.goBack": "Terug",
     "transactions.details.common.refundedStates.full": "Volledig terugbetaald",
     "transactions.details.common.refundedStates.partial": "Gedeeltelijk terugbetaald",
     "transactions.details.common.refundReasons.duplicate": "Duplicaat",

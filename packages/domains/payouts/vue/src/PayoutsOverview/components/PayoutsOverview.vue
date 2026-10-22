@@ -14,19 +14,16 @@ import PayoutsTable from './PayoutsTable.vue';
 import PayoutDetailsModal from './PayoutDetailsModal.vue';
 import { usePayoutsList } from '../composables/usePayoutsList';
 import { EARLIEST_PAYOUT_SINCE_DATE } from '../constants';
-import type { IBalanceAccountBase, PayoutsOverviewExternalProps } from '../types';
+import type { IBalanceAccountBase, PayoutsOverviewComponentProps } from '../types';
 import type { IPayout } from '@integration-components/types';
 import styles from './PayoutsOverview.module.scss';
 
-const props = defineProps<{
-    balanceAccountId?: string;
-    pagination?: PayoutsOverviewExternalProps['pagination'];
-    onContactSupport?: () => void;
-    onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
-    dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
-    balanceAccounts: IBalanceAccountBase[] | undefined;
-    isLoadingBalanceAccount: boolean;
-}>();
+const props = defineProps<
+    PayoutsOverviewComponentProps & {
+        balanceAccounts: IBalanceAccountBase[] | undefined;
+        isLoadingBalanceAccount: boolean;
+    }
+>();
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
@@ -91,7 +88,7 @@ function onRowClick(payout: IPayout) {
     // the modal directly.
     if (props.onRecordSelection) {
         props.onRecordSelection({
-            balanceAccountId,
+            id: balanceAccountId,
             date: payout.createdAt ?? '',
             showDetails: showPayoutDetailsModal,
         });

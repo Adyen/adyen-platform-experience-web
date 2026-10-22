@@ -5,9 +5,7 @@ import { useResponsiveContainer, containerQueries } from '@integration-component
 import FieldWrapper from '../../../fields/FieldWrapper.vue';
 import CountryField from './CountryField.vue';
 import { useWizard } from '../../../../composables/wizardContext';
-import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../../domain/src';
-import type { PaymentLinkFieldName } from '../../../../../../../domain/src';
-import type { TranslationKey } from '@integration-components/core';
+import { PAYMENT_LINK_CREATION_FIELD_LENGTHS, type PaymentLinkFieldName, type PayByLinkTranslationKey } from '../../../../../../../domain/src';
 import styles from './AddressSection.module.scss';
 
 type AddressPrefix = 'billingAddress' | 'deliveryAddress';
@@ -55,7 +53,7 @@ function getValue(field: string) {
 }
 
 function getLabel(field: string) {
-    return i18n.get(`payByLink.creation.fields.${props.prefix}.${field}.label` as TranslationKey);
+    return i18n.get(`payByLink.creation.fields.${props.prefix}.${field}.label` as PayByLinkTranslationKey);
 }
 
 function getMaxLength(field: string) {

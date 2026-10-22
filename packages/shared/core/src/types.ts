@@ -79,7 +79,8 @@ export interface CustomTheme {
     dark?: ThemeVariables;
 }
 
-export type OnErrorHandler = (error: Error) => any;
+export type OnErrorHandler = (error: Error) => void;
+
 export type AnalyticsConfig = {
     enabled?: boolean;
 };

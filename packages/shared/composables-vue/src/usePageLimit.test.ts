@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { usePageLimit } from './usePageLimit';
+import { asPageSizeItems, usePageLimit } from './usePageLimit';
 
 const options = [10, 20, 30] as const;
 
@@ -24,7 +24,21 @@ describe('usePageLimit', () => {
 
     test('hides limit options when limit selection is disabled', () => {
         const { limitOptions } = usePageLimit({ options, pagination: () => ({ disableLimitSelection: true }) });
-
         expect(limitOptions.value).toBeUndefined();
+    });
+
+    test('exposes the options without copying them', () => {
+        const { limitOptions } = usePageLimit({ options, pagination: () => undefined });
+        expect(limitOptions.value).toBe(options);
+    });
+});
+
+describe('asPageSizeItems', () => {
+    test('widens the readonly options without copying them', () => {
+        expect(asPageSizeItems(options)).toBe(options);
+    });
+
+    test('passes undefined through when limit selection is disabled', () => {
+        expect(asPageSizeItems(undefined)).toBeUndefined();
     });
 });

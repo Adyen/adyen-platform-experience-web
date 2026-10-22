@@ -1,11 +1,11 @@
 import type { IGrant } from '@integration-components/types';
-import { TranslationKey } from '@integration-components/core';
+import type { CapitalTranslationKey } from '../../shared';
 
 export type GrantStatusVariant = 'Default' | 'Warning' | 'Error' | 'Light';
 
 export type GrantConfig = {
     amount: IGrant['grantAmount'];
-    amountLabelKey: TranslationKey;
+    amountLabelKey: CapitalTranslationKey;
     areActionsVisible: boolean;
     areDetailsVisible: boolean;
     areRepaymentDetailsVisible: boolean;
@@ -16,9 +16,9 @@ export type GrantConfig = {
     isPendingAlertVisible: boolean;
     isProgressBarVisible: boolean;
     repaymentPeriodEndDate: Date;
-    statusKey?: TranslationKey;
+    statusKey?: CapitalTranslationKey;
     statusTagVariant: GrantStatusVariant;
-    statusTooltipKey?: TranslationKey;
+    statusTooltipKey?: CapitalTranslationKey;
 };
 
 export type EnhancedGrant = Omit<IGrant, 'maximumRepaymentPeriodDays'> & {
@@ -31,7 +31,7 @@ const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
     return endDate;
 };
 
-const getStatusKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): TranslationKey | undefined => {
+const getStatusKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): CapitalTranslationKey | undefined => {
     switch (status) {
         case 'Failed':
             return 'capital.overview.grants.common.statuses.failed';
@@ -66,7 +66,7 @@ const getStatusTagVariant = ({ status, missingActions }: IGrant, areActionsLocal
     }
 };
 
-const getStatusTooltipKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): TranslationKey | undefined => {
+const getStatusTooltipKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): CapitalTranslationKey | undefined => {
     switch (status) {
         case 'Pending':
             return !areActionsLocallyCompleted && missingActions?.length

@@ -42,6 +42,7 @@
     "transactions.details.actions.copyReferenceID": "Kopier referanse-ID",
     "transactions.details.actions.goToPayment": "Gå til betaling",
     "transactions.details.actions.refund": "Refunder betaling",
+    "transactions.details.common.actions.goBack": "Gå tilbake",
     "transactions.details.common.refundedStates.full": "Fullt refundert",
     "transactions.details.common.refundedStates.partial": "Delvis refundert",
     "transactions.details.common.refundReasons.duplicate": "Duplikat",

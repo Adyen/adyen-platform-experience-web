@@ -60,8 +60,8 @@ function onCloseModal() {
                     :id="props.disputeId"
                     :data-customization="props.dataCustomization ? { details: props.dataCustomization } : undefined"
                     :on-contact-support="props.onContactSupport"
-                    :on-dispute-accept="onDisputeManagementSuccessful"
-                    :on-dispute-defend="onDisputeManagementSuccessful"
+                    :on-accept="onDisputeManagementSuccessful"
+                    :on-defend="onDisputeManagementSuccessful"
                     :on-dismiss="onCloseModal"
                 />
             </template>

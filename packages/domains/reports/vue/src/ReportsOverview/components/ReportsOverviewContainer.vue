@@ -2,18 +2,9 @@
 import { computed } from 'vue';
 import ReportsOverview from './ReportsOverview.vue';
 import { ComponentShell, useBalanceAccounts, type ErrorMessageInfo } from '@integration-components/composables-vue';
-import type { ReportsOverviewExternalProps } from '../types';
+import type { ReportsOverviewComponentProps } from '../types';
 
-const props = withDefaults(
-    defineProps<{
-        balanceAccountId?: string;
-        pagination?: ReportsOverviewExternalProps['pagination'];
-        onContactSupport?: () => void;
-        dataCustomization?: any;
-    }>(),
-    {}
-);
-
+const props = defineProps<ReportsOverviewComponentProps>();
 const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(() => props.balanceAccountId);
 const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
 

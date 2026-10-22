@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/vue3';
 import { paymentLinksOverviewMeta } from './meta';
-import type { PaymentLinksOverviewExternalProps } from '../../src';
+import type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewExternalProps } from '../../src';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { payByLinkOverviewMockedResponses } from '../../../mocks/mock-server/payByLink';
 import { PAYMENT_LINKS_FIELDS_CONFIG } from '../utils/constants/paymentLinks';
@@ -53,7 +53,9 @@ export const WrongStoreIds: ElementStory<PaymentLinksOverviewExternalProps> = {
     },
 };
 
-export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternalProps> = {
+type SubComponentConfigProps = Pick<PaymentLinksOverviewComponentProps, 'paymentLinkCreation' | 'paymentLinkSettings'>;
+
+export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternalProps, SubComponentConfigProps> = {
     name: 'With props to sub-components',
     args: {
         mockedApi: true,

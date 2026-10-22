@@ -5,7 +5,7 @@ import FieldWrapper from '../../../fields/FieldWrapper.vue';
 import { useWizard } from '../../../../composables/wizardContext';
 import { FLEXIBLE_VALIDITY_ID, LINK_VALIDITY_DURATION_UNITS } from '../../../../../../../domain/src';
 import type { IPaymentLinkValidity } from '@integration-components/types';
-import type { TranslationKey } from '@integration-components/core';
+import type { PayByLinkTranslationKey } from '@integration-components/payByLink/domain';
 import styles from './ValidityField.module.scss';
 
 const props = defineProps<{
@@ -22,14 +22,14 @@ const presetItems = computed(() =>
         if (type === FLEXIBLE_VALIDITY_ID) {
             return { label: i18n.get('payByLink.creation.fields.validity.linkValidityUnit.custom'), value: FLEXIBLE_VALIDITY_ID };
         }
-        const key = `payByLink.creation.fields.validity.linkValidityUnit.${durationUnit}` as TranslationKey;
+        const key = `payByLink.creation.fields.validity.linkValidityUnit.${durationUnit}` as PayByLinkTranslationKey;
         return { label: i18n.get(key, { values: { quantity }, count: quantity }), value: `${quantity} ${durationUnit}` };
     })
 );
 
 const unitItems = computed(() =>
     LINK_VALIDITY_DURATION_UNITS.map(unit => ({
-        label: i18n.get(`payByLink.creation.fields.validity.linkValidityUnit.${unit}__plural` as TranslationKey),
+        label: i18n.get(`payByLink.creation.fields.validity.linkValidityUnit.${unit}__plural` as PayByLinkTranslationKey),
         value: unit,
     }))
 );

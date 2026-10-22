@@ -1,2 +1,2 @@
 export { PaymentLinksOverviewElement } from './PaymentLinksOverviewElement';
-export type { PaymentLinksOverviewExternalProps } from './types';
+export type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewExternalProps } from './types';

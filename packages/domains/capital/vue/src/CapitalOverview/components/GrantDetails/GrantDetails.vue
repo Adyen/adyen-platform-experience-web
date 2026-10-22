@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoStructuredList, BentoStructuredListItem, BentoTypography } from '@adyen/bento-vue3';
-import { CAPITAL_REPAYMENT_FREQUENCY, calculatePercentageFromBasisPoints, getEnhancedGrant } from '@integration-components/capital/domain';
-import type { TranslationKey } from '@integration-components/core';
+import {
+    CAPITAL_REPAYMENT_FREQUENCY,
+    calculatePercentageFromBasisPoints,
+    getEnhancedGrant,
+    type CapitalTranslationKey,
+} from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IGrant } from '@integration-components/types';
 import styles from './GrantDetails.module.scss';
 
 type GrantDetailItem = {
-    key: TranslationKey;
+    key: CapitalTranslationKey;
     labelInfo?: string;
     value: string;
 };
