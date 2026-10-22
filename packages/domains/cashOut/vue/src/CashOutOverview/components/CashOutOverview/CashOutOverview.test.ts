@@ -8,7 +8,7 @@ import { useShouldHideTitles, type ComponentShellState } from '@integration-comp
 import { useCashOutState } from '../../../shared/composables/useCashOutState';
 import CashOutOverview from './CashOutOverview.vue';
 
-const LABEL = 'cashOut.overview.availableForCashOut.label';
+const LABEL = 'cashOut.common.availableForCashOut.label';
 const AMOUNT = '22000 USD';
 const REACH_OUT = 'cashOut.common.actions.contactSupport.labels.reachOut';
 const START = 'cashOut.overview.actions.start';
@@ -179,7 +179,7 @@ describe('CashOutOverview', () => {
     });
 
     describe('Unavailable reason', () => {
-        const NOT_ALLOWED = 'cashOut.overview.unavailableReasons.notAllowed';
+        const NOT_ALLOWED = 'cashOut.common.unavailableReasons.notAllowed';
 
         test('should explain a reason the component does not know with the generic message', () => {
             mockCashOutState({ eligibility: unavailableEligibility('reasonAddedLater') });
@@ -194,7 +194,7 @@ describe('CashOutOverview', () => {
             mockCashOutState({ eligibility: unavailableEligibility('zeroBalance') });
             const { target, unmount } = renderCashOutOverview();
 
-            expect(target.textContent).not.toContain('cashOut.overview.unavailableReasons.');
+            expect(target.textContent).not.toContain('cashOut.common.unavailableReasons.');
 
             unmount();
         });

@@ -9,6 +9,7 @@ const props = defineProps<{
     eligibility?: ICashOutEligibility;
     isOpen: boolean;
     onClose: () => void;
+    onContactSupport?: () => void;
 }>();
 
 const { i18n } = useCoreContext();
@@ -19,7 +20,14 @@ const { i18n } = useCoreContext();
         {{ i18n.get('cashOut.request.title') }}
         <template #content>
             <!-- Mounted on open, so it starts from the balance account selected in the overview at that moment. -->
-            <CashOutRequest v-if="props.isOpen" :balance-account-id="props.balanceAccountId" :eligibility="props.eligibility" hide-title />
+            <!-- Without onDismiss, so the modal's close button is the only way to close it, instead of a cancel button too. -->
+            <CashOutRequest
+                v-if="props.isOpen"
+                :balance-account-id="props.balanceAccountId"
+                :eligibility="props.eligibility"
+                hide-title
+                :on-contact-support="props.onContactSupport"
+            />
         </template>
     </BentoModal>
 </template>

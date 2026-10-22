@@ -1,17 +1,8 @@
 @use '@integration-components/style';
-@use '@integration-components/style/breakpoints';
 
-// Stacked on small screens so the balance account name isn't truncated next to the title.
+// The balance account selector goes under the title, so in a modal, without the title, it isn't next to the close button.
 .root {
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-060);
-
-    @include breakpoints.adyen-pe-screen-sm-and-up {
-        align-items: center;
-        flex-direction: row;
-        justify-content: space-between;
-        // Matches the 36px Bento dropdown, so the row keeps its height when the selector appears after balance accounts load.
-        min-height: calc(#{style.token(spacer-100)} + #{style.token(spacer-020)});
-    }
 }

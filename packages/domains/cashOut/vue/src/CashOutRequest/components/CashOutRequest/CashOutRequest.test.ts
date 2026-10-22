@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { createApp, ref, toValue } from 'vue';
+import { createApp, nextTick, ref, toValue } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { ComponentShellState } from '@integration-components/composables-vue';
 import type { ICashOutEligibility } from '@integration-components/types';
@@ -18,6 +18,8 @@ const ELIGIBILITY = {
     availableForCashOutBalance: { value: 22000, currency: 'USD' },
     unavailableReasons: [],
 } as unknown as ICashOutEligibility;
+
+const formProps: { current?: Record<string, unknown> } = {};
 
 vi.mock('@adyen/bento-vue3', async () => {
     const { h } = await import('vue');
@@ -47,6 +49,7 @@ vi.mock('@integration-components/composables-vue', async () => {
 });
 
 vi.mock('../../../shared/composables/useCashOutState', () => ({
+    getCashOutErrorInfo: vi.fn(() => ({})),
     useCashOutState: vi.fn(),
 }));
 
@@ -55,14 +58,37 @@ vi.mock('../CashOutRequestSkeleton/CashOutRequestSkeleton.vue', async () => {
     return { default: () => h('div', 'skeleton') };
 });
 
+vi.mock('../CashOutRequestForm/CashOutRequestForm.vue', async () => {
+    const { defineComponent, h } = await import('vue');
+    return {
+        default: defineComponent({
+            props: {
+                balanceAccountId: { type: String, required: true },
+                eligibility: { type: Object, required: true },
+                onDismiss: { type: Function, default: undefined },
+                onContactSupport: { type: Function, default: undefined },
+                onFeesError: { type: Function, required: true },
+            },
+            setup(props) {
+                return () => {
+                    formProps.current = { ...props };
+                    return h('div', 'form');
+                };
+            },
+        }),
+    };
+});
+
 const mockCashOutState = (shellState: ComponentShellState) => {
-    vi.mocked(useCashOutState).mockReturnValue({
+    const state = {
         balanceAccountOptions: ref([]),
         eligibility: ref(shellState === 'ready' ? ELIGIBILITY : undefined),
         errorInfo: ref({}),
         selectedBalanceAccountId: ref('BA1'),
         shellState: ref(shellState),
-    } as unknown as ReturnType<typeof useCashOutState>);
+    };
+    vi.mocked(useCashOutState).mockReturnValue(state as unknown as ReturnType<typeof useCashOutState>);
+    return state;
 };
 
 const renderCashOutRequest = (props: Partial<CashOutRequestProps> = {}) => {
@@ -75,6 +101,7 @@ const renderCashOutRequest = (props: Partial<CashOutRequestProps> = {}) => {
 describe('CashOutRequest', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        formProps.current = undefined;
         vi.mocked(useCoreContext).mockReturnValue({
             i18n: { get: (key: string) => key },
         } as unknown as ReturnType<typeof useCoreContext>);
@@ -107,16 +134,7 @@ describe('CashOutRequest', () => {
 
             expect(target.textContent).toContain('loading');
             expect(target.textContent).toContain(SKELETON);
-
-            unmount();
-        });
-
-        test('should keep the skeleton layout as a placeholder once eligibility loads, so the height does not change', () => {
-            mockCashOutState('ready');
-            const { target, unmount } = renderCashOutRequest();
-
-            expect(target.textContent).toContain('ready');
-            expect(target.textContent).toContain(SKELETON);
+            expect(formProps.current).toBeUndefined();
 
             unmount();
         });
@@ -127,6 +145,55 @@ describe('CashOutRequest', () => {
 
             expect(target.textContent).toContain('error');
             expect(target.textContent).not.toContain(SKELETON);
+
+            unmount();
+        });
+    });
+
+    describe('Form', () => {
+        test('should show the form of the selected balance account once eligibility loads', () => {
+            const onDismiss = vi.fn();
+            const onContactSupport = vi.fn();
+            mockCashOutState('ready');
+            const { target, unmount } = renderCashOutRequest({ onDismiss, onContactSupport });
+
+            expect(target.textContent).toContain('form');
+            expect(formProps.current).toMatchObject({
+                balanceAccountId: 'BA1',
+                eligibility: ELIGIBILITY,
+                onDismiss,
+                onContactSupport,
+            });
+
+            unmount();
+        });
+
+        test('should show an error when the fees fail to load', async () => {
+            mockCashOutState('ready');
+            const { target, unmount } = renderCashOutRequest();
+
+            (formProps.current?.onFeesError as (error: Error) => void)(new Error('error'));
+            await nextTick();
+
+            expect(target.textContent).toContain('error');
+            expect(target.textContent).not.toContain('form');
+
+            unmount();
+        });
+
+        test('should show the form of another balance account selected after the fees fail to load', async () => {
+            const { selectedBalanceAccountId } = mockCashOutState('ready');
+            const { target, unmount } = renderCashOutRequest();
+
+            (formProps.current?.onFeesError as (error: Error) => void)(new Error('error'));
+            await nextTick();
+
+            selectedBalanceAccountId.value = 'BA2';
+            await nextTick();
+
+            expect(target.textContent).not.toContain('error');
+            expect(target.textContent).toContain('form');
+            expect(formProps.current).toMatchObject({ balanceAccountId: 'BA2' });
 
             unmount();
         });
