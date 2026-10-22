@@ -1,4 +1,4 @@
-import type { TranslationKey } from '@integration-components/core';
+import type { TransactionsTranslationKey } from '../shared/types';
 import type { IRefundStatus } from '@integration-components/types';
 import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_DETAILS } from '../TransactionsOverview/analyticsConstants';
 import { TRANSACTION_FIELDS } from '../TransactionsOverview/fields';
@@ -34,7 +34,7 @@ export const TX_DETAILS_FIELDS_REMAPS = {
     },
 } as const;
 
-export const TX_DETAILS_TABS: readonly Readonly<{ id: DetailsTab; label: TranslationKey; content: null }>[] = [
+export const TX_DETAILS_TABS: readonly Readonly<{ id: DetailsTab; label: TransactionsTranslationKey; content: null }>[] = [
     { id: DetailsTab.SUMMARY, label: 'transactions.details.views.summary', content: null } as const,
     { id: DetailsTab.DETAILS, label: 'transactions.details.views.details', content: null } as const,
     { id: DetailsTab.TIMELINE, label: 'transactions.details.views.timeline', content: null } as const,

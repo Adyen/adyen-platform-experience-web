@@ -4,15 +4,15 @@ import { BentoLoadingIndicator, BentoModal } from '@adyen/bento-vue3';
 import { ModalContextProvider, useCoreContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
 import type { PaymentLinkCreationFormValues, PaymentLinksOverviewModalType } from '@integration-components/payByLink/domain';
-import type { PaymentLinksOverviewExternalProps } from '../types';
+import type { PaymentLinksOverviewComponentProps } from '../types';
 
 const props = defineProps<{
     modalType: PaymentLinksOverviewModalType;
-    storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
-    paymentLinkCreation?: PaymentLinksOverviewExternalProps['paymentLinkCreation'];
-    paymentLinkSettings?: PaymentLinksOverviewExternalProps['paymentLinkSettings'];
-    onPaymentLinkCreated: (paymentLink: PaymentLinkCreationFormValues) => void;
-    onContactSupport?: () => void;
+    storeIds?: PaymentLinksOverviewComponentProps['storeIds'];
+    paymentLinkCreation?: PaymentLinksOverviewComponentProps['paymentLinkCreation'];
+    paymentLinkSettings?: PaymentLinksOverviewComponentProps['paymentLinkSettings'];
+    onCreate: (paymentLink: PaymentLinkCreationFormValues) => void;
+    onContactSupport?: PaymentLinksOverviewComponentProps['onContactSupport'];
     onClose: () => void;
 }>();
 
@@ -55,7 +55,7 @@ const PaymentLinkSettings = defineAsyncComponent({
                     v-if="props.modalType === 'Creation'"
                     :fields-config="props.paymentLinkCreation?.fieldsConfig"
                     :store-ids="props.storeIds"
-                    :on-payment-link-created="props.onPaymentLinkCreated"
+                    :on-create="props.onCreate"
                     :on-dismiss="props.paymentLinkCreation?.onDismiss"
                     :on-contact-support="props.onContactSupport"
                     :on-title-change="title => (modalTitleKey = title)"
@@ -63,8 +63,8 @@ const PaymentLinkSettings = defineAsyncComponent({
                 />
                 <PaymentLinkSettings
                     v-else
-                    v-bind="props.paymentLinkSettings"
                     :store-ids="props.storeIds"
+                    :on-dismiss="props.paymentLinkSettings?.onDismiss"
                     :on-contact-support="props.onContactSupport"
                     embedded-in-overview
                 />

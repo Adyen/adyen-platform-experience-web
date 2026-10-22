@@ -31,6 +31,7 @@
     "payouts.details.breakdown.fundsCaptured.types.chargeback": "Contracargos",
     "payouts.details.breakdown.fundsCaptured.types.correction": "Correcciones",
     "payouts.details.breakdown.fundsCaptured.types.refund": "Devoluciones",
+    "payouts.details.common.actions.goBack": "Volver",
     "payouts.details.errors.unavailable": "No hemos podido cargar los detalles del pago.",
     "payouts.details.tags.netPayout": "Pago neto",
     "payouts.details.tags.sameDaySum": "Suma de los pagos del mismo día",

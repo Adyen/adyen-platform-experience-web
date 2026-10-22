@@ -10,6 +10,7 @@ import {
 } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
+import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
 import {
     useCustomColumnsData,
     useTableColumns,
@@ -26,14 +27,17 @@ import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import type { BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IReport, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
-import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
-import { getReportType, REPORTS_DOWNLOAD_DISABLED_TIMEOUT, REPORTS_TABLE_FIELDS } from '../../../../domain/src';
+import {
+    getReportType,
+    REPORTS_DOWNLOAD_DISABLED_TIMEOUT,
+    REPORTS_TABLE_FIELDS,
+    type ReportsTableFields,
+    type ReportsTranslationKey,
+} from '../../../../domain/src';
 import DownloadErrorIcon from './DownloadErrorIcon.vue';
 import SmallLoadingIndicator from './SmallLoadingIndicator.vue';
 import styles from './ReportsTable.module.scss';
-
-export type ReportsTableFields = (typeof REPORTS_TABLE_FIELDS)[number];
 
 // ── Immutable set utils ──
 const withItem = <T,>(set: Set<T>, item: T) => {
@@ -56,7 +60,7 @@ const props = defineProps<{
     onContactSupport?: () => void;
     showPagination: boolean;
     data: IReport[] | undefined;
-    customColumns?: CustomColumn<StringWithAutocompleteOptions<ReportsTableFields>>[];
+    customColumns?: CustomColumn<ReportsTableFields>[];
     onDataRetrieve?: OnDataRetrievedCallback<IReport[]>;
     hasNext?: boolean;
     hasPrevious?: boolean;
@@ -175,12 +179,12 @@ const {
         createdAt: 'reports.overview.list.fields.createdAt',
         reportType: 'reports.overview.list.fields.reportType',
         reportFile: 'reports.overview.list.fields.reportFile',
-    },
+    } satisfies Record<string, ReportsTranslationKey>,
     columnConfig: () => ({ createdAt: { flex: 1 }, reportType: { flex: 1 }, reportFile: { flex: 1, numeric: isMobile.value } }),
     customColumnDefaults: () => ({ flex: 1 }),
     customColumnWidths: () => customColumnWidths.value,
     resolveCustomColumnLabel: key => {
-        const labelKey = `reports.overview.list.fields.${key}` as any;
+        const labelKey = `reports.overview.list.fields.${key}`;
         return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
     },
 });
@@ -246,7 +250,8 @@ const customColumnWidths = useCustomColumnWidths(
 // ── Row actions ──
 const getDownloadIcon = (report: IReport) => {
     const reportKey = getReportKey(report);
-    return isDownloadingReport(reportKey) ? SmallLoadingIndicator : failedReportKeys.value.has(reportKey) ? DownloadErrorIcon : DownloadIcon;
+    const downloadIcon = failedReportKeys.value.has(reportKey) ? DownloadErrorIcon : DownloadIcon;
+    return isDownloadingReport(reportKey) ? SmallLoadingIndicator : downloadIcon;
 };
 
 const paginationProps = computed(() => {
@@ -256,7 +261,7 @@ const paginationProps = computed(() => {
         size: props.limit ?? 10,
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
-        pageSizeItems: props.limitOptions,
+        pageSizeItems: asPageSizeItems(props.limitOptions),
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
         hideFirstLastPageButtons: true,
     };

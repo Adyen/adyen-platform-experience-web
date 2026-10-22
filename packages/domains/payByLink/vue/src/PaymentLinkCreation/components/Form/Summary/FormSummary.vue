@@ -2,9 +2,7 @@
 import { computed } from 'vue';
 import { BentoAlert, BentoDivider, BentoStructuredList, BentoStructuredListItem, BentoTag, BentoTypography } from '@adyen/bento-vue3';
 import { useWizard } from '../../../composables/wizardContext';
-import { PAYMENT_LINK_CREATION_SUMMARY_INVISIBLE_FIELDS } from '../../../../../../domain/src';
-import type { FormFieldConfig } from '../../../../../../domain/src';
-import type { TranslationKey } from '@integration-components/core';
+import { PAYMENT_LINK_CREATION_SUMMARY_INVISIBLE_FIELDS, type FormFieldConfig, type PayByLinkTranslationKey } from '../../../../../../domain/src';
 import type { IPaymentLinkType } from '@integration-components/types';
 import styles from './FormSummary.module.scss';
 
@@ -20,7 +18,7 @@ const INVISIBLE = PAYMENT_LINK_CREATION_SUMMARY_INVISIBLE_FIELDS as string[];
 
 interface SummaryRow {
     id: string;
-    label: TranslationKey;
+    label: PayByLinkTranslationKey;
     rendered: string;
 }
 
@@ -42,7 +40,7 @@ function renderValue(field: FormFieldConfig): string {
         case 'linkValidity.quantity': {
             const unit = rawValue('linkValidity.durationUnit');
             if (!value || !unit) return '';
-            return i18n.get(`payByLink.creation.fields.validity.linkValidityUnit.${unit}` as TranslationKey, {
+            return i18n.get(`payByLink.creation.fields.validity.linkValidityUnit.${unit}` as PayByLinkTranslationKey, {
                 values: { quantity: value },
                 count: Number(value),
             });
@@ -66,7 +64,7 @@ function renderValue(field: FormFieldConfig): string {
 function toRows(fields: FormFieldConfig[]): SummaryRow[] {
     return fields
         .filter(field => field.visible && !INVISIBLE.includes(field.fieldName) && !!field.label)
-        .map(field => ({ id: field.fieldName, label: field.label as TranslationKey, rendered: renderValue(field) }))
+        .map(field => ({ id: field.fieldName, label: field.label as PayByLinkTranslationKey, rendered: renderValue(field) }))
         .filter(row => row.rendered !== '');
 }
 
@@ -76,7 +74,7 @@ const paymentRows = computed<SummaryRow[]>(() => {
         ? [
               {
                   id: 'store',
-                  label: 'payByLink.creation.summary.fields.store' as TranslationKey,
+                  label: 'payByLink.creation.summary.fields.store' as PayByLinkTranslationKey,
                   rendered: displayValue('store') ?? props.selectItems.find(item => item.id === storeValue)?.name ?? storeValue,
               },
           ]

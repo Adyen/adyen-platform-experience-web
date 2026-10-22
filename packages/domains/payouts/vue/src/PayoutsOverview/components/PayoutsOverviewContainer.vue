@@ -2,19 +2,9 @@
 import { computed } from 'vue';
 import PayoutsOverview from './PayoutsOverview.vue';
 import { ComponentShell, useBalanceAccounts, type ErrorMessageInfo } from '@integration-components/composables-vue';
-import type { PayoutsOverviewExternalProps } from '../types';
+import type { PayoutsOverviewComponentProps } from '../types';
 
-const props = withDefaults(
-    defineProps<{
-        balanceAccountId?: string;
-        pagination?: PayoutsOverviewExternalProps['pagination'];
-        onContactSupport?: () => void;
-        onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
-        dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
-    }>(),
-    {}
-);
-
+const props = defineProps<PayoutsOverviewComponentProps>();
 const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(() => props.balanceAccountId);
 const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
 

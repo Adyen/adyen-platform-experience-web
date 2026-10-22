@@ -31,6 +31,7 @@
     "payouts.details.breakdown.fundsCaptured.types.chargeback": "Chargebacks",
     "payouts.details.breakdown.fundsCaptured.types.correction": "Corrections",
     "payouts.details.breakdown.fundsCaptured.types.refund": "Refunds",
+    "payouts.details.common.actions.goBack": "Go back",
     "payouts.details.errors.unavailable": "We couldn't load the payout details.",
     "payouts.details.tags.netPayout": "Net payout",
     "payouts.details.tags.sameDaySum": "Sum of same-day payouts",

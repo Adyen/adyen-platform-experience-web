@@ -15,24 +15,20 @@ import type { PaymentLinksFiltersValue } from './PaymentLinksFilters.vue';
 import type { IPaymentLinkFilters, IPaymentLinkItem, IPaymentLinkStatusGroup } from '@integration-components/types';
 import type { PaymentLinkCreationFormValues, StoreData, PaymentLinksOverviewModalType } from '../../../../domain/src';
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../../../../domain/src';
-import type { PaymentLinksOverviewExternalProps } from '../types';
+import type { PaymentLinksOverviewComponentProps } from '../types';
 import { createPaymentLinksError } from '../utils/error';
 import styles from './PaymentLinksOverview.module.scss';
 
-const props = defineProps<{
-    pagination?: PaymentLinksOverviewExternalProps['pagination'];
-    storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
-    onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
-    onContactSupport?: () => void;
-    paymentLinkCreation?: PaymentLinksOverviewExternalProps['paymentLinkCreation'];
-    paymentLinkSettings?: PaymentLinksOverviewExternalProps['paymentLinkSettings'];
-    stores: StoreData[] | undefined;
-    allStores: StoreData[] | undefined;
-    isFiltersLoading: boolean;
-    storeError?: Error;
-    filterOptions: IPaymentLinkFilters | undefined;
-    filterOptionsError?: Error;
-}>();
+const props = defineProps<
+    PaymentLinksOverviewComponentProps & {
+        stores: StoreData[] | undefined;
+        allStores: StoreData[] | undefined;
+        isFiltersLoading: boolean;
+        storeError?: Error;
+        filterOptions: IPaymentLinkFilters | undefined;
+        filterOptionsError?: Error;
+    }
+>();
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
@@ -196,8 +192,8 @@ function refreshPaymentLinkList() {
     lastRefreshTimestamp.value = performance.now();
 }
 
-function onPaymentLinkCreated(paymentLink: PaymentLinkCreationFormValues) {
-    props.paymentLinkCreation?.onPaymentLinkCreated?.(paymentLink);
+function onCreate(paymentLink: PaymentLinkCreationFormValues) {
+    props.paymentLinkCreation?.onCreate?.(paymentLink);
     hasToRefresh.value = true;
 }
 
@@ -311,7 +307,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
             :store-ids="props.storeIds"
             :payment-link-creation="props.paymentLinkCreation"
             :payment-link-settings="props.paymentLinkSettings"
-            :on-payment-link-created="onPaymentLinkCreated"
+            :on-create="onCreate"
             :on-contact-support="props.onContactSupport"
             :on-close="onCloseModal"
         />

@@ -2,9 +2,9 @@
 import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
-import type { TranslationKey } from '@integration-components/core';
+import type { PaymentLinkDetailsComponentProps } from '../../types';
 import { ComponentShell, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
-import { getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
+import { type PayByLinkTranslationKey, getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';
 import PaymentLinkDetailsContent from './PaymentLinkDetailsContent.vue';
 import PaymentLinkExpiration from '../PaymentLinkExpiration/PaymentLinkExpiration.vue';
@@ -13,14 +13,7 @@ import PaymentLinkSkeleton from '../PaymentLinkSkeleton/PaymentLinkSkeleton.vue'
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import styles from './PaymentLinkDetails.module.scss';
 
-const props = defineProps<{
-    id: string;
-    onContactSupport?: () => void;
-    onDismiss?: () => void;
-    onUpdate?: () => void;
-    onTitleChange?: (title: TranslationKey | undefined) => void;
-    isDismissButtonHidden?: boolean;
-}>();
+const props = defineProps<PaymentLinkDetailsComponentProps>();
 
 const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
@@ -45,7 +38,7 @@ const errorInfo = computed(() => {
 
 type Screen = 'details' | 'expirationConfirmation' | 'expirationSuccess';
 const activeScreen = ref<Screen>('details');
-const modalTitleKey = computed<TranslationKey | undefined>(() => {
+const modalTitleKey = computed<PayByLinkTranslationKey | undefined>(() => {
     if (activeScreen.value === 'details') return 'payByLink.details.title';
     if (activeScreen.value === 'expirationConfirmation') return 'payByLink.details.expiration.title';
     return undefined;

@@ -159,6 +159,7 @@
     "vitest": "catalog:",
     "vue": "catalog:",
     "vue-eslint-parser": "^10.4.0",
+    "vue-tsc": "catalog:",
     "webpack": "catalog:"
   }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
+import type { TranslationKey } from '@integration-components/core';
 import { BentoTypography, BentoCard, BentoTag, BentoLink, BentoButtonActions, BentoStructuredList, BentoStructuredListItem } from '@adyen/bento-vue3';
 import type { IPayoutDetails } from '@integration-components/types';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '@integration-components/utils';
@@ -83,10 +84,10 @@ interface ExtraDetailItem {
 }
 
 const extraDetails = computed<ExtraDetailItem[]>(() => {
-    const fields = props.extraFields as Record<string, any> | undefined;
+    const fields = props.extraFields;
     if (!fields) return [];
     return Object.entries(fields)
-        .filter(([, field]) => (field as any)?.type !== 'button' && (field as any)?.visibility !== 'hidden')
+        .filter(([, field]) => field?.type !== 'button' && field?.visibility !== 'hidden')
         .map(([key, value]) => ({
             key,
             value: isCustomDataObject(value) ? value.value : value,
@@ -96,8 +97,8 @@ const extraDetails = computed<ExtraDetailItem[]>(() => {
 });
 
 const buttonActions = computed(() => {
-    const fields = props.extraFields as Record<string, any> | undefined;
-    const actions = (Object.values(fields ?? {}) as any[])
+    const fields = props.extraFields;
+    const actions = Object.values(fields ?? {})
         .filter(field => field?.type === 'button')
         .map(field => ({
             title: field.value,
@@ -166,7 +167,7 @@ const formatAmount = (amount: { value: number; currency: string }) => formatAmou
                     <BentoStructuredListItem
                         v-for="item in extraDetails"
                         :key="item.key"
-                        :label="i18n.get(item.key as any)"
+                        :label="i18n.get(item.key as TranslationKey)"
                         :class="styles.extraDetailsLabel"
                     >
                         <BentoLink

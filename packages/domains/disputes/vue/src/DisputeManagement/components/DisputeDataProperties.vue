@@ -13,7 +13,6 @@ import {
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
-import type { TranslationKey } from '@integration-components/core';
 import { useLiveAnnouncement } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import {
@@ -24,6 +23,7 @@ import {
     getDisputeReason,
     isDisputeActionNeeded,
     type DisputeDetailsCustomization,
+    type DisputesTranslationKey,
     type TranslationConfigItem,
 } from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTE_DETAILS, isFunction, normalizeCustomFields } from '@integration-components/utils';
@@ -46,9 +46,9 @@ type CustomDataValue = {
 };
 
 type DetailItem =
-    | { id: string; label: TranslationKey; kind: 'text'; value: string | undefined }
-    | { id: string; label: TranslationKey; kind: 'date'; value: string }
-    | { id: string; label: TranslationKey; kind: 'evidence'; value: string[] };
+    | { id: string; label: DisputesTranslationKey; kind: 'text'; value: string | undefined }
+    | { id: string; label: DisputesTranslationKey; kind: 'date'; value: string }
+    | { id: string; label: DisputesTranslationKey; kind: 'evidence'; value: string[] };
 
 const DISPUTE_STATUSES_WITH_ACCEPTED_DATE: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
 
@@ -96,7 +96,7 @@ const items = computed<DetailItem[]>(() => {
     const isExpiredDispute = status === 'EXPIRED' || (status === 'LOST' && !isFraudNotification && !defendedOn);
     const isActionableDispute = isDisputeActionNeeded(props.dispute.dispute) && props.dispute.dispute.defensibility !== 'NOT_ACTIONABLE';
 
-    return [
+    const detailItems: (DetailItem | undefined)[] = [
         {
             id: 'disputeReason',
             label: 'disputes.management.details.fields.disputeReason',
@@ -191,7 +191,9 @@ const items = computed<DetailItem[]>(() => {
                   value: dueDate,
               }
             : undefined,
-    ].filter((item): item is DetailItem => !!item && isVisible(item.id));
+    ];
+
+    return detailItems.filter((item): item is DetailItem => !!item && isVisible(item.id));
 });
 
 const extraDetails = computed(() =>

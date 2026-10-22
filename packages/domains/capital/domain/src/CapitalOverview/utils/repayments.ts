@@ -1,5 +1,5 @@
 import type { IGBCapitalFundsCollection, IGrant, INLCapitalFundsCollection, IUSCapitalFundsCollection } from '@integration-components/types';
-import { TranslationKey } from '@integration-components/core';
+import type { CapitalTranslationKey } from '../../shared';
 import { KeyOfRecord } from '@integration-components/utils/types';
 
 export type CapitalBankAccount = NonNullable<IGrant['unscheduledRepaymentAccounts']>[number] &
@@ -14,10 +14,10 @@ export type AccountFieldMetadata = {
 
 export type AccountDetail = {
     content: string;
-    copyButtonLabel?: TranslationKey;
+    copyButtonLabel?: CapitalTranslationKey;
     field: string;
     isPrimary: boolean;
-    label: TranslationKey;
+    label: CapitalTranslationKey;
     textToCopy?: string;
 };
 
@@ -84,7 +84,7 @@ export const getBankAccountFieldTextToCopy = (field: string, value?: string) => 
     return getBankAccountFieldMetadata(field).isCopyable ? value : undefined;
 };
 
-export const getBankAccountFieldCopyButtonTranslationKey = (field: string): TranslationKey | undefined => {
+export const getBankAccountFieldCopyButtonTranslationKey = (field: string): CapitalTranslationKey | undefined => {
     switch (field) {
         case 'accountNumber':
             return 'capital.overview.repayment.actions.copyAccountNumber';
@@ -99,7 +99,7 @@ export const getBankAccountFieldCopyButtonTranslationKey = (field: string): Tran
     }
 };
 
-export const getBankAccountFieldTranslationKey = (field: string): TranslationKey => {
+export const getBankAccountFieldTranslationKey = (field: string): CapitalTranslationKey => {
     switch (field) {
         case 'accountNumber':
             return 'capital.overview.repayment.accountDetails.fields.accountNumber';
@@ -114,6 +114,6 @@ export const getBankAccountFieldTranslationKey = (field: string): TranslationKey
         case 'sortCode':
             return 'capital.overview.repayment.accountDetails.fields.sortCode';
         default:
-            return field as TranslationKey;
+            return field as CapitalTranslationKey;
     }
 };

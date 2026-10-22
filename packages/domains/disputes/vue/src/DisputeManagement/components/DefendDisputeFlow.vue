@@ -2,16 +2,17 @@
 import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import { DISPUTE_TYPE, type DisputeManagementProps } from '@integration-components/disputes/domain';
+import { DISPUTE_TYPE } from '@integration-components/disputes/domain';
 import { isFunction } from '@integration-components/utils';
 import { DefendResponse, DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
+import type { DisputeManagementComponentProps } from '../types';
 import DefendDocumentUpload from './DefendDocumentUpload.vue';
 import DefendDisputeResponse from './DefendDisputeResponse.vue';
 import DefendReasonSelection from './DefendReasonSelection.vue';
 import flowStyles from './DisputeFlow.module.scss';
 
 const props = defineProps<{
-    onDisputeDefend?: DisputeManagementProps['onDisputeDefend'];
+    onDefend?: DisputeManagementComponentProps['onDefend'];
 }>();
 
 const { i18n } = useCoreContext();
@@ -39,9 +40,9 @@ const callbackCalled = ref(false);
 
 watch(defendResponse, response => {
     const pspReference = disputePspReference.value;
-    if (response !== DefendResponse.Success || callbackCalled.value || !pspReference || !isFunction(props.onDisputeDefend)) return;
+    if (response !== DefendResponse.Success || callbackCalled.value || !pspReference || !isFunction(props.onDefend)) return;
     callbackCalled.value = true;
-    props.onDisputeDefend({ id: pspReference });
+    props.onDefend({ id: pspReference });
 });
 </script>
 

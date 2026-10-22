@@ -3,7 +3,7 @@ export { DisputesOverviewElement } from '../../src';
 
 export type {
     DisputeManagementExternalProps,
-    DisputeManagementProps,
+    DisputeManagementComponentProps,
     DisputeDetailsFields,
     DisputeDetailsCustomization,
     DisputeCallbackData,
@@ -11,7 +11,7 @@ export type {
 
 export type {
     DisputesOverviewExternalProps,
-    DisputesOverviewProps,
+    DisputesOverviewComponentProps,
     DisputesDataGridCustomization,
     DisputesOverviewTabsConfig,
     DisputesTableFields,
