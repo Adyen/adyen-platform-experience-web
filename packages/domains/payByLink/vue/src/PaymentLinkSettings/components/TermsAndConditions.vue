@@ -177,6 +177,7 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
                 </BentoAlert>
                 <div :class="styles.checkboxContainer">
                     <BentoCheckbox
+                        required
                         :model-value="isRequirementsChecked ?? false"
                         :disabled="disabled || !!isSaving"
                         :error-message="
@@ -188,9 +189,12 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
                         @update:model-value="onCheckboxUpdate"
                     >
                         {{ checkboxLabelPrefix }}
-                        <button type="button" :class="styles.requirementsLink" @click.stop="openRequirements">
-                            {{ i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.part2') }}
-                        </button>
+                        <span :class="styles.requirementsLinkWrapper">
+                            <button type="button" :class="styles.requirementsLink" @click.stop="openRequirements">
+                                {{ i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.part2') }}
+                            </button>
+                            <span aria-hidden="true">*</span>
+                        </span>
                     </BentoCheckbox>
                 </div>
             </div>
