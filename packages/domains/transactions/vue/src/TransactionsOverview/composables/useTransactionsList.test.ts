@@ -50,3 +50,37 @@ test('fetches the next page when paginating', async () => {
     await vi.waitFor(() => expect(getTransactions).toHaveBeenCalledTimes(2));
     scope.stop();
 });
+
+test('refreshes the list with the currently applied filters', async () => {
+    getTransactions.mockReset();
+    getTransactions.mockResolvedValue({
+        data: [],
+        _links: {},
+    });
+
+    const scope = effectScope();
+
+    const transactions = scope.run(() =>
+        useTransactionsList(() => ({
+            fetchEnabled: true,
+            filters: {
+                balanceAccountId: 'balance-account-id',
+                categories: ['Payment'],
+                statuses: ['Booked'],
+                currencies: ['EUR'],
+                createdSince: '2024-01-01T00:00:00.000Z',
+                createdUntil: '2024-01-31T23:59:59.999Z',
+                paymentPspReference: 'PSP123',
+            },
+        }))
+    )!;
+
+    await vi.waitFor(() => expect(transactions.hasFetchedOnce.value).toBe(true));
+
+    transactions.refresh();
+
+    await vi.waitFor(() => expect(getTransactions).toHaveBeenCalledTimes(2));
+    expect(getTransactions.mock.calls[1]?.[1]?.query).toEqual(getTransactions.mock.calls[0]?.[1]?.query);
+
+    scope.stop();
+});

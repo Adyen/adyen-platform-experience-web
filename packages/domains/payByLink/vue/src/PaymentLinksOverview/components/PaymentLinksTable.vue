@@ -35,6 +35,7 @@ const props = defineProps<{
     error?: Error;
     loading: boolean;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     onRowClick?: (paymentLink: IPaymentLinkItem) => void;
     showPagination: boolean;
     paymentLinks: IPaymentLinkItem[] | undefined;
@@ -195,6 +196,7 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             :error-info="errorInfo"
             :image="errorInfo?.imageName ?? 'wrong-environment'"
             :variant="isMobile ? 'condensed' : 'embedded'"
+            :on-refresh="props.onRefresh"
             :refresh-icon="RefreshIcon"
         />
 

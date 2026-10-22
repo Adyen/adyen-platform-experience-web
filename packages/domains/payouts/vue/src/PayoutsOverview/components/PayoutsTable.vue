@@ -27,6 +27,7 @@ const props = defineProps<{
     loading: boolean;
     error?: Error;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     onRowClick?: (payout: IPayout) => void;
     showPagination: boolean;
     data: IPayout[] | undefined;
@@ -181,6 +182,7 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
             :error="props.error"
             :error-message="'payouts.overview.errors.listUnavailable'"
             :on-contact-support="props.onContactSupport"
+            :on-refresh="props.onRefresh"
             :refresh-icon="RefreshIcon"
         />
 
