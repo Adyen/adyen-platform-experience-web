@@ -23,7 +23,7 @@ import {
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { getTransactionCategoryDescription, getTransactionCategory, TRANSACTION_FIELDS } from '../../../../../domain/src';
-import { isValidCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
+import { formatAmountWithCurrencyCode, isValidCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
 import type { ITransaction, CustomColumn } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { TransactionsTableFields, IBalanceAccountBase } from '../../types';
@@ -67,7 +67,7 @@ const FIELDS_KEYS: Record<string, string> = {
     transactionType: 'transactions.overview.list.fields.transactionType',
 };
 
-function amountLabel(field: 'netAmount' | 'grossAmount', defaultLabel: string): string {
+function amountLabel(defaultLabel: string): string {
     const currency = props.availableCurrencies?.[0];
     return props.hasMultipleCurrencies || !currency || !isValidCurrencyCode(currency) ? defaultLabel : `${defaultLabel} (${currency})`;
 }
@@ -87,7 +87,7 @@ const { columns: desktopColumns, customFieldKeys } = useTableColumns({
     customColumnDefaults: () => ({ flex: 1 }),
     customColumnWidths: () => customColumnWidths.value,
     resolveStandardColumnLabel: (field, defaultLabel) =>
-        field === 'netAmount' || field === 'grossAmount' ? amountLabel(field, defaultLabel) : defaultLabel,
+        field === 'netAmount' || field === 'grossAmount' ? amountLabel(defaultLabel) : defaultLabel,
     resolveCustomColumnLabel: key => {
         const labelKey = `transactions.overview.list.fields.${key}`;
         return i18n.has(labelKey as any) ? i18n.get(labelKey as any) : i18n.get(key as any);
@@ -97,7 +97,7 @@ const { columns: desktopColumns, customFieldKeys } = useTableColumns({
 const isLoading = computed(() => props.loading);
 
 const columns = computed<BentoColumn[]>(() => {
-    const grossAmountLabel = amountLabel('grossAmount', i18n.get(FIELDS_KEYS.grossAmount as any));
+    const grossAmountLabel = amountLabel(i18n.get(FIELDS_KEYS.grossAmount as any));
 
     if (isMobile.value) {
         return [
@@ -184,8 +184,9 @@ function formatDate(dateStr: string): string {
 
 function formatAmount(amount: { value: number; currency: string } | null | undefined): string {
     if (!amount) return '';
-    const formattedAmount = i18n.amount(amount.value, amount.currency, { hideCurrency: true });
-    return props.hasMultipleCurrencies ? `${formattedAmount} ${amount.currency}` : formattedAmount;
+    return props.hasMultipleCurrencies
+        ? formatAmountWithCurrencyCode(amount.value, i18n.locale, amount.currency)
+        : i18n.amount(amount.value, amount.currency, { hideCurrency: true });
 }
 </script>
 
