@@ -1,9 +1,19 @@
 import type { UIElementProps } from '@integration-components/core/vue';
-import type { TransactionDetailsCustomization, TransactionsListCustomization } from '../../../domain/src';
-import type { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus } from '@integration-components/types';
+import type { TransactionDetailsCustomization, TransactionsDataGridCustomization } from '../../../domain/src';
+import type {
+    GlobalAppearance,
+    IAmount,
+    ITransaction,
+    ITransactionCategory,
+    ITransactionStatus,
+    WithDataGridAppearance,
+} from '@integration-components/types';
 import type { PaginationProps } from '@integration-components/utils';
 
-export type { TransactionsCustomColumn, TransactionsListCustomization, TransactionsTableFields } from '../../../domain/src';
+export type { IBalanceAccountBase } from '@integration-components/types';
+export type { TransactionsCustomColumn, TransactionsDataGridCustomization, TransactionsTableFields } from '../../../domain/src';
+
+export type TransactionsOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
 
 export interface TransactionsFilters {
     balanceAccountId?: string;
@@ -15,12 +25,12 @@ export interface TransactionsFilters {
     paymentPspReference?: string;
 }
 
-export interface TransactionsOverviewExternalProps extends UIElementProps, PaginationProps {
+export interface TransactionsOverviewExternalProps extends UIElementProps<TransactionsOverviewAppearance>, PaginationProps {
     balanceAccountId?: string;
     onContactSupport?: () => void;
-    onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
+    onRecordSelection?: (selection: { id: string; showDetails: () => void }) => any;
     dataCustomization?: {
-        list?: TransactionsListCustomization;
+        dataGrid?: TransactionsDataGridCustomization;
         details?: TransactionDetailsCustomization;
     };
 }
@@ -32,5 +42,3 @@ export interface TransactionsListResponse {
         prev?: { cursor: string };
     };
 }
-
-export type { IBalanceAccountBase };

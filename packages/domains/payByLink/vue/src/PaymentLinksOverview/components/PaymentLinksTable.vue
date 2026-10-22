@@ -1,11 +1,24 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { BentoDataGrid, BentoTag, BentoTypography, BentoTooltipDirective as vBentoTooltip } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem, BentoTagVariant } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import { containerQueries, DataOverviewError, useResponsiveContainer, useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
+import {
+    containerQueries,
+    DataOverviewError,
+    useCustomColumnWidths,
+    useTableColumns,
+    useCondensedDataGrid,
+    useResponsiveContainer,
+    useTimezoneAwareDateFormatting,
+} from '@integration-components/composables-vue';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import { isActionNeededUrgently, BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '../../../../domain/src';
+import {
+    isActionNeededUrgently,
+    BACKEND_REDACTED_DATA_MARKER,
+    FRONTEND_REDACTED_DATA_MARKER,
+    PAYMENT_LINKS_TABLE_FIELDS,
+} from '../../../../domain/src';
 import {
     DATE_FORMAT_PAYMENT_LINKS_OVERVIEW,
     DATE_FORMAT_PAYMENT_LINKS_OVERVIEW_EXPIRATION_DATE,
@@ -39,6 +52,7 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const { dateFormat } = useTimezoneAwareDateFormatting();
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
+const isCondensed = useCondensedDataGrid();
 
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 const errorInfo = computed(() => getPaymentLinksErrorMessage(props.error, 'payByLink.overview.errors.couldNotLoadLinks', props.onContactSupport));
@@ -69,34 +83,45 @@ function getTimeToDeadline(dueDate: string): string {
         : i18n.get('payByLink.overview.common.actionNeeded.expiresDays', { values: { days: diffInDays, date: formattedDate } });
 }
 
+const { columns: desktopColumns } = useTableColumns({
+    fields: PAYMENT_LINKS_TABLE_FIELDS,
+    customColumns: () => undefined,
+    fieldsKeys: {
+        paymentLinkId: 'payByLink.overview.list.fields.id',
+        merchantReference: 'payByLink.overview.list.fields.merchantReference',
+        storeCode: 'payByLink.overview.list.fields.store',
+        currency: 'payByLink.overview.list.fields.currency',
+        amount: 'payByLink.overview.list.fields.amount',
+        status: 'payByLink.overview.list.fields.status',
+        expirationDate: 'payByLink.overview.list.fields.expirationDate',
+        creationDate: 'payByLink.overview.list.fields.createdAt',
+        linkType: 'payByLink.overview.list.fields.linkType',
+        shopperEmail: 'payByLink.overview.list.fields.shopperEmail',
+    },
+    columnConfig: () => ({ storeCode: { visible: !!props.hasMultipleStores }, amount: { numeric: true } }),
+    customColumnWidths: () => customColumnWidths.value,
+});
+
 const columns = computed<BentoColumn[]>(() => {
     if (isMobile.value) {
         return [
-            { field: 'paymentLinkId', label: i18n.get('payByLink.overview.list.fields.id'), flex: 2 },
-            { field: 'amount', label: i18n.get('payByLink.overview.list.fields.amount'), flex: 1, numeric: true },
+            {
+                field: 'paymentLinkId',
+                label: i18n.get('payByLink.overview.list.fields.id'),
+                flex: 2,
+                minWidth: customColumnWidths.value.paymentLinkId,
+            },
+            {
+                field: 'amount',
+                label: i18n.get('payByLink.overview.list.fields.amount'),
+                flex: 1,
+                minWidth: customColumnWidths.value.amount,
+                numeric: true,
+            },
         ];
     }
 
-    const cols: BentoColumn[] = [
-        { field: 'paymentLinkId', label: i18n.get('payByLink.overview.list.fields.id'), autoWidth: true },
-        { field: 'merchantReference', label: i18n.get('payByLink.overview.list.fields.merchantReference'), flex: 1 },
-    ];
-
-    if (props.hasMultipleStores) {
-        cols.push({ field: 'storeCode', label: i18n.get('payByLink.overview.list.fields.store'), autoWidth: true });
-    }
-
-    cols.push(
-        { field: 'currency', label: i18n.get('payByLink.overview.list.fields.currency'), autoWidth: true },
-        { field: 'amount', label: i18n.get('payByLink.overview.list.fields.amount'), autoWidth: true, numeric: true },
-        { field: 'status', label: i18n.get('payByLink.overview.list.fields.status'), autoWidth: true },
-        { field: 'expirationDate', label: i18n.get('payByLink.overview.list.fields.expirationDate'), autoWidth: true },
-        { field: 'creationDate', label: i18n.get('payByLink.overview.list.fields.createdAt'), autoWidth: true },
-        { field: 'linkType', label: i18n.get('payByLink.overview.list.fields.linkType'), autoWidth: true },
-        { field: 'shopperEmail', label: i18n.get('payByLink.overview.list.fields.shopperEmail'), flex: 1 }
-    );
-
-    return cols;
+    return desktopColumns.value;
 });
 
 const gridData = computed<BentoDatagridDataItem[]>(() => {
@@ -107,6 +132,13 @@ const gridData = computed<BentoDatagridDataItem[]>(() => {
         ...link,
     }));
 });
+
+const tableRef = ref<HTMLElement | null>(null);
+const customColumnWidths = useCustomColumnWidths(
+    tableRef,
+    () => [gridData.value, props.loading, isMobile.value, props.hasMultipleStores],
+    () => columns.value
+);
 
 const paginationProps = computed(() => {
     if (!props.showPagination) return undefined;
@@ -156,7 +188,7 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
 </script>
 
 <template>
-    <div>
+    <div ref="tableRef">
         <DataOverviewError
             v-if="props.error"
             :error="props.error"
@@ -170,12 +202,12 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             v-else
             allow-row-clicks
             has-resizable-columns
-            outline
             :columns="columns"
             :data="gridData"
             :loading="props.loading"
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
+            :condensed="isCondensed"
             :allow-column-drag-and-drop="false"
             @row-click="handleRowClick"
             @navigate="handleNavigate"

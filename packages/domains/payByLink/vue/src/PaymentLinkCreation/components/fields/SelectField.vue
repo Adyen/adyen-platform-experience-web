@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { BentoDropdown } from '@adyen/bento-vue3';
 import FieldWrapper from './FieldWrapper.vue';
 import { useWizard } from '../../composables/wizardContext';
@@ -22,11 +22,20 @@ const modelValue = computed(() => (wizard.values.value[props.name] as string | u
 
 const dropdownItems = computed(() => props.items.map(item => ({ label: item.name, description: item.description || undefined, value: item.id })));
 
-function onUpdate(value: string | number | { value?: string | number } | Array<unknown> | undefined) {
+watch(
+    [() => props.items, () => props.loading, () => config.value.visible],
+    ([items, loading, visible]) => {
+        if (visible && !loading && items.length === 1 && items[0] && !modelValue.value) {
+            onUpdate(items[0].id);
+        }
+    },
+    { immediate: true }
+);
+
+function onUpdate(value: string | number | { value?: string | number } | Array<unknown> | null | undefined) {
     if (Array.isArray(value)) return;
     const nextValue = typeof value === 'object' && value !== null ? value.value : value;
-    if (nextValue === undefined) return;
-    const stringValue = String(nextValue);
+    const stringValue = nextValue == null ? '' : String(nextValue);
     const displayName = props.items.find(item => item.id === stringValue)?.name ?? stringValue;
     wizard.setValue(props.name, stringValue, displayName);
 }
@@ -40,6 +49,7 @@ function onUpdate(value: string | number | { value?: string | number } | Array<u
             :placeholder="props.placeholder ?? props.label"
             :model-value="props.loading ? undefined : modelValue"
             :optional="!config.required"
+            :clearable="!config.required"
             :readonly="config.readOnly"
             :disabled="props.disabled"
             :dynamic-filtering="props.filterable"

@@ -10,7 +10,6 @@ import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } f
 import { useActionsAlertTitles } from '../composables/useActionsAlertTitles';
 
 const props = defineProps<{
-    className?: string;
     expirationDate?: string;
     legalEntityId: string;
     missingActions: IMissingAction[];
@@ -177,7 +176,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <BentoAlert :class="props.className" :type="areActionsCompleted ? 'highlight' : 'warning'">
+    <BentoAlert :type="areActionsCompleted ? 'highlight' : 'warning'">
         {{ alertTitle }}
     </BentoAlert>
     <BentoButtonActions :actions="actions" layout="fill-container" />

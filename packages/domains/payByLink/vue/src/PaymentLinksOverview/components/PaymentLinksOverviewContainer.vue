@@ -6,9 +6,8 @@ import type { PaymentLinksOverviewExternalProps } from '../types';
 
 const props = withDefaults(
     defineProps<{
-        allowLimitSelection?: boolean;
         balanceAccountId?: string;
-        preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
+        pagination?: PaymentLinksOverviewExternalProps['pagination'];
         storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
         onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
         onContactSupport?: () => void;
@@ -24,8 +23,7 @@ const { filters: filterOptions, isFetching: isFilterOptionsLoading, error: filte
 
 <template>
     <PaymentLinksOverview
-        :allow-limit-selection="props.allowLimitSelection"
-        :preferred-limit="props.preferredLimit"
+        :pagination="props.pagination"
         :store-ids="props.storeIds"
         :on-record-selection="props.onRecordSelection"
         :on-contact-support="props.onContactSupport"

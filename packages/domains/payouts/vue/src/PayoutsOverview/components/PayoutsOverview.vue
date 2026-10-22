@@ -20,8 +20,7 @@ import styles from './PayoutsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccountId?: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: PayoutsOverviewExternalProps['preferredLimit'];
+    pagination?: PayoutsOverviewExternalProps['pagination'];
     onContactSupport?: () => void;
     onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
     dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
@@ -62,8 +61,7 @@ const payoutsListResult = usePayoutsList(() => ({
     balanceAccountId: filterParams.value.balanceAccountId,
     createdSince: filterParams.value.createdSince,
     createdUntil: filterParams.value.createdUntil,
-    allowLimitSelection: props.allowLimitSelection,
-    preferredLimit: props.preferredLimit,
+    pagination: props.pagination,
 }));
 
 const isLoading = computed(
@@ -89,13 +87,13 @@ function onRowClick(payout: IPayout) {
     const showPayoutDetailsModal = () => showModal(payout, balanceAccount);
 
     // Notify the consumer first so they can intercept and decide whether to
-    // call `showModal` themselves. If no consumer callback is provided we open
+    // call `showDetails` themselves. If no consumer callback is provided we open
     // the modal directly.
     if (props.onRecordSelection) {
         props.onRecordSelection({
             balanceAccountId,
             date: payout.createdAt ?? '',
-            showModal: showPayoutDetailsModal,
+            showDetails: showPayoutDetailsModal,
         });
     } else {
         showPayoutDetailsModal();
@@ -132,8 +130,8 @@ function closeModal() {
             :error="payoutsError"
             :on-row-click="onRowClick"
             :on-contact-support="props.onContactSupport"
-            :custom-columns="props.dataCustomization?.list?.fields"
-            :on-data-retrieve="props.dataCustomization?.list?.onDataRetrieve"
+            :custom-columns="props.dataCustomization?.dataGrid?.fields"
+            :on-data-retrieve="props.dataCustomization?.dataGrid?.onDataRetrieve"
             :has-next="payoutsListResult.hasNext.value"
             :has-previous="payoutsListResult.hasPrevious.value"
             :go-to-next-page="payoutsListResult.goToNextPage"

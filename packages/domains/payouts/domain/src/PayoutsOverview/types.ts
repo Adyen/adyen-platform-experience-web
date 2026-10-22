@@ -7,13 +7,13 @@ type PayoutsTableCols = 'createdAt' | 'payoutType' | 'netPayoutAmount' | 'fundin
 
 export type PayoutsTableFields = StringWithAutocompleteOptions<PayoutsTableCols>;
 
-export type PayoutsListCustomization = DataCustomizationObject<PayoutsTableFields, IPayout[], CustomDataRetrieved[]>;
+export type PayoutsDataGridCustomization = DataCustomizationObject<PayoutsTableFields, IPayout[], CustomDataRetrieved[]>;
 
 export interface PayoutsOverviewProps extends UIElementProps, PaginationProps {
     balanceAccountId?: string;
-    onRecordSelection?: (selection: { balanceAccountId: string; date: string; showModal: () => void }) => any;
+    onRecordSelection?: (selection: { balanceAccountId: string; date: string; showDetails: () => void }) => any;
     dataCustomization?: {
-        list?: PayoutsListCustomization;
+        dataGrid?: PayoutsDataGridCustomization;
         details?: PayoutDetailsCustomization;
     };
 }

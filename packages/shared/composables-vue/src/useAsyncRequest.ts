@@ -54,7 +54,13 @@ export function useAsyncRequest<TData>() {
         }
     };
 
-    return { abort: abortRequest, data, error, execute, isLoading } as const;
+    const reset = () => {
+        data.value = undefined;
+        error.value = undefined;
+        isLoading.value = false;
+    };
+
+    return { data, error, isLoading, abort: abortRequest, execute, reset } as const;
 }
 
 export default useAsyncRequest;
