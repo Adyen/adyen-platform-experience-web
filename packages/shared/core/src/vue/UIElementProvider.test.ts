@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { createApp, defineComponent, h, type App } from 'vue';
+import { createApp, defineComponent, h, nextTick, reactive, type App } from 'vue';
 import { useCoreContext } from './Context';
 import { useConfigContext } from './ConfigContext';
 import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
@@ -113,7 +113,7 @@ describe('UIElementProvider', () => {
         coreProviderBindings.length = 0;
     });
 
-    const mountProvider = (slotProps: Record<string, unknown> = {}) => {
+    const mountProvider = (slotProps: Record<string, unknown> = reactive({})) => {
         const SlotComponent = defineComponent({
             name: 'SlotComponent',
             props: { onContactSupport: { type: Function, default: undefined } },
@@ -123,13 +123,16 @@ describe('UIElementProvider', () => {
         core = createCoreStub();
 
         const target = document.createElement('div');
+        // Mirrors UIElement: props are read in the outer render, so the slot only closes over a plain copy.
         const app = createApp({
-            setup: () => () =>
-                h(
+            setup: () => () => {
+                const componentProps = { ...slotProps };
+                return h(
                     UIElementProvider,
                     { core, bentoOverrides: {}, componentName: 'transactions', refreshComponent: vi.fn() },
-                    { default: () => h(SlotComponent, slotProps) }
-                ),
+                    { default: () => h(SlotComponent, componentProps) }
+                );
+            },
         });
         app.provide(DOMAIN_TRANSLATION_BINDING_KEY, { i18n, translationDomain: 'transactions' } as unknown as DomainTranslationBinding);
         app.mount(target);
@@ -174,6 +177,24 @@ describe('UIElementProvider', () => {
         const target = mountProvider({ onContactSupport });
         const supportButton = target.querySelector<HTMLButtonElement>('button');
 
+        expect(supportButton?.textContent).toBe('transactions.common.actions.contactSupport.labels.reachOut');
+
+        supportButton?.click();
+        expect(onContactSupport).toHaveBeenCalledOnce();
+    });
+
+    test('forwards onContactSupport to the availability error when the component receives it after mounting', async () => {
+        setContext({ componentUnavailable: true });
+        const onContactSupport = vi.fn();
+        const slotProps = reactive<Record<string, unknown>>({});
+
+        const target = mountProvider(slotProps);
+        expect(target.querySelector('button')).toBeNull();
+
+        slotProps.onContactSupport = onContactSupport;
+        await nextTick();
+
+        const supportButton = target.querySelector<HTMLButtonElement>('button');
         expect(supportButton?.textContent).toBe('transactions.common.actions.contactSupport.labels.reachOut');
 
         supportButton?.click();
