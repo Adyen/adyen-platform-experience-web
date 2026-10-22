@@ -19,21 +19,23 @@ const BREAKDOWN_ROW_COUNT = 3;
         </div>
 
         <div :class="totalsStyles.breakdowns">
-            <div v-for="breakdown in BREAKDOWN_COUNT" :key="breakdown" :class="totalsStyles.breakdown">
-                <div :class="totalsStyles.amountDisplay">
-                    <BentoLoadingSkeletonTypography :class="styles.label" :lines="1" :last-line-width="100" />
-                    <div :class="totalsStyles.amountDisplayAmount">
-                        <BentoLoadingSkeletonTypography :class="styles.amount" :lines="1" :last-line-width="100" />
+            <template v-for="breakdown in BREAKDOWN_COUNT" :key="breakdown">
+                <div :class="totalsStyles.breakdown">
+                    <div :class="totalsStyles.amountDisplay">
+                        <BentoLoadingSkeletonTypography :class="styles.label" :lines="1" :last-line-width="100" />
+                        <div :class="totalsStyles.amountDisplayAmount">
+                            <BentoLoadingSkeletonTypography :class="styles.amount" :lines="1" :last-line-width="100" />
+                        </div>
+                    </div>
+                    <div :class="styles.rows">
+                        <div v-for="row in BREAKDOWN_ROW_COUNT" :key="row" :class="styles.row">
+                            <BentoLoadingSkeletonTypography :class="styles.rowLabel" :lines="1" :last-line-width="100" />
+                            <BentoLoadingSkeletonTypography :class="styles.rowValue" :lines="1" :last-line-width="100" />
+                        </div>
                     </div>
                 </div>
-                <div :class="styles.rows">
-                    <div v-for="row in BREAKDOWN_ROW_COUNT" :key="row" :class="styles.row">
-                        <BentoLoadingSkeletonTypography :class="styles.rowLabel" :lines="1" :last-line-width="100" />
-                        <BentoLoadingSkeletonTypography :class="styles.rowValue" :lines="1" :last-line-width="100" />
-                    </div>
-                </div>
-            </div>
-            <BentoDivider :class="totalsStyles.divider" variant="vertical" />
+                <BentoDivider v-if="breakdown < BREAKDOWN_COUNT" :class="totalsStyles.divider" variant="vertical" />
+            </template>
         </div>
     </BentoLoadingSkeleton>
 </template>
