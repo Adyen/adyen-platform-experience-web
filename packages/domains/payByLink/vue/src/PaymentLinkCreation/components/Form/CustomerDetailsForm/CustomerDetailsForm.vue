@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoCheckbox, BentoFormLayoutGroup } from '@adyen/bento-vue3';
+import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
 import TextField from '../../fields/TextField.vue';
 import CountryField from './fields/CountryField.vue';
 import ShopperPhoneField from './fields/ShopperPhoneField.vue';
@@ -28,6 +29,9 @@ const { i18n } = wizard;
 const { showBillingFirst, isSameAddressCopyEnabled, billingState, deliveryState } = useAddressSections();
 
 const isNameVisible = computed(() => wizard.getFieldConfig('shopperName.firstName').visible || wizard.getFieldConfig('shopperName.lastName').visible);
+
+const isXsContainer = useResponsiveContainer(containerQueries.down.xs);
+const nameRowLayout = computed(() => (isXsContainer.value ? '100' : '50-50'));
 
 const baseCountryList = computed<{ id: string; name: string }[]>(() => {
     if (props.countryDatasetData?.length) return props.countryDatasetData;
@@ -91,7 +95,7 @@ function onCheckboxUpdate(value: boolean | string | string[]) {
         :label="i18n.get('payByLink.creation.fields.shopperReference.label')"
         :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperReference.max"
     />
-    <BentoFormLayoutGroup v-if="isNameVisible" layout="50-50">
+    <BentoFormLayoutGroup v-if="isNameVisible" :layout="nameRowLayout">
         <TextField
             name="shopperName.firstName"
             :label="i18n.get('payByLink.creation.fields.shopperName.label')"

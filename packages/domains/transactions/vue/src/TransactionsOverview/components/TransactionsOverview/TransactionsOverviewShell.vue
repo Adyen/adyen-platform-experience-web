@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useShouldHideTitles } from '@integration-components/composables-vue';
-import { BentoTypography, BentoSegmentedControl, BentoCard } from '@adyen/bento-vue3';
+import { BentoTypography, BentoSegmentedControl } from '@adyen/bento-vue3';
 import type { BentoSegmentedControlItem } from '@adyen/bento-vue3';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
 import type { IBalanceAccountBase } from '../../types';
@@ -36,10 +36,6 @@ const bentoViewTabs = computed<BentoSegmentedControlItem[]>(() => viewTabs.value
                 @update:model-value="onViewChange"
             />
         </div>
-        <BentoCard>
-            <template #content>
-                <slot />
-            </template>
-        </BentoCard>
+        <slot />
     </div>
 </template>

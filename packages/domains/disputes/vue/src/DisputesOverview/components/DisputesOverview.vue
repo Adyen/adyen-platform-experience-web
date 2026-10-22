@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { BentoCard, BentoTab, BentoTabs, BentoTypography } from '@adyen/bento-vue3';
+import { BentoTab, BentoTabs, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
 import { DISPUTE_STATUS_GROUPS } from '@integration-components/disputes/domain';
@@ -146,41 +146,37 @@ function closeModal() {
             </BentoTabs>
         </div>
 
-        <BentoCard :class="styles.card">
-            <template #content>
-                <div :class="styles.content">
-                    <div role="toolbar" :class="[styles.toolbar, isMobile ? styles.toolbarCompact : '']">
-                        <DisputesFilters
-                            :compact="isMobile"
-                            :balance-accounts="props.balanceAccounts"
-                            :status-group="statusGroup"
-                            :on-change="onFiltersChange"
-                        />
-                    </div>
+        <div :class="styles.content">
+            <div role="toolbar" :class="[styles.toolbar, isMobile ? styles.toolbarCompact : '']">
+                <DisputesFilters
+                    :compact="isMobile"
+                    :balance-accounts="props.balanceAccounts"
+                    :status-group="statusGroup"
+                    :on-change="onFiltersChange"
+                />
+            </div>
 
-                    <DisputesTable
-                        :status-group="statusGroup"
-                        :active-balance-account="activeBalanceAccount"
-                        :loading="isLoading"
-                        :data="disputesListResult.records.value"
-                        :show-pagination="true"
-                        :error="disputesError"
-                        :on-row-click="onRowClick"
-                        :on-contact-support="props.onContactSupport"
-                        :custom-columns="props.dataCustomization?.dataGrid?.fields"
-                        :on-data-retrieve="props.dataCustomization?.dataGrid?.onDataRetrieve"
-                        :has-next="disputesListResult.hasNext.value"
-                        :has-previous="disputesListResult.hasPrevious.value"
-                        :go-to-next-page="disputesListResult.goToNextPage"
-                        :go-to-previous-page="disputesListResult.goToPreviousPage"
-                        :limit="disputesListResult.limit.value"
-                        :limit-options="disputesListResult.limitOptions.value"
-                        :update-limit="disputesListResult.updateLimit"
-                        :current-page="disputesListResult.page.value + 1"
-                    />
-                </div>
-            </template>
-        </BentoCard>
+            <DisputesTable
+                :status-group="statusGroup"
+                :active-balance-account="activeBalanceAccount"
+                :loading="isLoading"
+                :data="disputesListResult.records.value"
+                :show-pagination="true"
+                :error="disputesError"
+                :on-row-click="onRowClick"
+                :on-contact-support="props.onContactSupport"
+                :custom-columns="props.dataCustomization?.dataGrid?.fields"
+                :on-data-retrieve="props.dataCustomization?.dataGrid?.onDataRetrieve"
+                :has-next="disputesListResult.hasNext.value"
+                :has-previous="disputesListResult.hasPrevious.value"
+                :go-to-next-page="disputesListResult.goToNextPage"
+                :go-to-previous-page="disputesListResult.goToPreviousPage"
+                :limit="disputesListResult.limit.value"
+                :limit-options="disputesListResult.limitOptions.value"
+                :update-limit="disputesListResult.updateLimit"
+                :current-page="disputesListResult.page.value + 1"
+            />
+        </div>
 
         <DisputeManagementModal
             v-if="selectedDisputeId"

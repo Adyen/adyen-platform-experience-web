@@ -3,6 +3,7 @@ import { paymentLinksOverviewMeta } from './meta';
 import type { PaymentLinksOverviewExternalProps } from '../../src';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { payByLinkOverviewMockedResponses } from '../../../mocks/mock-server/payByLink';
+import { PAYMENT_LINKS_FIELDS_CONFIG } from '../utils/constants/paymentLinks';
 
 const meta: Meta<ElementProps<PaymentLinksOverviewExternalProps>> = {
     ...paymentLinksOverviewMeta,
@@ -22,6 +23,17 @@ export const SingleStore: ElementStory<PaymentLinksOverviewExternalProps> = {
     args: {
         mockedApi: true,
         storeIds: 'STORE_NY_001',
+    },
+};
+
+export const PrefilledCreation: ElementStory<PaymentLinksOverviewExternalProps> = {
+    name: 'Prefilled creation',
+    args: {
+        mockedApi: true,
+        storeIds: 'STORE_NY_001',
+        paymentLinkCreation: {
+            fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
+        },
     },
 };
 
