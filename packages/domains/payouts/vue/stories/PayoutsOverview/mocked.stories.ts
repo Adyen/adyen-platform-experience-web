@@ -42,6 +42,14 @@ export const ErrorList: ElementStory<PayoutsOverviewExternalProps> = {
     },
 };
 
+export const ErrorListServerError: ElementStory<PayoutsOverviewExternalProps> = {
+    name: 'Error - List (server error)',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...PAYOUTS_OVERVIEW_HANDLERS.errorListServerError },
+    },
+};
+
 export const DataCustomization: ElementStory<PayoutsOverviewExternalProps> = {
     name: 'Data customization',
     args: {
