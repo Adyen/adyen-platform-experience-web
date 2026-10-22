@@ -442,7 +442,7 @@
     "typeTreeHash": "ea4a318bf35e337e4aee660226e7836c6ff5ddaddfb38aeee669e2024003454e",
     "missingPackageEntrypoints": [],
     "packageJson": {
-        "main": "./dist/cjs/index.js",
+        "main": "./dist/cjs/index.cjs",
         "module": "./dist/es/packages/sdk/src/index.js",
         "types": "./dist/types/packages/sdk/src/index.d.ts",
         "style": "./dist/adyen-platform-experience-web.css",
@@ -451,7 +451,7 @@
                 "types": "./dist/types/packages/sdk/src/index.d.ts",
                 "require": {
                     "types": "./dist/types/packages/sdk/src/index.d.ts",
-                    "default": "./dist/cjs/index.js"
+                    "default": "./dist/cjs/index.cjs"
                 },
                 "import": {
                     "types": "./dist/types/packages/sdk/src/index.d.ts",
