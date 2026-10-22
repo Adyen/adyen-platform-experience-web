@@ -1,4 +1,5 @@
 import { computed } from 'vue';
+import type { TranslationKey } from '@integration-components/core';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { CustomColumn } from '@integration-components/types';
 import { hasCustomField, hasOwnProperty } from '@integration-components/utils';
@@ -46,11 +47,11 @@ function getContentWidth(contentWidths: Readonly<Record<string, number>> | undef
 
 function createStandardColumns<T extends string, TExtra extends object>(
     fields: Readonly<T[]>,
-    fieldsKeys: { [k in T]?: string },
+    fieldsKeys: { [k in T]?: TranslationKey },
     customColumns: ReadonlyMap<string, NormalizedCustomColumn>,
     configuredColumns: Partial<Record<T, TableColumnOptions<TExtra>>>,
     contentWidths: Readonly<Record<string, number>> | undefined,
-    getLabel: (key: string) => string,
+    getLabel: (key: TranslationKey) => string,
     resolveLabel?: (field: T, defaultLabel: string) => string
 ): TableColumn<TExtra>[] {
     const columns: TableColumn<TExtra>[] = [];
@@ -126,7 +127,7 @@ export interface UseTableColumnsOptions<T extends string, TExtra extends object 
      * Maps each standard field key to its i18n translation key.
      * Only fields with an entry here are rendered as columns.
      */
-    fieldsKeys: { [k in T]?: string };
+    fieldsKeys: { [k in T]?: TranslationKey };
     /** Optional defaults for standard fields, including responsive visibility. */
     columnConfig?: () => Partial<Record<T, TableColumnOptions<TExtra>>>;
     /** Optional defaults applied to non-standard custom columns. */
@@ -192,7 +193,7 @@ export function useTableColumns<T extends string, TExtra extends object = object
                 customMap,
                 configuredColumns,
                 contentWidths,
-                translationKey => i18n.get(translationKey as Parameters<typeof i18n.get>[0]),
+                translationKey => i18n.get(translationKey),
                 resolveStandardColumnLabel
             ),
             ...createCustomColumns(

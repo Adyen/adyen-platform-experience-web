@@ -29,7 +29,8 @@
         "msw-storybook-addon": "^2.0.2",
         "storybook": "catalog:",
         "typescript": "catalog:",
-        "vite": "catalog:"
+        "vite": "catalog:",
+        "vue-tsc": "catalog:"
     },
     "msw": {
         "workerDirectory": [

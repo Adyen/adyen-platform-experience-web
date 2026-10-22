@@ -42,6 +42,7 @@
     "transactions.details.actions.copyReferenceID": "Referenz-ID kopieren",
     "transactions.details.actions.goToPayment": "Zur Zahlung",
     "transactions.details.actions.refund": "Zahlung erstatten",
+    "transactions.details.common.actions.goBack": "Zurück",
     "transactions.details.common.refundedStates.full": "Vollständig erstattet",
     "transactions.details.common.refundedStates.partial": "Teilweise erstattet",
     "transactions.details.common.refundReasons.duplicate": "Duplizieren",

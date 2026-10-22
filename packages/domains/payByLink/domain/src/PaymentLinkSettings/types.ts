@@ -1,6 +1,6 @@
 import type { TranslationKey } from '@integration-components/core';
 import type { IPaymentLinkTermsAndConditions, WithDismissCallback } from '@integration-components/types';
-import type { StoreIds } from '../types';
+import type { StoreIds } from '../shared/types';
 
 export interface PaymentLinkSettingsProps extends WithDismissCallback {
     storeIds?: StoreIds;

@@ -10,10 +10,15 @@ import {
     BentoButton,
     BentoTooltipDirective as vBentoTooltip,
 } from '@adyen/bento-vue3';
-import { getTransactionRefundReason, TX_DETAILS_FIELDS_REMAPS, sharedTransactionDetailsEventProperties } from '../../../../../domain/src';
+import {
+    getTransactionRefundReason,
+    TX_DETAILS_FIELDS_REMAPS,
+    sharedTransactionDetailsEventProperties,
+    type TransactionDetails,
+    type TransactionDetailsCustomization,
+    type TransactionsTranslationKey,
+} from '../../../../../domain/src';
 import { normalizeCustomFields } from '@integration-components/utils';
-import type { TransactionDetails, TransactionDetailsCustomization } from '../../../../../domain/src';
-import type { TranslationKey } from '@integration-components/core';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import styles from './PaymentDetails.module.scss';
@@ -42,14 +47,14 @@ const paymentDataCopyButtonKeys = {
     referenceId: 'transactions.details.actions.copyReferenceID',
     merchantReference: 'transactions.details.actions.copyMerchantReference',
     pspReference: 'transactions.details.actions.copyPspReference',
-} as const satisfies Record<string, TranslationKey>;
+} as const satisfies Record<string, TransactionsTranslationKey>;
 
 interface ListItem {
     id?: string;
-    key: TranslationKey;
+    key: TransactionsTranslationKey;
     value: string;
     copyable?: boolean;
-    copyAriaLabelKey?: TranslationKey;
+    copyAriaLabelKey?: TransactionsTranslationKey;
     trackingName?: string;
 }
 
@@ -62,18 +67,18 @@ const standardItems = computed<ListItem[]>(() => {
     const isVisible = customizedFields ? (fid: string) => customizedFields.find(f => f.key === fid)?.visibility !== 'hidden' : () => true;
 
     const items: (ListItem | null)[] = [
-        account && isVisible('account') ? { id: 'account', key: paymentDataKeys.account as TranslationKey, value: account } : null,
+        account && isVisible('account') ? { id: 'account', key: paymentDataKeys.account as TransactionsTranslationKey, value: account } : null,
         isRefund && refundMetadata?.refundReason && isVisible('refundReason')
             ? {
                   id: 'refundReason',
-                  key: paymentDataKeys.refundReason as TranslationKey,
+                  key: paymentDataKeys.refundReason as TransactionsTranslationKey,
                   value: getTransactionRefundReason(i18n, refundMetadata.refundReason) as string,
               }
             : null,
         isVisible('id')
             ? {
                   id: 'id',
-                  key: paymentDataKeys.id as TranslationKey,
+                  key: paymentDataKeys.id as TransactionsTranslationKey,
                   value: id,
                   copyable: true,
                   copyAriaLabelKey: paymentDataCopyButtonKeys.referenceId,
@@ -83,7 +88,7 @@ const standardItems = computed<ListItem[]>(() => {
         merchantReference && isVisible('merchantReference')
             ? {
                   id: 'merchantReference',
-                  key: paymentDataKeys.merchantReference as TranslationKey,
+                  key: paymentDataKeys.merchantReference as TransactionsTranslationKey,
                   value: merchantReference,
                   copyable: true,
                   copyAriaLabelKey: paymentDataCopyButtonKeys.merchantReference,
@@ -93,7 +98,7 @@ const standardItems = computed<ListItem[]>(() => {
         paymentPspReference && isVisible('paymentPspReference')
             ? {
                   id: 'paymentPspReference',
-                  key: paymentDataKeys.pspReference as TranslationKey,
+                  key: paymentDataKeys.pspReference as TransactionsTranslationKey,
                   value: paymentPspReference,
                   copyable: true,
                   copyAriaLabelKey: paymentDataCopyButtonKeys.pspReference,
@@ -101,7 +106,11 @@ const standardItems = computed<ListItem[]>(() => {
               }
             : null,
         isRefund && refundMetadata?.refundPspReference && isVisible('refundPspReference')
-            ? { id: 'refundPspReference', key: paymentDataKeys.refundPspReference as TranslationKey, value: refundMetadata.refundPspReference }
+            ? {
+                  id: 'refundPspReference',
+                  key: paymentDataKeys.refundPspReference as TransactionsTranslationKey,
+                  value: refundMetadata.refundPspReference,
+              }
             : null,
     ];
 
@@ -112,7 +121,7 @@ const customItems = computed(() =>
     Object.entries(props.extraFields ?? {})
         .filter(([, value]) => (value as any)?.type !== 'button')
         .map(([key, value]) => ({
-            key: key as TranslationKey,
+            key: key as TransactionsTranslationKey,
             value: (value as any)?.value ?? value,
             type: (value as any)?.type ?? 'text',
             config: (value as any)?.config,

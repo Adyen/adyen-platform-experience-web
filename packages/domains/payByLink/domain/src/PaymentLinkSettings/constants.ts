@@ -1,4 +1,4 @@
-import type { TranslationKey } from '@integration-components/core';
+import type { PayByLinkTranslationKey } from '../shared/types';
 import type { LogoType, PaymentLinkSettingsItem, PaymentLinkSettingsMenuItem } from './types';
 
 export const menuItem = {
@@ -26,7 +26,7 @@ export const logoOptionsList: LogoType[] = ['logo', 'fullWidthLogo'];
 export const logoLabel = {
     logo: 'payByLink.settings.theme.logo.input.label',
     fullWidthLogo: 'payByLink.settings.theme.wideLogo.input.label',
-} as Record<LogoType, TranslationKey>;
+} as Record<LogoType, PayByLinkTranslationKey>;
 
 export const themeFormDataRequest = {
     BRAND: 'brandName',
@@ -39,7 +39,7 @@ export const LOGO_DIMENSIONS: Record<LogoType, { width: number; height: number }
     fullWidthLogo: { width: 300, height: 30 },
 };
 
-export const LOGO_DIMENSION_ERROR: Record<LogoType, TranslationKey> = {
+export const LOGO_DIMENSION_ERROR: Record<LogoType, PayByLinkTranslationKey> = {
     logo: 'payByLink.settings.themes.inputs.file.errors.logo.invalidDimensions',
     fullWidthLogo: 'payByLink.settings.themes.inputs.file.errors.fullWidthLogo.invalidDimensions',
 };

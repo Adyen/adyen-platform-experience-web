@@ -1,6 +1,6 @@
-import type { TranslationKey } from '@integration-components/core';
 import type { IPaymentLinkConfiguration, IPaymentLinkConfigurationElement } from '@integration-components/types';
-import type { PaymentLinkFieldName, PaymentLinkFieldsVisibilityConfig, PaymentLinkFieldVisibility } from './types';
+import type { PayByLinkTranslationKey } from '../shared/types';
+import type { PaymentLinkFieldName, PaymentLinkFieldVisibility, PaymentLinkFieldsVisibilityConfig } from './types';
 
 export interface FormFieldConfig {
     fieldName: PaymentLinkFieldName;
@@ -8,7 +8,7 @@ export interface FormFieldConfig {
     visible: boolean;
     includeInApiPayload: boolean;
     readOnly?: boolean;
-    label?: TranslationKey;
+    label?: PayByLinkTranslationKey;
     options?: IPaymentLinkConfigurationElement['options'];
 }
 

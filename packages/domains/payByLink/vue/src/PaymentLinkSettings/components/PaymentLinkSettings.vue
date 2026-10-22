@@ -3,7 +3,8 @@ import { computed, ref, watch } from 'vue';
 import { BentoDivider, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
-import type { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
+import type { AdyenPlatformExperienceError } from '@integration-components/core';
+import type { PayByLinkTranslationKey } from '@integration-components/payByLink/domain';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../constants';
 import type { PaymentLinkSettingsItem } from '../types';
@@ -14,7 +15,7 @@ import PaymentLinkSettingsContent from './PaymentLinkSettingsContent.vue';
 import SettingsActionButtons from './SettingsActionButtons.vue';
 import styles from './PaymentLinkSettings.module.scss';
 
-const ERROR_MESSAGE_KEY: TranslationKey = 'payByLink.settings.errors.unavailable';
+const ERROR_MESSAGE_KEY: PayByLinkTranslationKey = 'payByLink.settings.errors.unavailable';
 
 const props = defineProps<{
     hideTitle?: boolean;
@@ -85,7 +86,7 @@ const showActionButtons = computed(
         </BentoTypography>
         <SettingsError v-if="hasError" :error="error" :error-message="ERROR_MESSAGE_KEY" :on-contact-support="props.onContactSupport" />
         <template v-else>
-            <div :class="[styles.contentContainer, { [styles.contentContainerMobile]: isSmContainer && contentVisible }]">
+            <div :class="[styles.contentContainer, isSmContainer && contentVisible ? styles.contentContainerMobile : '']">
                 <template v-if="menuItems.length > 1">
                     <div v-if="!contentVisible || !isSmContainer" :class="styles.sidebarContainer">
                         <StoreSelector :stores="filteredStores" :selected-store-id="selectedStore" @update:selected-store-id="setSelectedStore" />

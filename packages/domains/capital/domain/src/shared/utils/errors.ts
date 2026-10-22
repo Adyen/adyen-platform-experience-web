@@ -1,6 +1,5 @@
 import { AdyenErrorResponse, AdyenPlatformExperienceError } from '@integration-components/core';
-
-type CapitalTranslationKey = `capital.${string}`;
+import type { CapitalTranslationKey } from '../types';
 
 export type CapitalErrorMessage = {
     title: CapitalTranslationKey;

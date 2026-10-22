@@ -1,5 +1,5 @@
-import type { DomainTranslationKey } from '@integration-components/core/translations';
 import type { WithDismissCallback } from '@integration-components/types';
+import type { PayByLinkTranslationKey } from '../shared/types';
 
 export interface PaymentLinkDetailsProps extends WithDismissCallback {
     id: string;
@@ -16,7 +16,7 @@ export type PaymentLinkStatusTagVariant = 'info' | 'success' | 'neutral' | 'warn
 export type PaymentLinkActivityStatus = 'green' | 'red' | 'blue' | 'black';
 
 export type ListItemData = {
-    key: DomainTranslationKey;
+    key: PayByLinkTranslationKey;
     value?: string;
     isCopyable?: boolean;
     linkUrl?: string;
@@ -25,8 +25,8 @@ export type ListItemData = {
 export type PaymentLinkListItems = Record<'linkInformation' | 'shopperInformation' | 'shippingAddress' | 'billingAddress', ListItemData[]>;
 
 export type PaymentLinkErrorMessageContent = {
-    title: DomainTranslationKey;
-    message: DomainTranslationKey[];
+    title: PayByLinkTranslationKey;
+    message: PayByLinkTranslationKey[];
     refreshComponent?: boolean;
     requestId?: string;
 };

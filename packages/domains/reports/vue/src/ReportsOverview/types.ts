@@ -1,5 +1,5 @@
 import type { UIElementProps } from '@integration-components/core/vue';
-import type { GlobalAppearance, IBalanceAccountBase, IReport, WithDataGridAppearance } from '@integration-components/types';
+import type { GlobalAppearance, IReport, WithDataGridAppearance } from '@integration-components/types';
 import type { ReportsOverviewProps } from '../../../domain/src';
 
 export type ReportsOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
@@ -8,7 +8,7 @@ export type ReportsOverviewAppearance = GlobalAppearance & WithDataGridAppearanc
 export type ReportsOverviewExternalProps = UIElementProps<ReportsOverviewAppearance> & ReportsOverviewProps;
 export type ReportsOverviewComponentProps = Omit<ReportsOverviewExternalProps, 'core' | 'appearance'>;
 
-export type { IBalanceAccountBase };
+export type { IBalanceAccountBase } from '@integration-components/types';
 
 /**
  * Shape of the /v1/reports list response as consumed by useReportsList.

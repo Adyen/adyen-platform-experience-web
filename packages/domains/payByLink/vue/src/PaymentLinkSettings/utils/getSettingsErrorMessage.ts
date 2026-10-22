@@ -1,21 +1,21 @@
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
-import type { DomainTranslationKey } from '@integration-components/core/vue';
+import type { PayByLinkTranslationKey } from '@integration-components/payByLink/domain';
 import { ACCOUNT_MISCONFIGURATION, PERMISSION_ERROR, WRONG_STORE_IDS } from '../constants';
 
 type SettingsErrorContent = {
-    title: DomainTranslationKey;
-    messages: DomainTranslationKey[];
+    title: PayByLinkTranslationKey;
+    messages: PayByLinkTranslationKey[];
     refreshComponent: boolean;
 };
 
 export const getSettingsErrorMessage = (
     error: AdyenPlatformExperienceError | undefined,
-    errorMessage: DomainTranslationKey,
+    errorMessage: PayByLinkTranslationKey,
     onContactSupport?: () => void
 ): SettingsErrorContent | undefined => {
     if (!error) return undefined;
 
-    const secondaryErrorMessage: DomainTranslationKey = onContactSupport
+    const secondaryErrorMessage: PayByLinkTranslationKey = onContactSupport
         ? 'payByLink.common.errors.errorCode'
         : 'payByLink.common.errors.errorCodeSupport';
 
