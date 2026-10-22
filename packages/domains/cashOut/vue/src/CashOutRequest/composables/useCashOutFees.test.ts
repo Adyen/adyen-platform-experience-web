@@ -63,7 +63,8 @@ describe('useCashOutFees', () => {
         amount.value = { value: 3000, currency: 'USD' };
         await nextTick();
 
-        expect(state.isFetchingFees.value).toBe(true);
+        // Nothing is fetched while the amount is still changing, but the fees of the previous amount are gone.
+        expect(state.isFetchingFees.value).toBe(false);
         expect(state.fees.value).toBeUndefined();
         expect(requestedFees()).toHaveLength(1);
 

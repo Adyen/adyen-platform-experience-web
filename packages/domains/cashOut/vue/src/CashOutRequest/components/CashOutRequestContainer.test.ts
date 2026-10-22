@@ -19,7 +19,6 @@ vi.mock('./CashOutRequest/CashOutRequest.vue', async () => {
         default: defineComponent({
             props: {
                 hideTitle: Boolean,
-                onDismiss: { type: Function, default: undefined },
                 onContactSupport: { type: Function, default: undefined },
             },
             setup(props) {
@@ -46,11 +45,10 @@ describe('CashOutRequestContainer', () => {
         vi.mocked(useShouldHideTitles).mockReturnValue(computed(() => true));
     });
 
-    test('should pass the dismiss callback and whether to hide the title', () => {
-        const onDismiss = vi.fn();
-        const { unmount } = renderContainer({ onDismiss });
+    test('should pass whether to hide the title', () => {
+        const { unmount } = renderContainer({});
 
-        expect(requestProps.current).toMatchObject({ hideTitle: true, onDismiss });
+        expect(requestProps.current).toMatchObject({ hideTitle: true });
 
         unmount();
     });

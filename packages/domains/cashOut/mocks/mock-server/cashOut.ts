@@ -136,6 +136,14 @@ export const CASH_OUT_HANDLERS = {
             }),
         ],
     },
+    singleEligibleTransferInstrument: {
+        handlers: [
+            http.get(ENDPOINTS.eligibility, async () => {
+                await delay();
+                return HttpResponse.json(ELIGIBILITY_AVAILABLE.singleEligibleTransferInstrument);
+            }),
+        ],
+    },
     withIneligibleTransferInstruments: {
         handlers: [
             http.get(ENDPOINTS.eligibility, async () => {

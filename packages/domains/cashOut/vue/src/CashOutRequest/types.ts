@@ -4,8 +4,6 @@ import type { ICashOutEligibility, UIElementProps } from '@integration-component
 // The standalone component doesn't offer contact support.
 export type CashOutRequestExternalProps = Omit<UIElementProps, 'ref' | 'onContactSupport'> & {
     core: CoreInstance;
-    /** Called when the user clicks the cancel button, to close the component. Without it, the cancel button is hidden. */
-    onDismiss?: () => void;
 };
 
 export type CashOutRequestProps = Omit<CashOutRequestExternalProps, 'core'> & {

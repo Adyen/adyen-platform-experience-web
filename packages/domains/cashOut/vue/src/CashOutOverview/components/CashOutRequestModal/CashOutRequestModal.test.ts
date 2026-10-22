@@ -39,7 +39,6 @@ vi.mock('../../../CashOutRequest/components/CashOutRequest/CashOutRequest.vue', 
                 balanceAccountId: { type: String, default: undefined },
                 eligibility: { type: Object, default: undefined },
                 hideTitle: Boolean,
-                onDismiss: { type: Function, default: undefined },
                 onContactSupport: { type: Function, default: undefined },
             },
             setup(props) {
@@ -77,11 +76,9 @@ describe('CashOutRequestModal', () => {
         unmount();
     });
 
-    test('should leave closing to the close button of the modal, without a cancel button in the request', () => {
+    test('should close with the close button of the modal', () => {
         const onClose = vi.fn();
         const { target, unmount } = renderModal({ onClose });
-
-        expect(requestProps.current?.onDismiss).toBeUndefined();
 
         target.querySelector<HTMLButtonElement>('[data-testid="close"]')?.click();
         expect(onClose).toHaveBeenCalledTimes(1);

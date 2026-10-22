@@ -29,7 +29,6 @@ type DetailItem = {
 const props = defineProps<{
     balanceAccountId: string;
     eligibility: ICashOutEligibility;
-    onDismiss?: () => void;
     onContactSupport?: () => void;
     onFeesError: (error: AdyenPlatformExperienceError) => void;
 }>();
@@ -54,10 +53,17 @@ watch(feesError, error => {
     if (error) props.onFeesError(error);
 });
 
-const eligibleTransferInstruments = computed(() => props.eligibility.transferInstruments.filter(({ eligible }) => eligible));
-// With a single account to choose from, it is shown as a detail instead of a dropdown.
-const singleTransferInstrument = computed(() => (eligibleTransferInstruments.value.length === 1 ? eligibleTransferInstruments.value[0] : undefined));
-const transferInstrumentId = ref<string | undefined>(singleTransferInstrument.value?.transferInstrumentId);
+const transferInstruments = computed(() => props.eligibility.transferInstruments);
+const eligibleTransferInstruments = computed(() => transferInstruments.value.filter(({ eligible }) => eligible));
+// The only account of the balance account is shown as a detail instead of a dropdown. Ineligible accounts stay in the dropdown,
+// so the user sees why they can't be chosen.
+const singleTransferInstrument = computed(() =>
+    transferInstruments.value.length === 1 && transferInstruments.value[0]?.eligible ? transferInstruments.value[0] : undefined
+);
+// The only account that can be chosen is selected right away.
+const transferInstrumentId = ref<string | undefined>(
+    eligibleTransferInstruments.value.length === 1 ? eligibleTransferInstruments.value[0]?.transferInstrumentId : undefined
+);
 
 const feesValue = computed(() => {
     if (!amount.value) return '-';
@@ -92,14 +98,6 @@ const actions = computed<BentoButtonActionsList>(() => [
         title: i18n.get('cashOut.request.actions.cashOut.labels.default'),
         disabled: isCashOutDisabled.value,
     },
-    ...(props.onDismiss
-        ? [
-              {
-                  title: i18n.get('cashOut.common.actions.cancel.labels.default'),
-                  event: props.onDismiss,
-              },
-          ]
-        : []),
 ]);
 </script>
 
@@ -127,7 +125,7 @@ const actions = computed<BentoButtonActionsList>(() => [
             v-if="!singleTransferInstrument"
             v-model="transferInstrumentId"
             :disabled="!isCashOutAvailable"
-            :transfer-instruments="props.eligibility.transferInstruments"
+            :transfer-instruments="transferInstruments"
         />
         <UnavailableReasonAlert v-if="!isCashOutAvailable" :eligibility="props.eligibility" :on-contact-support="props.onContactSupport" />
         <BentoAlert v-else-if="amount" type="highlight" role="status">

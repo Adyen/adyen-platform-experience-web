@@ -65,7 +65,6 @@ vi.mock('../CashOutRequestForm/CashOutRequestForm.vue', async () => {
             props: {
                 balanceAccountId: { type: String, required: true },
                 eligibility: { type: Object, required: true },
-                onDismiss: { type: Function, default: undefined },
                 onContactSupport: { type: Function, default: undefined },
                 onFeesError: { type: Function, required: true },
             },
@@ -152,16 +151,14 @@ describe('CashOutRequest', () => {
 
     describe('Form', () => {
         test('should show the form of the selected balance account once eligibility loads', () => {
-            const onDismiss = vi.fn();
             const onContactSupport = vi.fn();
             mockCashOutState('ready');
-            const { target, unmount } = renderCashOutRequest({ onDismiss, onContactSupport });
+            const { target, unmount } = renderCashOutRequest({ onContactSupport });
 
             expect(target.textContent).toContain('form');
             expect(formProps.current).toMatchObject({
                 balanceAccountId: 'BA1',
                 eligibility: ELIGIBILITY,
-                onDismiss,
                 onContactSupport,
             });
 

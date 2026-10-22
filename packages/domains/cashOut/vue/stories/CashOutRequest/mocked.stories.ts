@@ -13,12 +13,12 @@ const meta: Meta<ElementProps<typeof CashOutRequestElement>> = {
 
 export const MultipleBalanceAccounts: ElementStory = {
     name: 'Multiple balance accounts',
-    args: { mockedApi: true, onDismiss: 'Enabled' },
+    args: { mockedApi: true },
 };
 
 export const SingleBalanceAccount: ElementStory = {
     name: 'Single balance account',
-    args: { mockedApi: true, onDismiss: 'Enabled' },
+    args: { mockedApi: true },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.singleBalanceAccount },
     },
@@ -26,15 +26,23 @@ export const SingleBalanceAccount: ElementStory = {
 
 export const SingleTransferInstrument: ElementStory = {
     name: 'Single transfer instrument',
-    args: { mockedApi: true, onDismiss: 'Enabled' },
+    args: { mockedApi: true },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.singleTransferInstrument },
     },
 };
 
+export const SingleEligibleTransferInstrument: ElementStory = {
+    name: 'Single eligible transfer instrument',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.singleEligibleTransferInstrument },
+    },
+};
+
 export const IneligibleTransferInstruments: ElementStory = {
     name: 'Ineligible transfer instruments',
-    args: { mockedApi: true, onDismiss: 'Enabled' },
+    args: { mockedApi: true },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.withIneligibleTransferInstruments },
     },
@@ -42,7 +50,7 @@ export const IneligibleTransferInstruments: ElementStory = {
 
 export const CashOutInProgress: ElementStory = {
     name: 'Unavailable - CashOut in progress',
-    args: { mockedApi: true, onDismiss: 'Enabled' },
+    args: { mockedApi: true },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.cashOutInProgress },
     },
@@ -50,7 +58,7 @@ export const CashOutInProgress: ElementStory = {
 
 export const FeesError: ElementStory = {
     name: 'Error - Fees',
-    args: { mockedApi: true, onDismiss: 'Enabled' },
+    args: { mockedApi: true },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.feesInternalServerError },
     },
@@ -58,7 +66,7 @@ export const FeesError: ElementStory = {
 
 export const EligibilityError: ElementStory = {
     name: 'Error - Eligibility',
-    args: { mockedApi: true, onDismiss: 'Enabled' },
+    args: { mockedApi: true },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.eligibilityInternalServerError },
     },
@@ -66,7 +74,7 @@ export const EligibilityError: ElementStory = {
 
 export const BalanceAccountsError: ElementStory = {
     name: 'Error - Balance accounts',
-    args: { mockedApi: true, onDismiss: 'Enabled' },
+    args: { mockedApi: true },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.balanceAccountsInternalServerError },
     },

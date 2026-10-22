@@ -123,7 +123,6 @@
     "capital.overview.repayment.subtitle": "Will be displayed as user guidance text alongside bank account information to enable the user proceed with repayment",
     "capital.overview.repayment.title": "Title of a section for making loan repayments",
     "capital.overview.repayment.transferInstruments": "Title of a list of transfer instruments",
-    "cashOut.common.actions.cancel.labels.default": "Label for a button that cancels the instant cash out and closes the interface without sending any money.",
     "cashOut.common.actions.contactSupport.labels.reachOut": "Label for a button that directs the user to contact support after an error.",
     "cashOut.common.actions.refresh.labels.default": "Label for a button that reloads the component after an error.",
     "cashOut.common.availableForCashOut.label": "Label for the amount of money the user can withdraw right now with an instant cash out from the selected balance account.",

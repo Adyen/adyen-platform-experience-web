@@ -1,4 +1,4 @@
-import { computed, onScopeDispose, ref, toValue, watch, type MaybeRefOrGetter } from 'vue';
+import { computed, onScopeDispose, toValue, watch, type MaybeRefOrGetter } from 'vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useAsyncRequest } from '@integration-components/composables-vue/useAsyncRequest';
@@ -16,20 +16,17 @@ export const useCashOutFees = ({ balanceAccountId, amount }: CashOutFeesOptions)
     const config = useConfigContext();
     const request = useAsyncRequest<ICashOutFees>();
     const getCashOutFees = computed(() => config.endpoints.getCashOutFees);
-    const isPending = ref(false);
     let debounceTimeout: ReturnType<typeof setTimeout> | undefined;
     let requestedBalanceAccountId: string | undefined;
 
     const cancel = () => {
         clearTimeout(debounceTimeout);
         debounceTimeout = undefined;
-        isPending.value = false;
         request.abort();
     };
 
     const fetchFees = (id: string, { value, currency }: ICashOutAmount) => {
         const endpoint = getCashOutFees.value;
-        isPending.value = false;
         if (!endpoint) return;
 
         requestedBalanceAccountId = id;
@@ -50,7 +47,6 @@ export const useCashOutFees = ({ balanceAccountId, amount }: CashOutFeesOptions)
             // The first amount of a balance account is set by the component rather than typed, so there is nothing to wait for.
             if (id !== requestedBalanceAccountId) return fetchFees(id, nextAmount);
 
-            isPending.value = true;
             debounceTimeout = setTimeout(() => fetchFees(id, nextAmount), CASH_OUT_FEES_DEBOUNCE_MS);
         },
         { immediate: true }
@@ -62,6 +58,6 @@ export const useCashOutFees = ({ balanceAccountId, amount }: CashOutFeesOptions)
         fees: request.data,
         // The HTTP layer throws AdyenPlatformExperienceError at runtime, whatever type the request composables declare.
         feesError: computed(() => request.error.value as AdyenPlatformExperienceError | undefined),
-        isFetchingFees: computed(() => isPending.value || request.isLoading.value),
+        isFetchingFees: request.isLoading,
     } as const;
 };

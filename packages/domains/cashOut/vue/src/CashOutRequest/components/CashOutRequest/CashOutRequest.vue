@@ -50,7 +50,6 @@ watch(selectedBalanceAccountId, () => {
                 :key="selectedBalanceAccountId"
                 :balance-account-id="selectedBalanceAccountId"
                 :eligibility="eligibility"
-                :on-dismiss="props.onDismiss"
                 :on-contact-support="props.onContactSupport"
                 :on-fees-error="handleFeesError"
             />

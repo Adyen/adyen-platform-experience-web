@@ -125,7 +125,7 @@ describe('CashOutAmountField', () => {
         await type('220.01');
 
         expect(model.value).toBeUndefined();
-        expect(error()).toBe('cashOut.request.fields.amount.errors.excess 22000 USD USD');
+        expect(error()).toBe('cashOut.request.fields.amount.errors.excess 22000 USD');
 
         unmount();
     });
