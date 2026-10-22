@@ -23,7 +23,7 @@ import {
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { getTransactionCategoryDescription, getTransactionCategory, TRANSACTION_FIELDS } from '../../../../../domain/src';
-import { getCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
+import { isValidCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
 import type { ITransaction, CustomColumn } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { TransactionsTableFields, IBalanceAccountBase } from '../../types';
@@ -69,8 +69,7 @@ const FIELDS_KEYS: Record<string, string> = {
 
 function amountLabel(field: 'netAmount' | 'grossAmount', defaultLabel: string): string {
     const currency = props.availableCurrencies?.[0];
-    const currencyCode = currency ? getCurrencyCode(currency) : undefined;
-    return props.hasMultipleCurrencies || !currencyCode ? defaultLabel : `${defaultLabel} (${currencyCode})`;
+    return props.hasMultipleCurrencies || !currency || !isValidCurrencyCode(currency) ? defaultLabel : `${defaultLabel} (${currency})`;
 }
 
 const { columns: desktopColumns, customFieldKeys } = useTableColumns({
@@ -185,7 +184,8 @@ function formatDate(dateStr: string): string {
 
 function formatAmount(amount: { value: number; currency: string } | null | undefined): string {
     if (!amount) return '';
-    return i18n.amount(amount.value, amount.currency, { hideCurrency: !props.hasMultipleCurrencies });
+    const formattedAmount = i18n.amount(amount.value, amount.currency, { hideCurrency: true });
+    return props.hasMultipleCurrencies ? `${formattedAmount} ${amount.currency}` : formattedAmount;
 }
 </script>
 
