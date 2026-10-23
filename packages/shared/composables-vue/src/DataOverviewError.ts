@@ -91,7 +91,13 @@ export const DataOverviewError = defineComponent({
             if (refreshComponent) {
                 return {
                     title: i18n.get(getDomainTranslationKey(translationDomain, 'common.actions.refresh.labels.default')),
-                    event: () => (configContext.hasError || !props.onRefresh ? refreshCurrentComponent : props.onRefresh)?.(),
+                    event: () => {
+                        if (configContext.hasError || !props.onRefresh) {
+                            refreshCurrentComponent?.();
+                        } else {
+                            props.onRefresh();
+                        }
+                    },
                     icon: props.refreshIcon,
                     variant: 'primary' as const,
                 };
