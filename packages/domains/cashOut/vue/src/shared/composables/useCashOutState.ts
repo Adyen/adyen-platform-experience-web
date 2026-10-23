@@ -14,6 +14,9 @@ type CashOutStateOptions = {
     eligibility?: MaybeRefOrGetter<ICashOutEligibility | undefined>;
 };
 
+// The domain types its keys as any `cashOut.` string, which is wider than the generated translation key union.
+export const getCashOutErrorInfo = (error: AdyenPlatformExperienceError | undefined) => getCashOutErrorMessage(error) as ErrorMessageInfo;
+
 /** The balance accounts, the selected one and its eligibility, with the component shell state they result in. */
 export const useCashOutState = ({ balanceAccountId, eligibility: givenEligibility }: CashOutStateOptions = {}) => {
     const { balanceAccounts, error: balanceAccountsError, isFetching: isFetchingBalanceAccounts } = useBalanceAccounts();
@@ -38,8 +41,7 @@ export const useCashOutState = ({ balanceAccountId, eligibility: givenEligibilit
     // Without a balance account there is nothing to request eligibility for, so the shell would otherwise stay loading.
     const hasNoBalanceAccounts = computed(() => !isFetchingBalanceAccounts.value && !balanceAccountsError.value && !balanceAccounts.value?.length);
 
-    // The domain types its keys as any `cashOut.` string, which is wider than the generated translation key union.
-    const errorInfo = computed(() => getCashOutErrorMessage(error.value) as ErrorMessageInfo);
+    const errorInfo = computed(() => getCashOutErrorInfo(error.value));
 
     const shellState = computed<ComponentShellState>(() => {
         if (error.value || hasNoBalanceAccounts.value) return 'error';

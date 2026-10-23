@@ -1,0 +1,1 @@
+export const CASH_OUT_FEES_DEBOUNCE_MS = 300;

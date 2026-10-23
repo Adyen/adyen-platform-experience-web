@@ -3,6 +3,6 @@
 
 .root {
     @include breakpoints.adyen-pe-screen-sm-and-up {
-        margin-left: auto;
+        align-self: flex-start;
     }
 }
