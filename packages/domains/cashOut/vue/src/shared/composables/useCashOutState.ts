@@ -14,6 +14,12 @@ type CashOutStateOptions = {
     eligibility?: MaybeRefOrGetter<ICashOutEligibility | undefined>;
 };
 
+// The API reports a cashOut without an account to receive it as unavailable; should it not, the components still don't offer it.
+const withoutUnreachableCashOut = (eligibility: ICashOutEligibility | undefined): ICashOutEligibility | undefined => {
+    if (!eligibility?.isCashoutAvailable || eligibility.transferInstruments.some(({ eligible }) => eligible)) return eligibility;
+    return { ...eligibility, isCashoutAvailable: false, unavailableReasons: ['noInstantReachableTransferInstruments'] };
+};
+
 // The domain types its keys as any `cashOut.` string, which is wider than the generated translation key union.
 export const getCashOutErrorInfo = (error: AdyenPlatformExperienceError | undefined) => getCashOutErrorMessage(error) as ErrorMessageInfo;
 
@@ -31,9 +37,10 @@ export const useCashOutState = ({ balanceAccountId, eligibility: givenEligibilit
         eligibility: fetchedEligibility,
         eligibilityError,
         isFetchingEligibility,
+        refreshEligibility,
     } = useCashOutEligibility(() => (usesGivenEligibility.value ? undefined : selectedBalanceAccountId.value));
 
-    const eligibility = computed(() => (usesGivenEligibility.value ? toValue(givenEligibility) : fetchedEligibility.value));
+    const eligibility = computed(() => withoutUnreachableCashOut(usesGivenEligibility.value ? toValue(givenEligibility) : fetchedEligibility.value));
 
     // The HTTP layer throws AdyenPlatformExperienceError at runtime, whatever type the request composables declare.
     const error = computed(() => (balanceAccountsError.value ?? eligibilityError.value) as AdyenPlatformExperienceError | undefined);
@@ -49,5 +56,5 @@ export const useCashOutState = ({ balanceAccountId, eligibility: givenEligibilit
         return 'ready';
     });
 
-    return { balanceAccountOptions, eligibility, errorInfo, selectedBalanceAccountId, shellState } as const;
+    return { balanceAccountOptions, eligibility, errorInfo, refreshEligibility, selectedBalanceAccountId, shellState } as const;
 };

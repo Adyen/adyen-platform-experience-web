@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { BentoButton, BentoInfoIcon, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { ComponentShell, useShouldHideTitles } from '@integration-components/composables-vue';
+import type { ICashOutResponse } from '@integration-components/types';
 import { CashOutOverviewProps } from '../../types';
 import { useCashOutState } from '../../../shared/composables/useCashOutState';
 import CashOutHeader from '../../../shared/CashOutHeader/CashOutHeader.vue';
@@ -16,16 +17,26 @@ const props = defineProps<CashOutOverviewProps>();
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
 
-const { balanceAccountOptions, eligibility, errorInfo, selectedBalanceAccountId, shellState } = useCashOutState();
+const { balanceAccountOptions, eligibility, errorInfo, refreshEligibility, selectedBalanceAccountId, shellState } = useCashOutState();
 
 const isRequestModalOpen = ref(false);
+let hasInstructedCashOut = false;
 
 const openRequestModal = () => {
     isRequestModalOpen.value = true;
 };
 
+const handleCashOutInstructed = (cashOut: ICashOutResponse) => {
+    hasInstructedCashOut = true;
+    props.onCashOutInstructed?.(cashOut);
+};
+
+// Refreshed on close rather than on success, so the success screen doesn't change while it's open.
 const closeRequestModal = () => {
     isRequestModalOpen.value = false;
+    if (!hasInstructedCashOut) return;
+    hasInstructedCashOut = false;
+    refreshEligibility();
 };
 </script>
 
@@ -61,6 +72,7 @@ const closeRequestModal = () => {
             :balance-account-id="selectedBalanceAccountId"
             :eligibility="eligibility"
             :is-open="isRequestModalOpen"
+            :on-cash-out-instructed="handleCashOutInstructed"
             :on-close="closeRequestModal"
             :on-contact-support="props.onContactSupport"
         />

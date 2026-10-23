@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import type { ICashOutFees, ICashOutRequest, ICashOutResponse } from '@integration-components/types';
+import type { ICashOutAmount, ICashOutEligibility, ICashOutFees, ICashOutRequest, ICashOutResponse } from '@integration-components/types';
 import { BALANCE_ACCOUNTS_SINGLE } from '@integration-components/testing/fixtures';
 import { BALANCE_ACCOUNTS_ENDPOINT, delay } from '@integration-components/testing/msw';
 import { uuid } from '@integration-components/utils';
@@ -73,10 +73,27 @@ const getInternalServerErrorResponse = () =>
         { status: 500 }
     );
 
+// What each balance account cashed out since the page loaded, so the eligibility fetched after a cashOut has less available to cash out.
+const cashedOutByBalanceAccount = new Map<string, number>();
+
+const deductCashedOut = (accountKey: string, eligibility: ICashOutEligibility): ICashOutEligibility => {
+    const cashedOut = cashedOutByBalanceAccount.get(accountKey);
+    if (!cashedOut) return eligibility;
+
+    const deduct = ({ currency, value }: ICashOutAmount): ICashOutAmount => ({ currency, value: Math.max(0, value - cashedOut) });
+    const availableForCashOutBalance = deduct(eligibility.availableForCashOutBalance);
+    const balances = { availableBalance: deduct(eligibility.availableBalance), availableForCashOutBalance };
+
+    if (availableForCashOutBalance.value > 0) return { ...eligibility, ...balances };
+    return { ...eligibility, ...balances, isCashoutAvailable: false, transferInstruments: [], unavailableReasons: ['zeroBalance'] };
+};
+
 export const cashOutMocks = [
     http.get<{ accountKey: string }>(ENDPOINTS.eligibility, async ({ params }) => {
         await delay();
-        return HttpResponse.json(ELIGIBILITY_BY_BALANCE_ACCOUNT[params.accountKey] ?? ELIGIBILITY_AVAILABLE.default);
+        return HttpResponse.json(
+            deductCashedOut(params.accountKey, ELIGIBILITY_BY_BALANCE_ACCOUNT[params.accountKey] ?? ELIGIBILITY_AVAILABLE.default)
+        );
     }),
     http.get(ENDPOINTS.fees, async ({ request }) => {
         const { searchParams } = new URL(request.url);
@@ -114,6 +131,8 @@ export const cashOutMocks = [
             ...(referenceForBeneficiary === undefined ? {} : { referenceForBeneficiary }),
         };
 
+        cashedOutByBalanceAccount.set(params.accountKey, (cashedOutByBalanceAccount.get(params.accountKey) ?? 0) + amount);
+
         return HttpResponse.json(response);
     }),
 ];
@@ -138,9 +157,15 @@ export const CASH_OUT_HANDLERS = {
     },
     withIneligibleTransferInstruments: {
         handlers: [
-            http.get(ENDPOINTS.eligibility, async () => {
+            // Keeps the balances of each balance account, so multiple balance accounts still differ from each other.
+            http.get<{ accountKey: string }>(ENDPOINTS.eligibility, async ({ params }) => {
                 await delay();
-                return HttpResponse.json(ELIGIBILITY_AVAILABLE.withIneligibleTransferInstruments);
+                return HttpResponse.json(
+                    deductCashedOut(params.accountKey, {
+                        ...(ELIGIBILITY_BY_BALANCE_ACCOUNT[params.accountKey] ?? ELIGIBILITY_AVAILABLE.default),
+                        transferInstruments: ELIGIBILITY_AVAILABLE.withIneligibleTransferInstruments.transferInstruments,
+                    })
+                );
             }),
         ],
     },
