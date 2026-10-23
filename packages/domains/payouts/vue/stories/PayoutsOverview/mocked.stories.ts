@@ -7,6 +7,7 @@ import { PAYOUTS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/payouts';
 import { PAYOUTS_ENDPOINTS } from '../../../mocks/endpoints';
 import { DEFAULT_PAYOUT_DETAILS } from '../../../fixtures/data/PayoutDetails';
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION_DETAILS, DATA_CUSTOMIZATION_DATA_GRID } from '../../../fixtures/data/PayoutsOverview';
+import { withDelay } from '@integration-components/testing/msw';
 
 const meta: Meta<ElementProps<PayoutsOverviewExternalProps>> = {
     ...payoutsOverviewMeta,
@@ -65,12 +66,15 @@ export const DataCustomization: ElementStory<PayoutsOverviewExternalProps> = {
     parameters: {
         msw: {
             handlers: [
-                http.get(PAYOUTS_ENDPOINTS.payouts, () => {
-                    return HttpResponse.json({
-                        data: [{ ...DEFAULT_PAYOUT_DETAILS.payout }],
-                        _links: {},
-                    });
-                }),
+                http.get(
+                    PAYOUTS_ENDPOINTS.payouts,
+                    withDelay(() => {
+                        return HttpResponse.json({
+                            data: [{ ...DEFAULT_PAYOUT_DETAILS.payout }],
+                            _links: {},
+                        });
+                    })
+                ),
             ],
         },
     },
