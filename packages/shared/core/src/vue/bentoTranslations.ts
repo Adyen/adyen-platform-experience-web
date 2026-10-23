@@ -199,8 +199,8 @@ export const applyBentoDomainOverrides = (
 };
 
 export const getBentoLocaleMessages = (
-    getTranslationTemplate: (key: string) => string | null,
-    hasTranslation: (key: string) => boolean
+    getTranslationTemplate: (key: BentoTranslationKey) => string | null,
+    hasTranslation: (key: BentoTranslationKey) => boolean
 ): Record<string, string> =>
     Object.fromEntries(
         BENTO_TRANSLATION_KEYS.filter(hasTranslation).flatMap(key => {

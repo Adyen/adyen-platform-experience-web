@@ -9,6 +9,21 @@ import { SUPPORTED_LOCALES } from './constants/localization';
 describe('Localization', () => {
     const translationKey = 'abc' as TranslationKey;
 
+    const jsonResponse = (body: unknown) => new Response(JSON.stringify(body), { headers: { 'Content-Type': 'application/json' } });
+
+    // The CDN serves one self-describing catalog per locale, under `locales/`.
+    const createCdnFetchMock = (catalogForLocale: (locale: string) => unknown) =>
+        vi.fn().mockImplementation(async (input: unknown) => {
+            const url = String(input);
+            const localeMatch = /\/locales\/([a-z]{2}-[A-Z]{2})\.json$/.exec(url);
+
+            if (localeMatch) return jsonResponse(catalogForLocale(localeMatch[1]!));
+
+            throw new Error(`Unexpected translations request: ${url}`);
+        });
+
+    const requestedUrls = (fetchMock: ReturnType<typeof vi.fn>) => fetchMock.mock.calls.map(([input]) => String(input));
+
     // The translations cache is shared module-wide, so every test starts with a clean cache.
     beforeEach(() => {
         invalidateTranslationsCache();
@@ -110,6 +125,7 @@ describe('Localization', () => {
 
     describe('getTranslationFamily', () => {
         test('indexes exact counts and refreshes the index when the locale changes', async () => {
+            const itemsKey = 'items' as TranslationKey;
             const localization = new Localization('de-DE', '', {
                 defaultTranslations: {
                     items: 'Items',
@@ -129,7 +145,7 @@ describe('Localization', () => {
 
             await localization.ready;
 
-            const germanFamily = localization.getTranslationFamily('items');
+            const germanFamily = localization.getTranslationFamily(itemsKey);
 
             expect(germanFamily).toEqual({
                 base: 'Items',
@@ -140,12 +156,12 @@ describe('Localization', () => {
             });
 
             germanFamily.unsupportedExactCounts.push(99);
-            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([2, 3]);
+            expect(localization.getTranslationFamily(itemsKey).unsupportedExactCounts).toEqual([2, 3]);
 
             localization.locale = 'en-US';
             await localization.ready;
 
-            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([]);
+            expect(localization.getTranslationFamily(itemsKey).unsupportedExactCounts).toEqual([]);
 
             localization.customTranslations = {
                 'en-US': {
@@ -154,12 +170,12 @@ describe('Localization', () => {
             };
             await localization.ready;
 
-            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([4]);
+            expect(localization.getTranslationFamily(itemsKey).unsupportedExactCounts).toEqual([4]);
 
             localization.customTranslations = undefined;
             await localization.ready;
 
-            expect(localization.getTranslationFamily('items').unsupportedExactCounts).toEqual([]);
+            expect(localization.getTranslationFamily(itemsKey).unsupportedExactCounts).toEqual([]);
         });
     });
 
@@ -187,11 +203,8 @@ describe('Localization', () => {
 
         test('loads SDK locale catalogs from the CDN before bundled catalogs', async () => {
             vi.stubEnv('VITE_LOCAL_ASSETS', '');
-            const fetch = vi.fn().mockResolvedValue(
-                new Response(JSON.stringify({ 'transactions.common.errors.updateFilters': 'CDN translation' }), {
-                    headers: { 'Content-Type': 'application/json' },
-                })
-            );
+            const cdnKey = 'transactions.common.errors.updateFilters';
+            const fetch = createCdnFetchMock(() => ({ [cdnKey]: 'CDN translation' }));
             vi.stubGlobal('fetch', fetch);
 
             const localization = new Localization('de-DE', 'https://cdn.example/translations', {
@@ -204,8 +217,35 @@ describe('Localization', () => {
 
             await localization.ready;
 
-            expect(String(fetch.mock.calls[0]?.[0])).toBe('https://cdn.example/translations/de-DE.json');
-            expect(localization.get('transactions.common.errors.updateFilters' as TranslationKey)).toBe('CDN translation');
+            expect(requestedUrls(fetch)).toEqual(['https://cdn.example/translations/locales/de-DE.json']);
+            expect(localization.get(cdnKey)).toBe('CDN translation');
+
+            // A key the CDN catalog does not carry still resolves through the bundled en-US defaults.
+            expect(localization.get('capital.common.errors.unsupportedRegion.message')).toBe(
+                sdkEnglishTranslations['capital.common.errors.unsupportedRegion.message']
+            );
+        });
+
+        test('falls back to bundled SDK locale catalogs when the CDN response is not a catalog', async () => {
+            vi.stubEnv('VITE_LOCAL_ASSETS', '');
+            vi.stubGlobal(
+                'fetch',
+                createCdnFetchMock(() => ['not', 'a', 'catalog'])
+            );
+
+            const localization = new Localization('de-DE', 'https://cdn.example/translations', {
+                defaultTranslations: sdkEnglishTranslations,
+                localeTranslations: {
+                    'de-DE': Promise.resolve(sdkGermanTranslations),
+                    'en-US': Promise.resolve(sdkEnglishTranslations),
+                },
+            });
+
+            await localization.ready;
+
+            expect(localization.get('capital.common.errors.unsupportedRegion.message')).toBe(
+                sdkGermanTranslations['capital.common.errors.unsupportedRegion.message']
+            );
         });
 
         test('falls back to bundled SDK locale catalogs when CDN loading fails', async () => {
@@ -238,8 +278,12 @@ describe('Localization', () => {
             },
         });
 
-        const createFetchMock = () =>
-            vi.fn().mockImplementation(async () => new Response(JSON.stringify({}), { headers: { 'Content-Type': 'application/json' } }));
+        const createFetchMock = () => createCdnFetchMock(() => ({ [translationKey]: 'CDN translation' }));
+
+        const createVersionedFetchMock = () => {
+            let cdnContentVersion = 0;
+            return createCdnFetchMock(() => ({ [translationKey]: `cdn-v${++cdnContentVersion}` }));
+        };
 
         test('requests a catalog once and reuses the cached response for repeated loads of the same locale', async () => {
             vi.stubEnv('VITE_LOCAL_ASSETS', '');
@@ -254,8 +298,7 @@ describe('Localization', () => {
 
             await localization.ready;
 
-            expect(fetchMock).toHaveBeenCalledTimes(1);
-            expect(String(fetchMock.mock.calls[0]?.[0])).toBe(`${cdnTranslationsUrl}/de-DE.json`);
+            expect(requestedUrls(fetchMock)).toEqual([`${cdnTranslationsUrl}/locales/de-DE.json`]);
 
             // No-op requests (same locale and customTranslations) reuse the cached response.
             localization.locale = 'de-DE';
@@ -271,7 +314,7 @@ describe('Localization', () => {
             await localization.ready;
 
             expect(fetchMock).toHaveBeenCalledTimes(2);
-            expect(String(fetchMock.mock.calls[1]?.[0])).toBe(`${cdnTranslationsUrl}/fr-FR.json`);
+            expect(requestedUrls(fetchMock)[1]).toBe(`${cdnTranslationsUrl}/locales/fr-FR.json`);
 
             // Switching back to a locale whose catalog is still cached does not hit the CDN again.
             localization.locale = 'de-DE';
@@ -306,14 +349,7 @@ describe('Localization', () => {
         test('expires the cached response after the translations cache TTL and requests the catalog again', async () => {
             vi.stubEnv('VITE_LOCAL_ASSETS', '');
 
-            let cdnContentVersion = 0;
-            const fetchMock = vi.fn().mockImplementation(
-                async () =>
-                    new Response(JSON.stringify({ [translationKey]: `cdn-v${++cdnContentVersion}` }), {
-                        headers: { 'Content-Type': 'application/json' },
-                    })
-            );
-
+            const fetchMock = createVersionedFetchMock();
             vi.stubGlobal('fetch', fetchMock);
 
             vi.useFakeTimers();
@@ -349,14 +385,7 @@ describe('Localization', () => {
         test('requests the catalog again after the cache is invalidated', async () => {
             vi.stubEnv('VITE_LOCAL_ASSETS', '');
 
-            let cdnContentVersion = 0;
-            const fetchMock = vi.fn().mockImplementation(
-                async () =>
-                    new Response(JSON.stringify({ [translationKey]: `cdn-v${++cdnContentVersion}` }), {
-                        headers: { 'Content-Type': 'application/json' },
-                    })
-            );
-
+            const fetchMock = createVersionedFetchMock();
             vi.stubGlobal('fetch', fetchMock);
 
             const localization = new Localization('de-DE', cdnTranslationsUrl, createSources());
