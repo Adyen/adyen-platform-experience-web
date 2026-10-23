@@ -58,6 +58,7 @@ const props = defineProps<{
     loading: boolean;
     error?: Error;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     showPagination: boolean;
     data: IReport[] | undefined;
     customColumns?: CustomColumn<ReportsTableFields>[];
@@ -300,6 +301,7 @@ function formatDate(dateStr: string): string {
             :error="props.error"
             :error-message="'reports.overview.errors.listUnavailable'"
             :on-contact-support="props.onContactSupport"
+            :on-refresh="props.onRefresh"
             :refresh-icon="RefreshIcon"
         />
 
