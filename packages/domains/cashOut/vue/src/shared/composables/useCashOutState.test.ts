@@ -9,14 +9,17 @@ vi.mock('@integration-components/core/vue', () => ({
     useConfigContext: () => ({ endpoints }),
 }));
 
-const eligibilityOf = (value: number) =>
+const transferInstrumentOf = (eligible: boolean) => ({ eligible, transferInstrumentId: eligible ? 'TI1' : 'TI2' });
+
+const eligibilityOf = (value: number, transferInstruments = [transferInstrumentOf(true)]) =>
     ({
         isCashoutAvailable: true,
         availableForCashOutBalance: { value, currency: 'USD' },
+        transferInstruments,
         unavailableReasons: [],
     }) as unknown as ICashOutEligibility;
 
-const ELIGIBILITY_BY_BALANCE_ACCOUNT: Record<string, ICashOutEligibility> = { BA1: eligibilityOf(100), BA2: eligibilityOf(200) };
+let ELIGIBILITY_BY_BALANCE_ACCOUNT: Record<string, ICashOutEligibility>;
 
 const renderCashOutState = (...args: Parameters<typeof useCashOutState>) => {
     const scope = effectScope();
@@ -29,6 +32,7 @@ const requestedBalanceAccountIds = () =>
 
 describe('useCashOutState', () => {
     beforeEach(() => {
+        ELIGIBILITY_BY_BALANCE_ACCOUNT = { BA1: eligibilityOf(100), BA2: eligibilityOf(200) };
         // A new endpoint for every test, because the balance accounts are cached per endpoint.
         endpoints.getBalanceAccounts = vi.fn().mockResolvedValue({ data: [{ id: 'BA1' }, { id: 'BA2' }] });
         endpoints.getCashOutEligibility = vi.fn(async (_: unknown, { path }: { path: { accountKey: string } }) => {
@@ -72,6 +76,65 @@ describe('useCashOutState', () => {
         expect(requestedBalanceAccountIds()).toEqual(['BA1']);
 
         stop();
+    });
+
+    test('should fetch the eligibility of the selected balance account again when refreshed', async () => {
+        const { state, stop } = renderCashOutState();
+        await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
+
+        ELIGIBILITY_BY_BALANCE_ACCOUNT.BA1 = eligibilityOf(50);
+        state.refreshEligibility();
+
+        await vi.waitFor(() => expect(state.eligibility.value).toEqual(eligibilityOf(50)));
+        expect(requestedBalanceAccountIds()).toEqual(['BA1', 'BA1']);
+
+        stop();
+    });
+
+    describe('Without an account to receive the cashOut', () => {
+        test.each([
+            ['no transfer instruments', []],
+            ['only ineligible transfer instruments', [transferInstrumentOf(false)]],
+        ])('should treat an available cashOut with %s as unavailable', async (_, transferInstruments) => {
+            ELIGIBILITY_BY_BALANCE_ACCOUNT.BA1 = eligibilityOf(100, transferInstruments);
+            const { state, stop } = renderCashOutState();
+
+            await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
+            expect(state.eligibility.value).toMatchObject({
+                isCashoutAvailable: false,
+                availableForCashOutBalance: { value: 100, currency: 'USD' },
+                unavailableReasons: ['noInstantReachableTransferInstruments'],
+            });
+
+            stop();
+        });
+
+        test('should treat the given eligibility the same way', async () => {
+            const { state, stop } = renderCashOutState({ balanceAccountId: 'BA1', eligibility: eligibilityOf(300, []) });
+
+            await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
+            expect(state.eligibility.value).toMatchObject({
+                isCashoutAvailable: false,
+                unavailableReasons: ['noInstantReachableTransferInstruments'],
+            });
+
+            stop();
+        });
+
+        test('should keep an unavailable cashOut as the API sent it', async () => {
+            const unavailable = {
+                ...eligibilityOf(0, []),
+                isCashoutAvailable: false,
+                unavailableReasons: ['dailyLimitReached'],
+            } as ICashOutEligibility;
+            ELIGIBILITY_BY_BALANCE_ACCOUNT.BA1 = unavailable;
+            const { state, stop } = renderCashOutState();
+
+            await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
+            expect(state.eligibility.value).toEqual(unavailable);
+
+            stop();
+        });
     });
 
     test('should be in an error state when the eligibility fails to load', async () => {

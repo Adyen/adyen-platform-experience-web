@@ -11,10 +11,12 @@ const meta: Meta<ElementProps<typeof CashOutOverviewElement>> = {
     title: 'Mocked/CashOut/CashOut Overview',
 };
 
-export const MultipleBalanceAccounts: ElementStory = {
-    name: 'Multiple balance accounts',
-    args: {
-        mockedApi: true,
+// The most complex happy flow: multiple balance accounts, and bank accounts that can and can't receive the cashOut.
+export const Default: ElementStory = {
+    name: 'Default',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.withIneligibleTransferInstruments },
     },
 };
 
@@ -22,7 +24,9 @@ export const SingleBalanceAccount: ElementStory = {
     name: 'Single balance account',
     args: { mockedApi: true },
     parameters: {
-        msw: { ...CASH_OUT_HANDLERS.singleBalanceAccount },
+        msw: {
+            handlers: [...CASH_OUT_HANDLERS.singleBalanceAccount.handlers, ...CASH_OUT_HANDLERS.withIneligibleTransferInstruments.handlers],
+        },
     },
 };
 
@@ -87,6 +91,23 @@ export const CashOutNotConfigured: ElementStory = {
     args: { mockedApi: true },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.cashOutNotConfigured },
+    },
+};
+
+// The fees load in the request modal, so this error shows once "Start instant CashOut" is clicked.
+export const FeesError: ElementStory = {
+    name: 'Error - Fees',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.feesInternalServerError },
+    },
+};
+
+export const CashOutError: ElementStory = {
+    name: 'Error - Cash out',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.instructInternalServerError },
     },
 };
 

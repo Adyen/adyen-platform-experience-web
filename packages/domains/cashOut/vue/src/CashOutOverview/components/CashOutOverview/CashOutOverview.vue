@@ -3,8 +3,10 @@ import { ref } from 'vue';
 import { BentoButton, BentoInfoIcon, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { ComponentShell, useShouldHideTitles } from '@integration-components/composables-vue';
+import type { ICashOutResponse } from '@integration-components/types';
 import { CashOutOverviewProps } from '../../types';
 import { useCashOutState } from '../../../shared/composables/useCashOutState';
+import { useFormatAmount } from '../../../shared/composables/useFormatAmount';
 import CashOutHeader from '../../../shared/CashOutHeader/CashOutHeader.vue';
 import UnavailableReasonAlert from '../../../shared/UnavailableReasonAlert/UnavailableReasonAlert.vue';
 import CashOutOverviewSkeleton from '../CashOutOverviewSkeleton/CashOutOverviewSkeleton.vue';
@@ -15,17 +17,28 @@ const props = defineProps<CashOutOverviewProps>();
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
+const formatAmount = useFormatAmount();
 
-const { balanceAccountOptions, eligibility, errorInfo, selectedBalanceAccountId, shellState } = useCashOutState();
+const { balanceAccountOptions, eligibility, errorInfo, refreshEligibility, selectedBalanceAccountId, shellState } = useCashOutState();
 
 const isRequestModalOpen = ref(false);
+let hasInstructedCashOut = false;
 
 const openRequestModal = () => {
     isRequestModalOpen.value = true;
 };
 
+const handleSubmit = (cashOut: ICashOutResponse) => {
+    hasInstructedCashOut = true;
+    props.onSubmit?.(cashOut);
+};
+
+// Refreshed on close rather than on success, so the success screen doesn't change while it's open.
 const closeRequestModal = () => {
     isRequestModalOpen.value = false;
+    if (!hasInstructedCashOut) return;
+    hasInstructedCashOut = false;
+    refreshEligibility();
 };
 </script>
 
@@ -48,7 +61,7 @@ const closeRequestModal = () => {
                         <BentoInfoIcon :tooltip-text="i18n.get('cashOut.common.availableForCashOut.tooltip')" />
                     </div>
                     <BentoTypography variant="title" large>
-                        {{ i18n.amount(eligibility.availableForCashOutBalance.value, eligibility.availableForCashOutBalance.currency) }}
+                        {{ formatAmount(eligibility.availableForCashOutBalance) }}
                     </BentoTypography>
                 </div>
                 <UnavailableReasonAlert :eligibility="eligibility" :on-contact-support="props.onContactSupport" />
@@ -61,6 +74,7 @@ const closeRequestModal = () => {
             :balance-account-id="selectedBalanceAccountId"
             :eligibility="eligibility"
             :is-open="isRequestModalOpen"
+            :on-submit="handleSubmit"
             :on-close="closeRequestModal"
             :on-contact-support="props.onContactSupport"
         />
