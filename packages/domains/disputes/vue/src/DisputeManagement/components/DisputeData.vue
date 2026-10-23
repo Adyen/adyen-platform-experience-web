@@ -91,8 +91,8 @@ const alertMode = computed<DisputeDataAlertMode | undefined>(() => {
 
 const defendButtonLabel = computed(() =>
     dispute.value?.dispute.type === 'REQUEST_FOR_INFORMATION'
-        ? i18n.get('disputes.management.details.actions.submitInformation')
-        : i18n.get('disputes.management.details.actions.defendChargeback')
+        ? i18n.get('disputes.management.details.submitInformation')
+        : i18n.get('disputes.management.details.defendChargeback')
 );
 
 const extraFields = ref<Record<string, unknown> | undefined>();
@@ -155,14 +155,14 @@ const actionButtons = computed(() => {
     }
     if (isAcceptable.value) {
         buttons.push({
-            title: i18n.get('disputes.management.details.actions.accept'),
+            title: i18n.get('disputes.management.details.accept'),
             event: onAcceptClick,
             variant: 'secondary' as const,
         });
     }
     if (showContactSupport.value && props.onContactSupport) {
         buttons.push({
-            title: i18n.get('disputes.management.details.actions.contactSupport'),
+            title: i18n.get('disputes.management.details.contactSupport'),
             event: props.onContactSupport,
             variant: 'secondary' as const,
         });
@@ -177,7 +177,7 @@ const actionButtons = computed(() => {
     }
     if (props.onDismiss && !withinModal) {
         buttons.push({
-            title: i18n.get('disputes.management.common.actions.goBack'),
+            title: i18n.get('disputes.management.actions.goBack'),
             event: props.onDismiss,
             variant: 'secondary' as const,
         });
@@ -200,11 +200,11 @@ const paymentMethodDetail = computed(() =>
         <ComponentShell
             :state="shellState"
             :error="error"
-            :error-message="'disputes.management.common.errors.unavailable'"
-            :not-found-message="'disputes.management.common.errors.notFound'"
+            :error-message="'disputes.management.errors.unavailable'"
+            :not-found-message="'disputes.management.errors.notFound'"
             :on-contact-support="props.onContactSupport"
             :on-dismiss="props.onDismiss"
-            :dismiss-label="'disputes.management.common.actions.goBack'"
+            :dismiss-label="'disputes.management.actions.goBack'"
             :on-refresh="retryFetch"
         >
             <template #loading>

@@ -25,7 +25,7 @@ const { i18n } = useCoreContext();
 
 const requestedFunds = computed(() => i18n.amount(props.grant.grantAmount.value, props.grant.grantAmount.currency));
 const requestedFundsText = computed(() =>
-    i18n.get('capital.overview.grants.item.details.requestedFunds', {
+    i18n.get('capital.overview.grants.details.requestedFunds', {
         values: { amount: requestedFunds.value },
     })
 );

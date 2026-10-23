@@ -8,13 +8,13 @@ export const sharedCapitalOverviewAnalyticsEventProperties = {
 
 export const GRANT_ACTION_CONFIGS: ActionConfigs = {
     signToS: {
-        buttonLabelKey: 'capital.overview.grants.item.actions.viewTermsAndConditions',
+        buttonLabelKey: 'capital.overview.grants.viewTermsAndConditions',
         eventLabel: 'Go to terms & conditions button clicked',
-        successButtonLabelKey: 'capital.overview.grants.item.actions.viewTermsAndConditionsSuccess',
+        successButtonLabelKey: 'capital.overview.grants.viewTermsAndConditionsSuccess',
     },
     AnaCredit: {
-        buttonLabelKey: 'capital.overview.grants.item.actions.submitInformation',
+        buttonLabelKey: 'capital.overview.grants.submitInformation',
         eventLabel: 'Submit information for AnaCredit button',
-        successButtonLabelKey: 'capital.overview.grants.item.actions.submitInformationSuccess',
+        successButtonLabelKey: 'capital.overview.grants.submitInformationSuccess',
     },
 };

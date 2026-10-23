@@ -18,7 +18,7 @@ const accountDetails = computed(() => getBankAccountDetails(props.bankAccount));
 
 const copyValue = async (value: string) => {
     await navigator.clipboard?.writeText(value);
-    announce(() => i18n.get('capital.common.actions.copy.labels.done'));
+    announce(() => i18n.get('capital.common.copy.done'));
 };
 </script>
 

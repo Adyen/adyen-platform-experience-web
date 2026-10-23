@@ -115,7 +115,7 @@ const handleReview = async () => {
 const actions = computed<BentoButtonActionsList>(() => {
     return [
         {
-            title: i18n.get('capital.offer.selection.actions.reviewOffer'),
+            title: i18n.get('capital.offer.selection.reviewOffer'),
             disabled: isReviewDisabled.value,
             state: isCreateOfferLoading.value ? 'loading' : 'start',
             event: handleReview,
@@ -123,7 +123,7 @@ const actions = computed<BentoButtonActionsList>(() => {
         ...(props.onDismiss
             ? [
                   {
-                      title: i18n.get('capital.offer.selection.actions.goBack'),
+                      title: i18n.get('capital.offer.selection.goBack'),
                       event: props.onDismiss,
                   },
               ]

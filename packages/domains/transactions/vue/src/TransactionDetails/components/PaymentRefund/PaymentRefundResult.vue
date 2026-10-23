@@ -24,7 +24,7 @@ const descriptionKey = computed(() =>
 );
 const actionButtons = computed<BentoButtonActionsList>(() => [
     {
-        title: i18n.get('transactions.details.refund.actions.back'),
+        title: i18n.get('transactions.details.refund.back'),
         variant: 'secondary',
         event: () => {
             props.showDetails();

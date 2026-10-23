@@ -176,15 +176,15 @@ const {
     fields: REPORTS_TABLE_FIELDS,
     customColumns: () => props.customColumns,
     fieldsKeys: {
-        createdAt: 'reports.overview.list.fields.createdAt',
-        reportType: 'reports.overview.list.fields.reportType',
-        reportFile: 'reports.overview.list.fields.reportFile',
+        createdAt: 'reports.overview.list.createdAt',
+        reportType: 'reports.overview.list.reportType',
+        reportFile: 'reports.overview.list.reportFile',
     } satisfies Record<string, ReportsTranslationKey>,
     columnConfig: () => ({ createdAt: { flex: 1 }, reportType: { flex: 1 }, reportFile: { flex: 1, numeric: isMobile.value } }),
     customColumnDefaults: () => ({ flex: 1 }),
     customColumnWidths: () => customColumnWidths.value,
     resolveCustomColumnLabel: key => {
-        const labelKey = `reports.overview.list.fields.${key}`;
+        const labelKey = `reports.overview.list.${key}`;
         return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
     },
 });
@@ -209,7 +209,7 @@ const columns = computed(() => {
         return [
             {
                 field: 'dateAndReportType',
-                label: i18n.get('reports.overview.list.fields.reportType'),
+                label: i18n.get('reports.overview.list.reportType'),
                 flex: 1,
                 minWidth: customColumnWidths.value.dateAndReportType,
             },
@@ -336,17 +336,17 @@ function formatDate(dateStr: string): string {
             </template>
             <template #item-reportFile="{ item }">
                 <BentoButton
-                    v-bento-tooltip="i18n.get('reports.overview.list.controls.downloadReport.label')"
+                    v-bento-tooltip="i18n.get('reports.overview.list.downloadReport')"
                     condensed
                     variant="secondary"
-                    :aria-label="i18n.get('reports.overview.list.controls.downloadReport.label')"
+                    :aria-label="i18n.get('reports.overview.list.downloadReport')"
                     :disabled="frozen || isDownloadingReport(getReportKey(item._raw))"
                     @click.stop="handleDownload(item._raw)"
                 >
                     <template #iconLeft>
                         <component :is="getDownloadIcon(item._raw)" />
                     </template>
-                    <template v-if="!isMobile" #default>{{ i18n.get('reports.overview.list.controls.downloadReport.label') }}</template>
+                    <template v-if="!isMobile" #default>{{ i18n.get('reports.overview.list.downloadReport') }}</template>
                 </BentoButton>
             </template>
             <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">

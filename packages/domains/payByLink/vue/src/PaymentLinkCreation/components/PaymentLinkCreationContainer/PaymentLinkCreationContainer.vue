@@ -43,7 +43,7 @@ const state = ref<CreationState>('Creation');
 const titleKey = computed<TranslationKey | undefined>(() => {
     if (state.value === 'Success') return undefined;
     if (state.value === 'Details') return 'payByLink.details.title';
-    return 'payByLink.creation.form.title';
+    return 'payByLink.creation.title';
 });
 
 watch(titleKey, title => props.onTitleChange?.(title), { immediate: true });
@@ -91,7 +91,7 @@ function handleShowDetails() {
         <template #loading>
             <div :class="styles.loading">
                 <BentoTypography v-if="!withinModal && !hideTitles" variant="title" stronger>
-                    {{ i18n.get('payByLink.creation.form.title') }}
+                    {{ i18n.get('payByLink.creation.title') }}
                 </BentoTypography>
                 <PaymentLinkCreationFormSkeleton
                     :step="initialSkeletonStep"

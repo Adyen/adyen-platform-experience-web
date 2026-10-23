@@ -49,11 +49,11 @@ const canDownloadTransactions = computed(() => isFunction(config.endpoints.downl
 const activeFilters = computed<readonly TransactionsTranslationKey[]>(() => {
     const { balanceAccountId, paymentPspReference, createdSince, createdUntil, categories, currencies } = filters.value;
     return [
-        ...(balanceAccountId ? (['transactions.overview.export.filters.types.account'] as const) : EMPTY_ARRAY),
-        ...(createdSince && createdUntil ? (['transactions.overview.export.filters.types.date'] as const) : EMPTY_ARRAY),
-        ...(categories.length ? (['transactions.overview.export.filters.types.category'] as const) : EMPTY_ARRAY),
-        ...(currencies.length ? (['transactions.overview.export.filters.types.currency'] as const) : EMPTY_ARRAY),
-        ...(paymentPspReference ? (['transactions.overview.export.filters.types.paymentPspReference'] as const) : EMPTY_ARRAY),
+        ...(balanceAccountId ? (['transactions.overview.export.filters.account'] as const) : EMPTY_ARRAY),
+        ...(createdSince && createdUntil ? (['transactions.overview.export.filters.date'] as const) : EMPTY_ARRAY),
+        ...(categories.length ? (['transactions.overview.export.filters.category'] as const) : EMPTY_ARRAY),
+        ...(currencies.length ? (['transactions.overview.export.filters.currency'] as const) : EMPTY_ARRAY),
+        ...(paymentPspReference ? (['transactions.overview.export.filters.paymentPspReference'] as const) : EMPTY_ARRAY),
     ] as readonly TransactionsTranslationKey[];
 });
 
@@ -78,7 +78,7 @@ const { isFetching, error } = useDownload(
 
 watch(error, err => {
     if (err) {
-        activeExportErrorToast = addToast({ text: i18n.get('transactions.overview.export.actions.error') });
+        activeExportErrorToast = addToast({ text: i18n.get('transactions.overview.export.errors.download') });
     }
 });
 
@@ -136,7 +136,7 @@ const masterSwitchChecked = computed(() => exportColumns.value.length === EXPORT
 const columnSwitches = computed(() =>
     EXPORT_COLUMNS.map(column => ({
         column,
-        label: i18n.get(`transactions.overview.export.columns.types.${column}` as TransactionsTranslationKey),
+        label: i18n.get(`transactions.overview.export.columns.${column}` as TransactionsTranslationKey),
         checked: exportColumns.value.includes(column),
     }))
 );
@@ -177,12 +177,12 @@ const popoverActions = computed(() => [
     {
         disabled: !exportColumns.value.length,
         event: startExport,
-        title: i18n.get('transactions.overview.export.actions.download'),
+        title: i18n.get('transactions.overview.export.download'),
         ...(isFetching.value ? ({ state: 'loading' } as const) : {}),
     },
     {
         event: dismissPopover,
-        title: i18n.get('transactions.overview.export.actions.cancel'),
+        title: i18n.get('transactions.overview.export.cancel'),
     },
 ]);
 </script>
@@ -194,7 +194,7 @@ const popoverActions = computed(() => [
             ref="targetElement"
             variant="secondary"
             :disabled="props.disabled || isFetching"
-            :aria-label="i18n.get('transactions.overview.export.button.label')"
+            :aria-label="i18n.get('transactions.overview.export.buttonLabel')"
             aria-haspopup="dialog"
             :aria-expanded="popoverOpen"
             @click="togglePopover"
@@ -202,7 +202,7 @@ const popoverActions = computed(() => [
             <template #iconLeft>
                 <DownloadIcon />
             </template>
-            {{ isFetching ? i18n.get('transactions.overview.export.button.inProgress') : i18n.get('transactions.overview.export.button.label') }}
+            {{ isFetching ? i18n.get('transactions.overview.export.buttonInProgress') : i18n.get('transactions.overview.export.buttonLabel') }}
         </BentoButton>
 
         <BentoPopover
@@ -231,7 +231,7 @@ const popoverActions = computed(() => [
                         {{ i18n.get('transactions.overview.export.columns.title') }}
                     </BentoTypography>
                     <BentoToggle label-position="after" :value="masterSwitchChecked" @input="onMasterSwitchChange">
-                        {{ i18n.get('transactions.overview.export.columns.types.all', { values: { count: EXPORT_COLUMNS.length } }) }}
+                        {{ i18n.get('transactions.overview.export.columns.all', { values: { count: EXPORT_COLUMNS.length } }) }}
                     </BentoToggle>
                     <BentoToggle
                         v-for="{ column, label, checked } in columnSwitches"
@@ -248,7 +248,7 @@ const popoverActions = computed(() => [
             <BentoAlert type="highlight" variant="tip">
                 <template #description>
                     <BentoTypography variant="body" el="span" strongest>
-                        {{ i18n.get('transactions.overview.export.actions.download.info') }}
+                        {{ i18n.get('transactions.overview.export.downloadInfo') }}
                     </BentoTypography>
                 </template>
             </BentoAlert>

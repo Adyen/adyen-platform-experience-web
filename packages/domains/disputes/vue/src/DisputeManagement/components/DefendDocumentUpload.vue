@@ -178,13 +178,13 @@ async function submitDefenseDocuments() {
 
 const uploadActionButtons = computed(() => [
     {
-        title: i18n.get('disputes.management.defend.common.actions.submit'),
+        title: i18n.get('disputes.management.defend.submit'),
         disabled: !canSubmitDocuments.value,
         event: () => void submitDefenseDocuments(),
         state: isSubmittingDefense.value ? 'loading' : 'start',
     },
     {
-        title: i18n.get('disputes.management.common.actions.goBack'),
+        title: i18n.get('disputes.management.actions.goBack'),
         disabled: isSubmittingDefense.value,
         event: goBack,
         variant: 'secondary',
@@ -194,29 +194,29 @@ const uploadActionButtons = computed(() => [
 
 <template>
     <BentoTypography variant="body">
-        {{ i18n.get('disputes.management.defend.common.documentUploadInfo') }}
+        {{ i18n.get('disputes.management.defend.documentUploadInfo') }}
     </BentoTypography>
     <BentoCard expandable closed background="secondary">
         <template #header>
             <BentoTypography :class="styles.documentRequirements" variant="body" strongest>
-                {{ i18n.get('disputes.management.defend.common.documentRequirements') }}
+                {{ i18n.get('disputes.management.defend.documentRequirements') }}
             </BentoTypography>
         </template>
         <template #content>
             <ul>
                 <li>
                     <BentoTypography variant="body">
-                        {{ i18n.get('disputes.management.defend.common.documentRequirements.language') }}
+                        {{ i18n.get('disputes.management.defend.documentRequirements.language') }}
                     </BentoTypography>
                 </li>
                 <li>
                     <BentoTypography variant="body">
-                        {{ i18n.get('disputes.management.defend.common.documentRequirements.recommendedSize') }}
+                        {{ i18n.get('disputes.management.defend.documentRequirements.recommendedSize') }}
                     </BentoTypography>
                 </li>
                 <li>
                     <BentoTypography variant="body">
-                        {{ i18n.get('disputes.management.defend.common.documentRequirements.formatAndSize') }}
+                        {{ i18n.get('disputes.management.defend.documentRequirements.formatAndSize') }}
                     </BentoTypography>
                 </li>
             </ul>
@@ -242,12 +242,12 @@ const uploadActionButtons = computed(() => [
 
                 <div v-if="oneOrMoreDocuments.length" :class="styles.documentUpload">
                     <BentoTypography variant="body" strongest>
-                        {{ i18n.get('disputes.management.defend.common.documentTypes.required') }}
+                        {{ i18n.get('disputes.management.defend.documentTypes.required') }}
                     </BentoTypography>
                     <SelectDropdown
                         :items="oneOrMoreDocuments"
                         :model-value="oneOrMoreSelectedDocument"
-                        :placeholder="i18n.get('disputes.management.defend.common.inputs.documentSelect.a11y.label')"
+                        :placeholder="i18n.get('disputes.management.defend.documentSelect.a11yLabel')"
                         :disabled="isSubmittingDefense"
                         @update:model-value="updateOneOrMoreSelection"
                     />
@@ -273,10 +273,10 @@ const uploadActionButtons = computed(() => [
             <div :class="styles.documentUpload">
                 <div :class="styles.deleteButtonContainer">
                     <BentoTypography variant="body" strongest>
-                        {{ i18n.get('disputes.management.defend.common.documentTypes.optional') }}
+                        {{ i18n.get('disputes.management.defend.documentTypes.optional') }}
                     </BentoTypography>
                     <BentoButton
-                        :aria-label="i18n.get('disputes.management.defend.common.actions.deleteOptionalDocument')"
+                        :aria-label="i18n.get('disputes.management.defend.deleteOptionalDocument')"
                         :disabled="isSubmittingDefense"
                         variant="tertiary"
                         @click="removeSelectedOptionalDocument(index)"
@@ -289,7 +289,7 @@ const uploadActionButtons = computed(() => [
                 <SelectDropdown
                     :items="availableOptionalDocuments"
                     :model-value="documentType"
-                    :placeholder="i18n.get('disputes.management.defend.common.inputs.documentSelect.a11y.label')"
+                    :placeholder="i18n.get('disputes.management.defend.documentSelect.a11yLabel')"
                     :disabled="isSubmittingDefense"
                     @update:model-value="value => updateOptionalSelection(value, index)"
                 />
@@ -310,7 +310,7 @@ const uploadActionButtons = computed(() => [
             <template #iconLeft>
                 <PlusIcon aria-hidden="true" />
             </template>
-            {{ i18n.get('disputes.management.defend.common.actions.addOptionalDocument') }}
+            {{ i18n.get('disputes.management.defend.addOptionalDocument') }}
         </BentoButton>
     </div>
 

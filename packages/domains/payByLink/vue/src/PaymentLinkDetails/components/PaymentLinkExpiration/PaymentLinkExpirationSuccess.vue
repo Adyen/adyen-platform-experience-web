@@ -15,10 +15,10 @@ const { i18n } = useCoreContext();
 
 const actionButtons = computed<BentoButtonActionsList>(() => [
     ...(props.onDismiss
-        ? [{ title: i18n.get('payByLink.details.expirationSuccess.actions.goBackToList'), event: props.onDismiss, variant: 'secondary' as const }]
+        ? [{ title: i18n.get('payByLink.details.expirationSuccess.goBackToList'), event: props.onDismiss, variant: 'secondary' as const }]
         : []),
     {
-        title: i18n.get('payByLink.details.expirationSuccess.actions.showDetails'),
+        title: i18n.get('payByLink.details.expirationSuccess.showDetails'),
         event: props.onShowDetails,
         variant: 'secondary',
     },

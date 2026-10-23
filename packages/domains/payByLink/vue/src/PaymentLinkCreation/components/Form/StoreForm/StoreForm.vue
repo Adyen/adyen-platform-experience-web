@@ -47,9 +47,9 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
     <div :class="layoutStyles.fieldsContainer">
         <StoreField
             name="store"
-            :label="i18n.get('payByLink.creation.fields.store.label')"
+            :label="i18n.get('payByLink.creation.store')"
             :items="props.selectItems"
-            :placeholder="i18n.get('payByLink.creation.inputs.select.placeholder')"
+            :placeholder="i18n.get('payByLink.creation.select')"
         />
         <BentoAlert v-if="showTcAlert" type="warning" role="alert">
             {{ i18n.get('payByLink.creation.storeForm.alerts.tcSetupRequiredTitle') }}

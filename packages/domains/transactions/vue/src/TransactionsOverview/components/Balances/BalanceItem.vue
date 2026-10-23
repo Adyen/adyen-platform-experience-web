@@ -23,7 +23,7 @@ const { i18n } = useCoreContext();
             :value1="formattedAvailable"
             :label2="i18n.get('transactions.overview.balances.tags.reserved')"
             :value2="formattedReserved"
-            :tooltip2="props.isHeader ? i18n.get('transactions.overview.balances.tags.reserved.description') : undefined"
+            :tooltip2="props.isHeader ? i18n.get('transactions.overview.balances.tags.reservedDescription') : undefined"
             :widths="props.widths"
             @widths-set="emit('widthsSet', $event)"
         />

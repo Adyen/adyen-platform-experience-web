@@ -81,7 +81,7 @@ function handleNavigationToDetailsAfterExpiration() {
                 :state="shellState"
                 :error-info="errorInfo"
                 :on-dismiss="props.onDismiss"
-                dismiss-label="payByLink.common.actions.goBack"
+                dismiss-label="payByLink.common.goBack"
                 :on-refresh="refetch"
             >
                 <template #loading>

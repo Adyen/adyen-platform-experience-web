@@ -20,16 +20,16 @@ const required = computed(() => config.value.required || wizard.getFieldConfig('
 const presetItems = computed(() =>
     (props.options ?? []).map(({ quantity, durationUnit, type }) => {
         if (type === FLEXIBLE_VALIDITY_ID) {
-            return { label: i18n.get('payByLink.creation.fields.validity.linkValidityUnit.custom'), value: FLEXIBLE_VALIDITY_ID };
+            return { label: i18n.get('payByLink.creation.validity.linkValidityUnit.custom'), value: FLEXIBLE_VALIDITY_ID };
         }
-        const key = `payByLink.creation.fields.validity.linkValidityUnit.${durationUnit}` as PayByLinkTranslationKey;
+        const key = `payByLink.creation.validity.linkValidityUnit.${durationUnit}` as PayByLinkTranslationKey;
         return { label: i18n.get(key, { values: { quantity }, count: quantity }), value: `${quantity} ${durationUnit}` };
     })
 );
 
 const unitItems = computed(() =>
     LINK_VALIDITY_DURATION_UNITS.map(unit => ({
-        label: i18n.get(`payByLink.creation.fields.validity.linkValidityUnit.${unit}__plural` as PayByLinkTranslationKey),
+        label: i18n.get(`payByLink.creation.validity.linkValidityUnit.${unit}__plural` as PayByLinkTranslationKey),
         value: unit,
     }))
 );
@@ -100,9 +100,9 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
         <FieldWrapper name="linkValidity.durationUnit">
             <BentoDropdown
                 :items="presetItems"
-                :label="i18n.get('payByLink.creation.fields.validity.label')"
-                :description="i18n.get('payByLink.creation.fields.validity.supportText')"
-                :placeholder="i18n.get('payByLink.creation.inputs.select.placeholder')"
+                :label="i18n.get('payByLink.creation.validity.label')"
+                :description="i18n.get('payByLink.creation.validity.supportText')"
+                :placeholder="i18n.get('payByLink.creation.select')"
                 :model-value="selection"
                 :optional="!required"
                 :clearable="!required"
@@ -113,7 +113,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
         <FieldWrapper v-if="selection === FLEXIBLE_VALIDITY_ID" name="linkValidity.quantity">
             <BentoFormLayoutGroup layout="33-66" :error-message="error">
                 <BentoInputField
-                    :label="i18n.get('payByLink.creation.fields.validity.customDuration.label')"
+                    :label="i18n.get('payByLink.creation.validity.customDuration')"
                     type="number"
                     :model-value="quantity"
                     :min="1"
@@ -123,7 +123,7 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                 />
                 <BentoDropdown
                     :items="unitItems"
-                    :placeholder="i18n.get('payByLink.creation.inputs.select.placeholder')"
+                    :placeholder="i18n.get('payByLink.creation.select')"
                     :model-value="unit"
                     :clearable="!required"
                     :readonly="config.readOnly"

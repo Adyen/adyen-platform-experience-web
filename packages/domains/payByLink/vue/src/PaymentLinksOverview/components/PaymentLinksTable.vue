@@ -81,24 +81,24 @@ function getTimeToDeadline(dueDate: string): string {
     const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
 
     return diffInDays <= 1
-        ? i18n.get('payByLink.overview.common.actionNeeded.expiresToday', { values: { date: formattedDate } })
-        : i18n.get('payByLink.overview.common.actionNeeded.expiresDays', { values: { days: diffInDays, date: formattedDate } });
+        ? i18n.get('payByLink.overview.actionNeeded.expiresToday', { values: { date: formattedDate } })
+        : i18n.get('payByLink.overview.actionNeeded.expiresDays', { values: { days: diffInDays, date: formattedDate } });
 }
 
 const { columns: desktopColumns } = useTableColumns<PaymentLinkTableCols>({
     fields: PAYMENT_LINKS_TABLE_FIELDS,
     customColumns: () => undefined,
     fieldsKeys: {
-        paymentLinkId: 'payByLink.overview.list.fields.id',
-        merchantReference: 'payByLink.overview.list.fields.merchantReference',
-        storeCode: 'payByLink.overview.list.fields.store',
-        currency: 'payByLink.overview.list.fields.currency',
-        amount: 'payByLink.overview.list.fields.amount',
-        status: 'payByLink.overview.list.fields.status',
-        expirationDate: 'payByLink.overview.list.fields.expirationDate',
-        creationDate: 'payByLink.overview.list.fields.createdAt',
-        linkType: 'payByLink.overview.list.fields.linkType',
-        shopperEmail: 'payByLink.overview.list.fields.shopperEmail',
+        paymentLinkId: 'payByLink.overview.list.id',
+        merchantReference: 'payByLink.overview.list.merchantReference',
+        storeCode: 'payByLink.overview.list.store',
+        currency: 'payByLink.overview.list.currency',
+        amount: 'payByLink.overview.list.amount',
+        status: 'payByLink.overview.list.status',
+        expirationDate: 'payByLink.overview.list.expirationDate',
+        creationDate: 'payByLink.overview.list.createdAt',
+        linkType: 'payByLink.overview.list.linkType',
+        shopperEmail: 'payByLink.overview.list.shopperEmail',
     },
     columnConfig: () => ({ storeCode: { visible: !!props.hasMultipleStores }, amount: { numeric: true } }),
     customColumnWidths: () => customColumnWidths.value,
@@ -109,13 +109,13 @@ const columns = computed<BentoColumn[]>(() => {
         return [
             {
                 field: 'paymentLinkId',
-                label: i18n.get('payByLink.overview.list.fields.id'),
+                label: i18n.get('payByLink.overview.list.id'),
                 flex: 2,
                 minWidth: customColumnWidths.value.paymentLinkId,
             },
             {
                 field: 'amount',
-                label: i18n.get('payByLink.overview.list.fields.amount'),
+                label: i18n.get('payByLink.overview.list.amount'),
                 flex: 1,
                 minWidth: customColumnWidths.value.amount,
                 numeric: true,
@@ -223,7 +223,7 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
                     <time :datetime="item.expirationDate">
                         <BentoTypography variant="caption" :class="styles.mobileExpireDateCell">
                             {{
-                                i18n.get('payByLink.overview.common.actionNeeded.expiresAt', {
+                                i18n.get('payByLink.overview.actionNeeded.expiresAt', {
                                     values: { date: dateFormat(item.expirationDate, DATE_FORMAT_PAYMENT_LINKS_OVERVIEW_EXPIRATION_DATE) },
                                 })
                             }}

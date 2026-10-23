@@ -10,12 +10,12 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const actions = computed<BentoButtonActionsList | undefined>(() =>
-    props.onDismiss ? [{ title: i18n.get('capital.common.actions.goBack'), event: props.onDismiss }] : undefined
+    props.onDismiss ? [{ title: i18n.get('capital.common.goBack'), event: props.onDismiss }] : undefined
 );
 </script>
 
 <template>
-    <EmptyState :title="i18n.get('capital.offer.common.noOfferTitle')" type="highlight" :actions="actions">
-        {{ i18n.get('capital.offer.common.noOfferDescription') }}
+    <EmptyState :title="i18n.get('capital.offer.noOfferTitle')" type="highlight" :actions="actions">
+        {{ i18n.get('capital.offer.noOfferDescription') }}
     </EmptyState>
 </template>

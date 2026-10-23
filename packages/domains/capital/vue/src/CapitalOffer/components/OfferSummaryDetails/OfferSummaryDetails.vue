@@ -38,10 +38,10 @@ const renewableGrantItems = computed(() => (renewableGrantDetails.value ? getIte
 <template>
     <section>
         <BentoTabs v-if="isEarlyRenewal">
-            <BentoTab :title="i18n.get('capital.offer.summary.earlyRenewal.tabs.newGrant')">
+            <BentoTab :title="i18n.get('capital.offer.summary.earlyRenewal.newGrant')">
                 <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="offerItems" :class="styles.list" />
             </BentoTab>
-            <BentoTab :title="i18n.get('capital.offer.summary.earlyRenewal.tabs.currentGrant')">
+            <BentoTab :title="i18n.get('capital.offer.summary.earlyRenewal.currentGrant')">
                 <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="renewableGrantItems" :class="styles.list" />
             </BentoTab>
         </BentoTabs>

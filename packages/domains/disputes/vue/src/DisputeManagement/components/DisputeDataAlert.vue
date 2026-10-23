@@ -22,10 +22,10 @@ const alertText = computed(() => {
         case 'contactSupport': {
             const translationKey =
                 currentDispute.type === 'REQUEST_FOR_INFORMATION'
-                    ? 'disputes.management.details.alerts.contactSupport.requestForInformation'
+                    ? 'disputes.management.details.alerts.contactSupportRequestForInformation'
                     : currentDispute.type === 'NOTIFICATION_OF_FRAUD'
-                      ? 'disputes.management.details.alerts.contactSupport.notificationOfFraud'
-                      : 'disputes.management.details.alerts.contactSupport.chargeback';
+                      ? 'disputes.management.details.alerts.contactSupportNotificationOfFraud'
+                      : 'disputes.management.details.alerts.contactSupportChargeback';
             const message = i18n.get(translationKey);
             if (currentDispute.type === 'NOTIFICATION_OF_FRAUD' || !currentDispute.dueDate) return message;
             return `${message} ${i18n.get('disputes.management.details.alerts.responseDeadline', {

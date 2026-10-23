@@ -40,7 +40,7 @@ const { internalFilterValue, isApplyButtonDisabled, clearFilter, openFilter, res
 const hasInvalidInput = ref(false);
 const hasInvalidLength = computed(() => !!internalFilterValue.value && internalFilterValue.value.length < PSP_REFERENCE_LENGTH);
 const invalidLengthError = computed(() =>
-    i18n.get('transactions.overview.filters.types.paymentPspReference.errors.invalidLength', {
+    i18n.get('transactions.overview.filters.paymentPspReferenceErrors.invalidLength', {
         values: { length: PSP_REFERENCE_LENGTH },
     })
 );

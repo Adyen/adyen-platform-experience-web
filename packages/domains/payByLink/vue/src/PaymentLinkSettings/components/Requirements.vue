@@ -31,14 +31,14 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 
     if (props.termsAndConditionsUrl) {
         actions.push({
-            title: i18n.get('payByLink.settings.terms.requirements.actions.confirmRequirements'),
+            title: i18n.get('payByLink.settings.requirements.confirmRequirements'),
             event: onAcceptRequirements,
             variant: 'primary',
         });
     }
 
     actions.push({
-        title: i18n.get('payByLink.settings.terms.requirements.actions.goBack'),
+        title: i18n.get('payByLink.settings.requirements.goBack'),
         event: () => emit('goBack'),
         variant: 'secondary',
     });

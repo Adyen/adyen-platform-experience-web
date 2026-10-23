@@ -21,10 +21,10 @@ const { i18n } = useCoreContext();
         <SummaryItemPair
             :label1="i18n.get('transactions.overview.totals.tags.incoming')"
             :value1="formattedIncomings"
-            :tooltip1="props.isHeader ? i18n.get('transactions.overview.totals.tags.incoming.description') : undefined"
+            :tooltip1="props.isHeader ? i18n.get('transactions.overview.totals.tags.incomingDescription') : undefined"
             :label2="i18n.get('transactions.overview.totals.tags.outgoing')"
             :value2="formattedExpenses"
-            :tooltip2="props.isHeader ? i18n.get('transactions.overview.totals.tags.outgoing.description') : undefined"
+            :tooltip2="props.isHeader ? i18n.get('transactions.overview.totals.tags.outgoingDescription') : undefined"
             :widths="props.widths"
             @widths-set="emit('widthsSet', $event)"
         />

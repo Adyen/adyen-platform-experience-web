@@ -82,7 +82,7 @@ const onTabChange = (newIndex: number) => {
             <BentoTabs
                 v-if="navigationTabs.length > 1"
                 :class="styles.tabs"
-                :aria-label="i18n.get('transactions.details.viewSelect.a11y.label')"
+                :aria-label="i18n.get('transactions.details.viewSelect.a11yLabel')"
                 :active-tab-index="activeTabIndex"
                 @update:active-tab-index="onTabChange"
             >

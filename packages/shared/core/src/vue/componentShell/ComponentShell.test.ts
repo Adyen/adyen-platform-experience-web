@@ -167,13 +167,13 @@ describe('ComponentShell', () => {
             state: 'error',
             error: new Error('boom'),
             errorMessage: 'transactions.details.errors.unavailable',
-            dismissLabel: 'transactions.details.common.actions.goBack',
+            dismissLabel: 'transactions.details.actions.goBack',
             onDismiss,
             onRefresh,
         });
         const buttons = [...target.querySelectorAll('button')];
 
-        const dismissButton = buttons.find(button => button.textContent === 'transactions.details.common.actions.goBack');
+        const dismissButton = buttons.find(button => button.textContent === 'transactions.details.actions.goBack');
         expect(dismissButton).toBeTruthy();
         dismissButton?.click();
         expect(onDismiss).toHaveBeenCalledOnce();

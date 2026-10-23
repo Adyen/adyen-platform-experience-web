@@ -76,7 +76,7 @@ const handleInput = (event: Event) => {
     <div :class="styles.root">
         <label :id="labelId" :for="sliderId" :class="styles.label">
             <BentoTypography variant="body" stronger>
-                {{ i18n.get('capital.offer.selection.slider.a11y.label') }}
+                {{ i18n.get('capital.offer.selection.sliderA11yLabel') }}
             </BentoTypography>
         </label>
         <output :aria-labelledby="labelId" :for="sliderId" aria-live="polite">
@@ -97,7 +97,7 @@ const handleInput = (event: Event) => {
         <div :class="styles.rangeLabels" aria-hidden="true">
             <div :class="styles.rangeLabel">
                 <BentoTypography variant="caption">
-                    {{ i18n.get('capital.offer.selection.slider.markers.min') }}
+                    {{ i18n.get('capital.offer.selection.sliderMin') }}
                 </BentoTypography>
                 <BentoTypography variant="body">
                     {{ i18n.amount(props.dynamicOfferConfig.minAmount.value, currency, { maximumFractionDigits: 0 }) }}
@@ -105,7 +105,7 @@ const handleInput = (event: Event) => {
             </div>
             <div :class="styles.rangeLabel">
                 <BentoTypography variant="caption">
-                    {{ i18n.get('capital.offer.selection.slider.markers.max') }}
+                    {{ i18n.get('capital.offer.selection.sliderMax') }}
                 </BentoTypography>
                 <BentoTypography variant="body">
                     {{ i18n.amount(props.dynamicOfferConfig.maxAmount.value, currency, { maximumFractionDigits: 0 }) }}

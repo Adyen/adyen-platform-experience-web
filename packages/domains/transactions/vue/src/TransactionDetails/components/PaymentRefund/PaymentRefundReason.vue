@@ -36,12 +36,12 @@ function onUpdate(value: string | number | { value?: string | number } | Array<u
     <div :class="layoutStyles.container">
         <div :class="styles.inputHead">
             <BentoTypography variant="body" stronger>
-                {{ i18n.get('transactions.details.refund.inputs.reason.label') }}
+                {{ i18n.get('transactions.details.refund.reason') }}
             </BentoTypography>
         </div>
         <div>
             <BentoDropdown
-                :placeholder="i18n.get('transactions.details.refund.inputs.reason.label')"
+                :placeholder="i18n.get('transactions.details.refund.reason')"
                 :items="refundReasons"
                 :model-value="props.reason"
                 :disabled="props.disabled"

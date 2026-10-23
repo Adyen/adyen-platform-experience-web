@@ -86,7 +86,7 @@ const submitError = ref<any>(null);
 const isSubmitError = ref(false);
 const selectedStoreNavigationCache = ref('');
 const showTermsAndConditions = ref(false);
-const titleKey = computed<TranslationKey>(() => (showTermsAndConditions.value ? 'payByLink.settings.title' : 'payByLink.creation.form.title'));
+const titleKey = computed<TranslationKey>(() => (showTermsAndConditions.value ? 'payByLink.settings.title' : 'payByLink.creation.title'));
 
 watch(titleKey, title => props.onTitleChange?.(title), { immediate: true });
 
@@ -107,8 +107,8 @@ const showStepSkeleton = computed(() => isNextStepLoading.value && currentFormSt
 
 const submitErrorTitle = computed(() =>
     getMappedInvalidFields(submitError.value).length
-        ? i18n.get('payByLink.creation.form.alert.invalidFields')
-        : i18n.get('payByLink.creation.form.alert.somethingWentWrong')
+        ? i18n.get('payByLink.creation.alert.invalidFields')
+        : i18n.get('payByLink.creation.alert.somethingWentWrong')
 );
 const mappedInvalidFields = computed(() => getMappedInvalidFields(submitError.value));
 
@@ -169,7 +169,7 @@ async function handleSubmit() {
 const buttonActions = computed<BentoButtonActionsList>(() => {
     const actions: BentoButtonActionsList = [
         {
-            title: wizard.isLastStep.value ? i18n.get('payByLink.creation.form.steps.submit') : i18n.get('payByLink.creation.form.steps.continue'),
+            title: wizard.isLastStep.value ? i18n.get('payByLink.creation.steps.submit') : i18n.get('payByLink.creation.steps.continue'),
             disabled: nextButtonDisabled.value || isNextStepLoading.value,
             event: wizard.isLastStep.value ? handleSubmit : handleContinue,
             variant: 'primary',
@@ -179,7 +179,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
 
     if (!wizard.isFirstStep.value || props.onDismiss) {
         actions.push({
-            title: i18n.get('payByLink.creation.form.steps.back'),
+            title: i18n.get('payByLink.creation.steps.back'),
             disabled: isSubmitting.value,
             event: handlePrevious,
             variant: 'secondary',
@@ -202,7 +202,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
     <div v-else :class="styles.root" :aria-busy="isNextStepLoading">
         <div :class="styles.header">
             <BentoTypography v-if="!withinModal && !hideTitles" variant="title" stronger>
-                {{ i18n.get('payByLink.creation.form.title') }}
+                {{ i18n.get('payByLink.creation.title') }}
             </BentoTypography>
             <BentoStepper
                 :index="wizard.currentIndex.value"
@@ -226,7 +226,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
                     </li>
                 </ul>
                 <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                    {{ i18n.get('payByLink.common.actions.contactSupport.labels.reachOut') }}
+                    {{ i18n.get('payByLink.common.contactSupport.reachOut') }}
                 </BentoButton>
             </template>
 
@@ -263,7 +263,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
                     <template #description>
                         <span>{{ i18n.get('payByLink.common.errors.contactSupport') }}</span>
                         <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                            {{ i18n.get('payByLink.common.actions.contactSupport.labels.reachOut') }}
+                            {{ i18n.get('payByLink.common.contactSupport.reachOut') }}
                         </BentoButton>
                     </template>
                 </BentoAlert>

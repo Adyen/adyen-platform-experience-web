@@ -24,7 +24,7 @@ function goBackToFileUploadView() {
 
 const actionButtons = computed<BentoButtonActionsList>(() => [
     {
-        title: isSuccess.value ? i18n.get('disputes.management.common.actions.showDetails') : i18n.get('disputes.management.common.actions.goBack'),
+        title: isSuccess.value ? i18n.get('disputes.management.actions.showDetails') : i18n.get('disputes.management.actions.goBack'),
         event: isSuccess.value ? goBackToDetails : goBackToFileUploadView,
         variant: 'secondary',
     },
@@ -36,7 +36,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
         <div v-if="isSuccess" :class="flowStyles.success">
             <CheckmarkCircleFillIcon :class="flowStyles.successIcon" />
             <BentoTypography variant="title">
-                {{ i18n.get('disputes.management.defend.common.evidenceSubmitted') }}
+                {{ i18n.get('disputes.management.defend.evidenceSubmitted') }}
             </BentoTypography>
             <BentoTypography :class="flowStyles.successDescription" variant="body">
                 {{ i18n.get('disputes.management.defend.chargeback.submitSuccessInfo') }}
@@ -46,10 +46,10 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
         <div v-else :class="flowStyles.error">
             <CrossCircleFillIcon :class="flowStyles.errorIcon" />
             <BentoTypography variant="title">
-                {{ i18n.get('disputes.management.defend.common.errors.somethingWentWrong') }}
+                {{ i18n.get('disputes.management.defend.errors.somethingWentWrong') }}
             </BentoTypography>
             <BentoTypography :class="flowStyles.errorDescription" variant="body">
-                {{ i18n.get('disputes.management.defend.common.errors.defenseFailed') }}
+                {{ i18n.get('disputes.management.defend.errors.defenseFailed') }}
             </BentoTypography>
             <ResponsiveButtonActions :actions="actionButtons" />
         </div>

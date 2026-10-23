@@ -49,18 +49,18 @@ describe('getBankAccountDetails', () => {
         expect(getBankAccountDetails(GRANT_NL_ACCOUNT)).toEqual([
             {
                 content: 'NL69 RABO 1319 7782 91',
-                copyButtonLabel: 'capital.overview.repayment.actions.copyIban',
+                copyButtonLabel: 'capital.overview.repayment.copyIban',
                 field: 'iban',
                 isPrimary: true,
-                label: 'capital.overview.repayment.accountDetails.fields.iban',
+                label: 'capital.overview.repayment.accountDetails.iban',
                 textToCopy: 'NL69RABO1319778291',
             },
             {
                 content: 'Adyen N.V.',
-                copyButtonLabel: 'capital.overview.repayment.actions.copyBeneficiaryName',
+                copyButtonLabel: 'capital.overview.repayment.copyBeneficiaryName',
                 field: 'beneficiaryName',
                 isPrimary: false,
-                label: 'capital.overview.repayment.accountDetails.fields.beneficiaryName',
+                label: 'capital.overview.repayment.accountDetails.beneficiaryName',
                 textToCopy: 'Adyen N.V.',
             },
             {
@@ -68,7 +68,7 @@ describe('getBankAccountDetails', () => {
                 copyButtonLabel: undefined,
                 field: 'region',
                 isPrimary: false,
-                label: 'capital.overview.repayment.accountDetails.fields.countryOrRegion',
+                label: 'capital.overview.repayment.accountDetails.countryOrRegion',
                 textToCopy: undefined,
             },
         ]);
@@ -105,11 +105,11 @@ describe('getBankAccountFieldTextToCopy', () => {
 
 describe('getBankAccountFieldCopyButtonTranslationKey', () => {
     test.each([
-        ['accountNumber', 'capital.overview.repayment.actions.copyAccountNumber'],
-        ['beneficiaryName', 'capital.overview.repayment.actions.copyBeneficiaryName'],
-        ['iban', 'capital.overview.repayment.actions.copyIban'],
-        ['routingNumber', 'capital.overview.repayment.actions.copyRoutingNumber'],
-        ['sortCode', 'capital.overview.repayment.actions.copySortCode'],
+        ['accountNumber', 'capital.overview.repayment.copyAccountNumber'],
+        ['beneficiaryName', 'capital.overview.repayment.copyBeneficiaryName'],
+        ['iban', 'capital.overview.repayment.copyIban'],
+        ['routingNumber', 'capital.overview.repayment.copyRoutingNumber'],
+        ['sortCode', 'capital.overview.repayment.copySortCode'],
         ['region', undefined],
     ])('returns copy button translation key for %s', (field, expected) => {
         expect(getBankAccountFieldCopyButtonTranslationKey(field)).toBe(expected);
@@ -118,12 +118,12 @@ describe('getBankAccountFieldCopyButtonTranslationKey', () => {
 
 describe('getBankAccountFieldTranslationKey', () => {
     test.each([
-        ['accountNumber', 'capital.overview.repayment.accountDetails.fields.accountNumber'],
-        ['beneficiaryName', 'capital.overview.repayment.accountDetails.fields.beneficiaryName'],
-        ['iban', 'capital.overview.repayment.accountDetails.fields.iban'],
-        ['region', 'capital.overview.repayment.accountDetails.fields.countryOrRegion'],
-        ['routingNumber', 'capital.overview.repayment.accountDetails.fields.routingNumber'],
-        ['sortCode', 'capital.overview.repayment.accountDetails.fields.sortCode'],
+        ['accountNumber', 'capital.overview.repayment.accountDetails.accountNumber'],
+        ['beneficiaryName', 'capital.overview.repayment.accountDetails.beneficiaryName'],
+        ['iban', 'capital.overview.repayment.accountDetails.iban'],
+        ['region', 'capital.overview.repayment.accountDetails.countryOrRegion'],
+        ['routingNumber', 'capital.overview.repayment.accountDetails.routingNumber'],
+        ['sortCode', 'capital.overview.repayment.accountDetails.sortCode'],
         ['unknown', 'unknown'],
     ])('returns translation key for %s', (field, expected) => {
         expect(getBankAccountFieldTranslationKey(field)).toBe(expected);

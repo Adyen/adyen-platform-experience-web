@@ -23,7 +23,7 @@ const modalTitle = computed(() => (modalTitleKey.value ? i18n.get(modalTitleKey.
 watch(
     () => props.modalType,
     modalType => {
-        modalTitleKey.value = modalType === 'Creation' ? 'payByLink.creation.form.title' : 'payByLink.settings.title';
+        modalTitleKey.value = modalType === 'Creation' ? 'payByLink.creation.title' : 'payByLink.settings.title';
     },
     { immediate: true }
 );

@@ -9,12 +9,14 @@ import type { IRefundReason } from '@integration-components/types';
 
 const originalValueFallback: TranslationFallbackFunction = (_, value) => value;
 
-const txAmountAdjustmentTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.details.summary.adjustments.types.' });
+const txAmountAdjustmentTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.details.summary.adjustments.' });
 export const getTransactionAmountAdjustmentType = createDynamicTranslationFactory(txAmountAdjustmentTypeKeyFactory, originalValueFallback);
 
+// The per-adjustment detail sentence compounds into its adjustment
+// (`adjustments.surchargeInformation`), hence a suffix without a leading dot.
 const txAmountAdjustmentInformationKeyFactory = createKeyFactoryFromConfig({
-    prefix: 'transactions.details.summary.adjustments.types.',
-    suffix: '.information',
+    prefix: 'transactions.details.summary.adjustments.',
+    suffix: 'Information',
 });
 export const getTransactionAmountAdjustmentTypeInformation = createDynamicTranslationFactory(txAmountAdjustmentInformationKeyFactory);
 
@@ -34,13 +36,13 @@ const txTimelineTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'transacti
 export const getTransactionTimelineTxType = createDynamicTranslationFactory(txTimelineTypeKeyFactory, originalValueFallback);
 
 export const REFUND_REASONS_KEYS = Object.freeze({
-    requested_by_customer: 'transactions.details.common.refundReasons.requestedByCustomer',
-    issue_with_item_sold: 'transactions.details.common.refundReasons.issueWithItemSold',
-    fraudulent: 'transactions.details.common.refundReasons.fraudulent',
-    duplicate: 'transactions.details.common.refundReasons.duplicate',
-    other: 'transactions.details.common.refundReasons.other',
+    requested_by_customer: 'transactions.details.refundReasons.requestedByCustomer',
+    issue_with_item_sold: 'transactions.details.refundReasons.issueWithItemSold',
+    fraudulent: 'transactions.details.refundReasons.fraudulent',
+    duplicate: 'transactions.details.refundReasons.duplicate',
+    other: 'transactions.details.refundReasons.other',
 } as const) satisfies Readonly<Record<IRefundReason, TransactionsTranslationKey>>;
 
-const txRefundReasonKey = createKeyFactoryFromConfig({ prefix: 'transactions.details.common.refundReasons.' });
+const txRefundReasonKey = createKeyFactoryFromConfig({ prefix: 'transactions.details.refundReasons.' });
 const txRefundReasonKeyFactory: KeyFactoryFunction = reason => reason && (REFUND_REASONS_KEYS[reason as IRefundReason] ?? txRefundReasonKey(reason));
 export const getTransactionRefundReason = createDynamicTranslationFactory(txRefundReasonKeyFactory, originalValueFallback);

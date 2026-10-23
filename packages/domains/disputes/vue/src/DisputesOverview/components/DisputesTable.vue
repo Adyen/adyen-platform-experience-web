@@ -90,7 +90,7 @@ const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
         };
     },
     resolveStandardColumnLabel: (field, defaultLabel) =>
-        field === 'disputeReason' ? i18n.get('disputes.overview.common.fields.disputeReasonLabel') : defaultLabel,
+        field === 'disputeReason' ? i18n.get('disputes.overview.fields.disputeReasonLabel') : defaultLabel,
     resolveCustomColumnLabel: key => (i18n.has(key) ? i18n.get(key) : key),
 });
 
@@ -190,8 +190,8 @@ function getTimeToDeadline(dueDate: string): string {
     if (timeRemaining.expired) return formattedDate;
 
     return timeRemaining.days <= 1
-        ? i18n.get('disputes.overview.common.actionNeeded.respondToday', { values: { date: formattedDate } })
-        : i18n.get('disputes.overview.common.actionNeeded.respondDays', { values: { days: timeRemaining.days, date: formattedDate } });
+        ? i18n.get('disputes.overview.actionNeeded.respondToday', { values: { date: formattedDate } })
+        : i18n.get('disputes.overview.actionNeeded.respondDays', { values: { days: timeRemaining.days, date: formattedDate } });
 }
 
 function handleNavigate(page: number) {
@@ -221,7 +221,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
         <DataOverviewError
             v-if="props.error"
             :error="props.error"
-            :error-message="'disputes.overview.common.errors.listUnavailable'"
+            :error-message="'disputes.overview.errors.listUnavailable'"
             :on-contact-support="props.onContactSupport"
             :variant="isMobile ? 'condensed' : 'embedded'"
             :refresh-icon="RefreshIcon"

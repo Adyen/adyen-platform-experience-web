@@ -177,7 +177,7 @@ describe('UIElementProvider', () => {
         const target = mountProvider({ onContactSupport });
         const supportButton = target.querySelector<HTMLButtonElement>('button');
 
-        expect(supportButton?.textContent).toBe('transactions.common.actions.contactSupport.labels.reachOut');
+        expect(supportButton?.textContent).toBe('transactions.common.contactSupport.reachOut');
 
         supportButton?.click();
         expect(onContactSupport).toHaveBeenCalledOnce();
@@ -195,7 +195,7 @@ describe('UIElementProvider', () => {
         await nextTick();
 
         const supportButton = target.querySelector<HTMLButtonElement>('button');
-        expect(supportButton?.textContent).toBe('transactions.common.actions.contactSupport.labels.reachOut');
+        expect(supportButton?.textContent).toBe('transactions.common.contactSupport.reachOut');
 
         supportButton?.click();
         expect(onContactSupport).toHaveBeenCalledOnce();

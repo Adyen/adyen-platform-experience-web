@@ -118,6 +118,6 @@ describe('TermsAndConditions saving', () => {
         await nextTick();
 
         expect(savePayByLinkSettings).not.toHaveBeenCalled();
-        expect(target.querySelector('[role="alert"]')).toHaveTextContent('payByLink.settings.common.alerts.validationError');
+        expect(target.querySelector('[role="alert"]')).toHaveTextContent('payByLink.settings.alerts.validationError');
     });
 });

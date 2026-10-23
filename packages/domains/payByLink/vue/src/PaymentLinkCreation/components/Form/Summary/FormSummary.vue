@@ -40,7 +40,7 @@ function renderValue(field: FormFieldConfig): string {
         case 'linkValidity.quantity': {
             const unit = rawValue('linkValidity.durationUnit');
             if (!value || !unit) return '';
-            return i18n.get(`payByLink.creation.fields.validity.linkValidityUnit.${unit}` as PayByLinkTranslationKey, {
+            return i18n.get(`payByLink.creation.validity.linkValidityUnit.${unit}` as PayByLinkTranslationKey, {
                 values: { quantity: value },
                 count: Number(value),
             });
@@ -51,7 +51,7 @@ function renderValue(field: FormFieldConfig): string {
             return i18n.amount(Number(value), currency);
         }
         case 'linkType':
-            return value ? i18n.get(`payByLink.creation.form.linkTypes.${value as IPaymentLinkType}`) : '';
+            return value ? i18n.get(`payByLink.creation.linkTypes.${value as IPaymentLinkType}`) : '';
         case 'countryCode':
         case 'deliveryAddress.country':
         case 'billingAddress.country':
@@ -74,7 +74,7 @@ const paymentRows = computed<SummaryRow[]>(() => {
         ? [
               {
                   id: 'store',
-                  label: 'payByLink.creation.summary.fields.store' as PayByLinkTranslationKey,
+                  label: 'payByLink.creation.summary.store' as PayByLinkTranslationKey,
                   rendered: displayValue('store') ?? props.selectItems.find(item => item.id === storeValue)?.name ?? storeValue,
               },
           ]
@@ -121,13 +121,13 @@ const showEmailNotifications = computed(() => sendLink.value || sendSuccess.valu
                             {{ row.rendered }}
                         </BentoTypography>
                     </BentoStructuredListItem>
-                    <BentoStructuredListItem v-if="showEmailNotifications" :label="i18n.get('payByLink.creation.summary.fields.emailNotifications')">
+                    <BentoStructuredListItem v-if="showEmailNotifications" :label="i18n.get('payByLink.creation.summary.emailNotifications')">
                         <div :class="styles.tagsContainer">
                             <BentoTag v-if="sendLink">
-                                {{ i18n.get('payByLink.creation.summary.fields.emailNotifications.emailCreation') }}
+                                {{ i18n.get('payByLink.creation.summary.emailNotifications.emailCreation') }}
                             </BentoTag>
                             <BentoTag v-if="sendSuccess">
-                                {{ i18n.get('payByLink.creation.summary.fields.emailNotifications.paymentSuccess') }}
+                                {{ i18n.get('payByLink.creation.summary.emailNotifications.paymentSuccess') }}
                             </BentoTag>
                         </div>
                     </BentoStructuredListItem>
@@ -137,7 +137,7 @@ const showEmailNotifications = computed(() => sendLink.value || sendSuccess.valu
 
         <section v-if="deliveryRows.length" :class="styles.section">
             <BentoTypography variant="body" stronger :class="styles.sectionTitle">
-                {{ i18n.get('payByLink.creation.summary.deliveryAddress') }}
+                {{ i18n.get('payByLink.creation.summary.deliveryAddress.title') }}
             </BentoTypography>
             <BentoStructuredList layout="42-58">
                 <BentoStructuredListItem v-for="row in deliveryRows" :key="row.id" :label="i18n.get(row.label)">
@@ -150,7 +150,7 @@ const showEmailNotifications = computed(() => sendLink.value || sendSuccess.valu
 
         <section v-if="billingRows.length" :class="styles.section">
             <BentoTypography variant="body" stronger :class="styles.sectionTitle">
-                {{ i18n.get('payByLink.creation.summary.billingAddress') }}
+                {{ i18n.get('payByLink.creation.summary.billingAddress.title') }}
             </BentoTypography>
             <BentoStructuredList layout="42-58">
                 <BentoStructuredListItem v-for="row in billingRows" :key="row.id" :label="i18n.get(row.label)">

@@ -222,11 +222,11 @@ function getCopyValue(item: DetailItem) {
 function onCopyText(text: string, itemId: string) {
     navigator.clipboard?.writeText(text);
     copiedItemId.value = itemId;
-    announce(() => i18n.get('disputes.common.actions.copy.labels.done'));
+    announce(() => i18n.get('disputes.common.copy.done'));
 }
 
 function getCopyTooltip(itemId: string) {
-    const key = copiedItemId.value === itemId ? 'disputes.common.actions.copy.labels.done' : 'disputes.common.actions.copy.labels.default';
+    const key = copiedItemId.value === itemId ? 'disputes.common.copy.done' : 'disputes.common.copy.label';
     return i18n.get(key);
 }
 
@@ -273,7 +273,7 @@ async function downloadEvidence(documentType: string) {
                 <BentoButton
                     v-bento-tooltip="getCopyTooltip(item.id)"
                     variant="tertiary"
-                    :aria-label="i18n.get('disputes.common.actions.copy.labels.default')"
+                    :aria-label="i18n.get('disputes.common.copy.label')"
                     @click="onCopyText(getCopyValue(item)!, item.id)"
                     @blur="resetCopiedItem"
                     @mouseleave="resetCopiedItem"
@@ -289,7 +289,7 @@ async function downloadEvidence(documentType: string) {
                     <BentoTag :label="getDefenseDocumentContent(defenseDocumentConfig, i18n, documentType)?.title ?? documentType" />
                     <BentoButton
                         variant="tertiary"
-                        :aria-label="i18n.get('disputes.management.details.actions.downloadEvidence')"
+                        :aria-label="i18n.get('disputes.management.details.downloadEvidence')"
                         @click="downloadEvidence(documentType)"
                     >
                         <DownloadIcon aria-hidden="true" />

@@ -54,7 +54,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
             ? [{ title: i18n.get('payByLink.details.actions.expire'), event: props.onExpire, variant: 'secondary' as const }]
             : []),
         ...(!props.isDismissButtonHidden && props.onDismiss
-            ? [{ title: i18n.get('payByLink.common.actions.goBack'), event: props.onDismiss, variant: 'secondary' as const }]
+            ? [{ title: i18n.get('payByLink.common.goBack'), event: props.onDismiss, variant: 'secondary' as const }]
             : []),
     ];
 });

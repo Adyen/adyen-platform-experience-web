@@ -77,7 +77,7 @@ const shellState = computed<ComponentShellState>(() => {
         :error-message="'payouts.details.errors.unavailable'"
         :on-contact-support="props.onContactSupport"
         :on-dismiss="props.onDismiss"
-        :dismiss-label="'payouts.details.common.actions.goBack'"
+        :dismiss-label="'payouts.details.actions.goBack'"
     >
         <template #loading>
             <PayoutSkeleton />

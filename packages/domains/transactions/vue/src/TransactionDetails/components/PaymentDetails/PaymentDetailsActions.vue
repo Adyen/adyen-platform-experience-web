@@ -79,7 +79,7 @@ const dismissAction = computed(() => {
     return {
         disabled: false,
         event: props.onDismiss,
-        title: i18n.get('transactions.details.common.actions.goBack'),
+        title: i18n.get('transactions.details.actions.goBack'),
         variant: 'secondary' as const,
     };
 });

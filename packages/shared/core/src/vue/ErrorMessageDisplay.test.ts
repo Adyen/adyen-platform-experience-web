@@ -127,7 +127,7 @@ describe('ErrorMessageDisplay', () => {
                 refreshComponent: true,
             },
             {
-                dismissLabel: 'transactions.common.actions.dismiss.labels.close',
+                dismissLabel: 'transactions.common.close.label',
                 onDismiss,
             }
         );
@@ -135,8 +135,8 @@ describe('ErrorMessageDisplay', () => {
         const buttonsContainer = (view().children as VNode[])[3]!;
         const [dismissButton, supportButton] = buttonsContainer.children as VNode[];
 
-        expect((dismissButton!.children as { default: () => string }).default()).toBe('transactions.common.actions.dismiss.labels.close');
-        expect((supportButton!.children as { default: () => string }).default()).toBe('transactions.common.actions.contactSupport.labels.reachOut');
+        expect((dismissButton!.children as { default: () => string }).default()).toBe('transactions.common.close.label');
+        expect((supportButton!.children as { default: () => string }).default()).toBe('transactions.common.contactSupport.reachOut');
 
         dismissButton!.props?.onClick();
         supportButton!.props?.onClick();

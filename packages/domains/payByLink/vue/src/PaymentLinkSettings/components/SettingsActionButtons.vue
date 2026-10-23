@@ -28,7 +28,7 @@ const isSaveDisabled = computed(() => {
 const actionButtons = computed<BentoButtonActionsList>(() => {
     const buttons: BentoButtonActionsList = [
         {
-            title: i18n.get('payByLink.settings.common.action.save'),
+            title: i18n.get('payByLink.settings.action.save'),
             disabled: isSaveDisabled.value,
             event: onSave,
             state: isSaving.value && !(props.navigateBack && isSaveSuccess.value) ? 'loading' : 'start',
@@ -36,13 +36,13 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
     ];
     if (props.onDismiss) {
         buttons.push({
-            title: i18n.get('payByLink.creation.form.steps.back'),
+            title: i18n.get('payByLink.creation.steps.back'),
             event: props.onDismiss,
             variant: 'secondary',
         });
     } else if (props.navigateBack || props.closeContent) {
         buttons.push({
-            title: i18n.get('payByLink.common.actions.goBack'),
+            title: i18n.get('payByLink.common.goBack'),
             disabled: isLoading.value,
             event: props.navigateBack ?? props.closeContent,
             variant: 'secondary',

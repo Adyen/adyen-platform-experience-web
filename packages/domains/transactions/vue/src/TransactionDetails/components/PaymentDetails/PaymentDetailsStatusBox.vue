@@ -60,27 +60,23 @@ const paymentMethodDetail = computed(() => {
                     />
 
                     <template v-if="refundType">
-                        <BentoTag
-                            v-if="refundType === RefundType.FULL"
-                            variant="green"
-                            :label="i18n.get('transactions.details.common.refundTypes.full')"
-                        />
+                        <BentoTag v-if="refundType === RefundType.FULL" variant="green" :label="i18n.get('transactions.details.refundTypes.full')" />
                         <BentoTag
                             v-else-if="refundType === RefundType.PARTIAL"
                             variant="blue"
-                            :label="i18n.get('transactions.details.common.refundTypes.partial')"
+                            :label="i18n.get('transactions.details.refundTypes.partial')"
                         />
                     </template>
 
                     <BentoTag
                         v-if="props.refundedState === RefundedState.FULL"
                         variant="green"
-                        :label="i18n.get('transactions.details.common.refundedStates.full')"
+                        :label="i18n.get('transactions.details.refundedStates.full')"
                     />
                     <BentoTag
                         v-else-if="props.refundedState === RefundedState.PARTIAL"
                         variant="blue"
-                        :label="i18n.get('transactions.details.common.refundedStates.partial')"
+                        :label="i18n.get('transactions.details.refundedStates.partial')"
                     />
                 </div>
 

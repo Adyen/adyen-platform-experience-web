@@ -93,7 +93,7 @@ describe('DataOverviewError', () => {
 
         expect(rendered.props?.title).toBe('transactions.common.errors.somethingWentWrong');
         expect(rendered.props?.action).toMatchObject({
-            title: 'transactions.common.actions.contactSupport.labels.reachOut',
+            title: 'transactions.common.contactSupport.reachOut',
             variant: 'primary',
         });
         rendered.props?.action.event();
@@ -116,7 +116,7 @@ describe('DataOverviewError', () => {
 
         const action = view().props?.action;
         expect(action).toMatchObject({
-            title: 'transactions.common.actions.refresh.labels.default',
+            title: 'transactions.common.refresh.label',
             icon: refreshIcon,
             variant: 'primary',
         });

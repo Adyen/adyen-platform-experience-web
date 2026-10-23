@@ -37,14 +37,14 @@ async function handleConfirmExpire() {
 
 const actionButtons = computed<BentoButtonActionsList>(() => [
     {
-        title: i18n.get('payByLink.details.expiration.actions.confirmExpiration'),
+        title: i18n.get('payByLink.details.expiration.confirmExpiration'),
         event: handleConfirmExpire,
         variant: 'primary',
         disabled: isLoading.value,
         state: isLoading.value ? 'loading' : undefined,
     },
     {
-        title: i18n.get('payByLink.details.expiration.actions.goBack'),
+        title: i18n.get('payByLink.details.expiration.goBack'),
         event: () => props.onCancel(),
         variant: 'secondary',
         disabled: isLoading.value,

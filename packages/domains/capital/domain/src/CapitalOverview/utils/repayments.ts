@@ -87,32 +87,32 @@ export const getBankAccountFieldTextToCopy = (field: string, value?: string) => 
 export const getBankAccountFieldCopyButtonTranslationKey = (field: string): CapitalTranslationKey | undefined => {
     switch (field) {
         case 'accountNumber':
-            return 'capital.overview.repayment.actions.copyAccountNumber';
+            return 'capital.overview.repayment.copyAccountNumber';
         case 'beneficiaryName':
-            return 'capital.overview.repayment.actions.copyBeneficiaryName';
+            return 'capital.overview.repayment.copyBeneficiaryName';
         case 'iban':
-            return 'capital.overview.repayment.actions.copyIban';
+            return 'capital.overview.repayment.copyIban';
         case 'routingNumber':
-            return 'capital.overview.repayment.actions.copyRoutingNumber';
+            return 'capital.overview.repayment.copyRoutingNumber';
         case 'sortCode':
-            return 'capital.overview.repayment.actions.copySortCode';
+            return 'capital.overview.repayment.copySortCode';
     }
 };
 
 export const getBankAccountFieldTranslationKey = (field: string): CapitalTranslationKey => {
     switch (field) {
         case 'accountNumber':
-            return 'capital.overview.repayment.accountDetails.fields.accountNumber';
+            return 'capital.overview.repayment.accountDetails.accountNumber';
         case 'beneficiaryName':
-            return 'capital.overview.repayment.accountDetails.fields.beneficiaryName';
+            return 'capital.overview.repayment.accountDetails.beneficiaryName';
         case 'iban':
-            return 'capital.overview.repayment.accountDetails.fields.iban';
+            return 'capital.overview.repayment.accountDetails.iban';
         case 'region':
-            return 'capital.overview.repayment.accountDetails.fields.countryOrRegion';
+            return 'capital.overview.repayment.accountDetails.countryOrRegion';
         case 'routingNumber':
-            return 'capital.overview.repayment.accountDetails.fields.routingNumber';
+            return 'capital.overview.repayment.accountDetails.routingNumber';
         case 'sortCode':
-            return 'capital.overview.repayment.accountDetails.fields.sortCode';
+            return 'capital.overview.repayment.accountDetails.sortCode';
         default:
             return field as CapitalTranslationKey;
     }

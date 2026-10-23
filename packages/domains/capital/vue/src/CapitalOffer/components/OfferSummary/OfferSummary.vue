@@ -88,13 +88,13 @@ function handleBack() {
 
 const actions = computed<BentoButtonActionsList>(() => [
     {
-        title: i18n.get('capital.offer.summary.actions.requestFundsWithAmount', { values: { amount: offerAmount.value } }),
+        title: i18n.get('capital.offer.summary.requestFundsWithAmount', { values: { amount: offerAmount.value } }),
         state: isRequestFundsLoading.value ? 'loading' : undefined,
         disabled: isRequestFundsLoading.value || !!requestFundsError.value || !!requestedFunds.value,
         event: handleRequestFunds,
     },
     {
-        title: i18n.get('capital.common.actions.goBack'),
+        title: i18n.get('capital.common.goBack'),
         event: handleBack,
     },
 ]);
@@ -127,7 +127,7 @@ const actions = computed<BentoButtonActionsList>(() => [
                 </template>
                 <template v-if="props.onContactSupport" #actions>
                     <BentoButton variant="tertiary" @click="props.onContactSupport">
-                        {{ i18n.get('capital.common.actions.contactSupport.labels.reachOut') }}
+                        {{ i18n.get('capital.common.contactSupport.reachOut') }}
                     </BentoButton>
                 </template>
             </BentoAlert>
