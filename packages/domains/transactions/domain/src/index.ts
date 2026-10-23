@@ -1,3 +1,4 @@
+export * from './TransactionDetails/paymentDetailsItems';
 export * from './TransactionDetails/translations';
 export * from './TransactionDetails/types';
 export * from './TransactionDetails/constants';
