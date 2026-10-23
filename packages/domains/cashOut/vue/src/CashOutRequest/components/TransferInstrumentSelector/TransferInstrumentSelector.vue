@@ -7,11 +7,14 @@ import type { ICashOutTransferInstrument, ICashOutTransferInstrumentIneligibilit
 
 const INELIGIBILITY_REASON_MESSAGES = {
     noInstantTransferRoute: 'cashOut.request.fields.transferInstrument.ineligibilityReasons.noInstantTransferRoute',
-    sendToTransferInstrumentNotAllowed: 'cashOut.request.fields.transferInstrument.ineligibilityReasons.sendToTransferInstrumentNotAllowed',
+    // Without the capability the account holder can't cash out at all, so the component never lists accounts for this reason.
+    sendToTransferInstrumentNotAllowed: undefined,
     transferInstrumentCurrencyMismatch: 'cashOut.request.fields.transferInstrument.ineligibilityReasons.transferInstrumentCurrencyMismatch',
-} as const satisfies Record<ICashOutTransferInstrumentIneligibilityReason, TranslationKey>;
+} as const satisfies Record<ICashOutTransferInstrumentIneligibilityReason, TranslationKey | undefined>;
 
 const props = defineProps<{
+    /** The currency of the cashOut, named in the reason of accounts that can't receive it. */
+    currency: string;
     disabled?: boolean;
     transferInstruments: ICashOutTransferInstrument[];
 }>();
@@ -21,13 +24,20 @@ const selectedTransferInstrumentId = defineModel<string | undefined>({ required:
 const { i18n } = useCoreContext();
 
 // Ineligible accounts stay listed, disabled, with the reason they can't receive the cashOut.
+// Eligible accounts come first; the sort is stable, so each group keeps the order of the API.
 const options = computed(() =>
-    props.transferInstruments.map(({ description, eligible, ineligibilityReasons: [reason], transferInstrumentId }) => ({
-        label: description,
-        value: transferInstrumentId,
-        description: eligible || !reason ? undefined : i18n.get(INELIGIBILITY_REASON_MESSAGES[reason]),
-        data: { disabled: !eligible },
-    }))
+    [...props.transferInstruments]
+        .sort((a, b) => Number(b.eligible) - Number(a.eligible))
+        .map(({ description, eligible, ineligibilityReasons: [reason], transferInstrumentId }) => {
+            const reasonMessage = eligible || !reason ? undefined : INELIGIBILITY_REASON_MESSAGES[reason];
+            const values = reason === 'transferInstrumentCurrencyMismatch' ? { currency: props.currency } : undefined;
+            return {
+                label: description,
+                value: transferInstrumentId,
+                description: reasonMessage ? i18n.get(reasonMessage, { values }) : undefined,
+                data: { disabled: !eligible },
+            };
+        })
 );
 
 const isOptionDisabled = (option: { data?: unknown }) =>

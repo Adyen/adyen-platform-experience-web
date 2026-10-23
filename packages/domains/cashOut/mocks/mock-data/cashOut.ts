@@ -36,14 +36,8 @@ const ELIGIBLE_TRANSFER_INSTRUMENTS = {
     },
 } satisfies Record<ICashOutTransferInstrumentType, ICashOutTransferInstrument>;
 
+// No `sendToTransferInstrumentNotAllowed`: without that capability cashOut isn't available, so no accounts are listed.
 const INELIGIBLE_TRANSFER_INSTRUMENTS = {
-    sendToTransferInstrumentNotAllowed: {
-        description: 'DE89 **** **** 3000',
-        eligible: false,
-        ineligibilityReasons: ['sendToTransferInstrumentNotAllowed'],
-        transferInstrumentId: 'SE322MK223222F5GXZFNM6E8N',
-        type: 'bank',
-    },
     noInstantTransferRoute: {
         description: 'GB33 **** **** 5432',
         eligible: false,
@@ -58,7 +52,7 @@ const INELIGIBLE_TRANSFER_INSTRUMENTS = {
         transferInstrumentId: 'SE322PM223222F5GXZFNM8G2Q',
         type: 'visa',
     },
-} satisfies Record<ICashOutTransferInstrumentIneligibilityReason, ICashOutTransferInstrument>;
+} satisfies Record<Exclude<ICashOutTransferInstrumentIneligibilityReason, 'sendToTransferInstrumentNotAllowed'>, ICashOutTransferInstrument>;
 
 const baseEligibility: ICashOutEligibility = {
     availableBalance: getAmount(125000),

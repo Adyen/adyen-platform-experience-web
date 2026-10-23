@@ -11,19 +11,6 @@ const meta: Meta<ElementProps<typeof CashOutRequestElement>> = {
     title: 'Mocked/CashOut/CashOut Request',
 };
 
-export const MultipleBalanceAccounts: ElementStory = {
-    name: 'Multiple balance accounts',
-    args: { mockedApi: true, onDismiss: 'Enabled' },
-};
-
-export const SingleBalanceAccount: ElementStory = {
-    name: 'Single balance account',
-    args: { mockedApi: true, onDismiss: 'Enabled' },
-    parameters: {
-        msw: { ...CASH_OUT_HANDLERS.singleBalanceAccount },
-    },
-};
-
 export const SingleTransferInstrument: ElementStory = {
     name: 'Single transfer instrument',
     args: { mockedApi: true, onDismiss: 'Enabled' },
@@ -40,6 +27,22 @@ export const IneligibleTransferInstruments: ElementStory = {
     },
 };
 
+export const ZeroBalance: ElementStory = {
+    name: 'Unavailable - Zero balance',
+    args: { mockedApi: true, onDismiss: 'Enabled' },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.zeroBalance },
+    },
+};
+
+export const NoInstantReachableTransferInstruments: ElementStory = {
+    name: 'Unavailable - No instant reachable transfer instruments',
+    args: { mockedApi: true, onDismiss: 'Enabled' },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.noInstantReachableTransferInstruments },
+    },
+};
+
 export const CashOutInProgress: ElementStory = {
     name: 'Unavailable - CashOut in progress',
     args: { mockedApi: true, onDismiss: 'Enabled' },
@@ -48,11 +51,59 @@ export const CashOutInProgress: ElementStory = {
     },
 };
 
+export const DailyLimitReached: ElementStory = {
+    name: 'Unavailable - Daily limit reached',
+    args: { mockedApi: true, onDismiss: 'Enabled' },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.dailyLimitReached },
+    },
+};
+
+export const SendToBalanceAccountNotAllowed: ElementStory = {
+    name: 'Unavailable - Send to balance account not allowed',
+    args: { mockedApi: true, onDismiss: 'Enabled' },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.sendToBalanceAccountNotAllowed },
+    },
+};
+
+export const ReceiveFromBalanceAccountNotAllowed: ElementStory = {
+    name: 'Unavailable - Receive from balance account not allowed',
+    args: { mockedApi: true, onDismiss: 'Enabled' },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.receiveFromBalanceAccountNotAllowed },
+    },
+};
+
+export const RiskRestricted: ElementStory = {
+    name: 'Unavailable - Risk restricted',
+    args: { mockedApi: true, onDismiss: 'Enabled' },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.riskRestricted },
+    },
+};
+
+export const CashOutNotConfigured: ElementStory = {
+    name: 'Unavailable - CashOut not configured',
+    args: { mockedApi: true, onDismiss: 'Enabled' },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.cashOutNotConfigured },
+    },
+};
+
 export const FeesError: ElementStory = {
     name: 'Error - Fees',
     args: { mockedApi: true, onDismiss: 'Enabled' },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.feesInternalServerError },
+    },
+};
+
+export const CashOutError: ElementStory = {
+    name: 'Error - Cash out',
+    args: { mockedApi: true, onDismiss: 'Enabled' },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.instructInternalServerError },
     },
 };
 

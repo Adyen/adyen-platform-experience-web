@@ -19,6 +19,8 @@ const ELIGIBILITY = {
     unavailableReasons: [],
 };
 
+const CASH_OUT = { id: 'CO1' };
+
 const unavailableEligibility = (reason: string) => ({ ...ELIGIBILITY, isCashoutAvailable: false, unavailableReasons: [reason] });
 
 vi.mock('@adyen/bento-vue3', async () => {
@@ -69,22 +71,23 @@ vi.mock('../CashOutRequestModal/CashOutRequestModal.vue', async () => {
                 balanceAccountId: { type: String, default: undefined },
                 eligibility: { type: Object, default: undefined },
                 isOpen: Boolean,
+                onCashOutInstructed: { type: Function, default: undefined },
                 onClose: { type: Function, default: undefined },
             },
             setup: props => () =>
                 props.isOpen
-                    ? h(
-                          'div',
-                          { 'data-testid': 'request-modal', onClick: props.onClose },
-                          `${props.balanceAccountId} ${JSON.stringify(props.eligibility)}`
-                      )
+                    ? h('div', { 'data-testid': 'request-modal' }, [
+                          h('span', `${props.balanceAccountId} ${JSON.stringify(props.eligibility)}`),
+                          h('button', { 'data-testid': 'close', onClick: props.onClose }),
+                          h('button', { 'data-testid': 'cash-out', onClick: () => props.onCashOutInstructed?.(CASH_OUT) }),
+                      ])
                     : null,
         }),
     };
 });
 
 const mockCashOutState = ({ eligibility, shellState = 'ready' }: { eligibility?: unknown; shellState?: ComponentShellState }) => {
-    const state = { eligibility: ref(eligibility), shellState: ref(shellState) };
+    const state = { eligibility: ref(eligibility), refreshEligibility: vi.fn(), shellState: ref(shellState) };
     vi.mocked(useCashOutState).mockReturnValue({
         ...state,
         balanceAccountOptions: ref([]),
@@ -94,7 +97,7 @@ const mockCashOutState = ({ eligibility, shellState = 'ready' }: { eligibility?:
     return state;
 };
 
-const renderCashOutOverview = (props: { onContactSupport?: () => void } = {}) => {
+const renderCashOutOverview = (props: { onCashOutInstructed?: (cashOut: unknown) => void; onContactSupport?: () => void } = {}) => {
     const target = document.createElement('div');
     const app = createApp(CashOutOverview, props);
     app.mount(target);
@@ -204,6 +207,16 @@ describe('CashOutOverview', () => {
         const findStartButton = (target: HTMLElement) => [...target.querySelectorAll('div')].find(element => element.textContent === START);
         const findModal = (target: HTMLElement) => target.querySelector<HTMLElement>('[data-testid="request-modal"]');
 
+        // Without it, the request in the modal shows the cashOut without offering to send it.
+        test('should offer to start a cashOut without the instruct cashOut endpoint', () => {
+            mockCashOutState({ eligibility: ELIGIBILITY });
+            const { target, unmount } = renderCashOutOverview();
+
+            expect(findStartButton(target)).toBeDefined();
+
+            unmount();
+        });
+
         test('should not show the modal before the start button is clicked', () => {
             mockCashOutState({ eligibility: ELIGIBILITY });
             const { target, unmount } = renderCashOutOverview();
@@ -225,16 +238,37 @@ describe('CashOutOverview', () => {
             unmount();
         });
 
-        test('should close the modal', async () => {
-            mockCashOutState({ eligibility: ELIGIBILITY });
+        test('should close the modal without fetching the eligibility again when nothing was cashed out', async () => {
+            const state = mockCashOutState({ eligibility: ELIGIBILITY });
             const { target, unmount } = renderCashOutOverview();
 
             findStartButton(target)?.click();
             await nextTick();
-            findModal(target)?.click();
+            target.querySelector<HTMLElement>('[data-testid="close"]')?.click();
             await nextTick();
 
             expect(findModal(target)).toBeNull();
+            expect(state.refreshEligibility).not.toHaveBeenCalled();
+
+            unmount();
+        });
+
+        test('should pass on the instructed cashOut, and fetch the eligibility again once the modal closes', async () => {
+            const onCashOutInstructed = vi.fn();
+            const state = mockCashOutState({ eligibility: ELIGIBILITY });
+            const { target, unmount } = renderCashOutOverview({ onCashOutInstructed });
+
+            findStartButton(target)?.click();
+            await nextTick();
+            target.querySelector<HTMLElement>('[data-testid="cash-out"]')?.click();
+
+            expect(onCashOutInstructed).toHaveBeenCalledWith(CASH_OUT);
+            expect(state.refreshEligibility).not.toHaveBeenCalled();
+
+            target.querySelector<HTMLElement>('[data-testid="close"]')?.click();
+            await nextTick();
+
+            expect(state.refreshEligibility).toHaveBeenCalledTimes(1);
 
             unmount();
         });

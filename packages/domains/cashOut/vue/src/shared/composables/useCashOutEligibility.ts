@@ -1,4 +1,4 @@
-import { computed, toValue, watch, type MaybeRefOrGetter } from 'vue';
+import { computed, ref, toValue, watch, type MaybeRefOrGetter } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useAsyncRequest } from '@integration-components/composables-vue/useAsyncRequest';
 import type { ICashOutEligibility } from '@integration-components/types';
@@ -7,9 +7,10 @@ export const useCashOutEligibility = (balanceAccountId: MaybeRefOrGetter<string 
     const config = useConfigContext();
     const request = useAsyncRequest<ICashOutEligibility>();
     const getCashOutEligibility = computed(() => config.endpoints.getCashOutEligibility);
+    const refreshCount = ref(0);
 
     watch(
-        [() => toValue(balanceAccountId), getCashOutEligibility],
+        [() => toValue(balanceAccountId), getCashOutEligibility, refreshCount],
         ([id, endpoint]) => {
             request.abort();
             // The eligibility of the previous balance account must not show while the next one loads.
@@ -28,5 +29,6 @@ export const useCashOutEligibility = (balanceAccountId: MaybeRefOrGetter<string 
         eligibility: request.data,
         eligibilityError: request.error,
         isFetchingEligibility: request.isLoading,
+        refreshEligibility: () => refreshCount.value++,
     } as const;
 };

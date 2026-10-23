@@ -4,6 +4,7 @@ import { CashOutRequestElement } from '../../src';
 
 export const cashOutRequestMeta: Meta<ElementProps<typeof CashOutRequestElement>> = {
     argTypes: {
+        onCashOutInstructed: enabledDisabledCallbackRadioControls('onCashOutInstructed'),
         onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
     },
     args: {

@@ -12,8 +12,10 @@ import {
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { ICashOutEligibility } from '@integration-components/types';
+import type { CashOutResult } from '../../types';
 import { useCashOutFees } from '../../composables/useCashOutFees';
 import { useFormatAmount } from '../../composables/useFormatAmount';
+import { useInstructCashOut } from '../../composables/useInstructCashOut';
 import UnavailableReasonAlert from '../../../shared/UnavailableReasonAlert/UnavailableReasonAlert.vue';
 import CashOutAmountField from '../CashOutAmountField/CashOutAmountField.vue';
 import TransferInstrumentSelector from '../TransferInstrumentSelector/TransferInstrumentSelector.vue';
@@ -29,6 +31,7 @@ type DetailItem = {
 const props = defineProps<{
     balanceAccountId: string;
     eligibility: ICashOutEligibility;
+    onCashOutResult: (result: CashOutResult) => void;
     onDismiss?: () => void;
     onContactSupport?: () => void;
     onFeesError: (error: AdyenPlatformExperienceError) => void;
@@ -83,19 +86,41 @@ const detailItems = computed<DetailItem[]>(() => [
         : []),
 ]);
 
-const isCashOutDisabled = computed(
-    () => !isCashOutAvailable.value || !amount.value || !transferInstrumentId.value || !fees.value || isFetchingFees.value
-);
+const { canInstructCashOut, instructCashOut, isInstructing } = useInstructCashOut();
 
+// Locked while the cashOut is sent, so the result matches what the user sent.
+const isFormDisabled = computed(() => !isCashOutAvailable.value || isInstructing.value);
+
+const isCashOutDisabled = computed(() => isFormDisabled.value || !amount.value || !transferInstrumentId.value || !fees.value || isFetchingFees.value);
+
+const cashOut = async () => {
+    if (isCashOutDisabled.value || !amount.value || !transferInstrumentId.value) return;
+
+    const instructedCashOut = await instructCashOut({
+        balanceAccountId: props.balanceAccountId,
+        amount: amount.value,
+        transferInstrumentId: transferInstrumentId.value,
+    });
+    props.onCashOutResult(instructedCashOut ? { status: 'success', cashOut: instructedCashOut } : { status: 'error' });
+};
+
+// Without the endpoint, the cashOut can be previewed but not sent, so the button is left out like other components' actions.
 const actions = computed<BentoButtonActionsList>(() => [
-    {
-        title: i18n.get('cashOut.request.actions.cashOut.labels.default'),
-        disabled: isCashOutDisabled.value,
-    },
+    ...(canInstructCashOut.value
+        ? [
+              {
+                  title: i18n.get('cashOut.request.actions.cashOut.labels.default'),
+                  disabled: isCashOutDisabled.value,
+                  event: cashOut,
+                  state: isInstructing.value ? ('loading' as const) : undefined,
+              },
+          ]
+        : []),
     ...(props.onDismiss
         ? [
               {
                   title: i18n.get('cashOut.common.actions.cancel.labels.default'),
+                  disabled: isInstructing.value,
                   event: props.onDismiss,
               },
           ]
@@ -106,7 +131,7 @@ const actions = computed<BentoButtonActionsList>(() => [
 <template>
     <div :class="styles.root">
         <div :class="styles.amount">
-            <CashOutAmountField v-model="amountValue" :disabled="!isCashOutAvailable" :max-amount="availableForCashOut" />
+            <CashOutAmountField v-model="amountValue" :disabled="isFormDisabled" :max-amount="availableForCashOut" />
             <!-- Not a BentoStructuredList: it stacks label and value below a 500px viewport, and these rows must stay side by side. -->
             <dl :class="styles.details">
                 <div v-for="item in detailItems" :key="item.key" :class="styles.detail">
@@ -126,7 +151,8 @@ const actions = computed<BentoButtonActionsList>(() => [
         <TransferInstrumentSelector
             v-if="!singleTransferInstrument"
             v-model="transferInstrumentId"
-            :disabled="!isCashOutAvailable"
+            :currency="availableForCashOut.currency"
+            :disabled="isFormDisabled"
             :transfer-instruments="props.eligibility.transferInstruments"
         />
         <UnavailableReasonAlert v-if="!isCashOutAvailable" :eligibility="props.eligibility" :on-contact-support="props.onContactSupport" />

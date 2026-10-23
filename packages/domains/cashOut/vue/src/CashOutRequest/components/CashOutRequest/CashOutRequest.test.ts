@@ -20,6 +20,7 @@ const ELIGIBILITY = {
 } as unknown as ICashOutEligibility;
 
 const formProps: { current?: Record<string, unknown> } = {};
+const resultProps: { current?: Record<string, unknown> } = {};
 
 vi.mock('@adyen/bento-vue3', async () => {
     const { h } = await import('vue');
@@ -65,6 +66,7 @@ vi.mock('../CashOutRequestForm/CashOutRequestForm.vue', async () => {
             props: {
                 balanceAccountId: { type: String, required: true },
                 eligibility: { type: Object, required: true },
+                onCashOutResult: { type: Function, required: true },
                 onDismiss: { type: Function, default: undefined },
                 onContactSupport: { type: Function, default: undefined },
                 onFeesError: { type: Function, required: true },
@@ -73,6 +75,21 @@ vi.mock('../CashOutRequestForm/CashOutRequestForm.vue', async () => {
                 return () => {
                     formProps.current = { ...props };
                     return h('div', 'form');
+                };
+            },
+        }),
+    };
+});
+
+vi.mock('../CashOutRequestResult/CashOutRequestResult.vue', async () => {
+    const { defineComponent, h } = await import('vue');
+    return {
+        default: defineComponent({
+            props: { status: { type: String, required: true }, onDismiss: { type: Function, default: undefined } },
+            setup(props) {
+                return () => {
+                    resultProps.current = { ...props };
+                    return h('div', `result ${props.status}`);
                 };
             },
         }),
@@ -102,6 +119,7 @@ describe('CashOutRequest', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         formProps.current = undefined;
+        resultProps.current = undefined;
         vi.mocked(useCoreContext).mockReturnValue({
             i18n: { get: (key: string) => key },
         } as unknown as ReturnType<typeof useCoreContext>);
@@ -194,6 +212,54 @@ describe('CashOutRequest', () => {
             expect(target.textContent).not.toContain('error');
             expect(target.textContent).toContain('form');
             expect(formProps.current).toMatchObject({ balanceAccountId: 'BA2' });
+
+            unmount();
+        });
+    });
+
+    describe('Result', () => {
+        const CASH_OUT = { id: 'CO1' };
+        const reportResult = (result: unknown) => (formProps.current?.onCashOutResult as (result: unknown) => void)(result);
+
+        test('should show the success screen instead of the title and form, and pass on the cashOut', async () => {
+            const onCashOutInstructed = vi.fn();
+            const onDismiss = vi.fn();
+            mockCashOutState('ready');
+            const { target, unmount } = renderCashOutRequest({ onCashOutInstructed, onDismiss });
+
+            reportResult({ status: 'success', cashOut: CASH_OUT });
+            await nextTick();
+
+            expect(target.textContent).toBe('result success');
+            expect(resultProps.current).toMatchObject({ status: 'success', onDismiss });
+            expect(onCashOutInstructed).toHaveBeenCalledWith(CASH_OUT);
+
+            unmount();
+        });
+
+        test('should report the result to the component that shows it', async () => {
+            const onCashOutResult = vi.fn();
+            mockCashOutState('ready');
+            const { unmount } = renderCashOutRequest({ onCashOutResult });
+
+            reportResult({ status: 'error' });
+            await nextTick();
+
+            expect(onCashOutResult).toHaveBeenCalledWith({ status: 'error' });
+
+            unmount();
+        });
+
+        test('should show the error screen instead of the title and form', async () => {
+            const onCashOutInstructed = vi.fn();
+            mockCashOutState('ready');
+            const { target, unmount } = renderCashOutRequest({ onCashOutInstructed });
+
+            reportResult({ status: 'error' });
+            await nextTick();
+
+            expect(target.textContent).toBe('result error');
+            expect(onCashOutInstructed).not.toHaveBeenCalled();
 
             unmount();
         });
