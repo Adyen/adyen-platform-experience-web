@@ -1,6 +1,6 @@
-import { DEFAULT_TRANSLATIONS, FALLBACK_LOCALE, SUPPORTED_LOCALES } from './constants/localization';
-import { asPlainObject, EMPTY_OBJECT, hasOwnProperty, isFunction } from '@integration-components/utils';
-import type { CustomTranslations, Locale, TranslationOptions, Translations } from '../translations';
+import { FALLBACK_LOCALE, SUPPORTED_LOCALES } from './constants/localization';
+import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
+import type { AddressableTranslationKey, CustomTranslations, Locale, TranslationOptions, Translations } from '../translations';
 import { SupportedLocales } from './types';
 
 const DEFAULT_TRANSLATION_OPTIONS: TranslationOptions = { values: EMPTY_OBJECT, count: 0 } as const;
@@ -10,6 +10,27 @@ const LOCALE_FORMAT_REGEX = /^[a-z]{2}-[A-Z]{2}$/;
  * Convert to ISO 639-1
  */
 export const toTwoLetterCode = (locale: string) => locale.substring(0, 2).toLowerCase();
+
+/**
+ * A plural-family member probed from a translation key (e.g. `myKey__2`, `myKey__plural`).
+ *
+ * The suffix stays loose. `${string}__${number}` rejects a probe of a key that already contains
+ * the separator, since template patterns are matched left-to-right and
+ * `…linkValidityUnit.day__plural__0` would have to parse "plural__0" as a number; distributing
+ * the probe over the keyspace instead pushes the comparison past the compiler's complexity limit.
+ */
+export type TranslationFamilyProbeKey = `${string}__${string}`;
+
+/**
+ * Any key a template resolver can be asked for: a catalog key of either keyspace, or a
+ * plural-family probe of one.
+ */
+export type ResolvableTranslationKey = AddressableTranslationKey | TranslationFamilyProbeKey;
+
+/**
+ * Resolves the raw template for a translation key from the currently active sources.
+ */
+export type TranslationTemplateResolver = (key: ResolvableTranslationKey) => string | null;
 
 /**
  * Matches a string with one of the locales
@@ -111,57 +132,61 @@ const replaceTranslationValues = (translation: string, values?: TranslationOptio
 
 /**
  * Returns a translation string by key
- * @param translations -
- * @param key -
- * @param options -
+ * @param resolveTemplate - Resolves the raw template for a key from the currently active sources
+ * @param key - Translation key
+ * @param options - Translation options
  *
  * @internal
  */
-export const getTranslation = (translations: Record<string, string>, key: string, options = DEFAULT_TRANSLATION_OPTIONS): string | null => {
+export const getTranslation = (
+    resolveTemplate: TranslationTemplateResolver,
+    key: AddressableTranslationKey,
+    options = DEFAULT_TRANSLATION_OPTIONS
+): string | null => {
     const count = options.count ?? 0;
-    const countKey = `${key}__${count}`;
+    const countKey: TranslationFamilyProbeKey = `${key}__${count}`;
 
     // Find {key}__{count} translation key
-    if (hasOwnProperty(translations, countKey) && translations[countKey]) {
-        return replaceTranslationValues(translations[countKey] as string, options.values);
+    const exactCountTemplate = resolveTemplate(countKey);
+    if (exactCountTemplate) {
+        return replaceTranslationValues(exactCountTemplate, options.values);
     }
 
-    const pluralKey = `${key}__plural`;
+    // The plural form only applies above one, so the probe string is not built for the common
+    // uncounted call (count defaults to zero).
+    if (count > 1) {
+        const pluralKey: TranslationFamilyProbeKey = `${key}__plural`;
 
-    // Find {key}__plural translation key, if `count` greater than 1 (e.g. myTranslation__plural)
-    if (hasOwnProperty(translations, pluralKey) && count > 1 && translations[pluralKey]) {
-        return replaceTranslationValues(translations[pluralKey] as string, options.values);
+        // Find {key}__plural translation key (e.g. myTranslation__plural)
+        const pluralTemplate = resolveTemplate(pluralKey);
+        if (pluralTemplate) {
+            return replaceTranslationValues(pluralTemplate, options.values);
+        }
     }
 
     // Find {key} translation key (e.g. myTranslation)
-    if (hasOwnProperty(translations, key) && translations[key]) {
-        return replaceTranslationValues(translations[key] as string, options.values);
+    const template = resolveTemplate(key);
+    if (template) {
+        return replaceTranslationValues(template, options.values);
     }
 
     return null;
 };
 
 /**
- * Returns an array with all the locales
+ * Returns the catalog of a locale, fetched from the CDN or bundled, or null when no source is
+ * available. The caller layers custom translations and the en-US defaults on top of it (see
+ * `Localization`).
+ *
  * @param locale - The locale the user wants to use
- * @param fetchTranslationFromCdnPromise -
- * @param customTranslations -
- * @param defaultTranslations -
+ * @param fetchTranslationFromCdnPromise - Resolves the locale's catalog
  */
 export const loadTranslations = async (
     locale: string,
-    fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>,
-    customTranslations: CustomTranslations = EMPTY_OBJECT as CustomTranslations,
-    defaultTranslations: Translations = DEFAULT_TRANSLATIONS
-): Promise<Translations> => {
+    fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<Translations | null>
+): Promise<Translations | null> => {
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
     const localeToLoad = parseLocale(locale, SUPPORTED_LOCALES) || FALLBACK_LOCALE;
 
-    const loadedLocale = fetchTranslationFromCdnPromise(localeToLoad as SupportedLocales);
-
-    return {
-        ...defaultTranslations, // Default en-US translations (in case any other translation file is missing any key)
-        ...((await loadedLocale) ?? EMPTY_OBJECT), // Merge with our locale file of the locale they are loading
-        ...asPlainObject(customTranslations?.[locale]), // Merge with their custom locales if available
-    };
+    return (await fetchTranslationFromCdnPromise(localeToLoad as SupportedLocales)) ?? null;
 };

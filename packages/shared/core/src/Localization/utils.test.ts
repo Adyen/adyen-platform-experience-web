@@ -1,4 +1,12 @@
-import { formatCustomTranslations, formatLocale, getTranslation, matchLocale, parseLocale, loadTranslations } from './utils';
+import {
+    formatCustomTranslations,
+    formatLocale,
+    getTranslation,
+    matchLocale,
+    parseLocale,
+    loadTranslations,
+    type TranslationTemplateResolver,
+} from './utils';
 import { describe, expect, test } from 'vitest';
 import { SUPPORTED_LOCALES } from './constants/localization';
 import { translationsDevAssets } from '../translations/local';
@@ -85,42 +93,64 @@ describe('formatLocale()', () => {
 });
 
 describe('getTranslation()', () => {
-    const translations = {
+    const key = 'myTranslation' as TranslationKey;
+
+    const resolverFor =
+        (templates: Record<string, string>): TranslationTemplateResolver =>
+        probedKey =>
+            templates[probedKey] ?? null;
+
+    const family = resolverFor({
         myTranslation: 'My translation',
         myTranslation__plural: 'My translations',
         myTranslation__2: 'My two translations',
-    };
+    });
 
     test('should get a translation with a matching key', () => {
-        expect(getTranslation(translations, 'myTranslation')).toBe('My translation');
+        expect(getTranslation(family, key)).toBe('My translation');
     });
 
     test('should get a translation with values', () => {
-        expect(getTranslation({ myTranslation: 'My %{type} translation' }, 'myTranslation', { values: { type: 'custom' } })).toBe(
+        expect(getTranslation(resolverFor({ myTranslation: 'My %{type} translation' }), key, { values: { type: 'custom' } })).toBe(
             'My custom translation'
         );
     });
 
     test('should get a translation with empty values', () => {
-        expect(getTranslation({ myTranslation: 'My %{type} translation' }, 'myTranslation')).toBe('My  translation');
+        expect(getTranslation(resolverFor({ myTranslation: 'My %{type} translation' }), key)).toBe('My  translation');
     });
 
     test('should get a plural translation if available', () => {
-        expect(getTranslation(translations, 'myTranslation', { count: 3 })).toBe('My translations');
+        expect(getTranslation(family, key, { count: 3 })).toBe('My translations');
     });
 
     test('should get a specific count translation if available', () => {
-        expect(getTranslation(translations, 'myTranslation', { count: 2 })).toBe('My two translations');
+        expect(getTranslation(family, key, { count: 2 })).toBe('My two translations');
     });
 
     test('should get the default translation if count is not greater than 1', () => {
-        expect(getTranslation(translations, 'myTranslation', { count: 1 })).toBe('My translation');
-        expect(getTranslation(translations, 'myTranslation', { count: 0 })).toBe('My translation');
-        expect(getTranslation(translations, 'myTranslation', { count: -1 })).toBe('My translation');
+        expect(getTranslation(family, key, { count: 1 })).toBe('My translation');
+        expect(getTranslation(family, key, { count: 0 })).toBe('My translation');
+        expect(getTranslation(family, key, { count: -1 })).toBe('My translation');
     });
 
     test('should get the default translation if count is not provided', () => {
-        expect(getTranslation(translations, 'myTranslation')).toBe('My translation');
+        expect(getTranslation(family, key)).toBe('My translation');
+    });
+
+    test('should only probe the plural form for a count greater than one', () => {
+        const probedKeys: string[] = [];
+
+        getTranslation(probedKey => {
+            probedKeys.push(probedKey);
+            return null;
+        }, key);
+
+        expect(probedKeys).toEqual(['myTranslation__0', 'myTranslation']);
+    });
+
+    test('should return null when the resolver has no template for the key', () => {
+        expect(getTranslation(() => null, key)).toBe(null);
     });
 });
 
@@ -206,39 +236,30 @@ describe('formatCustomTranslations()', () => {
 });
 
 describe('loadTranslations()', () => {
-    test('should accept customTranslations without a countryCode for default defaultSupportedLocales', () => {
-        loadTranslations('es-ES', () => translationsDevAssets['es-ES']!, {
-            'es-ES': {
-                [translationKey]: 'es-ES account',
-            },
-            'es-AR': {
-                [translationKey]: 'es-AR account',
-            },
-        } as const).then(translations => {
-            expect(translations[translationKey]).toBe('es-ES account');
+    test('should request the catalog of the locale matched against the supported locales', async () => {
+        const requestedLocales: string[] = [];
+
+        const translations = await loadTranslations('es-AR', locale => {
+            requestedLocales.push(locale);
+            return Promise.resolve(translationsDevAssets['es-ES']!);
         });
+
+        expect(requestedLocales).toEqual(['es-ES']);
+        expect(translations).toBe(await translationsDevAssets['es-ES']);
     });
 
-    test('should return the passed locale if formatted properly', () => {
-        loadTranslations('ca-CA' as const, () => translationsDevAssets['es-ES']!, {
-            'es-ES': {
-                [translationKey]: 'paymentId es-ES',
-            },
-            'ca-CA': {
-                [translationKey]: 'paymentId ca-CA',
-            },
-        } as const).then(translations => {
-            expect(translations[translationKey]).toBe('paymentId ca-CA');
+    test('should request the fallback locale when the locale cannot be matched', async () => {
+        const requestedLocales: string[] = [];
+
+        await loadTranslations('xx-XX', locale => {
+            requestedLocales.push(locale);
+            return Promise.resolve(null);
         });
+
+        expect(requestedLocales).toEqual(['en-US']);
     });
 
-    test('should return the passed locale if formatted properly', () => {
-        loadTranslations('ca-CA', () => translationsDevAssets['es-ES']!, {
-            'ca-CA': {
-                [translationKey]: 'paymentId ca-CA',
-            },
-        }).then(translations => {
-            expect(translations[translationKey]).toBe('paymentId ca-CA');
-        });
+    test('should resolve null when the locale has no catalog source', async () => {
+        await expect(loadTranslations('de-DE', () => Promise.resolve(null))).resolves.toBe(null);
     });
 });

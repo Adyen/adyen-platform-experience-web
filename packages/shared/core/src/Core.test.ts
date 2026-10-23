@@ -218,13 +218,16 @@ describe('Core', () => {
         ).toThrow('Invalid hex color');
     });
 
+    // Each catalog is served as one self-describing file per locale, under `locales/`.
+    const createTranslationsFetchMock = () =>
+        vi.fn().mockImplementation(async () => new Response(JSON.stringify({}), { headers: { 'Content-Type': 'application/json' } }));
+
+    const requestedUrls = (fetchMock: ReturnType<typeof vi.fn>) => fetchMock.mock.calls.map(([url]) => String(url));
+
     it('requests each CDN translation catalog once per locale', async () => {
         vi.stubEnv('VITE_LOCAL_ASSETS', '');
 
-        const fetchMock = vi
-            .fn()
-            .mockImplementation(async () => new Response(JSON.stringify({}), { headers: { 'Content-Type': 'application/json' } }));
-
+        const fetchMock = createTranslationsFetchMock();
         vi.stubGlobal('fetch', fetchMock);
 
         const cdnTranslationsUrl = `${CDN_ENVIRONMENTS.test}/assets/translations`;
@@ -235,9 +238,9 @@ describe('Core', () => {
         // both re-assigning the same locale and customTranslations.
         expect(fetchMock).toHaveBeenCalledTimes(2);
 
-        expect(fetchMock.mock.calls.map(([url]) => String(url)).sort()).toEqual([
-            `${cdnTranslationsUrl}/bento/de-DE.json`,
-            `${cdnTranslationsUrl}/de-DE.json`,
+        expect(requestedUrls(fetchMock).sort()).toEqual([
+            `${cdnTranslationsUrl}/bento/locales/de-DE.json`,
+            `${cdnTranslationsUrl}/locales/de-DE.json`,
         ]);
 
         // No-op updates do not re-request the catalogs.
@@ -249,11 +252,9 @@ describe('Core', () => {
         await core.update({ locale: 'fr-FR' });
 
         expect(fetchMock).toHaveBeenCalledTimes(4);
-        expect(fetchMock.mock.calls.map(([url]) => String(url)).sort()).toEqual([
-            `${cdnTranslationsUrl}/bento/de-DE.json`,
-            `${cdnTranslationsUrl}/bento/fr-FR.json`,
-            `${cdnTranslationsUrl}/de-DE.json`,
-            `${cdnTranslationsUrl}/fr-FR.json`,
+        expect(requestedUrls(fetchMock).slice(2).sort()).toEqual([
+            `${cdnTranslationsUrl}/bento/locales/fr-FR.json`,
+            `${cdnTranslationsUrl}/locales/fr-FR.json`,
         ]);
 
         // Switching back to a locale whose catalogs are still cached reuses the cached responses.
@@ -265,10 +266,7 @@ describe('Core', () => {
     it('shares cached translation catalogs across Core instances and re-requests them after invalidation', async () => {
         vi.stubEnv('VITE_LOCAL_ASSETS', '');
 
-        const fetchMock = vi
-            .fn()
-            .mockImplementation(async () => new Response(JSON.stringify({}), { headers: { 'Content-Type': 'application/json' } }));
-
+        const fetchMock = createTranslationsFetchMock();
         vi.stubGlobal('fetch', fetchMock);
 
         const cdnTranslationsUrl = `${CDN_ENVIRONMENTS.test}/assets/translations`;
@@ -292,11 +290,9 @@ describe('Core', () => {
         await thirdCore.initialize();
 
         expect(fetchMock).toHaveBeenCalledTimes(4);
-        expect(
-            fetchMock.mock.calls
-                .slice(2)
-                .map(([url]) => String(url))
-                .sort()
-        ).toEqual([`${cdnTranslationsUrl}/bento/de-DE.json`, `${cdnTranslationsUrl}/de-DE.json`]);
+        expect(requestedUrls(fetchMock).slice(2).sort()).toEqual([
+            `${cdnTranslationsUrl}/bento/locales/de-DE.json`,
+            `${cdnTranslationsUrl}/locales/de-DE.json`,
+        ]);
     });
 });

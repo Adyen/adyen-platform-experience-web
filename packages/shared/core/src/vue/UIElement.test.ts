@@ -4,7 +4,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createApp, type Component, type VNode } from 'vue';
 import { createI18n } from 'vue-i18n';
-import { UIElement } from './UIElement';
+import { UIElement, resolveBentoTranslationBundle } from './UIElement';
 import type { CoreOptions, GlobalAppearance } from './types';
 import deDE from '../../../../sdk/translations/de-DE.json' with { type: 'json' };
 import { SDK_BENTO_TRANSLATION_SOURCES, SDK_TRANSLATION_SOURCES } from '../../../../sdk/src/translations';
@@ -485,5 +485,66 @@ describe('UIElement', () => {
         } finally {
             consoleError.mockRestore();
         }
+    });
+});
+
+describe('resolveBentoTranslationBundle', () => {
+    const createCore = () => {
+        const localization = new Localization('en-US', '', SDK_TRANSLATION_SOURCES);
+        const bentoLocalization = new Localization('en-US', '', SDK_BENTO_TRANSLATION_SOURCES);
+        return { localization, bentoLocalization } as any;
+    };
+
+    const settle = (core: any) => Promise.all([core.localization.ready, core.bentoLocalization.ready]);
+
+    test('reuses one resolved bundle across repeated resolutions in a generation', async () => {
+        const core = createCore();
+        await settle(core);
+
+        const first = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+        const second = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+
+        expect(second).toBe(first);
+        expect(Object.keys(first.messages).length).toBeGreaterThan(0);
+    });
+
+    test('resolves a distinct bundle per domain and component', async () => {
+        const core = createCore();
+        await settle(core);
+
+        const transactions = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+        const disputes = resolveBentoTranslationBundle(core, 'disputes', 'disputes');
+
+        expect(disputes).not.toBe(transactions);
+    });
+
+    test('a locale change produces a fresh bundle', async () => {
+        const core = createCore();
+        await settle(core);
+        const english = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+
+        core.localization.locale = 'de-DE';
+        core.bentoLocalization.locale = 'de-DE';
+        await settle(core);
+
+        const german = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+
+        expect(german).not.toBe(english);
+        expect(german.messages).not.toEqual(english.messages);
+    });
+
+    test('a customTranslations change produces a fresh bundle with the customised override', async () => {
+        const core = createCore();
+        await settle(core);
+        const before = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+
+        core.localization.customTranslations = { 'en-US': { 'transactions.common.actions.copy.labels.default': 'Custom copy' } };
+        await core.localization.ready;
+
+        const after = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+
+        expect(after).not.toBe(before);
+        // `bento.copy.copy` routes to `common.actions.copy.labels.default`, so the merchant value must land here.
+        expect(after.overrides['bento.copy.copy']).toBe('Custom copy');
     });
 });

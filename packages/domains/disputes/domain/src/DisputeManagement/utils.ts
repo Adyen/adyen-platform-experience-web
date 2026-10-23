@@ -1,4 +1,5 @@
 import type Localization from '@integration-components/core/Localization';
+import type { DisputesTranslationKey } from '../shared/types';
 
 export type TranslationConfigItem = {
     title: string;
@@ -13,7 +14,9 @@ export type TranslationConfigContent = {
 };
 
 const getTranslationIfExists = (i18n: Localization['i18n'], prefix: string, key: string): string | undefined => {
-    const prefixedKey = `${prefix}.${key}`;
+    // Defense document and reason codes come from the API config, so the composed key is only
+    // known at runtime; `has` is what validates it against the catalog.
+    const prefixedKey = `${prefix}.${key}` as DisputesTranslationKey;
     return i18n.has(prefixedKey) ? i18n.get(prefixedKey) : undefined;
 };
 
