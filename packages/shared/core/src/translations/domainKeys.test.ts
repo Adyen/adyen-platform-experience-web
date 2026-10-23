@@ -17,7 +17,7 @@ const rejectedCompositions = () => {
     getSafeDomainTranslationKey('capital', 'common.errors.notFound');
 
     // @ts-expect-error - misspelled leaf
-    getSafeDomainTranslationKey(ambientDomain, 'common.actions.copy.labels.doen');
+    getSafeDomainTranslationKey(ambientDomain, 'common.copy.doen');
 
     // @ts-expect-error - not statically known, so it belongs to the unsafe builder
     getSafeDomainTranslationKey(ambientDomain, String(Date.now()));
@@ -26,11 +26,11 @@ const rejectedCompositions = () => {
 describe('getSafeDomainTranslationKey', () => {
     test('composes the absolute key', () => {
         expect(getSafeDomainTranslationKey('disputes', 'common.errors.unexpected')).toBe('disputes.common.errors.unexpected');
-        expect(getSafeDomainTranslationKey('capital', 'common.actions.copy.labels.done')).toBe('capital.common.actions.copy.labels.done');
+        expect(getSafeDomainTranslationKey('capital', 'common.copy.done')).toBe('capital.common.copy.done');
     });
 
     test('accepts a key defined by every domain, whichever one is mounted', () => {
-        expect(getSafeDomainTranslationKey(ambientDomain, 'common.actions.copy.labels.done')).toBe('disputes.common.actions.copy.labels.done');
+        expect(getSafeDomainTranslationKey(ambientDomain, 'common.copy.done')).toBe('disputes.common.copy.done');
         expect(getSafeDomainTranslationKey(ambientDomain, 'common.errors.somethingWentWrong')).toBe('disputes.common.errors.somethingWentWrong');
     });
 

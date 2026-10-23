@@ -26,7 +26,7 @@ let copiedTimeout: ReturnType<typeof setTimeout> | undefined;
 const { copyText, isCopied, resetCopyState } = useCopyText(
     () => props.paymentLink.linkInformation.paymentLink,
     () => {
-        announce(() => i18n.get('payByLink.details.actions.copied'));
+        announce(() => i18n.get('payByLink.details.copy.done'));
         clearTimeout(copiedTimeout);
         copiedTimeout = setTimeout(resetCopyState, COPIED_LABEL_DURATION);
     }
@@ -41,7 +41,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
         ...(navigator.clipboard
             ? [
                   {
-                      title: i18n.get(isCopied.value ? 'payByLink.details.actions.copied' : 'payByLink.details.actions.copyLink'),
+                      title: i18n.get(isCopied.value ? 'payByLink.details.copy.done' : 'payByLink.details.copy.link'),
                       event: copyText,
                       variant: 'primary',
                       iconLeft: isCopied.value ? CheckmarkIcon : CopyIcon,

@@ -34,8 +34,8 @@ function onUpdate(value: string | number | { value?: string | number } | Array<u
 <template>
     <div :class="layoutStyles.container">
         <BentoDropdown
-            :label="i18n.get('transactions.details.refund.inputs.reason.label')"
-            :placeholder="i18n.get('transactions.details.refund.inputs.reason.label')"
+            :label="i18n.get('transactions.details.refund.reason.label')"
+            :placeholder="i18n.get('transactions.details.refund.reason.label')"
             :items="refundReasons"
             :model-value="props.reason"
             :disabled="props.disabled"

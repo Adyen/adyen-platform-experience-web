@@ -1,55 +1,55 @@
 {
-    "titleKey": "payByLink.settings.terms.requirements.title",
+    "titleKey": "payByLink.settings.requirements.title",
     "sections": [
         {
             "id": "generalTerms",
-            "titleKey": "payByLink.settings.terms.requirements.generalTerms.title",
-            "descriptionKey": "payByLink.settings.terms.requirements.generalTerms.description",
+            "titleKey": "payByLink.settings.generalTerms.title",
+            "descriptionKey": "payByLink.settings.generalTerms.description",
             "items": [
-                { "key": "payByLink.settings.terms.requirements.generalTerms.productDescription" },
-                { "key": "payByLink.settings.terms.requirements.generalTerms.paymentExplanation" },
-                { "key": "payByLink.settings.terms.requirements.generalTerms.thirdParties" },
-                { "key": "payByLink.settings.terms.requirements.generalTerms.legalEntity" },
-                { "key": "payByLink.settings.terms.requirements.generalTerms.governingLaw" }
+                { "key": "payByLink.settings.generalTerms.productDescription" },
+                { "key": "payByLink.settings.generalTerms.paymentExplanation" },
+                { "key": "payByLink.settings.generalTerms.thirdParties" },
+                { "key": "payByLink.settings.generalTerms.legalEntity" },
+                { "key": "payByLink.settings.generalTerms.governingLaw" }
             ]
         },
         {
             "id": "privacyPolicy",
-            "titleKey": "payByLink.settings.terms.requirements.privacyPolicy.title",
-            "descriptionKey": "payByLink.settings.terms.requirements.privacyPolicy.description",
+            "titleKey": "payByLink.settings.privacyPolicy.title",
+            "descriptionKey": "payByLink.settings.privacyPolicy.description",
             "items": [
-                { "key": "payByLink.settings.terms.requirements.privacyPolicy.dataStoring" },
-                { "key": "payByLink.settings.terms.requirements.privacyPolicy.dataSharing" },
-                { "key": "payByLink.settings.terms.requirements.privacyPolicy.cookiePolicy" }
+                { "key": "payByLink.settings.privacyPolicy.dataStoring" },
+                { "key": "payByLink.settings.privacyPolicy.dataSharing" },
+                { "key": "payByLink.settings.privacyPolicy.cookiePolicy" }
             ]
         },
         {
             "id": "deliveryInformation",
-            "titleKey": "payByLink.settings.terms.requirements.deliveryInformation.title",
-            "descriptionKey": "payByLink.settings.terms.requirements.deliveryInformation.description",
+            "titleKey": "payByLink.settings.deliveryInformation.title",
+            "descriptionKey": "payByLink.settings.deliveryInformation.description",
             "items": [
-                { "key": "payByLink.settings.terms.requirements.deliveryInformation.deliveryTime" },
-                { "key": "payByLink.settings.terms.requirements.deliveryInformation.deliveryRegions" }
+                { "key": "payByLink.settings.deliveryInformation.deliveryTime" },
+                { "key": "payByLink.settings.deliveryInformation.deliveryRegions" }
             ]
         },
         {
             "id": "refundPolicy",
-            "titleKey": "payByLink.settings.terms.requirements.refundPolicy.title",
-            "descriptionKey": "payByLink.settings.terms.requirements.refundPolicy.description",
+            "titleKey": "payByLink.settings.refundPolicy.title",
+            "descriptionKey": "payByLink.settings.refundPolicy.description",
             "items": [
-                { "key": "payByLink.settings.terms.requirements.refundPolicy.moneyBack" },
-                { "key": "payByLink.settings.terms.requirements.refundPolicy.returnOrCancel" },
-                { "key": "payByLink.settings.terms.requirements.refundPolicy.returnProcess" }
+                { "key": "payByLink.settings.refundPolicy.moneyBack" },
+                { "key": "payByLink.settings.refundPolicy.returnOrCancel" },
+                { "key": "payByLink.settings.refundPolicy.returnProcess" }
             ]
         },
         {
             "id": "contactInformation",
-            "titleKey": "payByLink.settings.terms.requirements.contactInformation.title",
-            "descriptionKey": "payByLink.settings.terms.requirements.contactInformation.description",
+            "titleKey": "payByLink.settings.contactInformation.title",
+            "descriptionKey": "payByLink.settings.contactInformation.description",
             "items": [
-                { "key": "payByLink.settings.terms.requirements.contactInformation.legalEntityName" },
-                { "key": "payByLink.settings.terms.requirements.contactInformation.emailAddress" },
-                { "key": "payByLink.settings.terms.requirements.contactInformation.phoneNumber" }
+                { "key": "payByLink.settings.contactInformation.legalEntityName" },
+                { "key": "payByLink.settings.contactInformation.emailAddress" },
+                { "key": "payByLink.settings.contactInformation.phoneNumber" }
             ]
         }
     ]

@@ -43,7 +43,7 @@ export const getPaymentLinksErrorMessage = (
         case '29_001':
             if (invalidFields?.some(field => field.name === 'paymentLinkId')) {
                 return {
-                    title: 'payByLink.overview.errors.listEmpty',
+                    title: 'payByLink.overview.errors.listEmpty.title',
                     messages: ['payByLink.overview.errors.listEmpty.message'],
                     imageName: 'no-results-found',
                 };

@@ -182,7 +182,7 @@ describe('Localization', () => {
     describe('SDK translation sources', () => {
         test('loads SDK locale catalog and falls back to English for untranslated keys', async () => {
             const englishFallbackKey = 'transactions.common.errors.updateFilters';
-            const translationKey = 'capital.common.errors.unsupportedRegion';
+            const translationKey = 'capital.common.errors.unsupportedRegion.message';
             const germanTranslationsWithoutFallbackKey: Record<string, string> = { ...sdkGermanTranslations };
 
             delete germanTranslationsWithoutFallbackKey[englishFallbackKey];
@@ -221,8 +221,8 @@ describe('Localization', () => {
             expect(localization.get(cdnKey)).toBe('CDN translation');
 
             // A key the CDN catalog does not carry still resolves through the bundled en-US defaults.
-            expect(localization.get('capital.common.errors.unsupportedRegion')).toBe(
-                sdkEnglishTranslations['capital.common.errors.unsupportedRegion']
+            expect(localization.get('capital.common.errors.unsupportedRegion.title')).toBe(
+                sdkEnglishTranslations['capital.common.errors.unsupportedRegion.title']
             );
         });
 
@@ -243,8 +243,8 @@ describe('Localization', () => {
 
             await localization.ready;
 
-            expect(localization.get('capital.common.errors.unsupportedRegion')).toBe(
-                sdkGermanTranslations['capital.common.errors.unsupportedRegion']
+            expect(localization.get('capital.common.errors.unsupportedRegion.title')).toBe(
+                sdkGermanTranslations['capital.common.errors.unsupportedRegion.title']
             );
         });
 

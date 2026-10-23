@@ -130,17 +130,17 @@ function getLogoUrl(type: LogoType) {
     <div :class="styles.container">
         <BentoAlert v-if="showMissingBrandName || hasLogoError" type="critical" :dismissible="false">
             <template #description>
-                {{ i18n.get('payByLink.settings.common.alerts.validationError') }}
+                {{ i18n.get('payByLink.settings.alerts.validation.error') }}
             </template>
         </BentoAlert>
         <BentoAlert v-else-if="isSaveSuccess && !navigateBack" type="success" variant="tip" :dismissible="false">
             <template #description>
-                {{ i18n.get('payByLink.settings.common.alerts.saveSuccess') }}
+                {{ i18n.get('payByLink.settings.alerts.save.success') }}
             </template>
         </BentoAlert>
         <BentoAlert v-else-if="isSaveError" type="critical" variant="tip" :dismissible="false">
             <template #description>
-                {{ i18n.get('payByLink.settings.common.alerts.saveError') }}
+                {{ i18n.get('payByLink.settings.alerts.save.error') }}
             </template>
         </BentoAlert>
         <div :class="layoutStyles.contentHeader">
@@ -158,10 +158,10 @@ function getLogoUrl(type: LogoType) {
                     :disabled="!!isSaving"
                     :readonly="!!isSaving"
                     :lang="i18n.locale"
-                    :label="i18n.get('payByLink.settings.theme.brandName.input.label')"
+                    :label="i18n.get('payByLink.settings.theme.brandName.label')"
                     :model-value="brandName"
-                    :placeholder="i18n.get('payByLink.settings.theme.brandName.input.placeholder')"
-                    :error-message="showMissingBrandName ? i18n.get('payByLink.settings.theme.inputs.brandName.errors.missing') : undefined"
+                    :placeholder="i18n.get('payByLink.settings.theme.brandName.placeholder')"
+                    :error-message="showMissingBrandName ? i18n.get('payByLink.settings.theme.brandName.missingError') : undefined"
                     @update:model-value="onBrandNameChange"
                 />
             </div>

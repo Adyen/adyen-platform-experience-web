@@ -86,9 +86,9 @@ describe('createDomainErrorResolver', () => {
             notFound: 'disputes.common.errors.notFound',
         } as const satisfies DomainErrorVocabulary);
 
-        expect(disputesResolver(errorWithCode('30_112'), { errorMessage: 'disputes.overview.common.errors.listUnavailable' })).toEqual({
+        expect(disputesResolver(errorWithCode('30_112'), { errorMessage: 'disputes.overview.errors.listUnavailable' })).toEqual({
             title: 'disputes.common.errors.notFound',
-            messages: ['disputes.overview.common.errors.listUnavailable'],
+            messages: ['disputes.overview.errors.listUnavailable'],
             onContactSupport: undefined,
         });
     });

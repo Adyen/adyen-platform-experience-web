@@ -37,14 +37,14 @@ async function handleConfirmExpire() {
 
 const actionButtons = computed<BentoButtonActionsList>(() => [
     {
-        title: i18n.get('payByLink.details.expiration.actions.confirmExpiration'),
+        title: i18n.get('payByLink.details.expiration.confirmExpiration'),
         event: handleConfirmExpire,
         variant: 'primary',
         disabled: isLoading.value,
         state: isLoading.value ? 'loading' : undefined,
     },
     {
-        title: i18n.get('payByLink.details.expiration.actions.goBack'),
+        title: i18n.get('payByLink.common.goBack.label'),
         event: () => props.onCancel(),
         variant: 'secondary',
         disabled: isLoading.value,
@@ -63,9 +63,9 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
         </BentoTypography>
 
         <BentoAlert v-if="hasError" type="critical" role="alert">
-            {{ i18n.get('payByLink.details.expiration.errorTitle') }}
+            {{ i18n.get('payByLink.details.expiration.error.title') }}
             <template #description>
-                {{ i18n.get('payByLink.details.expiration.errorDescription') }}
+                {{ i18n.get('payByLink.details.expiration.error.description') }}
             </template>
         </BentoAlert>
 

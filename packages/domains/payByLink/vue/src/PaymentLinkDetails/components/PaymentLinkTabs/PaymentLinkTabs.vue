@@ -41,11 +41,11 @@ const listItems = computed(() => buildPaymentLinkListItems(props.paymentLink, { 
                     <PaymentLinkTabsList :items="listItems.shopperInformation" />
 
                     <div v-if="listItems.shippingAddress.length > 0">
-                        <PaymentLinkTabsList :heading="'payByLink.details.fields.shippingAddress.title'" :items="listItems.shippingAddress" />
+                        <PaymentLinkTabsList :heading="'payByLink.details.shippingAddress.title'" :items="listItems.shippingAddress" />
                     </div>
 
                     <div v-if="listItems.billingAddress.length > 0">
-                        <PaymentLinkTabsList :heading="'payByLink.details.fields.billingAddress.title'" :items="listItems.billingAddress" />
+                        <PaymentLinkTabsList :heading="'payByLink.details.billingAddress.title'" :items="listItems.billingAddress" />
                     </div>
                 </template>
 

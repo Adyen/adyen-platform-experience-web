@@ -24,26 +24,26 @@ const linkTypeItems = computed(() => {
     const options = props.configuration?.linkType?.options?.length
         ? (props.configuration.linkType.options as IPaymentLinkType[])
         : LINK_TYPE_FALLBACK;
-    return options.map(type => ({ id: type, name: i18n.get(`payByLink.creation.form.linkTypes.${type}` as PayByLinkTranslationKey) }));
+    return options.map(type => ({ id: type, name: i18n.get(`payByLink.creation.linkTypes.${type}` as PayByLinkTranslationKey) }));
 });
 </script>
 
 <template>
     <div :class="styles.fieldsContainer">
         <ValidityField :options="validityOptions" />
-        <AmountField :label="i18n.get('payByLink.creation.fields.amount.label')" :currency-options="currencyOptions" />
+        <AmountField :label="i18n.get('payByLink.creation.amount.label')" :currency-options="currencyOptions" />
         <TextField
             name="reference"
-            :label="i18n.get('payByLink.creation.fields.merchantReference.label')"
+            :label="i18n.get('payByLink.creation.merchantReference')"
             :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.merchantReference.max"
         />
-        <SelectField name="linkType" :label="i18n.get('payByLink.creation.fields.linkType.label')" :items="linkTypeItems" />
+        <SelectField name="linkType" :label="i18n.get('payByLink.creation.linkType')" :items="linkTypeItems" />
         <TextField
             name="description"
-            :label="i18n.get('payByLink.creation.fields.description.label')"
+            :label="i18n.get('payByLink.creation.description.label')"
             :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.description.max"
-            :support-text="i18n.get('payByLink.creation.fields.description.supportText')"
+            :support-text="i18n.get('payByLink.creation.description.supportText')"
         />
-        <DateField name="deliverAt" :label="i18n.get('payByLink.creation.fields.deliverAt.label')" />
+        <DateField name="deliverAt" :label="i18n.get('payByLink.creation.deliverAt')" />
     </div>
 </template>
