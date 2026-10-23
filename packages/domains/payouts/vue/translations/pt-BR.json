@@ -1,5 +1,5 @@
 {
-    "payouts.common.actions.contactSupport.labels.default": "Contate o suporte",
+    "payouts.common.contactSupport.default": "Contate o suporte",
     "payouts.common.contactSupport.reachOut": "Entre em contato com o suporte",
     "payouts.common.copy.done": "Copiado",
     "payouts.common.copy.label": "Copiar",
@@ -51,13 +51,11 @@
     "payouts.overview.filters.date.thisMonth": "Este mês",
     "payouts.overview.filters.date.thisWeek": "Esta semana",
     "payouts.overview.filters.date.yearToDate": "Ano até o momento",
-    "payouts.overview.filters.label": "Filtros de repasse de pagamentos",
     "payouts.overview.generateInfo": "As informações de repasse do pagamento são geradas todos os dias à meia-noite, horário UTC.",
     "payouts.overview.list.adjustmentAmount": "Ajustes",
     "payouts.overview.list.createdAt": "Data",
     "payouts.overview.list.fundsCapturedAmount": "Fundos capturados",
     "payouts.overview.list.payoutAmount": "Repasse do pagamento líquido",
-    "payouts.overview.pagination.controls.limitSelect.label": "Repasse de pagamentos por página",
     "payouts.overview.pagination.label": "Paginação de repasse de pagamentos",
     "payouts.overview.title": "Liquidação"
 }

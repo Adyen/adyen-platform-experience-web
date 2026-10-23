@@ -1,5 +1,5 @@
 {
-    "payouts.common.actions.contactSupport.labels.default": "Ota yhteyttä asiakaspalveluun",
+    "payouts.common.contactSupport.default": "Ota yhteyttä asiakaspalveluun",
     "payouts.common.contactSupport.reachOut": "Ota yhteyttä tukeen",
     "payouts.common.copy.done": "Kopioitu",
     "payouts.common.copy.label": "Kopioi",
@@ -51,13 +51,11 @@
     "payouts.overview.filters.date.thisMonth": "Tämä kuukausi",
     "payouts.overview.filters.date.thisWeek": "Tämä viikko",
     "payouts.overview.filters.date.yearToDate": "Vuoden alusta",
-    "payouts.overview.filters.label": "Maksusuodattimet",
     "payouts.overview.generateInfo": "Maksutiedot luodaan joka päivä keskiyöllä (UTC-aikaa).",
     "payouts.overview.list.adjustmentAmount": "Korjaukset",
     "payouts.overview.list.createdAt": "Päivämäärä",
     "payouts.overview.list.fundsCapturedAmount": "Kirjatut varat",
     "payouts.overview.list.payoutAmount": "Nettomaksu",
-    "payouts.overview.pagination.controls.limitSelect.label": "Maksuja per sivu",
     "payouts.overview.pagination.label": "Maksujen sivutus",
     "payouts.overview.title": "Maksut"
 }

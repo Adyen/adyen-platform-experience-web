@@ -1,5 +1,5 @@
 {
-    "reports.common.actions.contactSupport.labels.default": "Support kontaktieren",
+    "reports.common.contactSupport.default": "Support kontaktieren",
     "reports.common.contactSupport.reachOut": "Wenden Sie sich an den Support",
     "reports.common.copy.done": "Kopiert",
     "reports.common.copy.label": "Kopieren",
@@ -15,7 +15,6 @@
     "reports.common.errors.updateFilters": "Versuchen Sie es mit einer anderen Suchanfrage oder setzen Sie Ihre Filter zurück und wir versuchen es erneut.",
     "reports.common.refresh.label": "Aktualisieren",
     "reports.common.types.payout": "Auszahlung",
-    "reports.overview.errors.download": "Beim Herunterladen ist ein Fehler aufgetreten",
     "reports.overview.errors.listEmpty": "Keine Berichte gefunden",
     "reports.overview.errors.listUnavailable": "Ihre Berichte konnten nicht geladen werden.",
     "reports.overview.errors.retryDownload": "Bitte versuchen Sie es später erneut.",
@@ -33,13 +32,11 @@
     "reports.overview.filters.date.thisMonth": "Diesen Monat",
     "reports.overview.filters.date.thisWeek": "Diese Woche",
     "reports.overview.filters.date.yearToDate": "Laufendes Jahr",
-    "reports.overview.filters.label": "Filter für Berichte",
     "reports.overview.generateInfo": "Die Berichte werden täglich um Mitternacht (UTC-Zeit) generiert.",
     "reports.overview.list.createdAt": "Datum",
     "reports.overview.list.downloadReport": "Bericht herunterladen",
     "reports.overview.list.reportFile": "Datei",
     "reports.overview.list.reportType": "Bericht",
-    "reports.overview.pagination.controls.limitSelect.label": "Berichte pro Seite",
     "reports.overview.pagination.label": "Berichtspaginierung",
     "reports.overview.title": "Berichte"
 }

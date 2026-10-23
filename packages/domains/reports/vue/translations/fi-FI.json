@@ -1,5 +1,5 @@
 {
-    "reports.common.actions.contactSupport.labels.default": "Ota yhteyttä asiakaspalveluun",
+    "reports.common.contactSupport.default": "Ota yhteyttä asiakaspalveluun",
     "reports.common.contactSupport.reachOut": "Ota yhteyttä tukeen",
     "reports.common.copy.done": "Kopioitu",
     "reports.common.copy.label": "Kopioi",
@@ -15,7 +15,6 @@
     "reports.common.errors.updateFilters": "Kokeile toista hakua tai nollaa suodattimet, niin yritämme uudelleen.",
     "reports.common.refresh.label": "Lataa uudelleen",
     "reports.common.types.payout": "Maksu",
-    "reports.overview.errors.download": "Latauksessa meni jokin pieleen",
     "reports.overview.errors.listEmpty": "Raportteja ei löytynyt",
     "reports.overview.errors.listUnavailable": "Raporttiesi lataaminen ei onnistunut.",
     "reports.overview.errors.retryDownload": "Yritä myöhemmin uudelleen.",
@@ -33,13 +32,11 @@
     "reports.overview.filters.date.thisMonth": "Tämä kuukausi",
     "reports.overview.filters.date.thisWeek": "Tämä viikko",
     "reports.overview.filters.date.yearToDate": "Vuoden alusta",
-    "reports.overview.filters.label": "Raporttisuodattimet",
     "reports.overview.generateInfo": "Raportit luodaan joka päivä keskiyöllä (UTC-aikaa).",
     "reports.overview.list.createdAt": "Päivämäärä",
     "reports.overview.list.downloadReport": "Lataa raportti",
     "reports.overview.list.reportFile": "Tiedosto",
     "reports.overview.list.reportType": "Raportti",
-    "reports.overview.pagination.controls.limitSelect.label": "Raportteja per sivu",
     "reports.overview.pagination.label": "Raporttien sivutus",
     "reports.overview.title": "Raportit"
 }

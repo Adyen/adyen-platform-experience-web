@@ -1,5 +1,5 @@
 {
-    "payouts.common.actions.contactSupport.labels.default": "Contactez l'assistance",
+    "payouts.common.contactSupport.default": "Contactez l'assistance",
     "payouts.common.contactSupport.reachOut": "Contacter l'assistance",
     "payouts.common.copy.done": "Copié",
     "payouts.common.copy.label": "Copier",
@@ -51,13 +51,11 @@
     "payouts.overview.filters.date.thisMonth": "Ce mois-ci",
     "payouts.overview.filters.date.thisWeek": "Cette semaine",
     "payouts.overview.filters.date.yearToDate": "Depuis le début de l'année",
-    "payouts.overview.filters.label": "Filtres des paiements",
     "payouts.overview.generateInfo": "Les informations sur les reversements sont générées tous les jours à minuit, heure UTC.",
     "payouts.overview.list.adjustmentAmount": "Ajustements",
     "payouts.overview.list.createdAt": "Date",
     "payouts.overview.list.fundsCapturedAmount": "Fonds capturés",
     "payouts.overview.list.payoutAmount": "Reversement net",
-    "payouts.overview.pagination.controls.limitSelect.label": "Reversements par page",
     "payouts.overview.pagination.label": "Pagination des reversements",
     "payouts.overview.title": "Reversements"
 }

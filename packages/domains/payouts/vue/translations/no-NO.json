@@ -1,5 +1,5 @@
 {
-    "payouts.common.actions.contactSupport.labels.default": "Kontakt brukerstøtten",
+    "payouts.common.contactSupport.default": "Kontakt brukerstøtten",
     "payouts.common.contactSupport.reachOut": "Ta kontakt med brukerstøtten",
     "payouts.common.copy.done": "Kopiert",
     "payouts.common.copy.label": "Kopier",
@@ -51,13 +51,11 @@
     "payouts.overview.filters.date.thisMonth": "Denne måneden",
     "payouts.overview.filters.date.thisWeek": "Denne uken",
     "payouts.overview.filters.date.yearToDate": "Hittil i år",
-    "payouts.overview.filters.label": "Utbetalingsfiltre",
     "payouts.overview.generateInfo": "Utbetalingsinformasjon genereres hver dag ved midnatt, UTC-tid.",
     "payouts.overview.list.adjustmentAmount": "Justeringer",
     "payouts.overview.list.createdAt": "Dato",
     "payouts.overview.list.fundsCapturedAmount": "Midler registrert",
     "payouts.overview.list.payoutAmount": "Netto utbetaling",
-    "payouts.overview.pagination.controls.limitSelect.label": "Utbetalinger per side",
     "payouts.overview.pagination.label": "Sidenummerering av utbetalinger",
     "payouts.overview.title": "Utbetalinger"
 }

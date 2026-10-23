@@ -6,7 +6,7 @@ export const FIELD_KEYS = {
     respondBy: 'disputes.overview.fields.respondBy',
     createdAt: 'disputes.overview.fields.openedOn',
     paymentMethod: 'disputes.overview.fields.paymentMethod',
-    disputeReason: 'disputes.overview.fields.disputeReason',
+    disputeReason: 'disputes.overview.fields.disputeReasonLabel',
     reason: 'disputes.overview.fields.reason',
     currency: 'disputes.overview.fields.currency',
     disputedAmount: 'disputes.overview.fields.disputedAmount',

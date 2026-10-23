@@ -133,10 +133,24 @@ useClickOutside(
 
 const masterSwitchChecked = computed(() => exportColumns.value.length === EXPORT_COLUMNS.length);
 
+// Export-column ids resolve to their own export key.
+const EXPORT_COLUMN_LABEL_KEYS = Object.freeze({
+    id: 'transactions.overview.export.columns.id',
+    balanceAccountId: 'transactions.overview.export.columns.balanceAccountId',
+    createdAt: 'transactions.overview.export.columns.createdAt',
+    status: 'transactions.overview.export.columns.status',
+    paymentMethod: 'transactions.overview.export.columns.paymentMethod',
+    category: 'transactions.overview.export.columns.category',
+    paymentPspReference: 'transactions.overview.export.columns.paymentPspReference',
+    currency: 'transactions.overview.export.columns.currency',
+    netAmount: 'transactions.overview.export.columns.netAmount',
+    amountBeforeDeductions: 'transactions.overview.export.columns.amountBeforeDeductions',
+} as const) satisfies Readonly<Record<(typeof EXPORT_COLUMNS)[number], TransactionsTranslationKey>>;
+
 const columnSwitches = computed(() =>
     EXPORT_COLUMNS.map(column => ({
         column,
-        label: i18n.get(`transactions.overview.export.columns.${column}` as TransactionsTranslationKey),
+        label: i18n.get(EXPORT_COLUMN_LABEL_KEYS[column]),
         checked: exportColumns.value.includes(column),
     }))
 );

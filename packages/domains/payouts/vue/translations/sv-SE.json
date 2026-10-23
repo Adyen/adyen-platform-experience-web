@@ -1,5 +1,5 @@
 {
-    "payouts.common.actions.contactSupport.labels.default": "Kontakta supporten",
+    "payouts.common.contactSupport.default": "Kontakta supporten",
     "payouts.common.contactSupport.reachOut": "Kontakta supporten",
     "payouts.common.copy.done": "Kopierat",
     "payouts.common.copy.label": "Kopiera",
@@ -51,13 +51,11 @@
     "payouts.overview.filters.date.thisMonth": "Den här månaden",
     "payouts.overview.filters.date.thisWeek": "Denna vecka",
     "payouts.overview.filters.date.yearToDate": "Hittills i år",
-    "payouts.overview.filters.label": "Utbetalningsfilter",
     "payouts.overview.generateInfo": "Utbetalningsinformation genereras varje dag vid midnatt, UTC-tid.",
     "payouts.overview.list.adjustmentAmount": "Justeringar",
     "payouts.overview.list.createdAt": "Datum",
     "payouts.overview.list.fundsCapturedAmount": "Insamlade medel",
     "payouts.overview.list.payoutAmount": "Nettoutbetalning",
-    "payouts.overview.pagination.controls.limitSelect.label": "Utbetalningar per sida",
     "payouts.overview.pagination.label": "Paginering av utbetalningar",
     "payouts.overview.title": "Utbetalningar"
 }

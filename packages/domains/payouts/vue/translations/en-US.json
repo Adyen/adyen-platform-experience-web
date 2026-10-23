@@ -1,5 +1,5 @@
 {
-    "payouts.common.actions.contactSupport.labels.default": "Contact support",
+    "payouts.common.contactSupport.default": "Contact support",
     "payouts.common.contactSupport.reachOut": "Reach out to support",
     "payouts.common.copy.done": "Copied",
     "payouts.common.copy.label": "Copy",
@@ -51,13 +51,11 @@
     "payouts.overview.filters.date.thisMonth": "This month",
     "payouts.overview.filters.date.thisWeek": "This week",
     "payouts.overview.filters.date.yearToDate": "Year to date",
-    "payouts.overview.filters.label": "Payouts filters",
     "payouts.overview.generateInfo": "Payout information is generated each day at midnight, UTC time.",
     "payouts.overview.list.adjustmentAmount": "Adjustments",
     "payouts.overview.list.createdAt": "Date",
     "payouts.overview.list.fundsCapturedAmount": "Funds captured",
     "payouts.overview.list.payoutAmount": "Net payout",
-    "payouts.overview.pagination.controls.limitSelect.label": "Payouts per page",
     "payouts.overview.pagination.label": "Payouts pagination",
     "payouts.overview.title": "Payouts"
 }

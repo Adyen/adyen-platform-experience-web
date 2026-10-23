@@ -1,5 +1,5 @@
 {
-    "reports.common.actions.contactSupport.labels.default": "Contactez l'assistance",
+    "reports.common.contactSupport.default": "Contactez l'assistance",
     "reports.common.contactSupport.reachOut": "Contacter l'assistance",
     "reports.common.copy.done": "Copié",
     "reports.common.copy.label": "Copier",
@@ -15,7 +15,6 @@
     "reports.common.errors.updateFilters": "Essayez une autre recherche ou réinitialisez vos filtres, et nous réessayerons.",
     "reports.common.refresh.label": "Actualiser",
     "reports.common.types.payout": "Versement",
-    "reports.overview.errors.download": "Une erreur s'est produite pendant le téléchargement",
     "reports.overview.errors.listEmpty": "Aucun rapport trouvé",
     "reports.overview.errors.listUnavailable": "Nous n'avons pas pu charger vos rapports.",
     "reports.overview.errors.retryDownload": "Veuillez réessayer plus tard.",
@@ -33,13 +32,11 @@
     "reports.overview.filters.date.thisMonth": "Ce mois-ci",
     "reports.overview.filters.date.thisWeek": "Cette semaine",
     "reports.overview.filters.date.yearToDate": "Depuis le début de l'année",
-    "reports.overview.filters.label": "Filtres de rapports",
     "reports.overview.generateInfo": "Les rapports sont générés tous les jours à minuit, heure UTC.",
     "reports.overview.list.createdAt": "Date",
     "reports.overview.list.downloadReport": "Télécharger le rapport",
     "reports.overview.list.reportFile": "Fichier",
     "reports.overview.list.reportType": "Rapport",
-    "reports.overview.pagination.controls.limitSelect.label": "Rapports par page",
     "reports.overview.pagination.label": "Pagination des rapports",
     "reports.overview.title": "rapports"
 }

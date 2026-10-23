@@ -1,5 +1,5 @@
 {
-    "payouts.common.actions.contactSupport.labels.default": "Neem contact op met support",
+    "payouts.common.contactSupport.default": "Neem contact op met support",
     "payouts.common.contactSupport.reachOut": "Neem contact met support",
     "payouts.common.copy.done": "Gekopieerd",
     "payouts.common.copy.label": "Kopiëren",
@@ -51,13 +51,11 @@
     "payouts.overview.filters.date.thisMonth": "Deze maand",
     "payouts.overview.filters.date.thisWeek": "Deze week",
     "payouts.overview.filters.date.yearToDate": "Jaar tot heden",
-    "payouts.overview.filters.label": "Uitbetalingsfilters",
     "payouts.overview.generateInfo": "Uitbetalingsinformatie wordt elke dag om middernacht, UTC-tijd, gegenereerd.",
     "payouts.overview.list.adjustmentAmount": "Aanpassingen",
     "payouts.overview.list.createdAt": "Datum",
     "payouts.overview.list.fundsCapturedAmount": "Vastgehouden bedrag",
     "payouts.overview.list.payoutAmount": "Netto uitbetaling",
-    "payouts.overview.pagination.controls.limitSelect.label": "Uitbetalingen per pagina",
     "payouts.overview.pagination.label": "Paginering uitbetalingen",
     "payouts.overview.title": "Uitbetalingen"
 }

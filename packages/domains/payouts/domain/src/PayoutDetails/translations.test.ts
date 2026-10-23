@@ -13,6 +13,11 @@ describe('getPayoutAdjustmentType', () => {
         expect(getPayoutAdjustmentType(i18n, 'grantRepayment')).toBe('Grant repayments');
     });
 
+    test('resolves a category that appears in both breakdown tables', () => {
+        expect(getPayoutAdjustmentType(i18n, 'correction')).toBe('Corrections');
+        expect(getPayoutAdjustmentType(i18n, 'refund')).toBe('Refunds');
+    });
+
     test('falls back to the raw value for an unknown adjustment type', () => {
         expect(getPayoutAdjustmentType(i18n, 'brandNewType')).toBe('brandNewType');
     });
@@ -21,5 +26,10 @@ describe('getPayoutAdjustmentType', () => {
 describe('getPayoutFundsCapturedType', () => {
     test('resolves the copy of a funds captured type', () => {
         expect(getPayoutFundsCapturedType(i18n, 'capture')).toBe('Captured');
+    });
+
+    test('resolves a category that appears in both breakdown tables', () => {
+        expect(getPayoutFundsCapturedType(i18n, 'correction')).toBe('Corrections');
+        expect(getPayoutFundsCapturedType(i18n, 'refund')).toBe('Refunds');
     });
 });

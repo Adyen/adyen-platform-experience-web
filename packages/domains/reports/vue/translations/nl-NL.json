@@ -1,5 +1,5 @@
 {
-    "reports.common.actions.contactSupport.labels.default": "Neem contact op met support",
+    "reports.common.contactSupport.default": "Neem contact op met support",
     "reports.common.contactSupport.reachOut": "Neem contact met support",
     "reports.common.copy.done": "Gekopieerd",
     "reports.common.copy.label": "Kopiëren",
@@ -15,7 +15,6 @@
     "reports.common.errors.updateFilters": "Probeer een andere zoekopdracht of stel uw filters opnieuw in, en we proberen het opnieuw.",
     "reports.common.refresh.label": "Vernieuwen",
     "reports.common.types.payout": "Uitbetaling",
-    "reports.overview.errors.download": "Er is iets misgegaan tijdens het downloaden",
     "reports.overview.errors.listEmpty": "Geen rapporten gevonden",
     "reports.overview.errors.listUnavailable": "We konden je rapporten niet laden.",
     "reports.overview.errors.retryDownload": "Probeer het later opnieuw.",
@@ -33,13 +32,11 @@
     "reports.overview.filters.date.thisMonth": "Deze maand",
     "reports.overview.filters.date.thisWeek": "Deze week",
     "reports.overview.filters.date.yearToDate": "Jaar tot heden",
-    "reports.overview.filters.label": "Filters voor rapporten",
     "reports.overview.generateInfo": "Rapporten worden elke dag om middernacht, UTC-tijd, gegenereerd.",
     "reports.overview.list.createdAt": "Datum",
     "reports.overview.list.downloadReport": "Rapport downloaden",
     "reports.overview.list.reportFile": "Bestand",
     "reports.overview.list.reportType": "Rapport",
-    "reports.overview.pagination.controls.limitSelect.label": "Rapporten per pagina",
     "reports.overview.pagination.label": "Paginering van rapporten",
     "reports.overview.title": "Rapporten"
 }

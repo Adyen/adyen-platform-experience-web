@@ -1,5 +1,5 @@
 {
-    "payouts.common.actions.contactSupport.labels.default": "Contacta con el servicio de soporte",
+    "payouts.common.contactSupport.default": "Contacta con el servicio de soporte",
     "payouts.common.contactSupport.reachOut": "Ponte en contacto con soporte",
     "payouts.common.copy.done": "Copiado",
     "payouts.common.copy.label": "Texto",
@@ -51,13 +51,11 @@
     "payouts.overview.filters.date.thisMonth": "Este mes",
     "payouts.overview.filters.date.thisWeek": "Esta semana",
     "payouts.overview.filters.date.yearToDate": "Este año hasta la fecha",
-    "payouts.overview.filters.label": "Filtros de pagos",
     "payouts.overview.generateInfo": "La información de pago se genera todos los días a medianoche, hora UTC.",
     "payouts.overview.list.adjustmentAmount": "Ajustes",
     "payouts.overview.list.createdAt": "Fecha",
     "payouts.overview.list.fundsCapturedAmount": "Fondos capturados",
     "payouts.overview.list.payoutAmount": "Pago neto",
-    "payouts.overview.pagination.controls.limitSelect.label": "Pagos por página",
     "payouts.overview.pagination.label": "Paginación de los pagos",
     "payouts.overview.title": "Pagos"
 }

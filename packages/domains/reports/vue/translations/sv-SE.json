@@ -1,5 +1,5 @@
 {
-    "reports.common.actions.contactSupport.labels.default": "Kontakta supporten",
+    "reports.common.contactSupport.default": "Kontakta supporten",
     "reports.common.contactSupport.reachOut": "Kontakta supporten",
     "reports.common.copy.done": "Kopierat",
     "reports.common.copy.label": "Kopiera",
@@ -15,7 +15,6 @@
     "reports.common.errors.updateFilters": "Försök med en annan sökning eller återställ dina filter, så försöker vi igen.",
     "reports.common.refresh.label": "Uppdatera",
     "reports.common.types.payout": "Utbetalning",
-    "reports.overview.errors.download": "Något gick fel med nedladdningen",
     "reports.overview.errors.listEmpty": "Inga rapporter hittades",
     "reports.overview.errors.listUnavailable": "Det gick inte att läsa in dina rapporter.",
     "reports.overview.errors.retryDownload": "Försök igen senare.",
@@ -33,13 +32,11 @@
     "reports.overview.filters.date.thisMonth": "Den här månaden",
     "reports.overview.filters.date.thisWeek": "Denna vecka",
     "reports.overview.filters.date.yearToDate": "Hittills i år",
-    "reports.overview.filters.label": "Rapportfilter",
     "reports.overview.generateInfo": "Rapporter genereras varje dag vid midnatt, UTC-tid.",
     "reports.overview.list.createdAt": "Datum",
     "reports.overview.list.downloadReport": "Ladda ner rapport",
     "reports.overview.list.reportFile": "Fil",
     "reports.overview.list.reportType": "Rapport",
-    "reports.overview.pagination.controls.limitSelect.label": "Rapporter per sida",
     "reports.overview.pagination.label": "Rapportpaginering",
     "reports.overview.title": "Rapporter"
 }

@@ -89,8 +89,6 @@ const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
             totalPaymentAmount: { visible: statusGroup === 'FRAUD_ALERTS', flex: 1, numeric: true },
         };
     },
-    resolveStandardColumnLabel: (field, defaultLabel) =>
-        field === 'disputeReason' ? i18n.get('disputes.overview.fields.disputeReasonLabel') : defaultLabel,
     resolveCustomColumnLabel: key => (i18n.has(key) ? i18n.get(key) : key),
 });
 

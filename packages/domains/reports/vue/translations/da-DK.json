@@ -1,5 +1,5 @@
 {
-    "reports.common.actions.contactSupport.labels.default": "Kontakt support",
+    "reports.common.contactSupport.default": "Kontakt support",
     "reports.common.contactSupport.reachOut": "Ræk ud efter støtte",
     "reports.common.copy.done": "Kopieret",
     "reports.common.copy.label": "Kopiér",
@@ -15,7 +15,6 @@
     "reports.common.errors.updateFilters": "Prøv en anden søgning, eller nulstil dine filtre, så vi kan prøve igen.",
     "reports.common.refresh.label": "Opdater",
     "reports.common.types.payout": "Udbetaling",
-    "reports.overview.errors.download": "Noget gik galt under download",
     "reports.overview.errors.listEmpty": "Ingen rapporter fundet",
     "reports.overview.errors.listUnavailable": "Vi kunne ikke indlæse dine rapporter.",
     "reports.overview.errors.retryDownload": "Prøv igen senere.",
@@ -33,13 +32,11 @@
     "reports.overview.filters.date.thisMonth": "Denne måned",
     "reports.overview.filters.date.thisWeek": "Denne uge",
     "reports.overview.filters.date.yearToDate": "År til dato",
-    "reports.overview.filters.label": "Rapportfiltre",
     "reports.overview.generateInfo": "Rapporter genereres hver dag ved midnat, UTC-tid.",
     "reports.overview.list.createdAt": "Dato",
     "reports.overview.list.downloadReport": "Download rapport",
     "reports.overview.list.reportFile": "Fil",
     "reports.overview.list.reportType": "Rapport",
-    "reports.overview.pagination.controls.limitSelect.label": "Rapporter pr. side",
     "reports.overview.pagination.label": "Rapportpaginering",
     "reports.overview.title": "Rapporter"
 }
