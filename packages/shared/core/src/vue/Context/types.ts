@@ -7,7 +7,7 @@ import type { TranslationDomain } from '../../translations';
 export type { OnErrorHandler } from '../../types';
 export type { DomainCustomTranslations, DomainTranslationKey, TranslationDomain } from '../../translations';
 export { getDomainTranslationKey } from '../../translations';
-export type { I18n };
+export type { I18n } from '../../Localization/types';
 
 export interface DomainTranslationBinding {
     i18n: I18n;
