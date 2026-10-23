@@ -8,7 +8,7 @@ import TextField from '../../fields/TextField.vue';
 import DateField from './fields/DateField.vue';
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../domain/src';
 import type { IPaymentLinkConfiguration, IPaymentLinkType, IPaymentLinkValidity } from '@integration-components/types';
-import type { TranslationKey } from '@integration-components/core';
+import type { PayByLinkTranslationKey } from '@integration-components/payByLink/domain';
 import styles from '../FormLayout.module.scss';
 
 const props = defineProps<{ configuration?: IPaymentLinkConfiguration }>();
@@ -24,7 +24,7 @@ const linkTypeItems = computed(() => {
     const options = props.configuration?.linkType?.options?.length
         ? (props.configuration.linkType.options as IPaymentLinkType[])
         : LINK_TYPE_FALLBACK;
-    return options.map(type => ({ id: type, name: i18n.get(`payByLink.creation.form.linkTypes.${type}` as TranslationKey) }));
+    return options.map(type => ({ id: type, name: i18n.get(`payByLink.creation.form.linkTypes.${type}` as PayByLinkTranslationKey) }));
 });
 </script>
 

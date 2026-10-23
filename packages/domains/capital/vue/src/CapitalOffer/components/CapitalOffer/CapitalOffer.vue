@@ -5,7 +5,7 @@ import { getDynamicOfferConfig, sharedCapitalOfferAnalyticsEventProperties } fro
 import { useLandedPageEvent } from '@integration-components/composables-vue';
 import OfferSelection from '../OfferSelection/OfferSelection.vue';
 import OfferSummary from '../OfferSummary/OfferSummary.vue';
-import type { CapitalOfferProps } from '../../types';
+import type { CapitalOfferComponentProps } from '../../types';
 import { useEnhancedCapitalState } from '../../../shared/composables/useEnhancedCapitalState';
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import CapitalError from '../../../shared/CapitalError.vue';
@@ -13,7 +13,7 @@ import EmptyOfferState from '../../../shared/EmptyOfferState.vue';
 import UnsupportedRegionState from '../../../shared/UnsupportedRegionState.vue';
 import styles from './CapitalOffer.module.scss';
 
-const props = defineProps<CapitalOfferProps>();
+const props = defineProps<CapitalOfferComponentProps>();
 
 const { capitalState: backendCapitalState, error: capitalStateError } = useEnhancedCapitalState(() => !props.capitalState);
 const capitalState = computed(() => props.capitalState ?? backendCapitalState.value);

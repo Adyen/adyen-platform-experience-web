@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="TComponentAppearance extends GlobalAppearance = GlobalAppearance">
+<script setup lang="ts">
 import { computed, inject, provide, ref, useSlots } from 'vue';
 import type { CoreInstance, GlobalAppearance } from './types';
 import { useBentoTranslationOverrides } from '@adyen/bento-vue3';
@@ -12,7 +12,7 @@ import ComponentAvailabilityGate from './componentAvailability/ComponentAvailabi
 import styles from './UIElement.module.scss';
 import './UIElement.scss';
 
-interface Props {
+interface Props<TComponentAppearance extends GlobalAppearance = GlobalAppearance> {
     core: CoreInstance;
     bentoOverrides: Record<string, string>;
     componentName: ExternalComponentType;
@@ -30,12 +30,13 @@ const domainTranslations = inject(DOMAIN_TRANSLATION_BINDING_KEY);
 if (!domainTranslations) throw new Error('[UIElementProvider] Domain translations must be configured before mounting.');
 
 // The gated component is the slot's root vnode; surface its `onContactSupport` prop so the
-// availability error can offer a contact-support action.
-const onContactSupport = computed(() => {
+// availability error can offer a contact-support action. Read at render time rather than in a
+// computed: the slot closes over a plain props copy, so a computed would never see later updates.
+const getOnContactSupport = () => {
     const component = (slots.default?.() ?? [])[0];
     const componentProps = component?.props as Record<string, unknown> | null | undefined;
     return componentProps?.onContactSupport as (() => void) | undefined;
-});
+};
 
 provide(COMPONENT_REF_KEY, componentRef);
 useBentoTranslationOverrides(props.bentoOverrides);
@@ -59,9 +60,9 @@ useBentoTranslationOverrides(props.bentoOverrides);
                 <section ref="componentRef" class="adyen-pe-component" data-testid="component-root">
                     <div
                         data-testid="component-container"
-                        :class="[styles.container, { [styles.containerHidden]: appearance?.container === 'hidden' }]"
+                        :class="[styles.container, appearance?.container === 'hidden' ? styles.containerHidden : '']"
                     >
-                        <ComponentAvailabilityGate :type="props.componentName" :on-contact-support="onContactSupport">
+                        <ComponentAvailabilityGate :type="props.componentName" :on-contact-support="getOnContactSupport()">
                             <slot />
                         </ComponentAvailabilityGate>
                     </div>

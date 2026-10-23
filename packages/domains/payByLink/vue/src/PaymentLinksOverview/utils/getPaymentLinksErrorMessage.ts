@@ -1,10 +1,9 @@
-import type { DomainTranslationKey } from '@integration-components/core/vue';
-import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '@integration-components/payByLink/domain';
+import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS, type PayByLinkTranslationKey } from '@integration-components/payByLink/domain';
 import { getPaymentLinksErrorMetadata } from './error';
 
 export type PaymentLinksErrorContent = {
-    title: DomainTranslationKey;
-    messages: DomainTranslationKey[];
+    title: PayByLinkTranslationKey;
+    messages: PayByLinkTranslationKey[];
     requestId?: string;
     imageName?: 'no-results-found' | 'wrong-environment';
     onContactSupport?: () => void;
@@ -13,13 +12,13 @@ export type PaymentLinksErrorContent = {
 
 export const getPaymentLinksErrorMessage = (
     error: Error | undefined,
-    errorMessage: DomainTranslationKey,
+    errorMessage: PayByLinkTranslationKey,
     onContactSupport?: () => void
 ): PaymentLinksErrorContent | undefined => {
     if (!error) return undefined;
 
     const { errorCode, requestId, invalidFields } = getPaymentLinksErrorMetadata(error);
-    const secondaryErrorMessage: DomainTranslationKey = onContactSupport
+    const secondaryErrorMessage: PayByLinkTranslationKey = onContactSupport
         ? 'payByLink.common.errors.errorCode'
         : 'payByLink.common.errors.errorCodeSupport';
     const sharedContent = {

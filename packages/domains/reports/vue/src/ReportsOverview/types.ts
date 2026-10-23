@@ -1,26 +1,14 @@
-import type { ReportsOverviewProps } from '../../../domain/src';
 import type { UIElementProps } from '@integration-components/core/vue';
-import type {
-    CustomColumn,
-    GlobalAppearance,
-    IBalanceAccountBase,
-    IReport,
-    OnDataRetrievedCallback,
-    WithDataGridAppearance,
-} from '@integration-components/types';
-import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-
-export interface DataCustomizationList<Fields extends string> {
-    fields?: CustomColumn<StringWithAutocompleteOptions<Fields>>[];
-    onDataRetrieve?: OnDataRetrievedCallback<IReport[]>;
-}
+import type { GlobalAppearance, IReport, WithDataGridAppearance } from '@integration-components/types';
+import type { ReportsOverviewProps } from '../../../domain/src';
 
 export type ReportsOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
 
 // ── Component prop types ──
-export type ReportsOverviewExternalProps = Omit<ReportsOverviewProps, 'ref'> & UIElementProps<ReportsOverviewAppearance>;
+export type ReportsOverviewExternalProps = UIElementProps<ReportsOverviewAppearance> & ReportsOverviewProps;
+export type ReportsOverviewComponentProps = Omit<ReportsOverviewExternalProps, 'core' | 'appearance'>;
 
-export type { IBalanceAccountBase };
+export type { IBalanceAccountBase } from '@integration-components/types';
 
 /**
  * Shape of the /v1/reports list response as consumed by useReportsList.

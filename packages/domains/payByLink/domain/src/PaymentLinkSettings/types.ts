@@ -1,13 +1,9 @@
 import type { TranslationKey } from '@integration-components/core';
-import type { IPaymentLinkTermsAndConditions, UIElementProps } from '@integration-components/types';
-import type { StoreIds } from '../types';
+import type { IPaymentLinkTermsAndConditions, WithDismissCallback } from '@integration-components/types';
+import type { StoreIds } from '../shared/types';
 
-export interface PaymentLinkSettingsProps extends UIElementProps {
+export interface PaymentLinkSettingsProps extends WithDismissCallback {
     storeIds?: StoreIds;
-    settingsItems?: PaymentLinkSettingsItem[];
-    embeddedInOverview?: boolean;
-    navigateBack?: () => void;
-    onDismiss?: () => void;
 }
 
 export type PaymentLinkSettingsItem = 'theme' | 'termsAndConditions';

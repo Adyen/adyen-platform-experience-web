@@ -42,6 +42,7 @@
     "transactions.details.actions.copyReferenceID": "Copia ID di riferimento",
     "transactions.details.actions.goToPayment": "Vai al pagamento",
     "transactions.details.actions.refund": "Rimborsa pagamento",
+    "transactions.details.common.actions.goBack": "Torna indietro",
     "transactions.details.common.refundedStates.full": "Interamente rimborsato",
     "transactions.details.common.refundedStates.partial": "Parzialmente rimborsato",
     "transactions.details.common.refundReasons.duplicate": "Duplicato",

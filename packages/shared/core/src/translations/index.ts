@@ -15,7 +15,7 @@ export type TranslationOptions = {
 
 export type TranslationDomain = 'capital' | 'disputes' | 'payByLink' | 'payouts' | 'reports' | 'transactions';
 
-export type DomainTranslationKey = Extract<TranslationKey, `${TranslationDomain}.${string}`>;
+export type DomainTranslationKey<D extends TranslationDomain = TranslationDomain> = Extract<TranslationKey, `${D}.${string}`>;
 export type DomainCustomTranslations = Record<string, { [key in DomainTranslationKey]?: string }>;
 export const getDomainTranslationKey = (domain: TranslationDomain, key: string): DomainTranslationKey => `${domain}.${key}` as DomainTranslationKey;
 

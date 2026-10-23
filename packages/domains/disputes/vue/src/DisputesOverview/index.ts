@@ -1,7 +1,7 @@
 export { DisputesOverviewElement } from './DisputesOverviewElement';
 export type {
+    DisputesOverviewComponentProps,
     DisputesOverviewExternalProps,
-    DisputesOverviewProps,
     DisputesDataGridCustomization,
     DisputesOverviewTabsConfig,
     DisputeStatusGroup,

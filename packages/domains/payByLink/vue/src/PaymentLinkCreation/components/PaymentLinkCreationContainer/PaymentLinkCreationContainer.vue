@@ -9,15 +9,15 @@ import PaymentLinkCreationFormSkeleton from '../PaymentLinkCreationFormContainer
 import { usePaymentLinkFormData } from '../PaymentLinkCreationFormContainer/usePaymentLinkFormData';
 import PaymentLinkDetails from '../../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails.vue';
 import FormSuccess from '../Form/FormSuccess/FormSuccess.vue';
-import type { PaymentLinkCreationFormValues, CreatedPaymentLink, PaymentLinkCreationProps } from '../../../../../domain/src';
+import type { PaymentLinkCreationFormValues, CreatedPaymentLink } from '../../../../../domain/src';
+import type { PaymentLinkCreationComponentProps } from '../../types';
 import styles from './PaymentLinkCreationContainer.module.scss';
 
-type PaymentLinkCreationContainerProps = PaymentLinkCreationProps & {
-    embeddedInOverview?: boolean;
-    onTitleChange?: (title: TranslationKey | undefined) => void;
-};
-
-const props = defineProps<PaymentLinkCreationContainerProps>();
+const props = defineProps<
+    PaymentLinkCreationComponentProps & {
+        onTitleChange?: (title: TranslationKey | undefined) => void;
+    }
+>();
 
 const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
@@ -52,7 +52,7 @@ const paymentLinkUrl = ref('');
 const paymentLinkId = ref('');
 
 function handleCreated(data: PaymentLinkCreationFormValues & { paymentLink: CreatedPaymentLink }) {
-    props.onPaymentLinkCreated?.(data);
+    props.onCreate?.(data);
     paymentLinkUrl.value = data.paymentLink?.url ?? '';
     paymentLinkId.value = data.paymentLink?.paymentLinkId ?? '';
     state.value = 'Success';

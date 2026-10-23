@@ -4,7 +4,7 @@ import { useCoreContext, useEventDispatcherContext } from '@integration-componen
 import { OnFundsRequestCallback } from '@integration-components/capital/domain';
 import type { BentoButtonActionsList } from '@adyen/bento-vue3';
 import { IGrant } from '@integration-components/types';
-import { CapitalOverviewProps } from '../../types';
+import { CapitalOverviewComponentProps } from '../../types';
 import { useEnhancedCapitalState } from '../../../shared/composables/useEnhancedCapitalState';
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import GrantList from '../GrantList/GrantList.vue';
@@ -16,7 +16,7 @@ import styles from './CapitalOverview.module.scss';
 import OfferModal from '../OfferModal.vue';
 import UnsupportedRegionState from '../../../shared/UnsupportedRegionState.vue';
 
-const props = defineProps<CapitalOverviewProps>();
+const props = defineProps<CapitalOverviewComponentProps>();
 
 const { i18n } = useCoreContext();
 const userEvents = useEventDispatcherContext();
