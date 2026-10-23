@@ -4,13 +4,14 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { computed, createApp, nextTick, ref } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { useBalanceAccountFilterState, useBalanceAccounts, useShouldHideTitles } from '@integration-components/composables-vue';
-import { useCashOutEligibility } from '../../composables/useCashOutEligibility';
+import { useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
+import { useCashOutState } from '../../../shared/composables/useCashOutState';
 import CashOutOverview from './CashOutOverview.vue';
 
 const LABEL = 'cashOut.overview.availableForCashOut.label';
 const AMOUNT = '22000 USD';
 const REACH_OUT = 'cashOut.common.actions.contactSupport.labels.reachOut';
+const START = 'cashOut.overview.actions.start';
 
 const ELIGIBILITY = {
     isCashoutAvailable: true,
@@ -51,27 +52,45 @@ vi.mock('@integration-components/composables-vue', async () => {
             if (props.state === 'error') return h('div', 'error');
             return h('div', slots.default?.() as never);
         },
-        useBalanceAccountFilterState: vi.fn(),
-        useBalanceAccounts: vi.fn(),
         useShouldHideTitles: vi.fn(),
     };
 });
 
-vi.mock('../../composables/useCashOutEligibility', () => ({
-    useCashOutEligibility: vi.fn(),
+vi.mock('../../../shared/composables/useCashOutState', () => ({
+    useCashOutState: vi.fn(),
 }));
 
-const mockEligibility = ({
-    eligibility,
-    eligibilityError,
-    isFetchingEligibility = false,
-}: {
-    eligibility?: unknown;
-    eligibilityError?: Error;
-    isFetchingEligibility?: boolean;
-}) => {
-    const state = { eligibility: ref(eligibility), eligibilityError: ref(eligibilityError), isFetchingEligibility: ref(isFetchingEligibility) };
-    vi.mocked(useCashOutEligibility).mockReturnValue(state as unknown as ReturnType<typeof useCashOutEligibility>);
+vi.mock('../CashOutRequestModal/CashOutRequestModal.vue', async () => {
+    const { defineComponent, h } = await import('vue');
+
+    return {
+        default: defineComponent({
+            props: {
+                balanceAccountId: { type: String, default: undefined },
+                eligibility: { type: Object, default: undefined },
+                isOpen: Boolean,
+                onClose: { type: Function, default: undefined },
+            },
+            setup: props => () =>
+                props.isOpen
+                    ? h(
+                          'div',
+                          { 'data-testid': 'request-modal', onClick: props.onClose },
+                          `${props.balanceAccountId} ${JSON.stringify(props.eligibility)}`
+                      )
+                    : null,
+        }),
+    };
+});
+
+const mockCashOutState = ({ eligibility, shellState = 'ready' }: { eligibility?: unknown; shellState?: ComponentShellState }) => {
+    const state = { eligibility: ref(eligibility), shellState: ref(shellState) };
+    vi.mocked(useCashOutState).mockReturnValue({
+        ...state,
+        balanceAccountOptions: ref([]),
+        errorInfo: ref({}),
+        selectedBalanceAccountId: ref('BA1'),
+    } as unknown as ReturnType<typeof useCashOutState>);
     return state;
 };
 
@@ -89,20 +108,11 @@ describe('CashOutOverview', () => {
             i18n: { get: (key: string) => key, amount: (value: number, currency: string) => `${value} ${currency}` },
         } as unknown as ReturnType<typeof useCoreContext>);
         vi.mocked(useShouldHideTitles).mockReturnValue(computed(() => false));
-        vi.mocked(useBalanceAccounts).mockReturnValue({
-            balanceAccounts: ref([{ id: 'BA1' }]),
-            error: ref(undefined),
-            isFetching: ref(false),
-        } as unknown as ReturnType<typeof useBalanceAccounts>);
-        vi.mocked(useBalanceAccountFilterState).mockReturnValue({
-            balanceAccountOptions: ref([]),
-            selectedBalanceAccountId: ref('BA1'),
-        } as unknown as ReturnType<typeof useBalanceAccountFilterState>);
     });
 
     describe('Available for cash out label', () => {
         test('should not show the label while eligibility loads', () => {
-            mockEligibility({ isFetchingEligibility: true });
+            mockCashOutState({ shellState: 'loading' });
             const { target, unmount } = renderCashOutOverview();
 
             expect(target.textContent).not.toContain(LABEL);
@@ -111,7 +121,7 @@ describe('CashOutOverview', () => {
         });
 
         test('should not show the label when eligibility fails to load', () => {
-            mockEligibility({ eligibilityError: new Error('error') });
+            mockCashOutState({ shellState: 'error' });
             const { target, unmount } = renderCashOutOverview();
 
             expect(target.textContent).not.toContain(LABEL);
@@ -120,10 +130,10 @@ describe('CashOutOverview', () => {
         });
 
         test('should show the label together with the amount once eligibility loads', async () => {
-            const state = mockEligibility({ isFetchingEligibility: true });
+            const state = mockCashOutState({ shellState: 'loading' });
             const { target, unmount } = renderCashOutOverview();
 
-            state.isFetchingEligibility.value = false;
+            state.shellState.value = 'ready';
             state.eligibility.value = ELIGIBILITY;
             await nextTick();
 
@@ -139,7 +149,7 @@ describe('CashOutOverview', () => {
 
         test('should call onContactSupport when the reach out button is clicked for a reason support can resolve', () => {
             const onContactSupport = vi.fn();
-            mockEligibility({ eligibility: unavailableEligibility('cashOutNotConfigured') });
+            mockCashOutState({ eligibility: unavailableEligibility('cashOutNotConfigured') });
             const { target, unmount } = renderCashOutOverview({ onContactSupport });
 
             findReachOutButton(target)?.click();
@@ -150,7 +160,7 @@ describe('CashOutOverview', () => {
         });
 
         test('should not show the reach out button without an onContactSupport callback', () => {
-            mockEligibility({ eligibility: unavailableEligibility('cashOutNotConfigured') });
+            mockCashOutState({ eligibility: unavailableEligibility('cashOutNotConfigured') });
             const { target, unmount } = renderCashOutOverview();
 
             expect(target.textContent).not.toContain(REACH_OUT);
@@ -159,10 +169,72 @@ describe('CashOutOverview', () => {
         });
 
         test('should not show the reach out button for a reason support cannot resolve', () => {
-            mockEligibility({ eligibility: unavailableEligibility('dailyLimitReached') });
+            mockCashOutState({ eligibility: unavailableEligibility('dailyLimitReached') });
             const { target, unmount } = renderCashOutOverview({ onContactSupport: vi.fn() });
 
             expect(target.textContent).not.toContain(REACH_OUT);
+
+            unmount();
+        });
+    });
+
+    describe('Unavailable reason', () => {
+        const NOT_ALLOWED = 'cashOut.overview.unavailableReasons.notAllowed';
+
+        test('should explain a reason the component does not know with the generic message', () => {
+            mockCashOutState({ eligibility: unavailableEligibility('reasonAddedLater') });
+            const { target, unmount } = renderCashOutOverview();
+
+            expect(target.textContent).toContain(NOT_ALLOWED);
+
+            unmount();
+        });
+
+        test('should not show an alert for a zero balance', () => {
+            mockCashOutState({ eligibility: unavailableEligibility('zeroBalance') });
+            const { target, unmount } = renderCashOutOverview();
+
+            expect(target.textContent).not.toContain('cashOut.overview.unavailableReasons.');
+
+            unmount();
+        });
+    });
+
+    describe('Cash out request modal', () => {
+        const findStartButton = (target: HTMLElement) => [...target.querySelectorAll('div')].find(element => element.textContent === START);
+        const findModal = (target: HTMLElement) => target.querySelector<HTMLElement>('[data-testid="request-modal"]');
+
+        test('should not show the modal before the start button is clicked', () => {
+            mockCashOutState({ eligibility: ELIGIBILITY });
+            const { target, unmount } = renderCashOutOverview();
+
+            expect(findModal(target)).toBeNull();
+
+            unmount();
+        });
+
+        test('should open the modal with the selected balance account and its eligibility when the start button is clicked', async () => {
+            mockCashOutState({ eligibility: ELIGIBILITY });
+            const { target, unmount } = renderCashOutOverview();
+
+            findStartButton(target)?.click();
+            await nextTick();
+
+            expect(findModal(target)?.textContent).toBe(`BA1 ${JSON.stringify(ELIGIBILITY)}`);
+
+            unmount();
+        });
+
+        test('should close the modal', async () => {
+            mockCashOutState({ eligibility: ELIGIBILITY });
+            const { target, unmount } = renderCashOutOverview();
+
+            findStartButton(target)?.click();
+            await nextTick();
+            findModal(target)?.click();
+            await nextTick();
+
+            expect(findModal(target)).toBeNull();
 
             unmount();
         });

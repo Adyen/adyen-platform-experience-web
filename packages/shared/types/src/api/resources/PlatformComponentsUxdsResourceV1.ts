@@ -51,6 +51,7 @@ export interface components {
             | 'capitalOverview'
             | 'capitalOffer'
             | 'cashOutOverview'
+            | 'cashOutRequest'
             | 'disputes'
             | 'disputesManagement'
             | 'paymentLinkCreation'

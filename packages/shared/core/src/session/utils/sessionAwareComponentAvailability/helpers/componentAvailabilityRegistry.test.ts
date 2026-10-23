@@ -13,6 +13,8 @@ describe('componentAvailabilityRegistry', () => {
         ['reports', 'getReports'],
         ['capitalOverview', 'getGrants'],
         ['capitalOffer', 'getDynamicGrantOffer'],
+        ['cashOutOverview', 'getCashOutEligibility'],
+        ['cashOutRequest', 'instructCashOut'],
         ['disputes', 'getDisputeList'],
         ['disputesManagement', 'getDisputeDetail'],
         ['paymentLinksOverview', 'getPaymentLinks'],

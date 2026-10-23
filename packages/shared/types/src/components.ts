@@ -4,6 +4,7 @@ export type ExternalComponentType =
     | 'capitalOverview'
     | 'capitalOffer'
     | 'cashOutOverview'
+    | 'cashOutRequest'
     | 'disputes'
     | 'disputesManagement'
     | 'paymentLinkCreation'
