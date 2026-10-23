@@ -37,7 +37,7 @@ async function onCopy() {
 
 const actionButtons = computed<BentoButtonActionsList>(() => [
     {
-        title: copied.value ? i18n.get('payByLink.creation.success.copiedToClipboard') : i18n.get('payByLink.creation.success.copyLink'),
+        title: copied.value ? i18n.get('payByLink.creation.success.copy.done') : i18n.get('payByLink.creation.success.copy.link'),
         event: onCopy,
         variant: 'primary',
     },

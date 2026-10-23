@@ -46,9 +46,9 @@ async function onCopy() {
                 {{ props.item.value }}
             </BentoTypography>
             <BentoButton
-                v-bento-tooltip="i18n.get(isCopied ? 'payByLink.common.actions.copy.labels.done' : 'payByLink.common.actions.copy.labels.default')"
+                v-bento-tooltip="i18n.get(isCopied ? 'payByLink.common.copy.done' : 'payByLink.common.copy.label')"
                 variant="tertiary"
-                :aria-label="i18n.get('payByLink.common.actions.copy.labels.default')"
+                :aria-label="i18n.get('payByLink.common.copy.label')"
                 @click="onCopy"
                 @blur="emit('clearCopied')"
                 @mouseleave="emit('clearCopied')"

@@ -100,11 +100,17 @@ type ComponentRouteCase = CatalogCompatibilityCase & {
     componentName: keyof typeof overviewComponentDomains;
 };
 
-const getOverviewRouteTemplates = (domain: string, paginationKey = 'overview.pagination.label'): Record<string, string> => ({
+type RouteAdoption = {
+    domain: string;
+    domainKey: string;
+    liveLocales: Set<string>;
+};
+
+const getOverviewRouteTemplates = (domain: string, paginationKey = 'overview.pagination.a11yLabel'): Record<string, string> => ({
     [`${domain}.${paginationKey}`]: 'Domain pagination',
-    [`${domain}.overview.common.filters.types.date.rangeSelect.options.custom`]: 'Custom',
-    [`${domain}.overview.common.filters.types.date.rangeSelect.options.last7Days`]: 'Last 7 days',
-    [`${domain}.overview.common.filters.types.date.rangeSelect.options.lastMonth`]: 'Last month',
+    [`${domain}.overview.filters.date.custom`]: 'Custom',
+    [`${domain}.overview.filters.date.last7Days`]: 'Last 7 days',
+    [`${domain}.overview.filters.date.lastMonth`]: 'Last month',
 });
 
 const getCatalogCompatibilityCases = async (): Promise<CatalogCompatibilityCase[]> => {
@@ -124,6 +130,9 @@ const getCatalogCompatibilityCases = async (): Promise<CatalogCompatibilityCase[
                 const family = getTranslationFamily(domainTranslations, `${domain}.${domainKey}`);
                 const bentoTemplate = bentoTranslations[bentoKey] ?? SDK_BENTO_DEFAULT_TRANSLATIONS[bentoKey];
 
+                // A route whose target the domain has not adopted is dormant: Bento
+                // renders its own mirror copy, so no compatibility case exists. The
+                // uniformity test below pins that adoption never drifts between locales.
                 if (family.base && bentoTemplate) {
                     cases.push({ bentoKey, bentoTemplate, domain, domainKey, family, locale });
                 }
@@ -132,6 +141,33 @@ const getCatalogCompatibilityCases = async (): Promise<CatalogCompatibilityCase[
     }
 
     return cases;
+};
+
+// Per route and domain, the locales whose catalog carries the target. A route
+// is live in a domain when at least one locale carries the target, and the
+// uniformity test below holds that to "every locale or none".
+const getRouteAdoption = async (): Promise<RouteAdoption[]> => {
+    const i18nConfig = await getI18nConfig();
+    const locales = getConfiguredLocales(i18nConfig);
+    const domainTranslationSourcePaths = await getDomainTranslationSourcePaths();
+    const adoption = new Map<string, RouteAdoption>();
+
+    for (const domainSourcePath of domainTranslationSourcePaths) {
+        const domain = domainSourcePath.split('/')[2]!;
+
+        for (const locale of locales) {
+            const domainTranslations = await getTranslationCatalog(getLocaleCatalogPath(domainSourcePath, locale));
+
+            for (const [, domainKey] of BENTO_DOMAIN_OVERRIDES) {
+                const route = `${domain}.${domainKey}`;
+                const entry = adoption.get(route) ?? { domain, domainKey, liveLocales: new Set<string>() };
+                if (domainTranslations[route] !== undefined) entry.liveLocales.add(locale);
+                adoption.set(route, entry);
+            }
+        }
+    }
+
+    return [...adoption.values()].sort((a, b) => `${a.domain}.${a.domainKey}`.localeCompare(`${b.domain}.${b.domainKey}`));
 };
 
 const getComponentRouteCases = async (): Promise<ComponentRouteCase[]> => {
@@ -195,8 +231,8 @@ describe('applyBentoDomainOverrides', () => {
         const bentoKey = 'bento.dateRangePickerCalendar.lastMonth';
         const i18n = createI18n({
             ...getOverviewRouteTemplates('transactions'),
-            'transactions.common.filters.types.date.rangeSelect.options.lastMonth': 'Common last month',
-            'transactions.overview.common.filters.types.date.rangeSelect.options.lastMonth': 'Overview last month',
+            'transactions.common.filters.date.lastMonth': 'Common last month',
+            'transactions.overview.filters.date.lastMonth': 'Overview last month',
         });
 
         applyBentoDomainOverrides(overrides, i18n, { [bentoKey]: 'Last month' }, 'transactions', 'transactions');
@@ -209,7 +245,7 @@ describe('applyBentoDomainOverrides', () => {
         const bentoKey = 'bento.dataGrid.pagination';
         const i18n = createI18n({
             ...getOverviewRouteTemplates('payByLink'),
-            'payByLink.overview.pagination.label': 'Payment links pagination',
+            'payByLink.overview.pagination.a11yLabel': 'Payment links pagination',
         });
 
         applyBentoDomainOverrides(overrides, i18n, { [bentoKey]: 'Pagination' }, 'payByLink', 'paymentLinksOverview');
@@ -221,8 +257,8 @@ describe('applyBentoDomainOverrides', () => {
         const overrides: Record<string, string> = {};
         const bentoKey = 'bento.dateRangePickerCalendar.lastMonth';
         const i18n = createI18n({
-            'payByLink.common.filters.types.date.rangeSelect.options.lastMonth': 'Common last month',
-            'payByLink.overview.common.filters.types.date.rangeSelect.options.lastMonth': 'Overview last month',
+            'payByLink.common.filters.date.lastMonth': 'Common last month',
+            'payByLink.overview.filters.date.lastMonth': 'Overview last month',
         });
 
         applyBentoDomainOverrides(overrides, i18n, { [bentoKey]: 'Last month' }, 'payByLink', 'paymentLinkDetails');
@@ -231,7 +267,7 @@ describe('applyBentoDomainOverrides', () => {
     });
 
     test('rejects a missing component-specific domain key instead of using the SDK Bento fallback', () => {
-        const translationKey = 'transactions.overview.common.filters.types.date.rangeSelect.options.lastMonth';
+        const translationKey = 'transactions.overview.filters.date.lastMonth';
         const { [translationKey]: _, ...templates } = getOverviewRouteTemplates('transactions');
 
         expect(() =>
@@ -245,9 +281,7 @@ describe('applyBentoDomainOverrides', () => {
                 'transactions',
                 'transactions'
             )
-        ).toThrow(
-            '[Bento translations] Missing component-specific domain translation: transactions.overview.common.filters.types.date.rangeSelect.options.lastMonth'
-        );
+        ).toThrow('[Bento translations] Missing component-specific domain translation: transactions.overview.filters.date.lastMonth');
     });
 
     test('uses a localized SDK Bento fallback when a domain override is unavailable', () => {
@@ -273,7 +307,7 @@ describe('applyBentoDomainOverrides', () => {
 
     test('uses the general plural form when exact count variants are unavailable in Bento', () => {
         const overrides: Record<string, string> = {};
-        const translationKey = 'transactions.common.inputs.file.restrictions.maxUpload';
+        const translationKey = 'transactions.common.file.restrictions.maxUpload';
 
         const i18n = createI18n({
             [translationKey]: '%{count} result',
@@ -355,6 +389,17 @@ describe('applyBentoDomainOverrides', () => {
                 ).not.toBeNull();
             }
         );
+
+        test('route adoption is uniform: live in every locale of a domain, or in none', async () => {
+            const locales = new Set(getConfiguredLocales(await getI18nConfig()));
+            const adoption = await getRouteAdoption();
+
+            const drifted = adoption
+                .filter(({ liveLocales }) => liveLocales.size !== 0 && liveLocales.size !== locales.size)
+                .map(({ domain, domainKey, liveLocales }) => `${domain}.${domainKey} is live only in: ${[...liveLocales].join(', ')}`);
+
+            expect(drifted).toEqual([]);
+        });
     });
 
     test('uses the SDK English fallback for missing active-locale Bento translations', async () => {

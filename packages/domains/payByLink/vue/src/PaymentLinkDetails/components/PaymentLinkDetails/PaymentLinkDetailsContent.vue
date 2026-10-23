@@ -41,7 +41,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
         ...(navigator.clipboard
             ? [
                   {
-                      title: i18n.get(isCopiedIndicatorVisible.value ? 'payByLink.details.actions.copied' : 'payByLink.details.actions.copyLink'),
+                      title: i18n.get(isCopiedIndicatorVisible.value ? 'payByLink.details.copy.done' : 'payByLink.details.copy.link'),
                       event: handleCopyLink,
                       variant: 'primary',
                       iconLeft: isCopiedIndicatorVisible.value ? CheckmarkIcon : CopyIcon,

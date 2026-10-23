@@ -90,14 +90,14 @@ export const ErrorMessageDisplay = defineComponent({
             if (onContactSupport) {
                 buttons.push(
                     h(BentoButton, { type: 'button', variant: 'primary', onClick: () => onContactSupport() }, () =>
-                        i18n.get(contactSupportLabel ?? getDomainTranslationKey(translationDomain, 'common.actions.contactSupport.labels.reachOut'))
+                        i18n.get(contactSupportLabel ?? getDomainTranslationKey(translationDomain, 'common.contactSupport.reachOut'))
                     )
                 );
             } else if (refreshComponent) {
                 const refresh = props.onRefresh ?? refreshCurrentComponent;
                 buttons.push(
                     h(BentoButton, { type: 'button', variant: 'primary', onClick: () => refresh?.() }, () =>
-                        i18n.get(getDomainTranslationKey(translationDomain, 'common.actions.refresh.labels.default'))
+                        i18n.get(getDomainTranslationKey(translationDomain, 'common.refresh.label'))
                     )
                 );
             }

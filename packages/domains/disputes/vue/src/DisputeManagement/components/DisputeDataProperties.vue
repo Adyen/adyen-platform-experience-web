@@ -22,6 +22,7 @@ import {
     getDisputeDetailItems,
     type DisputeDetailItem,
     type DisputeDetailsCustomization,
+    type DisputesTranslationKey,
     type TranslationConfigItem,
 } from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTE_DETAILS, isFunction, normalizeCustomFields } from '@integration-components/utils';
@@ -42,6 +43,14 @@ type CustomDataValue = {
         alt?: string;
     };
 };
+
+// These three references sit next to each other, so a shared "Copy" name would
+// leave the buttons indistinguishable to a screen reader.
+const COPYABLE_FIELD_LABELS = {
+    disputeId: 'disputes.management.details.copy.disputeReference',
+    paymentPspReference: 'disputes.management.details.copy.paymentReference',
+    paymentMerchantReference: 'disputes.management.details.copy.merchantReference',
+} as const satisfies Record<string, DisputesTranslationKey>;
 
 const props = defineProps<{
     dispute: IDisputeDetail;
@@ -101,17 +110,21 @@ function isHiddenCustomValue(value: unknown) {
 }
 
 function getCopyValue(item: DisputeDetailItem) {
-    return ['disputeId', 'paymentPspReference', 'paymentMerchantReference'].includes(item.id) && item.kind === 'text' ? item.value : undefined;
+    return item.id in COPYABLE_FIELD_LABELS && item.kind === 'text' ? item.value : undefined;
+}
+
+function getCopyAriaLabel(itemId: string) {
+    return i18n.get(COPYABLE_FIELD_LABELS[itemId as keyof typeof COPYABLE_FIELD_LABELS] ?? 'disputes.common.copy.label');
 }
 
 function onCopyText(text: string, itemId: string) {
     navigator.clipboard?.writeText(text);
     copiedItemId.value = itemId;
-    announce(() => i18n.get('disputes.common.actions.copy.labels.done'));
+    announce(() => i18n.get('disputes.common.copy.done'));
 }
 
 function getCopyTooltip(itemId: string) {
-    const key = copiedItemId.value === itemId ? 'disputes.common.actions.copy.labels.done' : 'disputes.common.actions.copy.labels.default';
+    const key = copiedItemId.value === itemId ? 'disputes.common.copy.done' : 'disputes.common.copy.label';
     return i18n.get(key);
 }
 
@@ -158,7 +171,7 @@ async function downloadEvidence(documentType: string) {
                 <BentoButton
                     v-bento-tooltip="getCopyTooltip(item.id)"
                     variant="tertiary"
-                    :aria-label="i18n.get('disputes.common.actions.copy.labels.default')"
+                    :aria-label="getCopyAriaLabel(item.id)"
                     @click="onCopyText(getCopyValue(item)!, item.id)"
                     @blur="resetCopiedItem"
                     @mouseleave="resetCopiedItem"
@@ -174,7 +187,7 @@ async function downloadEvidence(documentType: string) {
                     <BentoTag :label="getDefenseDocumentContent(defenseDocumentConfig, i18n, documentType)?.title ?? documentType" />
                     <BentoButton
                         variant="tertiary"
-                        :aria-label="i18n.get('disputes.management.details.actions.downloadEvidence')"
+                        :aria-label="i18n.get('disputes.management.details.downloadEvidence')"
                         @click="downloadEvidence(documentType)"
                     >
                         <DownloadIcon aria-hidden="true" />

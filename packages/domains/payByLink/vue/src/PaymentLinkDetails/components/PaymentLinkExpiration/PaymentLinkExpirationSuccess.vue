@@ -14,7 +14,7 @@ const { i18n } = useCoreContext();
 
 const actionButtons = computed<BentoButtonActionsList>(() => [
     {
-        title: i18n.get('payByLink.details.expirationSuccess.actions.showDetails'),
+        title: i18n.get('payByLink.details.expirationSuccess.showDetails'),
         event: props.onShowDetails,
         variant: 'secondary',
     },

@@ -38,7 +38,7 @@ const quickSelectRanges = createQuickSelectRanges(
         lastMonth: quickSelectDateRanges.lastMonth,
         yearToDate: quickSelectDateRanges.yearToDate,
     },
-    'disputes.overview.common.filters.types.date.rangeSelect.options.',
+    'disputes.overview.filters.date.',
     key => i18n.get(key)
 );
 
@@ -71,7 +71,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
     if (hasMultipleBalanceAccounts.value) {
         filters.push({
             field: 'balanceAccountId',
-            label: i18n.get('disputes.overview.common.filters.types.account.label'),
+            label: i18n.get('disputes.overview.filters.account.label'),
             type: BentoFilterItemType.SELECT,
             visible: !props.compact,
             ...(!props.compact ? { defaultValue: balanceAccountOptions.value[0]?.value } : {}),
@@ -79,7 +79,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
                 listboxItems: [
                     ...balanceAccountOptions.value,
                     {
-                        label: i18n.get('disputes.overview.common.filters.types.account.options.all'),
+                        label: i18n.get('disputes.overview.filters.account.all'),
                         value: ALL_BALANCE_ACCOUNTS_VALUE,
                     },
                 ],
@@ -89,7 +89,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
     filters.push({
         field: 'dateRange',
-        label: i18n.get('disputes.overview.common.filters.types.date.label'),
+        label: i18n.get('disputes.overview.filters.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         visible: !props.compact,
         ...(!props.compact ? { defaultValue: defaultDateRange } : {}),
@@ -98,7 +98,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
     filters.push({
         field: 'schemeCodes',
-        label: i18n.get('disputes.overview.common.filters.types.paymentMethod'),
+        label: i18n.get('disputes.overview.filters.paymentMethod'),
         type: BentoFilterItemType.CHECKBOX_GROUP,
         visible: !props.compact,
         options: { checkboxItems: schemeItems },
@@ -107,7 +107,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
     if (showReasonsFilter.value) {
         filters.push({
             field: 'reasonCategories',
-            label: i18n.get('disputes.overview.common.filters.types.disputeReason'),
+            label: i18n.get('disputes.overview.filters.disputeReason'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
             visible: !props.compact,
             options: { checkboxItems: reasonItems.value },

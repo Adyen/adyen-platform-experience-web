@@ -76,42 +76,42 @@ export const buildPaymentLinkListItems = (
 
     const linkInformation: ListItemData[] = filterEmptyListItems([
         {
-            key: 'payByLink.details.fields.paymentLinkId',
+            key: 'payByLink.details.paymentLinkId',
             value: paymentLink.linkInformation.paymentLinkId,
             isCopyable: true,
             linkUrl: paymentLink.linkInformation.paymentLink,
         },
-        { key: 'payByLink.details.fields.store', value: paymentLink.linkInformation.storeCode },
-        { key: 'payByLink.details.fields.merchantReference', value: paymentLink.linkInformation.merchantReference },
+        { key: 'payByLink.details.store', value: paymentLink.linkInformation.storeCode },
+        { key: 'payByLink.details.merchantReference', value: paymentLink.linkInformation.merchantReference },
         {
-            key: 'payByLink.details.fields.createdOn',
+            key: 'payByLink.details.createdOn',
             value: dateFormat(paymentLink.linkInformation.creationDate, DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS),
         },
         {
-            key: 'payByLink.details.fields.expiresOn',
+            key: 'payByLink.details.expiresOn',
             value: dateFormat(paymentLink.linkInformation.expirationDate, DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS),
         },
-        { key: 'payByLink.details.fields.linkType', value: getPaymentLinkType(i18n, paymentLink.linkInformation.linkType) },
-        { key: 'payByLink.details.fields.description', value: paymentLink.linkInformation.description },
+        { key: 'payByLink.details.linkType', value: getPaymentLinkType(i18n, paymentLink.linkInformation.linkType) },
+        { key: 'payByLink.details.description', value: paymentLink.linkInformation.description },
     ]);
 
     const shopperInformation: ListItemData[] = filterEmptyListItems([
-        { key: 'payByLink.details.fields.shopper.reference', value: paymentLink.shopperInformation?.shopperReference },
+        { key: 'payByLink.details.shopper.reference', value: paymentLink.shopperInformation?.shopperReference },
         {
-            key: 'payByLink.details.fields.shopper.fullName',
+            key: 'payByLink.details.shopper.fullName',
             value: [paymentLink.shopperInformation?.shopperName?.firstName, paymentLink.shopperInformation?.shopperName?.lastName]
                 .filter(Boolean)
                 .join(' '),
             isCopyable: true,
         },
-        { key: 'payByLink.details.fields.shopper.email', value: paymentLink.shopperInformation?.shopperEmail, isCopyable: true },
-        { key: 'payByLink.details.fields.shopper.phone', value: paymentLink.shopperInformation?.telephoneNumber, isCopyable: true },
-        { key: 'payByLink.details.fields.shopper.country', value: paymentLink.shopperInformation?.shopperCountry },
+        { key: 'payByLink.details.shopper.email', value: paymentLink.shopperInformation?.shopperEmail, isCopyable: true },
+        { key: 'payByLink.details.shopper.phone', value: paymentLink.shopperInformation?.telephoneNumber, isCopyable: true },
+        { key: 'payByLink.details.shopper.country', value: paymentLink.shopperInformation?.shopperCountry },
         ...(isShippingAddressRedacted
-            ? [{ key: 'payByLink.details.fields.shippingAddress.title' as PayByLinkTranslationKey, value: BACKEND_REDACTED_DATA_MARKER }]
+            ? [{ key: 'payByLink.details.shippingAddress.title' as PayByLinkTranslationKey, value: BACKEND_REDACTED_DATA_MARKER }]
             : []),
         ...(isBillingAddressRedacted
-            ? [{ key: 'payByLink.details.fields.billingAddress.title' as PayByLinkTranslationKey, value: BACKEND_REDACTED_DATA_MARKER }]
+            ? [{ key: 'payByLink.details.billingAddress.title' as PayByLinkTranslationKey, value: BACKEND_REDACTED_DATA_MARKER }]
             : []),
     ]);
 
@@ -119,15 +119,15 @@ export const buildPaymentLinkListItems = (
         !address
             ? []
             : filterEmptyListItems([
-                  { key: `payByLink.details.fields.${prefix}.street` as PayByLinkTranslationKey, value: address.street, isCopyable: true },
+                  { key: `payByLink.details.${prefix}.street` as PayByLinkTranslationKey, value: address.street, isCopyable: true },
                   {
-                      key: `payByLink.details.fields.${prefix}.houseNumberOrName` as PayByLinkTranslationKey,
+                      key: `payByLink.details.${prefix}.houseNumberOrName` as PayByLinkTranslationKey,
                       value: address.houseNumberOrName,
                       isCopyable: true,
                   },
-                  { key: `payByLink.details.fields.${prefix}.country` as PayByLinkTranslationKey, value: address.country },
-                  { key: `payByLink.details.fields.${prefix}.city` as PayByLinkTranslationKey, value: address.city, isCopyable: true },
-                  { key: `payByLink.details.fields.${prefix}.postalCode` as PayByLinkTranslationKey, value: address.postalCode, isCopyable: true },
+                  { key: `payByLink.details.${prefix}.country` as PayByLinkTranslationKey, value: address.country },
+                  { key: `payByLink.details.${prefix}.city` as PayByLinkTranslationKey, value: address.city, isCopyable: true },
+                  { key: `payByLink.details.${prefix}.postalCode` as PayByLinkTranslationKey, value: address.postalCode, isCopyable: true },
               ]);
 
     return {

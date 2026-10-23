@@ -34,7 +34,7 @@ function onTabChange(index: number) {
 
 function onCopy(copyId: string) {
     copiedItemId.value = copyId;
-    announce(() => i18n.get('payByLink.common.actions.copy.labels.done'));
+    announce(() => i18n.get('payByLink.common.copy.done'));
 }
 
 function resetCopiedItem() {
@@ -66,7 +66,7 @@ const listItems = computed(() => buildPaymentLinkListItems(props.paymentLink, { 
 
                     <div v-if="listItems.shippingAddress.length > 0">
                         <PaymentLinkTabsList
-                            :heading="'payByLink.details.fields.shippingAddress.title'"
+                            :heading="'payByLink.details.shippingAddress.title'"
                             :items="listItems.shippingAddress"
                             :copied-item-id="copiedItemId"
                             @copied="onCopy"
@@ -76,7 +76,7 @@ const listItems = computed(() => buildPaymentLinkListItems(props.paymentLink, { 
 
                     <div v-if="listItems.billingAddress.length > 0">
                         <PaymentLinkTabsList
-                            :heading="'payByLink.details.fields.billingAddress.title'"
+                            :heading="'payByLink.details.billingAddress.title'"
                             :items="listItems.billingAddress"
                             :copied-item-id="copiedItemId"
                             @copied="onCopy"

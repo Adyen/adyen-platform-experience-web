@@ -166,7 +166,7 @@ describe('Localization', () => {
     describe('SDK translation sources', () => {
         test('loads SDK locale catalog and falls back to English for untranslated keys', async () => {
             const englishFallbackKey = 'transactions.common.errors.updateFilters';
-            const translationKey = 'capital.common.errors.unsupportedRegion';
+            const translationKey = 'capital.common.errors.unsupportedRegion.message';
             const germanTranslationsWithoutFallbackKey: Record<string, string> = { ...sdkGermanTranslations };
 
             delete germanTranslationsWithoutFallbackKey[englishFallbackKey];

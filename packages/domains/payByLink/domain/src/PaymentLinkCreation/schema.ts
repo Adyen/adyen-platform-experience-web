@@ -52,11 +52,11 @@ const validateAmount = (data: FlatValues, fields: FormFieldConfig[], i18n: I18n,
     const numericValue = Number(rawValue);
 
     if (!isEmpty(rawValue) && numericValue < 0) {
-        addRequiredIssue(ctx, 'amount.value', i18n.get('payByLink.creation.fields.amountValue.error.negativeNumber'));
+        addRequiredIssue(ctx, 'amount.value', i18n.get('payByLink.creation.amountValue.errors.negativeNumber'));
         return;
     }
     if (currencyVisible && isEmpty(data['amount.currency'])) {
-        addRequiredIssue(ctx, 'amount.value', i18n.get('payByLink.creation.fields.amountValue.error.currency'));
+        addRequiredIssue(ctx, 'amount.value', i18n.get('payByLink.creation.amountValue.errors.currency'));
         return;
     }
     if (valueField.required && (isEmpty(rawValue) || numericValue === 0)) {
@@ -75,15 +75,15 @@ const validateValidity = (data: FlatValues, fields: FormFieldConfig[], i18n: I18
     const quantity = parseInt(`${quantityRaw}`, 10);
 
     if (isEmpty(quantityRaw)) {
-        addRequiredIssue(ctx, 'linkValidity.quantity', i18n.get('payByLink.creation.fields.validity.customDuration.error.missingDurationValue'));
+        addRequiredIssue(ctx, 'linkValidity.quantity', i18n.get('payByLink.creation.validity.missingDurationValue'));
         return;
     }
     if (isNaN(quantity) || quantity <= 0) {
-        addRequiredIssue(ctx, 'linkValidity.quantity', i18n.get('payByLink.creation.fields.validity.customDuration.error.invalidDurationValue'));
+        addRequiredIssue(ctx, 'linkValidity.quantity', i18n.get('payByLink.creation.validity.invalidDurationValue'));
         return;
     }
     if (isEmpty(durationUnit)) {
-        addRequiredIssue(ctx, 'linkValidity.quantity', i18n.get('payByLink.creation.fields.validity.customDuration.error.missingDurationUnit'));
+        addRequiredIssue(ctx, 'linkValidity.quantity', i18n.get('payByLink.creation.validity.missingDurationUnit'));
         return;
     }
 
@@ -99,7 +99,7 @@ const validateValidity = (data: FlatValues, fields: FormFieldConfig[], i18n: I18
         addRequiredIssue(
             ctx,
             'linkValidity.quantity',
-            i18n.get('payByLink.creation.fields.validity.customDuration.error.durationTooLong', { values: { maxDays: MAX_VALIDITY_DAYS } })
+            i18n.get('payByLink.creation.validity.durationTooLong', { values: { maxDays: MAX_VALIDITY_DAYS } })
         );
     }
 };
@@ -157,7 +157,7 @@ const validateSimpleField = (data: FlatValues, field: FormFieldConfig, i18n: I18
     const value = data[field.fieldName];
 
     if (field.fieldName === 'shopperEmail' && !isEmpty(value) && !EMAIL_PATTERN.test(String(value))) {
-        addRequiredIssue(ctx, 'shopperEmail', i18n.get('payByLink.creation.fields.shopperEmail.error.validEmail'));
+        addRequiredIssue(ctx, 'shopperEmail', i18n.get('payByLink.creation.shopperEmail.errors.validEmail'));
         return;
     }
 
@@ -167,7 +167,7 @@ const validateSimpleField = (data: FlatValues, field: FormFieldConfig, i18n: I18
     }
 
     if (field.fieldName === 'telephoneNumber' && !isEmpty(value) && !String(value).startsWith('+')) {
-        addRequiredIssue(ctx, field.fieldName, i18n.get('payByLink.creation.fields.phoneNumber.errors.requiredPhoneCode'));
+        addRequiredIssue(ctx, field.fieldName, i18n.get('payByLink.creation.phoneNumber.errors.requiredPhoneCode'));
         return;
     }
 

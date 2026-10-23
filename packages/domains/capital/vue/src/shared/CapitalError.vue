@@ -28,20 +28,20 @@ const actions = computed<BentoButtonActionsList>(() => {
 
     if (onContactSupport) {
         actionsList.push({
-            title: i18n.get('capital.common.actions.contactSupport.labels.reachOut'),
+            title: i18n.get('capital.common.contactSupport.reachOut'),
             event: onContactSupport,
             variant: 'primary',
         });
     } else if (shouldRefreshComponent) {
         actionsList.push({
-            title: i18n.get('capital.common.actions.refresh.labels.default'),
+            title: i18n.get('capital.common.refresh.label'),
             event: () => refreshComponent?.(),
             variant: 'primary',
         });
     }
 
     if (props.onGoBack) {
-        actionsList.push({ title: i18n.get('capital.common.actions.goBack'), event: props.onGoBack, variant: 'secondary' });
+        actionsList.push({ title: i18n.get('capital.common.goBack.label'), event: props.onGoBack, variant: 'secondary' });
     }
 
     return actionsList;

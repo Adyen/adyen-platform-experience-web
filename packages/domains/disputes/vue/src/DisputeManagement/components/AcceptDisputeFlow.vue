@@ -55,8 +55,8 @@ const acceptTitle = computed(() =>
 );
 const acceptButtonTitle = computed(() =>
     isRequestForInformation.value
-        ? i18n.get('disputes.management.accept.requestForInformation.actions.accept')
-        : i18n.get('disputes.management.accept.chargeback.actions.accept')
+        ? i18n.get('disputes.management.accept.requestForInformation.accept')
+        : i18n.get('disputes.management.accept.chargeback.accept')
 );
 const interactionsDisabled = computed(() => isLoading.value || disputeAccepted.value);
 const canAcceptDispute = computed(
@@ -70,7 +70,7 @@ const actionButtons = computed(() => [
         state: isLoading.value ? 'loading' : 'start',
     },
     {
-        title: i18n.get('disputes.management.common.actions.goBack'),
+        title: i18n.get('disputes.common.goBack.label'),
         disabled: isLoading.value,
         event: goBack,
         variant: 'secondary',
@@ -78,7 +78,7 @@ const actionButtons = computed(() => [
 ]);
 const resultActionButtons = computed<BentoButtonActionsList>(() => [
     {
-        title: i18n.get('disputes.management.common.actions.showDetails'),
+        title: i18n.get('disputes.management.actions.showDetails'),
         event: goBack,
         variant: 'secondary',
     },
@@ -130,12 +130,12 @@ watch(disputeAccepted, accepted => {
             </BentoTypography>
             <div :class="styles.input">
                 <BentoCheckbox v-model="termsAgreed" :disabled="interactionsDisabled" required>
-                    {{ i18n.get('disputes.management.accept.common.agree') }}
+                    {{ i18n.get('disputes.management.accept.agree') }}
                 </BentoCheckbox>
             </div>
             <BentoAlert v-if="acceptError" type="critical" role="alert">
                 <template #description>
-                    {{ i18n.get('disputes.management.common.errors.unavailable') }}
+                    {{ i18n.get('disputes.management.errors.unavailable') }}
                 </template>
             </BentoAlert>
             <div :class="flowStyles.actions">
