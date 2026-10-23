@@ -1,4 +1,4 @@
-import { getMockHandlers } from '@integration-components/testing/msw';
+import { getMockHandlers, setMocksDelay } from '@integration-components/testing/msw';
 import { mswLoader, initialize, getWorker } from 'msw-storybook-addon';
 import { mocks } from '../../../../../mocks/mock-server';
 
@@ -9,6 +9,12 @@ const allHandlers = [...getMockHandlers(mocks)];
 // on top via `worker.use(...)`, which correctly takes precedence over defaults.
 initialize({}, allHandlers);
 
+const convertMocksDelayToNumber = (value?: string): number | undefined => {
+    if (value === undefined || value === '') return undefined;
+    const duration = Number(value);
+    return Number.isFinite(duration) && duration >= 0 ? duration : undefined;
+};
+
 export const sharedPreviewConfig = {
     parameters: {
         controls: {
@@ -16,6 +22,19 @@ export const sharedPreviewConfig = {
         },
     },
     globalTypes: {
+        mocksDelay: {
+            description: 'Delay applied to mocked API responses',
+            toolbar: {
+                title: 'Mocks delay',
+                items: [
+                    { title: 'Realistic delay', value: undefined },
+                    { title: '0s delay', value: '0' },
+                    { title: '1s delay', value: '1000' },
+                    { title: '3s delay', value: '3000' },
+                ],
+                dynamicTitle: true,
+            },
+        },
         locale: {
             description: 'Global locale for components',
             toolbar: {
@@ -36,6 +55,7 @@ export const sharedPreviewConfig = {
     initialGlobals: {
         locale: 'en-US',
         fontFamily: undefined,
+        mocksDelay: undefined,
     },
     argTypes: {
         mockedApi: {
@@ -64,6 +84,10 @@ export const sharedPreviewConfig = {
                 worker.stop();
             }
             return { worker };
+        },
+        // Applies the `mocksDelay` toolbar global to resolvers wrapped in `withDelay`.
+        (context: { globals: { mocksDelay?: string } }) => {
+            setMocksDelay(convertMocksDelayToNumber(context.globals.mocksDelay));
         },
         // mswLoader runs LAST so that story-level `parameters.msw` handlers are
         // registered on top of the baseline defaults via `worker.use(...)` and

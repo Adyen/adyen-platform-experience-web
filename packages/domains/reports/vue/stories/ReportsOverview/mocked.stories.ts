@@ -7,6 +7,7 @@ import { createDownloadReportHandler, REPORTS_OVERVIEW_HANDLERS } from '../../..
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, getCustomDataReports } from '../../../fixtures/data/ReportsOverview';
 import { REPORTS_ENDPOINTS } from '../../../mocks/endpoints';
 import { http, HttpResponse } from 'msw';
+import { withDelay } from '@integration-components/testing/msw';
 
 type ReportsOverviewStoryArgs = ReportsOverviewExternalProps & { enforceDownloadDelay?: boolean };
 
@@ -46,9 +47,12 @@ export const DataCustomization: ElementStory<ReportsOverviewExternalProps> = {
     parameters: {
         msw: {
             handlers: [
-                http.get(REPORTS_ENDPOINTS.reports, () => {
-                    return HttpResponse.json({ data: getCustomDataReports(), _links: {} });
-                }),
+                http.get(
+                    REPORTS_ENDPOINTS.reports,
+                    withDelay(() => {
+                        return HttpResponse.json({ data: getCustomDataReports(), _links: {} });
+                    })
+                ),
             ],
         },
     },
