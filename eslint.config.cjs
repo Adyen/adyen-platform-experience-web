@@ -381,9 +381,6 @@ module.exports = [
     // domain/src stays framework-neutral: business rules are unit-tested there without Vue.
     {
         files: ['packages/domains/*/domain/src/**/*.ts'],
-        // TODO: Known exception: the payment link schema types its translator with the Vue-layer `I18n` type.
-        // Move that type to the framework-neutral core, then remove this entry.
-        ignores: ['packages/domains/payByLink/domain/src/PaymentLinkCreation/schema{,.test}.ts'],
         rules: {
             'no-restricted-imports': [
                 'error',
