@@ -47,6 +47,7 @@ describe('getSummaryFieldValue', () => {
         test('is empty without an amount', () => {
             expect(render('amount.value', { 'amount.currency': 'EUR' })).toBe('');
             expect(render('amount.value', { 'amount.value': '', 'amount.currency': 'EUR' })).toBe('');
+            expect(render('amount.value', { 'amount.value': null, 'amount.currency': 'EUR' })).toBe('');
         });
 
         test('is empty without a currency', () => {

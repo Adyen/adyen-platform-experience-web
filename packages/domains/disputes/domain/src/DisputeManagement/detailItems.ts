@@ -60,7 +60,7 @@ export const getDisputeDetailItems = (
         [!!defendedOn, { id: 'defendedOn', label: 'disputes.management.details.fields.defendedOn', kind: 'date', value: defendedOn as string }],
         [
             !!suppliedDocuments?.length,
-            { id: 'disputeEvidence', label: 'disputes.management.details.fields.evidence', kind: 'evidence', value: suppliedDocuments as string[] },
+            { id: 'disputeEvidence', label: 'disputes.management.details.fields.evidence', kind: 'evidence', value: suppliedDocuments ?? [] },
         ],
         [
             !!acceptedDate && DISPUTE_STATUSES_WITH_ACCEPTED_DATE.includes(status),

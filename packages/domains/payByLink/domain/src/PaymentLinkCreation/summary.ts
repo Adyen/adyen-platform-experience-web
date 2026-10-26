@@ -28,7 +28,7 @@ export const getSummaryFieldValue = (fieldName: string, { i18n, values, displayV
 
     if (fieldName === 'amount.value') {
         const currency = values['amount.currency'] as string | undefined;
-        if (value === undefined || value === '' || !currency) return '';
+        if (value == null || value === '' || !currency) return '';
         return i18n.amount(Number(value), currency);
     }
 
