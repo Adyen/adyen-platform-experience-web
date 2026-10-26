@@ -37,7 +37,7 @@ pnpm run format             # Prettier format src/
 
 Keep prop composition consistent across domains:
 
-- Domain `*Props` types contain reusable, framework-neutral component prop fragments. Compose repeated fields with shared helpers such as `WithBalanceAccountId` and `WithDismissCallback` from `packages/shared/types/src/element.ts`; use `PaginationProps` from `@integration-components/utils`.
+- Domain `*Props` types contain reusable, framework-neutral component prop fragments. Compose repeated fields with shared helpers such as `WithDismissCallback` from `packages/shared/types/src/element.ts`; use `PaginationProps` from `@integration-components/utils`.
 - Vue `*ExternalProps` types are the public element constructor types. They must be composed as `UIElementProps<TAppearance> & DomainProps`, with `UIElementProps` providing `core`, `appearance`, and `onContactSupport`.
 - Vue `*ComponentProps` types are derived from the external type with `Omit<ExternalProps, 'core' | 'appearance'>`. Add Vue-only wiring fields only at this layer.
 - Use the derived `*ComponentProps` for containers and Vue components. Do not redeclare the external fields inline.
