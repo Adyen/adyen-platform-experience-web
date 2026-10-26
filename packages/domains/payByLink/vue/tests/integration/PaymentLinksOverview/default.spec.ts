@@ -95,10 +95,8 @@ test.describe('Payment Links Overview', () => {
             await expect(page.getByRole('button', { name: /settings/i })).toBeVisible();
         });
 
-        test('should open Create Payment Link modal when clicking the create button', async ({ page }) => {
-            const dialog = await openCreatePaymentLinkModal(page);
         test('should open Create Payment Link modal when clicking the create button', async ({ page, analyticsEvents }) => {
-            await openCreatePaymentLinkModal(page);
+            const dialog = await openCreatePaymentLinkModal(page);
 
             await Promise.all([
                 expect(dialog).toHaveAccessibleName('New payment link'),
@@ -106,19 +104,10 @@ test.describe('Payment Links Overview', () => {
                 expect(dialog.getByText('New payment link', { exact: true })).toHaveCount(1),
             ]);
             await expect(dialog.getByTestId('form-field-store')).toBeVisible();
-            await expect(dialog.getByText('New payment link', { exact: true })).toHaveCount(1);
-            await expect(page.getByText('New payment link', { exact: true })).toBeVisible();
             await expectAnalyticsEvents(analyticsEvents, [['Landed on page', paymentLinkCreationAnalyticsEventProperties]]);
         });
 
         test('should open Settings modal when clicking the settings button', async ({ page, analyticsEvents }) => {
-            const dialog = await openSettingsModal(page);
-
-            await expect(dialog.getByRole('heading', { name: 'Settings', exact: true })).toBeVisible();
-            await expectAnalyticsEvents(analyticsEvents, [['Landed on page', paymentLinkSettingsAnalyticsEventProperties]]);
-        });
-
-        test('should open Settings modal when clicking the settings button', async ({ page }) => {
             const dialog = await openSettingsModal(page);
 
             await Promise.all([
@@ -126,6 +115,7 @@ test.describe('Payment Links Overview', () => {
                 expect(dialog.locator('.b-modal-page__title')).toHaveText('Settings'),
                 expect(dialog.getByText('Settings', { exact: true })).toHaveCount(1),
             ]);
+            await expectAnalyticsEvents(analyticsEvents, [['Landed on page', paymentLinkSettingsAnalyticsEventProperties]]);
         });
 
         test('should keep the settings title in the modal header on mobile', async ({ page }) => {

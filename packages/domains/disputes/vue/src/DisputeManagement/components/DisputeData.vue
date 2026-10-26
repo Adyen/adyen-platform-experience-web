@@ -7,7 +7,7 @@ import {
     DISPUTES_ANALYTICS_SUBCATEGORY_DETAILS,
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
     getDisputeType,
-    isDisputeActionNeeded
+    isDisputeActionNeeded,
 } from '@integration-components/disputes/domain';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { isFunction, parsePaymentMethodType } from '@integration-components/utils';
