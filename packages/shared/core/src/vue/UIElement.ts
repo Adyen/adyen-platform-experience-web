@@ -1,6 +1,6 @@
 import { createApp, h, reactive, ref, shallowRef, type App, type Component } from 'vue';
 import { createI18n as createVueI18n, type I18n as VueI18n } from 'vue-i18n';
-import type { Appearance, ExternalComponentType } from '@integration-components/types';
+import type { ExternalComponentType, GlobalAppearance } from '@integration-components/types';
 import { isShallowEqual, uuid } from '@integration-components/utils';
 import UIElementProvider from './UIElementProvider.vue';
 import type { DomainTranslationBinding } from './Context/types';
@@ -56,17 +56,16 @@ export const createRefreshContext = () => {
  *     reportsOverview.update({ balanceAccountId: 'BA_NEW' });
  *     reportsOverview.unmount();
  */
-export class UIElement<Props extends Record<string, any>> {
-    public static type: ExternalComponentType;
+export class UIElement<Props extends Record<string, any> & { appearance?: GlobalAppearance }> {
+    public static readonly type: ExternalComponentType;
 
-    public customClassNames: string | undefined;
     public readonly _id = `${(this.constructor as typeof UIElement)?.type}-${uuid()}`;
 
     protected _app: App | null = null;
     protected _component: Component;
     protected _componentName: ExternalComponentType;
     protected _core: Props['core'];
-    protected _globalAppearance = shallowRef<Appearance | undefined>(undefined);
+    protected _globalAppearance = shallowRef<GlobalAppearance | undefined>(undefined);
     protected _props: Omit<Props, 'core'>;
     protected _target: Element | null = null;
     protected _bentoOverrides: Record<string, string> | null = null;
@@ -130,7 +129,6 @@ export class UIElement<Props extends Record<string, any>> {
             const component = this._component;
             const componentName = this._componentName;
             const globalAppearance = this._globalAppearance;
-            const customClassNames = this.customClassNames;
 
             const localization = core.localization;
             const customTranslations = core.options.translations as CustomTranslations | undefined;
@@ -159,7 +157,6 @@ export class UIElement<Props extends Record<string, any>> {
                             bentoOverrides,
                             componentName,
                             componentAppearance: appearance,
-                            customClassNames,
                             globalAppearance: globalAppearance.value,
                             refreshComponent: refresh,
                         },

@@ -1,10 +1,11 @@
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useCursorPaginatedRecords } from '@integration-components/composables-vue/useCursorPaginatedRecords';
+import { usePageLimit } from '@integration-components/composables-vue/usePageLimit';
 import { isFunction, listFrom } from '@integration-components/utils';
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
-import type { DisputesOverviewFilters } from '../../../../domain/src';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
+import { DISPUTES_PAGE_LIMITS } from '../../../../domain/src';
+import type { DisputesOverviewComponentProps } from '../types';
 
 interface UseDisputesListProps {
     fetchEnabled: boolean;
@@ -14,10 +15,8 @@ interface UseDisputesListProps {
     schemeCodes: string | undefined;
     createdSince: string | undefined;
     createdUntil: string | undefined;
-    allowLimitSelection?: boolean;
-    preferredLimit?: number;
+    pagination?: DisputesOverviewComponentProps['pagination'];
     refreshToken?: number;
-    onFiltersChanged?: (filters: DisputesOverviewFilters) => any;
 }
 
 export function useDisputesList(props: () => UseDisputesListProps) {
@@ -25,23 +24,10 @@ export function useDisputesList(props: () => UseDisputesListProps) {
     const getDisputeList = computed(() => config.endpoints.getDisputeList);
     const canFetch = computed(() => isFunction(getDisputeList.value) && props().fetchEnabled);
 
-    const getFiltersKey = () => {
-        const { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil } = props();
-        return JSON.stringify({ balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil });
-    };
-
-    watch(
-        getFiltersKey,
-        () => {
-            const { onFiltersChanged, balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil } = props();
-
-            if (isFunction(onFiltersChanged)) {
-                const filters = { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil };
-                onFiltersChanged(filters);
-            }
-        },
-        { immediate: true }
-    );
+    const pageLimit = usePageLimit({
+        options: DISPUTES_PAGE_LIMITS,
+        pagination: () => props().pagination,
+    });
 
     return useCursorPaginatedRecords<IDisputeListItem>({
         getFetchKey: () => {
@@ -74,7 +60,7 @@ export function useDisputesList(props: () => UseDisputesListProps) {
                 previousCursor: json?._links?.prev?.cursor,
             };
         },
-        preferredLimit: props().preferredLimit ?? DEFAULT_PAGE_LIMIT,
-        limitOptions: () => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined),
+        preferredLimit: pageLimit.initialLimit,
+        limitOptions: pageLimit.limitOptions,
     });
 }

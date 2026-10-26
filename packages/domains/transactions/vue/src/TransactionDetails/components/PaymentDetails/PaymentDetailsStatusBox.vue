@@ -85,13 +85,13 @@ const paymentMethodDetail = computed(() => {
                 </div>
 
                 <div :class="[amountClass]">
-                    <BentoTypography variant="title" large>{{ formattedAmount }}</BentoTypography>
+                    <BentoTypography variant="title" large>
+                        {{ formattedAmount }}
+                    </BentoTypography>
                 </div>
 
                 <div v-if="props.transaction.paymentMethod || props.transaction.bankAccount" :class="styles.paymentMethod">
-                    <div :class="styles.paymentMethodLogoContainer">
-                        <BentoPaymentMethod :type="paymentMethodType" />
-                    </div>
+                    <BentoPaymentMethod :type="paymentMethodType" />
                     <BentoTypography v-if="paymentMethodDetail" variant="title">
                         {{ paymentMethodDetail }}
                     </BentoTypography>

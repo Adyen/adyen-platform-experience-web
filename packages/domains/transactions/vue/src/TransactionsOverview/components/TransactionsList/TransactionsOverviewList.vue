@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useLandedPageEvent, useDurationEvent } from '@integration-components/composables-vue';
 import { BentoAlert, BentoButton } from '@adyen/bento-vue3';
@@ -9,17 +9,15 @@ import TransactionsTable from '../TransactionsTable/TransactionsTable.vue';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
 import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '@integration-components/transactions/domain';
 import type { ITransaction } from '@integration-components/types';
-import type { IBalanceAccountBase, TransactionsOverviewExternalProps } from '../../types';
-import { BREAKPOINTS } from '@integration-components/utils';
+import type { IBalanceAccountBase, TransactionsOverviewComponentProps } from '../../types';
 import styles from '../TransactionsOverview/TransactionsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccounts?: IBalanceAccountBase[];
     isLoadingBalanceAccount: boolean;
-    onContactSupport?: () => void;
-    onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
-    showDetails?: boolean;
-    dataCustomization?: TransactionsOverviewExternalProps['dataCustomization'];
+    onContactSupport?: TransactionsOverviewComponentProps['onContactSupport'];
+    onRecordSelection?: TransactionsOverviewComponentProps['onRecordSelection'];
+    dataCustomization?: TransactionsOverviewComponentProps['dataCustomization'];
     onRowClick: (transaction: ITransaction) => void;
 }>();
 
@@ -58,32 +56,56 @@ function updateSummaryLayout() {
     summaryEl.value?.style.setProperty('--adyen-pe-summary-height', `${maxHeight}px`);
 }
 
-watch([totalsError, balancesError], ([newTotalsError, newBalancesError], [oldTotalsError, oldBalancesError]) => {
-    const isMdUp = (summaryEl.value?.clientWidth ?? 0) >= BREAKPOINTS.md;
+// A retry clears the error before it settles, so the card comes back into view mid-fetch. Showing
+// its loading state there would collapse the column onto its min-width and then expand it again,
+// so the card keeps the figures it already has until the retry resolves, one way or the other.
+function useRetryTracker(error: () => unknown, loading: () => boolean) {
+    const errored = ref(false);
 
-    // Before the DOM updates, capture the width of sections that are about to switch to an alert
-    const totalsWidth = isMdUp && !oldTotalsError && newTotalsError ? balancesSectionEl.value?.offsetWidth : undefined;
-    const balancesWidth = isMdUp && !oldBalancesError && newBalancesError ? totalsSectionEl.value?.offsetWidth : undefined;
-
-    nextTick(() => {
-        if (totalsWidth !== undefined) {
-            totalsSectionEl.value?.style.setProperty('min-width', `${totalsWidth}px`);
-        } else if (!newTotalsError) {
-            totalsSectionEl.value?.style.removeProperty('min-width');
-        }
-
-        if (balancesWidth !== undefined) {
-            balancesSectionEl.value?.style.setProperty('min-width', `${balancesWidth}px`);
-        } else if (!newBalancesError) {
-            balancesSectionEl.value?.style.removeProperty('min-width');
-        }
-
-        updateSummaryLayout();
+    watch([error, loading], ([currentError, isLoading]) => {
+        if (currentError) errored.value = true;
+        else if (!isLoading) errored.value = false;
     });
+
+    return computed(() => errored.value && !error());
+}
+
+const totalsRetrying = useRetryTracker(
+    () => totalsError.value,
+    () => loadingTotals.value
+);
+
+const balancesRetrying = useRetryTracker(
+    () => balancesError.value,
+    () => loadingBalances.value
+);
+
+watch([totalsError, balancesError, totalsRetrying, balancesRetrying], () => {
+    nextTick(updateSummaryLayout);
 });
+
+// The sections are absolutely positioned on wider screens, so the summary height has to follow their
+// size changes (loaded figures, a horizontal scrollbar appearing), not just the error state.
+let summaryResizeObserver: ResizeObserver | undefined;
+let summaryLayoutFrame: number | undefined;
 
 onMounted(() => {
     updateSummaryLayout();
+
+    if (typeof ResizeObserver === 'undefined') return;
+    // Deferred to the next frame so the style write doesn't resize observed elements within the same
+    // observation cycle, and so several resizes in one frame collapse into a single update.
+    summaryResizeObserver = new ResizeObserver(() => {
+        if (summaryLayoutFrame !== undefined) cancelAnimationFrame(summaryLayoutFrame);
+        summaryLayoutFrame = requestAnimationFrame(updateSummaryLayout);
+    });
+    if (totalsSectionEl.value) summaryResizeObserver.observe(totalsSectionEl.value);
+    if (balancesSectionEl.value) summaryResizeObserver.observe(balancesSectionEl.value);
+});
+
+onBeforeUnmount(() => {
+    summaryResizeObserver?.disconnect();
+    if (summaryLayoutFrame !== undefined) cancelAnimationFrame(summaryLayoutFrame);
 });
 </script>
 
@@ -91,25 +113,33 @@ onMounted(() => {
     <div ref="summaryEl" :class="styles.summary">
         <div ref="totalsSectionEl" :class="[styles.summarySection, styles.summarySectionTotals]">
             <BentoAlert v-if="totalsError" type="warning">
-                <template #default>{{ i18n.get('transactions.overview.totals.error') }}</template>
+                <template #default>
+                    {{ i18n.get('transactions.overview.totals.error') }}
+                </template>
                 <template #actions>
                     <BentoButton variant="tertiary" :disabled="!transactionsTotalsResult.canRefresh.value" @click="transactionsTotalsResult.refresh">
                         {{ i18n.get('transactions.common.actions.refresh.labels.default') }}
                     </BentoButton>
                 </template>
             </BentoAlert>
-            <TransactionTotals v-else :totals="sortedTotals" :loading-totals="loadingTotals" />
+            <div :class="totalsError ? styles.summaryReservedWidth : ''" :inert="totalsError ? true : undefined">
+                <TransactionTotals :totals="sortedTotals" :loading-totals="loadingTotals && !totalsRetrying" />
+            </div>
         </div>
         <div ref="balancesSectionEl" :class="[styles.summarySection, styles.summarySectionBalances]">
             <BentoAlert v-if="balancesError" type="warning">
-                <template #default>{{ i18n.get('transactions.overview.balances.error') }}</template>
+                <template #default>
+                    {{ i18n.get('transactions.overview.balances.error') }}
+                </template>
                 <template #actions>
                     <BentoButton variant="tertiary" :disabled="!accountBalancesResult.canRefresh.value" @click="accountBalancesResult.refresh">
                         {{ i18n.get('transactions.common.actions.refresh.labels.default') }}
                     </BentoButton>
                 </template>
             </BentoAlert>
-            <Balances v-else :balances="sortedBalances" :loading-balances="loadingBalances" />
+            <div :class="balancesError ? styles.summaryReservedWidth : ''" :inert="balancesError ? true : undefined">
+                <Balances :balances="sortedBalances" :loading-balances="loadingBalances && !balancesRetrying" />
+            </div>
         </div>
     </div>
 
@@ -121,7 +151,6 @@ onMounted(() => {
         :loading="loadingTable"
         :on-contact-support="props.onContactSupport"
         :on-row-click="props.onRowClick"
-        :show-details="props.showDetails"
         :transactions="transactionsListResult.records.value"
         :custom-columns="transactionsListResult.fields.value"
         :has-next="transactionsListResult.hasNext.value"

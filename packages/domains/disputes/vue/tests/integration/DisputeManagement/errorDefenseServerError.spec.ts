@@ -15,9 +15,9 @@ test.describe('Error - Defense server error', () => {
         await page.getByRole('option', { name: 'Flight Ticket Used' }).click();
 
         // Upload document
-        const __filename = fileURLToPath(import.meta.url);
-        const __dirname = path.dirname(__filename);
-        const fixture = path.resolve(__dirname, '../../../../fixtures/files/test-file.pdf');
+        const filename = fileURLToPath(import.meta.url);
+        const dirname = path.dirname(filename);
+        const fixture = path.resolve(dirname, '../../../../fixtures/files/test-file.pdf');
         const fileInput = page.locator('input[type="file"]');
         await expect(fileInput).toBeEnabled();
         await fileInput.setInputFiles(fixture);

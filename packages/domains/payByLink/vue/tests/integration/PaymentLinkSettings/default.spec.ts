@@ -5,15 +5,22 @@ import path from 'path';
 
 const STORY_ID = 'mocked-pay-by-link-payment-link-settings--default';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const fullSizeIcon = path.resolve(__dirname, '../../../../fixtures/files/theme-logo.jpg');
-const fullWidthIcon = path.resolve(__dirname, '../../../../fixtures/files/theme-logo-full-width.jpg');
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+const fullSizeIcon = path.resolve(dirname, '../../../../fixtures/files/theme-logo.jpg');
+const fullWidthIcon = path.resolve(dirname, '../../../../fixtures/files/theme-logo-full-width.jpg');
 const invalidDimensionsMessage = 'File dimensions not met with the requirements';
 
 test.describe('Default', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
+    });
+
+    test('should keep the title in the standalone settings content', async ({ page }) => {
+        await Promise.all([
+            expect(page.getByRole('heading', { name: 'Settings', exact: true })).toBeVisible(),
+            expect(page.getByRole('dialog')).toHaveCount(0),
+        ]);
     });
 
     test('should render the settings sections as accessible navigation items', async ({ page }) => {
@@ -73,6 +80,17 @@ test.describe('Default', () => {
         const saveButton = page.getByRole('button', { name: 'Save' });
         await saveButton.click();
 
+        await expect(page.getByText('The changes have been saved successfully.')).toBeVisible();
+    });
+
+    test('should save the existing terms and conditions URL without changes', async ({ page }) => {
+        await page.getByRole('button', { name: 'Terms and conditions' }).click();
+        await expect(page.getByRole('textbox', { name: 'Your terms and conditions URL' })).toHaveValue('https://example.com/terms-and-conditions');
+
+        const saveRequest = page.waitForRequest(request => request.method() === 'POST' && request.url().includes('/paybylink/settings/'));
+        await page.getByRole('button', { name: 'Save' }).click();
+
+        expect((await saveRequest).postDataJSON()).toEqual({ termsOfServiceUrl: 'https://example.com/terms-and-conditions' });
         await expect(page.getByText('The changes have been saved successfully.')).toBeVisible();
     });
 

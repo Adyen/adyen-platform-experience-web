@@ -1,4 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
+import Localization from '@integration-components/core/Localization';
 import { DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS } from '@integration-components/utils';
 import { PAYMENT_LINKS } from '../../../mocks/mock-data/payByLink';
 import { buildPaymentLinkListItems, getPaymentLinkErrorMessageContent } from './utils';
@@ -9,8 +10,9 @@ describe('buildPaymentLinkListItems', () => {
         if (!paymentLink) throw new Error('Missing payment link fixture');
 
         const dateFormat = vi.fn(() => 'formatted date');
+        const i18n = new Localization().i18n;
         buildPaymentLinkListItems(paymentLink, {
-            i18n: { has: () => false, get: key => key },
+            i18n,
             dateFormat,
         });
 

@@ -1,21 +1,14 @@
-import type { CustomDataRetrieved, DataCustomizationObject, IReport, UIElementProps } from '@integration-components/types';
+import type { CustomDataRetrieved, DataCustomizationObject, IReport, WithBalanceAccountId } from '@integration-components/types';
+import type { PaginationProps } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-
-type ReportsTableCols = 'createdAt' | 'dateAndReportType' | 'reportType' | 'reportFile';
+import type { ReportsTableCols } from './constants';
 
 export type ReportsTableFields = StringWithAutocompleteOptions<ReportsTableCols>;
 
-export type ReportsListCustomization = DataCustomizationObject<ReportsTableFields, IReport[], CustomDataRetrieved[]>;
+export type ReportsDataGridCustomization = DataCustomizationObject<ReportsTableFields, IReport[], CustomDataRetrieved[]>;
 
-export interface ReportsOverviewProps extends UIElementProps {
-    allowLimitSelection?: boolean;
-    balanceAccountId?: string;
-    onFiltersChanged?: (filters: { balanceAccountId?: string; reportType?: string; createdSince?: string; createdUntil?: string }) => any;
-    preferredLimit?: 10 | 20;
-    onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
+export interface ReportsOverviewProps extends PaginationProps, WithBalanceAccountId {
     dataCustomization?: {
-        list?: ReportsListCustomization;
+        dataGrid?: ReportsDataGridCustomization;
     };
 }
-
-export type ReportsOverviewComponentProps = ReportsOverviewProps;

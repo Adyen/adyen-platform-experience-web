@@ -11,7 +11,7 @@ import {
     CAPITAL_STATE_UNSUPPORTED_REGION,
     CAPITAL_STATE_PENDING_GRANT,
 } from '../../../../mocks/mock-data/capital';
-import { getEnhancedCapitalState, getIsEarlyRenewal, shouldGetGrants, getRenewableGrantDetails } from './state';
+import { getEnhancedCapitalState, shouldGetGrants, getRenewableGrantDetails } from './state';
 
 describe('getEnhancedCapitalState', () => {
     test('returns undefined when no capital state is available', () => {
@@ -19,17 +19,17 @@ describe('getEnhancedCapitalState', () => {
     });
 
     test('returns dynamic offer when there are no ongoing grants or there is a valid renewal', () => {
-        expect(getEnhancedCapitalState(CAPITAL_STATE_INELIGIBLE, localSupportedRegions)).toMatchObject({ dynamicOffer: undefined });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_INELIGIBLE, localSupportedRegions)).toMatchObject({ dynamicOfferConfig: undefined });
         expect(getEnhancedCapitalState(CAPITAL_STATE_FIRST_OFFER, localSupportedRegions)).toMatchObject({
-            dynamicOffer: CAPITAL_STATE_FIRST_OFFER.dynamicOffer,
+            dynamicOfferConfig: CAPITAL_STATE_FIRST_OFFER.dynamicOffer,
         });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_PENDING_GRANT, localSupportedRegions)).toMatchObject({ dynamicOffer: undefined });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_ACTIVE_GRANT, localSupportedRegions)).toMatchObject({ dynamicOffer: undefined });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_PENDING_GRANT, localSupportedRegions)).toMatchObject({ dynamicOfferConfig: undefined });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_ACTIVE_GRANT, localSupportedRegions)).toMatchObject({ dynamicOfferConfig: undefined });
         expect(getEnhancedCapitalState(CAPITAL_STATE_RENEWABLE_GRANT, localSupportedRegions)).toMatchObject({
-            dynamicOffer: CAPITAL_STATE_RENEWABLE_GRANT.dynamicOffer,
+            dynamicOfferConfig: CAPITAL_STATE_RENEWABLE_GRANT.dynamicOffer,
         });
         expect(getEnhancedCapitalState(CAPITAL_STATE_CLOSED_GRANTS, localSupportedRegions)).toMatchObject({
-            dynamicOffer: CAPITAL_STATE_CLOSED_GRANTS.dynamicOffer,
+            dynamicOfferConfig: CAPITAL_STATE_CLOSED_GRANTS.dynamicOffer,
         });
     });
 
@@ -77,7 +77,7 @@ describe('getEnhancedCapitalState', () => {
         };
 
         expect(getEnhancedCapitalState(state, localSupportedRegions)).toMatchObject({
-            dynamicOffer: CAPITAL_STATE_RENEWABLE_GRANT.dynamicOffer,
+            dynamicOfferConfig: CAPITAL_STATE_RENEWABLE_GRANT.dynamicOffer,
             renewableGrants: state.activeOrPendingGrants,
         });
     });
@@ -97,7 +97,7 @@ describe('getEnhancedCapitalState', () => {
         };
 
         expect(getEnhancedCapitalState(state, localSupportedRegions)).toMatchObject({
-            dynamicOffer: undefined,
+            dynamicOfferConfig: undefined,
             renewableGrants: [],
         });
     });
@@ -117,13 +117,6 @@ describe('shouldGetGrants', () => {
         expect(shouldGetGrants(CAPITAL_STATE_FIRST_OFFER, true)).toBe(false);
         expect(shouldGetGrants(CAPITAL_STATE_ACTIVE_GRANT, false)).toBe(false);
         expect(shouldGetGrants(undefined, true)).toBe(false);
-    });
-});
-
-describe('getIsEarlyRenewal', () => {
-    test('returns true only when the state has renewable grants', () => {
-        expect(getIsEarlyRenewal(getEnhancedCapitalState(CAPITAL_STATE_RENEWABLE_GRANT, localSupportedRegions)!)).toBe(true);
-        expect(getIsEarlyRenewal(getEnhancedCapitalState(CAPITAL_STATE_FIRST_OFFER, localSupportedRegions)!)).toBe(false);
     });
 });
 

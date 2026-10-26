@@ -1,36 +1,47 @@
 <script setup lang="ts">
-import { computed, provide, ref, watch } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
+import { computed, defineAsyncComponent, provide, ref, watch } from 'vue';
+import { useCoreContext, useModalContext } from '@integration-components/core/vue';
+import type { TranslationKey } from '@integration-components/core';
+import {
+    BentoAlert,
+    BentoButton,
+    BentoButtonActions,
+    BentoFormLayout,
+    BentoStep,
+    BentoStepper,
+    BentoTypography,
+    type BentoButtonActionsList,
+} from '@adyen/bento-vue3';
 import { useShouldHideTitles } from '@integration-components/composables-vue';
-import { BentoAlert, BentoButton, BentoStep, BentoStepper, BentoTypography } from '@adyen/bento-vue3';
-import type { PaymentLinkCreationProps, PaymentLinkSettingsItem } from '../../../../../domain/src';
-import { usePaymentLinkFormData } from './usePaymentLinkFormData';
+import type { PaymentLinkSettingsItem } from '../../../../../domain/src';
+import type { PaymentLinkCreationComponentProps } from '../../types';
+import type { usePaymentLinkFormData } from './usePaymentLinkFormData';
 import { usePaymentLinkWizard } from './usePaymentLinkWizard';
 import { useInvalidFields } from './useInvalidFields';
 import { PAYMENT_LINK_WIZARD_KEY } from '../../composables/wizardContext';
-import PaymentLinkSettingsContainer from '../../../PaymentLinkSettings/components/PaymentLinkSettingsContainer.vue';
 import FormStepRenderer from './FormStepRenderer.vue';
+import PaymentLinkCreationFormSkeleton from './PaymentLinkCreationFormSkeleton.vue';
 import ArrowRightIcon from '@adyen/ui-assets-icons-16/vue/arrow-right';
 import styles from './PaymentLinkCreationForm.module.scss';
 
-type PaymentLinkCreationFormProps = Pick<
-    PaymentLinkCreationProps,
-    'fieldsConfig' | 'storeIds' | 'hideTitle' | 'onCreationDismiss' | 'onContactSupport'
-> & {
+type PaymentLinkCreationFormProps = Pick<PaymentLinkCreationComponentProps, 'fieldsConfig' | 'storeIds' | 'onDismiss' | 'onContactSupport'> & {
+    formData: ReturnType<typeof usePaymentLinkFormData>;
     embeddedInOverview?: boolean;
+    onTitleChange?: (title: TranslationKey | undefined) => void;
 };
 
 const props = defineProps<PaymentLinkCreationFormProps>();
 const emit = defineEmits<{ 'payment-link-created': [data: any] }>();
 
 const { i18n } = useCoreContext();
+const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
 const TERMS_AND_CONDITIONS_SETTINGS_ITEMS: PaymentLinkSettingsItem[] = ['termsAndConditions'];
 
-const data = usePaymentLinkFormData(() => ({ storeIds: props.storeIds, fieldsConfig: props.fieldsConfig }));
+const formData = props.formData;
 const wizard = usePaymentLinkWizard({
     i18n,
-    steps: data.formSteps,
+    steps: formData.formSteps,
     defaults: () => props.fieldsConfig?.data,
 });
 const { getMappedInvalidFields } = useInvalidFields();
@@ -53,16 +64,16 @@ provide(PAYMENT_LINK_WIZARD_KEY, {
 watch(
     () => wizard.getValue('store'),
     storeValue => {
-        if (storeValue) data.setSelectedStore(String(storeValue));
+        if (storeValue) formData.setSelectedStore(String(storeValue));
     }
 );
 
 // Seed the form's store value when a single store is auto-selected (store step skipped).
 watch(
-    data.selectedStore,
+    formData.selectedStore,
     storeId => {
         if (storeId && !wizard.getValue('store')) {
-            const name = data.storesSelectorItems.value.find(item => item.id === storeId)?.name ?? storeId;
+            const name = formData.storesSelectorItems.value.find(item => item.id === storeId)?.name ?? storeId;
             wizard.setValue('store', storeId, name);
         }
     },
@@ -75,12 +86,24 @@ const submitError = ref<any>(null);
 const isSubmitError = ref(false);
 const selectedStoreNavigationCache = ref('');
 const showTermsAndConditions = ref(false);
+const titleKey = computed<TranslationKey>(() => (showTermsAndConditions.value ? 'payByLink.settings.title' : 'payByLink.creation.form.title'));
+
+watch(titleKey, title => props.onTitleChange?.(title), { immediate: true });
+
+const PaymentLinkSettingsContainer = defineAsyncComponent({
+    loader: () => import('../../../PaymentLinkSettings/components/PaymentLinkSettingsContainer.vue'),
+    loadingComponent: PaymentLinkCreationFormSkeleton,
+    delay: 0,
+});
 
 const currentFormStepId = computed(() => wizard.currentStep.value?.id ?? 'store');
-const showConfigurationError = computed(() => data.displayConfigurationError(currentFormStepId.value));
-const accountIsMisconfigured = data.accountIsMisconfigured;
-const nextButtonDisabled = computed(() => !data.termsAndConditionsProvisioned.value || accountIsMisconfigured.value || showConfigurationError.value);
-const isNextStepLoading = computed(() => isSubmitting.value || data.isDataLoading.value);
+const showConfigurationError = computed(() => formData.displayConfigurationError(currentFormStepId.value));
+const accountIsMisconfigured = formData.accountIsMisconfigured;
+const nextButtonDisabled = computed(
+    () => !formData.termsAndConditionsProvisioned.value || accountIsMisconfigured.value || showConfigurationError.value
+);
+const isNextStepLoading = computed(() => isSubmitting.value || formData.isDataLoading.value);
+const showStepSkeleton = computed(() => isNextStepLoading.value && currentFormStepId.value !== 'store');
 
 const submitErrorTitle = computed(() =>
     getMappedInvalidFields(submitError.value).length
@@ -95,7 +118,7 @@ function handleContinue() {
 
 function handlePrevious() {
     if (wizard.isFirstStep.value) {
-        props.onCreationDismiss?.();
+        props.onDismiss?.();
         return;
     }
     submitError.value = null;
@@ -104,29 +127,29 @@ function handlePrevious() {
 }
 
 function handleStepSelect(index: number) {
-    if (index === wizard.currentIndex.value) return;
+    if (isNextStepLoading.value || index === wizard.currentIndex.value) return;
     submitError.value = null;
     isSubmitError.value = false;
     wizard.goToStep(index);
 }
 
 function handleSetupTermsAndConditions() {
-    if (!data.selectedStore.value) return;
-    selectedStoreNavigationCache.value = data.selectedStore.value;
-    data.setSelectedStore('');
+    if (!formData.selectedStore.value) return;
+    selectedStoreNavigationCache.value = formData.selectedStore.value;
+    formData.setSelectedStore('');
     showTermsAndConditions.value = true;
 }
 
 function navigateBackFromTermsAndConditions() {
-    data.setSelectedStore(selectedStoreNavigationCache.value);
+    formData.setSelectedStore(selectedStoreNavigationCache.value);
     showTermsAndConditions.value = false;
     selectedStoreNavigationCache.value = '';
 }
 
 async function handleSubmit() {
-    if (!wizard.validateStep()) return;
+    if (nextButtonDisabled.value || isNextStepLoading.value || !wizard.validateStep()) return;
     const { store, payload } = wizard.getApiPayload();
-    const createPaymentLink = data.createPaymentLink;
+    const createPaymentLink = formData.createPaymentLink;
     if (typeof createPaymentLink !== 'function') return;
 
     isSubmitting.value = true;
@@ -142,6 +165,29 @@ async function handleSubmit() {
         isSubmitting.value = false;
     }
 }
+
+const buttonActions = computed<BentoButtonActionsList>(() => {
+    const actions: BentoButtonActionsList = [
+        {
+            title: wizard.isLastStep.value ? i18n.get('payByLink.creation.form.steps.submit') : i18n.get('payByLink.creation.form.steps.continue'),
+            disabled: nextButtonDisabled.value || isNextStepLoading.value,
+            event: wizard.isLastStep.value ? handleSubmit : handleContinue,
+            variant: 'primary',
+            iconRight: wizard.isLastStep.value ? undefined : ArrowRightIcon,
+        },
+    ];
+
+    if (!wizard.isFirstStep.value || props.onDismiss) {
+        actions.push({
+            title: i18n.get('payByLink.creation.form.steps.back'),
+            disabled: isSubmitting.value,
+            event: handlePrevious,
+            variant: 'secondary',
+        });
+    }
+
+    return actions;
+});
 </script>
 
 <template>
@@ -153,117 +199,77 @@ async function handleSubmit() {
         :navigate-back="navigateBackFromTermsAndConditions"
         :embedded-in-overview="props.embeddedInOverview"
     />
-    <div v-else :class="styles.root">
-        <div v-if="!data.isFirstLoadDone.value" :class="styles.header">
-            <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title" stronger>
+    <div v-else :class="styles.root" :aria-busy="isNextStepLoading">
+        <div :class="styles.header">
+            <BentoTypography v-if="!withinModal && !hideTitles" variant="title" stronger>
                 {{ i18n.get('payByLink.creation.form.title') }}
             </BentoTypography>
-            <div :class="styles.skeleton">
-                <div :class="[styles.skeletonItem, styles.skeletonItemLarge]" />
-                <div :class="[styles.skeletonItem, styles.skeletonItemSmall]" />
-                <div :class="[styles.skeletonItem, styles.skeletonItemLarge]" />
-            </div>
+            <BentoStepper
+                :index="wizard.currentIndex.value"
+                type="linear"
+                variant="horizontal"
+                :aria-label="formData.formStepsAriaLabel.value"
+                @update:index="handleStepSelect"
+            >
+                <BentoStep v-for="item in formData.stepperItems.value" :key="item.id">
+                    {{ item.label }}
+                </BentoStep>
+            </BentoStepper>
         </div>
 
-        <template v-else>
-            <div :class="styles.header">
-                <BentoTypography v-if="!props.hideTitle && !hideTitles" variant="title" stronger>
-                    {{ i18n.get('payByLink.creation.form.title') }}
-                </BentoTypography>
-                <BentoStepper
-                    :index="wizard.currentIndex.value"
-                    type="linear"
-                    variant="horizontal"
-                    :aria-label="data.formStepsAriaLabel.value"
-                    @update:index="handleStepSelect"
-                >
-                    <BentoStep v-for="item in data.stepperItems.value" :key="item.id">{{ item.label }}</BentoStep>
-                </BentoStepper>
+        <BentoFormLayout form @submit.prevent="handleSubmit">
+            <template v-if="isSubmitError" #error-message>
+                {{ submitErrorTitle }}
+                <ul v-if="mappedInvalidFields.length" :class="styles.invalidFieldsError">
+                    <li v-for="(message, index) in mappedInvalidFields" :key="index">
+                        {{ message }}
+                    </li>
+                </ul>
+                <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
+                    {{ i18n.get('payByLink.common.actions.contactSupport.labels.reachOut') }}
+                </BentoButton>
+            </template>
+
+            <PaymentLinkCreationFormSkeleton v-if="showStepSkeleton" :step="currentFormStepId" />
+            <div v-show="!showStepSkeleton" :class="styles.container">
+                <FormStepRenderer
+                    :current-form-step="currentFormStepId"
+                    :select-items="formData.storesSelectorItems.value"
+                    :settings-data="formData.settingsData.value"
+                    :stores-data="formData.storesData.value"
+                    :configuration-data="formData.configurationData.value"
+                    :countries-data="formData.countriesData.value"
+                    :country-dataset-data="formData.countryDatasetData.value"
+                    :is-fetching-countries="formData.isFetchingCountries.value"
+                    :is-fetching-country-dataset="formData.isFetchingCountryDataset.value"
+                    :terms-and-conditions-provisioned="formData.termsAndConditionsProvisioned.value"
+                    :can-modify-settings="formData.canModifySettings.value"
+                    :is-same-address="isSameAddress"
+                    :on-contact-support="props.onContactSupport"
+                    @update:is-same-address="(value: boolean) => (isSameAddress = value)"
+                    @setup-terms-and-conditions="handleSetupTermsAndConditions"
+                />
+
+                <BentoAlert v-if="showConfigurationError" :class="styles.errorAlert" type="critical" role="alert">
+                    {{ i18n.get('payByLink.common.errors.somethingWentWrong') }}
+                    <template #description>
+                        <span>{{ i18n.get('payByLink.creation.errors.unavailable') }}</span>
+                        <span>{{ i18n.get('payByLink.common.errors.retry') }}</span>
+                    </template>
+                </BentoAlert>
+
+                <BentoAlert v-if="accountIsMisconfigured" :class="styles.warningAlert" type="warning" role="alert">
+                    {{ i18n.get('payByLink.common.errors.accountConfiguration') }}
+                    <template #description>
+                        <span>{{ i18n.get('payByLink.common.errors.contactSupport') }}</span>
+                        <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
+                            {{ i18n.get('payByLink.common.actions.contactSupport.labels.reachOut') }}
+                        </BentoButton>
+                    </template>
+                </BentoAlert>
             </div>
 
-            <div :class="styles.container">
-                <form @submit.prevent="handleSubmit">
-                    <FormStepRenderer
-                        :current-form-step="currentFormStepId"
-                        :select-items="data.storesSelectorItems.value"
-                        :settings-data="data.settingsData.value"
-                        :stores-data="data.storesData.value"
-                        :configuration-data="data.configurationData.value"
-                        :countries-data="data.countriesData.value"
-                        :country-dataset-data="data.countryDatasetData.value"
-                        :is-fetching-countries="data.isFetchingCountries.value"
-                        :is-fetching-country-dataset="data.isFetchingCountryDataset.value"
-                        :terms-and-conditions-provisioned="data.termsAndConditionsProvisioned.value"
-                        :can-modify-settings="data.canModifySettings.value"
-                        :is-same-address="isSameAddress"
-                        :on-contact-support="props.onContactSupport"
-                        @update:is-same-address="(value: boolean) => (isSameAddress = value)"
-                        @setup-terms-and-conditions="handleSetupTermsAndConditions"
-                    />
-
-                    <BentoAlert v-if="showConfigurationError" :class="styles.errorAlert" type="critical" role="alert">
-                        {{ i18n.get('payByLink.common.errors.somethingWentWrong') }}
-                        <template #description>
-                            <span>{{ i18n.get('payByLink.creation.errors.unavailable') }}</span>
-                            <span>{{ i18n.get('payByLink.common.errors.retry') }}</span>
-                        </template>
-                    </BentoAlert>
-
-                    <BentoAlert v-if="accountIsMisconfigured" :class="styles.warningAlert" type="warning" role="alert">
-                        {{ i18n.get('payByLink.common.errors.accountConfiguration') }}
-                        <template #description>
-                            <span>{{ i18n.get('payByLink.common.errors.contactSupport') }}</span>
-                            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                                {{ i18n.get('payByLink.common.actions.contactSupport.labels.reachOut') }}
-                            </BentoButton>
-                        </template>
-                    </BentoAlert>
-
-                    <BentoAlert v-if="isSubmitError" :class="styles.errorAlert" type="critical" role="alert">
-                        {{ submitErrorTitle }}
-                        <template #description>
-                            <ul v-if="mappedInvalidFields.length" :class="styles.invalidFieldsError">
-                                <li v-for="(message, index) in mappedInvalidFields" :key="index">{{ message }}</li>
-                            </ul>
-                            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
-                                {{ i18n.get('payByLink.common.actions.contactSupport.labels.reachOut') }}
-                            </BentoButton>
-                        </template>
-                    </BentoAlert>
-
-                    <div :class="styles.buttonsContainer">
-                        <BentoButton
-                            v-if="!wizard.isFirstStep.value || props.onCreationDismiss"
-                            variant="secondary"
-                            type="button"
-                            @click="handlePrevious"
-                        >
-                            {{ i18n.get('payByLink.creation.form.steps.back') }}
-                        </BentoButton>
-                        <BentoButton
-                            v-if="wizard.isLastStep.value"
-                            variant="primary"
-                            type="submit"
-                            :disabled="nextButtonDisabled || isNextStepLoading"
-                        >
-                            {{ i18n.get('payByLink.creation.form.steps.submit') }}
-                        </BentoButton>
-                        <BentoButton
-                            v-else
-                            variant="primary"
-                            type="button"
-                            :disabled="nextButtonDisabled || isNextStepLoading"
-                            :state="isNextStepLoading ? 'loading' : undefined"
-                            @click="handleContinue"
-                        >
-                            {{ i18n.get('payByLink.creation.form.steps.continue') }}
-                            <template #iconRight>
-                                <ArrowRightIcon />
-                            </template>
-                        </BentoButton>
-                    </div>
-                </form>
-            </div>
-        </template>
+            <BentoButtonActions :actions="buttonActions" layout="buttons-end" />
+        </BentoFormLayout>
     </div>
 </template>

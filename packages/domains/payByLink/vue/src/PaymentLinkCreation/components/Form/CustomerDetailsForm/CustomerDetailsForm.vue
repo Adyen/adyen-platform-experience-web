@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoCheckbox } from '@adyen/bento-vue3';
+import { BentoCheckbox, BentoFormLayoutGroup } from '@adyen/bento-vue3';
+import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
 import TextField from '../../fields/TextField.vue';
 import CountryField from './fields/CountryField.vue';
 import ShopperPhoneField from './fields/ShopperPhoneField.vue';
@@ -11,7 +12,6 @@ import { useAddressSections } from './useAddressSections';
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../domain/src';
 import type { PaymentLinkFieldName } from '../../../../../../domain/src';
 import type { IPaymentLinkCountry } from '@integration-components/types';
-import layoutStyles from '../FormLayout.module.scss';
 import styles from './CustomerDetailsForm.module.scss';
 
 const props = defineProps<{
@@ -29,6 +29,9 @@ const { i18n } = wizard;
 const { showBillingFirst, isSameAddressCopyEnabled, billingState, deliveryState } = useAddressSections();
 
 const isNameVisible = computed(() => wizard.getFieldConfig('shopperName.firstName').visible || wizard.getFieldConfig('shopperName.lastName').visible);
+
+const isXsContainer = useResponsiveContainer(containerQueries.down.xs);
+const nameRowLayout = computed(() => (isXsContainer.value ? '100' : '50-50'));
 
 const baseCountryList = computed<{ id: string; name: string }[]>(() => {
     if (props.countryDatasetData?.length) return props.countryDatasetData;
@@ -72,7 +75,11 @@ function toggleSameAddress(value: boolean) {
     ADDRESS_FIELDS.forEach(field => {
         const sourceName = `${source}.${field}` as PaymentLinkFieldName;
         const targetName = `${target}.${field}` as PaymentLinkFieldName;
-        wizard.setValue(targetName, value ? wizard.getValue(sourceName) : '');
+        if (value) {
+            wizard.setValue(targetName, wizard.getValue(sourceName), wizard.displayValues.value[sourceName]);
+        } else {
+            wizard.setValue(targetName, '');
+        }
     });
     emit('update:isSameAddress', value);
 }
@@ -83,87 +90,85 @@ function onCheckboxUpdate(value: boolean | string | string[]) {
 </script>
 
 <template>
-    <div :class="layoutStyles.fieldsContainer">
+    <TextField
+        name="shopperReference"
+        :label="i18n.get('payByLink.creation.fields.shopperReference.label')"
+        :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperReference.max"
+    />
+    <BentoFormLayoutGroup v-if="isNameVisible" :layout="nameRowLayout">
         <TextField
-            name="shopperReference"
-            :label="i18n.get('payByLink.creation.fields.shopperReference.label')"
-            :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperReference.max"
+            name="shopperName.firstName"
+            :label="i18n.get('payByLink.creation.fields.shopperName.label')"
+            :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperName.firstName.max"
         />
-        <div v-if="isNameVisible" :class="styles.shopperNameContainer">
-            <TextField
-                name="shopperName.firstName"
-                :label="i18n.get('payByLink.creation.fields.shopperName.label')"
-                :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperName.firstName.max"
-            />
-            <TextField
-                name="shopperName.lastName"
-                :label="i18n.get('payByLink.creation.fields.shopperLastName.label')"
-                :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperName.lastName.max"
-            />
-        </div>
         <TextField
-            name="shopperEmail"
-            :label="i18n.get('payByLink.creation.fields.shopperEmail.label')"
-            :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperEmail.max"
+            name="shopperName.lastName"
+            :label="i18n.get('payByLink.creation.fields.shopperLastName.label')"
+            :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperName.lastName.max"
         />
-        <ShopperPhoneField />
-        <CountryField
-            name="countryCode"
-            :label="i18n.get('payByLink.creation.fields.country.label')"
-            :items="shopperCountryItems"
-            :loading="countriesLoading"
-        />
+    </BentoFormLayoutGroup>
+    <TextField
+        name="shopperEmail"
+        :label="i18n.get('payByLink.creation.fields.shopperEmail.label')"
+        :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperEmail.max"
+    />
+    <ShopperPhoneField />
+    <CountryField
+        name="countryCode"
+        :label="i18n.get('payByLink.creation.fields.country.label')"
+        :items="shopperCountryItems"
+        :loading="countriesLoading"
+    />
 
-        <template v-if="showDeliveryDefault">
-            <AddressSection
-                prefix="deliveryAddress"
-                :title="i18n.get('payByLink.creation.sections.deliveryAddress.label')"
-                :is-optional="isDeliveryOptional"
-                :country-items="addressCountryItems"
-                :countries-loading="countriesLoading"
-                :copy-enabled="isSameAddressCopyEnabled && props.isSameAddress"
-                copy-to-prefix="billingAddress"
-            />
-            <div v-if="isSameAddressCopyEnabled">
-                <BentoCheckbox :class="styles.sameAddressCheckbox" :model-value="props.isSameAddress" @update:model-value="onCheckboxUpdate">
-                    {{ i18n.get('payByLink.creation.fields.shippingAndBillingSameAddress.label') }}
-                </BentoCheckbox>
-            </div>
-        </template>
-
+    <template v-if="showDeliveryDefault">
         <AddressSection
-            v-if="showBillingDefault"
+            prefix="deliveryAddress"
+            :title="i18n.get('payByLink.creation.sections.deliveryAddress.label')"
+            :is-optional="isDeliveryOptional"
+            :country-items="addressCountryItems"
+            :countries-loading="countriesLoading"
+            :copy-enabled="isSameAddressCopyEnabled && props.isSameAddress"
+            copy-to-prefix="billingAddress"
+        />
+        <div v-if="isSameAddressCopyEnabled">
+            <BentoCheckbox :class="styles.sameAddressCheckbox" :model-value="props.isSameAddress" @update:model-value="onCheckboxUpdate">
+                {{ i18n.get('payByLink.creation.fields.shippingAndBillingSameAddress.label') }}
+            </BentoCheckbox>
+        </div>
+    </template>
+
+    <AddressSection
+        v-if="showBillingDefault"
+        prefix="billingAddress"
+        :title="i18n.get('payByLink.creation.fields.billingAddress.label')"
+        :is-optional="isBillingOptional"
+        :country-items="addressCountryItems"
+        :countries-loading="countriesLoading"
+    />
+
+    <template v-if="showBillingFirst">
+        <AddressSection
             prefix="billingAddress"
             :title="i18n.get('payByLink.creation.fields.billingAddress.label')"
-            :is-optional="isBillingOptional"
+            :country-items="addressCountryItems"
+            :countries-loading="countriesLoading"
+            :copy-enabled="isSameAddressCopyEnabled && props.isSameAddress"
+            copy-to-prefix="deliveryAddress"
+        />
+        <div v-if="isSameAddressCopyEnabled">
+            <BentoCheckbox :class="styles.sameAddressCheckbox" :model-value="props.isSameAddress" @update:model-value="onCheckboxUpdate">
+                {{ i18n.get('payByLink.creation.fields.shippingAndBillingSameAddress.label') }}
+            </BentoCheckbox>
+        </div>
+        <AddressSection
+            v-if="showDeliveryAfterBilling"
+            prefix="deliveryAddress"
+            :title="i18n.get('payByLink.creation.sections.deliveryAddress.label')"
+            :is-optional="true"
             :country-items="addressCountryItems"
             :countries-loading="countriesLoading"
         />
+    </template>
 
-        <template v-if="showBillingFirst">
-            <AddressSection
-                prefix="billingAddress"
-                :title="i18n.get('payByLink.creation.fields.billingAddress.label')"
-                :country-items="addressCountryItems"
-                :countries-loading="countriesLoading"
-                :copy-enabled="isSameAddressCopyEnabled && props.isSameAddress"
-                copy-to-prefix="deliveryAddress"
-            />
-            <div v-if="isSameAddressCopyEnabled">
-                <BentoCheckbox :class="styles.sameAddressCheckbox" :model-value="props.isSameAddress" @update:model-value="onCheckboxUpdate">
-                    {{ i18n.get('payByLink.creation.fields.shippingAndBillingSameAddress.label') }}
-                </BentoCheckbox>
-            </div>
-            <AddressSection
-                v-if="showDeliveryAfterBilling"
-                prefix="deliveryAddress"
-                :title="i18n.get('payByLink.creation.sections.deliveryAddress.label')"
-                :is-optional="true"
-                :country-items="addressCountryItems"
-                :countries-loading="countriesLoading"
-            />
-        </template>
-
-        <LanguageField />
-    </div>
+    <LanguageField />
 </template>

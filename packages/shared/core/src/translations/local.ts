@@ -15,7 +15,7 @@ export const pt_BR = { 'pt-BR': _getTranslations(import('../../../../sdk/transla
 export const sv_SE = { 'sv-SE': _getTranslations(import('../../../../sdk/translations/sv-SE.json')) };
 export const en_US = { 'en-US': _getTranslations(import('../../../../sdk/translations/en-US.json')) };
 
-export const translations_dev_assets: Record<string, Promise<any>> = {
+export const translationsDevAssets: Record<string, Promise<any>> = {
     ...da_DK,
     ...de_DE,
     ...en_US,

@@ -14,19 +14,21 @@ import {
 } from '@adyen/bento-vue3';
 import WarningFilledIcon from '@adyen/ui-assets-icons-16/vue/warning-filled';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import type { BentoCurrencyISOCode, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import {
     useCustomColumnsData,
     CustomDataCell,
+    useCustomColumnWidths,
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
     useTableColumns,
     useShouldHideIllustrations,
+    useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
+import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
 import { getDisputeDeadlineTimeRemaining, getDisputeReason, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE, mergeRecords } from '@integration-components/utils';
 import type { CustomColumn, CustomDataRetrieved, IBalanceAccountBase, OnDataRetrievedCallback } from '@integration-components/types';
@@ -53,13 +55,14 @@ const props = defineProps<{
     goToNextPage?: () => void;
     goToPreviousPage?: () => void;
     limit?: number;
-    limitOptions?: number[];
+    limitOptions?: readonly number[];
     updateLimit?: (limit: number) => void;
     currentPage?: number;
 }>();
 
 const { i18n } = useCoreContext();
 const hideIllustrations = useShouldHideIllustrations();
+const isCondensed = useCondensedDataGrid();
 const config = useConfigContext();
 
 const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceAccount?.timeZone);
@@ -70,19 +73,20 @@ const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
     fields: DISPUTES_TABLE_FIELDS,
     customColumns: () => props.customColumns,
     fieldsKeys: FIELD_KEYS,
-    customColumnDefaults: () => ({ flex: 1, minWidth: 0 }),
+    customColumnDefaults: () => ({ flex: 1 }),
+    customColumnWidths: () => customColumnWidths.value,
     columnConfig: () => {
         const statusGroup = props.statusGroup;
         return {
-            status: { visible: statusGroup === 'ONGOING_AND_CLOSED', flex: 1, minWidth: 130 },
-            respondBy: { visible: statusGroup === 'CHARGEBACKS', flex: 1, minWidth: 120 },
-            createdAt: { visible: true, flex: 1, minWidth: 120 },
-            paymentMethod: { visible: true, flex: 1.2, minWidth: 150 },
-            disputeReason: { visible: statusGroup !== 'FRAUD_ALERTS', flex: 1.5, minWidth: 180 },
-            reason: { visible: statusGroup === 'FRAUD_ALERTS', flex: 2, minWidth: 220 },
-            currency: { visible: hasMultipleCurrencies.value, flex: 0.7, minWidth: 90 },
-            disputedAmount: { visible: statusGroup !== 'FRAUD_ALERTS', flex: 1, minWidth: 140, numeric: true },
-            totalPaymentAmount: { visible: statusGroup === 'FRAUD_ALERTS', flex: 1, minWidth: 140, numeric: true },
+            status: { visible: statusGroup === 'ONGOING_AND_CLOSED', flex: 1 },
+            respondBy: { visible: statusGroup === 'CHARGEBACKS', flex: 1 },
+            createdAt: { visible: true, flex: 1 },
+            paymentMethod: { visible: true, flex: 1.2 },
+            disputeReason: { visible: statusGroup !== 'FRAUD_ALERTS', flex: 1.5 },
+            reason: { visible: statusGroup === 'FRAUD_ALERTS', flex: 2 },
+            currency: { visible: hasMultipleCurrencies.value, flex: 0.7 },
+            disputedAmount: { visible: statusGroup !== 'FRAUD_ALERTS', flex: 1, numeric: true },
+            totalPaymentAmount: { visible: statusGroup === 'FRAUD_ALERTS', flex: 1, numeric: true },
         };
     },
     resolveStandardColumnLabel: (field, defaultLabel) =>
@@ -133,6 +137,13 @@ const gridData = computed<BentoDatagridDataItem[]>(() => {
     });
 });
 
+const tableRef = ref<HTMLElement | null>(null);
+const customColumnWidths = useCustomColumnWidths(
+    tableRef,
+    () => [gridData.value, isLoading.value, isMobile.value],
+    () => columns.value
+);
+
 const paginationProps = computed(() => {
     if (!props.showPagination) return undefined;
     return {
@@ -140,6 +151,7 @@ const paginationProps = computed(() => {
         size: props.limit ?? 10,
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
+        pageSizeItems: asPageSizeItems(props.limitOptions),
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
         hideFirstLastPageButtons: true,
     };
@@ -205,7 +217,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
 </script>
 
 <template>
-    <div :class="styles.root">
+    <div ref="tableRef" :class="styles.root">
         <DataOverviewError
             v-if="props.error"
             :error="props.error"
@@ -213,7 +225,6 @@ function handleListItemClick(dispute: IDisputeListItem) {
             :on-contact-support="props.onContactSupport"
             :variant="isMobile ? 'condensed' : 'embedded'"
             :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
         />
 
         <template v-else-if="isMobile">
@@ -262,8 +273,8 @@ function handleListItemClick(dispute: IDisputeListItem) {
                 </BentoList>
 
                 <BentoPagination
-                    hide-first-last-page-buttons
                     v-if="showMobilePagination"
+                    hide-first-last-page-buttons
                     :page="props.currentPage"
                     :size="props.limit"
                     :has-next="props.hasNext"
@@ -275,14 +286,15 @@ function handleListItemClick(dispute: IDisputeListItem) {
 
         <BentoDataGrid
             v-else
+            :condensed="isCondensed"
+            allow-row-clicks
+            has-resizable-columns
             :columns="columns"
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
-            :has-resizable-columns="false"
             :allow-column-drag-and-drop="false"
-            :allow-row-clicks="true"
             @row-click="handleRowClick"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"
@@ -349,7 +361,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
             </template>
 
             <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">
-                <CustomDataCell :value="item[key]" />
+                <CustomDataCell :value="item[key]" :field="key" />
             </template>
         </BentoDataGrid>
     </div>

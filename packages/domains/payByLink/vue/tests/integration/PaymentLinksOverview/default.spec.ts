@@ -46,20 +46,40 @@ test.describe('Payment Links Overview', () => {
         });
 
         test('should display all filter options', async ({ page }) => {
-            await expect(page.getByRole('button', { name: /^Date range/ })).toBeVisible();
+            await expect(page.getByRole('button', { name: /^Creation date/ })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Type' })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Status' })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Merchant reference' })).toBeVisible();
             await expect(page.getByRole('button', { name: 'Payment Link ID' })).toBeVisible();
         });
 
+        test('should only show Clear all while a link type or status is selected', async ({ page }) => {
+            const clearAll = page.getByRole('button', { name: 'Clear all', exact: true });
+            await expect(page.getByRole('button', { name: 'Status', exact: true })).toBeVisible();
+            await expect(clearAll).toHaveCount(0);
+
+            for (const { filter, option } of [
+                { filter: 'Type', option: 'Single use' },
+                { filter: 'Status', option: 'Payment pending' },
+            ]) {
+                await page.getByRole('button', { name: filter, exact: true }).click();
+                const filterDialog = page.getByRole('dialog');
+                await filterDialog.getByRole('checkbox', { name: option, exact: true }).click();
+                await filterDialog.getByRole('button', { name: 'Apply', exact: true }).click();
+
+                await expect(clearAll).toBeVisible();
+                await clearAll.click();
+                await expect(clearAll).toHaveCount(0);
+            }
+        });
+
         test('should render Stores before the other filters when stores load', async ({ page }) => {
             const filterButtons = page.getByRole('button', {
-                name: /^(?:Stores|Date range|Type|Status|Merchant reference|Payment Link ID)/,
+                name: /^(?:Stores|Creation date|Type|Status|Merchant reference|Payment Link ID)/,
             });
 
             await expect(filterButtons.first()).toHaveText('Stores');
-            await expect(filterButtons.nth(1)).toHaveText('Date range:Last 30 days');
+            await expect(filterButtons.nth(1)).toHaveText('Creation date:Last 30 days');
         });
 
         test('should display Create Payment Link and Settings buttons', async ({ page }) => {
@@ -68,15 +88,61 @@ test.describe('Payment Links Overview', () => {
         });
 
         test('should open Create Payment Link modal when clicking the create button', async ({ page }) => {
-            await openCreatePaymentLinkModal(page);
+            const dialog = await openCreatePaymentLinkModal(page);
 
-            await expect(page.getByText('New payment link', { exact: true })).toBeVisible();
+            await Promise.all([
+                expect(dialog).toHaveAccessibleName('New payment link'),
+                expect(dialog.locator('.b-modal-page__title')).toHaveText('New payment link'),
+                expect(dialog.getByText('New payment link', { exact: true })).toHaveCount(1),
+            ]);
+            await expect(dialog.getByTestId('form-field-store')).toBeVisible();
+            await expect(dialog.getByText('New payment link', { exact: true })).toHaveCount(1);
         });
 
         test('should open Settings modal when clicking the settings button', async ({ page }) => {
             const dialog = await openSettingsModal(page);
 
-            await expect(dialog.getByRole('heading', { name: 'Settings', exact: true })).toBeVisible();
+            await Promise.all([
+                expect(dialog).toHaveAccessibleName('Settings'),
+                expect(dialog.locator('.b-modal-page__title')).toHaveText('Settings'),
+                expect(dialog.getByText('Settings', { exact: true })).toHaveCount(1),
+            ]);
+        });
+
+        test('should keep the settings title in the modal header on mobile', async ({ page }) => {
+            await page.setViewportSize({ width: 375, height: 800 });
+            const dialog = await openSettingsModal(page);
+
+            await dialog.getByRole('navigation', { name: 'Settings' }).getByRole('button', { name: 'Theme' }).click();
+
+            await Promise.all([
+                expect(dialog.locator('.b-modal-page__title')).toHaveText('Settings'),
+                expect(dialog.getByText('Settings', { exact: true })).toHaveCount(1),
+                expect(dialog.getByRole('textbox', { name: 'Brand name' })).toBeVisible(),
+            ]);
+        });
+
+        test('should update the modal title when navigating to terms settings and back', async ({ page }) => {
+            const dialog = await openCreatePaymentLinkModal(page);
+            const storeSelect = dialog.getByTestId('form-field-store').getByRole('combobox');
+            await storeSelect.click();
+            await page.getByRole('option', { name: 'AM001' }).click();
+            await dialog.getByRole('button', { name: 'Set up Terms and Conditions' }).click();
+
+            await Promise.all([
+                expect(dialog).toHaveAccessibleName('Settings'),
+                expect(dialog.locator('.b-modal-page__title')).toHaveText('Settings'),
+                expect(dialog.getByText('Settings', { exact: true })).toHaveCount(1),
+                expect(dialog.getByRole('textbox', { name: 'Your terms and conditions URL' })).toBeVisible(),
+            ]);
+
+            await dialog.getByRole('button', { name: 'Go back', exact: true }).click();
+
+            await Promise.all([
+                expect(dialog).toHaveAccessibleName('New payment link'),
+                expect(dialog.locator('.b-modal-page__title')).toHaveText('New payment link'),
+                expect(storeSelect).toHaveText('Main Store - Amsterdam'),
+            ]);
         });
 
         test('should display payment link grid with expected columns', async ({ page }) => {
@@ -86,6 +152,49 @@ test.describe('Payment Links Overview', () => {
             await expect(grid.getByRole('columnheader', { name: /reference/i })).toBeVisible();
             await expect(grid.getByRole('columnheader', { name: /amount/i })).toBeVisible();
             await expect(grid.getByRole('columnheader', { name: /status/i })).toBeVisible();
+        });
+
+        test('should fill the available horizontal width in wide containers', async ({ page }) => {
+            await page.setViewportSize({ width: 2560, height: 900 });
+
+            const grid = page.getByRole('grid');
+            await expect(grid.getByRole('columnheader')).toHaveCount(10);
+            await expect(grid.getByRole('rowgroup').nth(1).getByRole('row')).toHaveCount(10);
+
+            for (const width of [2560, 1600, 2560]) {
+                await page.setViewportSize({ width, height: 900 });
+
+                await expect
+                    .poll(async () => {
+                        const gridBounds = await grid.boundingBox();
+                        const lastHeaderBounds = await grid.getByRole('columnheader').last().boundingBox();
+                        const lastCellBounds = await grid
+                            .getByRole('rowgroup')
+                            .nth(1)
+                            .getByRole('row')
+                            .first()
+                            .getByRole('gridcell')
+                            .last()
+                            .boundingBox();
+                        if (!gridBounds || !lastHeaderBounds || !lastCellBounds) return Infinity;
+
+                        const rightEdge = gridBounds.x + gridBounds.width;
+                        return Math.max(
+                            Math.abs(rightEdge - lastHeaderBounds.x - lastHeaderBounds.width),
+                            Math.abs(rightEdge - lastCellBounds.x - lastCellBounds.width)
+                        );
+                    })
+                    .toBeLessThanOrEqual(2);
+            }
+        });
+
+        test('should display the two-column layout in small containers', async ({ page }) => {
+            await page.setViewportSize({ width: 480, height: 800 });
+
+            const grid = page.getByRole('grid');
+            await expect(grid.getByRole('columnheader')).toHaveCount(2);
+            await expect(grid.getByRole('columnheader', { name: 'Payment link ID', exact: true })).toBeVisible();
+            await expect(grid.getByRole('columnheader', { name: 'Amount', exact: true })).toBeVisible();
         });
 
         test('should display multiple rows in the payment links grid', async ({ page }) => {
@@ -103,9 +212,54 @@ test.describe('Payment Links Overview', () => {
             await firstRow.click();
 
             const detailsModal = page.getByRole('dialog', { name: 'Payment link details' });
+            await expect(detailsModal.locator('.b-modal-page__title')).toHaveText('Payment link details');
+            await expect(detailsModal.getByText('Payment link details', { exact: true })).toHaveCount(1);
             await expect(detailsModal.getByText('Payment link ID')).toBeVisible();
             await expect(detailsModal.getByText(PAYMENT_LINK_ID)).toBeVisible();
             await expect(detailsModal.getByRole('tab', { name: 'Link information' })).toBeVisible();
+            await expect(detailsModal.getByRole('button', { name: 'Expire now' })).toBeVisible();
+        });
+
+        test('should keep the expiration success title in the content and restore the modal header for details', async ({ page }) => {
+            await page.getByRole('grid').getByRole('rowgroup').nth(1).getByRole('row').first().click();
+            const dialog = page.getByRole('dialog');
+
+            await dialog.getByRole('button', { name: 'Expire now' }).click();
+            await dialog.getByRole('button', { name: 'Expire link' }).click();
+
+            await Promise.all([
+                expect(dialog.locator('.b-modal-page__title')).toBeEmpty(),
+                expect(dialog.getByText('Link has been deactivated', { exact: true })).toBeVisible(),
+                expect(dialog.getByText('Link has been deactivated', { exact: true })).toHaveCount(1),
+            ]);
+
+            await dialog.getByRole('button', { name: 'Show details' }).click();
+
+            await Promise.all([
+                expect(dialog).toHaveAccessibleName('Payment link details'),
+                expect(dialog.locator('.b-modal-page__title')).toHaveText('Payment link details'),
+                expect(dialog.getByText('Expired', { exact: true })).toBeVisible(),
+            ]);
+        });
+
+        test('should display the expiration title in the modal header and restore the details title when going back', async ({ page }) => {
+            const grid = page.getByRole('grid');
+            await grid.getByRole('rowgroup').nth(1).getByRole('row').first().click();
+
+            const detailsModal = page.getByRole('dialog', { name: 'Payment link details' });
+            await detailsModal.getByRole('button', { name: 'Expire now' }).click();
+
+            const expirationModal = page.getByRole('dialog', { name: 'Expire this link', exact: true });
+            await Promise.all([
+                expect(expirationModal.locator('.b-modal-page__title')).toHaveText('Expire this link'),
+                expect(expirationModal.getByText('Expire this link', { exact: true })).toBeVisible(),
+                expect(expirationModal.getByText('Expire this link', { exact: true })).toHaveCount(1),
+            ]);
+            await expirationModal.getByRole('button', { name: 'Go back', exact: true }).click();
+
+            await expect(detailsModal).toBeVisible();
+            await expect(detailsModal.locator('.b-modal-page__title')).toHaveText('Payment link details');
+            await expect(detailsModal.getByText('Expire this link', { exact: true })).toHaveCount(0);
             await expect(detailsModal.getByRole('button', { name: 'Expire now' })).toBeVisible();
         });
 
@@ -114,10 +268,12 @@ test.describe('Payment Links Overview', () => {
             const firstRow = grid.getByRole('rowgroup').nth(1).getByRole('row').first();
             await firstRow.click();
 
-            const detailsModal = page.getByRole('dialog', { name: 'Payment link details' });
+            const detailsModal = page.getByRole('dialog');
             await detailsModal.getByRole('button', { name: 'Expire now' }).click();
-            await detailsModal.getByRole('button', { name: 'Expire link' }).click();
+            const expirationModal = page.getByRole('dialog', { name: 'Expire this link', exact: true });
+            await expirationModal.getByRole('button', { name: 'Expire link' }).click();
             await expect(detailsModal.getByText('Link has been deactivated')).toBeVisible();
+            await expect(detailsModal.getByText('Expire this link', { exact: true })).toHaveCount(0);
 
             const refreshRequest = page.waitForRequest(request => {
                 const url = new URL(request.url());

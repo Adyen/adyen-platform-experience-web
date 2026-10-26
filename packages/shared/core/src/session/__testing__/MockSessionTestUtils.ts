@@ -11,14 +11,14 @@ import AuthSession from '../AuthSession';
 type SessionSubscribe = AuthSession['subscribe'];
 type SessionUnsubscribe = ReturnType<SessionSubscribe>;
 
-const DeadlineAbortables = new WeakMap<any, ReturnType<typeof createAbortable>>();
+const deadlineAbortables = new WeakMap<any, ReturnType<typeof createAbortable>>();
 
 vi.mock('../AuthSessionSpecification', async () => {
     const module = await vi.importActual<typeof import('../AuthSessionSpecification')>('../AuthSessionSpecification');
-    const AuthSessionSpecification = class extends module.default {
-        public readonly deadline = (session: any) => DeadlineAbortables.get(session)!.signal;
+    const AuthSessionSpecificationMock = class extends module.default {
+        public readonly deadline = (session: any) => deadlineAbortables.get(session)!.signal;
     };
-    return { AuthSessionSpecification, default: AuthSessionSpecification };
+    return { AuthSessionSpecification: AuthSessionSpecificationMock, default: AuthSessionSpecificationMock };
 });
 
 export interface MockSessionContext {
@@ -123,7 +123,7 @@ export async function createMockSessionContext<Ctx extends TestContext & MockSes
     const authSession = { id: 'xxxx', token: 'xxxx' };
     const onSessionCreate = () => authSession;
 
-    DeadlineAbortables.set(authSession, abortable);
+    deadlineAbortables.set(authSession, abortable);
 
     const core = new Core({ onSessionCreate });
     const session = new AuthSession();

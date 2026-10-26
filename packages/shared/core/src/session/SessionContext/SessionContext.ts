@@ -23,7 +23,7 @@ import type { SessionEventType, SessionSpecification } from './types';
 // (`http`, `on`, and `refresh` are assigned in the constructor) without
 // emitting class field initializers. This pattern is also compatible with
 // Playwright's babel transformer, which cannot parse `declare` class fields.
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+
 export interface SessionContext<T, HttpParams extends any[] = any[]> {
     http: SessionContext<T, HttpParams>['_sessionHttp'];
     on: ReturnType<typeof createEventEmitter<SessionEventType>>['on'];

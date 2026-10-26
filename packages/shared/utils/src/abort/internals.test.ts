@@ -5,17 +5,17 @@ import { abortError, augmentSignalReason, timeoutError } from './internals';
 const _runTestsForDOMException = (name: string, factory: (message?: string) => DOMException) => {
     test(`should return '${name}' DOMException`, () => {
         const defaultMessage = factory().message;
-        const exception_1 = factory();
-        const exception_2 = factory();
+        const exception1 = factory();
+        const exception2 = factory();
 
-        expect(exception_1).toBeInstanceOf(DOMException);
-        expect(exception_1.message).toBe(defaultMessage);
-        expect(exception_1.name).toBe(name);
+        expect(exception1).toBeInstanceOf(DOMException);
+        expect(exception1.message).toBe(defaultMessage);
+        expect(exception1.name).toBe(name);
 
-        expect(exception_2).toBeInstanceOf(DOMException);
-        expect(exception_2.message).toBe(defaultMessage);
-        expect(exception_2.message).toBe(exception_1.message);
-        expect(exception_2.name).toBe(name);
+        expect(exception2).toBeInstanceOf(DOMException);
+        expect(exception2.message).toBe(defaultMessage);
+        expect(exception2.message).toBe(exception1.message);
+        expect(exception2.name).toBe(name);
     });
 
     test(`should return '${name}' DOMException with specified message`, () => {

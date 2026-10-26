@@ -34,7 +34,7 @@ function onTabChange(index: number) {
 
 function onCopy(copyId: string) {
     copiedItemId.value = copyId;
-    announce(() => i18n.get('common.actions.copy.labels.done'));
+    announce(() => i18n.get('payByLink.common.actions.copy.labels.done'));
 }
 
 function resetCopiedItem() {

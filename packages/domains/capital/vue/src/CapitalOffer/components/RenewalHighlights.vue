@@ -20,12 +20,18 @@ const items = computed(() => {
             label: i18n.get('capital.offer.selection.earlyRenewal.newGrantAmount'),
             value: formatAmount(breakdown.newGrantAmountValue),
         },
-        { value: '-' },
+        {
+            align: 'center' as const,
+            value: '-',
+        },
         {
             label: i18n.get('capital.offer.selection.earlyRenewal.currentGrantAmount'),
             value: formatAmount(breakdown.remainingGrantAmountValue),
         },
-        { value: '=' },
+        {
+            align: 'center' as const,
+            value: '=',
+        },
         {
             label: i18n.get('capital.offer.selection.earlyRenewal.amountToReceive'),
             value: formatAmount(breakdown.amountToReceive),

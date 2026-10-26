@@ -14,6 +14,7 @@ export { API_VERSION } from './Http/constants';
 export { default as CURRENCY_DECIMALS } from './Localization/constants/currency-decimals';
 export { default as Localization } from './Localization';
 export type { CustomTranslations, Locale, TranslationKey, Translations, TranslationOptions } from './Localization';
+export type { DomainTranslationKey, TranslationDomain } from './translations';
 
 export { createKeyFactoryFromConfig, createDynamicTranslationFactory } from './translation/factory';
 export type { KeyFactoryConfig, KeyFactoryFunction, TranslationFactoryFunction, TranslationFallbackFunction } from './translation/factory';
@@ -69,12 +70,12 @@ export type {
     CoreOptions,
     CustomTheme,
     DevEnvironment,
-    onErrorHandler,
+    OnErrorHandler,
     AnalyticsConfig,
     ThemeMode,
     ThemeVariables,
 } from './types';
-export type { Appearance } from '@integration-components/types';
+export type { DataGridAppearance, DensityMode, GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
 
 export { Core } from './Core';
 export type { CdnFetcher, ManagedElement } from './Core';

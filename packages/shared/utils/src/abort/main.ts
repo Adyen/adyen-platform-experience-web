@@ -2,7 +2,7 @@ import { isUndefined } from '../value/is';
 import { ABORT_EVENT } from './constants';
 import { abortError, augmentSignalReason } from './internals';
 
-declare let AbortSignal: {
+declare const AbortSignal: {
     any: (signals: AbortSignal[]) => AbortSignal;
 } & typeof window.AbortSignal;
 

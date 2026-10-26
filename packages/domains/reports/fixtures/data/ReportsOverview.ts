@@ -1,4 +1,4 @@
-import type { ReportsListCustomization } from '@integration-components/reports/domain';
+import type { ReportsDataGridCustomization } from '@integration-components/reports/domain';
 import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
 import { sleep } from '@integration-components/testing/fixtures/utils';
 import { REPORTS } from '../../mocks/mock-data/reports';
@@ -18,12 +18,12 @@ export const CUSTOM_TRANSLATIONS = {
     _summary: 'Summary',
 };
 
-export const DATA_CUSTOMIZATION: ReportsListCustomization = {
+export const DATA_CUSTOMIZATION: ReportsDataGridCustomization = {
     fields: [
         { key: 'createdAt' },
         { key: 'reportType', visibility: 'hidden' },
         { key: '_summary' },
-        { key: '_sendEmail', align: 'right' },
+        { key: '_sendEmail' },
         { key: 'reportFile', flex: 0.8 },
     ],
 

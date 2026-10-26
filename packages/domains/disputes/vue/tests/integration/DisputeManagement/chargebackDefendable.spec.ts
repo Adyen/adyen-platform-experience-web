@@ -37,9 +37,9 @@ test.describe('Chargeback - Defendable', () => {
         await expect(page.getByText('Documentation establishing that the cardholder was issued paper airline tickets.')).toBeVisible();
 
         // Upload document
-        const __filename = fileURLToPath(import.meta.url);
-        const __dirname = path.dirname(__filename);
-        const fixture = path.resolve(__dirname, '../../../../fixtures/files/test-file.pdf');
+        const filename = fileURLToPath(import.meta.url);
+        const dirname = path.dirname(filename);
+        const fixture = path.resolve(dirname, '../../../../fixtures/files/test-file.pdf');
         const fileInput = page.locator('input[type="file"]');
         await fileInput.setInputFiles(fixture);
 

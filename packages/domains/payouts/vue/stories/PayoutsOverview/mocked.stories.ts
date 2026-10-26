@@ -1,15 +1,15 @@
 import type { Meta } from '@storybook/vue3';
 import { http, HttpResponse } from 'msw';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
-import { PayoutsOverviewMeta } from './meta';
+import { payoutsOverviewMeta } from './meta';
 import type { PayoutsOverviewExternalProps } from '../../src';
 import { PAYOUTS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/payouts';
 import { PAYOUTS_ENDPOINTS } from '../../../mocks/endpoints';
 import { DEFAULT_PAYOUT_DETAILS } from '../../../fixtures/data/PayoutDetails';
-import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION_DETAILS, DATA_CUSTOMIZATION_LIST } from '../../../fixtures/data/PayoutsOverview';
+import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION_DETAILS, DATA_CUSTOMIZATION_DATA_GRID } from '../../../fixtures/data/PayoutsOverview';
 
 const meta: Meta<ElementProps<PayoutsOverviewExternalProps>> = {
-    ...PayoutsOverviewMeta,
+    ...payoutsOverviewMeta,
     title: 'Mocked/Payouts/Payouts Overview',
 };
 
@@ -42,6 +42,14 @@ export const ErrorList: ElementStory<PayoutsOverviewExternalProps> = {
     },
 };
 
+export const ErrorListServerError: ElementStory<PayoutsOverviewExternalProps> = {
+    name: 'Error - List (server error)',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...PAYOUTS_OVERVIEW_HANDLERS.errorListServerError },
+    },
+};
+
 export const DataCustomization: ElementStory<PayoutsOverviewExternalProps> = {
     name: 'Data customization',
     args: {
@@ -51,7 +59,7 @@ export const DataCustomization: ElementStory<PayoutsOverviewExternalProps> = {
         },
         dataCustomization: {
             details: DATA_CUSTOMIZATION_DETAILS,
-            list: DATA_CUSTOMIZATION_LIST,
+            dataGrid: DATA_CUSTOMIZATION_DATA_GRID,
         },
     },
     parameters: {

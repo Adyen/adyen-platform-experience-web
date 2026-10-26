@@ -1,9 +1,20 @@
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { CustomColumn } from './dataGrid';
 
-export type Appearance = {
+export type DensityMode = 'default' | 'condensed';
+
+export type GlobalAppearance = {
+    container?: 'hidden' | 'visible';
     illustrations?: 'hidden' | 'visible';
     titles?: 'hidden' | 'visible';
+};
+
+export type DataGridAppearance = {
+    density?: DensityMode;
+};
+
+export type WithDataGridAppearance = {
+    dataGrid?: DataGridAppearance;
 };
 
 interface BaseCustomObject {
@@ -45,13 +56,13 @@ export type DataCustomizationObject<Columns extends string, DataRetrieved, Callb
     onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
 };
 
-export type DetailsCustomFieldConfig<k> = {
-    key: k;
+export type DetailsCustomFieldConfig<K> = {
+    key: K;
     visibility?: 'visible' | 'hidden';
 };
 
 export type CustomDetailsField<T extends string> = {
-    [k in T]: DetailsCustomFieldConfig<k>;
+    [K in T]: DetailsCustomFieldConfig<K>;
 }[T];
 
 export type DetailsDataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { BentoDropdown, BentoInputField } from '@adyen/bento-vue3';
+import { BentoDropdown, BentoFormLayoutGroup, BentoInputField } from '@adyen/bento-vue3';
 import FieldWrapper from '../../../fields/FieldWrapper.vue';
 import { useWizard } from '../../../../composables/wizardContext';
 import { FLEXIBLE_VALIDITY_ID, LINK_VALIDITY_DURATION_UNITS } from '../../../../../../../domain/src';
 import type { IPaymentLinkValidity } from '@integration-components/types';
-import type { TranslationKey } from '@integration-components/core';
+import type { PayByLinkTranslationKey } from '@integration-components/payByLink/domain';
 import styles from './ValidityField.module.scss';
 
 const props = defineProps<{
@@ -22,14 +22,14 @@ const presetItems = computed(() =>
         if (type === FLEXIBLE_VALIDITY_ID) {
             return { label: i18n.get('payByLink.creation.fields.validity.linkValidityUnit.custom'), value: FLEXIBLE_VALIDITY_ID };
         }
-        const key = `payByLink.creation.fields.validity.linkValidityUnit.${durationUnit}` as TranslationKey;
+        const key = `payByLink.creation.fields.validity.linkValidityUnit.${durationUnit}` as PayByLinkTranslationKey;
         return { label: i18n.get(key, { values: { quantity }, count: quantity }), value: `${quantity} ${durationUnit}` };
     })
 );
 
 const unitItems = computed(() =>
     LINK_VALIDITY_DURATION_UNITS.map(unit => ({
-        label: i18n.get(`payByLink.creation.fields.validity.linkValidityUnit.${unit}__plural` as TranslationKey),
+        label: i18n.get(`payByLink.creation.fields.validity.linkValidityUnit.${unit}__plural` as PayByLinkTranslationKey),
         value: unit,
     }))
 );
@@ -67,13 +67,13 @@ watch(
     { immediate: true }
 );
 
-function onPresetUpdate(value: string | number | { value?: string | number } | Array<unknown> | undefined) {
+function onPresetUpdate(value: string | number | { value?: string | number } | Array<unknown> | null | undefined) {
     if (Array.isArray(value)) return;
     const next = typeof value === 'object' && value !== null ? value.value : value;
-    if (next === undefined) return;
-    const stringValue = String(next);
+    const stringValue = next == null ? '' : String(next);
+    if (selection.value === stringValue) return;
     selection.value = stringValue;
-    if (stringValue !== FLEXIBLE_VALIDITY_ID) {
+    if (stringValue && stringValue !== FLEXIBLE_VALIDITY_ID) {
         const [qty, durationUnit] = stringValue.split(' ');
         wizard.setValue('linkValidity.quantity', qty);
         wizard.setValue('linkValidity.durationUnit', durationUnit);
@@ -87,11 +87,11 @@ function onQuantityInput(value: string | number) {
     wizard.setValue('linkValidity.quantity', value);
 }
 
-function onUnitUpdate(value: string | number | { value?: string | number } | Array<unknown> | undefined) {
+function onUnitUpdate(value: string | number | { value?: string | number } | Array<unknown> | null | undefined) {
     if (Array.isArray(value)) return;
     const next = typeof value === 'object' && value !== null ? value.value : value;
-    if (next === undefined) return;
-    wizard.setValue('linkValidity.durationUnit', String(next));
+    wizard.setValue('linkValidity.durationUnit', next == null ? '' : String(next));
+    if (error.value) wizard.validateField('linkValidity.quantity');
 }
 </script>
 
@@ -105,12 +105,13 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                 :placeholder="i18n.get('payByLink.creation.inputs.select.placeholder')"
                 :model-value="selection"
                 :optional="!required"
+                :clearable="!required"
                 :readonly="config.readOnly"
                 @update:model-value="onPresetUpdate"
             />
         </FieldWrapper>
         <FieldWrapper v-if="selection === FLEXIBLE_VALIDITY_ID" name="linkValidity.quantity">
-            <div :class="styles.custom">
+            <BentoFormLayoutGroup layout="33-66" :error-message="error">
                 <BentoInputField
                     :label="i18n.get('payByLink.creation.fields.validity.customDuration.label')"
                     type="number"
@@ -124,11 +125,13 @@ function onUnitUpdate(value: string | number | { value?: string | number } | Arr
                     :items="unitItems"
                     :placeholder="i18n.get('payByLink.creation.inputs.select.placeholder')"
                     :model-value="unit"
+                    :clearable="!required"
                     :readonly="config.readOnly"
                     :error-message="unitError"
+                    :class="styles.dropdown"
                     @update:model-value="onUnitUpdate"
                 />
-            </div>
+            </BentoFormLayoutGroup>
         </FieldWrapper>
     </div>
 </template>

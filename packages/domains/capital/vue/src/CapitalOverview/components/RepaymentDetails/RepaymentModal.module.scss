@@ -1,0 +1,35 @@
+@use '@integration-components/style';
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-090);
+}
+
+.notice {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+    padding-bottom: style.token(spacer-070);
+}
+
+.transferInstrumentList {
+    padding-left: style.token(spacer-060);
+}
+
+.transferInstrumentListItem {
+    list-style: none;
+    padding: style.token(spacer-030) 0;
+}
+
+.instructionList {
+    padding-left: style.token(spacer-090);
+}
+
+.instructionListItem {
+    list-style: disc;
+}
+
+.verifiedBankAccountNotice {
+    color: style.token(color-label-secondary);
+}

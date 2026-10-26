@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { BentoAlert, BentoInputField, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { cloneFormData } from '../utils/getThemePayload';
-import { logoOptionsList, ThemeFormDataRequest } from '../constants';
+import { logoOptionsList, themeFormDataRequest } from '../constants';
 import type { LogoType, ThemeFormData } from '../types';
 import LogoInput from './LogoInput.vue';
 import LogoPreview from './LogoPreview.vue';
@@ -33,20 +33,22 @@ const fullWidthLogoUrl = ref<string | null>(props.theme.fullWidthLogo ?? null);
 const touchedLogo = ref(false);
 const touchedFullWidthLogo = ref(false);
 const showMissingBrandName = ref(false);
+const logoErrors = reactive<Record<LogoType, boolean>>({ logo: false, fullWidthLogo: false });
+const hasLogoError = computed(() => logoOptionsList.some(type => logoErrors[type]));
+const isValid = computed(() => !!brandName.value && !hasLogoError.value);
 
 function buildInitialPayload(): FormData {
     const formData = new FormData();
-    if (props.theme.brandName) formData.set(ThemeFormDataRequest.BRAND, props.theme.brandName);
-    if (props.theme.logo) formData.set(ThemeFormDataRequest.LOGO, props.theme.logo);
-    if (props.theme.fullWidthLogo) formData.set(ThemeFormDataRequest.FULL_WIDTH_LOGO, props.theme.fullWidthLogo);
+    if (props.theme.brandName) formData.set(themeFormDataRequest.BRAND, props.theme.brandName);
+    if (props.theme.logo) formData.set(themeFormDataRequest.LOGO, props.theme.logo);
+    if (props.theme.fullWidthLogo) formData.set(themeFormDataRequest.FULL_WIDTH_LOGO, props.theme.fullWidthLogo);
     return cloneFormData(formData);
 }
 
 let themePayload: FormData = buildInitialPayload();
 setPayload(themePayload);
-setIsValid(!!brandName.value);
 
-watch(brandName, value => setIsValid(!!value));
+watch(isValid, setIsValid, { immediate: true });
 
 watch(saveActionCalled, value => {
     if (value) {
@@ -78,7 +80,7 @@ function onBrandNameChange(value: string | number) {
     showMissingBrandName.value = false;
     brandName.value = name;
     const nextFormData = cloneFormData(themePayload);
-    nextFormData.set(ThemeFormDataRequest.BRAND, name);
+    nextFormData.set(themeFormDataRequest.BRAND, name);
     themePayload = nextFormData;
     setPayload(nextFormData);
 }
@@ -108,6 +110,10 @@ function onLogoChange(type: LogoType, file: File) {
     logoPreview(type, file);
 }
 
+function onLogoValidationChange(type: LogoType, valid: boolean) {
+    logoErrors[type] = !valid;
+}
+
 function onRemoveLogoUrl(type: LogoType) {
     setTouched(type);
     removeFieldFromThemePayload(type);
@@ -122,18 +128,28 @@ function getLogoUrl(type: LogoType) {
 
 <template>
     <div :class="styles.container">
-        <BentoAlert v-if="showMissingBrandName" type="critical" :dismissible="false">
-            <template #description>{{ i18n.get('payByLink.settings.common.alerts.validationError') }}</template>
+        <BentoAlert v-if="showMissingBrandName || hasLogoError" type="critical" :dismissible="false">
+            <template #description>
+                {{ i18n.get('payByLink.settings.common.alerts.validationError') }}
+            </template>
         </BentoAlert>
         <BentoAlert v-else-if="isSaveSuccess && !navigateBack" type="success" variant="tip" :dismissible="false">
-            <template #description>{{ i18n.get('payByLink.settings.common.alerts.saveSuccess') }}</template>
+            <template #description>
+                {{ i18n.get('payByLink.settings.common.alerts.saveSuccess') }}
+            </template>
         </BentoAlert>
         <BentoAlert v-else-if="isSaveError" type="critical" variant="tip" :dismissible="false">
-            <template #description>{{ i18n.get('payByLink.settings.common.alerts.saveError') }}</template>
+            <template #description>
+                {{ i18n.get('payByLink.settings.common.alerts.saveError') }}
+            </template>
         </BentoAlert>
         <div :class="layoutStyles.contentHeader">
-            <BentoTypography variant="title" medium el="div">{{ i18n.get('payByLink.settings.theme.title') }}</BentoTypography>
-            <BentoTypography variant="body" wide>{{ i18n.get('payByLink.settings.theme.subtitle') }}</BentoTypography>
+            <BentoTypography variant="title" medium el="div">
+                {{ i18n.get('payByLink.settings.theme.title') }}
+            </BentoTypography>
+            <BentoTypography variant="body" wide>
+                {{ i18n.get('payByLink.settings.theme.subtitle') }}
+            </BentoTypography>
         </div>
         <div :class="styles.root">
             <div :class="layoutStyles.inputContainer">
@@ -164,6 +180,7 @@ function getLogoUrl(type: LogoType) {
                     :preview-url="isTouched(logoType) ? getLogoUrl(logoType) : null"
                     @file-input-change="onLogoChange"
                     @file-removed="onRemoveLogoUrl"
+                    @validation-change="onLogoValidationChange"
                 />
             </div>
         </div>

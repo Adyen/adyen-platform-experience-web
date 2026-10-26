@@ -16,8 +16,11 @@ import { useDownload, useUniqueId } from '@integration-components/composables-vu
 import { isFunction, downloadBlob, EMPTY_ARRAY } from '@integration-components/utils';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
 import { EXPORT_COLUMNS, DEFAULT_EXPORT_COLUMNS } from '../../constants';
-import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '@integration-components/transactions/domain';
-import type { TranslationKey } from '@integration-components/core';
+import {
+    TRANSACTION_ANALYTICS_CATEGORY,
+    TRANSACTION_ANALYTICS_SUBCATEGORY_LIST,
+    type TransactionsTranslationKey,
+} from '@integration-components/transactions/domain';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import styles from './TransactionsExport.module.scss';
 
@@ -43,7 +46,7 @@ const sharedAnalyticsProps = { category: TRANSACTION_ANALYTICS_CATEGORY, subCate
 
 const canDownloadTransactions = computed(() => isFunction(config.endpoints.downloadTransactions));
 
-const activeFilters = computed<readonly TranslationKey[]>(() => {
+const activeFilters = computed<readonly TransactionsTranslationKey[]>(() => {
     const { balanceAccountId, paymentPspReference, createdSince, createdUntil, categories, currencies } = filters.value;
     return [
         ...(balanceAccountId ? (['transactions.overview.export.filters.types.account'] as const) : EMPTY_ARRAY),
@@ -51,7 +54,7 @@ const activeFilters = computed<readonly TranslationKey[]>(() => {
         ...(categories.length ? (['transactions.overview.export.filters.types.category'] as const) : EMPTY_ARRAY),
         ...(currencies.length ? (['transactions.overview.export.filters.types.currency'] as const) : EMPTY_ARRAY),
         ...(paymentPspReference ? (['transactions.overview.export.filters.types.paymentPspReference'] as const) : EMPTY_ARRAY),
-    ] as readonly TranslationKey[];
+    ] as readonly TransactionsTranslationKey[];
 });
 
 const exportParams = computed(() => ({
@@ -133,7 +136,7 @@ const masterSwitchChecked = computed(() => exportColumns.value.length === EXPORT
 const columnSwitches = computed(() =>
     EXPORT_COLUMNS.map(column => ({
         column,
-        label: i18n.get(`transactions.overview.export.columns.types.${column}` as TranslationKey),
+        label: i18n.get(`transactions.overview.export.columns.types.${column}` as TransactionsTranslationKey),
         checked: exportColumns.value.includes(column),
     }))
 );
@@ -215,21 +218,25 @@ const popoverActions = computed(() => [
         >
             <div :class="styles.popoverSections">
                 <div :class="styles.filters">
-                    <BentoTypography variant="body" strongest>{{ `${i18n.get('transactions.overview.export.filters.title')}:` }}</BentoTypography>
+                    <BentoTypography variant="body" strongest>
+                        {{ `${i18n.get('transactions.overview.export.filters.title')}:` }}
+                    </BentoTypography>
                     <BentoTag v-for="filter in activeFilters" :key="filter" variant="grey" :label="i18n.get(filter)" />
                 </div>
 
                 <BentoDivider />
 
                 <div :class="styles.columns">
-                    <BentoTypography variant="body" strongest>{{ i18n.get('transactions.overview.export.columns.title') }}</BentoTypography>
+                    <BentoTypography variant="body" strongest>
+                        {{ i18n.get('transactions.overview.export.columns.title') }}
+                    </BentoTypography>
                     <BentoToggle label-position="after" :value="masterSwitchChecked" @input="onMasterSwitchChange">
                         {{ i18n.get('transactions.overview.export.columns.types.all', { values: { count: EXPORT_COLUMNS.length } }) }}
                     </BentoToggle>
                     <BentoToggle
                         v-for="{ column, label, checked } in columnSwitches"
-                        label-position="after"
                         :key="column"
+                        label-position="after"
                         :value="checked"
                         @input="(val: boolean) => onColumnChange(column, val)"
                     >
@@ -238,8 +245,12 @@ const popoverActions = computed(() => [
                 </div>
             </div>
 
-            <BentoAlert type="highlight">
-                <template #default>{{ i18n.get('transactions.overview.export.actions.download.info') }}</template>
+            <BentoAlert type="highlight" variant="tip">
+                <template #description>
+                    <BentoTypography variant="body" el="span" strongest>
+                        {{ i18n.get('transactions.overview.export.actions.download.info') }}
+                    </BentoTypography>
+                </template>
             </BentoAlert>
         </BentoPopover>
     </div>

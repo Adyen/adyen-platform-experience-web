@@ -5,8 +5,8 @@ $adyen-pe-slider-progress-color: style.token(color-background-inverse-primary);
 $adyen-pe-slider-thumb-background-color: style.token(color-background-primary);
 $adyen-pe-slider-thumb-border-color: style.token(color-background-inverse-primary);
 $adyen-pe-slider-thumb-size: style.token(spacer-070);
-$adyen-pe-slider-border-size: 3px;
-$adyen-pe-slider-border-radius: style.token(border-radius-m);
+$adyen-pe-slider-border-size: style.token(spacer-020);
+$adyen-pe-slider-border-radius: style.token(border-radius-l);
 
 @mixin adyen-pe-slider-thumb-appearance {
     -webkit-appearance: none;
@@ -20,16 +20,18 @@ $adyen-pe-slider-border-radius: style.token(border-radius-m);
     transition: background-color 0.5s;
     width: $adyen-pe-slider-thumb-size;
 
+    // stylelint-disable nesting-selector-no-missing-scoping-root
     &:hover,
     &:active {
-        background-color: $adyen-pe-slider-thumb-border-color;
+        background-color: $adyen-pe-slider-thumb-background-color;
     }
+    // stylelint-enable nesting-selector-no-missing-scoping-root
 }
 
 .root {
     -webkit-appearance: none;
     background: $adyen-pe-slider-track-color;
-    background-image: linear-gradient($adyen-pe-slider-progress-color, $adyen-pe-slider-progress-color);
+    background-image: linear-gradient(#{$adyen-pe-slider-progress-color}, #{$adyen-pe-slider-progress-color});
     background-repeat: no-repeat;
     border-radius: $adyen-pe-slider-border-radius;
     cursor: pointer;
@@ -38,11 +40,11 @@ $adyen-pe-slider-border-radius: style.token(border-radius-m);
 
     &:focus {
         &::-webkit-slider-thumb {
-            background-color: $adyen-pe-slider-thumb-border-color;
+            background-color: $adyen-pe-slider-thumb-background-color;
         }
 
         &::-moz-range-thumb {
-            background-color: $adyen-pe-slider-thumb-border-color;
+            background-color: $adyen-pe-slider-thumb-background-color;
         }
     }
 

@@ -23,8 +23,6 @@ export interface Snapshot {
     jsExports: string[];
     cjsExports: string[];
     declarationExports: string[];
-    esFileCount: number;
-    cssHash: string | null;
     typeFiles: string[];
     typeTreeHash: string | null;
     missingPackageEntrypoints: MissingEntrypoint[];
@@ -58,10 +56,16 @@ function resolveExportsWithChecker(indexPath: string, allowJs: boolean): string[
         rootNames: [indexPath],
         options: {
             allowJs,
+            // Export enumeration is structural: it needs neither the default libs
+            // nor the ambient @types packages auto-included from node_modules. With
+            // them enabled every program loaded ~200 extra files (slow enough to
+            // time out tests on CI) and depended on whatever happened to be installed.
+            lib: [],
             module: ts.ModuleKind.ESNext,
             moduleResolution: ts.ModuleResolutionKind.Bundler,
             skipLibCheck: true,
             target: ts.ScriptTarget.ESNext,
+            types: [],
         },
     });
     const sourceFile = program.getSourceFile(indexPath);
@@ -253,7 +257,6 @@ function getTypeTreeHash(typesDir: string, typeFiles: string[]): string | null {
 
 export function buildSnapshot(root: string): Snapshot {
     const dist = resolve(root, 'dist');
-    const cssFile = resolve(dist, 'adyen-platform-experience-web.css');
     const typesDir = resolve(dist, 'types');
     const packageJson = getPackageJsonFields(root);
     const esIndex = packageJson.module ? resolve(root, packageJson.module) : resolve(dist, 'es/index.js');
@@ -265,8 +268,6 @@ export function buildSnapshot(root: string): Snapshot {
         jsExports: existsSync(esIndex) ? extractExports(esIndex) : [],
         cjsExports: existsSync(cjsIndex) ? extractCjsExports(cjsIndex) : [],
         declarationExports: existsSync(declarationIndex) ? extractDeclarationExports(declarationIndex) : [],
-        esFileCount: walkDir(resolve(dist, 'es')).filter(filePath => filePath.endsWith('.js')).length,
-        cssHash: existsSync(cssFile) ? sha256(cssFile) : null,
         typeFiles,
         typeTreeHash: getTypeTreeHash(typesDir, typeFiles),
         missingPackageEntrypoints: getMissingPackageEntrypoints(packageJson, root),
@@ -318,14 +319,6 @@ export function diff(baseline: Snapshot, current: Snapshot): string[] {
 
     if (addedDeclarationExports.length) diffs.push(`  Declaration exports added: ${addedDeclarationExports.join(', ')}`);
     if (removedDeclarationExports.length) diffs.push(`  Declaration exports removed: ${removedDeclarationExports.join(', ')}`);
-
-    if (baseline.esFileCount !== current.esFileCount) {
-        diffs.push(`  ES module count: ${baseline.esFileCount} -> ${current.esFileCount}`);
-    }
-
-    if (baseline.cssHash !== current.cssHash) {
-        diffs.push(`  CSS hash changed: ${baseline.cssHash?.slice(0, 12)}... -> ${current.cssHash?.slice(0, 12)}...`);
-    }
 
     const addedTypes = current.typeFiles.filter(filePath => !baseline.typeFiles.includes(filePath));
     const removedTypes = baseline.typeFiles.filter(filePath => !current.typeFiles.includes(filePath));

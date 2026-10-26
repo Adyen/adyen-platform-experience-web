@@ -1,13 +1,13 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedGrantsOverviewAnalyticsEventProperties } from '../../../../fixtures/CapitalOverview/constants/analytics';
+import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../fixtures/CapitalOverview/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--multiple-hosted-actions';
 
 test.describe('Multiple hosted actions', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedCapitalOverviewAnalyticsEventProperties]]);
     });
 
     test('should render pending grant with actions', async ({ page }) => {
@@ -29,7 +29,7 @@ test.describe('Multiple hosted actions', () => {
 
     test('should go to terms of service page when signing button is clicked', async ({ page, analyticsEvents }) => {
         const analyticsEventProperties = {
-            ...sharedGrantsOverviewAnalyticsEventProperties,
+            ...sharedCapitalOverviewAnalyticsEventProperties,
             subCategory: 'Missing action',
             label: 'Go to terms & conditions button clicked',
         };
@@ -44,7 +44,7 @@ test.describe('Multiple hosted actions', () => {
 
     test('should go to business financing page when information submit button is clicked', async ({ page, analyticsEvents }) => {
         const analyticsEventProperties = {
-            ...sharedGrantsOverviewAnalyticsEventProperties,
+            ...sharedCapitalOverviewAnalyticsEventProperties,
             subCategory: 'Missing action',
             label: 'Submit information for AnaCredit button',
         };

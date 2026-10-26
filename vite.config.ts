@@ -15,11 +15,12 @@ export default defineConfig(({ mode }) => {
     const externalDependencies = Object.keys(packageJson.dependencies);
     const isAnalyseMode = mode === 'analyse';
     const isUmdBuild = mode === 'umd';
+    const isUnitCoverage = process.env.UNIT_LOGIC_COVERAGE === 'true';
+    const coverageExtensions = isUnitCoverage ? 'ts' : '{ts,vue}';
 
     const { api, app } = getEnvironment(mode);
 
     const assetsDir = resolve(__dirname, 'packages/shared/assets/src');
-    const enUsFile = resolve(assetsDir, 'translations/en-US.json');
     const translationsDir = resolve(__dirname, 'packages/shared/core/src/translations');
     const translationsIndexFile = resolve(translationsDir, 'index.ts');
     const translationsLocalFile = resolve(translationsDir, 'local.ts');
@@ -29,8 +30,8 @@ export default defineConfig(({ mode }) => {
             return true;
         }
 
-        // Allow specific files from assets to be bundled.
-        if (id === enUsFile || id === translationsIndexFile) {
+        // Allow the core translation index (which embeds the English catalog) to be bundled.
+        if (id === translationsIndexFile) {
             return false;
         }
 
@@ -113,6 +114,7 @@ export default defineConfig(({ mode }) => {
                 'src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'config/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'scripts/check-publish-contract/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'scripts/process-translations/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/domains/*/{domain,vue}/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/tools/*/scripts/**/*.{test,spec}.?(c|m)[jt]s?(x)',
@@ -124,8 +126,8 @@ export default defineConfig(({ mode }) => {
                 include: [
                     'src/**/*.ts',
                     'packages/sdk/src/**/*.ts',
-                    'packages/domains/*/{domain,vue}/src/**/*.{ts,vue}',
-                    'packages/shared/{composables-vue,core,utils}/src/**/*.{ts,vue}',
+                    `packages/domains/*/{domain,vue}/src/**/*.${coverageExtensions}`,
+                    `packages/shared/{composables-vue,core,utils}/src/**/*.${coverageExtensions}`,
                 ],
                 exclude: [
                     '**/*.{test,spec}.{ts,vue}',
@@ -140,7 +142,7 @@ export default defineConfig(({ mode }) => {
                     'packages/shared/types/**',
                 ],
                 reporter: ['lcov', 'text', 'json-summary', 'json'],
-                reportsDirectory: resolve(__dirname, 'coverage'),
+                reportsDirectory: resolve(__dirname, isUnitCoverage ? 'coverage-unit' : 'coverage'),
                 // Uncomment next line once we reach 80% of coverage
                 //thresholds: 80,
                 reportOnFailure: true,

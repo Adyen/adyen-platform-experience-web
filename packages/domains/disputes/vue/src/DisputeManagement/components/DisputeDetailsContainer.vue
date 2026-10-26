@@ -3,10 +3,10 @@ import { ref, watch } from 'vue';
 import type { IDisputeDetail } from '@integration-components/types/api/models/disputes';
 import { DisputeFlowState, provideDisputeFlow } from '../composables/useDisputeFlow';
 import DisputeDetails from './DisputeDetails.vue';
-import type { DisputeManagementProps } from '../types';
+import type { DisputeManagementComponentProps } from '../types';
 import styles from './DisputeFlow.module.scss';
 
-const props = defineProps<DisputeManagementProps>();
+const props = defineProps<DisputeManagementComponentProps>();
 const dispute = ref<IDisputeDetail | undefined>();
 
 const { clearStates, setFlowState } = provideDisputeFlow(dispute);
@@ -24,11 +24,10 @@ watch(
     <div :class="styles.root">
         <DisputeDetails
             :id="props.id"
-            :hide-title="props.hideTitle"
             :data-customization="props.dataCustomization"
             :on-contact-support="props.onContactSupport"
-            :on-dispute-accept="props.onDisputeAccept"
-            :on-dispute-defend="props.onDisputeDefend"
+            :on-accept="props.onAccept"
+            :on-defend="props.onDefend"
             :on-dismiss="props.onDismiss"
         />
     </div>

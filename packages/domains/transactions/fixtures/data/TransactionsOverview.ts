@@ -1,4 +1,4 @@
-import type { TransactionDetailsCustomization, TransactionsListCustomization } from '../../domain/src';
+import type { TransactionDetailsCustomization, TransactionsDataGridCustomization } from '../../domain/src';
 import { getCustomDetailsData, getCustomListData } from '../../mocks/mock-data/customData';
 import { sleep } from '@integration-components/testing/fixtures/utils';
 import { TRANSACTIONS } from '../../mocks/mock-data/transactions';
@@ -34,14 +34,14 @@ export const DATA_CUSTOMIZATION_DETAILS: TransactionDetailsCustomization = {
     onDataRetrieve: async data => getCustomDetailsData(data?.id),
 };
 
-export const DATA_CUSTOMIZATION_LIST: TransactionsListCustomization = {
+export const DATA_CUSTOMIZATION_DATA_GRID: TransactionsDataGridCustomization = {
     fields: [
         { key: '_store', flex: 1.5 },
         { key: '_product' },
         { key: '_reference', flex: 1.5 },
         { key: 'transactionType', visibility: 'hidden' },
         { key: 'amount', flex: 2 },
-        { key: '_button', flex: 1.5, align: 'right' },
+        { key: '_button', flex: 1.5 },
     ],
 
     onDataRetrieve: async data => {

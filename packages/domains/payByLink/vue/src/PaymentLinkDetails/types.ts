@@ -1,6 +1,12 @@
 import type { UIElementProps } from '@integration-components/core/vue';
-import type { PaymentLinkDetailsProps } from '../../../domain/src';
+import type { PaymentLinkDetailsProps, PayByLinkTranslationKey } from '../../../domain/src';
 
-export type { PaymentLinkDetailsComponentProps, PaymentLinkDetailsProps } from '../../../domain/src';
+export type { PaymentLinkActivityStatus, PaymentLinkDetailsScreen, PaymentLinkListItems, PaymentLinkStatusTagVariant } from '../../../domain/src';
 
-export type PaymentLinkDetailsExternalProps = PaymentLinkDetailsProps & UIElementProps;
+export type PaymentLinkDetailsExternalProps = UIElementProps & PaymentLinkDetailsProps;
+
+export type PaymentLinkDetailsComponentProps = Omit<PaymentLinkDetailsExternalProps, 'core' | 'appearance'> & {
+    isDismissButtonHidden?: boolean;
+    onTitleChange?: (title: PayByLinkTranslationKey | undefined) => void;
+    onUpdate?: () => void;
+};

@@ -60,7 +60,7 @@ export const getRequestBodyForContentType = (body: any, contentType?: string) =>
 
 export const getRequestObject = (options: HttpOptions): RequestInit => {
     const { headers = [], method = 'GET' } = options;
-    const SDKVersion = !options.versionless && process.env.SDK_VERSION;
+    const sdkVersion = !options.versionless && process.env.SDK_VERSION;
     const contentType = options.skipContentType ? undefined : (options.contentType?.toLowerCase() ?? 'application/json');
 
     return {
@@ -76,7 +76,7 @@ export const getRequestObject = (options: HttpOptions): RequestInit => {
             // The browser will automatically set the content-type for such requests
             ...(contentType && contentType !== 'multipart/form-data' && { 'Content-Type': contentType }),
 
-            ...(SDKVersion && { 'SDK-Version': SDKVersion }),
+            ...(sdkVersion && { 'SDK-Version': sdkVersion }),
         },
         redirect: 'follow',
         signal: options.signal,

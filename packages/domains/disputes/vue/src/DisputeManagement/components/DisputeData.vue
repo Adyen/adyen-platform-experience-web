@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { BentoButtonActions, BentoCard, BentoLoadingIndicator, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
-import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
-import { ErrorMessageDisplay } from '@integration-components/composables-vue';
-import {
-    DISPUTE_DETAILS_RESERVED_FIELDS_SET,
-    getDisputeType,
-    isDisputeActionNeeded,
-    type DisputeDetailsCustomization,
-} from '@integration-components/disputes/domain';
+import { BentoButtonActions, BentoCard, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
+import { useConfigContext, useCoreContext, useModalContext } from '@integration-components/core/vue';
+import { ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
+import { DISPUTE_DETAILS_RESERVED_FIELDS_SET, getDisputeType, isDisputeActionNeeded } from '@integration-components/disputes/domain';
 import { isFunction, parsePaymentMethodType } from '@integration-components/utils';
 import type { CustomButtonObject, CustomDataRetrieved } from '@integration-components/types';
 import { useDisputeDetails } from '../composables/useDisputeDetails';
@@ -16,21 +11,23 @@ import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow'
 import DisputeDataAlert from './DisputeDataAlert.vue';
 import DisputeDataProperties from './DisputeDataProperties.vue';
 import DisputeIssuerComments from './DisputeIssuerComments.vue';
+import DisputeSkeleton from './DisputeSkeleton.vue';
 import DisputeStatusTag from './DisputeStatusTag.vue';
-import type { DisputeDataAlertMode, DisputeManagementProps } from '../types';
+import type { DisputeDataAlertMode, DisputeManagementComponentProps } from '../types';
 import flowStyles from './DisputeFlow.module.scss';
 import styles from './DisputeData.module.scss';
 
 const props = defineProps<{
     disputeId: string;
-    dataCustomization?: { details?: DisputeDetailsCustomization };
-    onContactSupport?: () => void;
-    onDismiss?: DisputeManagementProps['onDismiss'];
+    dataCustomization?: DisputeManagementComponentProps['dataCustomization'];
+    onContactSupport?: DisputeManagementComponentProps['onContactSupport'];
+    onDismiss?: DisputeManagementComponentProps['onDismiss'];
 }>();
 
 const { i18n } = useCoreContext();
 const config = useConfigContext();
 const { dispute: storedDispute, setDispute, setFlowState, defenseReasonConfig } = useDisputeFlow();
+const { withinModal } = useModalContext();
 
 const { data, error, isFetching, refetch } = useDisputeDetails(() => ({
     disputeId: props.disputeId,
@@ -46,6 +43,13 @@ const defensibility = computed(() => dispute.value?.dispute.defensibility);
 const acceptAuthorization = computed(() => isFunction(config.endpoints?.acceptDispute));
 const defendAuthorization = computed(() => isFunction(config.endpoints?.getApplicableDefenseDocuments));
 const showLoadingPlaceholder = computed(() => (!dispute.value && !error.value) || isFetching.value);
+
+const shellState = computed<ComponentShellState>(() => {
+    if (showLoadingPlaceholder.value) return 'loading';
+    if (error.value) return 'error';
+    return 'ready';
+});
+
 const disputeType = computed(() => getDisputeType(i18n, dispute.value?.dispute.type));
 const isFraudNotification = computed(() => dispute.value?.dispute.type === 'NOTIFICATION_OF_FRAUD');
 const isDefended = computed(() => !!dispute.value?.defense?.defendedOn);
@@ -153,22 +157,29 @@ const actionButtons = computed(() => {
         buttons.push({
             title: i18n.get('disputes.management.details.actions.accept'),
             event: onAcceptClick,
-            variant: 'secondary',
+            variant: 'secondary' as const,
         });
     }
     if (showContactSupport.value && props.onContactSupport) {
         buttons.push({
             title: i18n.get('disputes.management.details.actions.contactSupport'),
             event: props.onContactSupport,
-            variant: 'secondary',
+            variant: 'secondary' as const,
         });
     }
     for (const button of extraButtons.value) {
         buttons.push({
             title: String(button.value),
             event: button.config?.action,
-            variant: 'secondary',
+            variant: 'secondary' as const,
             class: button.config?.className,
+        });
+    }
+    if (props.onDismiss && !withinModal) {
+        buttons.push({
+            title: i18n.get('disputes.management.common.actions.goBack'),
+            event: props.onDismiss,
+            variant: 'secondary' as const,
         });
     }
     return buttons;
@@ -186,66 +197,59 @@ const paymentMethodDetail = computed(() =>
 
 <template>
     <div :class="styles.root">
-        <div v-if="showLoadingPlaceholder" aria-busy="true">
-            <BentoLoadingIndicator />
-        </div>
+        <ComponentShell
+            :state="shellState"
+            :error="error"
+            :error-message="'disputes.management.common.errors.unavailable'"
+            :not-found-message="'disputes.management.common.errors.notFound'"
+            :on-contact-support="props.onContactSupport"
+            :on-dismiss="props.onDismiss"
+            :dismiss-label="'disputes.management.common.actions.goBack'"
+            :on-refresh="retryFetch"
+        >
+            <template #loading>
+                <DisputeSkeleton />
+            </template>
 
-        <div v-else-if="error" :class="styles.errorContainer">
-            <ErrorMessageDisplay
-                :error="error"
-                :error-message="'disputes.management.common.errors.unavailable'"
-                :not-found-message="'disputes.management.common.errors.notFound'"
-                :on-contact-support="props.onContactSupport"
-                :on-dismiss="props.onDismiss"
-                :dismiss-label="'disputes.management.common.actions.goBack'"
-                :on-refresh="retryFetch"
-                with-image
-                :outlined="false"
-                :absolute-position="false"
-                :with-background="false"
-            />
-        </div>
-
-        <template v-else-if="dispute">
-            <div :class="styles.statusBox">
-                <BentoCard>
-                    <template #content>
-                        <div :class="styles.summary">
-                            <div :class="styles.summaryTags">
-                                <BentoTag v-if="disputeType" :label="disputeType" data-testid="dispute-type-tag" />
-                                <DisputeStatusTag v-if="!isFraudNotification" :dispute="dispute.dispute" />
-                            </div>
-                            <BentoTypography variant="title" large>
-                                {{ i18n.amount(dispute.dispute.amount.value, dispute.dispute.amount.currency, { hideCurrency: true }) }}
-                                {{ dispute.dispute.amount.currency }}
-                            </BentoTypography>
-                            <div v-if="paymentMethodType" :class="styles.paymentMethod">
-                                <div :class="styles.paymentMethodLogoContainer">
-                                    <BentoPaymentMethod :type="paymentMethodType" />
+            <template v-if="dispute">
+                <div :class="styles.statusBox">
+                    <BentoCard>
+                        <template #content>
+                            <div :class="styles.summary">
+                                <div :class="styles.summaryTags">
+                                    <BentoTag v-if="disputeType" :label="disputeType" data-testid="dispute-type-tag" />
+                                    <DisputeStatusTag v-if="!isFraudNotification" :dispute="dispute.dispute" />
                                 </div>
-                                <BentoTypography v-if="paymentMethodDetail" variant="title">
-                                    {{ paymentMethodDetail }}
+                                <BentoTypography variant="title" large>
+                                    {{ i18n.amount(dispute.dispute.amount.value, dispute.dispute.amount.currency, { hideCurrency: true }) }}
+                                    {{ dispute.dispute.amount.currency }}
                                 </BentoTypography>
+                                <div v-if="paymentMethodType" :class="styles.paymentMethod">
+                                    <BentoPaymentMethod :type="paymentMethodType" />
+                                    <BentoTypography v-if="paymentMethodDetail" variant="title">
+                                        {{ paymentMethodDetail }}
+                                    </BentoTypography>
+                                </div>
                             </div>
-                        </div>
-                    </template>
-                </BentoCard>
-            </div>
+                        </template>
+                    </BentoCard>
+                </div>
 
-            <DisputeIssuerComments v-if="issuerComments.length > 0" :issuer-comments="issuerComments" />
+                <DisputeIssuerComments v-if="issuerComments.length > 0" :issuer-comments="issuerComments" />
 
-            <DisputeDataAlert v-if="alertMode" :alert-mode="alertMode" :dispute="dispute" />
+                <DisputeDataAlert v-if="alertMode" :alert-mode="alertMode" :dispute="dispute" />
 
-            <DisputeDataProperties
-                :dispute="dispute"
-                :data-customization="props.dataCustomization"
-                :defense-reason-config="defenseReasonConfig"
-                :extra-fields="extraFields"
-            />
+                <DisputeDataProperties
+                    :dispute="dispute"
+                    :data-customization="props.dataCustomization"
+                    :defense-reason-config="defenseReasonConfig"
+                    :extra-fields="extraFields"
+                />
 
-            <div v-if="actionButtons.length" :class="flowStyles.actionBar">
-                <BentoButtonActions :actions="actionButtons" />
-            </div>
-        </template>
+                <div v-if="actionButtons.length" :class="flowStyles.actionBar">
+                    <BentoButtonActions :actions="actionButtons" />
+                </div>
+            </template>
+        </ComponentShell>
     </div>
 </template>

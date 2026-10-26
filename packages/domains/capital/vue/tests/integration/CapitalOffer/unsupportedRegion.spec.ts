@@ -8,5 +8,13 @@ test.describe('Unsupported region', () => {
         await goToStory(page, { id: STORY_ID });
         await expect(page.getByText('Stay tuned!')).toBeVisible();
         await expect(page.getByText('Business financing isn’t available in your region yet, but check back here for an offer.')).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();
+    });
+});
+
+test.describe('onDismiss prop', () => {
+    test('should render back button when prop is set', async ({ page }) => {
+        await goToStory(page, { id: STORY_ID, args: { onDismiss: 'Enabled' } });
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 });

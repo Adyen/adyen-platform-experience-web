@@ -8,10 +8,10 @@ describe('sameValue', () => {
             [NaN, [NaN]],
         ]);
 
-        map.forEach((nans, first_nan) => {
-            nans.forEach(second_nan => {
-                expect(first_nan === second_nan).toBe(false);
-                expect(sameValue(first_nan, second_nan)).toBe(true);
+        map.forEach((nans, firstNan) => {
+            nans.forEach(secondNan => {
+                expect(firstNan === secondNan).toBe(false);
+                expect(sameValue(firstNan, secondNan)).toBe(true);
             });
         });
     });
@@ -22,10 +22,10 @@ describe('sameValue', () => {
             [0, [0]],
         ]);
 
-        map.forEach((zeros, first_zero) => {
-            zeros.forEach(second_zero => {
-                expect(first_zero === second_zero).toBe(true);
-                expect(sameValue(first_zero, second_zero)).toBe(true);
+        map.forEach((zeros, firstZero) => {
+            zeros.forEach(secondZero => {
+                expect(firstZero === secondZero).toBe(true);
+                expect(sameValue(firstZero, secondZero)).toBe(true);
             });
         });
     });
@@ -39,9 +39,9 @@ describe('sameValue', () => {
             [new Date(), new Date()],
         ]);
 
-        map.forEach((second_value, first_value) => {
-            expect(first_value === second_value).toBe(false);
-            expect(sameValue(first_value, second_value)).toBe(false);
+        map.forEach((secondValue, firstValue) => {
+            expect(firstValue === secondValue).toBe(false);
+            expect(sameValue(firstValue, secondValue)).toBe(false);
         });
     });
 

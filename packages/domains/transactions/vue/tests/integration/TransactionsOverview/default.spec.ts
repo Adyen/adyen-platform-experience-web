@@ -148,6 +148,14 @@ test.describe('Default', () => {
             await expect(dataGrid.getByRole('gridcell')).toHaveCount(60);
         });
 
+        test('should render amounts with currency codes', async ({ page }) => {
+            const firstRowCells = page.getByRole('grid').getByRole('rowgroup').nth(1).getByRole('row').first().getByRole('gridcell');
+
+            await expect(firstRowCells.nth(3)).toHaveText('USD');
+            await expect(firstRowCells.nth(4)).toHaveText('216.50 USD');
+            await expect(firstRowCells.nth(5)).toHaveText('220.00 USD');
+        });
+
         test('should render pagination controls', async ({ page }) => {
             const pagination = page.getByRole('navigation', { name: /Pagination/i });
             const pageLimitSelect = pagination.getByRole('combobox', { name: /Items/i, disabled: false, expanded: false });
@@ -194,8 +202,8 @@ test.describe('Default', () => {
 
         test('should render period totals', async ({ page }) => {
             await expect(page.getByText('Period result', { exact: true })).toBeVisible();
-            await expect(page.getByText('Total incoming', { exact: true })).toBeVisible();
-            await expect(page.getByText('Total outgoing', { exact: true })).toBeVisible();
+            await expect(page.getByText('Total incoming', { exact: true }).first()).toBeVisible();
+            await expect(page.getByText('Total outgoing', { exact: true }).first()).toBeVisible();
             await expect(page.getByText('USD', { exact: true }).first()).toBeVisible();
         });
 

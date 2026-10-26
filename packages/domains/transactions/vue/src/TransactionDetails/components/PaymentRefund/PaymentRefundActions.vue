@@ -33,9 +33,6 @@ const isFullRefund = computed(() => props.refundedAmount === 0 && props.refundin
 const refundDisabled = computed(() => props.disabled || isLoading.value || !amountWithinRange.value);
 
 const refundButtonLabel = computed(() => {
-    if (isLoading.value) {
-        return `${i18n.get('transactions.details.refund.actions.refund.labels.inProgress')}..`;
-    }
     if (amountWithinRange.value) {
         const values = { amount: i18n.amount(props.refundAmount, props.currency) };
         return i18n.get('transactions.details.refund.actions.refund.labels.amount', { values });

@@ -3,10 +3,10 @@ import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { providePaymentLinkSettings } from '../composables/context';
 import { MENU_ITEMS } from '../constants';
-import type { PaymentLinkSettingsProps } from '../types';
+import type { PaymentLinkSettingsComponentProps } from '../types';
 import PaymentLinkSettings from './PaymentLinkSettings.vue';
 
-const props = defineProps<PaymentLinkSettingsProps>();
+const props = defineProps<PaymentLinkSettingsComponentProps>();
 
 const { i18n } = useCoreContext();
 
@@ -28,5 +28,10 @@ providePaymentLinkSettings({
 </script>
 
 <template>
-    <PaymentLinkSettings :hide-title="props.hideTitle" :on-contact-support="props.onContactSupport" :navigate-back="props.navigateBack" />
+    <PaymentLinkSettings
+        :hide-title="props.hideTitle"
+        :on-contact-support="props.onContactSupport"
+        :navigate-back="props.navigateBack"
+        :on-dismiss="props.onDismiss"
+    />
 </template>

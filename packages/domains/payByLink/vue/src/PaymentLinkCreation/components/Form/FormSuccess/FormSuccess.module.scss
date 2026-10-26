@@ -4,7 +4,7 @@
     align-items: center;
     display: flex;
     flex-direction: column;
-    gap: style.token(spacer-120);
+    gap: style.token(spacer-070);
     text-align: center;
 }
 
@@ -19,17 +19,11 @@
     margin: style.token(spacer-090) 0;
 }
 
-.actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: style.token(spacer-040);
-    align-self: flex-end;
-}
-
 .title.title {
     margin-bottom: style.token(spacer-040);
 }
 
-.description {
+.description.description {
     color: style.token(color-label-secondary);
+    margin-bottom: style.token(spacer-100);
 }

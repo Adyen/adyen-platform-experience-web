@@ -3,7 +3,7 @@ import { test, expect, type PageAnalyticsEvent } from '@integration-components/t
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 import {
     sharedActionAnalyticsEventProps,
-    sharedGrantsOverviewAnalyticsEventProperties,
+    sharedCapitalOverviewAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--multiple-actions';
@@ -41,11 +41,11 @@ const completeTermsOfService = async (page: Page) => {
 const clickedButtonEvents = {
     submitInformationClicked: [
         'Clicked button',
-        { ...sharedGrantsOverviewAnalyticsEventProperties, subCategory: 'Missing action', label: 'Submit information for AnaCredit button' },
+        { ...sharedCapitalOverviewAnalyticsEventProperties, subCategory: 'Missing action', label: 'Submit information for AnaCredit button' },
     ],
     signTermsClicked: [
         'Clicked button',
-        { ...sharedGrantsOverviewAnalyticsEventProperties, subCategory: 'Missing action', label: 'Go to terms & conditions button clicked' },
+        { ...sharedCapitalOverviewAnalyticsEventProperties, subCategory: 'Missing action', label: 'Go to terms & conditions button clicked' },
     ],
     dismissedAnaCredit: [
         'Clicked button',
@@ -69,7 +69,7 @@ const clickedButtonEvents = {
 test.describe('Multiple actions', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedCapitalOverviewAnalyticsEventProperties]]);
     });
 
     test('should render pending grant with actions', async ({ page }) => {

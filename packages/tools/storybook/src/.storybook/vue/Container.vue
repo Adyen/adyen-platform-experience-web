@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import {
-    type Appearance,
+    type GlobalAppearance,
     type CoreInstance,
     type SupportedLocales,
     type CoreOptions,
@@ -19,8 +19,9 @@ const props = defineProps<{
     componentProps?: Record<string, any>;
     locale?: SupportedLocales;
     fontFamily?: string;
-    illustrations?: Appearance['illustrations'];
-    titles?: Appearance['titles'];
+    container?: GlobalAppearance['container'];
+    illustrations?: GlobalAppearance['illustrations'];
+    titles?: GlobalAppearance['titles'];
     theme?: ThemeMode | 'story';
     themeDark?: boolean;
     themeVariables?: ThemeVariables;
@@ -44,15 +45,25 @@ const configuredThemeMode = computed<ThemeMode>(() => {
     return storyCoreOptions.value.themeMode ?? 'light';
 });
 
-const configuredAppearance = computed<Appearance>(() => ({
+const configuredAppearance = computed<GlobalAppearance>(() => ({
     ...storyCoreOptions.value.appearance,
+    ...(props.container && { container: props.container }),
     ...(props.illustrations && { illustrations: props.illustrations }),
     ...(props.titles && { titles: props.titles }),
 }));
 
 const componentPropsWithoutCoreOptions = computed(() => {
-    const { coreOptions: _, ...rest } = props.componentProps ?? {};
-    return rest;
+    const { coreOptions: _, container, dataGridDensity, ...rest } = props.componentProps ?? {};
+    // `UIElement.update` merges props, so `appearance` must stay present (even as `undefined`) for a reset to take effect.
+    const appearance =
+        container || dataGridDensity
+            ? {
+                  ...rest.appearance,
+                  ...(container && { container }),
+                  ...(dataGridDensity && { dataGrid: { ...rest.appearance?.dataGrid, density: dataGridDensity } }),
+              }
+            : rest.appearance;
+    return { ...rest, appearance };
 });
 
 const getThemeOptions = (): Pick<CoreOptions, 'themeMode' | 'customTheme'> => {
@@ -102,7 +113,7 @@ async function initializeCore() {
         element.mount(componentRoot.value!);
     } catch (e: any) {
         error.value = e?.message || 'Core initialization failed';
-        // eslint-disable-next-line no-console
+
         console.error('Core initialization failed:', e);
     }
 }

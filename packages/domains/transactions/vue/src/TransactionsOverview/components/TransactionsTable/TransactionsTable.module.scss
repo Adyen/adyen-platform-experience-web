@@ -1,9 +1,9 @@
 @use '@integration-components/style' as style;
 
 .paymentMethod {
-    display: flex;
     align-items: center;
-    gap: style.token(spacer-040);
+    display: flex;
+    gap: style.token(spacer-030);
 }
 
 .dateAndPaymentMethod {

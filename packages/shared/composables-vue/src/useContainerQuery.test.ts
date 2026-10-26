@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-/* eslint-disable vue/one-component-per-file */
+
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { createApp, defineComponent, h, nextTick, ref, type App } from 'vue';
 import { COMPONENT_REF_KEY } from '@integration-components/core/vue/Context/constants';

@@ -1,12 +1,12 @@
 import type { Meta } from '@storybook/vue3';
-import { PaymentLinkCreationMeta } from './meta';
+import { paymentLinkCreationMeta } from './meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { PaymentLinkCreationExternalProps } from '../../src';
-import { PayByLinkOverviewMockedResponses, PaymentLinkCreationMockedResponses } from '../../../mocks/mock-server/payByLink';
+import { payByLinkOverviewMockedResponses, paymentLinkCreationMockedResponses } from '../../../mocks/mock-server/payByLink';
 import { PAYMENT_LINKS_FIELDS_CONFIG } from '../utils/constants/paymentLinks';
 
 const meta: Meta<ElementProps<PaymentLinkCreationExternalProps>> = {
-    ...PaymentLinkCreationMeta,
+    ...paymentLinkCreationMeta,
     title: 'Mocked/Pay by Link/Payment Link Creation',
 };
 
@@ -20,6 +20,38 @@ export const Default: ElementStory<PaymentLinkCreationExternalProps> = {
     },
 };
 
+export const SingleOptions: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Single options',
+    args: {
+        ...defaultArgs,
+        storeIds: ['STORE_NY_001'],
+        fieldsConfig: {
+            data: {
+                amount: { value: 12345 },
+                reference: 'SINGLE_OPTIONS',
+                description: 'Payment link with single options',
+                shopperReference: 'SHOPPER001',
+                shopperEmail: 'test@example.com',
+                billingAddress: {
+                    street: 'Gran Via',
+                    houseNumberOrName: '123',
+                    city: 'Madrid',
+                    postalCode: '28001',
+                },
+                deliveryAddress: {
+                    street: 'Gran Via',
+                    houseNumberOrName: '123',
+                    city: 'Madrid',
+                    postalCode: '28001',
+                },
+            },
+        },
+    },
+    parameters: {
+        msw: { ...paymentLinkCreationMockedResponses.singleOptions },
+    },
+};
+
 export const Prefilled: ElementStory<PaymentLinkCreationExternalProps> = {
     name: 'Prefilled',
     args: {
@@ -29,8 +61,28 @@ export const Prefilled: ElementStory<PaymentLinkCreationExternalProps> = {
     },
 };
 
-export const AmbiguousPrefilledPhone: ElementStory<PaymentLinkCreationExternalProps> = {
-    name: 'Ambiguous prefilled phone',
+export const Loading: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Loading',
+    args: Prefilled.args,
+    parameters: {
+        msw: { ...paymentLinkCreationMockedResponses.loading },
+    },
+};
+
+export const OptionalSelectFields: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Optional select fields',
+    args: {
+        ...defaultArgs,
+        fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
+        storeIds: ['STORE_NY_001'],
+    },
+    parameters: {
+        msw: { ...paymentLinkCreationMockedResponses.optionalSelectFields },
+    },
+};
+
+export const CompactPrefilledPhone: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Compact prefilled phone',
     args: {
         ...defaultArgs,
         fieldsConfig: {
@@ -70,7 +122,7 @@ export const StoresMisconfiguration: ElementStory<PaymentLinkCreationExternalPro
     name: 'Stores misconfiguration',
     args: defaultArgs,
     parameters: {
-        msw: { ...PayByLinkOverviewMockedResponses.storesMisconfiguration },
+        msw: { ...payByLinkOverviewMockedResponses.storesMisconfiguration },
     },
 };
 
@@ -78,7 +130,7 @@ export const StoresNetworkError: ElementStory<PaymentLinkCreationExternalProps> 
     name: 'Error - Stores Network Error',
     args: defaultArgs,
     parameters: {
-        msw: { ...PayByLinkOverviewMockedResponses.storeNetworkError },
+        msw: { ...payByLinkOverviewMockedResponses.storeNetworkError },
     },
 };
 
@@ -89,7 +141,7 @@ export const SubmitNetworkError: ElementStory<PaymentLinkCreationExternalProps> 
         fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
     },
     parameters: {
-        msw: { ...PaymentLinkCreationMockedResponses.submitNetworkError },
+        msw: { ...paymentLinkCreationMockedResponses.submitNetworkError },
     },
 };
 
@@ -100,7 +152,7 @@ export const SubmitInvalidFieldError: ElementStory<PaymentLinkCreationExternalPr
         fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
     },
     parameters: {
-        msw: { ...PaymentLinkCreationMockedResponses.submitInvalidFields },
+        msw: { ...paymentLinkCreationMockedResponses.submitInvalidFields },
     },
 };
 
@@ -111,7 +163,7 @@ export const ConfigurationError: ElementStory<PaymentLinkCreationExternalProps> 
         fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
     },
     parameters: {
-        msw: { ...PaymentLinkCreationMockedResponses.configError },
+        msw: { ...paymentLinkCreationMockedResponses.configError },
     },
 };
 
@@ -124,7 +176,7 @@ export const CountryDatasetError: ElementStory<PaymentLinkCreationExternalProps>
         fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
     },
     parameters: {
-        msw: { ...PaymentLinkCreationMockedResponses.countryDatasetError },
+        msw: { ...paymentLinkCreationMockedResponses.countryDatasetError },
     },
 };
 
@@ -136,7 +188,7 @@ export const CountriesNetworkError: ElementStory<PaymentLinkCreationExternalProp
         fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
     },
     parameters: {
-        msw: { ...PaymentLinkCreationMockedResponses.countriesError },
+        msw: { ...paymentLinkCreationMockedResponses.countriesError },
     },
 };
 

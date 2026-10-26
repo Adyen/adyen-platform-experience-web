@@ -1,23 +1,27 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useLandedPageEvent, ErrorMessageDisplay } from '@integration-components/composables-vue';
-import { BentoLoadingIndicator } from '@adyen/bento-vue3';
+import { computed, ref, watch } from 'vue';
+import { useLandedPageEvent, ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
 import TransactionData from './TransactionData/TransactionData.vue';
+import TransactionSkeleton from './TransactionSkeleton/TransactionSkeleton.vue';
 import { useTransaction } from '../composables/useTransaction';
 import { normalizeCustomFields } from '@integration-components/utils';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET, sharedTransactionDetailsEventProperties } from '../../../../domain/src';
-import type { TransactionDetailsCustomization, TransactionDetails } from '../../../../domain/src';
-import styles from './TransactionDetailsContainer.module.scss';
+import type { TransactionDetails } from '../../../../domain/src';
+import type { TransactionDetailsComponentProps } from '../types';
 
-const props = defineProps<{
-    id: string;
-    dataCustomization?: { details?: TransactionDetailsCustomization };
-    onContactSupport?: () => void;
-    hideTitle?: boolean;
-    fromRecordSelection?: boolean;
-}>();
+const props = defineProps<
+    TransactionDetailsComponentProps & {
+        fromRecordSelection?: boolean;
+    }
+>();
 
 const { error, fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(() => props.id);
+
+const shellState = computed<ComponentShellState>(() => {
+    if (initialTransaction.value) return 'ready';
+    if (fetchingTransaction.value) return 'loading';
+    return error.value ? 'error' : 'ready';
+});
 
 const extraFields = ref<Record<string, any> | undefined>(undefined);
 const initialTransaction = ref<TransactionDetails | undefined>(undefined);
@@ -77,33 +81,29 @@ useLandedPageEvent(
 </script>
 
 <template>
-    <div>
+    <ComponentShell
+        :state="shellState"
+        :error="error"
+        :error-message="'transactions.details.errors.unavailable'"
+        :not-found-message="'transactions.details.errors.notFound'"
+        :on-contact-support="props.onContactSupport"
+        :on-dismiss="props.onDismiss"
+        :dismiss-label="'transactions.details.common.actions.goBack'"
+        :on-refresh="refreshTransaction"
+    >
         <TransactionData
             v-if="initialTransaction"
             :extra-fields="extraFields"
             :data-customization="props.dataCustomization"
             :fetching-transaction="fetchingTransaction"
-            :hide-title="props.hideTitle"
+            :on-dismiss="props.onDismiss"
             :refresh-transaction="refreshTransaction"
             :transaction="transaction ?? initialTransaction"
             :transaction-navigator="transactionNavigator"
         />
 
-        <div v-else-if="fetchingTransaction" :class="styles.loading">
-            <BentoLoadingIndicator />
-        </div>
-
-        <div v-else-if="error">
-            <ErrorMessageDisplay
-                :error="error"
-                :error-message="'transactions.details.errors.unavailable'"
-                :not-found-message="'transactions.details.errors.notFound'"
-                :on-contact-support="props.onContactSupport"
-                with-image
-                :outlined="false"
-                :absolute-position="false"
-                :with-background="false"
-            />
-        </div>
-    </div>
+        <template #loading>
+            <TransactionSkeleton />
+        </template>
+    </ComponentShell>
 </template>
