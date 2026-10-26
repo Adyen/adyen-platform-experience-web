@@ -372,7 +372,6 @@
         "packages/shared/utils/src/datetime/types.d.ts",
         "packages/shared/utils/src/file/download.d.ts",
         "packages/shared/utils/src/file/size.d.ts",
-        "packages/shared/utils/src/file/upload.d.ts",
         "packages/shared/utils/src/index.d.ts",
         "packages/shared/utils/src/layout/breakpoints.d.ts",
         "packages/shared/utils/src/pagination/constants.d.ts",
@@ -394,7 +393,6 @@
         "packages/shared/utils/src/primitives/auxiliary/indexed/index.d.ts",
         "packages/shared/utils/src/primitives/auxiliary/indexed/main.d.ts",
         "packages/shared/utils/src/primitives/auxiliary/indexed/types.d.ts",
-        "packages/shared/utils/src/primitives/dom/tabbableRoot/tabbable.d.ts",
         "packages/shared/utils/src/primitives/reactive/effectStack/index.d.ts",
         "packages/shared/utils/src/primitives/reactive/effectStack/main.d.ts",
         "packages/shared/utils/src/primitives/reactive/effectStack/types.d.ts",
@@ -439,7 +437,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "4027efe430809f245443a7bc1b0454d63b6335f18e3034ce3936d93e03047ae3",
+    "typeTreeHash": "56507a02b1aef097dd73a1567de1c4bb9497134e33c6d0651a02f04c52d4d29c",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.cjs",
