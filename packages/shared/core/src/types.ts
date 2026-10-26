@@ -12,12 +12,6 @@ type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<
 
 interface _CoreOptions<CustomTranslations extends Translations = Record<never, never>> {
     /**
-     * Core-level balance account config
-     */
-    // [TODO]: Expose when expected behavior has been decided
-    // balanceAccountId?: string;
-
-    /**
      * Use test. When you're ready to accept live payments, change the value to one of our {@link https://docs.adyen.com/checkout/drop-in-web#testing-your-integration | live environments}.
      */
     environment?: DevEnvironment;

@@ -113,7 +113,7 @@ describe('UIElement', () => {
         };
 
         const component = { render: () => null } as Component;
-        const element = new UIElement(component, { core, balanceAccountId: 'BA_OLD' }, 'transactions');
+        const element = new UIElement(component, { core, id: 'ID_OLD' }, 'transactions');
 
         element.mount(document.createElement('div'));
 
@@ -122,14 +122,14 @@ describe('UIElement', () => {
         const initialProviderKey = view.key;
         const initialComponentKey = getComponentSubtree(view).key;
 
-        element.update({ balanceAccountId: 'BA_NEW' });
+        element.update({ id: 'ID_NEW' });
         view = renderElement();
 
         const updatedComponent = getComponentSubtree(view);
 
         expect(view.key).toBe(initialProviderKey);
         expect(updatedComponent.key).toBe(initialComponentKey);
-        expect(updatedComponent.props?.balanceAccountId).toBe('BA_NEW');
+        expect(updatedComponent.props?.id).toBe('ID_NEW');
 
         view.props?.refreshComponent();
         view = renderElement();

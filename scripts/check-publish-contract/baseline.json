@@ -437,7 +437,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "56507a02b1aef097dd73a1567de1c4bb9497134e33c6d0651a02f04c52d4d29c",
+    "typeTreeHash": "93f9392bb083088a3661d7bb2b16c853e951540bc78a1d89156d28bd3af812da",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.cjs",

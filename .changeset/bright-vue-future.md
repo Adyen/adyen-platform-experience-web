@@ -7,3 +7,4 @@
 - Removed the deprecated `availableTranslations` Core option.
 - Removed flow-control callbacks and options across all Capital components, in favor of handling those flows internally.
 - Removed support for CSS classname overrides across all components.
+- Removed the `balanceAccountId` prop from `TransactionsOverview`, `PayoutsOverview`, `ReportsOverview` and `DisputesOverview`. Balance account selection is now done only through the component filters or session call.
