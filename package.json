@@ -79,6 +79,8 @@
     "test:integration:ui": "pnpm run test:integration --ui",
     "test:release": "node --test scripts/release-v1/*.test.mjs scripts/npm-publish/*.test.mjs",
     "translations:check": "node scripts/process-translations/sync-sdk-catalogs.mjs --check",
+    "translations:grammar": "node scripts/process-translations/lint-keyspace.mjs",
+    "translations:keys": "node scripts/process-translations/check-key-references.mjs",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
     "translations:split": "node scripts/process-translations/split-sdk-catalogs.mjs",
     "translations:split:check": "node scripts/process-translations/split-sdk-catalogs.mjs --check",
