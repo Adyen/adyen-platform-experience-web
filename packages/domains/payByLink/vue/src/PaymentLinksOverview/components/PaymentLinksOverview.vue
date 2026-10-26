@@ -20,7 +20,6 @@ import {
     PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_OVERVIEW,
     WRONG_STORE_IDS,
 } from '../../../../domain/src';
-import type { PaymentLinksOverviewExternalProps } from '../types';
 import type { PaymentLinksOverviewComponentProps } from '../types';
 import { createPaymentLinksError } from '../utils/error';
 import styles from './PaymentLinksOverview.module.scss';

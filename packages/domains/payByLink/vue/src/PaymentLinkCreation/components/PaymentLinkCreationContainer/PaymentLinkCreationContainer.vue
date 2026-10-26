@@ -10,7 +10,7 @@ import PaymentLinkCreationFormSkeleton from '../PaymentLinkCreationFormContainer
 import { usePaymentLinkFormData } from '../PaymentLinkCreationFormContainer/usePaymentLinkFormData';
 import PaymentLinkDetails from '../../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails.vue';
 import FormSuccess from '../Form/FormSuccess/FormSuccess.vue';
-import type { PaymentLinkCreationFormValues, CreatedPaymentLink, PaymentLinkCreationProps } from '../../../../../domain/src';
+import type { PaymentLinkCreationFormValues, CreatedPaymentLink } from '../../../../../domain/src';
 import { PAYMENT_LINKS_ANALYTICS_CATEGORY, PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_CREATION } from '../../../../../domain/src';
 import type { PaymentLinkCreationComponentProps } from '../../types';
 import styles from './PaymentLinkCreationContainer.module.scss';
