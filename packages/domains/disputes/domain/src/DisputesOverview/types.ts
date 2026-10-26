@@ -1,4 +1,4 @@
-import type { UIElementProps, DataCustomizationObject, CustomDataRetrieved } from '@integration-components/types';
+import type { DataCustomizationObject, CustomDataRetrieved, WithBalanceAccountId } from '@integration-components/types';
 import type { PaginationProps } from '@integration-components/utils';
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 import type { DisputeDetailsCustomization } from '../DisputeManagement';
@@ -14,14 +14,11 @@ export interface DisputesOverviewTabsConfig {
     hidden?: DisputeStatusGroup[];
 }
 
-export interface DisputesOverviewProps extends UIElementProps, PaginationProps<DisputesPageLimit> {
-    balanceAccountId?: string;
-    onRecordSelection?: (selection: { id: string; showDetails: () => void }) => any;
+export interface DisputesOverviewProps extends PaginationProps<DisputesPageLimit>, WithBalanceAccountId {
+    onRecordSelection?: (selection: { id: string; showDetails: () => void }) => void;
     tabs?: DisputesOverviewTabsConfig;
     dataCustomization?: {
         dataGrid?: DisputesDataGridCustomization;
         details?: DisputeDetailsCustomization;
     };
 }
-
-export type DisputeOverviewComponentProps = DisputesOverviewProps;

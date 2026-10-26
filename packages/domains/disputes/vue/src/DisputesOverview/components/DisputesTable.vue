@@ -28,6 +28,7 @@ import {
     useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
+import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
 import { getDisputeDeadlineTimeRemaining, getDisputeReason, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE, mergeRecords } from '@integration-components/utils';
 import type { CustomColumn, CustomDataRetrieved, IBalanceAccountBase, OnDataRetrievedCallback } from '@integration-components/types';
@@ -151,7 +152,7 @@ const paginationProps = computed(() => {
         size: props.limit ?? 10,
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
-        pageSizeItems: props.limitOptions,
+        pageSizeItems: asPageSizeItems(props.limitOptions),
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
         hideFirstLastPageButtons: true,
     };

@@ -4,7 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 
 const currentDir = dirname(fileURLToPath(import.meta.url));
-const tscBin = resolve(currentDir, '../node_modules/.bin/tsc');
+// vue-tsc is a drop-in superset of tsc that also checks the <script setup> blocks of .vue files.
+const tscBin = resolve(currentDir, '../node_modules/.bin/vue-tsc');
 
 const configs = readdirSync('src/.storybook')
     .map(dir => `src/.storybook/${dir}/tsconfig.json`)

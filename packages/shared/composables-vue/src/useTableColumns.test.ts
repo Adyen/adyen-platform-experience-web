@@ -26,8 +26,8 @@ describe('useTableColumns', () => {
             fields: FIELDS,
             customColumns: () => customColumns.value,
             fieldsKeys: {
-                createdAt: 'createdAt',
-                amount: 'amount',
+                createdAt: 'payouts.overview.list.fields.createdAt',
+                amount: 'payouts.overview.list.fields.payoutAmount',
             },
             columnConfig: () => ({
                 createdAt: { flex: 1, visible: true },
@@ -38,8 +38,8 @@ describe('useTableColumns', () => {
         expect(hasCustomColumn.value).toBe(true);
         expect(customFieldKeys.value).toEqual(['summary']);
         expect(columns.value).toEqual([
-            { field: 'createdAt', label: 'createdAt', flex: 1, visible: true },
-            { field: 'amount', label: 'amount', flex: 1, numeric: true, visible: false },
+            { field: 'createdAt', label: 'payouts.overview.list.fields.createdAt', flex: 1, visible: true },
+            { field: 'amount', label: 'payouts.overview.list.fields.payoutAmount', flex: 1, numeric: true, visible: false },
             { field: 'summary', label: 'summary', flex: 3 },
         ]);
     });
@@ -49,14 +49,14 @@ describe('useTableColumns', () => {
             fields: FIELDS,
             customColumns: () => [{ key: 'merchantReference' }],
             fieldsKeys: {
-                createdAt: 'createdAt',
+                createdAt: 'payouts.overview.list.fields.createdAt',
             },
             resolveStandardColumnLabel: (_field, label) => `standard:${label}`,
             resolveCustomColumnLabel: key => `custom:${key}`,
         });
 
         expect(columns.value).toEqual([
-            { field: 'createdAt', label: 'standard:createdAt', autoWidth: true },
+            { field: 'createdAt', label: 'standard:payouts.overview.list.fields.createdAt', autoWidth: true },
             { field: 'merchantReference', label: 'custom:merchantReference', autoWidth: true },
         ]);
     });
@@ -66,7 +66,7 @@ describe('useTableColumns', () => {
             fields: FIELDS,
             customColumns: () => [{ key: 'merchantReference' }],
             fieldsKeys: {
-                createdAt: 'createdAt',
+                createdAt: 'payouts.overview.list.fields.createdAt',
             },
             columnConfig: () => ({
                 createdAt: { overflow: 'wrap' as const },
@@ -75,7 +75,7 @@ describe('useTableColumns', () => {
         });
 
         expect(columns.value).toEqual([
-            { field: 'createdAt', label: 'createdAt', overflow: 'wrap', autoWidth: true },
+            { field: 'createdAt', label: 'payouts.overview.list.fields.createdAt', overflow: 'wrap', autoWidth: true },
             { field: 'merchantReference', label: 'merchantReference', flex: 1, minWidth: 120 },
         ]);
     });
@@ -85,14 +85,17 @@ describe('useTableColumns', () => {
         const { columns } = useTableColumns({
             fields: FIELDS,
             customColumns: () => [{ key: 'createdAt', flex: 2 }],
-            fieldsKeys: { createdAt: 'createdAt', amount: 'amount' },
+            fieldsKeys: {
+                createdAt: 'payouts.overview.list.fields.createdAt',
+                amount: 'payouts.overview.list.fields.payoutAmount',
+            },
             columnConfig: () => ({ createdAt: { flex: 1, minWidth: 120 }, amount: { flex: 1, minWidth: 120, numeric: true } }),
             customColumnWidths: () => measuredWidths.value,
         });
 
         expect(columns.value).toEqual([
-            { field: 'createdAt', label: 'createdAt', flex: 2, minWidth: 200 },
-            { field: 'amount', label: 'amount', flex: 1, minWidth: 120, numeric: true },
+            { field: 'createdAt', label: 'payouts.overview.list.fields.createdAt', flex: 2, minWidth: 200 },
+            { field: 'amount', label: 'payouts.overview.list.fields.payoutAmount', flex: 1, minWidth: 120, numeric: true },
         ]);
 
         measuredWidths.value = { createdAt: 150, amount: 240 };
@@ -103,12 +106,12 @@ describe('useTableColumns', () => {
         const { columns } = useTableColumns({
             fields: FIELDS,
             customColumns: () => [{ key: 'reference' }],
-            fieldsKeys: { createdAt: 'createdAt' },
+            fieldsKeys: { createdAt: 'payouts.overview.list.fields.createdAt' },
             customColumnWidths: () => ({ createdAt: 200, reference: 150 }),
         });
 
         expect(columns.value).toEqual([
-            { field: 'createdAt', label: 'createdAt', minWidth: 200, flex: 1 },
+            { field: 'createdAt', label: 'payouts.overview.list.fields.createdAt', minWidth: 200, flex: 1 },
             { field: 'reference', label: 'reference', minWidth: 150, flex: 1 },
         ]);
     });
@@ -118,7 +121,10 @@ describe('useTableColumns', () => {
         const { columns } = useTableColumns({
             fields: FIELDS,
             customColumns: () => [{ key: 'reference' }],
-            fieldsKeys: { createdAt: 'createdAt', amount: 'amount' },
+            fieldsKeys: {
+                createdAt: 'payouts.overview.list.fields.createdAt',
+                amount: 'payouts.overview.list.fields.payoutAmount',
+            },
             columnConfig: () => ({ createdAt: { flex: 1 }, amount: { flex: 1, numeric: true } }),
             customColumnDefaults: () => ({ flex: 1 }),
             customColumnWidths: () => measuredWidths.value,
@@ -168,7 +174,10 @@ describe('useTableColumns', () => {
         const { columns } = useTableColumns({
             fields: FIELDS,
             customColumns: () => [{ key: 'reference' }],
-            fieldsKeys: { createdAt: 'createdAt', amount: 'amount' },
+            fieldsKeys: {
+                createdAt: 'payouts.overview.list.fields.createdAt',
+                amount: 'payouts.overview.list.fields.payoutAmount',
+            },
             columnConfig: () => ({ createdAt: { flex: 1, minWidth: 120 }, amount: { flex: 1 } }),
             customColumnWidths: () => ({ createdAt: 0, amount: 0, reference: 0 }),
         });

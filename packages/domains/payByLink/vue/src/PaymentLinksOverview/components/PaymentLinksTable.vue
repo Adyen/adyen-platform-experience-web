@@ -12,12 +12,14 @@ import {
     useResponsiveContainer,
     useTimezoneAwareDateFormatting,
 } from '@integration-components/composables-vue';
+import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import {
     isActionNeededUrgently,
     BACKEND_REDACTED_DATA_MARKER,
     FRONTEND_REDACTED_DATA_MARKER,
     PAYMENT_LINKS_TABLE_FIELDS,
+    type PaymentLinkTableCols,
 } from '../../../../domain/src';
 import {
     DATE_FORMAT_PAYMENT_LINKS_OVERVIEW,
@@ -84,7 +86,7 @@ function getTimeToDeadline(dueDate: string): string {
         : i18n.get('payByLink.overview.common.actionNeeded.expiresDays', { values: { days: diffInDays, date: formattedDate } });
 }
 
-const { columns: desktopColumns } = useTableColumns({
+const { columns: desktopColumns } = useTableColumns<PaymentLinkTableCols>({
     fields: PAYMENT_LINKS_TABLE_FIELDS,
     customColumns: () => undefined,
     fieldsKeys: {
@@ -148,7 +150,7 @@ const paginationProps = computed(() => {
         size: props.limit ?? 10,
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
-        pageSizeItems: props.limitOptions,
+        pageSizeItems: asPageSizeItems(props.limitOptions),
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
         hideFirstLastPageButtons: true,
     };

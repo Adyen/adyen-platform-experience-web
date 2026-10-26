@@ -49,7 +49,7 @@
         "types:check": {
             "executor": "nx:run-commands",
             "options": {
-                "command": "tsc --noEmit --project {projectRoot}/tsconfig.json"
+                "command": "vue-tsc --noEmit --project {projectRoot}/tsconfig.json"
             },
             "outputs": [],
             "cache": true
@@ -57,7 +57,7 @@
         "types:watch": {
             "executor": "nx:run-commands",
             "options": {
-                "command": "tsc --noEmit --project {projectRoot}/tsconfig.json --watch"
+                "command": "vue-tsc --noEmit --project {projectRoot}/tsconfig.json --watch"
             },
             "cache": false
         }

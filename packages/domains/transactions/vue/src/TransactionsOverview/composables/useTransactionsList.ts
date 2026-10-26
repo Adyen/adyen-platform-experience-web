@@ -6,12 +6,12 @@ import { useCustomColumnsData } from '@integration-components/composables-vue';
 import { DEFAULT_PAGE_LIMITS, isFunction, normalizeCustomFields, hasCustomField, mergeRecords } from '@integration-components/utils';
 import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '@integration-components/transactions/domain';
 import type { ITransaction, CustomDataRetrieved } from '@integration-components/types';
-import type { TransactionsFilters, TransactionsDataGridCustomization, TransactionsListResponse, TransactionsOverviewExternalProps } from '../types';
+import type { TransactionsFilters, TransactionsDataGridCustomization, TransactionsListResponse, TransactionsOverviewComponentProps } from '../types';
 
 interface UseTransactionsListProps {
     filters: TransactionsFilters;
     fetchEnabled: boolean;
-    pagination?: TransactionsOverviewExternalProps['pagination'];
+    pagination?: TransactionsOverviewComponentProps['pagination'];
     dataCustomization?: { dataGrid?: TransactionsDataGridCustomization };
 }
 

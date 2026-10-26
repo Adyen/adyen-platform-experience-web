@@ -5,7 +5,7 @@ import { useTransactionsTotals } from './useTransactionsTotals';
 import { useCurrenciesLookup } from './useCurrenciesLookup';
 import { useTransactionsViewSwitcher, TransactionsView } from './useTransactionsViewSwitcher';
 import { quickSelectDateRanges } from '@integration-components/utils';
-import type { TransactionsFilters, TransactionsOverviewExternalProps } from '../types';
+import type { TransactionsFilters, TransactionsOverviewComponentProps } from '../types';
 
 const INSIGHTS_FILTERS: Set<keyof TransactionsFilters> = new Set(['balanceAccountId', 'createdSince', 'createdUntil']);
 
@@ -23,7 +23,7 @@ export type TransactionsOverviewStateKey = ReturnType<typeof useTransactionsOver
 
 const TRANSACTIONS_OVERVIEW_STATE_KEY: InjectionKey<TransactionsOverviewStateKey> = Symbol('TransactionsOverviewState');
 
-type TransactionsOverviewStateProps = TransactionsOverviewExternalProps & {
+type TransactionsOverviewStateProps = TransactionsOverviewComponentProps & {
     balanceAccounts?: any[];
     isLoadingBalanceAccount?: boolean;
     hideInsights?: boolean;

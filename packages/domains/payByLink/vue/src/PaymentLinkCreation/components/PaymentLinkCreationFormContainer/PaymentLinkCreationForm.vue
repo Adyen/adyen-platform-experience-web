@@ -13,7 +13,8 @@ import {
     type BentoButtonActionsList,
 } from '@adyen/bento-vue3';
 import { useShouldHideTitles } from '@integration-components/composables-vue';
-import type { PaymentLinkCreationProps, PaymentLinkSettingsItem } from '../../../../../domain/src';
+import type { PaymentLinkSettingsItem } from '../../../../../domain/src';
+import type { PaymentLinkCreationComponentProps } from '../../types';
 import type { usePaymentLinkFormData } from './usePaymentLinkFormData';
 import { usePaymentLinkWizard } from './usePaymentLinkWizard';
 import { useInvalidFields } from './useInvalidFields';
@@ -23,7 +24,7 @@ import PaymentLinkCreationFormSkeleton from './PaymentLinkCreationFormSkeleton.v
 import ArrowRightIcon from '@adyen/ui-assets-icons-16/vue/arrow-right';
 import styles from './PaymentLinkCreationForm.module.scss';
 
-type PaymentLinkCreationFormProps = Pick<PaymentLinkCreationProps, 'fieldsConfig' | 'onDismiss' | 'onContactSupport'> & {
+type PaymentLinkCreationFormProps = Pick<PaymentLinkCreationComponentProps, 'fieldsConfig' | 'storeIds' | 'onDismiss' | 'onContactSupport'> & {
     formData: ReturnType<typeof usePaymentLinkFormData>;
     embeddedInOverview?: boolean;
     onTitleChange?: (title: TranslationKey | undefined) => void;

@@ -6,6 +6,7 @@ import { BentoTypography, BentoDivider } from '@adyen/bento-vue3';
 import { getTransactionCategory } from '@integration-components/transactions/domain';
 import type { CurrencyLookupRecord } from '../../composables/useCurrenciesLookup';
 import type { useTransactionsTotals } from '../../composables/useTransactionsTotals';
+import InsightsTotalsSkeleton from './InsightsTotalsSkeleton.vue';
 import styles from './InsightsTotals.module.scss';
 
 const props = defineProps<{
@@ -49,17 +50,8 @@ const expensesBreakdown = computed(() => {
 </script>
 
 <template>
-    <div>
-        <template v-if="isLoading">
-            <div>
-                <span />
-                <div :class="styles.breakdowns">
-                    <div v-for="n in 2" :key="n" :class="styles.breakdown">
-                        <span />
-                    </div>
-                </div>
-            </div>
-        </template>
+    <div :aria-busy="isLoading">
+        <InsightsTotalsSkeleton v-if="isLoading" />
 
         <template v-else-if="props.transactionsTotalsResult.error.value">
             <ErrorMessageDisplay

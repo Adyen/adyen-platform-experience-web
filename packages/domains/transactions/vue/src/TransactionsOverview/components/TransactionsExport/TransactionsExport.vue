@@ -16,8 +16,11 @@ import { useDownload, useUniqueId } from '@integration-components/composables-vu
 import { isFunction, downloadBlob, EMPTY_ARRAY } from '@integration-components/utils';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
 import { EXPORT_COLUMNS, DEFAULT_EXPORT_COLUMNS } from '../../constants';
-import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '@integration-components/transactions/domain';
-import type { TranslationKey } from '@integration-components/core';
+import {
+    TRANSACTION_ANALYTICS_CATEGORY,
+    TRANSACTION_ANALYTICS_SUBCATEGORY_LIST,
+    type TransactionsTranslationKey,
+} from '@integration-components/transactions/domain';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import styles from './TransactionsExport.module.scss';
 
@@ -43,7 +46,7 @@ const sharedAnalyticsProps = { category: TRANSACTION_ANALYTICS_CATEGORY, subCate
 
 const canDownloadTransactions = computed(() => isFunction(config.endpoints.downloadTransactions));
 
-const activeFilters = computed<readonly TranslationKey[]>(() => {
+const activeFilters = computed<readonly TransactionsTranslationKey[]>(() => {
     const { balanceAccountId, paymentPspReference, createdSince, createdUntil, categories, currencies } = filters.value;
     return [
         ...(balanceAccountId ? (['transactions.overview.export.filters.types.account'] as const) : EMPTY_ARRAY),
@@ -51,7 +54,7 @@ const activeFilters = computed<readonly TranslationKey[]>(() => {
         ...(categories.length ? (['transactions.overview.export.filters.types.category'] as const) : EMPTY_ARRAY),
         ...(currencies.length ? (['transactions.overview.export.filters.types.currency'] as const) : EMPTY_ARRAY),
         ...(paymentPspReference ? (['transactions.overview.export.filters.types.paymentPspReference'] as const) : EMPTY_ARRAY),
-    ] as readonly TranslationKey[];
+    ] as readonly TransactionsTranslationKey[];
 });
 
 const exportParams = computed(() => ({
@@ -133,7 +136,7 @@ const masterSwitchChecked = computed(() => exportColumns.value.length === EXPORT
 const columnSwitches = computed(() =>
     EXPORT_COLUMNS.map(column => ({
         column,
-        label: i18n.get(`transactions.overview.export.columns.types.${column}` as TranslationKey),
+        label: i18n.get(`transactions.overview.export.columns.types.${column}` as TransactionsTranslationKey),
         checked: exportColumns.value.includes(column),
     }))
 );

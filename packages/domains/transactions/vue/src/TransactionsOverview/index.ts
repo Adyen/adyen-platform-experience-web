@@ -1,2 +1,2 @@
 export { TransactionsOverviewElement } from './TransactionsOverviewElement';
-export type { TransactionsOverviewExternalProps } from './types';
+export type { TransactionsOverviewComponentProps, TransactionsOverviewExternalProps } from './types';

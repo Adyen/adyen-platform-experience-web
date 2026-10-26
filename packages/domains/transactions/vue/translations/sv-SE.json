@@ -42,6 +42,7 @@
     "transactions.details.actions.copyReferenceID": "Kopiera referens-ID",
     "transactions.details.actions.goToPayment": "Gå till betalning",
     "transactions.details.actions.refund": "Utför återbetalning",
+    "transactions.details.common.actions.goBack": "Tillbaka",
     "transactions.details.common.refundedStates.full": "Helt återbetalt",
     "transactions.details.common.refundedStates.partial": "Delvis återbetalt",
     "transactions.details.common.refundReasons.duplicate": "Dubblett",

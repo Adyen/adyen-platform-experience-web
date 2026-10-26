@@ -2,21 +2,9 @@
 import PaymentLinksOverview from './PaymentLinksOverview.vue';
 import { useStores } from '../composables/useStores';
 import { usePaymentLinkFilterOptions } from '../composables/usePaymentLinkFilterOptions';
-import type { PaymentLinksOverviewExternalProps } from '../types';
+import type { PaymentLinksOverviewComponentProps } from '../types';
 
-const props = withDefaults(
-    defineProps<{
-        balanceAccountId?: string;
-        pagination?: PaymentLinksOverviewExternalProps['pagination'];
-        storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
-        onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
-        onContactSupport?: () => void;
-        paymentLinkCreation?: PaymentLinksOverviewExternalProps['paymentLinkCreation'];
-        paymentLinkSettings?: PaymentLinksOverviewExternalProps['paymentLinkSettings'];
-    }>(),
-    {}
-);
-
+const props = defineProps<PaymentLinksOverviewComponentProps>();
 const { allStores, filteredStores, isFetching: isStoresLoading, error: storeError } = useStores(() => props.storeIds);
 const { filters: filterOptions, isFetching: isFilterOptionsLoading, error: filterOptionsError } = usePaymentLinkFilterOptions();
 </script>

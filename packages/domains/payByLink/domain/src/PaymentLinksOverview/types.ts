@@ -1,8 +1,7 @@
 import type { IPaymentLinkStatusGroup, IStore } from '@integration-components/types';
 import type { PaginationProps } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import type { PaymentLinkCreationFieldsConfig, PaymentLinkCreationFormValues } from '../PaymentLinkCreation';
-import type { StoreIds } from '../types';
+import type { StoreIds } from '../shared/types';
 import type { PaymentLinkTableCols } from './fields';
 
 export type StoreData = IStore & { name?: string; id?: string };
@@ -23,18 +22,8 @@ export interface PaymentLinksOverviewFilters {
 }
 
 export interface PaymentLinksOverviewProps extends PaginationProps {
-    balanceAccountId?: string;
     storeIds?: StoreIds;
-    onContactSupport?: () => void;
     onRecordSelection?: (selection: { id: string; showDetails: () => void }) => void;
-    paymentLinkCreation?: {
-        onPaymentLinkCreated?: (paymentLink: PaymentLinkCreationFormValues) => void;
-        onDismiss?: () => void;
-        fieldsConfig?: PaymentLinkCreationFieldsConfig;
-    };
-    paymentLinkSettings?: {
-        onDismiss: () => void;
-    };
 }
 
-export type { IStore };
+export type { IStore } from '@integration-components/types';

@@ -31,6 +31,7 @@
     "payouts.details.breakdown.fundsCaptured.types.chargeback": "Chargebacks",
     "payouts.details.breakdown.fundsCaptured.types.correction": "Rättelser",
     "payouts.details.breakdown.fundsCaptured.types.refund": "Återbetalningar",
+    "payouts.details.common.actions.goBack": "Tillbaka",
     "payouts.details.errors.unavailable": "Det gick inte att läsa in utbetalningsinformationen.",
     "payouts.details.tags.netPayout": "Nettoutbetalning",
     "payouts.details.tags.sameDaySum": "Summan av utbetalningar samma dag",

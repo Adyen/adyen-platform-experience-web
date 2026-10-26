@@ -11,11 +11,11 @@ import DisputesTable from './DisputesTable.vue';
 import DisputeManagementModal from './DisputeManagementModal.vue';
 import { useDisputesList } from '../composables/useDisputesList';
 import { DEFAULT_DISPUTE_STATUS_GROUP } from '../constants';
-import type { DisputesOverviewProps } from '../types';
+import type { DisputesOverviewComponentProps } from '../types';
 import styles from './DisputesOverview.module.scss';
 
 const props = defineProps<
-    DisputesOverviewProps & {
+    DisputesOverviewComponentProps & {
         balanceAccounts: IBalanceAccountBase[] | undefined;
         isLoadingBalanceAccount: boolean;
     }

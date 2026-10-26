@@ -858,6 +858,7 @@
     "payouts.details.breakdown.fundsCaptured.types.chargeback": "Label text referring to chargeback disputes.",
     "payouts.details.breakdown.fundsCaptured.types.correction": "Financial category label for an amount listed under Funds captured in a payout breakdown.",
     "payouts.details.breakdown.fundsCaptured.types.refund": "Financial category label for an amount listed under Funds captured in a payout breakdown.",
+    "payouts.details.common.actions.goBack": "Label for a button that navigates backwards to the previous page or view.",
     "payouts.details.errors.unavailable": "Will be displayed as error message when the details of a payout cannot be shown to the user, probably due to insufficient permissions.",
     "payouts.details.tags.netPayout": "Label that identifies net payout in the details interface.",
     "payouts.details.tags.sameDaySum": "Label that identifies same day sum in the details interface.",
