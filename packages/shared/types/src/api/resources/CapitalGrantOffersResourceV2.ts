@@ -85,15 +85,19 @@ export interface components {
             selectedEstimatedRepaymentTermDays: number;
         };
         DynamicOffersResponseV2DTO: {
+            contractType?: components['schemas']['GrantOfferContractType'];
             estimatedRepaymentTermsInDays: number[];
             maxAmount: components['schemas']['Amount'];
             minAmount: components['schemas']['Amount'];
             /** Format: int32 */
             step: number;
         };
+        /** @enum {string} */
+        GrantOfferContractType: 'CashAdvance' | 'Loan';
         GrantOfferResponseDTO: {
             /** Format: int32 */
             aprBasisPoints?: number;
+            contractType?: components['schemas']['GrantOfferContractType'];
             /** Format: int32 */
             expectedRepaymentPeriodDays: number;
             feesAmount: components['schemas']['Amount'];
