@@ -19,6 +19,7 @@ test.describe('Error - Submit', () => {
     });
 
     test('should render offer summary screen when back button is clicked', async ({ page }) => {
+        await expect(page.getByText('Something went wrong.')).toBeVisible();
         await page.getByRole('button', { name: 'Go back' }).click();
         await expect(page.getByTestId('capital-offer-summary')).toBeVisible();
     });
