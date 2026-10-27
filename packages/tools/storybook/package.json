@@ -19,8 +19,8 @@
         "vue-i18n": "^11"
     },
     "devDependencies": {
-        "@storybook/vue3": "10.2.12",
-        "@storybook/vue3-vite": "10.2.12",
+        "@storybook/vue3": "catalog:",
+        "@storybook/vue3-vite": "catalog:",
         "@vitejs/plugin-vue": "^6.0.5",
         "concurrently": "^7.0.0",
         "cross-env": "^7.0.3",
@@ -29,7 +29,8 @@
         "msw-storybook-addon": "^2.0.2",
         "storybook": "catalog:",
         "typescript": "catalog:",
-        "vite": "catalog:"
+        "vite": "catalog:",
+        "vue-tsc": "catalog:"
     },
     "msw": {
         "workerDirectory": [

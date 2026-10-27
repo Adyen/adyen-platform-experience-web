@@ -2,7 +2,7 @@ import { onUnmounted, ref, type Ref } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { isFunction, isUndefined } from '@integration-components/utils';
 import type { EndpointHttpCallables } from '@integration-components/core';
-import { MenuItem } from '../constants';
+import { menuItem } from '../constants';
 import { isThemePayload } from '@integration-components/payByLink/domain';
 import { getThemePayload } from '../utils/getThemePayload';
 import type { PaymentLinkSettingsData, PaymentLinkSettingsItem, PaymentLinkSettingsPayload } from '../types';
@@ -106,8 +106,8 @@ export function useSaveAction({
         const item = activeMenuItem.value;
         if (!item) return;
         setSaveActionCalled(true);
-        if (item === MenuItem.theme) return onSaveTheme();
-        if (item === MenuItem.termsAndConditions) return onSaveTermsAndConditions();
+        if (item === menuItem.theme) return onSaveTheme();
+        if (item === menuItem.termsAndConditions) return onSaveTermsAndConditions();
     }
 
     return { onSave };

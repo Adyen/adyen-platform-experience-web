@@ -10,7 +10,7 @@ import {
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
 import { useRequestFunds } from '../../composables/useRequestFunds';
-import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
+import CapitalError from '../../../shared/CapitalError.vue';
 import Highlights from '../Highlights/Highlights.vue';
 import LegalNotice from '../LegalNotice/LegalNotice.vue';
 import RenewalHighlights from '../RenewalHighlights.vue';
@@ -21,8 +21,9 @@ const props = defineProps<{
     capitalState: EnhancedCapitalState;
     offer: IGrantOfferResponseDTO;
     onBack: () => void;
+    onDismiss?: () => void;
     onContactSupport?: () => void;
-    onFundsRequest: OnFundsRequestCallback;
+    onFundsRequest?: OnFundsRequestCallback;
 }>();
 
 const { i18n } = useCoreContext();
@@ -36,21 +37,35 @@ const highlights = computed(() => [
         value: offerAmount.value,
     },
     {
+        align: 'center' as const,
+        value: '+',
+    },
+    {
         label: i18n.get('capital.common.fields.fees'),
         value: i18n.amount(props.offer.feesAmount.value, props.offer.feesAmount.currency, { minimumFractionDigits: 0 }),
+    },
+    {
+        align: 'center' as const,
+        value: '=',
     },
     {
         label: i18n.get('capital.common.fields.totalRepaymentAmount'),
         value: i18n.amount(props.offer.totalAmount.value, props.offer.totalAmount.currency, { minimumFractionDigits: 0 }),
     },
 ]);
-const { data: requestedFunds, error: requestFundsError, isLoading: isRequestFundsLoading, requestFunds } = useRequestFunds();
+const {
+    data: requestedFunds,
+    error: requestFundsError,
+    isLoading: isRequestFundsLoading,
+    requestFunds,
+    reset: resetRequestedFunds,
+} = useRequestFunds();
 const balanceAccountError = computed(() => getBalanceAccountErrorMessage(requestFundsError.value));
 
 async function handleRequestFunds() {
     const grant = await requestFunds(props.offer.id, renewableGrant.value?.id);
     if (grant) {
-        props.onFundsRequest(grant, renewableGrant.value?.id);
+        props.onFundsRequest?.(grant, renewableGrant.value?.id);
     }
 
     userEvents.addEvent?.('Clicked button', {
@@ -90,7 +105,7 @@ const actions = computed<BentoButtonActionsList>(() => [
         <CapitalError
             v-if="requestFundsError && !balanceAccountError"
             :error="requestFundsError"
-            :on-back="handleBack"
+            :on-go-back="resetRequestedFunds"
             :on-contact-support="props.onContactSupport"
         />
         <template v-else>
@@ -112,7 +127,7 @@ const actions = computed<BentoButtonActionsList>(() => [
                 </template>
                 <template v-if="props.onContactSupport" #actions>
                     <BentoButton variant="tertiary" @click="props.onContactSupport">
-                        {{ i18n.get('common.actions.contactSupport.labels.reachOut') }}
+                        {{ i18n.get('capital.common.actions.contactSupport.labels.reachOut') }}
                     </BentoButton>
                 </template>
             </BentoAlert>

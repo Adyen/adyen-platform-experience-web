@@ -2,16 +2,15 @@ import { computed, ref, watch } from 'vue';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import type { IPaymentLinkConfiguration, IPaymentLinkCountry, IPaymentLinkSettings, IPaymentLinkStore } from '@integration-components/types';
-import { getFormSteps, type FormStepConfig } from '../../../../../domain/src';
-import type { TranslationKey } from '@integration-components/core';
-import type { PaymentLinkCreationExternalProps } from '../../types';
+import { getFormSteps, type FormStepConfig, type PayByLinkTranslationKey } from '../../../../../domain/src';
+import type { PaymentLinkCreationComponentProps } from '../../types';
 
 interface CountryDatasetItem {
     id: string;
     name: string;
 }
 
-export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExternalProps, 'storeIds' | 'fieldsConfig'>) {
+export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationComponentProps, 'storeIds' | 'fieldsConfig'>) {
     const { i18n, getCdnDataset } = useCoreContext();
     const config = useConfigContext();
     const endpoints = config.endpoints;
@@ -121,7 +120,11 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
                 if (Array.isArray(storeIds) && storeId) return storeIds.includes(storeId);
                 return storeIds === storeId;
             })
-            .map(({ storeCode, storeId }) => ({ id: storeId || '', name: storeCode || '' }));
+            .map(({ description, storeCode, storeId }) => ({
+                id: storeId || '',
+                name: storeCode || '',
+                description: description || undefined,
+            }));
     });
 
     const termsAndConditionsProvisioned = computed(() => !!settingsData.value?.termsOfServiceUrl);
@@ -135,7 +138,7 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
 
     const formSteps = computed<ReadonlyArray<FormStepConfig>>(() => {
         const skipStoreStep = storesSelectorItems.value.length === 1 && termsAndConditionsProvisioned.value;
-        return getFormSteps({ i18n, getFieldConfig, visibilityConfig: props().fieldsConfig?.visibility }).filter(
+        return getFormSteps({ getFieldConfig, visibilityConfig: props().fieldsConfig?.visibility }).filter(
             step => !(step.id === 'store' && skipStoreStep)
         );
     });
@@ -143,7 +146,7 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationExte
     const stepperItems = computed(() =>
         formSteps.value.map(step => ({
             id: step.id,
-            label: i18n.get(`payByLink.creation.form.steps.${step.id}` as TranslationKey),
+            label: i18n.get(`payByLink.creation.form.steps.${step.id}` as PayByLinkTranslationKey),
         }))
     );
 

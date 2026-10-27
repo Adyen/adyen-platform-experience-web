@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { sameValue } from './compare';
+import { isShallowEqual, sameValue } from './compare';
 
 describe('sameValue', () => {
     test('should return `true` if both arguments are NaN (unlike strict equality)', () => {
@@ -8,10 +8,10 @@ describe('sameValue', () => {
             [NaN, [NaN]],
         ]);
 
-        map.forEach((nans, first_nan) => {
-            nans.forEach(second_nan => {
-                expect(first_nan === second_nan).toBe(false);
-                expect(sameValue(first_nan, second_nan)).toBe(true);
+        map.forEach((nans, firstNan) => {
+            nans.forEach(secondNan => {
+                expect(firstNan === secondNan).toBe(false);
+                expect(sameValue(firstNan, secondNan)).toBe(true);
             });
         });
     });
@@ -22,10 +22,10 @@ describe('sameValue', () => {
             [0, [0]],
         ]);
 
-        map.forEach((zeros, first_zero) => {
-            zeros.forEach(second_zero => {
-                expect(first_zero === second_zero).toBe(true);
-                expect(sameValue(first_zero, second_zero)).toBe(true);
+        map.forEach((zeros, firstZero) => {
+            zeros.forEach(secondZero => {
+                expect(firstZero === secondZero).toBe(true);
+                expect(sameValue(firstZero, secondZero)).toBe(true);
             });
         });
     });
@@ -39,9 +39,9 @@ describe('sameValue', () => {
             [new Date(), new Date()],
         ]);
 
-        map.forEach((second_value, first_value) => {
-            expect(first_value === second_value).toBe(false);
-            expect(sameValue(first_value, second_value)).toBe(false);
+        map.forEach((secondValue, firstValue) => {
+            expect(firstValue === secondValue).toBe(false);
+            expect(sameValue(firstValue, secondValue)).toBe(false);
         });
     });
 
@@ -57,5 +57,32 @@ describe('sameValue', () => {
             expect(value === value).toBe(true);
             expect(sameValue(value, value)).toBe(true);
         });
+    });
+});
+
+describe('isShallowEqual', () => {
+    test('returns true for the same object or two objects with equal primitive properties', () => {
+        const value = { illustrations: 'hidden' as const, titles: 'visible' as const };
+
+        expect(isShallowEqual(value, value)).toBe(true);
+        expect(isShallowEqual(value, { illustrations: 'hidden', titles: 'visible' })).toBe(true);
+    });
+
+    test('returns false when a property value or property name differs', () => {
+        expect(isShallowEqual({ illustrations: 'hidden' }, { illustrations: 'visible' })).toBe(false);
+        expect(isShallowEqual({ illustrations: undefined }, { titles: undefined })).toBe(false);
+    });
+
+    test('compares nested objects by reference', () => {
+        const nested = { dataGrid: 'condensed' };
+
+        expect(isShallowEqual({ density: nested }, { density: nested })).toBe(true);
+        expect(isShallowEqual({ density: nested }, { density: { dataGrid: 'condensed' } })).toBe(false);
+    });
+
+    test('handles nullish values', () => {
+        expect(isShallowEqual(undefined, undefined)).toBe(true);
+        expect(isShallowEqual(null, null)).toBe(true);
+        expect(isShallowEqual(undefined, {})).toBe(false);
     });
 });

@@ -1,5 +1,5 @@
 import type { Meta } from '@storybook/vue3';
-import { TransactionsOverviewMeta } from './meta';
+import { transactionsOverviewMeta } from './meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { TransactionsOverviewExternalProps } from '../../src';
 import { http, HttpResponse } from 'msw';
@@ -8,12 +8,13 @@ import { TRANSACTIONS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/trans
 import {
     CUSTOM_TRANSLATIONS,
     DATA_CUSTOMIZATION_DETAILS,
-    DATA_CUSTOMIZATION_LIST,
+    DATA_CUSTOMIZATION_DATA_GRID,
     getCustomDataTransactions,
 } from '../../../fixtures/data/TransactionsOverview';
+import { withDelay } from '@integration-components/testing/msw';
 
 const meta: Meta<ElementProps<TransactionsOverviewExternalProps>> = {
-    ...TransactionsOverviewMeta,
+    ...transactionsOverviewMeta,
     title: 'Mocked/Transactions/Transactions Overview',
 };
 
@@ -22,6 +23,14 @@ const sharedArgs = { mockedApi: true } as const;
 export const Default: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Default',
     args: sharedArgs,
+};
+
+export const Condensed: ElementStory<TransactionsOverviewExternalProps> = {
+    name: 'Condensed',
+    args: {
+        ...sharedArgs,
+        dataGridDensity: 'condensed',
+    },
 };
 
 export const SingleBalanceAccount: ElementStory<TransactionsOverviewExternalProps> = {
@@ -89,15 +98,18 @@ export const DataCustomization: ElementStory<TransactionsOverviewExternalProps> 
         },
         dataCustomization: {
             details: DATA_CUSTOMIZATION_DETAILS,
-            list: DATA_CUSTOMIZATION_LIST,
+            dataGrid: DATA_CUSTOMIZATION_DATA_GRID,
         },
     },
     parameters: {
         msw: {
             handlers: [
-                http.get(TRANSACTIONS_ENDPOINTS.transactions, () => {
-                    return HttpResponse.json({ data: getCustomDataTransactions(), _links: {} });
-                }),
+                http.get(
+                    TRANSACTIONS_ENDPOINTS.transactions,
+                    withDelay(() => {
+                        return HttpResponse.json({ data: getCustomDataTransactions(), _links: {} });
+                    })
+                ),
             ],
         },
     },

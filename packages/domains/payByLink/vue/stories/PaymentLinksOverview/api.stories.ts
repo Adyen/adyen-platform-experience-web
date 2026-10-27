@@ -1,10 +1,10 @@
 import type { Meta } from '@storybook/vue3';
-import { PaymentLinksOverviewMeta } from './meta';
+import { paymentLinksOverviewMeta } from './meta';
 import type { PaymentLinksOverviewExternalProps } from '../../src';
 import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT, SessionControls } from '@integration-components/testing/storybook-helpers';
 
 const meta: Meta<ElementProps<PaymentLinksOverviewExternalProps>> = {
-    ...PaymentLinksOverviewMeta,
+    ...paymentLinksOverviewMeta,
     title: 'API-connected/Pay by Link/Payment Links Overview',
 };
 

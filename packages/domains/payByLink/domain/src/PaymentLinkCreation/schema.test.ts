@@ -1,10 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import { buildStepSchema } from './schema';
 import { getFormSteps, type FormFieldConfig, type FormStepConfig } from './formSteps';
-import type { Localization } from '@integration-components/core';
+import type { I18n } from '@integration-components/core/vue';
 import type { IPaymentLinkConfigurationElement } from '@integration-components/types';
-
-type I18n = Localization['i18n'];
 
 const i18n = {
     get: (key: string, options?: { values?: Record<string, unknown> }) => {
@@ -36,7 +34,7 @@ describe('buildStepSchema - merchantReference min length', () => {
         expect(result.success).toBe(false);
         if (!result.success) {
             const issue = result.error.issues.find(i => i.path.join('.') === 'reference');
-            expect(issue?.message).toBe('common.errors.minLength:{"minLength":3}');
+            expect(issue?.message).toBe('payByLink.creation.errors.minLength:{"minLength":3}');
         }
     });
 
@@ -66,7 +64,6 @@ describe('buildStepSchema - link validity presets', () => {
             options: [{ durationUnit: 'day', quantity: 90, type: 'fixed' }],
         } satisfies IPaymentLinkConfigurationElement;
         const paymentStep = getFormSteps({
-            i18n,
             getFieldConfig: field => (field === 'linkValidity' ? linkValidity : undefined),
         }).find(step => step.id === 'payment');
 

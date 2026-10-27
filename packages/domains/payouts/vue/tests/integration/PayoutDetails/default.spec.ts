@@ -78,7 +78,6 @@ test.describe('Default', () => {
         const list = breakdown.toggleContent;
 
         const locators = [
-            list.getByRole('columnheader', { name: 'Funds captured', exact: true }),
             ...BentoPayoutBreakdown.getPairwiseLocators(list, ['Captured', '1,200.00 EUR']),
             ...BentoPayoutBreakdown.getPairwiseLocators(list, ['Chargebacks', '- 300.00 EUR']),
             ...BentoPayoutBreakdown.getPairwiseLocators(list, ['Corrections', '- 10.00 EUR']),
@@ -93,6 +92,7 @@ test.describe('Default', () => {
 
         await breakdown.expectToBeExpanded();
         await expect(list).toBeVisible();
+        await expect(list).toHaveAccessibleName('Funds captured');
         for (const locator of locators) await expect(locator).toBeVisible();
 
         await breakdown.toggle();

@@ -1,28 +1,52 @@
 <script setup lang="ts">
-import { ref, provide } from 'vue';
-import type { CoreInstance } from './types';
+import { computed, inject, provide, ref, useSlots } from 'vue';
+import type { CoreInstance, GlobalAppearance } from './types';
+import { useBentoTranslationOverrides } from '@adyen/bento-vue3';
 import CoreProvider from './Context/CoreProvider.vue';
+import { resolveAppearance } from './customization';
 import ConfigProvider from './ConfigContext/ConfigProvider.vue';
 import EventDispatcherProvider from './Context/eventDispatcher/EventDispatcherProvider.vue';
 import type { ExternalComponentType } from '@integration-components/types';
-import { COMPONENT_REF_KEY } from './Context/constants';
+import { COMPONENT_REF_KEY, DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
+import ComponentAvailabilityGate from './componentAvailability/ComponentAvailabilityGate';
+import styles from './UIElement.module.scss';
 import './UIElement.scss';
 
-interface Props {
+interface Props<TComponentAppearance extends GlobalAppearance = GlobalAppearance> {
     core: CoreInstance;
+    bentoOverrides: Record<string, string>;
     componentName: ExternalComponentType;
-    customClassNames?: string;
+    componentAppearance?: TComponentAppearance;
+    globalAppearance?: GlobalAppearance;
     refreshComponent: () => void;
 }
 
 const props = defineProps<Props>();
 const componentRef = ref<HTMLDivElement | null>(null);
+const slots = useSlots();
+const appearance = computed(() => resolveAppearance(props.globalAppearance ?? props.core.options.appearance, props.componentAppearance));
+const domainTranslations = inject(DOMAIN_TRANSLATION_BINDING_KEY);
+
+if (!domainTranslations) throw new Error('[UIElementProvider] Domain translations must be configured before mounting.');
+
+// The gated component is the slot's root vnode; surface its `onContactSupport` prop so the
+// availability error can offer a contact-support action. Read at render time rather than in a
+// computed: the slot closes over a plain props copy, so a computed would never see later updates.
+const getOnContactSupport = () => {
+    const component = (slots.default?.() ?? [])[0];
+    const componentProps = component?.props as Record<string, unknown> | null | undefined;
+    return componentProps?.onContactSupport as (() => void) | undefined;
+};
+
 provide(COMPONENT_REF_KEY, componentRef);
+useBentoTranslationOverrides(props.bentoOverrides);
 </script>
 
 <template>
     <CoreProvider
-        :i18n="props.core.i18n"
+        :i18n="domainTranslations.i18n"
+        :translation-domain="domainTranslations.translationDomain"
+        :appearance="appearance"
         :loading-context="props.core.loadingContext"
         :get-cdn-config="props.core.getCdnConfig"
         :get-cdn-dataset="props.core.getCdnDataset"
@@ -33,9 +57,14 @@ provide(COMPONENT_REF_KEY, componentRef);
     >
         <ConfigProvider :session="props.core.session" :type="props.componentName">
             <EventDispatcherProvider :component-name="props.componentName" :analytics-enabled="props.core.analyticsEnabled ?? true">
-                <section ref="componentRef" :class="['adyen-pe-component', props.customClassNames]" data-testid="component-root">
-                    <div class="adyen-pe-component__container">
-                        <slot />
+                <section ref="componentRef" class="adyen-pe-component" data-testid="component-root">
+                    <div
+                        data-testid="component-container"
+                        :class="[styles.container, appearance?.container === 'hidden' ? styles.containerHidden : '']"
+                    >
+                        <ComponentAvailabilityGate :type="props.componentName" :on-contact-support="getOnContactSupport()">
+                            <slot />
+                        </ComponentAvailabilityGate>
                     </div>
                 </section>
             </EventDispatcherProvider>

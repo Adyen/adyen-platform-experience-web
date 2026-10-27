@@ -1,45 +1,37 @@
 <script setup lang="ts">
 import { ref, computed, watch, onUnmounted } from 'vue';
-import { BentoTypography, BentoTabs, BentoTab, BentoButton, BentoAlert, BentoModal } from '@adyen/bento-vue3';
+import { BentoTypography, BentoTabs, BentoTab, BentoButtonActions, BentoAlert, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import PlusIcon from '@adyen/ui-assets-icons-16/vue/plus';
 import SettingsIcon from '@adyen/ui-assets-icons-16/vue/settings';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
+import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
 import PaymentLinksFilters from './PaymentLinksFilters.vue';
 import PaymentLinksTable from './PaymentLinksTable.vue';
-import PaymentLinkCreation from '../../PaymentLinkCreation/components/PaymentLinkCreationContainer/PaymentLinkCreationContainer.vue';
-import PaymentLinkDetails from '../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails.vue';
-import PaymentLinkSettings from '../../PaymentLinkSettings/components/PaymentLinkSettingsContainer.vue';
+import PaymentLinkDetailsModal from './PaymentLinkDetailsModal.vue';
+import PaymentLinkOverviewModal from './PaymentLinkOverviewModal.vue';
 import { usePaymentLinksList } from '../composables/usePaymentLinksList';
 import { DEFAULT_PAYMENT_LINK_STATUS_GROUP, PAYMENT_LINK_STATUS_GROUPS_TABS } from '../constants';
 import type { PaymentLinksFiltersValue } from './PaymentLinksFilters.vue';
 import type { IPaymentLinkFilters, IPaymentLinkItem, IPaymentLinkStatusGroup } from '@integration-components/types';
-import type { StoreData, PaymentLinksOverviewModalType } from '../../../../domain/src';
+import type { PaymentLinkCreationFormValues, StoreData, PaymentLinksOverviewModalType } from '../../../../domain/src';
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../../../../domain/src';
-import type { PaymentLinksOverviewExternalProps } from '../types';
+import type { PaymentLinksOverviewComponentProps } from '../types';
 import { createPaymentLinksError } from '../utils/error';
 import styles from './PaymentLinksOverview.module.scss';
 
-const props = defineProps<{
-    allowLimitSelection?: boolean;
-    hideTitle?: boolean;
-    preferredLimit?: number;
-    showDetails?: boolean;
-    storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
-    onFiltersChanged?: PaymentLinksOverviewExternalProps['onFiltersChanged'];
-    onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
-    onContactSupport?: () => void;
-    paymentLinkCreation?: PaymentLinksOverviewExternalProps['paymentLinkCreation'];
-    paymentLinkSettings?: PaymentLinksOverviewExternalProps['paymentLinkSettings'];
-    stores: StoreData[] | undefined;
-    allStores: StoreData[] | undefined;
-    isFiltersLoading: boolean;
-    storeError?: Error;
-    filterOptions: IPaymentLinkFilters | undefined;
-    filterOptionsError?: Error;
-}>();
+const props = defineProps<
+    PaymentLinksOverviewComponentProps & {
+        stores: StoreData[] | undefined;
+        allStores: StoreData[] | undefined;
+        isFiltersLoading: boolean;
+        storeError?: Error;
+        filterOptions: IPaymentLinkFilters | undefined;
+        filterOptionsError?: Error;
+    }
+>();
 
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 const config = useConfigContext();
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
@@ -98,9 +90,7 @@ const paymentLinksListResult = usePaymentLinksList(() => ({
     paymentLinkId: filtersValue.value.paymentLinkId,
     createdSince: filtersValue.value.createdSince,
     createdUntil: filtersValue.value.createdUntil,
-    allowLimitSelection: props.allowLimitSelection,
-    preferredLimit: props.preferredLimit,
-    onFiltersChanged: props.onFiltersChanged,
+    pagination: props.pagination,
     lastRefreshTimestamp: lastRefreshTimestamp.value,
 }));
 
@@ -137,17 +127,18 @@ const isDetailsModalOpen = ref(false);
 const selectedPaymentLink = ref<IPaymentLinkItem | null>(null);
 const hasDetailsToRefresh = ref(false);
 
-function showDetailsModal() {
+function showDetailsModal(paymentLink: IPaymentLinkItem) {
+    selectedPaymentLink.value = paymentLink;
     isDetailsModalOpen.value = true;
 }
 
 function onRowClick(paymentLink: IPaymentLinkItem) {
-    selectedPaymentLink.value = paymentLink;
+    const showPaymentLinkDetailsModal = () => showDetailsModal(paymentLink);
 
     if (props.onRecordSelection) {
-        props.onRecordSelection({ id: paymentLink.paymentLinkId, showModal: showDetailsModal });
-    } else if (props.showDetails !== false) {
-        showDetailsModal();
+        props.onRecordSelection({ id: paymentLink.paymentLinkId, showDetails: showPaymentLinkDetailsModal });
+    } else {
+        showPaymentLinkDetailsModal();
     }
 }
 
@@ -201,54 +192,50 @@ function refreshPaymentLinkList() {
     lastRefreshTimestamp.value = performance.now();
 }
 
-function onPaymentLinkCreated(paymentLink: any) {
-    props.paymentLinkCreation?.onPaymentLinkCreated?.(paymentLink);
+function onCreate(paymentLink: PaymentLinkCreationFormValues) {
+    props.paymentLinkCreation?.onCreate?.(paymentLink);
     hasToRefresh.value = true;
 }
 
 const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettings || config.endpoints?.createPBLPaymentLink));
+const actionButtons = computed<BentoButtonActionsList>(() => {
+    const actions: BentoButtonActionsList = [];
+
+    if (config.endpoints?.savePayByLinkSettings) {
+        actions.push({
+            title: i18n.get('payByLink.overview.actions.settings.a11y.label'),
+            event: openSettingsModal,
+            variant: 'secondary',
+            condensed: isMobile.value,
+            iconOnly: true,
+            iconLeft: SettingsIcon,
+        });
+    }
+
+    if (config.endpoints?.createPBLPaymentLink) {
+        actions.push({
+            title: i18n.get('payByLink.overview.list.actions.createPaymentLink'),
+            event: openPaymentLinkModal,
+            variant: 'primary',
+            condensed: isMobile.value,
+            iconOnly: isMobile.value,
+            iconLeft: isMobile.value ? PlusIcon : undefined,
+        });
+    }
+
+    return actions;
+});
 </script>
 
 <template>
     <div :class="[styles.root, isMobile ? styles.rootXs : '']">
         <div :class="styles.header">
-            <BentoTypography v-if="!props.hideTitle" variant="title">
+            <BentoTypography v-if="!hideTitles" variant="title">
                 {{ i18n.get('payByLink.overview.title') }}
             </BentoTypography>
             <div v-else />
             <div v-if="hasActionButtons" :class="styles.actionsContainer">
-                <BentoButton v-if="!isMobile && config.endpoints?.createPBLPaymentLink" variant="primary" @click="openPaymentLinkModal">
-                    {{ i18n.get('payByLink.overview.list.actions.createPaymentLink') }}
-                </BentoButton>
-                <BentoButton
-                    v-if="!isMobile && config.endpoints?.savePayByLinkSettings"
-                    variant="secondary"
-                    :class="styles.settingsButton"
-                    :aria-label="i18n.get('payByLink.overview.actions.settings.a11y.label')"
-                    @click="openSettingsModal"
-                >
-                    <SettingsIcon />
-                </BentoButton>
-                <BentoButton
-                    v-if="isMobile && config.endpoints?.createPBLPaymentLink"
-                    variant="primary"
-                    condensed
-                    :class="styles.actionButtonXs"
-                    :aria-label="i18n.get('payByLink.overview.list.actions.createPaymentLink')"
-                    @click="openPaymentLinkModal"
-                >
-                    <PlusIcon />
-                </BentoButton>
-                <BentoButton
-                    v-if="isMobile && config.endpoints?.savePayByLinkSettings"
-                    variant="secondary"
-                    condensed
-                    :class="styles.actionButtonXs"
-                    :aria-label="i18n.get('payByLink.overview.actions.settings.a11y.label')"
-                    @click="openSettingsModal"
-                >
-                    <SettingsIcon />
-                </BentoButton>
+                <BentoButtonActions :actions="actionButtons" layout="buttons-end" />
             </div>
         </div>
 
@@ -264,6 +251,7 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
 
         <div :class="styles.filtersContainer">
             <PaymentLinksFilters
+                :compact="isMobile"
                 :stores="props.stores"
                 :store-error="props.storeError"
                 :filter-error="props.filterOptionsError"
@@ -305,51 +293,23 @@ const hasActionButtons = computed(() => !!(config.endpoints?.savePayByLinkSettin
             :current-page="paymentLinksListResult.page.value + 1"
         />
 
-        <BentoModal
-            :is-open="isDetailsModalOpen"
-            size="large"
-            :is-dismissible="true"
-            :aria-label="i18n.get('payByLink.details.title')"
-            @close-modal="closeDetailsModal"
-        >
-            <template #content>
-                <PaymentLinkDetails
-                    v-if="selectedPaymentLink"
-                    :id="selectedPaymentLink.paymentLinkId"
-                    hide-title
-                    :on-contact-support="props.onContactSupport"
-                    :on-dismiss="closeDetailsModal"
-                    :on-update="onPaymentLinkUpdate"
-                    is-dismiss-button-hidden
-                />
-            </template>
-        </BentoModal>
+        <PaymentLinkDetailsModal
+            v-if="isDetailsModalOpen && selectedPaymentLink"
+            :id="selectedPaymentLink.paymentLinkId"
+            :on-contact-support="props.onContactSupport"
+            :on-close="closeDetailsModal"
+            :on-update="onPaymentLinkUpdate"
+        />
 
-        <BentoModal
-            :is-open="isModalVisible"
-            size="large"
-            :is-dismissible="true"
-            :aria-label="i18n.get('payByLink.overview.title')"
-            @close-modal="onCloseModal"
-        >
-            <template #content>
-                <PaymentLinkCreation
-                    v-if="modalType === 'Creation'"
-                    :fields-config="props.paymentLinkCreation?.fieldsConfig"
-                    :store-ids="props.storeIds"
-                    :on-payment-link-created="onPaymentLinkCreated"
-                    :on-creation-dismiss="props.paymentLinkCreation?.onCreationDismiss"
-                    :on-contact-support="props.onContactSupport"
-                    embedded-in-overview
-                />
-                <PaymentLinkSettings
-                    v-else-if="modalType === 'Settings'"
-                    v-bind="props.paymentLinkSettings"
-                    :store-ids="props.storeIds"
-                    :on-contact-support="props.onContactSupport"
-                    embedded-in-overview
-                />
-            </template>
-        </BentoModal>
+        <PaymentLinkOverviewModal
+            v-if="isModalVisible && modalType"
+            :modal-type="modalType"
+            :store-ids="props.storeIds"
+            :payment-link-creation="props.paymentLinkCreation"
+            :payment-link-settings="props.paymentLinkSettings"
+            :on-create="onCreate"
+            :on-contact-support="props.onContactSupport"
+            :on-close="onCloseModal"
+        />
     </div>
 </template>

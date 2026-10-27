@@ -2,9 +2,9 @@ import { spawnSync } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const storybookBin = resolve(__dirname, '../node_modules/.bin/storybook');
-const viteBin = resolve(__dirname, '../node_modules/.bin/vite');
+const currentDir = dirname(fileURLToPath(import.meta.url));
+const storybookBin = resolve(currentDir, '../node_modules/.bin/storybook');
+const viteBin = resolve(currentDir, '../node_modules/.bin/vite');
 
 const args = process.argv.slice(2);
 const preview = args.includes('--preview');

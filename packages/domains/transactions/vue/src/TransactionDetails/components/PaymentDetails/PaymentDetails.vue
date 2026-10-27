@@ -28,6 +28,7 @@ const props = defineProps<{
     refundedAmount: number;
     refundedState: RefundedState;
     refundLocked: boolean;
+    onDismiss?: () => void;
     setActiveView: (view: ActiveView) => void;
     transaction: TransactionDetails;
     transactionNavigator: TransactionNavigatorState;
@@ -79,10 +80,10 @@ const onTabChange = (newIndex: number) => {
 
         <div :class="layoutStyles.container">
             <BentoTabs
-                :class="styles.tabs"
                 v-if="navigationTabs.length > 1"
+                :class="styles.tabs"
                 :aria-label="i18n.get('transactions.details.viewSelect.a11y.label')"
-                :activeTabIndex="activeTabIndex"
+                :active-tab-index="activeTabIndex"
                 @update:active-tab-index="onTabChange"
             >
                 <BentoTab v-for="tab in navigationTabs" :key="tab.id" :title="i18n.get(tab.label)" />
@@ -112,6 +113,7 @@ const onTabChange = (newIndex: number) => {
             :extra-fields="props.extraFields"
             :refund-available="props.refundAvailable"
             :refund-disabled="props.refundDisabled"
+            :on-dismiss="props.onDismiss"
             :set-active-view="props.setActiveView"
             :transaction="props.transaction"
             :transaction-navigator="props.transactionNavigator"

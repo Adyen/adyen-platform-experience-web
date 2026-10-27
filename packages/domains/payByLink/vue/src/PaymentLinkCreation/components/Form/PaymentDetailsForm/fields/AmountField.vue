@@ -35,7 +35,7 @@ const dropdownProps = computed<BentoInputDropdownProps>(() => ({
     modelValue: currencyValue.value,
     readonly: currencyConfig.value.readOnly,
     'aria-label': i18n.get('payByLink.creation.fields.amount.currency.ariaLabel'),
-    placeholder: i18n.get('common.inputs.select.placeholder'),
+    placeholder: i18n.get('payByLink.creation.inputs.select.placeholder'),
     class: styles.amountCurrency,
 }));
 

@@ -1,24 +1,17 @@
-import type { CustomDataRetrieved, DataCustomizationObject, IPayout, UIElementProps } from '@integration-components/types';
+import type { CustomDataRetrieved, DataCustomizationObject, IPayout, WithBalanceAccountId } from '@integration-components/types';
+import type { PaginationProps } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import type { PayoutDetailsCustomization } from '../PayoutDetails/types';
-
-type PayoutsTableCols = 'createdAt' | 'payoutType' | 'netPayoutAmount' | 'fundingSource' | 'summary';
+import type { PayoutsTableCols } from './fields';
 
 export type PayoutsTableFields = StringWithAutocompleteOptions<PayoutsTableCols>;
 
-export type PayoutsListCustomization = DataCustomizationObject<PayoutsTableFields, IPayout[], CustomDataRetrieved[]>;
+export type PayoutsDataGridCustomization = DataCustomizationObject<PayoutsTableFields, IPayout[], CustomDataRetrieved[]>;
 
-export interface PayoutsOverviewProps extends UIElementProps {
-    allowLimitSelection?: boolean;
-    balanceAccountId?: string;
-    onFiltersChanged?: (filters: { balanceAccountId?: string; createdSince?: string; createdUntil?: string }) => any;
-    preferredLimit?: 10 | 20;
-    showDetails?: boolean;
-    onRecordSelection?: (selection: { balanceAccountId: string; date: string; showModal: () => void }) => any;
+export interface PayoutsOverviewProps extends PaginationProps, WithBalanceAccountId {
+    onRecordSelection?: (selection: { id: string; date: string; showDetails: () => void }) => void;
     dataCustomization?: {
-        list?: PayoutsListCustomization;
+        dataGrid?: PayoutsDataGridCustomization;
         details?: PayoutDetailsCustomization;
     };
 }
-
-export type PayoutsOverviewComponentProps = PayoutsOverviewProps;

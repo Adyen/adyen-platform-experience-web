@@ -5,14 +5,43 @@ import path from 'path';
 
 const STORY_ID = 'mocked-pay-by-link-payment-link-settings--default';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const fullSizeIcon = path.resolve(__dirname, '../../../../fixtures/files/theme-logo.jpg');
-const fullWidthIcon = path.resolve(__dirname, '../../../../fixtures/files/theme-logo-full-width.jpg');
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+const fullSizeIcon = path.resolve(dirname, '../../../../fixtures/files/theme-logo.jpg');
+const fullWidthIcon = path.resolve(dirname, '../../../../fixtures/files/theme-logo-full-width.jpg');
+const invalidDimensionsMessage = 'File dimensions not met with the requirements';
 
 test.describe('Default', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
+    });
+
+    test('should keep the title in the standalone settings content', async ({ page }) => {
+        await Promise.all([
+            expect(page.getByRole('heading', { name: 'Settings', exact: true })).toBeVisible(),
+            expect(page.getByRole('dialog')).toHaveCount(0),
+        ]);
+    });
+
+    test('should render the settings sections as accessible navigation items', async ({ page }) => {
+        const navigation = page.getByRole('navigation', { name: 'Settings' });
+
+        await expect(navigation).toBeVisible();
+        await expect(navigation.locator('button[aria-current="true"]')).toContainText('Theme');
+
+        await navigation.getByRole('button', { name: 'Terms and conditions' }).click();
+        await expect(navigation.locator('button[aria-current="true"]')).toContainText('Terms and conditions');
+    });
+
+    test('should only show navigation chevrons on mobile', async ({ page }) => {
+        const navigation = page.getByRole('navigation', { name: 'Settings' });
+        const chevrons = navigation.getByTestId('secondary-nav-chevron');
+
+        await expect(chevrons).toHaveCount(0);
+
+        await page.setViewportSize({ width: 375, height: 800 });
+        await expect(chevrons).toHaveCount(2);
+        await expect(chevrons.first()).toBeVisible();
     });
 
     test('should successfully save theme changes', async ({ page }) => {
@@ -54,6 +83,17 @@ test.describe('Default', () => {
         await expect(page.getByText('The changes have been saved successfully.')).toBeVisible();
     });
 
+    test('should save the existing terms and conditions URL without changes', async ({ page }) => {
+        await page.getByRole('button', { name: 'Terms and conditions' }).click();
+        await expect(page.getByRole('textbox', { name: 'Your terms and conditions URL' })).toHaveValue('https://example.com/terms-and-conditions');
+
+        const saveRequest = page.waitForRequest(request => request.method() === 'POST' && request.url().includes('/paybylink/settings/'));
+        await page.getByRole('button', { name: 'Save' }).click();
+
+        expect((await saveRequest).postDataJSON()).toEqual({ termsOfServiceUrl: 'https://example.com/terms-and-conditions' });
+        await expect(page.getByText('The changes have been saved successfully.')).toBeVisible();
+    });
+
     test('should validate fields for theme changes', async ({ page }) => {
         const saveButton = page.getByRole('button', { name: 'Save' });
         await saveButton.click();
@@ -64,7 +104,7 @@ test.describe('Default', () => {
         const fullSizeUpload = page.locator('input[type="file"]').first();
         await fullSizeUpload.setInputFiles(fullWidthIcon);
 
-        const fullSizeValidationDimensionError = page.getByText('Image dimensions exceed limits');
+        const fullSizeValidationDimensionError = page.getByText(invalidDimensionsMessage);
         await expect(fullSizeValidationDimensionError).toBeVisible();
         const fullSizeValidationMaxImageError = page.getByText('Max image dimensions: 200 × 200px');
         await expect(fullSizeValidationMaxImageError).toBeVisible();
@@ -73,7 +113,7 @@ test.describe('Default', () => {
 
         const fullWidthUpload = page.locator('input[type="file"]').nth(1);
         await fullWidthUpload.setInputFiles(fullSizeIcon);
-        const fullWidthValidationError = page.getByText('Image dimensions exceed limits');
+        const fullWidthValidationError = page.getByText(invalidDimensionsMessage);
         await expect(fullWidthValidationError).toBeVisible();
         const fullWidthMaxImageError = page.getByText('Max image dimensions: 300 × 30px');
         await expect(fullWidthMaxImageError).toBeVisible();
@@ -112,5 +152,10 @@ test.describe('Default', () => {
 
         await expect(confirmErrorMessage).not.toBeVisible();
         await expect(validUrlErrorMessage).not.toBeVisible();
+    });
+
+    test('should show store description as selected value in the store selector', async ({ page }) => {
+        const storeSelector = page.getByRole('combobox').first();
+        await expect(storeSelector).toHaveText('Main Store - New York');
     });
 });

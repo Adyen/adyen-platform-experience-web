@@ -3,6 +3,7 @@ import type { CustomTranslations as Translations } from './translations';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '@integration-components/utils/types';
 import { SupportedLocales } from './Localization/types';
 import type { ThemeProps } from '@adyen/adyen-shared-web';
+import type { GlobalAppearance } from '@integration-components/types';
 
 type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<
     WithReplacedUnderscoreOrDash<KeyOfRecord<T extends Translations ? T : Record<never, never>>, '_', '-'>,
@@ -31,7 +32,7 @@ interface _CoreOptions<CustomTranslations extends Translations = Record<never, n
         | (CustomTranslations extends CustomTranslations ? CreateLocalesUnionFromCustomTranslations<CustomTranslations> : never)
         | SupportedLocales;
 
-    onError?: onErrorHandler;
+    onError?: OnErrorHandler;
     onSessionCreate: SessionRequest;
 
     /**
@@ -39,6 +40,8 @@ interface _CoreOptions<CustomTranslations extends Translations = Record<never, n
      * See {@link https://docs.adyen.com/checkout/components-web/localization-components | Localizing Components}
      */
     translations?: CustomTranslations extends Translations ? CustomTranslations : Translations;
+
+    appearance?: GlobalAppearance;
 
     analytics?: AnalyticsConfig;
 
@@ -76,7 +79,8 @@ export interface CustomTheme {
     dark?: ThemeVariables;
 }
 
-export type onErrorHandler = (error: Error) => any;
+export type OnErrorHandler = (error: Error) => void;
+
 export type AnalyticsConfig = {
     enabled?: boolean;
 };

@@ -21,8 +21,10 @@ import {
 import type { FilterType, MixpanelProperty } from '@integration-components/core/EventDispatcher/eventDispatcher/user-events';
 import { TRANSACTION_CATEGORIES } from '../../constants';
 import type { IBalanceAccountBase, TransactionsFilters } from '../../types';
+import styles from './TransactionsFilters.module.scss';
 
 const props = defineProps<{
+    compact?: boolean;
     balanceAccounts?: IBalanceAccountBase[];
 }>();
 
@@ -120,6 +122,7 @@ const quickSelectRanges = createQuickSelectRanges(
         lastMonth: quickSelectDateRanges.lastMonth,
         yearToDate: quickSelectDateRanges.yearToDate,
     },
+    'transactions.overview.common.filters.types.date.rangeSelect.options.',
     key => i18n.get(key)
 );
 
@@ -129,9 +132,10 @@ const sharedFilterItems = computed<BentoFilterBarModel>(() => {
     if (hasMultipleBalanceAccounts.value) {
         items.push({
             field: 'balanceAccountId',
-            label: i18n.get('common.filters.types.account.label'),
+            label: i18n.get('transactions.overview.common.filters.types.account.label'),
             type: BentoFilterItemType.SELECT,
             defaultValue: balanceAccountOptions.value[0]?.value,
+            visible: !props.compact,
             options: {
                 listboxItems: balanceAccountOptions.value,
             },
@@ -140,9 +144,10 @@ const sharedFilterItems = computed<BentoFilterBarModel>(() => {
 
     items.push({
         field: 'dateRange',
-        label: i18n.get('common.filters.types.date.label'),
+        label: i18n.get('transactions.overview.common.filters.types.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         defaultValue: dateRangeDefaultValue,
+        visible: !props.compact,
         options: {
             numberOfMonths: 1,
             ...getDateRangeFilterOptions({ quickSelectRanges, disableUnavailableDates: true }),
@@ -170,6 +175,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             field: 'categories',
             label: i18n.get('transactions.overview.filters.types.category.label'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
+            visible: !props.compact,
             options: {
                 checkboxItems: TRANSACTION_CATEGORIES.map(c => ({ label: c, value: c })),
             },
@@ -180,6 +186,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
                 field: 'currencies',
                 label: i18n.get('transactions.overview.filters.types.currency.label'),
                 type: BentoFilterItemType.SELECT_CURRENCY,
+                visible: !props.compact,
                 options: {
                     listboxItems: availableCurrencies.value.map(c => ({ label: c, value: c })),
                     multiple: true,
@@ -191,6 +198,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             field: 'paymentPspReference',
             label: i18n.get('transactions.overview.filters.types.paymentPspReference.label'),
             type: TransactionPspReferenceFilter,
+            visible: !props.compact,
             options: {
                 placeholder: i18n.get('transactions.overview.filters.types.paymentPspReference.placeholder'),
             },
@@ -419,6 +427,7 @@ const insightsFilterConfig = computed<BentoFilterBarModel>(() => {
             label: i18n.get('transactions.overview.filters.types.currency.label'),
             type: BentoFilterItemType.SELECT_CURRENCY,
             defaultValue: insightsCurrency.value,
+            visible: !props.compact,
             options: {
                 listboxItems: availableCurrencies.value.map(c => ({ label: c, value: c })),
             },
@@ -456,6 +465,20 @@ function onInsightsFilterInput(updatedValues: BentoFilterValues) {
 </script>
 
 <template>
-    <BentoFilterBar v-if="isTransactionsView" :config="filterConfig" :filter-values="filterValues" @input="onFilterInput" />
-    <BentoFilterBar v-else :config="insightsFilterConfig" :filter-values="insightsFilterValues" @input="onInsightsFilterInput" />
+    <div :class="[styles.filtersContainer, props.compact ? styles.filtersContainerCompact : '']">
+        <BentoFilterBar
+            v-if="isTransactionsView"
+            :show-applied-hidden-filters="false"
+            :config="filterConfig"
+            :filter-values="filterValues"
+            @input="onFilterInput"
+        />
+        <BentoFilterBar
+            v-else
+            :config="insightsFilterConfig"
+            :show-applied-hidden-filters="false"
+            :filter-values="insightsFilterValues"
+            @input="onInsightsFilterInput"
+        />
+    </div>
 </template>

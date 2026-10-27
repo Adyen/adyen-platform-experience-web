@@ -1,5 +1,5 @@
 import type { Meta } from '@storybook/vue3';
-import { ReportsOverviewMeta } from './meta';
+import { reportsOverviewMeta } from './meta';
 import { getWorker } from 'msw-storybook-addon';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { ReportsOverviewExternalProps } from '../../src';
@@ -7,13 +7,15 @@ import { createDownloadReportHandler, REPORTS_OVERVIEW_HANDLERS } from '../../..
 import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, getCustomDataReports } from '../../../fixtures/data/ReportsOverview';
 import { REPORTS_ENDPOINTS } from '../../../mocks/endpoints';
 import { http, HttpResponse } from 'msw';
+import { withDelay } from '@integration-components/testing/msw';
 
 type ReportsOverviewStoryArgs = ReportsOverviewExternalProps & { enforceDownloadDelay?: boolean };
 
 const meta: Meta<ElementProps<ReportsOverviewStoryArgs>> = {
-    ...ReportsOverviewMeta,
+    ...reportsOverviewMeta,
     title: 'Mocked/Reports/Reports Overview',
     argTypes: {
+        ...reportsOverviewMeta.argTypes,
         enforceDownloadDelay: {
             table: { disable: true },
         },
@@ -40,14 +42,17 @@ export const DataCustomization: ElementStory<ReportsOverviewExternalProps> = {
         coreOptions: {
             translations: { en_US: CUSTOM_TRANSLATIONS },
         },
-        dataCustomization: { list: DATA_CUSTOMIZATION },
+        dataCustomization: { dataGrid: DATA_CUSTOMIZATION },
     },
     parameters: {
         msw: {
             handlers: [
-                http.get(REPORTS_ENDPOINTS.reports, () => {
-                    return HttpResponse.json({ data: getCustomDataReports(), _links: {} });
-                }),
+                http.get(
+                    REPORTS_ENDPOINTS.reports,
+                    withDelay(() => {
+                        return HttpResponse.json({ data: getCustomDataReports(), _links: {} });
+                    })
+                ),
             ],
         },
     },

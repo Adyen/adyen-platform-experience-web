@@ -1,5 +1,5 @@
-import type { CoreInstance } from '@integration-components/core/vue';
-import type { PaymentLinkSettingsProps } from '../../../domain/src';
+import type { UIElementProps } from '@integration-components/core/vue';
+import type { PaymentLinkSettingsItem, PaymentLinkSettingsProps } from '../../../domain/src';
 
 export type {
     LogoType,
@@ -8,12 +8,17 @@ export type {
     PaymentLinkSettingsItem,
     PaymentLinkSettingsMenuItem,
     PaymentLinkSettingsPayload,
-    PaymentLinkSettingsProps,
     SettingsErrorContent,
     StoreItem,
     ThemeFormData,
 } from '../../../domain/src';
 
-export interface PaymentLinkSettingsExternalProps extends PaymentLinkSettingsProps {
-    core: CoreInstance;
-}
+export type PaymentLinkSettingsExternalProps = UIElementProps & PaymentLinkSettingsProps;
+
+export type PaymentLinkSettingsComponentProps = Omit<PaymentLinkSettingsExternalProps, 'core' | 'appearance'> & {
+    embeddedInOverview?: boolean;
+    hideTitle?: boolean;
+    navigateBack?: () => void;
+    onContactSupport?: () => void;
+    settingsItems?: PaymentLinkSettingsItem[];
+};

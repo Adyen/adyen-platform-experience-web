@@ -8,6 +8,16 @@ NC='\033[0m'
 
 echo "----- ${LIGHT_BLUE}Pre-commit hook checks started${NC} -----"
 
+echo "${GREEN}Synchronizing SDK translation catalogs${NC}"
+
+if pnpm run translations:sync -- --staged; then
+    :
+else
+    echo ""
+    echo " ${RED}✗✗✗✗✗ SDK translation synchronization failed${NC}"
+    exit 1
+fi
+
 echo "${GREEN}Running lint-staged (Prettier, Stylelint, ESLint)${NC}"
 
 if pnpm exec lint-staged --allow-empty; then

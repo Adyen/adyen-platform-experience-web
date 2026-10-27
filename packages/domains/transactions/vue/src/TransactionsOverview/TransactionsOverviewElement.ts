@@ -12,7 +12,7 @@ export class TransactionsOverviewElement extends UIElement<TransactionsOverviewE
         super(TransactionsOverviewContainer, props, 'transactions');
     }
 
-    protected configureApp(app: App): void {
+    protected configureComponentApp(app: App): void {
         app.use(BentoVue, { withToast: true, withDesignTokensCSSInjection: false });
     }
 }

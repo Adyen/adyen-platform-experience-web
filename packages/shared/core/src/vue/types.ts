@@ -1,14 +1,25 @@
 import type { AuthSession } from '../session/AuthSession';
 import type { AssetOptions } from '../Assets/Assets';
-import type { SessionObject, SessionRequest } from '../ConfigContext.types';
-import type { AnalyticsConfig, CoreOptions, CustomTheme, DevEnvironment, onErrorHandler, ThemeMode, ThemeVariables } from '../types';
+import type { CoreOptions } from '../types';
 import type { I18n } from './Context/types';
+import type { GlobalAppearance } from '@integration-components/types';
+import type Localization from '../Localization';
 
-export type { CoreOptions, CustomTheme, DevEnvironment, onErrorHandler, AnalyticsConfig, SessionObject, SessionRequest, ThemeMode, ThemeVariables };
+export type { AnalyticsConfig, CoreOptions, CustomTheme, DevEnvironment, OnErrorHandler, ThemeMode, ThemeVariables } from '../types';
+export type { DataGridAppearance, DensityMode, GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
+export type { SessionObject, SessionRequest } from '../ConfigContext.types';
+
+export interface UIElementProps<TComponentAppearance extends GlobalAppearance = GlobalAppearance> {
+    core: CoreInstance;
+    appearance?: TComponentAppearance;
+    onContactSupport?: () => void;
+}
 
 export interface CoreInstance {
     options: CoreOptions;
     i18n: I18n;
+    localization: Localization;
+    bentoLocalization: Localization;
     loadingContext: string;
     analyticsEnabled: boolean;
     session: AuthSession;

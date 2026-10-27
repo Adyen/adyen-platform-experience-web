@@ -27,10 +27,10 @@ describe('abortedSignal', () => {
 describe('abortSignalForAny', () => {
     test('should throw an error called without source signals or with invalid signal value', () => {
         type _SignalFactory = (...args: any[]) => AbortSignal;
-        const signal_1 = new AbortController().signal;
+        const signal1 = new AbortController().signal;
 
         const throwsMissingAbortSignalTypeError = () => (abortSignalForAny as _SignalFactory)();
-        const throwsInvalidAbortSignalTypeError = () => (abortSignalForAny as _SignalFactory)([signal_1, 5, 'invalid_value']);
+        const throwsInvalidAbortSignalTypeError = () => (abortSignalForAny as _SignalFactory)([signal1, 5, 'invalid_value']);
 
         expect(throwsMissingAbortSignalTypeError).toThrowError();
         expect(throwsInvalidAbortSignalTypeError).toThrowError();
@@ -65,11 +65,11 @@ describe('abortSignalForAny', () => {
 
 describe('isAbortSignal', () => {
     test('should return true for only for instances of `AbortSignal`', () => {
-        const signal_1 = new AbortController().signal;
-        const signal_2 = abortedSignal('aborted');
-        const signal_3 = abortSignalForAny([signal_1, signal_2]);
+        const signal1 = new AbortController().signal;
+        const signal2 = abortedSignal('aborted');
+        const signal3 = abortSignalForAny([signal1, signal2]);
 
-        [signal_1, signal_2, signal_3].forEach(signal => expect(isAbortSignal(signal)).toBe(true));
+        [signal1, signal2, signal3].forEach(signal => expect(isAbortSignal(signal)).toBe(true));
 
         expect(isAbortSignal()).toBe(false);
         expect(isAbortSignal({ aborted: true })).toBe(false);

@@ -2,16 +2,17 @@
 @use '@integration-components/style/breakpoints' as *;
 
 .root {
+    align-items: baseline;
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-060);
     justify-content: space-between;
-    align-items: baseline;
+    overflow-x: auto;
     width: 100%;
 
     @include adyen-pe-screen-sm-and-up {
-        flex-direction: row;
         align-items: center;
+        flex-direction: row;
         gap: style.token(spacer-120);
     }
 }
@@ -20,6 +21,7 @@
     align-items: center;
     display: flex;
     gap: style.token(spacer-060);
+    white-space: nowrap;
 }
 
 .tooltipPlaceholder {

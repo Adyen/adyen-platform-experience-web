@@ -1,20 +1,31 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
-import { BentoTypography } from '@adyen/bento-vue3';
+import { computed, defineAsyncComponent, onMounted } from 'vue';
+import { BentoLoadingIndicator, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
+import { useShouldHideTitles } from '@integration-components/composables-vue';
 import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
-import AcceptDisputeFlow from './AcceptDisputeFlow.vue';
-import DefendDisputeFlow from './DefendDisputeFlow.vue';
 import DisputeData from './DisputeData.vue';
-import type { DisputeManagementProps } from '../types';
+import type { DisputeManagementComponentProps } from '../types';
 import styles from './DisputeData.module.scss';
 
-const props = defineProps<DisputeManagementProps>();
+const props = defineProps<DisputeManagementComponentProps>();
 const { i18n } = useCoreContext();
+const hideTitles = useShouldHideTitles();
 const { flowState, getDisputesConfig } = useDisputeFlow();
 
 const { withinModal } = useModalContext();
-const shouldHideTitle = computed(() => props.hideTitle || withinModal);
+const shouldHideTitle = computed(() => withinModal || hideTitles.value);
+
+const AcceptDisputeFlow = defineAsyncComponent({
+    loader: () => import('./AcceptDisputeFlow.vue'),
+    loadingComponent: BentoLoadingIndicator,
+    delay: 0,
+});
+const DefendDisputeFlow = defineAsyncComponent({
+    loader: () => import('./DefendDisputeFlow.vue'),
+    loadingComponent: BentoLoadingIndicator,
+    delay: 0,
+});
 
 onMounted(() => getDisputesConfig());
 </script>
@@ -33,6 +44,6 @@ onMounted(() => getDisputesConfig());
         :on-contact-support="props.onContactSupport"
         :on-dismiss="props.onDismiss"
     />
-    <AcceptDisputeFlow v-else-if="flowState === DisputeFlowState.Accept" :on-dispute-accept="props.onDisputeAccept" />
-    <DefendDisputeFlow v-else :on-dispute-defend="props.onDisputeDefend" />
+    <AcceptDisputeFlow v-else-if="flowState === DisputeFlowState.Accept" :on-accept="props.onAccept" />
+    <DefendDisputeFlow v-else :on-defend="props.onDefend" />
 </template>

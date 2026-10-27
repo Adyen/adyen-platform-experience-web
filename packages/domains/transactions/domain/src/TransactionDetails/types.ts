@@ -1,11 +1,11 @@
 import {
     CustomDataRetrieved,
     DetailsDataCustomizationObject,
-    ExternalUIComponentProps,
     IBalanceAccountBase,
     ILineItem,
     IRefundReason,
     ITransactionWithDetails,
+    WithDismissCallback,
 } from '@integration-components/types';
 
 export type TransactionDetailsCustomization = DetailsDataCustomizationObject<TransactionDetailsFields, TransactionDetails, CustomDataRetrieved>;
@@ -17,10 +17,10 @@ export type TransactionDetails = ITransactionWithDetails & {
     lineItems?: ILineItem[];
 };
 
-export type TransactionDetailsProps = ExternalUIComponentProps<{
+export type TransactionDetailsProps = WithDismissCallback & {
     dataCustomization?: { details?: TransactionDetailsCustomization };
     id: string;
-}>;
+};
 
 export type TransactionDetailsFields =
     | 'account'

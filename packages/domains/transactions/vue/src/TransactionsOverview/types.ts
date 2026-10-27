@@ -1,8 +1,18 @@
-import type { CoreInstance } from '@integration-components/core/vue';
-import type { TransactionDetailsCustomization, TransactionsListCustomization } from '../../../domain/src';
-import type { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus } from '@integration-components/types';
+import type { UIElementProps } from '@integration-components/core/vue';
+import type { TransactionsOverviewProps } from '../../../domain/src';
+import type {
+    GlobalAppearance,
+    IAmount,
+    ITransaction,
+    ITransactionCategory,
+    ITransactionStatus,
+    WithDataGridAppearance,
+} from '@integration-components/types';
 
-export type { TransactionsCustomColumn, TransactionsListCustomization, TransactionsTableFields } from '../../../domain/src';
+export type { IBalanceAccountBase } from '@integration-components/types';
+export type { TransactionsCustomColumn, TransactionsDataGridCustomization, TransactionsTableFields } from '../../../domain/src';
+
+export type TransactionsOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
 
 export interface TransactionsFilters {
     balanceAccountId?: string;
@@ -14,21 +24,8 @@ export interface TransactionsFilters {
     paymentPspReference?: string;
 }
 
-export interface TransactionsOverviewExternalProps {
-    core: CoreInstance;
-    balanceAccountId?: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: number;
-    hideTitle?: boolean;
-    showDetails?: boolean;
-    onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
-    onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
-    dataCustomization?: {
-        list?: TransactionsListCustomization;
-        details?: TransactionDetailsCustomization;
-    };
-}
+export type TransactionsOverviewExternalProps = UIElementProps<TransactionsOverviewAppearance> & TransactionsOverviewProps;
+export type TransactionsOverviewComponentProps = Omit<TransactionsOverviewExternalProps, 'core' | 'appearance'>;
 
 export interface TransactionsListResponse {
     data?: ITransaction[];
@@ -37,5 +34,3 @@ export interface TransactionsListResponse {
         prev?: { cursor: string };
     };
 }
-
-export type { IBalanceAccountBase };

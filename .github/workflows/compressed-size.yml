@@ -41,5 +41,5 @@ jobs:
         with:
           install-script: "pnpm install --frozen-lockfile"
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          pattern: "**/dist/**/*.js"
+          pattern: "dist/es/**/*.js"
           exclude: "{**/*.map,**/node_modules/**,**/src}"

@@ -21,8 +21,7 @@ fi
 ARCHIVE_NAME="platform-components-${RELEASE_LINE}_cdn.tar.gz"
 BUILD_SCRIPT="build:umd"
 ASSETS_DIR="./packages/shared/assets/src"
-CONFIG_DIR="./packages/shared/core/src/config"
-TRANSLATIONS_SWAP_CONFIG_FILE="$CONFIG_DIR/translations/swapConfig.json"
+SDK_TRANSLATIONS_DIR="./packages/sdk/translations"
 DISPUTES_CONFIG_DIR="./packages/domains/disputes/domain/src/config"
 PAY_BY_LINK_CONFIG_DIR="./packages/domains/payByLink/domain/src/config"
 CAPITAL_CONFIG_DIR="./packages/domains/capital/domain/src/config"
@@ -43,12 +42,12 @@ if [[ ! -d "$ASSETS_DIR" ]]; then
   echo "Error: Assets directory not found at '$PROJECT_ROOT/$ASSETS_DIR'. Aborting" >&2
   exit 1
 fi
-if [[ ! -f "$UMD_FILE" ]]; then
-  echo "Error: UMD file not found at '$PROJECT_ROOT/$UMD_FILE'. Aborting" >&2
+if [[ ! -d "$SDK_TRANSLATIONS_DIR" ]]; then
+  echo "Error: SDK translations directory not found at '$PROJECT_ROOT/$SDK_TRANSLATIONS_DIR'. Aborting" >&2
   exit 1
 fi
-if [[ ! -f "$TRANSLATIONS_SWAP_CONFIG_FILE" ]]; then
-  echo "Error: Translations swap config file not found at '$PROJECT_ROOT/$TRANSLATIONS_SWAP_CONFIG_FILE'. Aborting" >&2
+if [[ ! -f "$UMD_FILE" ]]; then
+  echo "Error: UMD file not found at '$PROJECT_ROOT/$UMD_FILE'. Aborting" >&2
   exit 1
 fi
 echo "All paths verified"
@@ -57,6 +56,10 @@ echo "Preparing staging directory for archive"
 
 echo "Copying assets to staging area..."
 cp -r "$ASSETS_DIR" "$STAGING_DIR/assets"
+
+echo "Copying SDK translations to staging area..."
+rm -rf "$STAGING_DIR/assets/translations"
+cp -r "$SDK_TRANSLATIONS_DIR" "$STAGING_DIR/assets/translations"
 
 # Conditionally copy the UMD file based on the environment
 if [[ "$DEPLOY_ENV" != "live" ]]; then
@@ -71,14 +74,6 @@ if [[ "$DEPLOY_ENV" != "live" ]]; then
 else
   echo "Skipping UMD and CSS files copy for LIVE environment."
 fi
-
-echo "Copying shared core config to staging area..."
-mkdir -p "$STAGING_DIR/config/core"
-cp -r "$CONFIG_DIR"/. "$STAGING_DIR/config/core/"
-
-echo "Copying translations swap config to legacy CDN path..."
-mkdir -p "$STAGING_DIR/config/translations"
-cp "$TRANSLATIONS_SWAP_CONFIG_FILE" "$STAGING_DIR/config/translations/"
 
 echo "Copying capital domain config to staging area..."
 mkdir -p "$STAGING_DIR/config/capital"

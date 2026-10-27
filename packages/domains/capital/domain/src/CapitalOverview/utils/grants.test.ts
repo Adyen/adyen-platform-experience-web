@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import type { IGrant, IGrantsResponseDTO } from '@integration-components/types';
+import type { IGrant } from '@integration-components/types';
 import {
     ACTIVE_GRANT,
     RENEWING_ACTIVE_GRANT,
@@ -17,22 +17,22 @@ describe('getAdjustedGrants', () => {
         expect(getAdjustedGrants(undefined, undefined, undefined)).toBeUndefined();
     });
 
-    test('prepends the requested grant', () => {
+    test('prepends the requested grant if it is not in the array ', () => {
         const state = getEnhancedCapitalState(CAPITAL_STATE_CLOSED_GRANTS, localSupportedRegions);
-        const response = { data: [REPAID_GRANT] } as IGrantsResponseDTO;
-        expect(getAdjustedGrants(state, response, PENDING_GRANT)).toEqual([PENDING_GRANT, REPAID_GRANT]);
+        expect(getAdjustedGrants(state, [REPAID_GRANT], PENDING_GRANT)).toEqual([PENDING_GRANT, REPAID_GRANT]);
+        expect(getAdjustedGrants(state, [PENDING_GRANT, REPAID_GRANT], PENDING_GRANT)).toEqual([PENDING_GRANT, REPAID_GRANT]);
     });
 
     test('removes renewed active grants', () => {
         const state = getEnhancedCapitalState(CAPITAL_STATE_GRANTS, localSupportedRegions);
         const renewedActiveGrant: IGrant = { ...REPAID_GRANT, status: 'Active' };
-        const response: IGrantsResponseDTO = { data: [RENEWING_ACTIVE_GRANT, renewedActiveGrant] };
+        const response = [RENEWING_ACTIVE_GRANT, renewedActiveGrant];
         expect(getAdjustedGrants(state, response, undefined)).toEqual([RENEWING_ACTIVE_GRANT]);
     });
 
     test('keeps non-active renewed grants', () => {
         const state = getEnhancedCapitalState(CAPITAL_STATE_CLOSED_GRANTS, localSupportedRegions);
-        const response = { data: [RENEWING_ACTIVE_GRANT, REPAID_GRANT] } as IGrantsResponseDTO;
+        const response = [RENEWING_ACTIVE_GRANT, REPAID_GRANT];
 
         expect(getAdjustedGrants(state, response, undefined)).toEqual([RENEWING_ACTIVE_GRANT, REPAID_GRANT]);
     });

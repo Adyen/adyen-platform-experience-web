@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
+import type { TranslationKey } from '@integration-components/core';
+import { PAYOUT_TABLE_FIELDS, type PayoutsTableFields, type PayoutsTranslationKey } from '@integration-components/payouts/domain';
 import {
     useCustomColumnsData,
     CustomDataCell,
+    useCustomColumnWidths,
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
     useTableColumns,
+    useShouldHideIllustrations,
+    useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
+import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IPayout, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
-import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import { PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
 import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '@integration-components/utils';
 import styles from './PayoutsTable.module.scss';
 
@@ -26,22 +29,23 @@ const props = defineProps<{
     error?: Error;
     onContactSupport?: () => void;
     onRowClick?: (payout: IPayout) => void;
-    showDetails?: boolean;
     showPagination: boolean;
     data: IPayout[] | undefined;
-    customColumns?: CustomColumn<StringWithAutocompleteOptions<PayoutsTableFields>>[];
+    customColumns?: CustomColumn<PayoutsTableFields>[];
     onDataRetrieve?: OnDataRetrievedCallback<IPayout[], CustomDataRetrieved[]>;
     hasNext?: boolean;
     hasPrevious?: boolean;
     goToNextPage?: () => void;
     goToPreviousPage?: () => void;
     limit?: number;
-    limitOptions?: number[];
+    limitOptions?: readonly number[];
     updateLimit?: (limit: number) => void;
     currentPage?: number;
 }>();
 
 const { i18n } = useCoreContext();
+const hideIllustrations = useShouldHideIllustrations();
+const isCondensed = useCondensedDataGrid();
 // Reactive proxy — destructuring would unwrap `refreshing` into a stale snapshot.
 const config = useConfigContext();
 
@@ -67,7 +71,7 @@ const {
         fundsCapturedAmount: 'payouts.overview.list.fields.fundsCapturedAmount',
         adjustmentAmount: 'payouts.overview.list.fields.adjustmentAmount',
         payoutAmount: 'payouts.overview.list.fields.payoutAmount',
-    },
+    } satisfies Record<string, PayoutsTranslationKey>,
     columnConfig: () => ({
         createdAt: { flex: 1 },
         fundsCapturedAmount: { flex: 1, numeric: true },
@@ -75,9 +79,10 @@ const {
         payoutAmount: { flex: 1, numeric: true },
     }),
     customColumnDefaults: () => ({ flex: 1 }),
+    customColumnWidths: () => customColumnWidths.value,
     resolveCustomColumnLabel: key => {
         const labelKey = `payouts.overview.list.fields.${key}`;
-        return i18n.has(labelKey as any) ? i18n.get(labelKey as any) : i18n.get(key as any);
+        return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
     },
 });
 
@@ -119,6 +124,13 @@ const gridData = computed<BentoDatagridDataItem[]>(() => {
     });
 });
 
+const tableRef = ref<HTMLElement | null>(null);
+const customColumnWidths = useCustomColumnWidths(
+    tableRef,
+    () => [gridData.value, isLoading.value, isMobile.value],
+    () => columns.value
+);
+
 const paginationProps = computed(() => {
     if (!props.showPagination) return undefined;
     return {
@@ -126,16 +138,17 @@ const paginationProps = computed(() => {
         size: props.limit ?? 10,
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
+        pageSizeItems: asPageSizeItems(props.limitOptions),
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
         hideFirstLastPageButtons: true,
     };
 });
 
 const emptyStateProps = computed(() => ({
-    image: 'no-results-found' as const,
+    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
     variant: 'embedded' as const,
     title: i18n.get('payouts.overview.errors.listEmpty'),
-    description: i18n.get('common.errors.updateFilters'),
+    description: i18n.get('payouts.common.errors.updateFilters'),
 }));
 
 function handleNavigate(page: number) {
@@ -162,7 +175,7 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
 </script>
 
 <template>
-    <div :class="styles.root">
+    <div ref="tableRef" :class="styles.root">
         <!-- Error state -->
         <DataOverviewError
             v-if="props.error"
@@ -170,20 +183,19 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
             :error-message="'payouts.overview.errors.listUnavailable'"
             :on-contact-support="props.onContactSupport"
             :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
         />
 
         <BentoDataGrid
             v-else
-            outline
+            allow-row-clicks
+            has-resizable-columns
+            :condensed="isCondensed"
             :columns="columns"
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
-            :has-resizable-columns="false"
             :allow-column-drag-and-drop="false"
-            :allow-row-clicks="true"
             @row-click="handleRowClick"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"
@@ -211,7 +223,7 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
                 </BentoTypography>
             </template>
             <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">
-                <CustomDataCell :value="item[key]" />
+                <CustomDataCell :value="item[key]" :field="key" />
             </template>
         </BentoDataGrid>
     </div>

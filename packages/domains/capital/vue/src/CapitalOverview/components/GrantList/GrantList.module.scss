@@ -1,0 +1,13 @@
+@use '@integration-components/style' as style;
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+    margin: 0;
+    padding: 0;
+}
+
+.listItem {
+    list-style: none;
+}

@@ -3,16 +3,17 @@ export { DisputesOverviewElement } from './DisputesOverview';
 
 export type {
     DisputeManagementExternalProps,
-    DisputeManagementProps,
+    DisputeManagementComponentProps,
     DisputeDetailsFields,
     DisputeDetailsCustomization,
     DisputeCallbackData,
 } from './DisputeManagement';
 
 export type {
+    DisputesOverviewComponentProps,
     DisputesOverviewExternalProps,
-    DisputesOverviewProps,
-    DisputesListCustomization,
+    DisputesDataGridCustomization,
+    DisputesOverviewTabsConfig,
     DisputesTableFields,
     DisputeStatusGroup,
 } from './DisputesOverview';

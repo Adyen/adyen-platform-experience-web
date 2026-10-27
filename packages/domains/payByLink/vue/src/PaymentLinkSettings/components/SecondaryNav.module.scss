@@ -14,13 +14,22 @@
 }
 
 .item {
+    :global(.b-list-item__inner) {
+        padding: 0;
+    }
+}
+
+.button {
+    align-items: center;
     background-color: transparent;
     border: 0;
     border-radius: style.token(border-radius-m);
     cursor: pointer;
-    display: block;
+    display: flex;
     font: inherit;
-    padding: style.token(spacer-040) style.token(spacer-050);
+    gap: style.token(spacer-070);
+    justify-content: space-between;
+    padding: style.token(spacer-040);
     text-align: left;
     width: 100%;
 
@@ -29,6 +38,15 @@
     }
 }
 
-.itemActive {
+.buttonActive {
     background-color: style.token(color-background-primary-active);
+}
+
+.buttonMobile {
+    align-items: flex-start;
+    padding: style.token(spacer-070) style.token(spacer-050);
+}
+
+.chevron {
+    flex-shrink: 0;
 }

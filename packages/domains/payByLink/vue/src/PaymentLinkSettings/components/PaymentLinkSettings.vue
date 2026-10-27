@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoDivider, BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
-import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
-import type { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
+import { useCoreContext, useModalContext } from '@integration-components/core/vue';
+import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
+import type { AdyenPlatformExperienceError } from '@integration-components/core';
+import type { PayByLinkTranslationKey } from '@integration-components/payByLink/domain';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../constants';
 import type { PaymentLinkSettingsItem } from '../types';
@@ -14,15 +15,18 @@ import PaymentLinkSettingsContent from './PaymentLinkSettingsContent.vue';
 import SettingsActionButtons from './SettingsActionButtons.vue';
 import styles from './PaymentLinkSettings.module.scss';
 
-const ERROR_MESSAGE_KEY: TranslationKey = 'payByLink.settings.errors.couldNotLoadSettings';
+const ERROR_MESSAGE_KEY: PayByLinkTranslationKey = 'payByLink.settings.errors.unavailable';
 
 const props = defineProps<{
     hideTitle?: boolean;
     onContactSupport?: () => void;
+    onDismiss?: () => void;
     navigateBack?: () => void;
 }>();
 
 const { i18n } = useCoreContext();
+const { withinModal } = useModalContext();
+const hideTitles = useShouldHideTitles();
 const {
     activeMenuItem,
     setSelectedMenuItem,
@@ -77,12 +81,12 @@ const showActionButtons = computed(
 
 <template>
     <div v-if="menuItems.length > 0" :class="styles.root">
-        <BentoTypography v-if="!props.hideTitle && (!isSmContainer || !contentVisible)" variant="title" el="h1">
+        <BentoTypography v-if="!withinModal && !props.hideTitle && !hideTitles && (!isSmContainer || !contentVisible)" variant="title" el="h1">
             {{ i18n.get('payByLink.settings.title') }}
         </BentoTypography>
         <SettingsError v-if="hasError" :error="error" :error-message="ERROR_MESSAGE_KEY" :on-contact-support="props.onContactSupport" />
         <template v-else>
-            <div :class="[styles.contentContainer, { [styles.contentContainerMobile]: isSmContainer && contentVisible }]">
+            <div :class="[styles.contentContainer, isSmContainer && contentVisible ? styles.contentContainerMobile : '']">
                 <template v-if="menuItems.length > 1">
                     <div v-if="!contentVisible || !isSmContainer" :class="styles.sidebarContainer">
                         <StoreSelector :stores="filteredStores" :selected-store-id="selectedStore" @update:selected-store-id="setSelectedStore" />
@@ -102,6 +106,7 @@ const showActionButtons = computed(
             <SettingsActionButtons
                 v-if="showActionButtons"
                 :navigate-back="props.navigateBack"
+                :on-dismiss="props.onDismiss"
                 :close-content="isSmContainer ? closeContent : undefined"
             />
         </template>

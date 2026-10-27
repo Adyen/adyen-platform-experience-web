@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { BentoDropdown } from '@adyen/bento-vue3';
 import type { StoreItem } from '../types';
+import StoreDropdown from '../../shared/components/StoreDropdown.vue';
 import styles from './StoreSelector.module.scss';
 
 const props = defineProps<{
@@ -13,23 +12,19 @@ const emit = defineEmits<{
     'update:selectedStoreId': [value: string];
 }>();
 
-const dropdownItems = computed(() =>
-    (props.stores ?? []).map(store => ({ label: store.storeCode || store.name, description: store.description || undefined, value: store.id }))
-);
-
-function onUpdate(value: string | number | { value?: string | number } | Array<string | number | { value?: string | number }> | undefined) {
-    if (Array.isArray(value)) return;
-    const nextValue = typeof value === 'object' ? value?.value : value;
-    if (nextValue !== undefined && nextValue !== '') emit('update:selectedStoreId', String(nextValue));
+function onUpdate(value: string) {
+    if (value !== '') {
+        emit('update:selectedStoreId', value);
+    }
 }
 </script>
 
 <template>
-    <BentoDropdown
+    <StoreDropdown
         v-if="stores && stores.length > 1"
         :class="styles.root"
-        :items="dropdownItems"
-        :model-value="selectedStoreId ?? ''"
+        :stores="props.stores"
+        :model-value="props.selectedStoreId ?? ''"
         @update:model-value="onUpdate"
     />
 </template>

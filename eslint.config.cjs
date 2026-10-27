@@ -3,6 +3,7 @@
 const { existsSync, readdirSync } = require('node:fs');
 const { join, relative } = require('node:path');
 const js = require('@eslint/js');
+const nx = require('@nx/eslint-plugin');
 const globals = require('globals');
 const tsParser = require('@typescript-eslint/parser');
 const tsPlugin = require('@typescript-eslint/eslint-plugin');
@@ -38,7 +39,7 @@ const workspacePackageDirs = getWorkspacePackageDirs();
 module.exports = [
     // Global ignores
     {
-        ignores: ['**/dist/**', '**/storybook-static/**', '**/coverage/**', '**/static/**'],
+        ignores: ['**/dist/**', '**/storybook-static/**', '**/coverage/**', '**/coverage-unit/**', '**/static/**'],
     },
 
     // eslint:recommended base rules
@@ -57,6 +58,10 @@ module.exports = [
                 sourceType: 'module',
             },
             globals: Object.fromEntries(Object.entries({ ...globals.browser, ...globals.node, ...globals.es2020 }).map(([k, v]) => [k.trim(), v])),
+        },
+        linterOptions: {
+            // Stale disable comments fail lint instead of silently accumulating as warnings
+            reportUnusedDisableDirectives: 'error',
         },
         plugins: {
             '@typescript-eslint': tsPlugin,
@@ -95,16 +100,14 @@ module.exports = [
                         'stories/**/*',
                         'playwright.config.ts',
                         'vite.config.ts',
-                        'config/**/*.ts',
-                        'envs/**/*.ts',
-                        'mocks/**/*.ts',
                         'packages/**/vite.config.ts',
                         '**/*.test.ts',
+                        '{config,endpoints,envs,mocks,scripts,src}/**/*.ts',
                         '{src,packages}/**/{__testing__,testing}/**/*.ts',
                         'packages/domains/*/{domain,vue}/tests/**/*.ts',
                         'packages/domains/*/**/stories/**/*.ts',
                         'packages/domains/*/{fixtures,mocks}/**/*.ts',
-                        'src/**/*.ts',
+                        'packages/sdk/tests/**/*.ts',
                     ],
                     includeTypes: false,
                 },
@@ -140,7 +143,6 @@ module.exports = [
             '@typescript-eslint/indent': 'off',
             '@typescript-eslint/no-empty-function': ['error', { allow: ['arrowFunctions'] }],
             '@typescript-eslint/ban-types': 'off',
-
         },
     },
 
@@ -162,6 +164,22 @@ module.exports = [
             'vue/max-attributes-per-line': 'off',
             'vue/multi-word-component-names': 'off',
             'vue/require-default-prop': 'off',
+            // Prettier owns template content layout; these stylistic rules fight it
+            'vue/singleline-html-element-content-newline': 'off',
+            'vue/multiline-html-element-content-newline': 'off',
+            // Semantic template rules: enforce as errors
+            'vue/attributes-order': 'error',
+            // Enforce kebab-case attributes, but ignore camelCase props bound to embedded web components:
+            // their .prop DOM property names must match the web component's API exactly
+            'vue/attribute-hyphenation': ['error', 'always', { ignore: ['fetchToken'] }],
+        },
+    },
+
+    // Test files commonly define multiple small inline components per file
+    {
+        files: ['**/*.{test,spec}.ts'],
+        rules: {
+            'vue/one-component-per-file': 'off',
         },
     },
 
@@ -170,6 +188,76 @@ module.exports = [
         files: ['**/*.ts'],
         rules: {
             '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'off', overrides: { properties: 'explicit' } }],
+        },
+    },
+    {
+        files: ['src/index.ts', 'packages/sdk/src/index.ts'],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                {
+                    selector: 'ExportAllDeclaration',
+                    message: 'Public SDK entry points must use explicit exports.',
+                },
+            ],
+        },
+    },
+
+    // Root CommonJS tooling files use require() and dev-only dependencies
+    {
+        files: ['*.cjs', '.pnpmfile.cjs', 'config/**/*.cjs', 'scripts/**/*.cjs', '.changeset/**/*.js'],
+        rules: {
+            '@typescript-eslint/no-require-imports': 'off',
+            'import-x/no-extraneous-dependencies': ['error', { devDependencies: true, peerDependencies: true }],
+        },
+    },
+
+    // Root config files import with explicit .ts extensions (allowImportingTsExtensions)
+    {
+        files: ['config/**/*.ts'],
+        rules: {
+            'import-x/extensions': 'off',
+        },
+    },
+
+    // Netlify edge functions need explicit extensions (Deno-style resolution)
+    {
+        files: ['netlify/edge-functions/**'],
+        rules: {
+            'import-x/extensions': ['error', 'always'],
+        },
+    },
+
+    // Naming conventions: value identifiers are camelCase (or UPPER_CASE constants), types and classes are PascalCase
+    {
+        files: ['**/*.{js,mjs,cjs,ts,vue}'],
+        rules: {
+            '@typescript-eslint/naming-convention': [
+                'error',
+                // Locale-coded translation identifiers (e.g. da_DK, pt_BR, _en_US) are allowed to mirror IETF locale tags
+                { selector: 'variable', filter: { regex: '^_?[a-z]{2}_[A-Z]{2}$', match: true }, format: null },
+                // Dunder sentinel identifiers (e.g. __INDEXED_PROTO__) are allowed
+                { selector: 'variable', filter: { regex: '^__\\w+__$', match: true }, format: null },
+                // Imported names follow their source: helpers (camelCase), types/classes (PascalCase), constants (UPPER_CASE)
+                { selector: 'import', format: ['camelCase', 'PascalCase', 'UPPER_CASE'] },
+                // Value identifiers: camelCase; const-bound values may also be UPPER_CASE constants or PascalCase (components, class references); leading underscore marks module-private values
+                { selector: 'variable', modifiers: ['const'], format: ['camelCase', 'UPPER_CASE', 'PascalCase'], leadingUnderscore: 'allow' },
+                // Re-assignable identifiers stay camelCase (UPPER_CASE retained for mutable test counters)
+                { selector: 'variable', format: ['camelCase', 'UPPER_CASE'], leadingUnderscore: 'allow' },
+                // PascalCase stays valid for component-like factories (e.g. AdyenPlatformExperience); leading underscore marks module-private functions
+                { selector: 'function', format: ['camelCase', 'PascalCase'], leadingUnderscore: 'allow' },
+                { selector: 'parameter', format: ['camelCase'], leadingUnderscore: 'allow' },
+                // Types, classes, interfaces and enums: PascalCase; leading underscore marks internal types
+                { selector: 'typeLike', format: ['PascalCase'], leadingUnderscore: 'allow' },
+            ],
+        },
+    },
+
+    // Generated API resource types are exempt (produced by schemas:generate, never hand-edited)
+    {
+        files: ['packages/shared/types/src/api/resources/**', 'src/types/api/**'],
+        rules: {
+            '@typescript-eslint/naming-convention': 'off',
         },
     },
 
@@ -222,7 +310,7 @@ module.exports = [
         rules: {
             'import-x/no-extraneous-dependencies': [
                 'error',
-                { devDependencies: ['**/storybook-helpers/**/*.ts'], packageDir: ['packages/shared/testing'] },
+                { devDependencies: ['**/storybook-helpers/**/*.ts', '**/*.test.ts'], packageDir: ['packages/shared/testing'] },
             ],
         },
     },
@@ -250,6 +338,72 @@ module.exports = [
         files: ['packages/tools/storybook/src/.storybook/**/*'],
         rules: {
             'import-x/extensions': 'off',
+        },
+    },
+
+    // Domain quality gates. Domains depend only on shared libraries,
+    // never on another domain: affected-domain test selection relies on it. Inline ESLint comments are
+    // disabled so a gate cannot be switched off from inside a domain; exceptions go through this file.
+    {
+        files: ['packages/domains/**/*.{ts,vue}'],
+        linterOptions: {
+            noInlineConfig: true,
+        },
+        plugins: {
+            '@nx': nx,
+        },
+        rules: {
+            '@nx/enforce-module-boundaries': [
+                'error',
+                {
+                    enforceBuildableLibDependency: false,
+                    depConstraints: [{ sourceTag: 'type:domain', onlyDependOnLibsWithTags: ['type:shared'] }],
+                },
+            ],
+            'no-warning-comments': ['error', { terms: ['istanbul ignore', 'v8 ignore', 'c8 ignore'], location: 'start' }],
+        },
+    },
+
+    // Decision-heavy code belongs in composables or domain/src, where unit coverage measures it, not in components.
+    {
+        files: ['packages/domains/*/vue/src/**/*.vue'],
+        // TODO: Known exceptions, above the limit before it was introduced. Extract their logic, then remove them here.
+        ignores: [
+            'packages/domains/transactions/vue/src/TransactionDetails/components/PaymentDetails/PaymentDetailsProperties.vue',
+            'packages/domains/disputes/vue/src/DisputeManagement/components/DisputeDataProperties.vue',
+            'packages/domains/payByLink/vue/src/PaymentLinkCreation/components/Form/Summary/FormSummary.vue',
+        ],
+        rules: {
+            complexity: ['error', 15],
+        },
+    },
+
+    // domain/src stays framework-neutral: business rules are unit-tested there without Vue.
+    {
+        files: ['packages/domains/*/domain/src/**/*.ts'],
+        // TODO: Known exception: the payment link schema types its translator with the Vue-layer `I18n` type.
+        // Move that type to the framework-neutral core, then remove this entry.
+        ignores: ['packages/domains/payByLink/domain/src/PaymentLinkCreation/schema{,.test}.ts'],
+        rules: {
+            'no-restricted-imports': [
+                'error',
+                {
+                    patterns: [
+                        {
+                            group: [
+                                'vue',
+                                'vue-i18n',
+                                '@integration-components/composables-vue',
+                                '@integration-components/composables-vue/*',
+                                '*.vue',
+                                '**/vue',
+                                '**/vue/**',
+                            ],
+                            message: 'domain/src must stay framework-neutral: move Vue-dependent code to vue/src.',
+                        },
+                    ],
+                },
+            ],
         },
     },
 ];

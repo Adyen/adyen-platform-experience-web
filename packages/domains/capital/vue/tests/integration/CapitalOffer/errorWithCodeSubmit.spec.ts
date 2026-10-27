@@ -12,18 +12,16 @@ test.describe('Error (with code) - Submit', () => {
 
     test('should render an error message', async ({ page }) => {
         await expect(page.getByText('Something went wrong.')).toBeVisible();
-        await expect(
-            page.getByText("We couldn't continue with the offer. Contact support for help and share error code 226ac4ce59f0f159ad672d38d3291e93")
-        ).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
+        await expect(page.getByText("We couldn't continue with the offer.")).toBeVisible();
+        await expect(page.getByText('Contact support for help and share error code 226ac4ce59f0f159ad672d38d3291e93')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeHidden();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 
-    test('should go back to offer selection screen when back button is clicked', async ({ page }) => {
+    test('should render offer summary screen when back button is clicked', async ({ page }) => {
+        await expect(page.getByText('Something went wrong.')).toBeVisible();
         await page.getByRole('button', { name: 'Go back' }).click();
-        await expect(page.getByText('Business financing request')).toBeVisible();
-        await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
-        await expect(page.getByText('Select the amount for the loan')).toBeVisible();
+        await expect(page.getByTestId('capital-offer-summary')).toBeVisible();
     });
 });
 

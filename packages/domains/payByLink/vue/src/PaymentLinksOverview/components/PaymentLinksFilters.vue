@@ -9,6 +9,7 @@ import { EARLIEST_PAYMENT_LINK_DATE_DAYS } from '../constants';
 import type { IPaymentLinkFilterStatusGroup, IPaymentLinkStatus, IPaymentLinkStatusGroup, IPaymentLinkType } from '@integration-components/types';
 import type { StoreData } from '../../../../domain/src';
 import { usePaymentLinkLabels } from '../composables/usePaymentLinkLabels';
+import styles from './PaymentLinksFilters.module.scss';
 
 export interface PaymentLinksFiltersValue {
     statuses: string[];
@@ -27,12 +28,12 @@ const props = defineProps<{
     availableLinkTypes?: IPaymentLinkType[];
     availableStatuses?: IPaymentLinkFilterStatusGroup;
     statusGroup: IPaymentLinkStatusGroup;
+    compact?: boolean;
     onChange?: (value: PaymentLinksFiltersValue) => void;
 }>();
 
 const { i18n } = useCoreContext();
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
-const earliestDate = startOfDay(new Date(Date.now() - EARLIEST_PAYMENT_LINK_DATE_DAYS * DAY_IN_MS));
 
 const quickSelectRanges = createQuickSelectRanges(
     {
@@ -43,12 +44,13 @@ const quickSelectRanges = createQuickSelectRanges(
         thisMonth: quickSelectDateRanges.thisMonth,
         lastMonth: quickSelectDateRanges.lastMonth,
     },
+    'payByLink.overview.common.filters.types.date.rangeSelect.options.',
     key => i18n.get(key)
 );
 
 const { defaultDateRange, selectedDateRange, normalizeDateRange, getDateRangeFilterOptions, getDateRangeQueryParams } = useDateRangeFilterState({
     defaultValue: quickSelectDateRanges.last30Days,
-    earliestDate,
+    earliestDate: startOfDay(new Date(Date.now() - EARLIEST_PAYMENT_LINK_DATE_DAYS * DAY_IN_MS)),
 });
 
 const { selectedValues: selectedStoreIds, setSelectedValues: setSelectedStoreIds } = useSortedMultiSelection<string>();
@@ -93,20 +95,26 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             field: 'storeIds',
             label: i18n.get('payByLink.overview.filters.types.stores.label'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
+            visible: !props.compact,
             defaultValue: [],
             disabled: !!props.storeError,
             options: {
                 checkboxItems: (props.stores ?? [])
                     .filter(store => store.id)
-                    .map(store => ({ label: store.storeCode ?? store.id!, value: store.id! })),
+                    .map(store => ({
+                        label: store.storeCode ?? store.id!,
+                        description: store.description || undefined,
+                        value: store.id!,
+                    })),
             },
         });
     }
 
     config.push({
         field: 'dateRange',
-        label: i18n.get('common.filters.types.date.label'),
+        label: i18n.get('payByLink.overview.common.filters.types.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
+        visible: !props.compact,
         defaultValue: defaultDateRange,
         options: {
             numberOfMonths: 1,
@@ -119,6 +127,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             field: 'linkTypes',
             label: i18n.get('payByLink.overview.filters.types.linkTypes.label'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
+            visible: !props.compact,
             disabled: !!props.filterError,
             options: {
                 checkboxItems: (props.availableLinkTypes ?? []).map(type => ({ label: getLinkTypeLabel(type), value: type })),
@@ -131,6 +140,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
             field: 'statuses',
             label: i18n.get('payByLink.overview.filters.types.status.label'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
+            visible: !props.compact,
             disabled: !!props.filterError,
             options: {
                 checkboxItems: (availableStatusesForGroup.value ?? []).map((status: IPaymentLinkStatus) => ({
@@ -145,12 +155,14 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
         field: 'merchantReference',
         label: i18n.get('payByLink.overview.filters.types.merchantReference.label'),
         type: BentoFilterItemType.INPUT,
+        visible: !props.compact,
     });
 
     config.push({
         field: 'paymentLinkId',
         label: i18n.get('payByLink.overview.filters.types.paymentLinkID.label'),
         type: BentoFilterItemType.INPUT,
+        visible: !props.compact,
     });
 
     return config;
@@ -163,9 +175,9 @@ function getFilterValue(field: string) {
         case 'dateRange':
             return selectedDateRange.value;
         case 'linkTypes':
-            return selectedLinkTypes.value;
+            return selectedLinkTypes.value.length ? selectedLinkTypes.value : undefined;
         case 'statuses':
-            return selectedStatuses.value;
+            return selectedStatuses.value.length ? selectedStatuses.value : undefined;
         case 'merchantReference':
             return selectedMerchantReference.value;
         case 'paymentLinkId':
@@ -213,5 +225,7 @@ watch(currentFilterParams, params => props.onChange?.(params), { deep: true, imm
 </script>
 
 <template>
-    <BentoFilterBar :config="filterConfig" :filter-values="filterValues" @input="onFilterInput" />
+    <div :class="[styles.filtersContainer, props.compact ? styles.filtersContainerCompact : '']">
+        <BentoFilterBar :config="filterConfig" :filter-values="filterValues" :show-applied-hidden-filters="false" @input="onFilterInput" />
+    </div>
 </template>

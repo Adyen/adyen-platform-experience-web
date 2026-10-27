@@ -7,6 +7,10 @@ export interface ConfigContextValue {
     readonly extraConfig: SetupContextObject['extraConfig'];
     readonly hasError: boolean;
     readonly refreshing: boolean;
+    /** The permission check failed. Domain components render the error through the availability gate. */
+    readonly componentUnavailable: boolean;
+    /** The permission check has not resolved, so no endpoint is callable yet. */
+    readonly permissionPending: boolean;
     refresh: AuthSession['refresh'];
 }
 

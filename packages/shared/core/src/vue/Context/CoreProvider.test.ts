@@ -1,11 +1,12 @@
 /**
  * @vitest-environment jsdom
  */
-/* eslint-disable vue/one-component-per-file */
+
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { createApp, defineComponent, h, type App } from 'vue';
 import CoreProvider from './CoreProvider.vue';
 import { useCoreContext } from './useCoreContext';
+import type { I18n } from './types';
 
 describe('CoreProvider', () => {
     let app: App | undefined;
@@ -21,7 +22,7 @@ describe('CoreProvider', () => {
         const ready = new Promise<void>(resolve => {
             markReady = resolve;
         });
-        const i18n = { ready };
+        const i18n = { ready } as unknown as I18n;
         const refreshComponent = vi.fn();
         const getImageAsset = vi.fn();
         let injected!: ReturnType<typeof useCoreContext>;
@@ -38,12 +39,13 @@ describe('CoreProvider', () => {
                 h(
                     CoreProvider,
                     {
-                        commonProps: { balanceAccountId: 'BA1' },
+                        commonProps: { isCollatingErrors: true },
                         environment: 'test',
                         getImageAsset,
                         i18n,
                         loadingContext: 'session',
                         refreshComponent,
+                        translationDomain: 'transactions',
                     },
                     { default: () => h(child) }
                 ),
@@ -58,12 +60,13 @@ describe('CoreProvider', () => {
         await vi.waitFor(() => expect(mountTarget.textContent).toBe('ready'));
 
         expect(injected).toMatchObject({
-            commonProps: { balanceAccountId: 'BA1' },
+            commonProps: { isCollatingErrors: true },
             environment: 'test',
             getImageAsset,
             i18n,
             loadingContext: 'session',
             refreshComponent,
+            translationDomain: 'transactions',
         });
     });
 });

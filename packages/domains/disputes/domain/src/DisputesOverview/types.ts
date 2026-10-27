@@ -1,35 +1,24 @@
-import type { UIElementProps, DataCustomizationObject, CustomDataRetrieved } from '@integration-components/types';
+import type { DataCustomizationObject, CustomDataRetrieved, WithBalanceAccountId } from '@integration-components/types';
+import type { PaginationProps } from '@integration-components/utils';
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 import type { DisputeDetailsCustomization } from '../DisputeManagement';
-import { FIELD_KEYS } from './constants';
+import { DISPUTES_PAGE_LIMITS, FIELD_KEYS } from './constants';
 
 export type DisputeStatusGroup = IDisputeStatusGroup;
+export type DisputesPageLimit = (typeof DISPUTES_PAGE_LIMITS)[number];
 export type DisputesTableFields = keyof typeof FIELD_KEYS;
-export type DisputesListCustomization = DataCustomizationObject<DisputesTableFields, IDisputeListItem[], CustomDataRetrieved[]>;
+export type DisputesDataGridCustomization = DataCustomizationObject<DisputesTableFields, IDisputeListItem[], CustomDataRetrieved[]>;
 
-export type DisputesOverviewFilters = {
-    balanceAccountId?: string;
-    statusGroup: DisputeStatusGroup;
-    schemeCodes?: string;
-    createdSince?: string;
-    createdUntil?: string;
-    /** @deprecated This field is not emitted. Use statusGroup instead. */
-    disputeType?: string;
-    /** @deprecated This field is not emitted. Use statusGroup instead. */
-    statuses?: string;
-};
-
-export interface DisputesOverviewProps extends UIElementProps {
-    allowLimitSelection?: boolean;
-    balanceAccountId?: string;
-    onFiltersChanged?: (filters: DisputesOverviewFilters) => any;
-    preferredLimit?: 10 | 20;
-    onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
-    dataCustomization?: {
-        list?: DisputesListCustomization;
-        details?: DisputeDetailsCustomization;
-    };
-    showDetails?: boolean;
+export interface DisputesOverviewTabsConfig {
+    /** Tabs to hide. If every tab is hidden, the setting is ignored. */
+    hidden?: DisputeStatusGroup[];
 }
 
-export type DisputeOverviewComponentProps = DisputesOverviewProps;
+export interface DisputesOverviewProps extends PaginationProps<DisputesPageLimit>, WithBalanceAccountId {
+    onRecordSelection?: (selection: { id: string; showDetails: () => void }) => void;
+    tabs?: DisputesOverviewTabsConfig;
+    dataCustomization?: {
+        dataGrid?: DisputesDataGridCustomization;
+        details?: DisputeDetailsCustomization;
+    };
+}

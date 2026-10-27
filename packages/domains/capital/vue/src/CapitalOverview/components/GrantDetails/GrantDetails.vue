@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoStructuredList, BentoStructuredListItem, BentoTypography } from '@adyen/bento-vue3';
-import { CAPITAL_REPAYMENT_FREQUENCY, calculatePercentageFromBasisPoints, getEnhancedGrant } from '@integration-components/capital/domain';
-import type { TranslationKey } from '@integration-components/core';
+import {
+    CAPITAL_REPAYMENT_FREQUENCY,
+    calculatePercentageFromBasisPoints,
+    getEnhancedGrant,
+    type CapitalTranslationKey,
+} from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IGrant } from '@integration-components/types';
 import styles from './GrantDetails.module.scss';
 
 type GrantDetailItem = {
-    key: TranslationKey;
+    key: CapitalTranslationKey;
     labelInfo?: string;
     value: string;
 };
@@ -37,11 +41,20 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
         { key: 'capital.common.fields.remainingFees', value: formatAmount(enhancedGrant.remainingFeesAmount) },
         { key: 'capital.common.fields.repaidAmount', value: formatAmount(enhancedGrant.repaidGrantAmount) },
         { key: 'capital.common.fields.repaidFees', value: formatAmount(enhancedGrant.repaidFeesAmount) },
+        { key: 'capital.common.fields.totalRepaymentAmount', value: formatAmount(enhancedGrant.totalAmount) },
+        { key: 'capital.common.fields.totalFees', value: formatAmount(enhancedGrant.feesAmount) },
         {
             key: 'capital.common.fields.dailyRepaymentRate',
             value: i18n.get('capital.common.values.percentage', {
                 values: { percentage: calculatePercentageFromBasisPoints(enhancedGrant.repaymentRate) },
             }),
+        },
+        {
+            key: 'capital.common.fields.repaymentThreshold',
+            labelInfo: i18n.get('capital.common.fields.repaymentThreshold.description', {
+                values: { days: CAPITAL_REPAYMENT_FREQUENCY },
+            }),
+            value: formatAmount(enhancedGrant.thresholdAmount),
         },
         ...(enhancedGrant.maximumRepaymentPeriodMonths
             ? ([
@@ -62,15 +75,6 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
                 },
             }),
         },
-        { key: 'capital.common.fields.totalFees', value: formatAmount(enhancedGrant.feesAmount) },
-        { key: 'capital.common.fields.totalRepaymentAmount', value: formatAmount(enhancedGrant.totalAmount) },
-        {
-            key: 'capital.common.fields.repaymentThreshold',
-            labelInfo: i18n.get('capital.common.fields.repaymentThreshold.description', {
-                values: { days: CAPITAL_REPAYMENT_FREQUENCY },
-            }),
-            value: formatAmount(enhancedGrant.thresholdAmount),
-        },
         { key: 'capital.common.fields.grantID', value: enhancedGrant.id },
         { key: 'capital.common.fields.accountDescription', value: enhancedGrant.balanceAccountDescription ?? '' },
         { key: 'capital.common.fields.accountID', value: enhancedGrant.balanceAccountCode ?? '' },
@@ -89,7 +93,7 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
                 </BentoTypography>
             </div>
 
-            <BentoStructuredList>
+            <BentoStructuredList layout="50-50">
                 <BentoStructuredListItem v-for="item in structuredListItems" :key="item.key" :label="i18n.get(item.key)" :label-info="item.labelInfo">
                     <BentoTypography el="span" variant="caption" stronger>
                         {{ item.value }}

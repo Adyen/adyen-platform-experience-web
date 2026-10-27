@@ -1,0 +1,9 @@
+@use '@integration-components/style';
+
+.loading {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: style.token(spacer-090) 0;
+    width: 100%;
+}

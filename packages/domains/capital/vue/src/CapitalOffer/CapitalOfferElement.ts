@@ -1,7 +1,7 @@
 import { UIElement } from '@integration-components/core/vue';
 import { getExternalCapitalState, type ExternalCapitalState } from '@integration-components/capital/domain';
 import type { ExternalComponentType } from '@integration-components/types';
-import CapitalOffer from './components/CapitalOffer.vue';
+import CapitalOffer from './components/CapitalOffer/CapitalOffer.vue';
 import type { CapitalOfferExternalProps } from './types';
 
 export class CapitalOfferElement extends UIElement<CapitalOfferExternalProps> {
@@ -15,5 +15,3 @@ export class CapitalOfferElement extends UIElement<CapitalOfferExternalProps> {
         return await getExternalCapitalState(this.core.session, this.core.getCdnConfig);
     }
 }
-
-export default CapitalOfferElement;

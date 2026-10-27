@@ -1,30 +1,43 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref } from 'vue';
-import { BentoDataGrid, BentoToast, BentoTypography, useBentoToastController } from '@adyen/bento-vue3';
+import {
+    BentoButton,
+    BentoDataGrid,
+    BentoToast,
+    BentoTypography,
+    BentoTooltipDirective as vBentoTooltip,
+    useBentoToastController,
+} from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
+import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
 import {
     useCustomColumnsData,
     useTableColumns,
     CustomDataCell,
+    useCustomColumnWidths,
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
+    useShouldHideIllustrations,
+    useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import { DATE_FORMAT_REPORTS, downloadBlob } from '@integration-components/utils';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
-import type { BentoDatagridDataItem, BentoDataGridRowActionsProp } from '@adyen/bento-vue3';
+import type { BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IReport, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
-import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
-import { getReportType, REPORTS_DOWNLOAD_DISABLED_TIMEOUT, REPORTS_TABLE_FIELDS } from '../../../../domain/src';
+import {
+    getReportType,
+    REPORTS_DOWNLOAD_DISABLED_TIMEOUT,
+    REPORTS_TABLE_FIELDS,
+    type ReportsTableFields,
+    type ReportsTranslationKey,
+} from '../../../../domain/src';
 import DownloadErrorIcon from './DownloadErrorIcon.vue';
 import SmallLoadingIndicator from './SmallLoadingIndicator.vue';
 import styles from './ReportsTable.module.scss';
-
-export type ReportsTableFields = (typeof REPORTS_TABLE_FIELDS)[number];
 
 // ── Immutable set utils ──
 const withItem = <T,>(set: Set<T>, item: T) => {
@@ -47,19 +60,21 @@ const props = defineProps<{
     onContactSupport?: () => void;
     showPagination: boolean;
     data: IReport[] | undefined;
-    customColumns?: CustomColumn<StringWithAutocompleteOptions<ReportsTableFields>>[];
+    customColumns?: CustomColumn<ReportsTableFields>[];
     onDataRetrieve?: OnDataRetrievedCallback<IReport[]>;
     hasNext?: boolean;
     hasPrevious?: boolean;
     goToNextPage?: () => void;
     goToPreviousPage?: () => void;
     limit?: number;
-    limitOptions?: number[];
+    limitOptions?: readonly number[];
     updateLimit?: (limit: number) => void;
     currentPage?: number;
 }>();
 
 const { i18n } = useCoreContext();
+const hideIllustrations = useShouldHideIllustrations();
+const isCondensed = useCondensedDataGrid();
 // Keep the reactive proxy here — destructuring `useConfigContext()` would unwrap
 // the `refreshing` primitive into a one-time snapshot and capture a stale
 // `endpoints` reference, breaking reactivity when the session is refreshed.
@@ -163,9 +178,13 @@ const {
     fieldsKeys: {
         createdAt: 'reports.overview.list.fields.createdAt',
         reportType: 'reports.overview.list.fields.reportType',
-    },
+        reportFile: 'reports.overview.list.fields.reportFile',
+    } satisfies Record<string, ReportsTranslationKey>,
+    columnConfig: () => ({ createdAt: { flex: 1 }, reportType: { flex: 1 }, reportFile: { flex: 1, numeric: isMobile.value } }),
+    customColumnDefaults: () => ({ flex: 1 }),
+    customColumnWidths: () => customColumnWidths.value,
     resolveCustomColumnLabel: key => {
-        const labelKey = `reports.overview.list.fields.${key}` as any;
+        const labelKey = `reports.overview.list.fields.${key}`;
         return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
     },
 });
@@ -187,7 +206,15 @@ const { customRecords, loadingCustomRecords } = useCustomColumnsData<IReport>({
 // ── Grid columns ──
 const columns = computed(() => {
     if (isMobile.value) {
-        return [{ field: 'dateAndReportType', label: i18n.get('reports.overview.list.fields.reportType'), autoWidth: true }];
+        return [
+            {
+                field: 'dateAndReportType',
+                label: i18n.get('reports.overview.list.fields.reportType'),
+                flex: 1,
+                minWidth: customColumnWidths.value.dateAndReportType,
+            },
+            ...desktopColumns.value.filter(column => column.field === 'reportFile'),
+        ];
     }
     return desktopColumns.value;
 });
@@ -213,26 +240,18 @@ const gridData = computed<BentoDatagridDataItem[]>(() => {
     });
 });
 
+const tableRef = ref<HTMLElement | null>(null);
+const customColumnWidths = useCustomColumnWidths(
+    tableRef,
+    () => [gridData.value, isLoading.value, isMobile.value],
+    () => columns.value
+);
+
 // ── Row actions ──
-const getRowActions: BentoDataGridRowActionsProp = (item: BentoDatagridDataItem) => {
-    const report = item._raw as IReport;
+const getDownloadIcon = (report: IReport) => {
     const reportKey = getReportKey(report);
-    const isDownloading = isDownloadingReport(reportKey);
-    const ButtonIcon = failedReportKeys.value.has(reportKey) ? DownloadErrorIcon : DownloadIcon;
-
-    const label = isDownloading
-        ? `${i18n.get('common.actions.download.labels.inProgress')}..`
-        : i18n.get('reports.overview.list.controls.downloadReport.label');
-
-    return [
-        {
-            title: label,
-            event: () => handleDownload(report),
-            tooltipText: label,
-            disabled: frozen.value || isDownloading,
-            iconLeft: isDownloading ? SmallLoadingIndicator : ButtonIcon,
-        },
-    ];
+    const downloadIcon = failedReportKeys.value.has(reportKey) ? DownloadErrorIcon : DownloadIcon;
+    return isDownloadingReport(reportKey) ? SmallLoadingIndicator : downloadIcon;
 };
 
 const paginationProps = computed(() => {
@@ -242,16 +261,17 @@ const paginationProps = computed(() => {
         size: props.limit ?? 10,
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
+        pageSizeItems: asPageSizeItems(props.limitOptions),
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
         hideFirstLastPageButtons: true,
     };
 });
 
 const emptyStateProps = computed(() => ({
-    image: 'no-results-found' as const,
+    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
     variant: 'embedded' as const,
     title: i18n.get('reports.overview.errors.listEmpty'),
-    description: i18n.get('common.errors.updateFilters'),
+    description: i18n.get('reports.common.errors.updateFilters'),
 }));
 
 function handleNavigate(page: number) {
@@ -274,28 +294,24 @@ function formatDate(dateStr: string): string {
 </script>
 
 <template>
-    <div :class="styles.root">
-        <BentoToast />
-
+    <div ref="tableRef" :class="styles.root">
         <DataOverviewError
             v-if="props.error"
             :error="props.error"
             :error-message="'reports.overview.errors.listUnavailable'"
             :on-contact-support="props.onContactSupport"
             :refresh-icon="RefreshIcon"
-            :copy-icon="CopyIcon"
         />
 
         <BentoDataGrid
             v-else
-            outline
+            has-resizable-columns
+            :condensed="isCondensed"
             :columns="columns"
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
-            :row-actions="getRowActions"
-            :has-resizable-columns="false"
             :allow-column-drag-and-drop="false"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"
@@ -310,15 +326,33 @@ function formatDate(dateStr: string): string {
             </template>
             <template #item-dateAndReportType="{ item }">
                 <div :class="styles.dateReportType">
-                    <BentoTypography v-if="item.reportType" variant="body" stronger>{{ item.reportType }}</BentoTypography>
+                    <BentoTypography v-if="item.reportType" variant="body" stronger>
+                        {{ item.reportType }}
+                    </BentoTypography>
                     <time v-if="item.createdAt" :datetime="item.createdAt">
                         <BentoTypography variant="body" :class="styles.date">{{ formatDate(item.createdAt) }}</BentoTypography>
                     </time>
                 </div>
             </template>
+            <template #item-reportFile="{ item }">
+                <BentoButton
+                    v-bento-tooltip="i18n.get('reports.overview.list.controls.downloadReport.label')"
+                    condensed
+                    variant="secondary"
+                    :aria-label="i18n.get('reports.overview.list.controls.downloadReport.label')"
+                    :disabled="frozen || isDownloadingReport(getReportKey(item._raw))"
+                    @click.stop="handleDownload(item._raw)"
+                >
+                    <template #iconLeft>
+                        <component :is="getDownloadIcon(item._raw)" />
+                    </template>
+                    <template v-if="!isMobile" #default>{{ i18n.get('reports.overview.list.controls.downloadReport.label') }}</template>
+                </BentoButton>
+            </template>
             <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">
-                <CustomDataCell :value="item[key]" />
+                <CustomDataCell :value="item[key]" :field="key" />
             </template>
         </BentoDataGrid>
     </div>
+    <BentoToast />
 </template>

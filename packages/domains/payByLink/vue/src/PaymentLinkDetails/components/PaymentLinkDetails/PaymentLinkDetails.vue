@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
-import { ErrorMessageDisplay } from '@integration-components/composables-vue';
-import { getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
+import { useCoreContext, useModalContext } from '@integration-components/core/vue';
+import type { PaymentLinkDetailsComponentProps } from '../../types';
+import { ComponentShell, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
+import { type PayByLinkTranslationKey, getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';
 import PaymentLinkDetailsContent from './PaymentLinkDetailsContent.vue';
 import PaymentLinkExpiration from '../PaymentLinkExpiration/PaymentLinkExpiration.vue';
@@ -12,17 +13,17 @@ import PaymentLinkSkeleton from '../PaymentLinkSkeleton/PaymentLinkSkeleton.vue'
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import styles from './PaymentLinkDetails.module.scss';
 
-const props = defineProps<{
-    id: string;
-    hideTitle?: boolean;
-    onContactSupport?: () => void;
-    onDismiss?: () => void;
-    onUpdate?: () => void;
-    isDismissButtonHidden?: boolean;
-}>();
+const props = defineProps<PaymentLinkDetailsComponentProps>();
 
 const { i18n } = useCoreContext();
+const { withinModal } = useModalContext();
+const hideTitles = useShouldHideTitles();
 const { paymentLink, error, isFetching, refetch } = usePaymentLinkDetails(() => ({ id: props.id }));
+
+const shellState = computed<ComponentShellState>(() => {
+    if (isFetching.value) return 'loading';
+    return !paymentLink.value || error.value ? 'error' : 'ready';
+});
 
 const errorInfo = computed(() => {
     const content = getPaymentLinkErrorMessageContent(error.value, 'payByLink.details.errors.unavailable', !!props.onContactSupport);
@@ -37,6 +38,13 @@ const errorInfo = computed(() => {
 
 type Screen = 'details' | 'expirationConfirmation' | 'expirationSuccess';
 const activeScreen = ref<Screen>('details');
+const modalTitleKey = computed<PayByLinkTranslationKey | undefined>(() => {
+    if (activeScreen.value === 'details') return 'payByLink.details.title';
+    if (activeScreen.value === 'expirationConfirmation') return 'payByLink.details.expiration.title';
+    return undefined;
+});
+
+watch(modalTitleKey, title => props.onTitleChange?.(title), { immediate: true });
 
 watch(
     () => props.id,
@@ -62,48 +70,45 @@ function handleNavigationToDetailsAfterExpiration() {
 
 <template>
     <div :class="styles.root">
-        <div :class="activeScreen !== 'details' ? accessibilityStyles.visuallyHidden : undefined">
-            <BentoTypography v-if="!props.hideTitle" el="h1" variant="title" large stronger>
+        <div v-if="!withinModal && !hideTitles" :class="activeScreen !== 'details' ? accessibilityStyles.visuallyHidden : undefined">
+            <BentoTypography el="h1" variant="title">
                 {{ i18n.get('payByLink.details.title') }}
             </BentoTypography>
         </div>
 
         <div :class="styles.content">
-            <PaymentLinkSkeleton v-if="isFetching" />
+            <ComponentShell
+                :state="shellState"
+                :error-info="errorInfo"
+                :on-dismiss="props.onDismiss"
+                dismiss-label="payByLink.common.actions.goBack"
+                :on-refresh="refetch"
+            >
+                <template #loading>
+                    <PaymentLinkSkeleton />
+                </template>
 
-            <div v-else-if="!paymentLink || error">
-                <ErrorMessageDisplay
-                    :error-info="errorInfo"
-                    :on-dismiss="props.onDismiss"
-                    dismiss-label="payByLink.common.actions.goBack"
-                    :on-refresh="refetch"
-                    :outlined="false"
-                    :absolute-position="false"
-                    :with-background="false"
-                    with-image
+                <PaymentLinkExpiration
+                    v-if="activeScreen === 'expirationConfirmation' && paymentLink"
+                    :payment-link="paymentLink"
+                    :on-cancel="() => (activeScreen = 'details')"
+                    :on-expiration-success="handleExpirationSuccess"
                 />
-            </div>
 
-            <PaymentLinkExpiration
-                v-else-if="activeScreen === 'expirationConfirmation' && paymentLink"
-                :payment-link="paymentLink"
-                :on-cancel="() => (activeScreen = 'details')"
-                :on-expiration-success="handleExpirationSuccess"
-            />
+                <PaymentLinkExpirationSuccess
+                    v-else-if="activeScreen === 'expirationSuccess'"
+                    :on-dismiss="props.onDismiss"
+                    :on-show-details="handleNavigationToDetailsAfterExpiration"
+                />
 
-            <PaymentLinkExpirationSuccess
-                v-else-if="activeScreen === 'expirationSuccess'"
-                :on-dismiss="props.onDismiss"
-                :on-show-details="handleNavigationToDetailsAfterExpiration"
-            />
-
-            <PaymentLinkDetailsContent
-                v-else-if="paymentLink"
-                :payment-link="paymentLink"
-                :on-dismiss="props.onDismiss"
-                :on-expire="handleExpireNow"
-                :is-dismiss-button-hidden="props.isDismissButtonHidden"
-            />
+                <PaymentLinkDetailsContent
+                    v-else-if="paymentLink"
+                    :payment-link="paymentLink"
+                    :on-dismiss="props.onDismiss"
+                    :on-expire="handleExpireNow"
+                    :is-dismiss-button-hidden="props.isDismissButtonHidden"
+                />
+            </ComponentShell>
         </div>
     </div>
 </template>

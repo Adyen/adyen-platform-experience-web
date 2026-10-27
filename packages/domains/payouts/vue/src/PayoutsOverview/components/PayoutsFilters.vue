@@ -7,9 +7,11 @@ import { useBalanceAccountFilterState, useDateRangeFilterState } from '@integrat
 import type { IBalanceAccountBase } from '@integration-components/types';
 import { createQuickSelectRanges, quickSelectDateRanges, startOfDay } from '@integration-components/utils';
 import { EARLIEST_PAYOUT_SINCE_DATE } from '../constants';
+import styles from './PayoutsFilters.module.scss';
 
 const props = defineProps<{
     balanceAccounts?: IBalanceAccountBase[];
+    compact?: boolean;
     onChange?: (params: { balanceAccountId: string | undefined; createdSince: string; createdUntil: string }) => void;
 }>();
 
@@ -27,6 +29,7 @@ const quickSelectRanges = createQuickSelectRanges(
         lastMonth: quickSelectDateRanges.lastMonth,
         yearToDate: quickSelectDateRanges.yearToDate,
     },
+    'payouts.overview.common.filters.types.date.rangeSelect.options.',
     key => i18n.get(key)
 );
 
@@ -48,9 +51,10 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
     if (hasMultipleBalanceAccounts.value) {
         filters.push({
             field: 'balanceAccountId',
-            label: i18n.get('common.filters.types.account.label'),
+            label: i18n.get('payouts.overview.common.filters.types.account.label'),
             type: BentoFilterItemType.SELECT,
             defaultValue: balanceAccountOptions.value[0]?.value,
+            visible: !props.compact,
             options: {
                 listboxItems: balanceAccountOptions.value,
             },
@@ -59,9 +63,10 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
     filters.push({
         field: 'dateRange',
-        label: i18n.get('common.filters.types.date.label'),
+        label: i18n.get('payouts.overview.common.filters.types.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         defaultValue: defaultDateRange,
+        visible: !props.compact,
         options: {
             numberOfMonths: 1,
             ...getDateRangeFilterOptions({ quickSelectRanges, disableUnavailableDates: true }),
@@ -109,5 +114,7 @@ watch(currentFilterParams, params => props.onChange?.(params), { deep: true, imm
 </script>
 
 <template>
-    <BentoFilterBar :config="filterConfig" :filter-values="filterValues" @input="onFilterInput" />
+    <div :class="[styles.filtersContainer, props.compact ? styles.filtersContainerCompact : '']">
+        <BentoFilterBar :config="filterConfig" :filter-values="filterValues" :show-applied-hidden-filters="false" @input="onFilterInput" />
+    </div>
 </template>

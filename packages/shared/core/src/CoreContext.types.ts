@@ -1,5 +1,5 @@
 import Localization from './Localization';
-import { DevEnvironment, onErrorHandler } from './types';
+import { DevEnvironment, OnErrorHandler } from './types';
 import { AssetOptions } from './Assets/Assets';
 
 export type ComponentRef<T = HTMLDivElement> = () => T | null;
@@ -14,7 +14,7 @@ export interface CoreProviderProps {
     i18n: Localization['i18n'];
     loadingContext?: string;
     refreshComponent?: () => void;
-    externalErrorHandler?: onErrorHandler | null;
+    externalErrorHandler?: OnErrorHandler | null;
     componentRef: ComponentRef<HTMLDivElement>;
     getImageAsset?: (props: AssetOptions) => string;
     getDatasetAsset?: (props: AssetOptions) => string;

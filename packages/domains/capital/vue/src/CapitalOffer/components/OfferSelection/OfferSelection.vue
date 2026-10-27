@@ -17,11 +17,12 @@ import { useCreateOffer } from '../../composables/useCreateOffer';
 import type { IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
 import { BentoButtonActions, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import AmountSelector from '../AmountSelector/AmountSelector.vue';
-import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
+import CapitalError from '../../../shared/CapitalError.vue';
 import OfferSelectionDetails from '../OfferSelectionDetails.vue';
 import RenewalHighlights from '../RenewalHighlights.vue';
 import TermSelector from '../TermSelector.vue';
 import styles from './OfferSelection.module.scss';
+import EmptyOfferState from '../../../shared/EmptyOfferState.vue';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
@@ -122,7 +123,7 @@ const actions = computed<BentoButtonActionsList>(() => {
         ...(props.onDismiss
             ? [
                   {
-                      title: i18n.get('capital.common.actions.goBack'),
+                      title: i18n.get('capital.offer.selection.actions.goBack'),
                       event: props.onDismiss,
                   },
               ]
@@ -134,12 +135,12 @@ const actions = computed<BentoButtonActionsList>(() => {
 <template>
     <div :class="styles.root" data-testid="capital-offer-selection">
         <CapitalError
-            v-if="offersError || hasNoOffers || createOfferError"
-            :empty-grant-offer="hasNoOffers"
+            v-if="offersError || createOfferError"
             :error="createOfferError ?? offersError"
-            :on-back="props.onDismiss"
+            :on-dismiss="props.onDismiss"
             :on-contact-support="props.onContactSupport"
         />
+        <EmptyOfferState v-else-if="hasNoOffers" :on-dismiss="props.onDismiss" />
         <template v-else-if="amountValue">
             <AmountSelector
                 :amount-value="amountValue"

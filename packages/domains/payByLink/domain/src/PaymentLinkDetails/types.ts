@@ -1,14 +1,9 @@
-import type { TranslationKey } from '@integration-components/core';
-import type { UIElementProps } from '@integration-components/types';
+import type { WithDismissCallback } from '@integration-components/types';
+import type { PayByLinkTranslationKey } from '../shared/types';
 
-export interface PaymentLinkDetailsProps extends UIElementProps {
+export interface PaymentLinkDetailsProps extends WithDismissCallback {
     id: string;
-    onContactSupport?: () => void;
-    onDismiss?: () => void;
-    onUpdate?: () => void;
 }
-
-export type PaymentLinkDetailsComponentProps = PaymentLinkDetailsProps;
 
 export type PaymentLinkDetailsScreen = 'details' | 'expirationConfirmation' | 'expirationSuccess';
 
@@ -21,7 +16,7 @@ export type PaymentLinkStatusTagVariant = 'info' | 'success' | 'neutral' | 'warn
 export type PaymentLinkActivityStatus = 'green' | 'red' | 'blue' | 'black';
 
 export type ListItemData = {
-    key: TranslationKey;
+    key: PayByLinkTranslationKey;
     value?: string;
     isCopyable?: boolean;
     linkUrl?: string;
@@ -30,8 +25,8 @@ export type ListItemData = {
 export type PaymentLinkListItems = Record<'linkInformation' | 'shopperInformation' | 'shippingAddress' | 'billingAddress', ListItemData[]>;
 
 export type PaymentLinkErrorMessageContent = {
-    title: TranslationKey;
-    message: TranslationKey[];
+    title: PayByLinkTranslationKey;
+    message: PayByLinkTranslationKey[];
     refreshComponent?: boolean;
     requestId?: string;
 };

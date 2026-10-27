@@ -10,16 +10,23 @@ export { default as useCustomColumnsData } from './useCustomColumnsData';
 export * from './useTableColumns';
 export { default as useTableColumns } from './useTableColumns';
 
+export * from './useCustomColumnWidths';
+export { default as useCustomColumnWidths } from './useCustomColumnWidths';
+
 export * from './useCustomDataCells';
 export { default as useCustomDataCells } from './useCustomDataCells';
 
 export { CustomDataCell } from './CustomDataCell';
 
-export * from './getErrorMessage';
-export { default as getErrorMessage } from './getErrorMessage';
+export { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from '@integration-components/core/vue';
 export { DataOverviewError } from './DataOverviewError';
-export { ErrorMessageDisplay } from './ErrorMessageDisplay';
+export { ErrorMessageDisplay } from '@integration-components/core/vue';
+export { ComponentShell } from '@integration-components/core/vue';
+export type { ComponentShellState } from '@integration-components/core/vue';
+export { ComponentAvailabilityGate } from '@integration-components/core/vue';
+export { useShouldHideIllustrations, useShouldHideTitles, useCondensedDataGrid } from '@integration-components/core/vue';
 export { CopyText } from './CopyText';
+export { default as ResponsiveButtonActions } from './ResponsiveButtonActions.vue';
 
 export { default as useTimezoneAwareDateFormatting } from './useTimezoneAwareDateFormatting';
 
@@ -56,6 +63,9 @@ export { default as useSortedMultiSelection } from './useSortedMultiSelection';
 
 export * from './useCursorPaginatedRecords';
 export { default as useCursorPaginatedRecords } from './useCursorPaginatedRecords';
+
+export * from './usePageLimit';
+export { default as usePageLimit } from './usePageLimit';
 
 export * from './useLiveAnnouncement';
 export { default as useLiveAnnouncement } from './useLiveAnnouncement';
