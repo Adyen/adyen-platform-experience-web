@@ -28,178 +28,314 @@ import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-component
 import { CAPITAL_ENDPOINTS } from '../endpoints';
 import { commonHandlers } from './commonHandlers';
 import { getAsyncCapitalStateResponse, getAsyncGrantsResponse, getErrorResponse } from './utils';
+import { withDelay } from '@integration-components/testing/msw';
 
 export const capitalOverviewHandlers = {
     ...commonHandlers,
     unsupportedRegion: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_UNSUPPORTED_REGION);
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_UNSUPPORTED_REGION);
+            })
+        ),
     ],
     ineligible: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_INELIGIBLE);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [] });
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_INELIGIBLE);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [] });
+            })
+        ),
     ],
     firstTimeEligible: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_FIRST_OFFER);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [] });
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_FIRST_OFFER);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [] });
+            })
+        ),
     ],
     earlyRenewal: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_RENEWABLE_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [RENEWABLE_GRANT] });
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_RENEWABLE_GRANT);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [RENEWABLE_GRANT] });
+            })
+        ),
     ],
     eligible: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_CLOSED_GRANTS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [REPAID_GRANT] });
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_CLOSED_GRANTS);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [REPAID_GRANT] });
+            })
+        ),
     ],
     grants: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_GRANTS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: GRANTS });
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_GRANTS);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: GRANTS });
+            })
+        ),
     ],
     pending: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [PENDING_GRANT] });
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [PENDING_GRANT] });
+            })
+        ),
     ],
     multipleActions: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, ({ request }) => {
-            return getAsyncCapitalStateResponse(request.url);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, ({ request }) => {
-            return getAsyncGrantsResponse(request.url);
-        }),
-        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
-            return HttpResponse.json(ONBOARDING_CONFIGURATION);
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(({ request }) => {
+                return getAsyncCapitalStateResponse(request.url);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(({ request }) => {
+                return getAsyncGrantsResponse(request.url);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return HttpResponse.json(ONBOARDING_CONFIGURATION);
+            })
+        ),
     ],
     singleAction: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [PENDING_GRANT_WITH_SINGLE_ACTION] });
-        }),
-        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
-            return HttpResponse.json(ONBOARDING_CONFIGURATION);
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [PENDING_GRANT_WITH_SINGLE_ACTION] });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return HttpResponse.json(ONBOARDING_CONFIGURATION);
+            })
+        ),
     ],
     multipleHostedActions: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, ({ request }) => {
-            return getAsyncCapitalStateResponse(request.url);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, ({ request }) => {
-            return getAsyncGrantsResponse(request.url);
-        }),
-        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
-            return HttpResponse.json(undefined, { status: 204 });
-        }),
-        http.get(CAPITAL_ENDPOINTS.signToS, () => {
-            return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.anaCredit, () => {
-            return HttpResponse.json(ANACREDIT_ACTION_DETAILS);
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(({ request }) => {
+                return getAsyncCapitalStateResponse(request.url);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(({ request }) => {
+                return getAsyncGrantsResponse(request.url);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return HttpResponse.json(undefined, { status: 204 });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.signToS,
+            withDelay(() => {
+                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.anaCredit,
+            withDelay(() => {
+                return HttpResponse.json(ANACREDIT_ACTION_DETAILS);
+            })
+        ),
     ],
     singleHostedAction: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [PENDING_GRANT_WITH_SINGLE_ACTION] });
-        }),
-        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
-            return HttpResponse.json(undefined, { status: 204 });
-        }),
-        http.get(CAPITAL_ENDPOINTS.signToS, () => {
-            return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [PENDING_GRANT_WITH_SINGLE_ACTION] });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return HttpResponse.json(undefined, { status: 204 });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.signToS,
+            withDelay(() => {
+                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
+            })
+        ),
     ],
     repaymentNL: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [ACTIVE_GRANT_NL] });
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [ACTIVE_GRANT_NL] });
+            })
+        ),
     ],
     repaymentGB: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [ACTIVE_GRANT_GB] });
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [ACTIVE_GRANT_GB] });
+            })
+        ),
     ],
     repaymentUS: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [ACTIVE_GRANT_US] });
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [ACTIVE_GRANT_US] });
+            })
+        ),
     ],
     repaymentWithoutTransferInstruments: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [ACTIVE_GRANT_WITHOUT_TRANSFER_INSTRUMENTS] });
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [ACTIVE_GRANT_WITHOUT_TRANSFER_INSTRUMENTS] });
+            })
+        ),
     ],
     errorOnboardingConfig: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] });
-        }),
-        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
-            const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
-            return getErrorResponse(error, 500);
-        }),
-        http.get(CAPITAL_ENDPOINTS.signToS, () => {
-            return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.anaCredit, () => {
-            return HttpResponse.json(ANACREDIT_ACTION_DETAILS);
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
+                return getErrorResponse(error, 500);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.signToS,
+            withDelay(() => {
+                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.anaCredit,
+            withDelay(() => {
+                return HttpResponse.json(ANACREDIT_ACTION_DETAILS);
+            })
+        ),
     ],
     errorHostedAction: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] });
-        }),
-        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
-            return HttpResponse.json(undefined, { status: 204 });
-        }),
-        http.get(CAPITAL_ENDPOINTS.signToS, () => {
-            const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
-            return getErrorResponse(error, 500);
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return HttpResponse.json(undefined, { status: 204 });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.signToS,
+            withDelay(() => {
+                const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
+                return getErrorResponse(error, 500);
+            })
+        ),
     ],
 };

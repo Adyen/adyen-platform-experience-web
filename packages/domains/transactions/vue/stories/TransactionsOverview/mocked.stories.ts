@@ -11,6 +11,7 @@ import {
     DATA_CUSTOMIZATION_DATA_GRID,
     getCustomDataTransactions,
 } from '../../../fixtures/data/TransactionsOverview';
+import { withDelay } from '@integration-components/testing/msw';
 
 const meta: Meta<ElementProps<TransactionsOverviewExternalProps>> = {
     ...transactionsOverviewMeta,
@@ -103,9 +104,12 @@ export const DataCustomization: ElementStory<TransactionsOverviewExternalProps> 
     parameters: {
         msw: {
             handlers: [
-                http.get(TRANSACTIONS_ENDPOINTS.transactions, () => {
-                    return HttpResponse.json({ data: getCustomDataTransactions(), _links: {} });
-                }),
+                http.get(
+                    TRANSACTIONS_ENDPOINTS.transactions,
+                    withDelay(() => {
+                        return HttpResponse.json({ data: getCustomDataTransactions(), _links: {} });
+                    })
+                ),
             ],
         },
     },
