@@ -1,5 +1,13 @@
 # @adyen/adyen-platform-experience-web
 
+## 2.0.0-alpha.1
+
+### Patch Changes
+
+- da2ffe3: - Added column resizing to overview components.
+    - Improved loading states and lazy-loaded components.
+    - Various UI, Capital and Pay by Link fixes and improvements.
+
 ## 2.0.0-alpha.0
 
 ### Major Changes
