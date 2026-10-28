@@ -7,9 +7,12 @@ import type { ICashOutEligibility, ICashOutResponse } from '@integration-compone
 import CashOutRequest from '../../../CashOutRequest/components/CashOutRequest/CashOutRequest.vue';
 
 const props = defineProps<{
-    balanceAccountId?: string;
+    /** The balance account selected in the overview, which the request starts from. */
+    initialBalanceAccountId?: string;
     eligibility?: ICashOutEligibility;
     isOpen: boolean;
+    referenceForBeneficiary?: string;
+    transferDescription?: string;
     onSubmit: (cashOut: ICashOutResponse) => void;
     onClose: () => void;
     onContactSupport?: () => void;
@@ -40,7 +43,9 @@ watch(
             <!-- Mounted on open, so it starts from the balance account selected in the overview at that moment. -->
             <CashOutRequest
                 v-if="props.isOpen"
-                :balance-account-id="props.balanceAccountId"
+                :initial-balance-account-id="props.initialBalanceAccountId"
+                :reference-for-beneficiary="props.referenceForBeneficiary"
+                :transfer-description="props.transferDescription"
                 :eligibility="props.eligibility"
                 hide-title
                 :on-submit="props.onSubmit"

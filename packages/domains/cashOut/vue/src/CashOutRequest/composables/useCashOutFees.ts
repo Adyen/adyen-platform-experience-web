@@ -4,6 +4,7 @@ import { useConfigContext } from '@integration-components/core/vue';
 import { useAsyncRequest } from '@integration-components/composables-vue/useAsyncRequest';
 import { CASH_OUT_FEES_DEBOUNCE_MS } from '@integration-components/cashOut/domain';
 import type { ICashOutAmount, ICashOutFees } from '@integration-components/types';
+import { useReportErrors } from '../../shared/composables/useReportErrors';
 
 type CashOutFeesOptions = {
     balanceAccountId: MaybeRefOrGetter<string | undefined>;
@@ -53,6 +54,7 @@ export const useCashOutFees = ({ balanceAccountId, amount }: CashOutFeesOptions)
     );
 
     onScopeDispose(cancel);
+    useReportErrors(request.error);
 
     return {
         fees: request.data,
