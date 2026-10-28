@@ -39,8 +39,8 @@ export const ZeroBalance: ElementStory = {
     },
 };
 
-export const NoInstantReachableTransferInstruments: ElementStory = {
-    name: 'Unavailable - No instant reachable transfer instruments',
+export const NoTransferInstruments: ElementStory = {
+    name: 'Unavailable - No transfer instruments',
     args: { mockedApi: true },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.noInstantReachableTransferInstruments },
@@ -79,8 +79,8 @@ export const ReceiveFromBalanceAccountNotAllowed: ElementStory = {
     },
 };
 
-export const RiskRestricted: ElementStory = {
-    name: 'Unavailable - Risk restricted',
+export const RiskRestriction: ElementStory = {
+    name: 'Unavailable - Risk restriction',
     args: { mockedApi: true },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.riskRestricted },

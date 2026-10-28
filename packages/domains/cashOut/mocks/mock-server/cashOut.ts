@@ -242,6 +242,21 @@ export const CASH_OUT_HANDLERS = {
         ],
     },
     // A session with the view role only, so it can't instruct a cashOut.
+    freeFees: {
+        handlers: [
+            http.get(ENDPOINTS.fees, async ({ request }) => {
+                const { searchParams } = new URL(request.url);
+                const value = Number(searchParams.get('amount'));
+                const currency = searchParams.get('currency') ?? '';
+                await delay(200);
+                return HttpResponse.json({
+                    amount: { currency, value },
+                    fee: { currency, value: 0 },
+                    payoutAmount: { currency, value },
+                } satisfies ICashOutFees);
+            }),
+        ],
+    },
     instructRoleNotAssigned: {
         handlers: [
             http.post(SETUP_ENDPOINT, () => {
