@@ -17,7 +17,7 @@ catalog:
   msw: ^2.7.3
   storybook: 10.6.2
   typescript: 5.8.3
-  vite: ^7.3.5
+  vite: ^7.3.7
   vitest: 4.1.11
   vue: ^3.5.42
   vue-tsc: 3.3.11
@@ -35,10 +35,11 @@ overrides:
   "browserslist": "4.28.7"
   "esbuild": "0.28.1"
   "fast-uri": "4.1.5"
-  "follow-redirects": "1.16.0"
+  "follow-redirects": "1.16.1"
   "form-data": "4.0.6"
   "immutable": "4.3.9"
   "js-yaml": "4.3.2"
+  "launch-editor": "2.14.2"
   "lodash": "4.18.1"
   "minimatch@<9.0.7": "10.2.4"
   "picomatch": "4.0.4"
@@ -50,6 +51,7 @@ overrides:
   "serialize-javascript@6.0.2": "7.0.3"
   "shell-quote": "1.11.0"
   "smol-toml": "1.9.0"
+  "source-map-js": "1.2.2"
   "tmp": "0.2.7"
   "typescript": "catalog:"
   "uuid": "11.1.1"
