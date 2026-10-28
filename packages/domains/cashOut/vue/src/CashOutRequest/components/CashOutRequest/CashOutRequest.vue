@@ -13,7 +13,7 @@ import styles from './CashOutRequest.module.scss';
 const props = defineProps<CashOutRequestProps>();
 
 const cashOutState = useCashOutState({
-    balanceAccountId: () => props.balanceAccountId,
+    initialBalanceAccountId: () => props.initialBalanceAccountId,
     eligibility: () => props.eligibility,
 });
 const { balanceAccountOptions, eligibility, selectedBalanceAccountId } = cashOutState;
@@ -64,6 +64,8 @@ const handleCashOutResult = (cashOutResult: CashOutResult) => {
                 :on-dismiss="props.onDismiss"
                 :on-contact-support="props.onContactSupport"
                 :on-fees-error="handleFeesError"
+                :reference-for-beneficiary="props.referenceForBeneficiary"
+                :transfer-description="props.transferDescription"
             />
         </ComponentShell>
     </div>

@@ -50,9 +50,11 @@ vi.mock('../../../CashOutRequest/components/CashOutRequest/CashOutRequest.vue', 
     return {
         default: defineComponent({
             props: {
-                balanceAccountId: { type: String, default: undefined },
+                initialBalanceAccountId: { type: String, default: undefined },
                 eligibility: { type: Object, default: undefined },
                 hideTitle: Boolean,
+                referenceForBeneficiary: { type: String, default: undefined },
+                transferDescription: { type: String, default: undefined },
                 onCashOutInstructed: { type: Function, default: undefined },
                 onCashOutResult: { type: Function, default: undefined },
                 onDismiss: { type: Function, default: undefined },
@@ -68,20 +70,26 @@ vi.mock('../../../CashOutRequest/components/CashOutRequest/CashOutRequest.vue', 
     };
 });
 
-type ModalProps = { onCashOutInstructed?: () => void; onClose?: () => void; onContactSupport?: () => void };
+type ModalProps = {
+    referenceForBeneficiary?: string;
+    transferDescription?: string;
+    onCashOutInstructed?: () => void;
+    onClose?: () => void;
+    onContactSupport?: () => void;
+};
 
-const renderModal = ({ onCashOutInstructed = vi.fn(), onClose = vi.fn(), onContactSupport }: ModalProps = {}) => {
+const renderModal = ({ onCashOutInstructed = vi.fn(), onClose = vi.fn(), ...props }: ModalProps = {}) => {
     const isOpen = ref(true);
     const target = document.createElement('div');
     const app = createApp({
         setup: () => () =>
             h(CashOutRequestModal, {
-                balanceAccountId: 'BA1',
+                initialBalanceAccountId: 'BA1',
                 eligibility: ELIGIBILITY,
                 isOpen: isOpen.value,
                 onCashOutInstructed,
                 onClose,
-                onContactSupport,
+                ...props,
             }),
     });
     app.mount(target);
@@ -107,7 +115,23 @@ describe('CashOutRequestModal', () => {
         const onContactSupport = vi.fn();
         const { unmount } = renderModal({ onCashOutInstructed, onContactSupport });
 
-        expect(requestProps.current).toMatchObject({ balanceAccountId: 'BA1', eligibility: ELIGIBILITY, onCashOutInstructed, onContactSupport });
+        expect(requestProps.current).toMatchObject({
+            initialBalanceAccountId: 'BA1',
+            eligibility: ELIGIBILITY,
+            onCashOutInstructed,
+            onContactSupport,
+        });
+
+        unmount();
+    });
+
+    test('should pass on the reference and the description given by the integration', () => {
+        const { unmount } = renderModal({ referenceForBeneficiary: 'REF123', transferDescription: 'Weekly cashOut' });
+
+        expect(requestProps.current).toMatchObject({
+            referenceForBeneficiary: 'REF123',
+            transferDescription: 'Weekly cashOut',
+        });
 
         unmount();
     });

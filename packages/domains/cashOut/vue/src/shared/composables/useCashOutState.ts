@@ -6,11 +6,12 @@ import { useBalanceAccountFilterState } from '@integration-components/composable
 import { useBalanceAccounts } from '@integration-components/composables-vue/useBalanceAccounts';
 import type { ICashOutEligibility } from '@integration-components/types';
 import { useCashOutEligibility } from './useCashOutEligibility';
+import { useReportErrors } from './useReportErrors';
 
 type CashOutStateOptions = {
-    /** The balance account selected initially. */
-    balanceAccountId?: MaybeRefOrGetter<string | undefined>;
-    /** The eligibility of `balanceAccountId`, already loaded elsewhere, so it isn't fetched again. */
+    /** The balance account selected initially, which can then be switched. */
+    initialBalanceAccountId?: MaybeRefOrGetter<string | undefined>;
+    /** The eligibility of `initialBalanceAccountId`, already loaded elsewhere, so it isn't fetched again. */
     eligibility?: MaybeRefOrGetter<ICashOutEligibility | undefined>;
 };
 
@@ -24,14 +25,14 @@ const withoutUnreachableCashOut = (eligibility: ICashOutEligibility | undefined)
 export const getCashOutErrorInfo = (error: AdyenPlatformExperienceError | undefined) => getCashOutErrorMessage(error) as ErrorMessageInfo;
 
 /** The balance accounts, the selected one and its eligibility, with the component shell state they result in. */
-export const useCashOutState = ({ balanceAccountId, eligibility: givenEligibility }: CashOutStateOptions = {}) => {
+export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEligibility }: CashOutStateOptions = {}) => {
     const { balanceAccounts, error: balanceAccountsError, isFetching: isFetchingBalanceAccounts } = useBalanceAccounts();
     const { balanceAccountOptions, selectedBalanceAccountId } = useBalanceAccountFilterState({
         balanceAccounts: () => balanceAccounts.value,
-        initialValue: toValue(balanceAccountId),
+        initialValue: toValue(initialBalanceAccountId),
     });
 
-    const usesGivenEligibility = computed(() => !!toValue(givenEligibility) && selectedBalanceAccountId.value === toValue(balanceAccountId));
+    const usesGivenEligibility = computed(() => !!toValue(givenEligibility) && selectedBalanceAccountId.value === toValue(initialBalanceAccountId));
 
     const {
         eligibility: fetchedEligibility,
@@ -44,6 +45,7 @@ export const useCashOutState = ({ balanceAccountId, eligibility: givenEligibilit
 
     // The HTTP layer throws AdyenPlatformExperienceError at runtime, whatever type the request composables declare.
     const error = computed(() => (balanceAccountsError.value ?? eligibilityError.value) as AdyenPlatformExperienceError | undefined);
+    useReportErrors(error);
 
     // Without a balance account there is nothing to request eligibility for, so the shell would otherwise stay loading.
     const hasNoBalanceAccounts = computed(() => !isFetchingBalanceAccounts.value && !balanceAccountsError.value && !balanceAccounts.value?.length);

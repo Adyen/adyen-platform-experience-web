@@ -7,9 +7,12 @@ import type { ICashOutEligibility, ICashOutResponse } from '@integration-compone
 import CashOutRequest from '../../../CashOutRequest/components/CashOutRequest/CashOutRequest.vue';
 
 const props = defineProps<{
-    balanceAccountId?: string;
+    /** The balance account selected in the overview, which the request starts from. */
+    initialBalanceAccountId?: string;
     eligibility?: ICashOutEligibility;
     isOpen: boolean;
+    referenceForBeneficiary?: string;
+    transferDescription?: string;
     onCashOutInstructed: (cashOut: ICashOutResponse) => void;
     onClose: () => void;
     onContactSupport?: () => void;
@@ -41,7 +44,9 @@ watch(
             <!-- Without onDismiss, so the modal's close button is the only way to close it, instead of a cancel button too. -->
             <CashOutRequest
                 v-if="props.isOpen"
-                :balance-account-id="props.balanceAccountId"
+                :initial-balance-account-id="props.initialBalanceAccountId"
+                :reference-for-beneficiary="props.referenceForBeneficiary"
+                :transfer-description="props.transferDescription"
                 :eligibility="props.eligibility"
                 hide-title
                 :on-cash-out-instructed="props.onCashOutInstructed"

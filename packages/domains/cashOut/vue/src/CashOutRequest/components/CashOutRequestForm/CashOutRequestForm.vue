@@ -31,6 +31,8 @@ type DetailItem = {
 const props = defineProps<{
     balanceAccountId: string;
     eligibility: ICashOutEligibility;
+    referenceForBeneficiary?: string;
+    transferDescription?: string;
     onCashOutResult: (result: CashOutResult) => void;
     onDismiss?: () => void;
     onContactSupport?: () => void;
@@ -100,6 +102,8 @@ const cashOut = async () => {
         balanceAccountId: props.balanceAccountId,
         amount: amount.value,
         transferInstrumentId: transferInstrumentId.value,
+        referenceForBeneficiary: props.referenceForBeneficiary,
+        transferDescription: props.transferDescription,
     });
     props.onCashOutResult(instructedCashOut ? { status: 'success', cashOut: instructedCashOut } : { status: 'error' });
 };

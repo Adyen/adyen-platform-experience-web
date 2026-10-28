@@ -6,8 +6,11 @@ import { useCashOutFees } from './useCashOutFees';
 
 const endpoints: { getCashOutFees?: ReturnType<typeof vi.fn> } = {};
 
+const core: { externalErrorHandler?: ReturnType<typeof vi.fn> } = {};
+
 vi.mock('@integration-components/core/vue', () => ({
     useConfigContext: () => ({ endpoints }),
+    useCoreContext: () => core,
 }));
 
 type FeesParams = { path: { accountKey: string }; query: { amount: number; currency: string } };
@@ -35,6 +38,7 @@ const requestedFees = () =>
 describe('useCashOutFees', () => {
     beforeEach(() => {
         vi.useFakeTimers();
+        core.externalErrorHandler = vi.fn();
         endpoints.getCashOutFees = vi.fn(async (_: unknown, { query }: FeesParams) => feesOf({ value: query.amount, currency: query.currency }));
     });
 
@@ -144,6 +148,7 @@ describe('useCashOutFees', () => {
 
         await vi.waitFor(() => expect(state.feesError.value).toBe(error));
         expect(state.isFetchingFees.value).toBe(false);
+        expect(core.externalErrorHandler).toHaveBeenCalledExactlyOnceWith(error);
 
         stop();
     });

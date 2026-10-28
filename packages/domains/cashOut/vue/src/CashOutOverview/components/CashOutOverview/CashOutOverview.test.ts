@@ -68,16 +68,23 @@ vi.mock('../CashOutRequestModal/CashOutRequestModal.vue', async () => {
     return {
         default: defineComponent({
             props: {
-                balanceAccountId: { type: String, default: undefined },
+                initialBalanceAccountId: { type: String, default: undefined },
                 eligibility: { type: Object, default: undefined },
                 isOpen: Boolean,
+                referenceForBeneficiary: { type: String, default: undefined },
+                transferDescription: { type: String, default: undefined },
                 onCashOutInstructed: { type: Function, default: undefined },
                 onClose: { type: Function, default: undefined },
             },
             setup: props => () =>
                 props.isOpen
                     ? h('div', { 'data-testid': 'request-modal' }, [
-                          h('span', `${props.balanceAccountId} ${JSON.stringify(props.eligibility)}`),
+                          h('span', `${props.initialBalanceAccountId} ${JSON.stringify(props.eligibility)}`),
+                          h(
+                              'span',
+                              { 'data-testid': 'integration-props' },
+                              JSON.stringify([props.referenceForBeneficiary, props.transferDescription])
+                          ),
                           h('button', { 'data-testid': 'close', onClick: props.onClose }),
                           h('button', { 'data-testid': 'cash-out', onClick: () => props.onCashOutInstructed?.(CASH_OUT) }),
                       ])
@@ -97,7 +104,14 @@ const mockCashOutState = ({ eligibility, shellState = 'ready' }: { eligibility?:
     return state;
 };
 
-const renderCashOutOverview = (props: { onCashOutInstructed?: (cashOut: unknown) => void; onContactSupport?: () => void } = {}) => {
+type OverviewProps = {
+    referenceForBeneficiary?: string;
+    transferDescription?: string;
+    onCashOutInstructed?: (cashOut: unknown) => void;
+    onContactSupport?: () => void;
+};
+
+const renderCashOutOverview = (props: OverviewProps = {}) => {
     const target = document.createElement('div');
     const app = createApp(CashOutOverview, props);
     app.mount(target);
@@ -217,6 +231,21 @@ describe('CashOutOverview', () => {
             unmount();
         });
 
+        test('should pass the reference and the description given by the integration on to the modal', async () => {
+            mockCashOutState({ eligibility: ELIGIBILITY });
+            const { target, unmount } = renderCashOutOverview({
+                referenceForBeneficiary: 'REF123',
+                transferDescription: 'Weekly cashOut',
+            });
+
+            findStartButton(target)?.click();
+            await nextTick();
+
+            expect(target.querySelector('[data-testid="integration-props"]')?.textContent).toBe(JSON.stringify(['REF123', 'Weekly cashOut']));
+
+            unmount();
+        });
+
         test('should not show the modal before the start button is clicked', () => {
             mockCashOutState({ eligibility: ELIGIBILITY });
             const { target, unmount } = renderCashOutOverview();
@@ -233,7 +262,7 @@ describe('CashOutOverview', () => {
             findStartButton(target)?.click();
             await nextTick();
 
-            expect(findModal(target)?.textContent).toBe(`BA1 ${JSON.stringify(ELIGIBILITY)}`);
+            expect(findModal(target)?.querySelector('span')?.textContent).toBe(`BA1 ${JSON.stringify(ELIGIBILITY)}`);
 
             unmount();
         });
