@@ -11,14 +11,12 @@ import {
     BentoTooltipDirective as vBentoTooltip,
 } from '@adyen/bento-vue3';
 import {
-    getTransactionRefundReason,
-    TX_DETAILS_FIELDS_REMAPS,
+    getPaymentDetailsItems,
     sharedTransactionDetailsEventProperties,
     type TransactionDetails,
     type TransactionDetailsCustomization,
     type TransactionsTranslationKey,
 } from '../../../../../domain/src';
-import { normalizeCustomFields } from '@integration-components/utils';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import styles from './PaymentDetails.module.scss';
@@ -34,88 +32,7 @@ const { announce, announcement } = useLiveAnnouncement();
 const userEvents = useEventDispatcherContext();
 const copiedItemId = ref<string>();
 
-const paymentDataKeys = {
-    account: 'transactions.details.fields.account',
-    id: 'transactions.details.fields.referenceID',
-    merchantReference: 'transactions.details.fields.merchantReference',
-    pspReference: 'transactions.details.fields.pspReference',
-    refundPspReference: 'transactions.details.fields.refundPspReference',
-    refundReason: 'transactions.details.fields.refundReason',
-} as const;
-
-const paymentDataCopyButtonKeys = {
-    referenceId: 'transactions.details.actions.copyReferenceID',
-    merchantReference: 'transactions.details.actions.copyMerchantReference',
-    pspReference: 'transactions.details.actions.copyPspReference',
-} as const satisfies Record<string, TransactionsTranslationKey>;
-
-interface ListItem {
-    id?: string;
-    key: TransactionsTranslationKey;
-    value: string;
-    copyable?: boolean;
-    copyAriaLabelKey?: TransactionsTranslationKey;
-    trackingName?: string;
-}
-
-const standardItems = computed<ListItem[]>(() => {
-    const { balanceAccount, category, id, merchantReference, paymentPspReference, refundMetadata } = props.transaction;
-    const account = balanceAccount?.description || balanceAccount?.id;
-    const isRefund = category === 'Refund';
-
-    const customizedFields = normalizeCustomFields(props.dataCustomization?.details?.fields, TX_DETAILS_FIELDS_REMAPS, props.transaction);
-    const isVisible = customizedFields ? (fid: string) => customizedFields.find(f => f.key === fid)?.visibility !== 'hidden' : () => true;
-
-    const items: (ListItem | null)[] = [
-        account && isVisible('account') ? { id: 'account', key: paymentDataKeys.account as TransactionsTranslationKey, value: account } : null,
-        isRefund && refundMetadata?.refundReason && isVisible('refundReason')
-            ? {
-                  id: 'refundReason',
-                  key: paymentDataKeys.refundReason as TransactionsTranslationKey,
-                  value: getTransactionRefundReason(i18n, refundMetadata.refundReason) as string,
-              }
-            : null,
-        isVisible('id')
-            ? {
-                  id: 'id',
-                  key: paymentDataKeys.id as TransactionsTranslationKey,
-                  value: id,
-                  copyable: true,
-                  copyAriaLabelKey: paymentDataCopyButtonKeys.referenceId,
-                  trackingName: 'Reference ID',
-              }
-            : null,
-        merchantReference && isVisible('merchantReference')
-            ? {
-                  id: 'merchantReference',
-                  key: paymentDataKeys.merchantReference as TransactionsTranslationKey,
-                  value: merchantReference,
-                  copyable: true,
-                  copyAriaLabelKey: paymentDataCopyButtonKeys.merchantReference,
-                  trackingName: 'Merchant reference',
-              }
-            : null,
-        paymentPspReference && isVisible('paymentPspReference')
-            ? {
-                  id: 'paymentPspReference',
-                  key: paymentDataKeys.pspReference as TransactionsTranslationKey,
-                  value: paymentPspReference,
-                  copyable: true,
-                  copyAriaLabelKey: paymentDataCopyButtonKeys.pspReference,
-                  trackingName: 'PSP reference',
-              }
-            : null,
-        isRefund && refundMetadata?.refundPspReference && isVisible('refundPspReference')
-            ? {
-                  id: 'refundPspReference',
-                  key: paymentDataKeys.refundPspReference as TransactionsTranslationKey,
-                  value: refundMetadata.refundPspReference,
-              }
-            : null,
-    ];
-
-    return items.filter(Boolean) as ListItem[];
-});
+const standardItems = computed(() => getPaymentDetailsItems(i18n, props.transaction, props.dataCustomization?.details));
 
 const customItems = computed(() =>
     Object.entries(props.extraFields ?? {})

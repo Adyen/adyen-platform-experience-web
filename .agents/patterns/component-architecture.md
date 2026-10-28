@@ -85,7 +85,7 @@ Keep the domain and Vue layers structurally consistent:
 
 ```typescript
 // domain/src/TransactionsOverview/types.ts
-export interface TransactionsOverviewProps extends PaginationProps, WithBalanceAccountId {
+export interface TransactionsOverviewProps extends PaginationProps {
     dataCustomization?: TransactionsDataGridCustomization;
 }
 
@@ -97,7 +97,7 @@ export type TransactionsOverviewComponentProps = Omit<TransactionsOverviewExtern
 - Domain `*Props` types are reusable, framework-neutral fragments.
 - Vue `*ExternalProps` types compose `UIElementProps` with the domain fragment and define the element constructor contract.
 - Vue `*ComponentProps` types derive the runtime component shape from `*ExternalProps`; containers and components use these types rather than redeclaring fields.
-- Shared fragments such as `WithBalanceAccountId` and `WithDismissCallback` live in `packages/shared/types/src/element.ts`.
+- Shared fragments such as `WithDismissCallback` live in `packages/shared/types/src/element.ts`.
 - Components with no domain-specific fields use `UIElementProps` directly; do not add an empty props interface.
 
 ## External Components

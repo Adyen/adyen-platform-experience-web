@@ -17,7 +17,7 @@ const { i18n } = useCoreContext();
 </script>
 
 <template>
-    <div role="listitem">
+    <div :role="props.isHeader ? undefined : 'listitem'">
         <SummaryItemPair
             :label1="i18n.get('transactions.overview.totals.tags.incoming')"
             :value1="formattedIncomings"

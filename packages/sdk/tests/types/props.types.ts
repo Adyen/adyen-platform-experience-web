@@ -57,7 +57,6 @@ type DataGridComponents = Pick<
     'DisputesOverview' | 'PaymentLinksOverview' | 'PayoutsOverview' | 'ReportsOverview' | 'TransactionsOverview'
 >;
 type NonDataGridComponents = Omit<PublishedProps, keyof DataGridComponents>;
-type BalanceAccountComponents = Pick<PublishedProps, 'DisputesOverview' | 'PayoutsOverview' | 'ReportsOverview' | 'TransactionsOverview'>;
 type DismissibleComponents = Pick<
     PublishedProps,
     | 'CapitalOffer'
@@ -83,7 +82,6 @@ export type _CoreOptionsMatchFactoryParameters = Assert<Same<CoreOptions, Parame
 export type _EveryComponentUsesUIElementProps = Assert<
     Every<{ [K in keyof PublishedProps]: PublishedProps[K] extends UIElementProps ? true : false }, true>
 >;
-export type _BalanceAccountComponentsTakeBalanceAccountId = Assert<Every<PropPresence<BalanceAccountComponents, 'balanceAccountId'>, true>>;
 export type _DismissibleComponentsTakeOnDismiss = Assert<Every<PropPresence<DismissibleComponents, 'onDismiss'>, true>>;
 type ForbiddenProps = 'onError' | 'ref';
 export type _NoComponentTakesForbiddenProps = Assert<
@@ -113,8 +111,12 @@ export type _NoComponentPublishesInternalOnlyProps = Assert<
 
 type RemovedProps = {
     CapitalOffer: 'onOfferDismiss';
+    DisputesOverview: 'balanceAccountId';
     PaymentLinkCreation: 'onPaymentLinkCreated';
     PaymentLinksOverview: 'balanceAccountId';
+    PayoutsOverview: 'balanceAccountId';
+    ReportsOverview: 'balanceAccountId';
+    TransactionsOverview: 'balanceAccountId';
 };
 
 export type _NoComponentPublishesRemovedProps = Assert<Every<{ [K in keyof RemovedProps]: LacksKey<PublishedProps[K], RemovedProps[K]> }, true>>;

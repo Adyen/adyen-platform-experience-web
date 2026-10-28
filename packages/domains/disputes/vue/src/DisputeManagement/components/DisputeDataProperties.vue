@@ -19,15 +19,13 @@ import {
     DISPUTE_DETAILS_FIELDS_REMAPS,
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
     getDefenseDocumentContent,
-    getDefenseReasonContent,
-    getDisputeReason,
-    isDisputeActionNeeded,
+    getDisputeDetailItems,
+    type DisputeDetailItem,
     type DisputeDetailsCustomization,
-    type DisputesTranslationKey,
     type TranslationConfigItem,
 } from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTE_DETAILS, isFunction, normalizeCustomFields } from '@integration-components/utils';
-import type { IDisputeDetail, IDisputeStatus } from '@integration-components/types/api/models/disputes';
+import type { IDisputeDetail } from '@integration-components/types/api/models/disputes';
 import { useDisputeFlow } from '../composables/useDisputeFlow';
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import styles from './DisputeData.module.scss';
@@ -44,13 +42,6 @@ type CustomDataValue = {
         alt?: string;
     };
 };
-
-type DetailItem =
-    | { id: string; label: DisputesTranslationKey; kind: 'text'; value: string | undefined }
-    | { id: string; label: DisputesTranslationKey; kind: 'date'; value: string }
-    | { id: string; label: DisputesTranslationKey; kind: 'evidence'; value: string[] };
-
-const DISPUTE_STATUSES_WITH_ACCEPTED_DATE: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
 
 const props = defineProps<{
     dispute: IDisputeDetail;
@@ -88,113 +79,7 @@ function formatDate(date: string) {
     return dateFormat(date, DATE_FORMAT_DISPUTE_DETAILS);
 }
 
-const items = computed<DetailItem[]>(() => {
-    const { pspReference: disputeReference, reason: disputeReason, acceptedDate, createdAt, dueDate, status, type } = props.dispute.dispute;
-    const { pspReference: paymentReference, merchantReference, balanceAccount } = props.dispute.payment;
-    const { reason: defenseReason, defendedOn, suppliedDocuments } = props.dispute.defense || {};
-    const isFraudNotification = type === 'NOTIFICATION_OF_FRAUD';
-    const isExpiredDispute = status === 'EXPIRED' || (status === 'LOST' && !isFraudNotification && !defendedOn);
-    const isActionableDispute = isDisputeActionNeeded(props.dispute.dispute) && props.dispute.dispute.defensibility !== 'NOT_ACTIONABLE';
-
-    const detailItems: (DetailItem | undefined)[] = [
-        {
-            id: 'disputeReason',
-            label: 'disputes.management.details.fields.disputeReason',
-            kind: 'text',
-            value: `${getDisputeReason(i18n, disputeReason.category)} - ${disputeReason.title}`,
-        },
-        !isFraudNotification
-            ? {
-                  id: 'reasonCode',
-                  label: 'disputes.management.details.fields.reasonCode',
-                  kind: 'text',
-                  value: disputeReason.code,
-              }
-            : undefined,
-        {
-            id: 'openedOn',
-            label: 'disputes.management.details.fields.openedOn',
-            kind: 'date',
-            value: createdAt,
-        },
-        dueDate && isActionableDispute
-            ? {
-                  id: 'respondBy',
-                  label: 'disputes.management.details.fields.respondBy',
-                  kind: 'date',
-                  value: dueDate,
-              }
-            : undefined,
-        {
-            id: 'disputeId',
-            label: 'disputes.management.details.fields.disputeReference',
-            kind: 'text',
-            value: disputeReference,
-        },
-        {
-            id: 'account',
-            label: 'disputes.management.details.fields.account',
-            kind: 'text',
-            value: balanceAccount?.description,
-        },
-        {
-            id: 'paymentPspReference',
-            label: 'disputes.management.details.fields.paymentReference',
-            kind: 'text',
-            value: paymentReference,
-        },
-        merchantReference
-            ? {
-                  id: 'paymentMerchantReference',
-                  label: 'disputes.management.details.fields.merchantReference',
-                  kind: 'text',
-                  value: merchantReference,
-              }
-            : undefined,
-        defenseReason
-            ? {
-                  id: 'defenseReason',
-                  label: 'disputes.management.details.fields.defenseReason',
-                  kind: 'text',
-                  value: getDefenseReasonContent(props.defenseReasonConfig, i18n, defenseReason)?.title ?? defenseReason,
-              }
-            : undefined,
-        defendedOn
-            ? {
-                  id: 'defendedOn',
-                  label: 'disputes.management.details.fields.defendedOn',
-                  kind: 'date',
-                  value: defendedOn,
-              }
-            : undefined,
-        suppliedDocuments?.length
-            ? {
-                  id: 'disputeEvidence',
-                  label: 'disputes.management.details.fields.evidence',
-                  kind: 'evidence',
-                  value: suppliedDocuments,
-              }
-            : undefined,
-        acceptedDate && DISPUTE_STATUSES_WITH_ACCEPTED_DATE.includes(status)
-            ? {
-                  id: 'acceptedOn',
-                  label: 'disputes.management.details.fields.acceptedOn',
-                  kind: 'date',
-                  value: acceptedDate,
-              }
-            : undefined,
-        dueDate && isExpiredDispute
-            ? {
-                  id: 'expiredOn',
-                  label: 'disputes.management.details.fields.expiredOn',
-                  kind: 'date',
-                  value: dueDate,
-              }
-            : undefined,
-    ];
-
-    return detailItems.filter((item): item is DetailItem => !!item && isVisible(item.id));
-});
+const items = computed(() => getDisputeDetailItems(i18n, props.dispute, props.defenseReasonConfig).filter(item => isVisible(item.id)));
 
 const extraDetails = computed(() =>
     Object.entries(props.extraFields ?? {})
@@ -215,7 +100,7 @@ function isHiddenCustomValue(value: unknown) {
     return isCustomDataObject(value) && value.visibility === 'hidden';
 }
 
-function getCopyValue(item: DetailItem) {
+function getCopyValue(item: DisputeDetailItem) {
     return ['disputeId', 'paymentPspReference', 'paymentMerchantReference'].includes(item.id) && item.kind === 'text' ? item.value : undefined;
 }
 
