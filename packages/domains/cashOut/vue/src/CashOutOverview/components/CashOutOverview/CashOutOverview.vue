@@ -69,7 +69,9 @@ const closeRequestModal = () => {
             </div>
         </ComponentShell>
         <CashOutRequestModal
-            :balance-account-id="selectedBalanceAccountId"
+            :initial-balance-account-id="selectedBalanceAccountId"
+            :reference-for-beneficiary="props.referenceForBeneficiary"
+            :transfer-description="props.transferDescription"
             :eligibility="eligibility"
             :is-open="isRequestModalOpen"
             :on-cash-out-instructed="handleCashOutInstructed"

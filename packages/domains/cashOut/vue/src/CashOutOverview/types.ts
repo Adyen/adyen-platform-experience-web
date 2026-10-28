@@ -1,10 +1,11 @@
 import type { CoreInstance } from '@integration-components/core/vue';
-import type { ICashOutResponse, UIElementProps } from '@integration-components/types';
+import type { UIElementProps } from '@integration-components/types';
+import type { CashOutIntegrationProps } from '../shared/types';
 
-export type CashOutOverviewExternalProps = Omit<UIElementProps, 'ref'> & {
-    core: CoreInstance;
-    /** Called with the cashOut once it is instructed from the CashOut Overview, so the integration can track it by its id. */
-    onCashOutInstructed?: (cashOut: ICashOutResponse) => void;
-};
+// Errors go to the onError set on Core, as the component has no onError of its own.
+export type CashOutOverviewExternalProps = Omit<UIElementProps, 'ref' | 'onError'> &
+    CashOutIntegrationProps & {
+        core: CoreInstance;
+    };
 
 export type CashOutOverviewProps = Omit<CashOutOverviewExternalProps, 'core'>;

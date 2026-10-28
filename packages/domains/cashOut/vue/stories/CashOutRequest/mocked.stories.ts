@@ -91,6 +91,14 @@ export const CashOutNotConfigured: ElementStory = {
     },
 };
 
+export const RoleNotAssigned: ElementStory = {
+    name: 'Error - Role not assigned',
+    args: { mockedApi: true, onDismiss: 'Enabled' },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.instructRoleNotAssigned },
+    },
+};
+
 export const FeesError: ElementStory = {
     name: 'Error - Fees',
     args: { mockedApi: true, onDismiss: 'Enabled' },

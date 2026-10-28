@@ -67,6 +67,8 @@ vi.mock('../CashOutRequestForm/CashOutRequestForm.vue', async () => {
                 balanceAccountId: { type: String, required: true },
                 eligibility: { type: Object, required: true },
                 onCashOutResult: { type: Function, required: true },
+                referenceForBeneficiary: { type: String, default: undefined },
+                transferDescription: { type: String, default: undefined },
                 onDismiss: { type: Function, default: undefined },
                 onContactSupport: { type: Function, default: undefined },
                 onFeesError: { type: Function, required: true },
@@ -267,11 +269,20 @@ describe('CashOutRequest', () => {
 
     test('should start from the given balance account and its eligibility', () => {
         mockCashOutState('ready');
-        const { unmount } = renderCashOutRequest({ balanceAccountId: 'BA2', eligibility: ELIGIBILITY });
+        const { unmount } = renderCashOutRequest({ initialBalanceAccountId: 'BA2', eligibility: ELIGIBILITY });
 
         const [options] = vi.mocked(useCashOutState).mock.calls[0]!;
-        expect(toValue(options?.balanceAccountId)).toBe('BA2');
+        expect(toValue(options?.initialBalanceAccountId)).toBe('BA2');
         expect(toValue(options?.eligibility)).toBe(ELIGIBILITY);
+
+        unmount();
+    });
+
+    test('should pass the reference and the description of the cashOut on to the form', () => {
+        mockCashOutState('ready');
+        const { unmount } = renderCashOutRequest({ referenceForBeneficiary: 'REF123', transferDescription: 'Weekly cashOut' });
+
+        expect(formProps.current).toMatchObject({ referenceForBeneficiary: 'REF123', transferDescription: 'Weekly cashOut' });
 
         unmount();
     });

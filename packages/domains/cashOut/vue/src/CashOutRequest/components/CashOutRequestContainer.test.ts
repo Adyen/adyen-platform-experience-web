@@ -19,6 +19,8 @@ vi.mock('./CashOutRequest/CashOutRequest.vue', async () => {
         default: defineComponent({
             props: {
                 hideTitle: Boolean,
+                referenceForBeneficiary: { type: String, default: undefined },
+                transferDescription: { type: String, default: undefined },
                 onDismiss: { type: Function, default: undefined },
                 onContactSupport: { type: Function, default: undefined },
             },
@@ -51,6 +53,17 @@ describe('CashOutRequestContainer', () => {
         const { unmount } = renderContainer({ onDismiss });
 
         expect(requestProps.current).toMatchObject({ hideTitle: true, onDismiss });
+
+        unmount();
+    });
+
+    test('should pass the reference and the description given by the integration', () => {
+        const { unmount } = renderContainer({ referenceForBeneficiary: 'REF123', transferDescription: 'Weekly cashOut' });
+
+        expect(requestProps.current).toMatchObject({
+            referenceForBeneficiary: 'REF123',
+            transferDescription: 'Weekly cashOut',
+        });
 
         unmount();
     });

@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import type { ICashOutAmount, ICashOutEligibility, ICashOutFees, ICashOutRequest, ICashOutResponse } from '@integration-components/types';
-import { BALANCE_ACCOUNTS_SINGLE } from '@integration-components/testing/fixtures';
-import { BALANCE_ACCOUNTS_ENDPOINT, delay } from '@integration-components/testing/msw';
+import { BALANCE_ACCOUNTS_SINGLE, setupBasicResponse } from '@integration-components/testing/fixtures';
+import { BALANCE_ACCOUNTS_ENDPOINT, delay, SETUP_ENDPOINT } from '@integration-components/testing/msw';
 import { uuid } from '@integration-components/utils';
 import { ENDPOINTS } from '../endpoints';
 import { ELIGIBILITY_AVAILABLE, ELIGIBILITY_BY_BALANCE_ACCOUNT, ELIGIBILITY_UNAVAILABLE } from '../mock-data/cashOut';
@@ -230,6 +230,15 @@ export const CASH_OUT_HANDLERS = {
             http.get(ENDPOINTS.eligibility, async () => {
                 await delay();
                 return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.cashOutNotConfigured);
+            }),
+        ],
+    },
+    // A session with the view role only, so it can't instruct a cashOut.
+    instructRoleNotAssigned: {
+        handlers: [
+            http.post(SETUP_ENDPOINT, () => {
+                const { instructCashOut, ...endpoints } = setupBasicResponse.endpoints;
+                return HttpResponse.json({ endpoints });
             }),
         ],
     },
