@@ -21,7 +21,6 @@ const props = defineProps<{
     capitalState: EnhancedCapitalState;
     offer: IGrantOfferResponseDTO;
     onBack: () => void;
-    onDismiss?: () => void;
     onContactSupport?: () => void;
     onFundsRequest?: OnFundsRequestCallback;
 }>();

@@ -349,7 +349,6 @@
         "packages/shared/types/src/components.d.ts",
         "packages/shared/types/src/customization.d.ts",
         "packages/shared/types/src/dataGrid.d.ts",
-        "packages/shared/types/src/element.d.ts",
         "packages/shared/types/src/index.d.ts",
         "packages/shared/types/src/select.d.ts",
         "packages/shared/utils/src/abort/constants.d.ts",
@@ -440,7 +439,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "21432f3c9a2b966cc776f205286dab4dacb63729f7a7e99b0d027596ea3e1217",
+    "typeTreeHash": "85ffa64facc2fb4b76af8fdef27f80361490aac0de1f04fc6c2cfe9137265fd7",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.cjs",

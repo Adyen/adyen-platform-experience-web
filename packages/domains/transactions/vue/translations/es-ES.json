@@ -42,7 +42,6 @@
     "transactions.details.actions.copyReferenceID": "Copiar ID de referencia",
     "transactions.details.actions.goToPayment": "Ve a Pagos",
     "transactions.details.actions.refund": "Pago de la devolución",
-    "transactions.details.common.actions.goBack": "Volver",
     "transactions.details.common.refundedStates.full": "Devolución completa",
     "transactions.details.common.refundedStates.partial": "Devolución parcial",
     "transactions.details.common.refundReasons.duplicate": "Duplicar",

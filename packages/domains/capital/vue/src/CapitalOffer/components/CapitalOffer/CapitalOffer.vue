@@ -47,15 +47,10 @@ const handleSummaryBack = () => {
 <template>
     <div :class="styles.root">
         <CapitalHeader :hide-subtitle="props.hideSubtitle" :region="capitalState?.region" :title-key="titleKey" />
-        <CapitalError
-            v-if="capitalStateError"
-            :error="capitalStateError"
-            :on-dismiss="props.onDismiss"
-            :on-contact-support="props.onContactSupport"
-        />
+        <CapitalError v-if="capitalStateError" :error="capitalStateError" :on-contact-support="props.onContactSupport" />
         <template v-else-if="capitalState">
-            <UnsupportedRegionState v-if="!capitalState.isRegionSupported" :on-dismiss="props.onDismiss" />
-            <EmptyOfferState v-else-if="!dynamicOfferConfig" :on-dismiss="props.onDismiss" />
+            <UnsupportedRegionState v-if="!capitalState.isRegionSupported" />
+            <EmptyOfferState v-else-if="!dynamicOfferConfig" />
             <template v-else>
                 <OfferSelection
                     v-show="activeStep === 'selection'"
@@ -63,7 +58,6 @@ const handleSummaryBack = () => {
                     :created-offer="createdOffer"
                     :dynamic-offer-config="dynamicOfferConfig"
                     :on-contact-support="props.onContactSupport"
-                    :on-dismiss="props.onDismiss"
                     :on-offer-create="handleOfferSelect"
                 />
                 <OfferSummary
@@ -73,7 +67,6 @@ const handleSummaryBack = () => {
                     :offer="createdOffer"
                     :on-back="handleSummaryBack"
                     :on-contact-support="props.onContactSupport"
-                    :on-dismiss="props.onDismiss"
                     :on-funds-request="props.onFundsRequest"
                 />
             </template>

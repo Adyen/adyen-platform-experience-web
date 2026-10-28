@@ -39,10 +39,8 @@ function handleTitleChange(title: PayByLinkTranslationKey | undefined) {
                 <PaymentLinkDetails
                     :id="props.id"
                     :on-contact-support="props.onContactSupport"
-                    :on-dismiss="props.onClose"
                     :on-update="props.onUpdate"
                     :on-title-change="handleTitleChange"
-                    is-dismiss-button-hidden
                 />
             </ModalContextProvider>
         </template>

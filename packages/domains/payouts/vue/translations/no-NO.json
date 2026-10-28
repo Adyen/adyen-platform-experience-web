@@ -31,7 +31,6 @@
     "payouts.details.breakdown.fundsCaptured.types.chargeback": "Chargebacks",
     "payouts.details.breakdown.fundsCaptured.types.correction": "Rettelser",
     "payouts.details.breakdown.fundsCaptured.types.refund": "Refunderinger",
-    "payouts.details.common.actions.goBack": "Gå tilbake",
     "payouts.details.errors.unavailable": "Vi kunne ikke laste inn utbetalingsdetaljene.",
     "payouts.details.tags.netPayout": "Netto utbetaling",
     "payouts.details.tags.sameDaySum": "Summen av utbetalinger samme dag",

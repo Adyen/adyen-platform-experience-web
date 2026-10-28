@@ -20,7 +20,6 @@ const ERROR_MESSAGE_KEY: PayByLinkTranslationKey = 'payByLink.settings.errors.un
 const props = defineProps<{
     hideTitle?: boolean;
     onContactSupport?: () => void;
-    onDismiss?: () => void;
     navigateBack?: () => void;
 }>();
 
@@ -106,7 +105,6 @@ const showActionButtons = computed(
             <SettingsActionButtons
                 v-if="showActionButtons"
                 :navigate-back="props.navigateBack"
-                :on-dismiss="props.onDismiss"
                 :close-content="isSmContainer ? closeContent : undefined"
             />
         </template>

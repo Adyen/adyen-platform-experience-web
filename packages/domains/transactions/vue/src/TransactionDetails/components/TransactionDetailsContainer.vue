@@ -87,8 +87,6 @@ useLandedPageEvent(
         :error-message="'transactions.details.errors.unavailable'"
         :not-found-message="'transactions.details.errors.notFound'"
         :on-contact-support="props.onContactSupport"
-        :on-dismiss="props.onDismiss"
-        :dismiss-label="'transactions.details.common.actions.goBack'"
         :on-refresh="refreshTransaction"
     >
         <TransactionData
@@ -96,7 +94,6 @@ useLandedPageEvent(
             :extra-fields="extraFields"
             :data-customization="props.dataCustomization"
             :fetching-transaction="fetchingTransaction"
-            :on-dismiss="props.onDismiss"
             :refresh-transaction="refreshTransaction"
             :transaction="transaction ?? initialTransaction"
             :transaction-navigator="transactionNavigator"

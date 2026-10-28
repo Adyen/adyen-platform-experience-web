@@ -158,25 +158,17 @@ describe('ComponentShell', () => {
         expect(target.textContent).toContain('transactions.details.errors.unavailable');
     });
 
-    test('forwards the dismiss and refresh actions to the shared error message display', () => {
+    test('forwards the refresh action to the shared error message display', () => {
         setCoreContext();
-        const onDismiss = vi.fn();
         const onRefresh = vi.fn();
 
         const target = mountShell({
             state: 'error',
             error: new Error('boom'),
             errorMessage: 'transactions.details.errors.unavailable',
-            dismissLabel: 'transactions.details.common.actions.goBack',
-            onDismiss,
             onRefresh,
         });
         const buttons = [...target.querySelectorAll('button')];
-
-        const dismissButton = buttons.find(button => button.textContent === 'transactions.details.common.actions.goBack');
-        expect(dismissButton).toBeTruthy();
-        dismissButton?.click();
-        expect(onDismiss).toHaveBeenCalledOnce();
 
         // The error carries no code, so the display offers a refresh rather than contact support.
         const refreshButton = buttons.find(button => button.textContent?.includes('refresh'));

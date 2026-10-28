@@ -6,7 +6,6 @@ export type { PaymentLinkActivityStatus, PaymentLinkDetailsScreen, PaymentLinkLi
 export type PaymentLinkDetailsExternalProps = UIElementProps & PaymentLinkDetailsProps;
 
 export type PaymentLinkDetailsComponentProps = Omit<PaymentLinkDetailsExternalProps, 'core' | 'appearance'> & {
-    isDismissButtonHidden?: boolean;
     onTitleChange?: (title: PayByLinkTranslationKey | undefined) => void;
     onUpdate?: () => void;
 };

@@ -158,7 +158,6 @@
     "payByLink.details.expiration.errorDescription": "Maksulinkin käytöstä poistaminen ei onnistunut. Yritä uudelleen.",
     "payByLink.details.expiration.errorTitle": "Jotain meni pieleen",
     "payByLink.details.expiration.title": "Vanhenna tämä linkki",
-    "payByLink.details.expirationSuccess.actions.goBackToList": "Palaa takaisin maksulinkkeihin",
     "payByLink.details.expirationSuccess.actions.showDetails": "Näytä tiedot",
     "payByLink.details.expirationSuccess.description": "Maksulinkki on nyt vanhentunut. Ostajat eivät voi käyttää sitä.",
     "payByLink.details.expirationSuccess.title": "Linkki on poistettu käytöstä",
