@@ -32,7 +32,7 @@ test.describe('Single balance currency', () => {
         });
 
         test('should render transaction totals and account balances in non-expandable card', async ({ page }) => {
-            // [TODO]: Fix accessible names for the totals and balances expandable cards
+            // [TODO]: Match exact names once BentoCard accepts an accessible name for expandable cards (the name is now the whole header text)
             await expect(page.getByRole('button', { name: /^Total/i, expanded: false })).toBeHidden();
             await expect(page.getByText('Total incoming', { exact: true })).toBeVisible();
             await expect(page.getByText('Total outgoing', { exact: true })).toBeVisible();

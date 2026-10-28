@@ -8,9 +8,8 @@ import type { PayoutsOverviewExternalProps } from './types';
  *
  * Usage:
  *   const core = await new Core({ ... }).initialize();
- *   const payoutsOverview = new PayoutsOverviewElement({ core, balanceAccountId: 'BA...' });
+ *   const payoutsOverview = new PayoutsOverviewElement({ core });
  *   payoutsOverview.mount('#payouts-container');
- *   payoutsOverview.update({ balanceAccountId: 'BA_NEW...' });
  *   payoutsOverview.unmount();
  */
 export class PayoutsOverviewElement extends UIElement<PayoutsOverviewExternalProps> {

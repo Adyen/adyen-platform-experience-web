@@ -1,4 +1,4 @@
-import { ref, computed, provide, inject, watch, type InjectionKey } from 'vue';
+import { ref, computed, provide, inject, type InjectionKey } from 'vue';
 import { useAccountBalances } from '@integration-components/composables-vue';
 import { useTransactionsList } from './useTransactionsList';
 import { useTransactionsTotals } from './useTransactionsTotals';
@@ -9,8 +9,7 @@ import type { TransactionsFilters, TransactionsOverviewComponentProps } from '..
 
 const INSIGHTS_FILTERS: Set<keyof TransactionsFilters> = new Set(['balanceAccountId', 'createdSince', 'createdUntil']);
 
-const getDefaultFilters = (balanceAccountId?: string): TransactionsFilters => ({
-    balanceAccountId,
+const getDefaultFilters = (): TransactionsFilters => ({
     categories: [],
     statuses: ['Booked'],
     currencies: [],
@@ -30,17 +29,8 @@ type TransactionsOverviewStateProps = TransactionsOverviewComponentProps & {
 };
 
 export function useTransactionsOverviewState(componentProps: () => TransactionsOverviewStateProps) {
-    const filters = ref<TransactionsFilters>(getDefaultFilters(componentProps().balanceAccountId));
+    const filters = ref<TransactionsFilters>(getDefaultFilters());
     const insightsCurrency = ref<string | undefined>(undefined);
-
-    watch(
-        () => componentProps().balanceAccountId,
-        newId => {
-            if (newId !== undefined) {
-                filters.value.balanceAccountId = newId;
-            }
-        }
-    );
 
     const transactionsViewState = useTransactionsViewSwitcher(() => ({
         view: componentProps().hideInsights ? TransactionsView.TRANSACTIONS : undefined,

@@ -8,7 +8,7 @@ import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitializa
 import { ThemeManager } from './theme/ThemeManager';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
 import type { CoreOptions, OnErrorHandler, ResolvedEnvironment } from './types';
-import type { I18n } from './vue/Context/types';
+import type { I18n } from './Localization/types';
 
 /**
  * Minimal contract that UI element classes must satisfy so Core can manage them uniformly.

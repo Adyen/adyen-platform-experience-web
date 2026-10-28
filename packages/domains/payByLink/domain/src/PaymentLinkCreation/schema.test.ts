@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { buildStepSchema } from './schema';
 import { getFormSteps, type FormFieldConfig, type FormStepConfig } from './formSteps';
-import type { I18n } from '@integration-components/core/vue';
+import type { I18n } from '@integration-components/core';
 import type { IPaymentLinkConfigurationElement } from '@integration-components/types';
 
 const i18n = {
