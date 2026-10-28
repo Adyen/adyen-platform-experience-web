@@ -121,6 +121,7 @@
         "packages/domains/capital/vue/src/CapitalOverview/types.d.ts",
         "packages/domains/capital/vue/src/index.d.ts",
         "packages/domains/disputes/domain/src/DisputeManagement/constants.d.ts",
+        "packages/domains/disputes/domain/src/DisputeManagement/detailItems.d.ts",
         "packages/domains/disputes/domain/src/DisputeManagement/index.d.ts",
         "packages/domains/disputes/domain/src/DisputeManagement/types.d.ts",
         "packages/domains/disputes/domain/src/DisputeManagement/utils.d.ts",
@@ -145,6 +146,7 @@
         "packages/domains/payByLink/domain/src/PaymentLinkCreation/formSteps.d.ts",
         "packages/domains/payByLink/domain/src/PaymentLinkCreation/index.d.ts",
         "packages/domains/payByLink/domain/src/PaymentLinkCreation/schema.d.ts",
+        "packages/domains/payByLink/domain/src/PaymentLinkCreation/summary.d.ts",
         "packages/domains/payByLink/domain/src/PaymentLinkCreation/types.d.ts",
         "packages/domains/payByLink/domain/src/PaymentLinkCreation/values.d.ts",
         "packages/domains/payByLink/domain/src/PaymentLinkDetails/constants.d.ts",
@@ -206,6 +208,7 @@
         "packages/domains/reports/vue/src/ReportsOverview/types.d.ts",
         "packages/domains/reports/vue/src/index.d.ts",
         "packages/domains/transactions/domain/src/TransactionDetails/constants.d.ts",
+        "packages/domains/transactions/domain/src/TransactionDetails/paymentDetailsItems.d.ts",
         "packages/domains/transactions/domain/src/TransactionDetails/translations.d.ts",
         "packages/domains/transactions/domain/src/TransactionDetails/types.d.ts",
         "packages/domains/transactions/domain/src/TransactionDetails/utils.d.ts",
@@ -437,7 +440,7 @@
         "src/global.d.ts",
         "src/index.d.ts"
     ],
-    "typeTreeHash": "93f9392bb083088a3661d7bb2b16c853e951540bc78a1d89156d28bd3af812da",
+    "typeTreeHash": "21432f3c9a2b966cc776f205286dab4dacb63729f7a7e99b0d027596ea3e1217",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.cjs",
