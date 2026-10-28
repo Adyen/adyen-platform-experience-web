@@ -1,5 +1,6 @@
 import { AdyenPlatformExperience as AdyenPlatformExperienceCore } from '@adyen/adyen-platform-experience-web';
 
+import { INITIAL_CORE_OPTIONS } from './playground/coreOptions';
 import { getSessionToken } from './utils';
 
 export class AdyenPlatformExperience {
@@ -23,9 +24,8 @@ export class AdyenPlatformExperience {
             AdyenPlatformExperience.initializationPromise = (async () => {
                 try {
                     const core = await AdyenPlatformExperienceCore({
-                        availableTranslations: [],
+                        ...INITIAL_CORE_OPTIONS,
                         onSessionCreate: getSessionToken,
-                        locale: 'en-US',
                     });
                     AdyenPlatformExperience.instance = new AdyenPlatformExperience(core);
                     return AdyenPlatformExperience.instance;

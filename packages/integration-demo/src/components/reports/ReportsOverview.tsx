@@ -1,27 +1,37 @@
-import { useEffect } from 'react';
-import { ReportsOverview as ReportsOverviewAdyen } from '@adyen/adyen-platform-experience-web';
-import { AdyenPlatformExperience } from '../../AdyenPlatformExperience';
+import { ReportsOverview as ReportsOverviewAdyen, type ReportsOverviewProps } from '@adyen/adyen-platform-experience-web';
+import type { ElementProps } from '../../hooks/useAdyenElement';
+import { ComponentPlayground } from '../../playground/ComponentPlayground';
+import {
+    appearanceSection,
+    balanceAccountIdControl,
+    compact,
+    contactSupportControl,
+    optional,
+    paginationSection,
+    presetControl,
+    toAppearance,
+    toContactSupport,
+    toPagination,
+} from '../../playground/controls';
+import type { ControlSection, ControlValues } from '../../playground/types';
+import { REPORTS_DATA_GRID_PRESETS } from './presets';
 
-export const ReportsOverview = () => {
-    useEffect(() => {
-        let isMounted = true;
-        let componentInstance: ReportsOverviewAdyen | null = null;
+const SECTIONS: readonly ControlSection[] = [
+    { title: 'Props', controls: [balanceAccountIdControl] },
+    { title: 'Callbacks', controls: [contactSupportControl] },
+    paginationSection,
+    { title: 'dataCustomization', controls: [presetControl('dataGrid', 'dataCustomization.dataGrid', REPORTS_DATA_GRID_PRESETS)] },
+    appearanceSection({ dataGrid: true }),
+];
 
-        (async () => {
-            const adyenInstance = await AdyenPlatformExperience.getInstance();
-            if (!isMounted) return;
+const toProps = (values: ControlValues): ElementProps<ReportsOverviewProps> => ({
+    balanceAccountId: optional(values.balanceAccountId),
+    onContactSupport: toContactSupport(values),
+    pagination: toPagination(values),
+    dataCustomization: compact({ dataGrid: REPORTS_DATA_GRID_PRESETS[values.dataGrid]?.value }),
+    appearance: toAppearance(values),
+});
 
-            componentInstance = new ReportsOverviewAdyen({
-                core: adyenInstance.core,
-            });
-            componentInstance.mount('#reports-overview-container');
-        })();
-
-        return () => {
-            isMounted = false;
-            componentInstance?.unmount();
-        };
-    }, []);
-
-    return <div id="reports-overview-container" />;
-};
+export const ReportsOverview = () => (
+    <ComponentPlayground title="ReportsOverview" element={ReportsOverviewAdyen} sections={SECTIONS} toProps={toProps} />
+);

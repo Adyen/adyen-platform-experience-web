@@ -1,28 +1,58 @@
-import { useEffect } from 'react';
-import { DisputeManagement as DisputeManagementAdyen } from '@adyen/adyen-platform-experience-web';
-import { AdyenPlatformExperience } from '../../AdyenPlatformExperience';
+import { DisputeManagement as DisputeManagementAdyen, type DisputeManagementProps } from '@adyen/adyen-platform-experience-web';
+import type { ElementProps } from '../../hooks/useAdyenElement';
+import { ComponentPlayground } from '../../playground/ComponentPlayground';
+import {
+    appearanceSection,
+    compact,
+    contactSupportControl,
+    dismissControl,
+    presetControl,
+    toContactSupport,
+    toDismiss,
+    toVisibility,
+} from '../../playground/controls';
+import type { ControlSection, ControlValues } from '../../playground/types';
+import { acceptControl, defendControl, DISPUTE_DETAILS_PRESETS, toAccept, toDefend } from './controls';
 
-export const DisputeManagement = () => {
-    useEffect(() => {
-        let isMounted = true;
-        let componentInstance: DisputeManagementAdyen | null = null;
+const SECTIONS: readonly ControlSection[] = [
+    {
+        title: 'Props',
+        controls: [
+            {
+                key: 'id',
+                label: 'id',
+                type: 'text',
+                defaultValue: 'RX8VWGR5HTX9MH75',
+                hint: 'Dispute PSP reference. An unknown ID shows the error state.',
+            },
+        ],
+    },
+    {
+        title: 'Callbacks',
+        controls: [
+            acceptControl,
+            defendControl,
+            dismissControl,
+            {
+                ...contactSupportControl,
+                hint: 'Adds a "Contact support" action to error states, fraud notifications, and disputes that can only be handled outside the component.',
+            },
+        ],
+    },
+    { title: 'dataCustomization', controls: [presetControl('details', 'dataCustomization.details', DISPUTE_DETAILS_PRESETS)] },
+    appearanceSection({ dataGrid: false }),
+];
 
-        (async () => {
-            const adyenInstance = await AdyenPlatformExperience.getInstance();
-            if (!isMounted) return;
+const toProps = (values: ControlValues): ElementProps<DisputeManagementProps> => ({
+    id: values.id ?? '',
+    onAccept: toAccept(values),
+    onDefend: toDefend(values),
+    onDismiss: toDismiss(values),
+    onContactSupport: toContactSupport(values),
+    dataCustomization: compact({ details: DISPUTE_DETAILS_PRESETS[values.details]?.value }),
+    appearance: toVisibility(values),
+});
 
-            componentInstance = new DisputeManagementAdyen({
-                core: adyenInstance.core,
-                id: 'RX8VWGR5HTX9MH75',
-            });
-            componentInstance.mount('#dispute-management-container');
-        })();
-
-        return () => {
-            isMounted = false;
-            componentInstance?.unmount();
-        };
-    }, []);
-
-    return <div id="dispute-management-container" className="component-narrow" />;
-};
+export const DisputeManagement = () => (
+    <ComponentPlayground title="DisputeManagement" element={DisputeManagementAdyen} sections={SECTIONS} toProps={toProps} narrow />
+);

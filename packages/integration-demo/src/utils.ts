@@ -23,6 +23,7 @@ export const getSessionToken = async () => {
                 'Pay By Link Component: View',
                 'Pay By Link Component: Manage Links',
                 'Pay By Link Component: Manage Settings',
+                'Pay By Link Component: View PII',
                 'Payouts Overview Component: View',
             ],
         },

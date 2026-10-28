@@ -1,27 +1,37 @@
-import { useEffect } from 'react';
-import { PaymentLinksOverview as PaymentLinksOverviewAdyen } from '@adyen/adyen-platform-experience-web';
-import { AdyenPlatformExperience } from '../../AdyenPlatformExperience';
+import { PaymentLinksOverview as PaymentLinksOverviewAdyen, type PaymentLinksOverviewProps } from '@adyen/adyen-platform-experience-web';
+import type { ElementProps } from '../../hooks/useAdyenElement';
+import { ComponentPlayground } from '../../playground/ComponentPlayground';
+import {
+    appearanceSection,
+    contactSupportControl,
+    paginationSection,
+    recordSelectionControl,
+    toAppearance,
+    toContactSupport,
+    toPagination,
+    toRecordSelection,
+} from '../../playground/controls';
+import type { ControlSection, ControlValues } from '../../playground/types';
+import { storeIdsControl, toStoreIds } from './controls';
 
-export const PaymentLinksOverview = () => {
-    useEffect(() => {
-        let isMounted = true;
-        let componentInstance: PaymentLinksOverviewAdyen | null = null;
+const SECTIONS: readonly ControlSection[] = [
+    { title: 'Props', controls: [storeIdsControl] },
+    {
+        title: 'Callbacks',
+        controls: [recordSelectionControl, { ...contactSupportControl, hint: 'Adds a "Contact support" action to error states.' }],
+    },
+    paginationSection,
+    appearanceSection({ dataGrid: true }),
+];
 
-        (async () => {
-            const adyenInstance = await AdyenPlatformExperience.getInstance();
-            if (!isMounted) return;
+const toProps = (values: ControlValues): ElementProps<PaymentLinksOverviewProps> => ({
+    storeIds: toStoreIds(values),
+    onRecordSelection: toRecordSelection(values),
+    onContactSupport: toContactSupport(values),
+    pagination: toPagination(values),
+    appearance: toAppearance(values),
+});
 
-            componentInstance = new PaymentLinksOverviewAdyen({
-                core: adyenInstance.core,
-            });
-            componentInstance.mount('#payment-links-overview-container');
-        })();
-
-        return () => {
-            isMounted = false;
-            componentInstance?.unmount();
-        };
-    }, []);
-
-    return <div id="payment-links-overview-container" />;
-};
+export const PaymentLinksOverview = () => (
+    <ComponentPlayground title="PaymentLinksOverview" element={PaymentLinksOverviewAdyen} sections={SECTIONS} toProps={toProps} />
+);

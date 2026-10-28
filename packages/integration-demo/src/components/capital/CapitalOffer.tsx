@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-    CapitalComponentState,
+    CapitalState,
     CapitalOffer as CapitalOfferAdyen,
     CapitalOverview as CapitalOverviewAdyen,
 } from '@adyen/adyen-platform-experience-web';
@@ -9,7 +9,7 @@ import { AdyenPlatformExperience } from '../../AdyenPlatformExperience';
 import { useNavigate } from 'react-router';
 
 export const CapitalOffer = () => {
-    const [capitalState, setCapitalState] = useState<CapitalComponentState['state']>();
+    const [capitalState, setCapitalState] = useState<CapitalState>();
     const navigate = useNavigate();
 
     useEffect(() => {
