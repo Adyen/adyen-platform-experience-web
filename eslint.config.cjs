@@ -367,12 +367,6 @@ module.exports = [
     // Decision-heavy code belongs in composables or domain/src, where unit coverage measures it, not in components.
     {
         files: ['packages/domains/*/vue/src/**/*.vue'],
-        // TODO: Known exceptions, above the limit before it was introduced. Extract their logic, then remove them here.
-        ignores: [
-            'packages/domains/transactions/vue/src/TransactionDetails/components/PaymentDetails/PaymentDetailsProperties.vue',
-            'packages/domains/disputes/vue/src/DisputeManagement/components/DisputeDataProperties.vue',
-            'packages/domains/payByLink/vue/src/PaymentLinkCreation/components/Form/Summary/FormSummary.vue',
-        ],
         rules: {
             complexity: ['error', 15],
         },
