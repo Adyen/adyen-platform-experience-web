@@ -26,8 +26,9 @@ pnpm run format             # Prettier format src/
 - **ESLint**: TypeScript and Vue recommended rules are enforced
 - **Stylelint**: SCSS only, extends `stylelint-config-sass-guidelines`
 - **CSS classes**: `adyen-pe-` prefix, BEM-like (`block__element--modifier`), defined in `constants.ts` files
-- **Commits**: `type(scope): subject` — Conventional Commits with required scope
-- **Branches**: `bug/` prefix for fixes, `feature/` for new functionality
+- **Commits**: Use empty-scope Conventional Commits (`type: subject`) in past tense, such as `fix: corrected image uploads in payment link settings`
+- **Commit types**: `feature`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`, and `deprecate`
+- **Branches**: Create feature branches using `<type>/<short-summary>`, such as `fix/payment-link-image-uploads` or `feature/payment-link-settings`
 - **PRs**: Fork → branch from `develop` → PR with description → all CI checks must pass
 - **a11y**: ARIA attributes, keyboard navigation, and semantic HTML are required
 - **Imports**: Vue only (`vue` and `.vue` single-file components) — do not import from other UI frameworks like React or Preact
