@@ -11,10 +11,11 @@ import GrantList from '../GrantList/GrantList.vue';
 import CapitalError from '../../../shared/CapitalError.vue';
 import OfferAlert from '../OfferAlert.vue';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
-import { ComponentShell, useLandedPageEvent, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
+import { ComponentShell, ComponentShellState, useLandedPageEvent } from '@integration-components/composables-vue';
 import styles from './CapitalOverview.module.scss';
 import OfferModal from '../OfferModal.vue';
 import UnsupportedRegionState from '../../../shared/UnsupportedRegionState.vue';
+import CapitalOverviewLoadingSkeleton from '../CapitalOverviewLoadingSkeleton/CapitalOverviewLoadingSkeleton.vue';
 
 const props = defineProps<CapitalOverviewComponentProps>();
 
@@ -25,7 +26,6 @@ const { capitalState, error, isLoading } = useEnhancedCapitalState(() => true, r
 const isEarlyRenewal = computed(() => !!capitalState.value?.renewableGrants.length);
 const isOfferModalOpen = ref(false);
 const shouldTrackOfferClose = ref(true);
-const hideTitles = useShouldHideTitles();
 const shellState = computed<ComponentShellState>(() => (isLoading.value ? 'loading' : 'ready'));
 
 useLandedPageEvent(
@@ -86,7 +86,10 @@ const headerActions = computed<BentoButtonActionsList | undefined>(() => {
 <template>
     <div :class="styles.root">
         <ComponentShell :state="shellState">
-            <CapitalHeader :actions="headerActions" :hide-title="hideTitles" :region="capitalState?.region" title-key="capital.common.title" />
+            <template #loading>
+                <CapitalOverviewLoadingSkeleton />
+            </template>
+            <CapitalHeader :actions="headerActions" :region="capitalState?.region" title-key="capital.common.title" />
             <CapitalError v-if="error" :error="error" :on-contact-support="props.onContactSupport" />
             <template v-else-if="capitalState">
                 <UnsupportedRegionState v-if="!capitalState.isRegionSupported" />

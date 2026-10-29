@@ -18,7 +18,7 @@ import { useCoreContext, useEventDispatcherContext } from '@integration-componen
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '@integration-components/utils';
 import type { IAmount, IGrant } from '@integration-components/types';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
-import Actions from '../Actions.vue';
+import Actions from '../Actions/Actions.vue';
 import GrantDetails from '../GrantDetails/GrantDetails.vue';
 import styles from './GrantItem.module.scss';
 import RepaymentModal from '../RepaymentDetails/RepaymentModal.vue';

@@ -133,8 +133,6 @@ const createSnapshot = (overrides: Partial<Snapshot>): Snapshot => ({
     jsExports: [],
     cjsExports: [],
     declarationExports: [],
-    typeFiles: [],
-    typeTreeHash: null,
     missingPackageEntrypoints: [],
     packageJson: { main: null, module: null, types: null, style: null, exports: null },
     ...overrides,
@@ -160,32 +158,9 @@ test('getPublicExportViolations rejects unaliased external prop types', () => {
     expect(violations).toContain('  Declaration exports contain unaliased ExternalProps types: ComponentExternalProps');
 });
 
-test('diff reports declaration changes when file paths stay the same', () => {
+test('diff ignores identical snapshots and reports package.json changes', () => {
+    expect(diff(createSnapshot({}), createSnapshot({}))).toEqual([]);
     expect(
-        diff(
-            createSnapshot({
-                typeFiles: ['components/Button.d.ts'],
-                typeTreeHash: 'aaaaaaaaaaaa',
-            }),
-            createSnapshot({
-                typeFiles: ['components/Button.d.ts'],
-                typeTreeHash: 'bbbbbbbbbbbb',
-            })
-        )
-    ).toEqual(['  Type declarations changed within existing files: aaaaaaaaaaaa... -> bbbbbbbbbbbb...']);
-});
-
-test('diff reports added and removed declaration files separately', () => {
-    expect(
-        diff(
-            createSnapshot({
-                typeFiles: ['components/Button.d.ts'],
-                typeTreeHash: 'aaaaaaaaaaaa',
-            }),
-            createSnapshot({
-                typeFiles: ['components/Card.d.ts'],
-                typeTreeHash: 'bbbbbbbbbbbb',
-            })
-        )
-    ).toEqual(['  Type files added (1): components/Card.d.ts', '  Type files removed (1): components/Button.d.ts']);
+        diff(createSnapshot({}), createSnapshot({ packageJson: { main: './dist/index.cjs', module: null, types: null, style: null, exports: null } }))
+    ).toEqual(['  package.json entrypoints changed']);
 });
