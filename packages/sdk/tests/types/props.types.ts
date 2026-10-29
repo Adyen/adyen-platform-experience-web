@@ -123,7 +123,7 @@ export type _NoComponentPublishesRemovedProps = Assert<Every<{ [K in keyof Remov
 export type _PaymentLinkCreationTakesOnCreate = Assert<HasKey<PaymentLinkCreationProps, 'onCreate'>>;
 export type _PayoutDetailsKeepsRequiredIdAndDate = Assert<Same<Pick<PayoutDetailsProps, 'id' | 'date'>, { id: string; date: string }>>;
 export type _CapitalOfferPropsDoNotRequireFundsRequest = Assert<
-    Pick<CapitalOfferProps, never> extends Pick<CapitalOfferProps, 'onFundsRequest'> ? true : false
+    Pick<CapitalOfferProps, never> extends Pick<CapitalOfferProps, 'onSubmit'> ? true : false
 >;
 
 type SelectionPayload<TProps extends { onRecordSelection?: (...args: never[]) => void }> = Parameters<NonNullable<TProps['onRecordSelection']>>[0];

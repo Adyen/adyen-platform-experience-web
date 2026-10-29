@@ -8,13 +8,13 @@ export const CapitalOfferMeta: Meta<ElementProps<CapitalOfferExternalProps>> = {
     title: 'Components/Capital/Capital Offer',
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        onFundsRequest: enabledDisabledCallbackRadioControls('onFundsRequest'),
+        onSubmit: enabledDisabledCallbackRadioControls('onSubmit'),
         onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
     },
     args: {
         component: CapitalOfferElement,
         compact: true,
-        onFundsRequest: action('onFundsRequest'),
+        onSubmit: action('onSubmit'),
     },
     parameters: {
         controls: {

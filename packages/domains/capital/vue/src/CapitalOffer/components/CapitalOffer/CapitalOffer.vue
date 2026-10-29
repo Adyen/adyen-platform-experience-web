@@ -84,7 +84,7 @@ const handleSummaryBack = () => {
                         :on-back="handleSummaryBack"
                         :on-contact-support="props.onContactSupport"
                         :on-dismiss="props.onDismiss"
-                        :on-funds-request="props.onFundsRequest"
+                        :on-submit="props.onSubmit"
                     />
                 </template>
             </template>
