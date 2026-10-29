@@ -146,16 +146,13 @@ describe('ComponentShell', () => {
         expect(target.querySelector(`[data-testid="${CONTENT_TEST_ID}"]`)).toBeNull();
     });
 
-    test('derives the error content from the caught error when no errorInfo is given', () => {
+    test('renders nothing in the error state without errorInfo, having no copy of its own to fall back on', () => {
         setCoreContext();
 
-        const target = mountShell({
-            state: 'error',
-            error: new Error('boom'),
-            errorMessage: 'transactions.details.errors.unavailable',
-        });
+        const target = mountShell({ state: 'error' });
 
-        expect(target.textContent).toContain('transactions.details.errors.unavailable');
+        expect(target.querySelector('[data-testid="error-message-display"]')).toBeNull();
+        expect(target.querySelector(`[data-testid="${CONTENT_TEST_ID}"]`)).toBeNull();
     });
 
     test('forwards the refresh action to the shared error message display', () => {
@@ -164,13 +161,16 @@ describe('ComponentShell', () => {
 
         const target = mountShell({
             state: 'error',
-            error: new Error('boom'),
-            errorMessage: 'transactions.details.errors.unavailable',
+            errorInfo: {
+                title: 'transactions.common.errors.somethingWentWrong',
+                messages: ['transactions.details.errors.unavailable'],
+                refreshComponent: true,
+            },
             onRefresh,
         });
         const buttons = [...target.querySelectorAll('button')];
 
-        // The error carries no code, so the display offers a refresh rather than contact support.
+        // The resolved error asks for a refresh rather than contact support.
         const refreshButton = buttons.find(button => button.textContent?.includes('refresh'));
         refreshButton?.click();
         expect(onRefresh).toHaveBeenCalledOnce();

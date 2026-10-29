@@ -18,7 +18,13 @@ export { default as useCustomDataCells } from './useCustomDataCells';
 
 export { CustomDataCell } from './CustomDataCell';
 
-export { getErrorMessage, type ErrorMessageInfo, type ErrorWithCode } from '@integration-components/core/vue';
+export {
+    createDomainErrorResolver,
+    type DomainErrorContext,
+    type DomainErrorVocabulary,
+    type ErrorMessageInfo,
+    type ErrorWithCode,
+} from '@integration-components/core/vue';
 export { DataOverviewError } from './DataOverviewError';
 export { ErrorMessageDisplay } from '@integration-components/core/vue';
 export { ComponentShell } from '@integration-components/core/vue';

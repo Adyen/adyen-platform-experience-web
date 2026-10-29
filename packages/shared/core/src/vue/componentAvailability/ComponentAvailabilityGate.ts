@@ -4,7 +4,7 @@ import { useConfigContext } from '../ConfigContext';
 import { useCoreContext } from '../Context';
 import { getComponentAvailabilityErrorMessages, getComponentAvailabilityErrorTitle } from '../../session/utils/sessionAwareComponentAvailability';
 import { ComponentShell } from '../componentShell/ComponentShell';
-import type { ErrorMessageInfo } from '../getErrorMessage';
+import type { ErrorMessageInfo } from '../../errors/domainErrorResolver';
 
 /**
  * Withholds the slot until the component is known to be available for the current session, so an

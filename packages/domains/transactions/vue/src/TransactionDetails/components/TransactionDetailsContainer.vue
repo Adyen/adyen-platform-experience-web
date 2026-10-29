@@ -5,7 +5,12 @@ import TransactionData from './TransactionData/TransactionData.vue';
 import TransactionSkeleton from './TransactionSkeleton/TransactionSkeleton.vue';
 import { useTransaction } from '../composables/useTransaction';
 import { normalizeCustomFields } from '@integration-components/utils';
-import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET, sharedTransactionDetailsEventProperties } from '../../../../domain/src';
+import {
+    TX_DETAILS_FIELDS_REMAPS,
+    TX_DETAILS_RESERVED_FIELDS_SET,
+    getTransactionsErrorConfig,
+    sharedTransactionDetailsEventProperties,
+} from '../../../../domain/src';
 import type { TransactionDetails } from '../../../../domain/src';
 import type { TransactionDetailsComponentProps } from '../types';
 
@@ -22,6 +27,14 @@ const shellState = computed<ComponentShellState>(() => {
     if (fetchingTransaction.value) return 'loading';
     return error.value ? 'error' : 'ready';
 });
+
+const errorInfo = computed(() =>
+    getTransactionsErrorConfig(error.value, {
+        errorMessage: 'transactions.details.errors.unavailable',
+        notFoundMessage: 'transactions.details.errors.notFound',
+        onContactSupport: props.onContactSupport,
+    })
+);
 
 const extraFields = ref<Record<string, any> | undefined>(undefined);
 const initialTransaction = ref<TransactionDetails | undefined>(undefined);
@@ -81,14 +94,7 @@ useLandedPageEvent(
 </script>
 
 <template>
-    <ComponentShell
-        :state="shellState"
-        :error="error"
-        :error-message="'transactions.details.errors.unavailable'"
-        :not-found-message="'transactions.details.errors.notFound'"
-        :on-contact-support="props.onContactSupport"
-        :on-refresh="refreshTransaction"
-    >
+    <ComponentShell :state="shellState" :error-info="errorInfo" :on-refresh="refreshTransaction">
         <TransactionData
             v-if="initialTransaction"
             :extra-fields="extraFields"

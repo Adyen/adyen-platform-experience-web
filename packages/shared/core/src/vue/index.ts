@@ -30,4 +30,5 @@ export { ComponentShell } from './componentShell/ComponentShell';
 export type { ComponentShellState } from './componentShell/ComponentShell';
 export { hasDataGridAppearance, useShouldHideIllustrations, useShouldHideTitles, useCondensedDataGrid } from './customization';
 export { ErrorMessageDisplay } from './ErrorMessageDisplay';
-export * from './getErrorMessage';
+export { createDomainErrorResolver } from '../errors/domainErrorResolver';
+export type { DomainErrorContext, DomainErrorVocabulary, ErrorMessageInfo, ErrorWithCode } from '../errors/domainErrorResolver';

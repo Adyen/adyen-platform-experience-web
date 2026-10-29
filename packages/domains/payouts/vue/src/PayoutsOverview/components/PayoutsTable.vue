@@ -4,7 +4,12 @@ import { BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
-import { PAYOUT_TABLE_FIELDS, type PayoutsTableFields, type PayoutsTranslationKey } from '@integration-components/payouts/domain';
+import {
+    PAYOUT_TABLE_FIELDS,
+    type PayoutsTableFields,
+    type PayoutsTranslationKey,
+    getPayoutsErrorConfig,
+} from '@integration-components/payouts/domain';
 import {
     useCustomColumnsData,
     CustomDataCell,
@@ -172,18 +177,15 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
     if (!value) return '';
     return i18n.amount(value.value, value.currency, { hideCurrency: false });
 }
+const errorInfo = computed(() =>
+    getPayoutsErrorConfig(props.error, { errorMessage: 'payouts.overview.errors.listUnavailable', onContactSupport: props.onContactSupport })
+);
 </script>
 
 <template>
     <div ref="tableRef" :class="styles.root">
         <!-- Error state -->
-        <DataOverviewError
-            v-if="props.error"
-            :error="props.error"
-            :error-message="'payouts.overview.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
-            :refresh-icon="RefreshIcon"
-        />
+        <DataOverviewError v-if="props.error" :error-info="errorInfo" :refresh-icon="RefreshIcon" />
 
         <BentoDataGrid
             v-else

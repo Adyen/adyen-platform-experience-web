@@ -1,7 +1,7 @@
 import { computed, defineComponent, h, mergeProps, type PropType, type VNodeChild, withDirectives } from 'vue';
 import { BentoButton, BentoTooltipDirective } from '@adyen/bento-vue3';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
-import { getDomainTranslationKey, useCoreContext, type DomainTranslationKey } from '@integration-components/core/vue';
+import { getSafeDomainTranslationKey, useCoreContext, type DomainTranslationKey } from '@integration-components/core/vue';
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import { useCopyText } from './useCopyText';
 import { useLiveAnnouncement } from './useLiveAnnouncement';
@@ -31,16 +31,19 @@ export const CopyText = defineComponent({
         const { copyText, isCopied, resetCopyState } = useCopyText(
             () => props.textToCopy,
             () => {
-                announce(() => i18n.get(getDomainTranslationKey(translationDomain, 'common.actions.copy.labels.done')));
+                announce(() => i18n.get(getSafeDomainTranslationKey(translationDomain, 'common.actions.copy.labels.done')));
                 props.onCopyText?.();
             }
         );
         const copyButtonLabel = computed(() =>
-            i18n.get(props.copyButtonAriaLabelKey ?? getDomainTranslationKey(translationDomain, 'common.actions.copy.labels.default'))
+            i18n.get(props.copyButtonAriaLabelKey ?? getSafeDomainTranslationKey(translationDomain, 'common.actions.copy.labels.default'))
         );
         const copyButtonTooltip = computed(() =>
             i18n.get(
-                getDomainTranslationKey(translationDomain, isCopied.value ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default')
+                getSafeDomainTranslationKey(
+                    translationDomain,
+                    isCopied.value ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default'
+                )
             )
         );
 

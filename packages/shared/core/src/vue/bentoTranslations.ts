@@ -1,6 +1,6 @@
 import { BENTO_TRANSLATION_KEYS, SDK_BENTO_DEFAULT_TRANSLATIONS } from '../../../../sdk/src/translations';
 import { compileBentoTemplate, compileDomainTranslationFamilyForBento, InvalidBentoTranslationTemplateError } from './bentoTranslationTemplate';
-import { getDomainTranslationKey, type I18n, type TranslationDomain } from './Context/types';
+import { getUnsafeDomainTranslationKey, type I18n, type TranslationDomain } from './Context/types';
 import type { BentoTranslationKey } from '@adyen/bento-vue3/translation-keys';
 import type { ExternalComponentType } from '@integration-components/types';
 
@@ -168,7 +168,7 @@ export const applyBentoDomainOverrides = (
             override => override.bentoKey === bentoKey && appliesToComponent(override.componentNames, componentName)
         );
         const resolvedDomainKey = componentOverride?.domainKey ?? domainKey;
-        const translationKey = getDomainTranslationKey(domain, resolvedDomainKey);
+        const translationKey = getUnsafeDomainTranslationKey(domain, resolvedDomainKey);
         const domainTranslationFamily = i18n.getTranslationFamily(translationKey);
         const bentoTemplate = bentoTranslations[bentoKey] ?? SDK_BENTO_DEFAULT_TRANSLATIONS[bentoKey];
         let translation = bentoTranslations[bentoKey];

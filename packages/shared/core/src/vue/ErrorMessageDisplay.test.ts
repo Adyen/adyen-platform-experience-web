@@ -6,7 +6,7 @@ import type { VNode } from 'vue';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useCoreContext } from './Context';
 import { ErrorMessageDisplay } from './ErrorMessageDisplay';
-import type { ErrorMessageInfo } from './getErrorMessage';
+import type { ErrorMessageInfo } from '../errors/domainErrorResolver';
 
 vi.mock('@adyen/bento-vue3', () => ({
     BentoButton: { name: 'BentoButton' },
