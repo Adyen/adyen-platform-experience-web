@@ -197,11 +197,3 @@ test.describe('Eligible', () => {
         await expect(requestFundsButton).toBeDisabled();
     });
 });
-
-test.describe('onDismiss prop', () => {
-    test('should render back button when prop is set', async ({ page, analyticsEvents }) => {
-        await goToStory(page, { id: STORY_ID, args: { onDismiss: 'Enabled' } });
-        await expectPageLoadAnalyticsEvents(analyticsEvents);
-        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
-    });
-});

@@ -10,7 +10,6 @@ const props = defineProps<{
     modalType: PaymentLinksOverviewModalType;
     storeIds?: PaymentLinksOverviewComponentProps['storeIds'];
     paymentLinkCreation?: PaymentLinksOverviewComponentProps['paymentLinkCreation'];
-    paymentLinkSettings?: PaymentLinksOverviewComponentProps['paymentLinkSettings'];
     onCreate: (paymentLink: PaymentLinkCreationFormValues) => void;
     onContactSupport?: PaymentLinksOverviewComponentProps['onContactSupport'];
     onClose: () => void;
@@ -56,18 +55,11 @@ const PaymentLinkSettings = defineAsyncComponent({
                     :fields-config="props.paymentLinkCreation?.fieldsConfig"
                     :store-ids="props.storeIds"
                     :on-create="props.onCreate"
-                    :on-dismiss="props.paymentLinkCreation?.onDismiss"
                     :on-contact-support="props.onContactSupport"
                     :on-title-change="title => (modalTitleKey = title)"
                     embedded-in-overview
                 />
-                <PaymentLinkSettings
-                    v-else
-                    :store-ids="props.storeIds"
-                    :on-dismiss="props.paymentLinkSettings?.onDismiss"
-                    :on-contact-support="props.onContactSupport"
-                    embedded-in-overview
-                />
+                <PaymentLinkSettings v-else :store-ids="props.storeIds" :on-contact-support="props.onContactSupport" embedded-in-overview />
             </ModalContextProvider>
         </template>
     </BentoModal>

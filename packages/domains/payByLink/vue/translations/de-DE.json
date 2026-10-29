@@ -158,7 +158,6 @@
     "payByLink.details.expiration.errorDescription": "Der Zahlungslink konnte nicht deaktiviert werden. Bitte versuchen Sie es erneut.",
     "payByLink.details.expiration.errorTitle": "Etwas ist schiefgelaufen.",
     "payByLink.details.expiration.title": "Diesen Link ablaufen lassen",
-    "payByLink.details.expirationSuccess.actions.goBackToList": "Zurück zu den Zahlungslinks",
     "payByLink.details.expirationSuccess.actions.showDetails": "Details anzeigen",
     "payByLink.details.expirationSuccess.description": "Der Zahlungslink ist abgelaufen und kann vom Käufer nicht mehr verwendet werden.",
     "payByLink.details.expirationSuccess.title": "Link wurde deaktiviert",
