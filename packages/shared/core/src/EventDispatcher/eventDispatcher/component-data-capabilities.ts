@@ -29,10 +29,12 @@ export const COMPONENT_DATA_EVENT_CAPABILITIES: Record<ExternalComponentType, Co
     },
     paymentLinksOverview: {
         callbackProps: ['onContactSupport', 'onRecordSelection'],
-        fieldsConfig: 'paymentLinkCreation.fieldsConfig',
         pagination: true,
     },
-    payoutDetails: { callbackProps: ['onContactSupport', 'onDismiss'], dataCustomization: ['details'] },
+    payoutDetails: {
+        callbackProps: ['onContactSupport'],
+        dataCustomization: ['details'],
+    },
     payouts: {
         callbackProps: ['onContactSupport', 'onRecordSelection'],
         dataCustomization: ['dataGrid', 'details'],
