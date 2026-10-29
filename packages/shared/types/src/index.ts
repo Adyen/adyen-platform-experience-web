@@ -2,5 +2,4 @@ export * from './api/index';
 export * from './components';
 export * from './customization';
 export * from './dataGrid';
-export * from './element';
 export * from './select';

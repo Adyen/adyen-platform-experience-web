@@ -1,6 +1,5 @@
-import type { WithDismissCallback } from '@integration-components/types';
-import type { OnFundsRequestCallback } from '../shared';
+import type { OnSubmitCallback } from '../shared';
 
-export interface CapitalOfferProps extends WithDismissCallback {
-    onSubmit?: OnFundsRequestCallback;
+export interface CapitalOfferProps {
+    onSubmit?: OnSubmitCallback;
 }

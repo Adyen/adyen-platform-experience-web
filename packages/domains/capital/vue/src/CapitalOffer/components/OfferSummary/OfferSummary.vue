@@ -5,7 +5,7 @@ import {
     getBalanceAccountErrorMessage,
     sharedCapitalOfferAnalyticsEventProperties,
     type EnhancedCapitalState,
-    type OnFundsRequestCallback,
+    type OnSubmitCallback,
 } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
@@ -21,9 +21,8 @@ const props = defineProps<{
     capitalState: EnhancedCapitalState;
     offer: IGrantOfferResponseDTO;
     onBack: () => void;
-    onDismiss?: () => void;
     onContactSupport?: () => void;
-    onSubmit?: OnFundsRequestCallback;
+    onSubmit?: OnSubmitCallback;
 }>();
 
 const { i18n } = useCoreContext();

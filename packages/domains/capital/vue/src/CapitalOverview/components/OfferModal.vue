@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { type CapitalTranslationKey, OnFundsRequestCallback } from '@integration-components/capital/domain';
+import { type CapitalTranslationKey, OnSubmitCallback } from '@integration-components/capital/domain';
 import { ModalContextProvider, useCoreContext } from '@integration-components/core/vue';
 import { BentoModal } from '@adyen/bento-vue3';
 import { IGrant } from '@integration-components/types';
@@ -10,7 +10,7 @@ const props = defineProps<{
     isOpen: boolean;
     onClose: () => void;
     onContactSupport?: () => void;
-    onSubmit: OnFundsRequestCallback;
+    onSubmit: OnSubmitCallback;
 }>();
 
 const { i18n } = useCoreContext();

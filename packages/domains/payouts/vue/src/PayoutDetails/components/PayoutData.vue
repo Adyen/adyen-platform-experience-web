@@ -18,7 +18,6 @@ const props = defineProps<{
     balanceAccountDescription?: string;
     extraFields?: Record<string, any> | undefined;
     dataCustomization?: { details?: PayoutDetailsCustomization };
-    onDismiss?: () => void;
 }>();
 
 const { i18n } = useCoreContext();
@@ -98,24 +97,13 @@ const extraDetails = computed<ExtraDetailItem[]>(() => {
 
 const buttonActions = computed(() => {
     const fields = props.extraFields;
-    const actions = Object.values(fields ?? {})
+    return Object.values(fields ?? {})
         .filter(field => field?.type === 'button')
         .map(field => ({
             title: field.value,
             event: field.config?.action,
             variant: 'secondary' as const,
         }));
-
-    // The dismiss action is hidden inside overview modals, which have their own close affordance.
-    if (props.onDismiss && !withinModal) {
-        actions.push({
-            title: i18n.get('payouts.details.common.actions.goBack'),
-            event: props.onDismiss,
-            variant: 'secondary' as const,
-        });
-    }
-
-    return actions;
 });
 
 const titleClass = computed(() => [styles.title, extraDetails.value.length ? styles.titleWithExtraDetails : '']);

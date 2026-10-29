@@ -57,18 +57,6 @@ type DataGridComponents = Pick<
     'DisputesOverview' | 'PaymentLinksOverview' | 'PayoutsOverview' | 'ReportsOverview' | 'TransactionsOverview'
 >;
 type NonDataGridComponents = Omit<PublishedProps, keyof DataGridComponents>;
-type DismissibleComponents = Pick<
-    PublishedProps,
-    | 'CapitalOffer'
-    | 'DisputeManagement'
-    | 'PaymentLinkCreation'
-    | 'PaymentLinkDetails'
-    | 'PaymentLinkSettings'
-    | 'PayoutDetails'
-    | 'TransactionDetails'
->;
-
-type PropPresence<TProps extends Record<string, unknown>, TKey extends string> = { [K in keyof TProps]: HasKey<TProps[K], TKey> };
 
 export type _SdkExportsAtLeastOneComponent = Assert<[ComponentExportNames] extends [never] ? false : true>;
 export type _EverySdkComponentHasPublishedProps = Assert<Every<{ [K in ComponentExportNames]: K extends keyof PropsAliases ? true : false }, true>>;
@@ -82,8 +70,7 @@ export type _CoreOptionsMatchFactoryParameters = Assert<Same<CoreOptions, Parame
 export type _EveryComponentUsesUIElementProps = Assert<
     Every<{ [K in keyof PublishedProps]: PublishedProps[K] extends UIElementProps ? true : false }, true>
 >;
-export type _DismissibleComponentsTakeOnDismiss = Assert<Every<PropPresence<DismissibleComponents, 'onDismiss'>, true>>;
-type ForbiddenProps = 'onError' | 'ref';
+type ForbiddenProps = 'onDismiss' | 'onError' | 'ref';
 export type _NoComponentTakesForbiddenProps = Assert<
     Every<{ [K in keyof PublishedProps]: [Extract<keyof PublishedProps[K], ForbiddenProps>] extends [never] ? true : false }, true>
 >;
@@ -99,7 +86,7 @@ export type _OtherComponentsRejectDataGridAppearance = Assert<
 type InternalOnlyProps = {
     CapitalOffer: 'capitalState' | 'hideSubtitle' | 'hideTitle' | 'onTitleChange';
     PaymentLinkCreation: 'embeddedInOverview' | 'onShowDetails';
-    PaymentLinkDetails: 'isDismissButtonHidden' | 'onTitleChange' | 'onUpdate';
+    PaymentLinkDetails: 'onTitleChange' | 'onUpdate';
     PaymentLinkSettings: 'embeddedInOverview' | 'hideTitle' | 'navigateBack' | 'settingsItems';
     PayoutDetails: 'balanceAccountDescription';
     PaymentLinksOverview: 'paymentLinkCreation' | 'paymentLinkSettings';
