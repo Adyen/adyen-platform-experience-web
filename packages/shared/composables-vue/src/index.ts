@@ -32,6 +32,7 @@ export type { ComponentShellState } from '@integration-components/core/vue';
 export { ComponentAvailabilityGate } from '@integration-components/core/vue';
 export { useShouldHideIllustrations, useShouldHideTitles, useCondensedDataGrid } from '@integration-components/core/vue';
 export { CopyText } from './CopyText';
+export { LiveAnnouncement } from './LiveAnnouncement';
 export { default as ResponsiveButtonActions } from './ResponsiveButtonActions.vue';
 
 export { default as useTimezoneAwareDateFormatting } from './useTimezoneAwareDateFormatting';

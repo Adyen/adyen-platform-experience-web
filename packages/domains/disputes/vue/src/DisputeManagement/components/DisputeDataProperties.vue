@@ -1,19 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import {
-    BentoAlert,
-    BentoButton,
-    BentoLink,
-    BentoStructuredList,
-    BentoStructuredListItem,
-    BentoTag,
-    BentoTooltipDirective as vBentoTooltip,
-    BentoTypography,
-} from '@adyen/bento-vue3';
+import { BentoAlert, BentoButton, BentoLink, BentoStructuredList, BentoStructuredListItem, BentoTag, BentoTypography } from '@adyen/bento-vue3';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
-import { useLiveAnnouncement } from '@integration-components/composables-vue';
+import { CopyText } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import {
     DISPUTE_DETAILS_FIELDS_REMAPS,
@@ -22,12 +12,12 @@ import {
     getDisputeDetailItems,
     type DisputeDetailItem,
     type DisputeDetailsCustomization,
+    type DisputesTranslationKey,
     type TranslationConfigItem,
 } from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTE_DETAILS, isFunction, normalizeCustomFields } from '@integration-components/utils';
 import type { IDisputeDetail } from '@integration-components/types/api/models/disputes';
 import { useDisputeFlow } from '../composables/useDisputeFlow';
-import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import styles from './DisputeData.module.scss';
 
 type CustomDataValue = {
@@ -43,6 +33,14 @@ type CustomDataValue = {
     };
 };
 
+// These three references sit next to each other, so a shared "Copy" name would
+// leave the buttons indistinguishable to a screen reader.
+const COPYABLE_FIELD_LABELS = {
+    disputeId: 'disputes.management.details.actions.copyDisputeReference',
+    paymentPspReference: 'disputes.management.details.actions.copyPaymentReference',
+    paymentMerchantReference: 'disputes.management.details.actions.copyMerchantReference',
+} as const satisfies Record<string, DisputesTranslationKey>;
+
 const props = defineProps<{
     dispute: IDisputeDetail;
     dataCustomization?: { details?: DisputeDetailsCustomization };
@@ -54,9 +52,7 @@ const { i18n } = useCoreContext();
 const config = useConfigContext();
 const { defenseDocumentConfig } = useDisputeFlow();
 const { dateFormat } = useTimezoneAwareDateFormatting(() => props.dispute.payment.balanceAccount?.timeZone);
-const { announce, announcement } = useLiveAnnouncement();
 const downloadErrors = ref<Set<string>>(new Set());
-const copiedItemId = ref<string>();
 
 const hiddenFields = computed(
     () =>
@@ -101,22 +97,11 @@ function isHiddenCustomValue(value: unknown) {
 }
 
 function getCopyValue(item: DisputeDetailItem) {
-    return ['disputeId', 'paymentPspReference', 'paymentMerchantReference'].includes(item.id) && item.kind === 'text' ? item.value : undefined;
+    return item.id in COPYABLE_FIELD_LABELS && item.kind === 'text' ? item.value : undefined;
 }
 
-function onCopyText(text: string, itemId: string) {
-    navigator.clipboard?.writeText(text);
-    copiedItemId.value = itemId;
-    announce(() => i18n.get('disputes.common.actions.copy.labels.done'));
-}
-
-function getCopyTooltip(itemId: string) {
-    const key = copiedItemId.value === itemId ? 'disputes.common.actions.copy.labels.done' : 'disputes.common.actions.copy.labels.default';
-    return i18n.get(key);
-}
-
-function resetCopiedItem() {
-    copiedItemId.value = undefined;
+function getCopyAriaLabelKey(itemId: string) {
+    return COPYABLE_FIELD_LABELS[itemId as keyof typeof COPYABLE_FIELD_LABELS];
 }
 
 async function downloadEvidence(documentType: string) {
@@ -152,19 +137,16 @@ async function downloadEvidence(documentType: string) {
     <BentoStructuredList :class="styles.list">
         <BentoStructuredListItem v-for="item in items" :key="item.id" :label="i18n.get(item.label)">
             <div v-if="getCopyValue(item)" :class="styles.copyableValue">
-                <BentoTypography variant="body">
-                    {{ getCopyValue(item) }}
-                </BentoTypography>
-                <BentoButton
-                    v-bento-tooltip="getCopyTooltip(item.id)"
-                    variant="tertiary"
-                    :aria-label="i18n.get('disputes.common.actions.copy.labels.default')"
-                    @click="onCopyText(getCopyValue(item)!, item.id)"
-                    @blur="resetCopiedItem"
-                    @mouseleave="resetCopiedItem"
+                <CopyText
+                    :copy-button-aria-label-key="getCopyAriaLabelKey(item.id)"
+                    :show-copy-text-tooltip="false"
+                    :text-to-copy="getCopyValue(item)!"
+                    type="Default"
                 >
-                    <CopyIcon />
-                </BentoButton>
+                    <BentoTypography variant="body">
+                        {{ getCopyValue(item) }}
+                    </BentoTypography>
+                </CopyText>
             </div>
             <time v-else-if="item.kind === 'date'" :datetime="item.value">
                 <BentoTypography variant="body">{{ formatDate(item.value) }}</BentoTypography>
@@ -213,5 +195,4 @@ async function downloadEvidence(documentType: string) {
             </BentoTypography>
         </BentoStructuredListItem>
     </BentoStructuredList>
-    <span :class="accessibilityStyles.visuallyHidden" aria-atomic="true" aria-live="polite">{{ announcement }}</span>
 </template>

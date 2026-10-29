@@ -2,7 +2,7 @@ import { computed, defineComponent, h, mergeProps, type PropType, type VNodeChil
 import { BentoButton, BentoTooltipDirective } from '@adyen/bento-vue3';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { getSafeDomainTranslationKey, useCoreContext, type DomainTranslationKey } from '@integration-components/core/vue';
-import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
+import { LiveAnnouncement } from './LiveAnnouncement';
 import { useCopyText } from './useCopyText';
 import { useLiveAnnouncement } from './useLiveAnnouncement';
 import styles from './CopyText.module.scss';
@@ -86,7 +86,7 @@ export const CopyText = defineComponent({
             return h('span', mergeProps(attrs, { class: styles.container }), [
                 textWithTooltip,
                 copyButton,
-                h('span', { class: accessibilityStyles.visuallyHidden, 'aria-atomic': 'true', 'aria-live': 'polite' }, announcement.value),
+                h(LiveAnnouncement, { message: announcement.value }),
             ]);
         };
     },

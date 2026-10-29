@@ -2,7 +2,7 @@ import { computed, defineComponent, h, type Component, type PropType, type VNode
 import { BentoEmptyState } from '@adyen/bento-vue3';
 import { getSafeDomainTranslationKey, useCoreContext, useShouldHideIllustrations, type ErrorMessageInfo } from '@integration-components/core/vue';
 import { useLiveAnnouncement } from './useLiveAnnouncement';
-import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
+import { LiveAnnouncement } from './LiveAnnouncement';
 
 export const DataOverviewError = defineComponent({
     name: 'DataOverviewError',
@@ -33,7 +33,7 @@ export const DataOverviewError = defineComponent({
                 nodes.push(h('span', { key }, i18n.get(key, options)));
             });
 
-            nodes.push(h('span', { class: accessibilityStyles.visuallyHidden, 'aria-atomic': 'true', 'aria-live': 'polite' }, announcement.value));
+            nodes.push(h(LiveAnnouncement, { message: announcement.value }));
 
             return nodes;
         });
