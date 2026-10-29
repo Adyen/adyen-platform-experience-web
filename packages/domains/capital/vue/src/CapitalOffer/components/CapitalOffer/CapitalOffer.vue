@@ -31,8 +31,7 @@ const shellState = computed<ComponentShellState>(() => (isCapitalStateLoading.va
 useLandedPageEvent(
     () => ({
         ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Capital offer',
-        label: 'Capital offer',
+        subCategory: 'Offer selection',
         isEarlyRenewal: !!capitalState.value?.renewableGrants.length,
     }),
     () => !!capitalState.value
