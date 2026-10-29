@@ -77,13 +77,7 @@ function handleNavigationToDetailsAfterExpiration() {
         </div>
 
         <div :class="styles.content">
-            <ComponentShell
-                :state="shellState"
-                :error-info="errorInfo"
-                :on-dismiss="props.onDismiss"
-                dismiss-label="payByLink.common.actions.goBack"
-                :on-refresh="refetch"
-            >
+            <ComponentShell :state="shellState" :error-info="errorInfo" :on-refresh="refetch">
                 <template #loading>
                     <PaymentLinkSkeleton />
                 </template>
@@ -97,17 +91,10 @@ function handleNavigationToDetailsAfterExpiration() {
 
                 <PaymentLinkExpirationSuccess
                     v-else-if="activeScreen === 'expirationSuccess'"
-                    :on-dismiss="props.onDismiss"
                     :on-show-details="handleNavigationToDetailsAfterExpiration"
                 />
 
-                <PaymentLinkDetailsContent
-                    v-else-if="paymentLink"
-                    :payment-link="paymentLink"
-                    :on-dismiss="props.onDismiss"
-                    :on-expire="handleExpireNow"
-                    :is-dismiss-button-hidden="props.isDismissButtonHidden"
-                />
+                <PaymentLinkDetailsContent v-else-if="paymentLink" :payment-link="paymentLink" :on-expire="handleExpireNow" />
             </ComponentShell>
         </div>
     </div>

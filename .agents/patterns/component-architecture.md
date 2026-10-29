@@ -97,7 +97,7 @@ export type TransactionsOverviewComponentProps = Omit<TransactionsOverviewExtern
 - Domain `*Props` types are reusable, framework-neutral fragments.
 - Vue `*ExternalProps` types compose `UIElementProps` with the domain fragment and define the element constructor contract.
 - Vue `*ComponentProps` types derive the runtime component shape from `*ExternalProps`; containers and components use these types rather than redeclaring fields.
-- Shared fragments such as `WithDismissCallback` live in `packages/shared/types/src/element.ts`.
+- Shared prop fragments live in `packages/shared/types/src/`.
 - Components with no domain-specific fields use `UIElementProps` directly; do not add an empty props interface.
 
 ## External Components
@@ -155,6 +155,7 @@ export const CLASS_NAMES = {
 - **No raw strings in JSX**: Use `i18n.get()` for all text — see [i18n patterns](i18n.md)
 - **Provider access**: Use `useCoreContext()` for i18n, assets, error handling — not direct imports
 - **Form components**: Extend `FormElement` (see `external/FormElement.tsx`) for submit/validation lifecycle
+- **Dismissal**: No component takes a dismiss callback, internally or publicly. A component rendered in a modal is closed only by the modal's own close control; in-component "Go back" buttons may only navigate between the component's own steps.
 - **New external component?** Must be added to `ExternalComponentType` in `src/components/types.ts` and exported from `src/components/external/index.ts`
 
 ## JIT Find Commands

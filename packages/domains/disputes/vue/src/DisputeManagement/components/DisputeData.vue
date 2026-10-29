@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoButtonActions, BentoCard, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
-import { useConfigContext, useCoreContext, useModalContext } from '@integration-components/core/vue';
+import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
 import { DISPUTE_DETAILS_RESERVED_FIELDS_SET, getDisputeType, isDisputeActionNeeded } from '@integration-components/disputes/domain';
 import { isFunction, parsePaymentMethodType } from '@integration-components/utils';
@@ -21,13 +21,11 @@ const props = defineProps<{
     disputeId: string;
     dataCustomization?: DisputeManagementComponentProps['dataCustomization'];
     onContactSupport?: DisputeManagementComponentProps['onContactSupport'];
-    onDismiss?: DisputeManagementComponentProps['onDismiss'];
 }>();
 
 const { i18n } = useCoreContext();
 const config = useConfigContext();
 const { dispute: storedDispute, setDispute, setFlowState, defenseReasonConfig } = useDisputeFlow();
-const { withinModal } = useModalContext();
 
 const { data, error, isFetching, refetch } = useDisputeDetails(() => ({
     disputeId: props.disputeId,
@@ -175,13 +173,6 @@ const actionButtons = computed(() => {
             class: button.config?.className,
         });
     }
-    if (props.onDismiss && !withinModal) {
-        buttons.push({
-            title: i18n.get('disputes.management.common.actions.goBack'),
-            event: props.onDismiss,
-            variant: 'secondary' as const,
-        });
-    }
     return buttons;
 });
 
@@ -203,8 +194,6 @@ const paymentMethodDetail = computed(() =>
             :error-message="'disputes.management.common.errors.unavailable'"
             :not-found-message="'disputes.management.common.errors.notFound'"
             :on-contact-support="props.onContactSupport"
-            :on-dismiss="props.onDismiss"
-            :dismiss-label="'disputes.management.common.actions.goBack'"
             :on-refresh="retryFetch"
         >
             <template #loading>

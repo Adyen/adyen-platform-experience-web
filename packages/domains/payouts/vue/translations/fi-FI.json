@@ -31,7 +31,6 @@
     "payouts.details.breakdown.fundsCaptured.types.chargeback": "Maksunpalautukset",
     "payouts.details.breakdown.fundsCaptured.types.correction": "Korjaukset",
     "payouts.details.breakdown.fundsCaptured.types.refund": "Palautukset",
-    "payouts.details.common.actions.goBack": "Palaa takaisin",
     "payouts.details.errors.unavailable": "Maksutietojen lataaminen ei onnistunut.",
     "payouts.details.tags.netPayout": "Nettomaksu",
     "payouts.details.tags.sameDaySum": "Samana päivänä suoritettujen maksujen summa",
