@@ -89,7 +89,7 @@ const actions = computed<BentoButtonActionsList>(() => [
     {
         title: i18n.get('capital.offer.summary.actions.requestFundsWithAmount', { values: { amount: offerAmount.value } }),
         state: isRequestFundsLoading.value ? 'loading' : undefined,
-        disabled: isRequestFundsLoading.value || !!requestFundsError.value || !!requestedFunds.value,
+        disabled: !!requestFundsError.value || !!requestedFunds.value,
         event: handleRequestFunds,
     },
     {
