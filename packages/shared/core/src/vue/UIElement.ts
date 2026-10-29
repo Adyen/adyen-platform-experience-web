@@ -184,12 +184,12 @@ export class UIElement<Props extends Record<string, any> & { appearance?: Global
 
             this.configureApp(this._app, { i18n, translationDomain });
             this._app.mount(el);
-
-            this.#trackComponentConfiguration();
         } catch (error) {
             this.unmount();
             throw error;
         }
+
+        this.#trackComponentConfiguration();
 
         return this;
     }

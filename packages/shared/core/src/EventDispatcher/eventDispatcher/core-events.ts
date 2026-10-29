@@ -1,6 +1,6 @@
 import { isFunction, isPlainObject } from '@integration-components/utils';
 import type { ExternalComponentType, GlobalAppearance } from '@integration-components/types';
-import { encodeAnalyticsEvent, getEventInsertId, getEventTime } from './utils';
+import { encodeAnalyticsEvent, getEventTime } from './utils';
 import { getUserAgent } from '../../runtime';
 import type { CoreOptions, ThemeMode } from '../../types';
 import type { MixpanelProperty } from './user-events';
@@ -19,13 +19,8 @@ export const CORE_EVENT_NAMES = {
 
 export type CoreEventName = (typeof CORE_EVENT_NAMES)[keyof typeof CORE_EVENT_NAMES];
 
-/**
- * Funnel section of an embedded component, following the
- * Overview / Details / Offer taxonomy from the data dictionary.
- */
 export type ComponentEventSubCategory = 'Overview' | 'Details' | 'Offer';
 
-// Exhaustive on purpose: adding an external component type forces a conscious decision here.
 const COMPONENT_EVENT_SUB_CATEGORIES: Record<ExternalComponentType, ComponentEventSubCategory> = {
     capitalOverview: 'Overview',
     capitalOffer: 'Offer',
@@ -68,9 +63,6 @@ const getAppearanceEventProperties = (appearance: GlobalAppearance | undefined):
     return properties;
 };
 
-/**
- * Keys of the per-mode custom theme, without their values
- */
 const getCustomThemeVariables = (customTheme: CoreOptions<any>['customTheme']): string[] => {
     const variableNames = new Set<string>();
 
@@ -102,13 +94,12 @@ export const getInitiatedCoreEventProperties = (options: CoreOptions<any>): Reco
 export interface ComponentEventContext {
     /** Name of the mounted component, sent as the event `label`. */
     componentName: ExternalComponentType;
-    /** The appearance resolved for this mount (component props falling back to Core options). */
+    /** The appearance props the integrator passed. */
     appearance?: GlobalAppearance | undefined;
-    /** The props the integrator passed for this mount. */
+    /** The props the integrator passed. */
     componentProps: Record<string, unknown>;
 }
 
-/** Runtime capabilities generated from each component's external prop type. */
 export interface ComponentDataEventCapabilityConfiguration {
     callbackProps?: readonly string[];
     dataCustomization?: readonly ('dataGrid' | 'details')[];
@@ -199,17 +190,11 @@ export const getCustomizedComponentDataEventProperties = ({
         label: componentName,
         subCategory: getComponentEventSubCategory(componentName),
 
-        ...(supportsCallback('onDismiss') ? { hasOnDismiss: hasCallback('onDismiss') } : {}),
         ...(supportsCallback('onContactSupport') ? { hasOnContactSupport: hasCallback('onContactSupport') } : {}),
         ...(supportsCallback('onRecordSelection') ? { hasOnRecordSelection: hasCallback('onRecordSelection') } : {}),
         ...(supportsCallback('onShowDetails') ? { hasShowDetails: hasCallback('onShowDetails') } : {}),
 
         ...(supportsDataGrid && customColumns !== undefined ? { dataCustomColumns: customColumns } : {}),
-        ...(supportsDataGrid || supportsDetails
-            ? {
-                  hasOnDataRetrieve: isFunction(dataGridCustomization.onDataRetrieve) || isFunction(detailsCustomization.onDataRetrieve),
-              }
-            : {}),
         ...(supportsDetails && hiddenDetailFields.length > 0 ? { hiddenDetailFields } : {}),
 
         // Payment Link creation only (fieldsConfig)
@@ -221,15 +206,11 @@ export const getCustomizedComponentDataEventProperties = ({
               }
             : {}),
 
-        // How integrations scope data and paginate
         ...(capabilities.pagination
             ? {
                   allowLimitSelection: pagination.disableLimitSelection !== true,
                   hasPreferredLimit: pagination.defaultLimit !== undefined,
               }
-            : {}),
-        ...(capabilities.balanceAccountId
-            ? { hasBalanceAccountId: typeof componentProps.balanceAccountId === 'string' && componentProps.balanceAccountId.length > 0 }
             : {}),
     };
 };
@@ -275,7 +256,6 @@ const createCoreEventPayload = (
             sdkVersion: process.env.SDK_VERSION,
             userAgent: getUserAgent(),
             time: getEventTime(),
-            $insert_id: getEventInsertId(),
             ...properties,
         },
     });
