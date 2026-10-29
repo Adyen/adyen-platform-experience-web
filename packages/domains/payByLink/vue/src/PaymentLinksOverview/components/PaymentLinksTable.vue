@@ -10,6 +10,7 @@ import {
     useTableColumns,
     useCondensedDataGrid,
     useResponsiveContainer,
+    useShouldHideIllustrations,
     useTimezoneAwareDateFormatting,
 } from '@integration-components/composables-vue';
 import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
@@ -54,6 +55,7 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const { dateFormat } = useTimezoneAwareDateFormatting();
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
+const hideIllustrations = useShouldHideIllustrations();
 const isCondensed = useCondensedDataGrid();
 
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
@@ -156,7 +158,7 @@ const paginationProps = computed(() => {
 });
 
 const emptyStateProps = computed(() => ({
-    image: 'no-results-found' as const,
+    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
     variant: 'embedded' as const,
     title: i18n.get('payByLink.overview.errors.listEmpty'),
     description: i18n.get('payByLink.overview.errors.listEmpty.message'),
