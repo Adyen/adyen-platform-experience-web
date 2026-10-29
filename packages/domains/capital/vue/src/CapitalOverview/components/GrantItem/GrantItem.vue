@@ -88,13 +88,18 @@ const openRepaymentDetails = () => {
     isRepaymentModalOpen.value = true;
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
-        subCategory: 'Grant active',
-        label: 'Send repayment',
+        subCategory: 'Grant item',
+        label: 'Open repayment',
     });
 };
 
 const closeRepaymentModal = () => {
     isRepaymentModalOpen.value = false;
+    userEvents.addEvent?.('Clicked button', {
+        ...sharedCapitalOverviewAnalyticsEventProperties,
+        subCategory: 'Repayment',
+        label: 'Dismiss repayment',
+    });
 };
 </script>
 

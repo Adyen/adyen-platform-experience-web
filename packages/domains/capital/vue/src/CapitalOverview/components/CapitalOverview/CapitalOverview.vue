@@ -29,14 +29,12 @@ const shouldTrackOfferClose = ref(true);
 const shellState = computed<ComponentShellState>(() => (isLoading.value ? 'loading' : 'ready'));
 
 useLandedPageEvent(
-    // TODO: Verify
     () => ({
         ...sharedCapitalOverviewAnalyticsEventProperties,
-        label: 'Capital overview',
         subCategory: 'Grants overview',
+        hasGrants: capitalState.value?.hasGrants,
         hasOffer: !!capitalState.value?.dynamicOfferConfig,
         isEarlyRenewal: isEarlyRenewal.value,
-        hasGrants: capitalState.value?.hasGrants,
     }),
     () => !error.value && !!capitalState.value?.isRegionSupported
 );
@@ -44,11 +42,13 @@ useLandedPageEvent(
 const openOfferModal = () => {
     isOfferModalOpen.value = true;
     shouldTrackOfferClose.value = true;
-    // TODO: Verify
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
-        label: 'Open offer',
         subCategory: 'Grants overview',
+        label: 'Open offer',
+        hasGrants: capitalState.value?.hasGrants,
+        hasOffer: !!capitalState.value?.dynamicOfferConfig,
+        isEarlyRenewal: isEarlyRenewal.value,
     });
 };
 
@@ -57,11 +57,10 @@ const closeOfferModal = () => {
 
     if (!shouldTrackOfferClose.value) return;
 
-    // TODO: Verify
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
+        subCategory: 'Offer',
         label: 'Dismiss offer',
-        subCategory: 'Grants overview',
     });
 };
 

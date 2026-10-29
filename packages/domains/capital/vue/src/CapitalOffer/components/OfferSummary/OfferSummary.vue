@@ -69,8 +69,8 @@ async function handleRequestFunds() {
 
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing summary',
-        label: 'Request funds',
+        subCategory: 'Offer summary',
+        label: 'Submit request',
         isEarlyRenewal: isEarlyRenewal.value,
     });
 }
@@ -79,8 +79,8 @@ function handleBack() {
     props.onBack();
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing summary',
-        label: 'Back to slider view',
+        subCategory: 'Offer summary',
+        label: 'Go back',
         isEarlyRenewal: isEarlyRenewal.value,
     });
 }
