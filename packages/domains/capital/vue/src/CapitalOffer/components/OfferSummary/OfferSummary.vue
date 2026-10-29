@@ -5,7 +5,7 @@ import {
     getBalanceAccountErrorMessage,
     sharedCapitalOfferAnalyticsEventProperties,
     type EnhancedCapitalState,
-    type OnFundsRequestCallback,
+    type OnSubmitCallback,
 } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
@@ -22,7 +22,7 @@ const props = defineProps<{
     offer: IGrantOfferResponseDTO;
     onBack: () => void;
     onContactSupport?: () => void;
-    onFundsRequest?: OnFundsRequestCallback;
+    onSubmit?: OnSubmitCallback;
 }>();
 
 const { i18n } = useCoreContext();
@@ -64,7 +64,7 @@ const balanceAccountError = computed(() => getBalanceAccountErrorMessage(request
 async function handleRequestFunds() {
     const grant = await requestFunds(props.offer.id, renewableGrant.value?.id);
     if (grant) {
-        props.onFundsRequest?.(grant, renewableGrant.value?.id);
+        props.onSubmit?.(grant, renewableGrant.value?.id);
     }
 
     userEvents.addEvent?.('Clicked button', {

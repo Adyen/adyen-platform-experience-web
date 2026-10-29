@@ -76,7 +76,7 @@ const handleSummaryBack = () => {
                         :offer="createdOffer"
                         :on-back="handleSummaryBack"
                         :on-contact-support="props.onContactSupport"
-                        :on-funds-request="props.onFundsRequest"
+                        :on-submit="props.onSubmit"
                     />
                 </template>
             </template>

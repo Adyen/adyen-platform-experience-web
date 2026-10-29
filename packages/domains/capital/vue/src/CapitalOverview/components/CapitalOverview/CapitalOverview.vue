@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import { OnFundsRequestCallback } from '@integration-components/capital/domain';
+import { OnSubmitCallback } from '@integration-components/capital/domain';
 import type { BentoButtonActionsList } from '@adyen/bento-vue3';
 import { IGrant } from '@integration-components/types';
 import { CapitalOverviewComponentProps } from '../../types';
@@ -64,7 +64,7 @@ const closeOfferModal = () => {
     });
 };
 
-const handleFundsRequest: OnFundsRequestCallback = (data, renewsGrantId) => {
+const handleSubmit: OnSubmitCallback = (data, renewsGrantId) => {
     requestedGrant.value = { ...data, renewsGrantId };
     shouldTrackOfferClose.value = false;
     closeOfferModal();
@@ -105,10 +105,5 @@ const headerActions = computed<BentoButtonActionsList | undefined>(() => {
             </template>
         </ComponentShell>
     </div>
-    <OfferModal
-        :is-open="isOfferModalOpen"
-        :on-close="closeOfferModal"
-        :on-contact-support="props.onContactSupport"
-        :on-funds-request="handleFundsRequest"
-    />
+    <OfferModal :is-open="isOfferModalOpen" :on-close="closeOfferModal" :on-contact-support="props.onContactSupport" :on-submit="handleSubmit" />
 </template>

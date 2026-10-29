@@ -1,5 +1,5 @@
-import type { OnFundsRequestCallback } from '../shared';
+import type { OnSubmitCallback } from '../shared';
 
 export interface CapitalOfferProps {
-    onFundsRequest?: OnFundsRequestCallback;
+    onSubmit?: OnSubmitCallback;
 }
