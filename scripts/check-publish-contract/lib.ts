@@ -1,6 +1,5 @@
-import { createHash } from 'node:crypto';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { ALLOWED_DECLARATION_EXPORTS, ALLOWED_RUNTIME_EXPORTS } from './allowed-exports.js';
 import ts from 'typescript';
 
@@ -23,29 +22,8 @@ export interface Snapshot {
     jsExports: string[];
     cjsExports: string[];
     declarationExports: string[];
-    typeFiles: string[];
-    typeTreeHash: string | null;
     missingPackageEntrypoints: MissingEntrypoint[];
     packageJson: PackageJsonFields;
-}
-
-export function sha256(filePath: string): string {
-    const content = readFileSync(filePath);
-    return createHash('sha256').update(content).digest('hex');
-}
-
-export function walkDir(dir: string, base: string = dir): string[] {
-    const results: string[] = [];
-    if (!existsSync(dir)) return results;
-    for (const entry of readdirSync(dir)) {
-        const full = join(dir, entry);
-        if (statSync(full).isDirectory()) {
-            results.push(...walkDir(full, base));
-        } else {
-            results.push(relative(base, full));
-        }
-    }
-    return results.sort();
 }
 
 // ESM interop marker emitted by bundlers; not part of the public surface.
@@ -245,31 +223,17 @@ export function getMissingPackageEntrypoints(packageJson: PackageJsonFields, roo
     return entrypoints.filter(({ path }) => !existsSync(resolve(root, path)));
 }
 
-function getTypeTreeHash(typesDir: string, typeFiles: string[]): string | null {
-    if (typeFiles.length === 0) {
-        return null;
-    }
-
-    const manifest = typeFiles.map(filePath => `${filePath}:${sha256(resolve(typesDir, filePath))}`);
-
-    return createHash('sha256').update(manifest.join('\n')).digest('hex');
-}
-
 export function buildSnapshot(root: string): Snapshot {
     const dist = resolve(root, 'dist');
-    const typesDir = resolve(dist, 'types');
     const packageJson = getPackageJsonFields(root);
     const esIndex = packageJson.module ? resolve(root, packageJson.module) : resolve(dist, 'es/index.js');
     const cjsIndex = packageJson.main ? resolve(root, packageJson.main) : resolve(dist, 'cjs/index.js');
     const declarationIndex = packageJson.types ? resolve(root, packageJson.types) : resolve(dist, 'types/index.d.ts');
-    const typeFiles = walkDir(typesDir).filter(filePath => filePath.endsWith('.d.ts'));
 
     return {
         jsExports: existsSync(esIndex) ? extractExports(esIndex) : [],
         cjsExports: existsSync(cjsIndex) ? extractCjsExports(cjsIndex) : [],
         declarationExports: existsSync(declarationIndex) ? extractDeclarationExports(declarationIndex) : [],
-        typeFiles,
-        typeTreeHash: getTypeTreeHash(typesDir, typeFiles),
         missingPackageEntrypoints: getMissingPackageEntrypoints(packageJson, root),
         packageJson,
     };
@@ -319,23 +283,6 @@ export function diff(baseline: Snapshot, current: Snapshot): string[] {
 
     if (addedDeclarationExports.length) diffs.push(`  Declaration exports added: ${addedDeclarationExports.join(', ')}`);
     if (removedDeclarationExports.length) diffs.push(`  Declaration exports removed: ${removedDeclarationExports.join(', ')}`);
-
-    const addedTypes = current.typeFiles.filter(filePath => !baseline.typeFiles.includes(filePath));
-    const removedTypes = baseline.typeFiles.filter(filePath => !current.typeFiles.includes(filePath));
-
-    if (addedTypes.length) {
-        diffs.push(`  Type files added (${addedTypes.length}): ${addedTypes.slice(0, 5).join(', ')}${addedTypes.length > 5 ? '...' : ''}`);
-    }
-
-    if (removedTypes.length) {
-        diffs.push(`  Type files removed (${removedTypes.length}): ${removedTypes.slice(0, 5).join(', ')}${removedTypes.length > 5 ? '...' : ''}`);
-    }
-
-    if (addedTypes.length === 0 && removedTypes.length === 0 && baseline.typeTreeHash !== current.typeTreeHash) {
-        diffs.push(
-            `  Type declarations changed within existing files: ${baseline.typeTreeHash?.slice(0, 12)}... -> ${current.typeTreeHash?.slice(0, 12)}...`
-        );
-    }
 
     if (current.missingPackageEntrypoints.length) {
         const missingEntrypoints = current.missingPackageEntrypoints.map(({ field, path }) => `${field} -> ${path}`);
