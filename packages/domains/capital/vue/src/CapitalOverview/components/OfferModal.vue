@@ -10,7 +10,7 @@ const props = defineProps<{
     isOpen: boolean;
     onClose: () => void;
     onContactSupport?: () => void;
-    onFundsRequest: OnFundsRequestCallback;
+    onSubmit: OnFundsRequestCallback;
 }>();
 
 const { i18n } = useCoreContext();
@@ -33,7 +33,7 @@ const handleOfferTitleChange = (title: CapitalTranslationKey) => {
                     :capital-state="capitalState"
                     hide-subtitle
                     :on-contact-support="props.onContactSupport"
-                    :on-funds-request="props.onFundsRequest"
+                    :on-submit="props.onSubmit"
                     :on-title-change="handleOfferTitleChange"
                 />
             </ModalContextProvider>

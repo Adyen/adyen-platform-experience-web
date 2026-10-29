@@ -107,6 +107,6 @@ const headerActions = computed<BentoButtonActionsList | undefined>(() => {
         :is-open="isOfferModalOpen"
         :on-close="closeOfferModal"
         :on-contact-support="props.onContactSupport"
-        :on-funds-request="handleFundsRequest"
+        :on-submit="handleFundsRequest"
     />
 </template>
