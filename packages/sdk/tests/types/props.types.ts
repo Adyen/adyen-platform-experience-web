@@ -57,18 +57,6 @@ type DataGridComponents = Pick<
     'DisputesOverview' | 'PaymentLinksOverview' | 'PayoutsOverview' | 'ReportsOverview' | 'TransactionsOverview'
 >;
 type NonDataGridComponents = Omit<PublishedProps, keyof DataGridComponents>;
-type DismissibleComponents = Pick<
-    PublishedProps,
-    | 'CapitalOffer'
-    | 'DisputeManagement'
-    | 'PaymentLinkCreation'
-    | 'PaymentLinkDetails'
-    | 'PaymentLinkSettings'
-    | 'PayoutDetails'
-    | 'TransactionDetails'
->;
-
-type PropPresence<TProps extends Record<string, unknown>, TKey extends string> = { [K in keyof TProps]: HasKey<TProps[K], TKey> };
 
 export type _SdkExportsAtLeastOneComponent = Assert<[ComponentExportNames] extends [never] ? false : true>;
 export type _EverySdkComponentHasPublishedProps = Assert<Every<{ [K in ComponentExportNames]: K extends keyof PropsAliases ? true : false }, true>>;
@@ -82,8 +70,7 @@ export type _CoreOptionsMatchFactoryParameters = Assert<Same<CoreOptions, Parame
 export type _EveryComponentUsesUIElementProps = Assert<
     Every<{ [K in keyof PublishedProps]: PublishedProps[K] extends UIElementProps ? true : false }, true>
 >;
-export type _DismissibleComponentsTakeOnDismiss = Assert<Every<PropPresence<DismissibleComponents, 'onDismiss'>, true>>;
-type ForbiddenProps = 'onError' | 'ref';
+type ForbiddenProps = 'onDismiss' | 'onError' | 'ref';
 export type _NoComponentTakesForbiddenProps = Assert<
     Every<{ [K in keyof PublishedProps]: [Extract<keyof PublishedProps[K], ForbiddenProps>] extends [never] ? true : false }, true>
 >;
@@ -99,7 +86,7 @@ export type _OtherComponentsRejectDataGridAppearance = Assert<
 type InternalOnlyProps = {
     CapitalOffer: 'capitalState' | 'hideSubtitle' | 'hideTitle' | 'onTitleChange';
     PaymentLinkCreation: 'embeddedInOverview' | 'onShowDetails';
-    PaymentLinkDetails: 'isDismissButtonHidden' | 'onTitleChange' | 'onUpdate';
+    PaymentLinkDetails: 'onTitleChange' | 'onUpdate';
     PaymentLinkSettings: 'embeddedInOverview' | 'hideTitle' | 'navigateBack' | 'settingsItems';
     PayoutDetails: 'balanceAccountDescription';
     PaymentLinksOverview: 'paymentLinkCreation' | 'paymentLinkSettings';
@@ -122,9 +109,8 @@ type RemovedProps = {
 export type _NoComponentPublishesRemovedProps = Assert<Every<{ [K in keyof RemovedProps]: LacksKey<PublishedProps[K], RemovedProps[K]> }, true>>;
 export type _PaymentLinkCreationTakesOnCreate = Assert<HasKey<PaymentLinkCreationProps, 'onCreate'>>;
 export type _PayoutDetailsKeepsRequiredIdAndDate = Assert<Same<Pick<PayoutDetailsProps, 'id' | 'date'>, { id: string; date: string }>>;
-export type _CapitalOfferPropsDoNotRequireFundsRequest = Assert<
-    Pick<CapitalOfferProps, never> extends Pick<CapitalOfferProps, 'onFundsRequest'> ? true : false
->;
+export type _CapitalOfferPropsDoNotRequireSubmit = Assert<Pick<CapitalOfferProps, never> extends Pick<CapitalOfferProps, 'onSubmit'> ? true : false>;
+export type _CapitalOfferDoesNotPublishFundsRequest = Assert<LacksKey<CapitalOfferProps, 'onFundsRequest'>>;
 
 type SelectionPayload<TProps extends { onRecordSelection?: (...args: never[]) => void }> = Parameters<NonNullable<TProps['onRecordSelection']>>[0];
 type SelectionComponents = Pick<PublishedProps, 'TransactionsOverview' | 'PayoutsOverview' | 'DisputesOverview' | 'PaymentLinksOverview'>;

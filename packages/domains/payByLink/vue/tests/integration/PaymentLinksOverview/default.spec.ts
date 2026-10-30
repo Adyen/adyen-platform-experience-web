@@ -281,7 +281,7 @@ test.describe('Payment Links Overview', () => {
             });
             const refreshStartedAt = Date.now();
 
-            await detailsModal.getByRole('button', { name: 'Go back to payment links' }).click();
+            await detailsModal.getByRole('button', { name: 'Close', exact: true }).click();
 
             const createdUntil = new URL((await refreshRequest).url()).searchParams.get('createdUntil');
             expect(createdUntil).not.toBeNull();

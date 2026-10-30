@@ -42,7 +42,6 @@
     "transactions.details.actions.copyReferenceID": "Copier l'ID de référence",
     "transactions.details.actions.goToPayment": "Accéder à la transaction",
     "transactions.details.actions.refund": "Remboursement de la transaction",
-    "transactions.details.common.actions.goBack": "Retour",
     "transactions.details.common.refundedStates.full": "Entièrement remboursé",
     "transactions.details.common.refundedStates.partial": "Partiellement remboursé",
     "transactions.details.common.refundReasons.duplicate": "Dupliquer",

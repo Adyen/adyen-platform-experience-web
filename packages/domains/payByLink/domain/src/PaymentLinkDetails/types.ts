@@ -1,7 +1,6 @@
-import type { WithDismissCallback } from '@integration-components/types';
 import type { PayByLinkTranslationKey } from '../shared/types';
 
-export interface PaymentLinkDetailsProps extends WithDismissCallback {
+export interface PaymentLinkDetailsProps {
     id: string;
 }
 

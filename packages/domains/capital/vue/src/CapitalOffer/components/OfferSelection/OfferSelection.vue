@@ -29,7 +29,6 @@ const props = defineProps<{
     dynamicOfferConfig: IDynamicOffersConfig;
     createdOffer: IGrantOfferResponseDTO | undefined;
     onContactSupport?: () => void;
-    onDismiss?: () => void;
     onOfferCreate: (offer: IGrantOfferResponseDTO) => void;
 }>();
 
@@ -105,8 +104,8 @@ const handleReview = async () => {
     } finally {
         userEvents.addEvent?.('Clicked button', {
             ...sharedCapitalOfferAnalyticsEventProperties,
-            subCategory: 'Business financing offer',
-            label: 'Review offer',
+            subCategory: 'Offer selection',
+            label: 'Review request',
             isEarlyRenewal: isEarlyRenewal.value,
         });
     }
@@ -120,27 +119,14 @@ const actions = computed<BentoButtonActionsList>(() => {
             state: isCreateOfferLoading.value ? 'loading' : 'start',
             event: handleReview,
         },
-        ...(props.onDismiss
-            ? [
-                  {
-                      title: i18n.get('capital.offer.selection.actions.goBack'),
-                      event: props.onDismiss,
-                  },
-              ]
-            : []),
     ];
 });
 </script>
 
 <template>
     <div :class="styles.root" :aria-busy="areDetailsLoading" data-testid="capital-offer-selection">
-        <CapitalError
-            v-if="offersError || createOfferError"
-            :error="createOfferError ?? offersError"
-            :on-dismiss="props.onDismiss"
-            :on-contact-support="props.onContactSupport"
-        />
-        <EmptyOfferState v-else-if="hasNoOffers" :on-dismiss="props.onDismiss" />
+        <CapitalError v-if="offersError || createOfferError" :error="createOfferError ?? offersError" :on-contact-support="props.onContactSupport" />
+        <EmptyOfferState v-else-if="hasNoOffers" />
         <template v-else-if="amountValue">
             <AmountSelector
                 :amount-value="amountValue"

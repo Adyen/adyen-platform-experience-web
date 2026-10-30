@@ -158,7 +158,6 @@
     "payByLink.details.expiration.errorDescription": "Vi kunne ikke deaktivere betalingslenken. Prøv igjen.",
     "payByLink.details.expiration.errorTitle": "Noe gikk galt",
     "payByLink.details.expiration.title": "Gjør denne lenken ugyldig",
-    "payByLink.details.expirationSuccess.actions.goBackToList": "Gå tilbake til betalingslenkene",
     "payByLink.details.expirationSuccess.actions.showDetails": "Vis detaljer",
     "payByLink.details.expirationSuccess.description": "Betalingslenken er nå utløpt og kan ikke brukes av forbrukeren.",
     "payByLink.details.expirationSuccess.title": "Lenken er deaktivert",

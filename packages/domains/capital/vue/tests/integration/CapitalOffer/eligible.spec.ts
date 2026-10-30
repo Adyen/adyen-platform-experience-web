@@ -2,11 +2,11 @@ import type { Page } from '@playwright/test';
 import { test, expect, type PageAnalyticsEvent } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
 import {
+    changedOfferAmountAnalyticsEventProperties,
+    changedOfferTermAnalyticsEventProperties,
     landedOnPageAnalyticsEventProperties,
-    selectedRepaymentTermAnalyticsEventProperties,
     sharedCapitalOfferSelectionAnalyticsEventProperties,
     sharedCapitalOfferSummaryAnalyticsEventProperties,
-    sliderChangedAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOffer/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-offer--eligible';
@@ -14,14 +14,14 @@ const STORY_ID = 'mocked-capital-capital-offer--eligible';
 const expectPageLoadAnalyticsEvents = (analyticsEvents: PageAnalyticsEvent[]) =>
     expectAnalyticsEvents(analyticsEvents, [
         ['Landed on page', landedOnPageAnalyticsEventProperties],
-        ['Changed capital offer slider', sliderChangedAnalyticsEventProperties],
-        ['Selected repayment term', selectedRepaymentTermAnalyticsEventProperties],
+        ['Changed offer amount', changedOfferAmountAnalyticsEventProperties],
+        ['Changed offer term', changedOfferTermAnalyticsEventProperties],
     ]);
 
 const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await page.getByRole('button', { name: 'Review request' }).click();
     await expectAnalyticsEvents(analyticsEvents, [
-        ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review offer' }],
+        ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review request' }],
     ]);
 };
 
@@ -69,10 +69,9 @@ test.describe('Eligible', () => {
         await page.keyboard.press('Home');
         await expectAnalyticsEvents(analyticsEvents, [
             [
-                'Changed capital offer slider',
+                'Changed offer amount',
                 {
                     ...sharedCapitalOfferSelectionAnalyticsEventProperties,
-                    label: 'Slider changed',
                     currency: 'EUR',
                     value: 100000,
                     valuePercentage: 0,
@@ -106,7 +105,7 @@ test.describe('Eligible', () => {
         await page.getByText('3 months', { exact: true }).click();
         await expectAnalyticsEvents(analyticsEvents, [
             [
-                'Selected repayment term',
+                'Changed offer term',
                 {
                     ...sharedCapitalOfferSelectionAnalyticsEventProperties,
                     allTerms: [90, 180, 360],
@@ -182,7 +181,7 @@ test.describe('Eligible', () => {
         await goToOfferSummary(page, analyticsEvents);
         await page.getByRole('button', { name: 'Go back' }).click();
         await expectAnalyticsEvents(analyticsEvents, [
-            ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Back to slider view' }],
+            ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Go back' }],
         ]);
         await expect(page.getByText('Business financing request')).toBeVisible();
     });
@@ -193,16 +192,8 @@ test.describe('Eligible', () => {
 
         await requestFundsButton.click();
         await expectAnalyticsEvents(analyticsEvents, [
-            ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
+            ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Submit request' }],
         ]);
         await expect(requestFundsButton).toBeDisabled();
-    });
-});
-
-test.describe('onDismiss prop', () => {
-    test('should render back button when prop is set', async ({ page, analyticsEvents }) => {
-        await goToStory(page, { id: STORY_ID, args: { onDismiss: 'Enabled' } });
-        await expectPageLoadAnalyticsEvents(analyticsEvents);
-        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 });

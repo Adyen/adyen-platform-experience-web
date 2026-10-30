@@ -63,7 +63,6 @@ describe('ErrorMessageDisplay', () => {
             absolutePosition: true,
             centered: false,
             condensed: false,
-            dismissLabel: undefined,
             error: undefined,
             errorInfo,
             errorMessage: undefined,
@@ -71,7 +70,6 @@ describe('ErrorMessageDisplay', () => {
             imageMobile: undefined,
             notFoundMessage: undefined,
             onContactSupport: undefined,
-            onDismiss: undefined,
             onRefresh: undefined,
             outlined: true,
             withBackground: true,
@@ -117,31 +115,23 @@ describe('ErrorMessageDisplay', () => {
         expect(getImageAsset).toHaveBeenCalledWith({ name: 'wrong-environment', subFolder: 'images/small' });
     });
 
-    test('renders dismiss and support actions, with support taking precedence over refresh', () => {
-        const onDismiss = vi.fn();
+    test('renders only the support action when support takes precedence over refresh', () => {
         const onContactSupport = vi.fn();
-        const view = renderWithInfo(
-            {
-                messages: [],
-                onContactSupport,
-                refreshComponent: true,
-            },
-            {
-                dismissLabel: 'transactions.common.actions.dismiss.labels.close',
-                onDismiss,
-            }
-        );
+        const view = renderWithInfo({
+            messages: [],
+            onContactSupport,
+            refreshComponent: true,
+        });
 
         const buttonsContainer = (view().children as VNode[])[3]!;
-        const [dismissButton, supportButton] = buttonsContainer.children as VNode[];
+        const buttons = buttonsContainer.children as VNode[];
+        const [supportButton] = buttons;
 
-        expect((dismissButton!.children as { default: () => string }).default()).toBe('transactions.common.actions.dismiss.labels.close');
+        expect(buttons).toHaveLength(1);
         expect((supportButton!.children as { default: () => string }).default()).toBe('transactions.common.actions.contactSupport.labels.reachOut');
 
-        dismissButton!.props?.onClick();
         supportButton!.props?.onClick();
 
-        expect(onDismiss).toHaveBeenCalledOnce();
         expect(onContactSupport).toHaveBeenCalledOnce();
         expect(refreshComponent).not.toHaveBeenCalled();
     });
