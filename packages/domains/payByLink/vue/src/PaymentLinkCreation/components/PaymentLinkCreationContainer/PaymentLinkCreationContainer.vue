@@ -74,7 +74,6 @@ function handleShowDetails() {
                 v-if="state === 'Creation'"
                 :form-data="formData"
                 :fields-config="props.fieldsConfig"
-                :on-dismiss="props.onDismiss"
                 :on-contact-support="props.onContactSupport"
                 :embedded-in-overview="props.embeddedInOverview"
                 :on-title-change="props.onTitleChange"

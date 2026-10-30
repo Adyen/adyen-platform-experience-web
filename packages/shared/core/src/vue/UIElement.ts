@@ -51,9 +51,9 @@ export const createRefreshContext = () => {
  * The mounted component is automatically wrapped in the standard provider stack
  * (CoreProvider → ConfigProvider → EventDispatcherProvider) via UIElementProvider
  *
- *     const reportsOverview = new ReportsOverviewElement({ core, balanceAccountId: 'BA...' });
+ *     const reportsOverview = new ReportsOverviewElement({ core });
  *     reportsOverview.mount('#reports-container');
- *     reportsOverview.update({ balanceAccountId: 'BA_NEW' });
+ *     reportsOverview.update({ appearance: { titles: 'hidden' } });
  *     reportsOverview.unmount();
  */
 export class UIElement<Props extends Record<string, any> & { appearance?: GlobalAppearance }> {

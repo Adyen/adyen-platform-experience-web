@@ -11,10 +11,3 @@ test.describe('Unsupported region', () => {
         await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();
     });
 });
-
-test.describe('onDismiss prop', () => {
-    test('should render back button when prop is set', async ({ page }) => {
-        await goToStory(page, { id: STORY_ID, args: { onDismiss: 'Enabled' } });
-        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
-    });
-});

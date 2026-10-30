@@ -62,7 +62,6 @@ function onCloseModal() {
                     :on-contact-support="props.onContactSupport"
                     :on-accept="onDisputeManagementSuccessful"
                     :on-defend="onDisputeManagementSuccessful"
-                    :on-dismiss="onCloseModal"
                 />
             </template>
         </BentoModal>

@@ -12,7 +12,15 @@ test.describe('Data customization', () => {
         await expectAnalyticsEvents(
             analyticsEvents,
             [
-                ['Customized translation', { category: 'PIE', subCategory: 'Core', locale: 'en-US', keys: [] }],
+                [
+                    'Customized translation',
+                    {
+                        category: 'PIE',
+                        subCategory: 'Core',
+                        locale: 'en-US',
+                        unmatchedKeys: ['_button', '_country', '_product', '_reference', '_store', '_summary'],
+                    },
+                ],
                 ['Landed on page', sharedTransactionsListAnalyticsEventProperties],
             ],
             { strictOrder: false }

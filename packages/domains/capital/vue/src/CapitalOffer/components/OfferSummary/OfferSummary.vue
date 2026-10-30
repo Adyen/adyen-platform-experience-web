@@ -5,7 +5,7 @@ import {
     getBalanceAccountErrorMessage,
     sharedCapitalOfferAnalyticsEventProperties,
     type EnhancedCapitalState,
-    type OnFundsRequestCallback,
+    type OnSubmitCallback,
 } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
@@ -21,9 +21,8 @@ const props = defineProps<{
     capitalState: EnhancedCapitalState;
     offer: IGrantOfferResponseDTO;
     onBack: () => void;
-    onDismiss?: () => void;
     onContactSupport?: () => void;
-    onFundsRequest?: OnFundsRequestCallback;
+    onSubmit?: OnSubmitCallback;
 }>();
 
 const { i18n } = useCoreContext();
@@ -65,13 +64,13 @@ const balanceAccountError = computed(() => getBalanceAccountErrorMessage(request
 async function handleRequestFunds() {
     const grant = await requestFunds(props.offer.id, renewableGrant.value?.id);
     if (grant) {
-        props.onFundsRequest?.(grant, renewableGrant.value?.id);
+        props.onSubmit?.(grant, renewableGrant.value?.id);
     }
 
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing summary',
-        label: 'Request funds',
+        subCategory: 'Offer summary',
+        label: 'Submit request',
         isEarlyRenewal: isEarlyRenewal.value,
     });
 }
@@ -80,8 +79,8 @@ function handleBack() {
     props.onBack();
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing summary',
-        label: 'Back to slider view',
+        subCategory: 'Offer summary',
+        label: 'Go back',
         isEarlyRenewal: isEarlyRenewal.value,
     });
 }
@@ -90,7 +89,7 @@ const actions = computed<BentoButtonActionsList>(() => [
     {
         title: i18n.get('capital.offer.summary.actions.requestFundsWithAmount', { values: { amount: offerAmount.value } }),
         state: isRequestFundsLoading.value ? 'loading' : undefined,
-        disabled: isRequestFundsLoading.value || !!requestFundsError.value || !!requestedFunds.value,
+        disabled: !!requestFundsError.value || !!requestedFunds.value,
         event: handleRequestFunds,
     },
     {

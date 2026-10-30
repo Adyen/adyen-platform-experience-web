@@ -1,5 +1,5 @@
 import { z, type ZodType } from 'zod';
-import type { I18n } from '@integration-components/core/vue';
+import type { I18n } from '@integration-components/core';
 import type { IPaymentLinkValidity } from '@integration-components/types';
 import { transformToMS } from '@integration-components/utils';
 import type { FormFieldConfig, FormStepConfig } from './formSteps';

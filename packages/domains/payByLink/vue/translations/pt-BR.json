@@ -158,7 +158,6 @@
     "payByLink.details.expiration.errorDescription": "Não foi possível desativar o link de pagamento. Tente novamente.",
     "payByLink.details.expiration.errorTitle": "Ocorreu algum erro",
     "payByLink.details.expiration.title": "Desativar este link",
-    "payByLink.details.expirationSuccess.actions.goBackToList": "Voltar aos links de pagamento",
     "payByLink.details.expirationSuccess.actions.showDetails": "Mostrar informações",
     "payByLink.details.expirationSuccess.description": "O link de pagamento expirou e não pode mais ser utilizado pelo consumidor.",
     "payByLink.details.expirationSuccess.title": "O link foi desativado",

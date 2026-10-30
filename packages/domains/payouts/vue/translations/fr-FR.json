@@ -31,7 +31,6 @@
     "payouts.details.breakdown.fundsCaptured.types.chargeback": "Chargebacks",
     "payouts.details.breakdown.fundsCaptured.types.correction": "Corrections",
     "payouts.details.breakdown.fundsCaptured.types.refund": "Remboursements",
-    "payouts.details.common.actions.goBack": "Retour",
     "payouts.details.errors.unavailable": "Nous n'avons pas pu charger les détails des reversements.",
     "payouts.details.tags.netPayout": "Reversement net",
     "payouts.details.tags.sameDaySum": "Somme des reversements le même jour",

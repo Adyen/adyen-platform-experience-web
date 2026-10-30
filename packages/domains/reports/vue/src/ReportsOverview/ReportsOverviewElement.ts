@@ -10,9 +10,8 @@ import type { ReportsOverviewExternalProps } from './types';
  *
  * Usage:
  *   const core = await new Core({ ... }).initialize();
- *   const reportsOverview = new ReportsOverviewElement({ core, balanceAccountId: 'BA...' });
+ *   const reportsOverview = new ReportsOverviewElement({ core });
  *   reportsOverview.mount('#reports-container');
- *   reportsOverview.update({ balanceAccountId: 'BA_NEW...' });
  *   reportsOverview.unmount();
  */
 export class ReportsOverviewElement extends UIElement<ReportsOverviewExternalProps> {

@@ -31,13 +31,28 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
             } else {
                 const translations = customTranslations?.[locale];
                 const keys = translations ? Object.keys(translations) : [];
-                if (keys?.length > 0) {
-                    const matchingCustomizedKeys = keys.filter(key => currentTranslationKeys.has(key));
+                if (keys.length > 0) {
+                    const matchingCustomizedKeys: string[] = [];
+                    const unmatchedCustomizedKeys: string[] = [];
+
+                    for (const key of keys) {
+                        if (currentTranslationKeys.has(key)) {
+                            matchingCustomizedKeys.push(key);
+                        } else {
+                            unmatchedCustomizedKeys.push(key);
+                        }
+                    }
 
                     // This event is permanent to keep track of all the customizations that user made to translations
                     const allTranslationsEvent = encodeAnalyticsEvent({
                         event: 'Customized translation',
-                        properties: { ...baseEventProperties, keys: matchingCustomizedKeys, time: getEventTime(), $insert_id: getEventInsertId() },
+                        properties: {
+                            ...baseEventProperties,
+                            ...(matchingCustomizedKeys.length > 0 && { keys: matchingCustomizedKeys }),
+                            ...(unmatchedCustomizedKeys.length > 0 && { unmatchedKeys: unmatchedCustomizedKeys }),
+                            time: getEventTime(),
+                            $insert_id: getEventInsertId(),
+                        },
                     });
                     if (allTranslationsEvent) {
                         payloads.push(allTranslationsEvent);

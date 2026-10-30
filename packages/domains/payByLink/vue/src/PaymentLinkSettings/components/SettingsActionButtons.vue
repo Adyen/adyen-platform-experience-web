@@ -10,7 +10,6 @@ import styles from './SettingsActionButtons.module.scss';
 const props = defineProps<{
     navigateBack?: () => void;
     closeContent?: () => void;
-    onDismiss?: () => void;
 }>();
 
 const { i18n } = useCoreContext();
@@ -34,13 +33,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
             state: isSaving.value && !(props.navigateBack && isSaveSuccess.value) ? 'loading' : 'start',
         },
     ];
-    if (props.onDismiss) {
-        buttons.push({
-            title: i18n.get('payByLink.creation.form.steps.back'),
-            event: props.onDismiss,
-            variant: 'secondary',
-        });
-    } else if (props.navigateBack || props.closeContent) {
+    if (props.navigateBack || props.closeContent) {
         buttons.push({
             title: i18n.get('payByLink.common.actions.goBack'),
             disabled: isLoading.value,

@@ -307,7 +307,6 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
             :modal-type="modalType"
             :store-ids="props.storeIds"
             :payment-link-creation="props.paymentLinkCreation"
-            :payment-link-settings="props.paymentLinkSettings"
             :on-create="onCreate"
             :on-contact-support="props.onContactSupport"
             :on-close="onCloseModal"

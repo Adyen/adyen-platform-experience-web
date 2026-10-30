@@ -35,3 +35,19 @@ test('replaces stale balance-account selections but preserves a configured senti
 
     scope.stop();
 });
+
+test('selects the first balance account once accounts load when there is no initial value', async () => {
+    const accounts = ref<{ id: string }[] | undefined>(undefined);
+    const scope = effectScope();
+
+    const balanceAccount = scope.run(() => useBalanceAccountFilterState({ balanceAccounts: () => accounts.value }))!;
+
+    expect(balanceAccount.selectedBalanceAccountId.value).toBeUndefined();
+
+    accounts.value = [{ id: 'account-a' }, { id: 'account-b' }];
+    await nextTick();
+
+    expect(balanceAccount.selectedBalanceAccountId.value).toBe('account-a');
+
+    scope.stop();
+});
