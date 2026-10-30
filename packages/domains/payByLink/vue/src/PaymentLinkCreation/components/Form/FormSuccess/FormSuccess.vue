@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from 'vue';
+import { computed, onBeforeUnmount } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { ResponsiveButtonActions } from '@integration-components/composables-vue';
+import { LiveAnnouncement, ResponsiveButtonActions, useCopyText, useLiveAnnouncement } from '@integration-components/composables-vue';
 import { BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
 import styles from './FormSuccess.module.scss';
+
+const COPIED_LABEL_DURATION = 3000;
 
 const props = defineProps<{
     paymentLinkUrl: string;
@@ -12,33 +14,30 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { announce, announcement } = useLiveAnnouncement();
 
-const copied = ref(false);
 let copiedTimeout: ReturnType<typeof setTimeout> | null = null;
+
+const { copyText, isCopied, resetCopyState } = useCopyText(
+    () => props.paymentLinkUrl,
+    () => {
+        announce(() => i18n.get('payByLink.creation.success.copiedToClipboard'));
+        if (copiedTimeout) clearTimeout(copiedTimeout);
+        copiedTimeout = setTimeout(() => {
+            resetCopyState();
+            copiedTimeout = null;
+        }, COPIED_LABEL_DURATION);
+    }
+);
 
 onBeforeUnmount(() => {
     if (copiedTimeout) clearTimeout(copiedTimeout);
 });
 
-async function onCopy() {
-    if (!props.paymentLinkUrl || !navigator.clipboard) return;
-    try {
-        await navigator.clipboard.writeText(props.paymentLinkUrl);
-        copied.value = true;
-        if (copiedTimeout) clearTimeout(copiedTimeout);
-        copiedTimeout = setTimeout(() => {
-            copied.value = false;
-            copiedTimeout = null;
-        }, 3000);
-    } catch {
-        // no-op
-    }
-}
-
 const actionButtons = computed<BentoButtonActionsList>(() => [
     {
-        title: copied.value ? i18n.get('payByLink.creation.success.copiedToClipboard') : i18n.get('payByLink.creation.success.copyLink'),
-        event: onCopy,
+        title: isCopied.value ? i18n.get('payByLink.creation.success.copiedToClipboard') : i18n.get('payByLink.creation.success.copyLink'),
+        event: copyText,
         variant: 'primary',
     },
     {
@@ -61,5 +60,6 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
             </BentoTypography>
         </div>
         <ResponsiveButtonActions :actions="actionButtons" />
+        <LiveAnnouncement :message="announcement" />
     </section>
 </template>

@@ -5,7 +5,7 @@ import { isFunction } from '@integration-components/utils';
 import PayoutData from './PayoutData.vue';
 import PayoutSkeleton from './PayoutSkeleton.vue';
 import { usePayoutDetails } from '../composables/usePayoutDetails';
-import { PAYOUT_TABLE_FIELDS } from '@integration-components/payouts/domain';
+import { PAYOUT_TABLE_FIELDS, getPayoutsErrorConfig } from '@integration-components/payouts/domain';
 import type { PayoutDetailsComponentProps } from '../types';
 import type { CustomDataRetrieved } from '@integration-components/types';
 
@@ -68,15 +68,17 @@ const shellState = computed<ComponentShellState>(() => {
     if (error.value) return 'error';
     return isFetching.value && !data.value ? 'loading' : 'ready';
 });
+
+const errorInfo = computed(() =>
+    getPayoutsErrorConfig(error.value, {
+        errorMessage: 'payouts.details.errors.unavailable',
+        onContactSupport: props.onContactSupport,
+    })
+);
 </script>
 
 <template>
-    <ComponentShell
-        :state="shellState"
-        :error="error"
-        :error-message="'payouts.details.errors.unavailable'"
-        :on-contact-support="props.onContactSupport"
-    >
+    <ComponentShell :state="shellState" :error-info="errorInfo">
         <template #loading>
             <PayoutSkeleton />
         </template>

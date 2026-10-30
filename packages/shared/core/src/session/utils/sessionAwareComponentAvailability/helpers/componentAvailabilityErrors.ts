@@ -1,4 +1,4 @@
-import { getDomainTranslationKey } from '../../../../translations';
+import { getSafeDomainTranslationKey } from '../../../../translations';
 import type { DomainTranslationKey, TranslationDomain } from '../../../../translations';
 import type { ExternalComponentType } from '@integration-components/types';
 
@@ -37,13 +37,13 @@ function componentAvailabilityErrors(type: ExternalComponentType | undefined, fa
 }
 
 export function getComponentAvailabilityErrorTitle(domain: TranslationDomain): DomainTranslationKey {
-    return getDomainTranslationKey(domain, 'common.errors.somethingWentWrong');
+    return getSafeDomainTranslationKey(domain, 'common.errors.somethingWentWrong');
 }
 
 export function getComponentAvailabilityErrorMessages(type: ExternalComponentType | undefined, domain: TranslationDomain): DomainTranslationKey[] {
     return [
-        componentAvailabilityErrors(type, getDomainTranslationKey(domain, 'common.errors.componentUnavailable')),
-        getDomainTranslationKey(domain, 'common.errors.contactSupport'),
+        componentAvailabilityErrors(type, getSafeDomainTranslationKey(domain, 'common.errors.componentUnavailable')),
+        getSafeDomainTranslationKey(domain, 'common.errors.contactSupport'),
     ];
 }
 

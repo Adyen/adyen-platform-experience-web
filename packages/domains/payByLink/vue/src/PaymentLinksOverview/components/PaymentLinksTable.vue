@@ -193,10 +193,9 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
 <template>
     <div ref="tableRef">
         <DataOverviewError
-            v-if="props.error"
-            :error="props.error"
+            v-if="errorInfo"
             :error-info="errorInfo"
-            :image="errorInfo?.imageName ?? 'wrong-environment'"
+            :image="errorInfo.imageName ?? 'wrong-environment'"
             :variant="isMobile ? 'condensed' : 'embedded'"
             :on-refresh="props.onRefresh"
             :refresh-icon="RefreshIcon"

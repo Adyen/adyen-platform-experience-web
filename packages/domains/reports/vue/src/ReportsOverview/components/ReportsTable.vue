@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getReportsErrorConfig } from '@integration-components/reports/domain';
 import { computed, onUnmounted, ref } from 'vue';
 import {
     BentoButton,
@@ -292,18 +293,14 @@ const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
 function formatDate(dateStr: string): string {
     return dateFormat(dateStr, DATE_FORMAT_REPORTS);
 }
+const errorInfo = computed(() =>
+    getReportsErrorConfig(props.error, { errorMessage: 'reports.overview.errors.listUnavailable', onContactSupport: props.onContactSupport })
+);
 </script>
 
 <template>
     <div ref="tableRef" :class="styles.root">
-        <DataOverviewError
-            v-if="props.error"
-            :error="props.error"
-            :error-message="'reports.overview.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
-            :on-refresh="props.onRefresh"
-            :refresh-icon="RefreshIcon"
-        />
+        <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" />
 
         <BentoDataGrid
             v-else

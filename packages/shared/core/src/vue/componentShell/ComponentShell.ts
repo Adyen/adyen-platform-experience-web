@@ -1,8 +1,7 @@
 import { defineComponent, h, type PropType } from 'vue';
 import { BentoLoadingIndicator } from '@adyen/bento-vue3';
-import type { DomainTranslationKey } from '../../translations';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay';
-import type { ErrorMessageInfo, ErrorWithCode } from '../getErrorMessage';
+import type { ErrorMessageInfo } from '../../errors/domainErrorResolver';
 import styles from './ComponentShell.module.scss';
 
 export type ComponentShellState = 'loading' | 'error' | 'ready';
@@ -19,12 +18,11 @@ export const ComponentShell = defineComponent({
 
     props: {
         state: { type: String as PropType<ComponentShellState>, default: 'ready' },
-        /** Pass `errorInfo` directly, or pass `error` plus message keys to have it derived. */
+        /**
+         * Required whenever `state` is `error`. The shell has no domain copy of its own, so the
+         * calling domain resolves the error with its own vocabulary and passes the result in.
+         */
         errorInfo: { type: Object as PropType<ErrorMessageInfo | undefined>, default: undefined },
-        error: { type: Object as PropType<ErrorWithCode | undefined>, default: undefined },
-        errorMessage: { type: String as PropType<DomainTranslationKey | undefined>, default: undefined },
-        notFoundMessage: { type: String as PropType<DomainTranslationKey | undefined>, default: undefined },
-        onContactSupport: { type: Function as PropType<(() => void) | undefined>, default: undefined },
         onRefresh: { type: Function as PropType<(() => void) | undefined>, default: undefined },
     },
 
@@ -45,13 +43,10 @@ export const ComponentShell = defineComponent({
                     );
                 }
                 case 'error':
+                    if (!props.errorInfo) return null;
                     // Flush: the display's own outline and background would draw a second box.
                     return h(ErrorMessageDisplay, {
                         errorInfo: props.errorInfo,
-                        error: props.error,
-                        errorMessage: props.errorMessage,
-                        notFoundMessage: props.notFoundMessage,
-                        onContactSupport: props.onContactSupport,
                         onRefresh: props.onRefresh,
                         withImage: true,
                         absolutePosition: false,

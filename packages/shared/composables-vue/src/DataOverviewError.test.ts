@@ -14,7 +14,7 @@ vi.mock('@integration-components/core/vue', async () => {
     const useConfigContext = vi.fn(() => ({ hasError: false }));
 
     return {
-        getDomainTranslationKey: (domain: string, key: string) => `${domain}.${key}`,
+        getSafeDomainTranslationKey: (domain: string, key: string) => `${domain}.${key}`,
         getErrorMessage: vi.fn(),
         useCoreContext,
         useConfigContext,

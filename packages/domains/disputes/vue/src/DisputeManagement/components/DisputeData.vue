@@ -3,7 +3,12 @@ import { computed, ref, watch } from 'vue';
 import { BentoButtonActions, BentoCard, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
-import { DISPUTE_DETAILS_RESERVED_FIELDS_SET, getDisputeType, isDisputeActionNeeded } from '@integration-components/disputes/domain';
+import {
+    DISPUTE_DETAILS_RESERVED_FIELDS_SET,
+    getDisputeType,
+    getDisputesErrorConfig,
+    isDisputeActionNeeded,
+} from '@integration-components/disputes/domain';
 import { isFunction, parsePaymentMethodType } from '@integration-components/utils';
 import type { CustomButtonObject, CustomDataRetrieved } from '@integration-components/types';
 import { useDisputeDetails } from '../composables/useDisputeDetails';
@@ -47,6 +52,14 @@ const shellState = computed<ComponentShellState>(() => {
     if (error.value) return 'error';
     return 'ready';
 });
+
+const errorInfo = computed(() =>
+    getDisputesErrorConfig(error.value, {
+        errorMessage: 'disputes.management.common.errors.unavailable',
+        notFoundMessage: 'disputes.management.common.errors.notFound',
+        onContactSupport: props.onContactSupport,
+    })
+);
 
 const disputeType = computed(() => getDisputeType(i18n, dispute.value?.dispute.type));
 const isFraudNotification = computed(() => dispute.value?.dispute.type === 'NOTIFICATION_OF_FRAUD');
@@ -188,14 +201,7 @@ const paymentMethodDetail = computed(() =>
 
 <template>
     <div :class="styles.root">
-        <ComponentShell
-            :state="shellState"
-            :error="error"
-            :error-message="'disputes.management.common.errors.unavailable'"
-            :not-found-message="'disputes.management.common.errors.notFound'"
-            :on-contact-support="props.onContactSupport"
-            :on-refresh="retryFetch"
-        >
+        <ComponentShell :state="shellState" :error-info="errorInfo" :on-refresh="retryFetch">
             <template #loading>
                 <DisputeSkeleton />
             </template>

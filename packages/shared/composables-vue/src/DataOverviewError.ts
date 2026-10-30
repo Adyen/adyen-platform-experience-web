@@ -1,27 +1,20 @@
 import { computed, defineComponent, h, type Component, type PropType, type VNode } from 'vue';
 import { BentoEmptyState } from '@adyen/bento-vue3';
 import {
-    getDomainTranslationKey,
-    getErrorMessage,
+    getSafeDomainTranslationKey,
     useCoreContext,
     useShouldHideIllustrations,
-    type DomainTranslationKey,
     type ErrorMessageInfo,
-    type ErrorWithCode,
     useConfigContext,
 } from '@integration-components/core/vue';
 import { useLiveAnnouncement } from './useLiveAnnouncement';
-import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
+import { LiveAnnouncement } from './LiveAnnouncement';
 
 export const DataOverviewError = defineComponent({
     name: 'DataOverviewError',
 
     props: {
-        error: { type: Object as PropType<ErrorWithCode | undefined>, default: undefined },
-        errorMessage: { type: String as PropType<DomainTranslationKey>, default: undefined },
-        notFoundMessage: { type: String as PropType<DomainTranslationKey>, default: undefined },
-        errorInfo: { type: Object as PropType<ErrorMessageInfo>, default: undefined },
-        onContactSupport: { type: Function as PropType<() => void>, default: undefined },
+        errorInfo: { type: Object as PropType<ErrorMessageInfo>, required: true },
         variant: { type: String as PropType<'embedded' | 'condensed'>, default: 'embedded' },
         image: { type: String as PropType<'wrong-environment' | 'no-results-found'>, default: 'wrong-environment' },
         refreshIcon: { type: [Object, Function] as PropType<Component>, default: undefined },
@@ -38,17 +31,7 @@ export const DataOverviewError = defineComponent({
         const { announcement } = useLiveAnnouncement();
         const hideIllustrations = useShouldHideIllustrations();
 
-        const errorInfo = computed(
-            () =>
-                props.errorInfo ??
-                getErrorMessage(
-                    props.error,
-                    props.errorMessage ?? getDomainTranslationKey(translationDomain, 'common.errors.unexpected'),
-                    translationDomain,
-                    props.onContactSupport,
-                    props.notFoundMessage
-                )
-        );
+        const errorInfo = computed(() => props.errorInfo);
 
         const title = computed(() => (errorInfo.value.title ? i18n.get(errorInfo.value.title) : undefined));
 
@@ -62,7 +45,7 @@ export const DataOverviewError = defineComponent({
                 nodes.push(h('span', { key }, i18n.get(key, options)));
             });
 
-            nodes.push(h('span', { class: accessibilityStyles.visuallyHidden, 'aria-atomic': 'true', 'aria-live': 'polite' }, announcement.value));
+            nodes.push(h(LiveAnnouncement, { message: announcement.value }));
 
             return nodes;
         });
@@ -81,7 +64,7 @@ export const DataOverviewError = defineComponent({
             if (onContactSupport) {
                 return {
                     title: i18n.get(
-                        contactSupportLabel ?? getDomainTranslationKey(translationDomain, 'common.actions.contactSupport.labels.reachOut')
+                        contactSupportLabel ?? getSafeDomainTranslationKey(translationDomain, 'common.actions.contactSupport.labels.reachOut')
                     ),
                     event: onContactSupport,
                     variant: 'primary' as const,
@@ -90,7 +73,7 @@ export const DataOverviewError = defineComponent({
 
             if (refreshComponent) {
                 return {
-                    title: i18n.get(getDomainTranslationKey(translationDomain, 'common.actions.refresh.labels.default')),
+                    title: i18n.get(getSafeDomainTranslationKey(translationDomain, 'common.actions.refresh.labels.default')),
                     event: () => (configContext.hasError || !props.onRefresh ? refreshCurrentComponent : props.onRefresh)?.(),
                     icon: props.refreshIcon,
                     variant: 'primary' as const,

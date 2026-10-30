@@ -65,6 +65,23 @@ export const getPaymentLinkStatusTagVariant = (status: IPaymentLinkStatus | unde
 
 const filterEmptyListItems = (items: ListItemData[]): ListItemData[] => items.filter(item => item.value != null && item.value !== '');
 
+// Shipping and billing rows carry the same field names, so each address keeps
+// its own copy labels rather than sharing one built from the field name.
+const ADDRESS_COPY_LABEL_KEYS = {
+    shippingAddress: {
+        street: 'payByLink.details.actions.copyShippingAddressStreet',
+        houseNumberOrName: 'payByLink.details.actions.copyShippingAddressHouseNumberOrName',
+        city: 'payByLink.details.actions.copyShippingAddressCity',
+        postalCode: 'payByLink.details.actions.copyShippingAddressPostalCode',
+    },
+    billingAddress: {
+        street: 'payByLink.details.actions.copyBillingAddressStreet',
+        houseNumberOrName: 'payByLink.details.actions.copyBillingAddressHouseNumberOrName',
+        city: 'payByLink.details.actions.copyBillingAddressCity',
+        postalCode: 'payByLink.details.actions.copyBillingAddressPostalCode',
+    },
+} as const satisfies Record<'shippingAddress' | 'billingAddress', Record<string, PayByLinkTranslationKey>>;
+
 export const buildPaymentLinkListItems = (
     paymentLink: IPaymentLinkDetails,
     { i18n, dateFormat }: { i18n: Localization['i18n']; dateFormat: DateFormatFn }
@@ -79,6 +96,7 @@ export const buildPaymentLinkListItems = (
             key: 'payByLink.details.fields.paymentLinkId',
             value: paymentLink.linkInformation.paymentLinkId,
             isCopyable: true,
+            copyAriaLabelKey: 'payByLink.details.actions.copyPaymentLinkId',
             linkUrl: paymentLink.linkInformation.paymentLink,
         },
         { key: 'payByLink.details.fields.store', value: paymentLink.linkInformation.storeCode },
@@ -103,9 +121,20 @@ export const buildPaymentLinkListItems = (
                 .filter(Boolean)
                 .join(' '),
             isCopyable: true,
+            copyAriaLabelKey: 'payByLink.details.actions.copyShopperFullName',
         },
-        { key: 'payByLink.details.fields.shopper.email', value: paymentLink.shopperInformation?.shopperEmail, isCopyable: true },
-        { key: 'payByLink.details.fields.shopper.phone', value: paymentLink.shopperInformation?.telephoneNumber, isCopyable: true },
+        {
+            key: 'payByLink.details.fields.shopper.email',
+            value: paymentLink.shopperInformation?.shopperEmail,
+            isCopyable: true,
+            copyAriaLabelKey: 'payByLink.details.actions.copyShopperEmail',
+        },
+        {
+            key: 'payByLink.details.fields.shopper.phone',
+            value: paymentLink.shopperInformation?.telephoneNumber,
+            isCopyable: true,
+            copyAriaLabelKey: 'payByLink.details.actions.copyShopperPhone',
+        },
         { key: 'payByLink.details.fields.shopper.country', value: paymentLink.shopperInformation?.shopperCountry },
         ...(isShippingAddressRedacted
             ? [{ key: 'payByLink.details.fields.shippingAddress.title' as PayByLinkTranslationKey, value: BACKEND_REDACTED_DATA_MARKER }]
@@ -119,15 +148,31 @@ export const buildPaymentLinkListItems = (
         !address
             ? []
             : filterEmptyListItems([
-                  { key: `payByLink.details.fields.${prefix}.street` as PayByLinkTranslationKey, value: address.street, isCopyable: true },
+                  {
+                      key: `payByLink.details.fields.${prefix}.street` as PayByLinkTranslationKey,
+                      value: address.street,
+                      isCopyable: true,
+                      copyAriaLabelKey: ADDRESS_COPY_LABEL_KEYS[prefix].street,
+                  },
                   {
                       key: `payByLink.details.fields.${prefix}.houseNumberOrName` as PayByLinkTranslationKey,
                       value: address.houseNumberOrName,
                       isCopyable: true,
+                      copyAriaLabelKey: ADDRESS_COPY_LABEL_KEYS[prefix].houseNumberOrName,
                   },
                   { key: `payByLink.details.fields.${prefix}.country` as PayByLinkTranslationKey, value: address.country },
-                  { key: `payByLink.details.fields.${prefix}.city` as PayByLinkTranslationKey, value: address.city, isCopyable: true },
-                  { key: `payByLink.details.fields.${prefix}.postalCode` as PayByLinkTranslationKey, value: address.postalCode, isCopyable: true },
+                  {
+                      key: `payByLink.details.fields.${prefix}.city` as PayByLinkTranslationKey,
+                      value: address.city,
+                      isCopyable: true,
+                      copyAriaLabelKey: ADDRESS_COPY_LABEL_KEYS[prefix].city,
+                  },
+                  {
+                      key: `payByLink.details.fields.${prefix}.postalCode` as PayByLinkTranslationKey,
+                      value: address.postalCode,
+                      isCopyable: true,
+                      copyAriaLabelKey: ADDRESS_COPY_LABEL_KEYS[prefix].postalCode,
+                  },
               ]);
 
     return {

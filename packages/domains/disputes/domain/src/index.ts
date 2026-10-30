@@ -2,6 +2,7 @@ export * from './constants';
 export * from './actionNeeded';
 export * from './translations';
 export * from './shared/types';
+export * from './shared/errors';
 export * from './DisputeManagement/constants';
 export * from './DisputeManagement/detailItems';
 export * from './DisputeManagement/types';

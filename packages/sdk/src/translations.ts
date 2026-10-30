@@ -2,7 +2,8 @@ import enUS from '../translations/en-US.json' with { type: 'json' };
 import bentoEnUS from '../translations/bento/en-US.json' with { type: 'json' };
 import type { LocalizationSources } from '@integration-components/core/Localization/Localization';
 
-export const BENTO_TRANSLATION_KEYS = Object.keys(bentoEnUS);
+export type BentoMirrorTranslationKey = keyof typeof bentoEnUS;
+export const BENTO_TRANSLATION_KEYS = Object.keys(bentoEnUS) as BentoMirrorTranslationKey[];
 export const SDK_BENTO_DEFAULT_TRANSLATIONS = bentoEnUS;
 
 export const SDK_TRANSLATION_SOURCES: LocalizationSources = {

@@ -38,6 +38,72 @@ const getTranslationDomain = (componentName: ExternalComponentType): Translation
     }
 };
 
+/**
+ * The resolved Bento messages and domain-override table for one (locale, domain, component) triple.
+ * Both are pure functions of the two localizations' current state, so they can be resolved once and
+ * shared: the second element mounting the same component, and every locale flip back, reuse the
+ * first resolution instead of recompiling the Bento templates and re-probing every route.
+ */
+type BentoTranslationBundle = Readonly<{
+    messages: Record<string, string>;
+    overrides: Readonly<Record<string, string>>;
+}>;
+
+// Keyed by Core instance so two integrations on one page cannot share a bundle. The generation
+// stamp changes whenever either localization refreshes (locale or customTranslations), so a
+// merchant's translation change can never be served from a stale bundle.
+const bentoTranslationBundles = new WeakMap<object, { generation: string; bundles: Map<string, BentoTranslationBundle> }>();
+
+// The `customTranslations` accessor hands back a fresh empty object on every read while unset, so
+// identity is only meaningful for a non-empty translation set. `performance.now()` is coarsened in
+// browsers, so the customTranslations identity is part of the stamp rather than relying on the
+// timestamps alone.
+const translationIdentities = new WeakMap<object, number>();
+let nextTranslationIdentity = 0;
+
+const getTranslationIdentity = (customTranslations: Record<string, unknown> | undefined): number => {
+    if (!customTranslations || Object.keys(customTranslations).length === 0) return 0;
+
+    let identity = translationIdentities.get(customTranslations);
+    if (identity === undefined) {
+        identity = ++nextTranslationIdentity;
+        translationIdentities.set(customTranslations, identity);
+    }
+    return identity;
+};
+
+export const resolveBentoTranslationBundle = (core: any, domain: TranslationDomain, componentName: ExternalComponentType): BentoTranslationBundle => {
+    const { localization, bentoLocalization } = core;
+    const generation = [
+        bentoLocalization.locale,
+        localization.locale,
+        getTranslationIdentity(localization.customTranslations),
+        bentoLocalization.lastRefreshTimestamp,
+        localization.lastRefreshTimestamp,
+    ].join(':');
+
+    let cache = bentoTranslationBundles.get(core);
+    if (!cache || cache.generation !== generation) {
+        cache = { generation, bundles: new Map() };
+        bentoTranslationBundles.set(core, cache);
+    }
+
+    const cacheKey = `${bentoLocalization.locale}:${domain}:${componentName}`;
+    const cachedBundle = cache.bundles.get(cacheKey);
+    if (cachedBundle) return cachedBundle;
+
+    const messages = getBentoLocaleMessages(
+        key => bentoLocalization.getTemplate(key),
+        key => bentoLocalization.has(key)
+    );
+    const overrides: Record<string, string> = {};
+    applyBentoDomainOverrides(overrides, localization.i18n, messages, domain, componentName);
+
+    const bundle: BentoTranslationBundle = { messages, overrides };
+    cache.bundles.set(cacheKey, bundle);
+    return bundle;
+};
+
 export const createRefreshContext = () => {
     const refreshCount = ref(0);
     const refresh: () => void = () => refreshCount.value++;
@@ -284,16 +350,19 @@ export class UIElement<Props extends Record<string, any> & { appearance?: Global
     #syncTranslations(): void {
         if (!this._vueI18n || !this._bentoOverrides || !this._translationDomain) return;
 
-        const bentoTranslations = getBentoLocaleMessages(
-            key => this.core.bentoLocalization.getTemplate(key),
-            key => this.core.bentoLocalization.has(key)
-        );
-
+        const { messages, overrides } = resolveBentoTranslationBundle(this.core, this._translationDomain, this._componentName);
         const bentoLocale = this.core.bentoLocalization.locale;
 
         this._vueI18n.global.locale.value = bentoLocale;
-        this._vueI18n.global.setLocaleMessage(bentoLocale, bentoTranslations);
-        applyBentoDomainOverrides(this._bentoOverrides, this.core.localization.i18n, bentoTranslations, this._translationDomain, this._componentName);
+        this._vueI18n.global.setLocaleMessage(bentoLocale, messages);
+
+        // The bundle is shared, so its entries are copied into this element's reactive object
+        // rather than provided by reference; routes the bundle dropped are removed to match it.
+        for (const key of Object.keys(this._bentoOverrides)) {
+            if (!(key in overrides)) delete this._bentoOverrides[key];
+        }
+        Object.assign(this._bentoOverrides, overrides);
+
         this._refreshTranslations?.();
     }
 }

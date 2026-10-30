@@ -29,7 +29,12 @@ import {
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
-import { getDisputeDeadlineTimeRemaining, getDisputeReason, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
+import {
+    getDisputeDeadlineTimeRemaining,
+    getDisputeReason,
+    isDisputeActionNeededUrgently,
+    getDisputesErrorConfig,
+} from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE, mergeRecords } from '@integration-components/utils';
 import type { CustomColumn, CustomDataRetrieved, IBalanceAccountBase, OnDataRetrievedCallback } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
@@ -215,15 +220,16 @@ function handleRowClick(item: BentoDatagridDataItem) {
 function handleListItemClick(dispute: IDisputeListItem) {
     props.onRowClick?.(dispute);
 }
+const errorInfo = computed(() =>
+    getDisputesErrorConfig(props.error, { errorMessage: 'disputes.overview.common.errors.listUnavailable', onContactSupport: props.onContactSupport })
+);
 </script>
 
 <template>
     <div ref="tableRef" :class="styles.root">
         <DataOverviewError
             v-if="props.error"
-            :error="props.error"
-            :error-message="'disputes.overview.common.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
+            :error-info="errorInfo"
             :on-refresh="props.onRefresh"
             :variant="isMobile ? 'condensed' : 'embedded'"
             :refresh-icon="RefreshIcon"

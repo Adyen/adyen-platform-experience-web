@@ -30,7 +30,7 @@ test.describe('Default', () => {
         await expect(getComponentRoot(page).getByText('Description')).toBeVisible();
         await expect(page.getByText('Payment for online order #001')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Expire now' })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Copy payment link' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Copy payment link', exact: true })).toBeVisible();
     });
 
     test('should switch to link information tab when the latter is clicked', async ({ page }) => {

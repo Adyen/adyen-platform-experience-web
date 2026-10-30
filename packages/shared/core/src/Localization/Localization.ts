@@ -1,12 +1,21 @@
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_TRANSLATIONS, EXCLUDE_PROPS, FALLBACK_LOCALE, SUPPORTED_LOCALES } from './constants/localization';
 import { getCachedTranslations } from './translationCache';
-import type { CustomTranslations, Locale, TranslationKey, TranslationOptions } from '../translations';
+import type { AddressableTranslationKey, CustomTranslations, Locale, TranslationKey, TranslationOptions, Translations } from '../translations';
 import { getLocalisedAmount } from './amount/amount-util';
 import restamper from '@integration-components/utils/datetime/restamper';
 import type { RestamperWithTimezone } from '@integration-components/utils/datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
-import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
-import { ALREADY_RESOLVED_PROMISE, createWatchlist, isNull, isNullish, isUndefined, noop, struct } from '@integration-components/utils';
+import { formatCustomTranslations, getTranslation, toTwoLetterCode, type ResolvableTranslationKey } from './utils';
+import {
+    ALREADY_RESOLVED_PROMISE,
+    createWatchlist,
+    hasOwnProperty,
+    isNull,
+    isNullish,
+    isUndefined,
+    noop,
+    struct,
+} from '@integration-components/utils';
 import { httpGet } from '../Http/http';
 import { SupportedLocales } from './types';
 import { translationsDevAssets } from '../translations/local';
@@ -24,15 +33,23 @@ export type TranslationFamily = Readonly<{
     unsupportedExactCounts: number[];
 }>;
 
+// The catalogs are keyed by catalog keys at runtime; reading their keys widens to plain strings,
+// so the family scan narrows them back to the addressable keyspace.
+const catalogKeysOf = (source: object): AddressableTranslationKey[] => Object.keys(source) as AddressableTranslationKey[];
+
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;
     #languageCode: string = toTwoLetterCode(this.#locale);
     #supportedLocales: Readonly<Locale[]> = [...SUPPORTED_LOCALES];
 
     #customTranslations?: CustomTranslations;
-    #translations: Record<string, string> = DEFAULT_TRANSLATIONS as Record<string, string>;
+
+    // The active locale catalog, layered by `#resolveTemplate` instead of being spread into one
+    // merged catalog: the custom translations of the active locale win, then this catalog, then
+    // the en-US defaults. Before the first refresh resolves, only the defaults serve.
+    #activeTranslations: Record<string, string> | null = null;
     #defaultTranslations: Record<string, string>;
-    #translationFamilyExactCounts = new Map<string, readonly number[]>();
+    #translationFamilyExactCounts: Map<AddressableTranslationKey, readonly number[]> | null = null;
     #translationsLoader = createTranslationsLoader.call(this);
     readonly #fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>;
 
@@ -48,30 +65,35 @@ export default class Localization {
     constructor(locale: string = FALLBACK_LOCALE, cdnTranslationsUrl = '', sources?: LocalizationSources) {
         this.watch(noop);
         this.#defaultTranslations = sources?.defaultTranslations ?? (DEFAULT_TRANSLATIONS as Record<string, string>);
-        this.#translations = this.#defaultTranslations;
-        this.#translationFamilyExactCounts = this.#getTranslationFamilyExactCounts(this.#translations);
 
         const getBundledTranslations = (locale: string) => {
             const source = sources?.localeTranslations[locale];
             return Promise.resolve(typeof source === 'function' ? source() : (source ?? {}));
         };
 
-        this.#fetchTranslationFromCdnPromise = (locale: string) => {
-            const url = `${cdnTranslationsUrl}/${locale}.json`;
+        // Every CDN locale catalog is self-describing (key → copy), so a response from another
+        // deployment is merely out of date rather than misaligned: keys it does not carry fall
+        // through to the bundled defaults, and keys the SDK does not know are never read.
+        const isLocaleCatalog = (value: any): value is Translations => value !== null && typeof value === 'object' && !Array.isArray(value);
 
-            const fetchTranslationsFromCdn = () =>
+        const loadCdnCatalog = (locale: string, fallback: () => Promise<Translations | null>): Promise<Translations | null> =>
+            getCachedTranslations(`${cdnTranslationsUrl}/locales/${locale}.json`, () =>
                 httpGet<any>({
                     loadingContext: cdnTranslationsUrl,
-                    path: `/${locale}.json`,
+                    path: `/locales/${locale}.json`,
                     versionless: true,
                     skipContentType: true,
                     errorLevel: 'info',
-                });
+                })
+            )
+                .then(translations => (isLocaleCatalog(translations) ? translations : fallback()))
+                .catch(() => fallback());
 
+        this.#fetchTranslationFromCdnPromise = (locale: string) => {
             if (!sources) {
                 return process.env.VITE_LOCAL_ASSETS
                     ? Promise.resolve(translationsDevAssets[locale]!)
-                    : getCachedTranslations(url, fetchTranslationsFromCdn);
+                    : loadCdnCatalog(locale, () => Promise.resolve(null));
             }
 
             if (locale === FALLBACK_LOCALE || process.env.VITE_LOCAL_ASSETS) {
@@ -79,10 +101,8 @@ export default class Localization {
             }
 
             // The cache coalesces concurrent requests for the same catalog and serves the cached
-            // response within its time-to-live; an empty or rejected CDN response falls back to the bundled catalog.
-            return getCachedTranslations(url, fetchTranslationsFromCdn)
-                .then(translations => translations ?? getBundledTranslations(locale))
-                .catch(() => getBundledTranslations(locale));
+            // response within its time-to-live; an unusable CDN response falls back to the bundled catalog.
+            return loadCdnCatalog(locale, () => getBundledTranslations(locale));
         };
 
         this.locale = locale;
@@ -165,12 +185,8 @@ export default class Localization {
         };
 
         const currentRefresh = (this.#currentRefresh = (async () => {
-            this.#translations = await this.#translationsLoader.load(
-                this.#fetchTranslationFromCdnPromise,
-                customTranslations,
-                this.#defaultTranslations
-            );
-            this.#translationFamilyExactCounts = this.#getTranslationFamilyExactCounts(this.#translations);
+            this.#activeTranslations = (await this.#translationsLoader.load(this.#fetchTranslationFromCdnPromise)) ?? null;
+            this.#translationFamilyExactCounts = null;
             this.#locale = this.#translationsLoader.locale;
             this.#supportedLocales = Object.freeze(this.#translationsLoader.supportedLocales);
             this.#customTranslations = customTranslations;
@@ -186,17 +202,34 @@ export default class Localization {
         });
     }
 
-    #getTranslationFamilyExactCounts(translations: Record<string, string>): Map<string, readonly number[]> {
-        const exactCounts = new Map<string, number[]>();
+    // Exact counts above one are only meaningful to the Bento bridge, which is the sole caller of
+    // getTranslationFamily. Building the map on first query instead of on every refresh keeps the
+    // full-catalog scan off the refresh path for components that never ask for a family.
+    #getTranslationFamilyExactCounts(): Map<AddressableTranslationKey, readonly number[]> {
+        const exactCounts = new Map<AddressableTranslationKey, number[]>();
 
-        for (const translationKey of Object.keys(translations)) {
+        // The scan covers every key the merged catalog of the previous design exposed: the en-US
+        // defaults, the active locale catalog, and the custom translations of the active locale.
+        const translationKeys = new Set<AddressableTranslationKey>(catalogKeysOf(this.#defaultTranslations));
+
+        if (this.#activeTranslations !== null) {
+            for (const translationKey of catalogKeysOf(this.#activeTranslations)) translationKeys.add(translationKey);
+        }
+
+        const customLocaleTranslations = this.#customTranslations?.[this.#locale];
+        if (customLocaleTranslations !== undefined) {
+            for (const translationKey of catalogKeysOf(customLocaleTranslations)) translationKeys.add(translationKey);
+        }
+
+        for (const translationKey of translationKeys) {
             const separatorIndex = translationKey.lastIndexOf('__');
             if (separatorIndex < 0) continue;
 
             const count = Number(translationKey.slice(separatorIndex + 2));
             if (!Number.isInteger(count) || count <= 1) continue;
 
-            const key = translationKey.slice(0, separatorIndex);
+            // The family base of a catalog key; the runtime map is keyed like the catalog.
+            const key = translationKey.slice(0, separatorIndex) as AddressableTranslationKey;
             const counts = exactCounts.get(key);
 
             if (counts) {
@@ -209,6 +242,22 @@ export default class Localization {
         return exactCounts;
     }
 
+    // Layers the active sources for a key without materializing a merged catalog. A key that exists
+    // with an empty string is authoritative and does not fall through, matching the spread-merge
+    // of the previous design.
+    readonly #resolveTemplate = (key: ResolvableTranslationKey): string | null => {
+        const customLocaleTranslations = this.#customTranslations?.[this.#locale] as Record<string, string> | undefined;
+        if (customLocaleTranslations !== undefined && hasOwnProperty(customLocaleTranslations, key)) {
+            return customLocaleTranslations[key] ?? null;
+        }
+
+        if (this.#activeTranslations !== null && hasOwnProperty(this.#activeTranslations, key)) {
+            return this.#activeTranslations[key] ?? null;
+        }
+
+        return this.#defaultTranslations[key] ?? null;
+    };
+
     /**
      * Returns a translated string from a key in the current {@link Localization.locale}
      * @param key - Translation key
@@ -216,7 +265,7 @@ export default class Localization {
      * @returns Translated string
      */
     get(key: TranslationKey, options?: TranslationOptions): string {
-        const translation = getTranslation(this.#translations, key, options);
+        const translation = getTranslation(this.#resolveTemplate, key, options);
         return isNull(translation) ? key : translation;
     }
 
@@ -225,8 +274,8 @@ export default class Localization {
      * This is intended for consumers that need to compile the SDK placeholder
      * syntax for another localization runtime.
      */
-    getTemplate(key: string): string | null {
-        return this.#translations[key] ?? null;
+    getTemplate(key: AddressableTranslationKey): string | null {
+        return this.#resolveTemplate(key);
     }
 
     /**
@@ -234,12 +283,14 @@ export default class Localization {
      * Bento can represent the zero, one, and greater-than-one forms, but not
      * arbitrary exact counts above one.
      */
-    getTranslationFamily(key: string): TranslationFamily {
+    getTranslationFamily(key: AddressableTranslationKey): TranslationFamily {
+        this.#translationFamilyExactCounts ??= this.#getTranslationFamilyExactCounts();
+
         return {
-            base: this.getTemplate(key),
-            zero: this.getTemplate(`${key}__0`),
-            one: this.getTemplate(`${key}__1`),
-            plural: this.getTemplate(`${key}__plural`),
+            base: this.#resolveTemplate(key),
+            zero: this.#resolveTemplate(`${key}__0`),
+            one: this.#resolveTemplate(`${key}__1`),
+            plural: this.#resolveTemplate(`${key}__plural`),
             unsupportedExactCounts: [...(this.#translationFamilyExactCounts.get(key) ?? [])],
         };
     }
@@ -250,8 +301,8 @@ export default class Localization {
      * @param options - Translation options
      * @returns boolean
      */
-    has(key: string, options?: TranslationOptions): key is TranslationKey {
-        const translation = getTranslation(this.#translations, key, options);
+    has(key: AddressableTranslationKey, options?: TranslationOptions): key is TranslationKey {
+        const translation = getTranslation(this.#resolveTemplate, key, options);
         return !!translation;
     }
 
