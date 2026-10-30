@@ -92,6 +92,7 @@ const listError = computed(() => reportsListResult.error.value as Error | undefi
             :show-pagination="true"
             :error="listError"
             :on-contact-support="props.onContactSupport"
+            :on-refresh="reportsListResult.refresh"
             :custom-columns="props.dataCustomization?.dataGrid?.fields"
             :on-data-retrieve="props.dataCustomization?.dataGrid?.onDataRetrieve"
             :has-next="reportsListResult.hasNext.value"

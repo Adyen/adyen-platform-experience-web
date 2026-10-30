@@ -166,6 +166,7 @@ function closeModal() {
                 :data="disputesListResult.records.value"
                 :show-pagination="true"
                 :error="disputesError"
+                :on-refresh="disputesListResult.refresh"
                 :on-row-click="onRowClick"
                 :on-contact-support="props.onContactSupport"
                 :custom-columns="props.dataCustomization?.dataGrid?.fields"

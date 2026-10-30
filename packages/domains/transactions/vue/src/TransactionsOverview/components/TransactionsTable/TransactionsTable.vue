@@ -41,6 +41,7 @@ const props = defineProps<{
     hasMultipleCurrencies: boolean;
     loading: boolean;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     onRowClick?: (transaction: ITransaction) => void;
     transactions?: ITransaction[];
     customColumns?: CustomColumn<StringWithAutocompleteOptions<TransactionsTableFields>>[];
@@ -201,6 +202,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
             :error="props.error"
             :error-message="'transactions.overview.errors.listUnavailable'"
             :on-contact-support="props.onContactSupport"
+            :on-refresh="props.onRefresh"
             :refresh-icon="RefreshIcon"
         />
 
