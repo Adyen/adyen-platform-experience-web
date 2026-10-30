@@ -8,7 +8,11 @@ export type ExternalCapitalState =
     | { isAvailable: false }
     | {
           isAvailable: true;
-          isRegionSupported: boolean;
+          isRegionSupported: false;
+      }
+    | {
+          isAvailable: true;
+          isRegionSupported: true;
           hasGrants: boolean;
           hasRenewableGrants: boolean;
           dynamicOfferConfig?: {
@@ -27,15 +31,20 @@ export const getExternalCapitalState = async (session: AuthSession, getCdnConfig
     ]);
 
     const capitalState = getEnhancedCapitalState(capitalStateResponse, supportedRegions);
+    const isAvailable = !!capitalState;
 
-    if (!capitalState) {
-        return { isAvailable: false };
+    if (!isAvailable) {
+        return { isAvailable };
     }
 
-    const { dynamicOfferConfig, hasGrants, isRegionSupported, renewableGrants } = capitalState;
+    const { dynamicOfferConfig, isRegionSupported, hasGrants, renewableGrants } = capitalState;
+
+    if (!isRegionSupported) {
+        return { isAvailable, isRegionSupported };
+    }
 
     return {
-        isAvailable: true,
+        isAvailable,
         isRegionSupported,
         hasGrants,
         hasRenewableGrants: !!renewableGrants.length,
