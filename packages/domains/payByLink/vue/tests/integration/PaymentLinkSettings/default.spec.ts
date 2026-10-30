@@ -1,5 +1,6 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
+import { paymentLinkSettingsAnalyticsEventProperties } from '../../../../fixtures/constants/analytics';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -12,8 +13,9 @@ const fullWidthIcon = path.resolve(dirname, '../../../../fixtures/files/theme-lo
 const invalidDimensionsMessage = 'File dimensions not met with the requirements';
 
 test.describe('Default', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', paymentLinkSettingsAnalyticsEventProperties]]);
     });
 
     test('should keep the title in the standalone settings content', async ({ page }) => {

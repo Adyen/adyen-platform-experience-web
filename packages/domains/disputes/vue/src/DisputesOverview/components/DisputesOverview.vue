@@ -2,8 +2,8 @@
 import { ref, computed, watch } from 'vue';
 import { BentoTab, BentoTabs, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
-import { DISPUTE_STATUS_GROUPS } from '@integration-components/disputes/domain';
+import { useLandedPageEvent, useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
+import { DISPUTE_STATUS_GROUPS, DISPUTES_ANALYTICS_CATEGORY, DISPUTES_ANALYTICS_SUBCATEGORY_OVERVIEW } from '@integration-components/disputes/domain';
 import type { IBalanceAccountBase } from '@integration-components/types';
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 import DisputesFilters from './DisputesFilters.vue';
@@ -26,6 +26,9 @@ const hideTitles = useShouldHideTitles();
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
 const ALL_DISPUTE_STATUS_GROUPS = Object.keys(DISPUTE_STATUS_GROUPS) as IDisputeStatusGroup[];
+const analyticsProps = { category: DISPUTES_ANALYTICS_CATEGORY, subCategory: DISPUTES_ANALYTICS_SUBCATEGORY_OVERVIEW } as const;
+
+useLandedPageEvent(analyticsProps);
 
 const visibleStatusGroups = computed(() => {
     const hidden = props.tabs?.hidden;
