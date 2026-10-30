@@ -2,6 +2,7 @@
  * @vitest-environment jsdom
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { decodeAnalyticsEvent as decodeEvent } from '@integration-components/testing';
 import Core from './Core';
 import { CDN_ENVIRONMENTS } from './constants';
 import { SERVER_SIDE_INITIALIZATION_WARNING } from './runtime';
@@ -301,15 +302,6 @@ describe('Core', () => {
     });
 
     describe('core event analytics', () => {
-        const decodeEvent = (payload: URLSearchParams) => {
-            const encodedData = payload.get('data');
-            if (!encodedData) throw new Error('Payload is missing its encoded data');
-
-            const decodedJson = atob(encodedData);
-            const decodedBytes = Uint8Array.from(decodedJson, character => character.codePointAt(0)!);
-            return JSON.parse(new TextDecoder().decode(decodedBytes)) as { event: string; properties: Record<string, any> };
-        };
-
         it('sends Initiated core once on the first initialize and never on update', async () => {
             const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
             const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');

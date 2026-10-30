@@ -2,6 +2,7 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, it, vi } from 'vitest';
+import { decodeAnalyticsEvent as decodePayload } from '@integration-components/testing';
 import type { GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
 import {
     CORE_EVENT_NAMES,
@@ -14,18 +15,6 @@ import {
     getUpdatedThemeEventPayload,
     getUpdatedThemeEventProperties,
 } from './core-events';
-import type { CoreEventName } from './core-events';
-
-type DecodedEvent = { event: CoreEventName; properties: Record<string, any> };
-
-const decodePayload = (payload: URLSearchParams): DecodedEvent => {
-    const encodedData = payload.get('data');
-    if (!encodedData) throw new Error('Payload is missing its encoded data');
-
-    const decodedJson = atob(encodedData);
-    const decodedBytes = Uint8Array.from(decodedJson, character => character.codePointAt(0)!);
-    return JSON.parse(new TextDecoder().decode(decodedBytes)) as DecodedEvent;
-};
 
 describe('getInitiatedCoreEventProperties', () => {
     it('reports the defaults of an unconfigured core', () => {

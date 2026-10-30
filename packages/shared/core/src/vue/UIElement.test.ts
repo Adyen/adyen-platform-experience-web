@@ -2,6 +2,7 @@
  * @vitest-environment jsdom
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { decodeAnalyticsEvent as decodeEvent } from '@integration-components/testing';
 import { createApp, type Component, type VNode } from 'vue';
 import { createI18n } from 'vue-i18n';
 import { UIElement } from './UIElement';
@@ -488,15 +489,6 @@ describe('UIElement', () => {
     });
 
     describe('core component events', () => {
-        const decodeEvent = (payload: URLSearchParams) => {
-            const encodedData = payload.get('data');
-            if (!encodedData) throw new Error('Payload is missing its encoded data');
-
-            const decodedJson = atob(encodedData);
-            const decodedBytes = Uint8Array.from(decodedJson, character => character.codePointAt(0)!);
-            return JSON.parse(new TextDecoder().decode(decodedBytes)) as { event: string; properties: Record<string, any> };
-        };
-
         test('sends the customized component style and data events once per mount, never on update', () => {
             const core = new Core({
                 locale: 'en-US',
