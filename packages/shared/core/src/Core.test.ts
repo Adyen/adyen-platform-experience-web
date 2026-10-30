@@ -302,7 +302,7 @@ describe('Core', () => {
     });
 
     describe('core event analytics', () => {
-        it('sends Initiated core once on the first initialize and never on update', async () => {
+        it('sends "Initiated core" once on the first initialize and never on update', async () => {
             const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
             const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
 
@@ -329,7 +329,7 @@ describe('Core', () => {
             expect(sendAnalyticsEvent).toHaveBeenCalledOnce();
         });
 
-        it('queues Initiated core ahead of the Customized translation event without dropping either', async () => {
+        it('queues "Initiated core" ahead of the "Customized translation" event without dropping either', async () => {
             const core = new Core({
                 locale: 'en-US',
                 onSessionCreate: vi.fn(),
@@ -345,7 +345,7 @@ describe('Core', () => {
             ]);
         });
 
-        it('snapshots the theme configuration in Initiated core', async () => {
+        it('snapshots the theme configuration in "Initiated core"', async () => {
             const core = new Core({
                 locale: 'en-US',
                 onSessionCreate: vi.fn(),
@@ -377,7 +377,7 @@ describe('Core', () => {
             expect(sendAnalyticsEvent).not.toHaveBeenCalled();
         });
 
-        it('sends Updated theme (runtime) on each runtime theme change, never on construction', async () => {
+        it('sends "Updated theme (runtime)" on each runtime theme change, never on construction', async () => {
             const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn(), themeMode: 'dark' });
             const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
 
@@ -404,7 +404,7 @@ describe('Core', () => {
             });
         });
 
-        it('records the registered components in Updated theme (runtime)', async () => {
+        it('records the registered components in "Updated theme (runtime)"', async () => {
             const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
             const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
 

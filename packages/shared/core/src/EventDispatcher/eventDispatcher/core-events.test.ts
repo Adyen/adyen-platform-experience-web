@@ -90,6 +90,30 @@ describe('getCustomizedComponentStyleEventProperties', () => {
 });
 
 describe('getCustomizedComponentDataEventProperties', () => {
+    it.each([undefined, {}, { defaultLimit: 50 }, { disableLimitSelection: undefined }])(
+        'omits limit selection analytics when the option is not configured: %j',
+        pagination => {
+            const properties = getCustomizedComponentDataEventProperties({
+                componentName: 'transactions',
+                componentProps: { pagination },
+            });
+
+            expect(properties).not.toHaveProperty('allowLimitSelection');
+        }
+    );
+
+    it.each([
+        { disableLimitSelection: false, allowLimitSelection: true },
+        { disableLimitSelection: true, allowLimitSelection: false },
+    ])('tracks explicit limit selection configuration: %j', ({ disableLimitSelection, allowLimitSelection }) => {
+        const properties = getCustomizedComponentDataEventProperties({
+            componentName: 'transactions',
+            componentProps: { pagination: { disableLimitSelection } },
+        });
+
+        expect(properties).toHaveProperty('allowLimitSelection', allowLimitSelection);
+    });
+
     it('reports the defaults of a minimally wired component', () => {
         const properties = getCustomizedComponentDataEventProperties({
             componentName: 'transactions',
@@ -102,7 +126,6 @@ describe('getCustomizedComponentDataEventProperties', () => {
             hasOnContactSupport: false,
             hasOnRecordSelection: false,
             hasOnDataRetrieve: false,
-            allowLimitSelection: true,
             hasPreferredLimit: false,
             hasBalanceAccountId: false,
         });
@@ -114,6 +137,7 @@ describe('getCustomizedComponentDataEventProperties', () => {
         expect(properties).not.toHaveProperty('dataCustomColumns');
         expect(properties).not.toHaveProperty('hiddenDetailFields');
         expect(properties).not.toHaveProperty('fieldsPrefilled');
+        expect(properties).not.toHaveProperty('allowLimitSelection');
     });
 
     it('does not track internal props absent from external capabilities', () => {
@@ -212,8 +236,8 @@ describe('getCustomizedComponentDataEventProperties', () => {
             fieldsPrefilled: ['amount'],
             fieldsHidden: ['amount'],
             hasPreferredLimit: true,
-            allowLimitSelection: true,
         });
+        expect(properties).not.toHaveProperty('allowLimitSelection');
         expect(properties).not.toHaveProperty('appearance');
         expect(properties).not.toHaveProperty('appearanceTitles');
     });
@@ -243,7 +267,7 @@ describe('getCustomizedComponentDataEventProperties', () => {
                 onShowDetails: () => {},
                 dataCustomization: { dataGrid: { fields: [] } },
                 fieldsConfig: { data: { shopperEmail: 'shopper@example.com' } },
-                pagination: { defaultLimit: 50 },
+                pagination: { defaultLimit: 50, disableLimitSelection: true },
                 balanceAccountId: 'BA322KH22322DKGJ4',
             },
         });
@@ -283,7 +307,7 @@ describe('getUpdatedThemeEventProperties', () => {
 });
 
 describe('core event payloads', () => {
-    it('encodes Initiated core with the PIE / Core base properties', () => {
+    it('encodes "Initiated core" with the PIE / Core base properties', () => {
         const payload = getInitiatedCoreEventPayload({ onSessionCreate: vi.fn(), locale: 'nl-NL' });
         if (!payload) throw new Error('Expected an encoded payload');
 
@@ -329,7 +353,7 @@ describe('core event payloads', () => {
         });
     });
 
-    it('encodes Updated theme (runtime) with the previous and new theme', () => {
+    it('encodes "Updated theme (runtime)" with the previous and new theme', () => {
         const payload = getUpdatedThemeEventPayload({
             previousThemeMode: 'light',
             themeMode: 'dark',

@@ -208,7 +208,7 @@ export const getCustomizedComponentDataEventProperties = ({
 
         ...(capabilities.pagination
             ? {
-                  allowLimitSelection: pagination.disableLimitSelection !== true,
+                  ...(typeof pagination.disableLimitSelection === 'boolean' ? { allowLimitSelection: !pagination.disableLimitSelection } : {}),
                   hasPreferredLimit: pagination.defaultLimit !== undefined,
               }
             : {}),

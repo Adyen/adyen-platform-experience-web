@@ -530,9 +530,9 @@ describe('UIElement', () => {
                 label: 'transactions',
                 hasOnContactSupport: false,
                 hasBalanceAccountId: true,
-                allowLimitSelection: true,
                 hasPreferredLimit: false,
             });
+            expect(dataEvent.properties).not.toHaveProperty('allowLimitSelection');
             expect(dataEvent.properties).not.toHaveProperty('appearance');
             expect(dataEvent.properties).not.toHaveProperty('appearanceTitles');
             expect(dataEvent.properties).not.toHaveProperty('appearanceIllustrations');
