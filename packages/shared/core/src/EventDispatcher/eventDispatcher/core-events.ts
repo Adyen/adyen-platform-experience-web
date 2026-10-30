@@ -105,7 +105,6 @@ export interface ComponentDataEventCapabilityConfiguration {
     dataCustomization?: readonly ('dataGrid' | 'details')[];
     fieldsConfig?: string;
     pagination?: boolean;
-    balanceAccountId?: boolean;
 }
 
 export interface ComponentDataEventContext {

@@ -529,7 +529,6 @@ describe('UIElement', () => {
                 subCategory: 'Overview',
                 label: 'transactions',
                 hasOnContactSupport: false,
-                hasBalanceAccountId: true,
                 hasPreferredLimit: false,
             });
             expect(dataEvent.properties).not.toHaveProperty('allowLimitSelection');

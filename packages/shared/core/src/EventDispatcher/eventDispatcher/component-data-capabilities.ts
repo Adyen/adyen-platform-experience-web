@@ -3,7 +3,7 @@ import type { ComponentDataEventCapabilityConfiguration } from './core-events';
 
 export const COMPONENT_DATA_EVENT_CAPABILITIES: Record<ExternalComponentType, ComponentDataEventCapabilityConfiguration> = {
     capitalOffer: {
-        callbackProps: ['onContactSupport', 'onFundsRequest'],
+        callbackProps: ['onContactSupport'],
     },
     capitalOverview: {
         callbackProps: ['onContactSupport'],

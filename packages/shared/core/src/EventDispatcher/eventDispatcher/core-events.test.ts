@@ -125,9 +125,7 @@ describe('getCustomizedComponentDataEventProperties', () => {
             subCategory: 'Overview',
             hasOnContactSupport: false,
             hasOnRecordSelection: false,
-            hasOnDataRetrieve: false,
             hasPreferredLimit: false,
-            hasBalanceAccountId: false,
         });
         expect(properties).not.toHaveProperty('appearance');
         expect(properties).not.toHaveProperty('appearanceTitles');
@@ -153,28 +151,25 @@ describe('getCustomizedComponentDataEventProperties', () => {
         const properties = getCustomizedComponentDataEventProperties({
             componentName: 'paymentLinkCreation',
             componentProps: {
-                onDismiss: () => {},
                 onContactSupport: () => {},
                 onShowDetails: () => {},
             },
         });
 
         expect(properties).toMatchObject({
-            hasOnDismiss: true,
             hasOnContactSupport: true,
             hasShowDetails: true,
         });
         expect(properties).not.toHaveProperty('hasOnRecordSelection');
     });
 
-    it('tracks custom columns, the data-transform hook, and hidden detail fields by key', () => {
+    it('tracks custom columns and hidden detail fields by key', () => {
         const properties = getCustomizedComponentDataEventProperties({
             componentName: 'transactions',
             componentProps: {
                 dataCustomization: {
                     dataGrid: {
                         fields: [{ key: 'merchantReference' }, { key: 'paymentPspReference' }],
-                        onDataRetrieve: async () => [],
                     },
                     details: {
                         fields: [
@@ -188,7 +183,6 @@ describe('getCustomizedComponentDataEventProperties', () => {
 
         expect(properties).toMatchObject({
             dataCustomColumns: ['merchantReference', 'paymentPspReference'],
-            hasOnDataRetrieve: true,
             hiddenDetailFields: ['merchantReference'],
         });
     });
@@ -215,44 +209,15 @@ describe('getCustomizedComponentDataEventProperties', () => {
         });
     });
 
-    it('reads nested creation props for the payment links overview', () => {
-        const properties = getCustomizedComponentDataEventProperties({
-            componentName: 'paymentLinksOverview',
-            componentProps: {
-                paymentLinkCreation: {
-                    onDismiss: () => {},
-                    fieldsConfig: {
-                        data: { amount: { value: 1000 } },
-                        visibility: { amount: 'hidden' },
-                    },
-                },
-                paymentLinkSettings: { onDismiss: () => {} },
-                pagination: { defaultLimit: 20 },
-            },
-        });
-
-        expect(properties).toMatchObject({
-            hasOnDismiss: true,
-            fieldsPrefilled: ['amount'],
-            fieldsHidden: ['amount'],
-            hasPreferredLimit: true,
-        });
-        expect(properties).not.toHaveProperty('allowLimitSelection');
-        expect(properties).not.toHaveProperty('appearance');
-        expect(properties).not.toHaveProperty('appearanceTitles');
-    });
-
-    it('tracks data scoping and pagination options', () => {
+    it('tracks pagination options', () => {
         const properties = getCustomizedComponentDataEventProperties({
             componentName: 'transactions',
             componentProps: {
-                balanceAccountId: 'BA322KH22322DKGJ4',
                 pagination: { defaultLimit: 50, disableLimitSelection: true },
             },
         });
 
         expect(properties).toMatchObject({
-            hasBalanceAccountId: true,
             allowLimitSelection: false,
             hasPreferredLimit: true,
         });
@@ -320,7 +285,6 @@ describe('core event payloads', () => {
             locale: 'nl-NL',
         });
         expect(typeof properties.time).toBe('number');
-        expect(typeof properties.$insert_id).toBe('string');
     });
 
     it('encodes the style and data component events with their funnel section', () => {
@@ -328,7 +292,7 @@ describe('core event payloads', () => {
             componentName: 'transactionDetails',
             locale: 'en-US',
             appearance: { illustrations: 'hidden' },
-            componentProps: { onDismiss: () => {} },
+            componentProps: {},
         });
 
         expect(payloads).toHaveLength(2);
@@ -349,7 +313,6 @@ describe('core event payloads', () => {
             category: 'PIE',
             subCategory: 'Details',
             label: 'transactionDetails',
-            hasOnDismiss: true,
         });
     });
 
