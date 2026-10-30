@@ -1,6 +1,7 @@
 import { effectScope, ref } from 'vue';
 import { expect, test, vi } from 'vitest';
 import { useTransactionsList } from './useTransactionsList';
+import type { TransactionsFilters } from '../types';
 
 const getTransactions = vi.fn();
 
@@ -58,20 +59,21 @@ test('refreshes the list with the currently applied filters', async () => {
         _links: {},
     });
 
+    const filters: TransactionsFilters = {
+        balanceAccountId: 'balance-account-id',
+        categories: ['Payment'],
+        statuses: ['Booked'],
+        currencies: ['EUR'],
+        createdSince: '2024-01-01T00:00:00.000Z',
+        createdUntil: '2024-01-31T23:59:59.999Z',
+        paymentPspReference: 'PSP123',
+    };
     const scope = effectScope();
 
     const transactions = scope.run(() =>
         useTransactionsList(() => ({
             fetchEnabled: true,
-            filters: {
-                balanceAccountId: 'balance-account-id',
-                categories: ['Payment'],
-                statuses: ['Booked'],
-                currencies: ['EUR'],
-                createdSince: '2024-01-01T00:00:00.000Z',
-                createdUntil: '2024-01-31T23:59:59.999Z',
-                paymentPspReference: 'PSP123',
-            },
+            filters,
         }))
     )!;
 
@@ -80,7 +82,11 @@ test('refreshes the list with the currently applied filters', async () => {
     transactions.refresh();
 
     await vi.waitFor(() => expect(getTransactions).toHaveBeenCalledTimes(2));
-    expect(getTransactions.mock.calls[1]?.[1]?.query).toEqual(getTransactions.mock.calls[0]?.[1]?.query);
+    for (const call of [1, 2]) {
+        expect(getTransactions).toHaveBeenNthCalledWith(call, expect.anything(), {
+            query: expect.objectContaining(filters),
+        });
+    }
 
     scope.stop();
 });

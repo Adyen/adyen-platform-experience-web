@@ -46,13 +46,16 @@ test('refreshes the list with the currently applied filters', async () => {
         _links: {},
     });
 
+    const filters = {
+        balanceAccountId: 'balance-account-id',
+        createdSince: '2024-01-01T00:00:00.000Z',
+        createdUntil: '2024-01-31T23:59:59.999Z',
+    };
     const scope = effectScope();
     const reports = scope.run(() =>
         useReportsList(() => ({
             fetchEnabled: true,
-            balanceAccountId: 'balance-account-id',
-            createdSince: '2024-01-01T00:00:00.000Z',
-            createdUntil: '2024-01-31T23:59:59.999Z',
+            ...filters,
         }))
     )!;
 
@@ -61,7 +64,11 @@ test('refreshes the list with the currently applied filters', async () => {
     reports.refresh();
 
     await vi.waitFor(() => expect(getReports).toHaveBeenCalledTimes(2));
-    expect(getReports.mock.calls[1]?.[1]?.query).toEqual(getReports.mock.calls[0]?.[1]?.query);
+    for (const call of [1, 2]) {
+        expect(getReports).toHaveBeenNthCalledWith(call, expect.anything(), {
+            query: expect.objectContaining(filters),
+        });
+    }
 
     scope.stop();
 });
