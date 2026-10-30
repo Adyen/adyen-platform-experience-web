@@ -2,8 +2,10 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, it, vi } from 'vitest';
+import { createDeferred } from '@integration-components/utils';
 import { SetupContext } from './SetupContext';
 import type { SetupResponse } from '../ConfigContext.types';
+import { getCustomizedComponentEventPayloads } from '../EventDispatcher/eventDispatcher/core-events';
 
 const setupResponse: SetupResponse = {
     endpoints: {
@@ -47,6 +49,61 @@ describe('SetupContext.sendAnalyticsEvent', () => {
         await vi.waitFor(() => expect(http).toHaveBeenCalledTimes(3));
         expect(setupContext.analyticsPayload).toBeUndefined();
         expect(http.mock.calls[2]?.[1]).toMatchObject({ body: payload, method: 'POST' });
+    });
+
+    it('retains component configuration events during setup and sends them only once after readiness', async () => {
+        const setup = createDeferred<SetupResponse>();
+        const profile = createDeferred<object>();
+        const http = vi.fn().mockReturnValueOnce(setup.promise).mockReturnValueOnce(profile.promise).mockResolvedValue({});
+        const setupContext = new SetupContext({ http } as never);
+        setupContext.analyticsEnabled = true;
+
+        const refresh = setupContext.refresh(new AbortController().signal);
+        await vi.waitFor(() => expect(http).toHaveBeenCalledTimes(1));
+
+        const payloads = getCustomizedComponentEventPayloads({
+            componentName: 'transactions',
+            appearance: { titles: 'hidden' },
+            componentProps: { pagination: { defaultLimit: 25 } },
+            locale: 'en-US',
+        }).filter(payload => payload !== null);
+        expect(payloads).toHaveLength(2);
+
+        payloads.forEach(payload => setupContext.sendAnalyticsEvent(payload));
+
+        expect(setupContext.analyticsPayload).toEqual(payloads);
+        expect(http).toHaveBeenCalledTimes(1);
+
+        setup.resolve(setupResponse);
+        await refresh;
+        await vi.waitFor(() => expect(http).toHaveBeenCalledTimes(2));
+        expect(http).toHaveBeenNthCalledWith(2, expect.any(Function), expect.objectContaining({ path: 'https://analytics.test/engage' }));
+        expect(setupContext.analyticsPayload).toEqual(payloads);
+
+        profile.resolve({});
+        await vi.waitFor(() => expect(http).toHaveBeenCalledTimes(4));
+
+        for (const [index, payload] of payloads.entries()) {
+            expect(http).toHaveBeenNthCalledWith(
+                index + 3,
+                expect.any(Function),
+                expect.objectContaining({
+                    path: 'https://analytics.test/track',
+                    method: 'POST',
+                    body: payload,
+                })
+            );
+        }
+        expect(setupContext.analyticsPayload).toBeUndefined();
+
+        http.mockResolvedValueOnce(setupResponse);
+        await setupContext.refresh(new AbortController().signal);
+        await vi.waitFor(() => expect(http).toHaveBeenCalledTimes(6));
+
+        const trackedPayloads = http.mock.calls
+            .filter(([, options]) => options.path === 'https://analytics.test/track')
+            .map(([, options]) => options.body);
+        expect(trackedPayloads).toEqual(payloads);
     });
 
     it('sends events immediately once the setup endpoints are live', async () => {
