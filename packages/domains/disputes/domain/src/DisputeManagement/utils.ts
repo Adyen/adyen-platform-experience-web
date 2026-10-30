@@ -52,10 +52,10 @@ export const getDefenseDocumentContent = (
     defenseDocumentConfig: Record<string, TranslationConfigItem>,
     i18n: Localization['i18n'],
     defenseDocumentKey: string
-) => getContent(i18n, defenseDocumentConfig, defenseDocumentKey, 'disputes.management.common.defenseDocuments');
+) => getContent(i18n, defenseDocumentConfig, defenseDocumentKey, 'disputes.management.defenseDocuments');
 
 export const getDefenseReasonContent = (
     defenseReasonConfig: Record<string, TranslationConfigItem>,
     i18n: Localization['i18n'],
     defenseReasonKey: string
-) => getContent(i18n, defenseReasonConfig, defenseReasonKey, 'disputes.management.common.defenseReasons');
+) => getContent(i18n, defenseReasonConfig, defenseReasonKey, 'disputes.management.defenseReasons');

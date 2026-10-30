@@ -21,7 +21,7 @@ let copiedTimeout: ReturnType<typeof setTimeout> | null = null;
 const { copyText, isCopied, resetCopyState } = useCopyText(
     () => props.paymentLinkUrl,
     () => {
-        announce(() => i18n.get('payByLink.creation.success.copiedToClipboard'));
+        announce(() => i18n.get('payByLink.creation.success.copy.done'));
         if (copiedTimeout) clearTimeout(copiedTimeout);
         copiedTimeout = setTimeout(() => {
             resetCopyState();
@@ -36,7 +36,7 @@ onBeforeUnmount(() => {
 
 const actionButtons = computed<BentoButtonActionsList>(() => [
     {
-        title: isCopied.value ? i18n.get('payByLink.creation.success.copiedToClipboard') : i18n.get('payByLink.creation.success.copyLink'),
+        title: isCopied.value ? i18n.get('payByLink.creation.success.copy.done') : i18n.get('payByLink.creation.success.copy.link'),
         event: copyText,
         variant: 'primary',
     },

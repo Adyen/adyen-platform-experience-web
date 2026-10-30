@@ -75,7 +75,7 @@ const headerActions = computed<BentoButtonActionsList | undefined>(() => {
     return [
         {
             title: i18n.get(
-                capitalState.value.hasGrants ? 'capital.overview.grants.newGrant.actions.newGrant' : 'capital.overview.grants.newGrant.actions.grant'
+                capitalState.value.hasGrants ? 'capital.overview.grants.newGrant.requestNewLoan' : 'capital.overview.grants.newGrant.requestLoan'
             ),
             event: openOfferModal,
         },

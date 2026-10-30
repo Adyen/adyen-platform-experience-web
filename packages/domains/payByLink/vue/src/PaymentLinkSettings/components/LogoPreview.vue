@@ -29,7 +29,7 @@ function onRemove() {
         </BentoTypography>
         <img :src="logoUrl" :alt="i18n.get(logoLabel[props.logoType])" :class="styles.previewImage" />
         <BentoButton :disabled="props.disabled" variant="secondary" :class="styles.previewRemove" @click="onRemove">
-            {{ i18n.get('payByLink.settings.theme.action.logo.remove') }}
+            {{ i18n.get('payByLink.settings.theme.logo.remove') }}
         </BentoButton>
     </div>
 </template>

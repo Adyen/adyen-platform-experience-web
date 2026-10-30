@@ -73,10 +73,10 @@ const {
     fields: PAYOUT_TABLE_FIELDS,
     customColumns: () => props.customColumns,
     fieldsKeys: {
-        createdAt: 'payouts.overview.list.fields.createdAt',
-        fundsCapturedAmount: 'payouts.overview.list.fields.fundsCapturedAmount',
-        adjustmentAmount: 'payouts.overview.list.fields.adjustmentAmount',
-        payoutAmount: 'payouts.overview.list.fields.payoutAmount',
+        createdAt: 'payouts.overview.list.createdAt',
+        fundsCapturedAmount: 'payouts.overview.list.fundsCapturedAmount',
+        adjustmentAmount: 'payouts.overview.list.adjustmentAmount',
+        payoutAmount: 'payouts.overview.list.payoutAmount',
     } satisfies Record<string, PayoutsTranslationKey>,
     columnConfig: () => ({
         createdAt: { flex: 1 },
@@ -87,7 +87,7 @@ const {
     customColumnDefaults: () => ({ flex: 1 }),
     customColumnWidths: () => customColumnWidths.value,
     resolveCustomColumnLabel: key => {
-        const labelKey = `payouts.overview.list.fields.${key}`;
+        const labelKey = `payouts.overview.list.${key}`;
         return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
     },
 });

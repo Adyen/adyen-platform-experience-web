@@ -36,22 +36,22 @@ vi.mock('@integration-components/payByLink/domain', () => ({
 
 const ITEMS = [
     {
-        key: 'payByLink.details.fields.shopper.email',
+        key: 'payByLink.details.shopper.email',
         value: 'shopper@example.com',
         isCopyable: true,
-        copyAriaLabelKey: 'payByLink.details.actions.copyShopperEmail',
+        copyAriaLabelKey: 'payByLink.details.copy.shopperEmail',
     },
     {
-        key: 'payByLink.details.fields.shopper.phone',
+        key: 'payByLink.details.shopper.phone',
         value: '+31000000000',
         isCopyable: true,
-        copyAriaLabelKey: 'payByLink.details.actions.copyShopperPhone',
+        copyAriaLabelKey: 'payByLink.details.copy.shopperPhone',
     },
     {
-        key: 'payByLink.details.fields.shippingAddress.city',
+        key: 'payByLink.details.shippingAddress.city',
         value: 'Amsterdam',
         isCopyable: true,
-        copyAriaLabelKey: 'payByLink.details.actions.copyShippingAddressCity',
+        copyAriaLabelKey: 'payByLink.details.copy.shippingAddressCity',
     },
 ] as never[];
 

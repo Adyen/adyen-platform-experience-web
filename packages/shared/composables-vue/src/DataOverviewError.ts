@@ -59,13 +59,11 @@ export const DataOverviewError = defineComponent({
               }
             | undefined
         >(() => {
-            const { onContactSupport, refreshComponent, contactSupportLabel } = errorInfo.value;
+            const { onContactSupport, refreshComponent } = errorInfo.value;
 
             if (onContactSupport) {
                 return {
-                    title: i18n.get(
-                        contactSupportLabel ?? getSafeDomainTranslationKey(translationDomain, 'common.actions.contactSupport.labels.reachOut')
-                    ),
+                    title: i18n.get(getSafeDomainTranslationKey(translationDomain, 'common.contactSupport.label')),
                     event: onContactSupport,
                     variant: 'primary' as const,
                 };
@@ -73,7 +71,7 @@ export const DataOverviewError = defineComponent({
 
             if (refreshComponent) {
                 return {
-                    title: i18n.get(getSafeDomainTranslationKey(translationDomain, 'common.actions.refresh.labels.default')),
+                    title: i18n.get(getSafeDomainTranslationKey(translationDomain, 'common.refresh.label')),
                     event: () => (configContext.hasError || !props.onRefresh ? refreshCurrentComponent : props.onRefresh)?.(),
                     icon: props.refreshIcon,
                     variant: 'primary' as const,

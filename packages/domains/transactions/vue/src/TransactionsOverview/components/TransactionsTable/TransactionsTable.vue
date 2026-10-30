@@ -63,12 +63,12 @@ const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceA
 const isMobile = useResponsiveContainer(containerQueries.down.sm);
 
 const FIELDS_KEYS = {
-    createdAt: 'transactions.overview.list.fields.createdAt',
-    currency: 'transactions.overview.list.fields.currency',
-    grossAmount: 'transactions.overview.list.fields.grossAmount',
-    netAmount: 'transactions.overview.list.fields.netAmount',
-    paymentMethod: 'transactions.overview.list.fields.paymentMethod',
-    transactionType: 'transactions.overview.list.fields.transactionType',
+    createdAt: 'transactions.overview.list.createdAt',
+    currency: 'transactions.overview.list.currency',
+    grossAmount: 'transactions.overview.list.grossAmount',
+    netAmount: 'transactions.overview.list.netAmount',
+    paymentMethod: 'transactions.overview.list.paymentMethod',
+    transactionType: 'transactions.overview.list.transactionType',
 } satisfies Record<string, TransactionsTranslationKey>;
 
 function amountLabel(defaultLabel: string): string {
@@ -94,7 +94,7 @@ const { columns: desktopColumns, customFieldKeys } = useTableColumns({
     customColumnWidths: () => customColumnWidths.value,
     resolveStandardColumnLabel: (field, defaultLabel) => (isAmountField(field) ? amountLabel(defaultLabel) : defaultLabel),
     resolveCustomColumnLabel: key => {
-        const labelKey = `transactions.overview.list.fields.${key}`;
+        const labelKey = `transactions.overview.list.${key}`;
         return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
     },
 });

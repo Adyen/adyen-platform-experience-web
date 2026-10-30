@@ -47,7 +47,7 @@ function onUpdate(value: string | number | { value?: string | number } | Array<u
         <BentoDropdown
             :items="dropdownItems"
             :label="props.label"
-            :placeholder="i18n.get('payByLink.creation.inputs.select.placeholder')"
+            :placeholder="i18n.get('payByLink.creation.select')"
             :model-value="modelValue"
             dynamic-filtering
             :optional="!config.required && !props.hideOptionalLabel"

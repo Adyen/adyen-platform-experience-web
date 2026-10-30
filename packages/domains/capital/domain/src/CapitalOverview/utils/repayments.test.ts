@@ -49,7 +49,7 @@ describe('getBankAccountDetails', () => {
         expect(getBankAccountDetails(GRANT_NL_ACCOUNT)).toEqual([
             {
                 content: 'NL69 RABO 1319 7782 91',
-                copyButtonLabel: 'capital.overview.repayment.actions.copyIban',
+                copyButtonLabel: 'capital.overview.repayment.accountDetails.copy.iban',
                 field: 'iban',
                 isPrimary: true,
                 label: 'capital.overview.repayment.accountDetails.fields.iban',
@@ -57,7 +57,7 @@ describe('getBankAccountDetails', () => {
             },
             {
                 content: 'Adyen N.V.',
-                copyButtonLabel: 'capital.overview.repayment.actions.copyBeneficiaryName',
+                copyButtonLabel: 'capital.overview.repayment.accountDetails.copy.beneficiaryName',
                 field: 'beneficiaryName',
                 isPrimary: false,
                 label: 'capital.overview.repayment.accountDetails.fields.beneficiaryName',
@@ -105,11 +105,11 @@ describe('getBankAccountFieldTextToCopy', () => {
 
 describe('getBankAccountFieldCopyButtonTranslationKey', () => {
     test.each([
-        ['accountNumber', 'capital.overview.repayment.actions.copyAccountNumber'],
-        ['beneficiaryName', 'capital.overview.repayment.actions.copyBeneficiaryName'],
-        ['iban', 'capital.overview.repayment.actions.copyIban'],
-        ['routingNumber', 'capital.overview.repayment.actions.copyRoutingNumber'],
-        ['sortCode', 'capital.overview.repayment.actions.copySortCode'],
+        ['accountNumber', 'capital.overview.repayment.accountDetails.copy.accountNumber'],
+        ['beneficiaryName', 'capital.overview.repayment.accountDetails.copy.beneficiaryName'],
+        ['iban', 'capital.overview.repayment.accountDetails.copy.iban'],
+        ['routingNumber', 'capital.overview.repayment.accountDetails.copy.routingNumber'],
+        ['sortCode', 'capital.overview.repayment.accountDetails.copy.sortCode'],
         ['region', undefined],
     ])('returns copy button translation key for %s', (field, expected) => {
         expect(getBankAccountFieldCopyButtonTranslationKey(field)).toBe(expected);

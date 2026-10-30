@@ -24,7 +24,7 @@ vi.mock('@integration-components/core/vue', () => ({
 }));
 
 const TEXT = 'copy-me';
-const DONE_KEY = 'transactions.common.actions.copy.labels.done';
+const DONE_KEY = 'transactions.common.copy.done';
 
 describe('CopyText', () => {
     let app: App | undefined;
@@ -64,20 +64,20 @@ describe('CopyText', () => {
         test('should fall back to the domain copy label when no key is given', () => {
             mount();
 
-            expect(target.querySelector('button')?.getAttribute('aria-label')).toBe('transactions.common.actions.copy.labels.default');
+            expect(target.querySelector('button')?.getAttribute('aria-label')).toBe('transactions.common.copy.label');
         });
 
         test('should prefer the given key over the domain fallback', () => {
-            mount({ copyButtonAriaLabelKey: 'transactions.details.actions.copyPspReference' });
+            mount({ copyButtonAriaLabelKey: 'transactions.details.copy.pspReference' });
 
-            expect(target.querySelector('button')?.getAttribute('aria-label')).toBe('transactions.details.actions.copyPspReference');
+            expect(target.querySelector('button')?.getAttribute('aria-label')).toBe('transactions.details.copy.pspReference');
         });
 
         test('should give sibling instances distinct names when each is given its own key', () => {
             app = createApp(() =>
                 h('div', [
-                    h(CopyText, { textToCopy: 'a', copyButtonAriaLabelKey: 'transactions.details.actions.copyPspReference' }),
-                    h(CopyText, { textToCopy: 'b', copyButtonAriaLabelKey: 'transactions.details.actions.copyMerchantReference' }),
+                    h(CopyText, { textToCopy: 'a', copyButtonAriaLabelKey: 'transactions.details.copy.pspReference' }),
+                    h(CopyText, { textToCopy: 'b', copyButtonAriaLabelKey: 'transactions.details.copy.merchantReference' }),
                 ])
             );
             app.mount(target);
