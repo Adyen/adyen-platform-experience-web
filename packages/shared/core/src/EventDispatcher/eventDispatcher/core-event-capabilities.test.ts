@@ -5,7 +5,7 @@ it('matches the tracked props declared by each component external props type', (
     // Hand-maintained map: any change to an entry must land together with this
     // expectation, so accidental edits cannot pass silently.
     expect(COMPONENT_DATA_EVENT_CAPABILITIES).toEqual({
-        capitalOffer: { callbackProps: ['onContactSupport'] },
+        capitalOffer: { callbackProps: ['onContactSupport', 'onSubmit'] },
         capitalOverview: { callbackProps: ['onContactSupport'] },
         disputes: {
             callbackProps: ['onContactSupport', 'onRecordSelection'],
