@@ -52,6 +52,7 @@ const props = defineProps<{
     activeBalanceAccount?: IBalanceAccountBase;
     showPagination: boolean;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     onRowClick?: (dispute: IDisputeListItem) => void;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<DisputesTableFields>>[];
     onDataRetrieve?: OnDataRetrievedCallback<IDisputeListItem[], CustomDataRetrieved[]>;
@@ -226,7 +227,13 @@ const errorInfo = computed(() =>
 
 <template>
     <div ref="tableRef" :class="styles.root">
-        <DataOverviewError v-if="props.error" :error-info="errorInfo" :variant="isMobile ? 'condensed' : 'embedded'" :refresh-icon="RefreshIcon" />
+        <DataOverviewError
+            v-if="props.error"
+            :error-info="errorInfo"
+            :on-refresh="props.onRefresh"
+            :variant="isMobile ? 'condensed' : 'embedded'"
+            :refresh-icon="RefreshIcon"
+        />
 
         <template v-else-if="isMobile">
             <div v-if="isLoading" :class="styles.loading" aria-busy="true">

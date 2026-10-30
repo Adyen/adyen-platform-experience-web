@@ -4,18 +4,20 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createApp } from 'vue';
 import type { VNode } from 'vue';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { DataOverviewError } from './DataOverviewError';
 import type { ErrorMessageInfo } from '@integration-components/core/vue';
 
 vi.mock('@integration-components/core/vue', async () => {
     const { computed } = await import('vue');
     const useCoreContext = vi.fn();
+    const useConfigContext = vi.fn(() => ({ hasError: false }));
 
     return {
         getSafeDomainTranslationKey: (domain: string, key: string) => `${domain}.${key}`,
         getErrorMessage: vi.fn(),
         useCoreContext,
+        useConfigContext,
         useShouldHideIllustrations: () => {
             const coreContext = useCoreContext() as { appearance?: { illustrations?: string } };
             return computed(() => coreContext.appearance?.illustrations === 'hidden');
@@ -59,6 +61,7 @@ describe('DataOverviewError', () => {
         vi.mocked(useCoreContext).mockReturnValue({ i18n, refreshComponent, translationDomain: 'transactions' } as unknown as ReturnType<
             typeof useCoreContext
         >);
+        vi.mocked(useConfigContext).mockReturnValue({ hasError: false } as unknown as ReturnType<typeof useConfigContext>);
     });
 
     const renderWithInfo = (errorInfo: ErrorMessageInfo, extraProps: Record<string, unknown> = {}) => {
@@ -123,6 +126,65 @@ describe('DataOverviewError', () => {
 
         action.event();
         expect(refreshComponent).toHaveBeenCalledOnce();
+    });
+
+    test('re-fetches the data through onRefresh when it is provided', () => {
+        const onRefresh = vi.fn();
+        const view = renderWithInfo(
+            {
+                messages: ['transactions.common.errors.retry'],
+                refreshComponent: true,
+            },
+            { onRefresh }
+        );
+
+        const action = view().props?.action;
+        expect(action).toMatchObject({
+            title: 'transactions.common.actions.refresh.labels.default',
+            variant: 'primary',
+        });
+
+        action.event();
+        expect(onRefresh).toHaveBeenCalledOnce();
+        expect(refreshComponent).not.toHaveBeenCalled();
+    });
+
+    test('falls back to remounting the component when the config session is in an error state', () => {
+        vi.mocked(useConfigContext).mockReturnValue({ hasError: true } as unknown as ReturnType<typeof useConfigContext>);
+        const onRefresh = vi.fn();
+        const view = renderWithInfo(
+            {
+                messages: ['transactions.common.errors.retry'],
+                refreshComponent: true,
+            },
+            { onRefresh }
+        );
+
+        view().props?.action.event();
+
+        expect(refreshComponent).toHaveBeenCalledOnce();
+        expect(onRefresh).not.toHaveBeenCalled();
+    });
+
+    test('falls back to remounting the component when the config session errors after the error state renders', () => {
+        const configContext = { hasError: false };
+        vi.mocked(useConfigContext).mockReturnValue(configContext as unknown as ReturnType<typeof useConfigContext>);
+        const onRefresh = vi.fn();
+        const view = renderWithInfo(
+            {
+                messages: ['transactions.common.errors.retry'],
+                refreshComponent: true,
+            },
+            { onRefresh }
+        );
+
+        const action = view().props?.action;
+        configContext.hasError = true; // e.g. the session refresh triggered by the failing request fails afterwards
+
+        action.event();
+
+        expect(refreshComponent).toHaveBeenCalledOnce();
+        expect(onRefresh).not.toHaveBeenCalled();
     });
 
     test('does not offer an action when the error has only a request ID', () => {

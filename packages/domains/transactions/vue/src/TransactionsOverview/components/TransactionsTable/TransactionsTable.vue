@@ -41,6 +41,7 @@ const props = defineProps<{
     hasMultipleCurrencies: boolean;
     loading: boolean;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     onRowClick?: (transaction: ITransaction) => void;
     transactions?: ITransaction[];
     customColumns?: CustomColumn<StringWithAutocompleteOptions<TransactionsTableFields>>[];
@@ -202,7 +203,7 @@ const errorInfo = computed(() =>
 
 <template>
     <div ref="tableRef">
-        <DataOverviewError v-if="props.error" :error-info="errorInfo" :refresh-icon="RefreshIcon" />
+        <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" />
 
         <BentoDataGrid
             v-else

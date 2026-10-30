@@ -59,6 +59,7 @@ const props = defineProps<{
     loading: boolean;
     error?: Error;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     showPagination: boolean;
     data: IReport[] | undefined;
     customColumns?: CustomColumn<ReportsTableFields>[];
@@ -299,7 +300,7 @@ const errorInfo = computed(() =>
 
 <template>
     <div ref="tableRef" :class="styles.root">
-        <DataOverviewError v-if="props.error" :error-info="errorInfo" :refresh-icon="RefreshIcon" />
+        <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" />
 
         <BentoDataGrid
             v-else

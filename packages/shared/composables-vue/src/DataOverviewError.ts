@@ -1,6 +1,12 @@
 import { computed, defineComponent, h, type Component, type PropType, type VNode } from 'vue';
 import { BentoEmptyState } from '@adyen/bento-vue3';
-import { getSafeDomainTranslationKey, useCoreContext, useShouldHideIllustrations, type ErrorMessageInfo } from '@integration-components/core/vue';
+import {
+    getSafeDomainTranslationKey,
+    useCoreContext,
+    useShouldHideIllustrations,
+    type ErrorMessageInfo,
+    useConfigContext,
+} from '@integration-components/core/vue';
 import { useLiveAnnouncement } from './useLiveAnnouncement';
 import { LiveAnnouncement } from './LiveAnnouncement';
 
@@ -12,10 +18,16 @@ export const DataOverviewError = defineComponent({
         variant: { type: String as PropType<'embedded' | 'condensed'>, default: 'embedded' },
         image: { type: String as PropType<'wrong-environment' | 'no-results-found'>, default: 'wrong-environment' },
         refreshIcon: { type: [Object, Function] as PropType<Component>, default: undefined },
+        /**
+         * Re-fetches the data the error state belongs to. Falls back to remounting the component, which resets its filters.
+         * A config/session error also forces the remount fallback, so the session can be re-established.
+         */
+        onRefresh: { type: Function as PropType<(() => void) | undefined>, default: undefined },
     },
 
     setup(props) {
         const { i18n, refreshComponent: refreshCurrentComponent, translationDomain } = useCoreContext();
+        const configContext = useConfigContext();
         const { announcement } = useLiveAnnouncement();
         const hideIllustrations = useShouldHideIllustrations();
 
@@ -62,7 +74,7 @@ export const DataOverviewError = defineComponent({
             if (refreshComponent) {
                 return {
                     title: i18n.get(getSafeDomainTranslationKey(translationDomain, 'common.actions.refresh.labels.default')),
-                    event: () => refreshCurrentComponent?.(),
+                    event: () => (configContext.hasError || !props.onRefresh ? refreshCurrentComponent : props.onRefresh)?.(),
                     icon: props.refreshIcon,
                     variant: 'primary' as const,
                 };
