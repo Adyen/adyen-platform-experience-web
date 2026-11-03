@@ -57,7 +57,7 @@ describe('getSummaryFieldValue', () => {
 
     describe('link type', () => {
         test('translates the link type', () => {
-            expect(render('linkType', { linkType: 'singleUse' })).toBe(i18n.get('payByLink.creation.form.linkTypes.singleUse'));
+            expect(render('linkType', { linkType: 'singleUse' })).toBe(i18n.get('payByLink.creation.linkTypes.singleUse'));
         });
 
         test('is empty without a link type', () => {

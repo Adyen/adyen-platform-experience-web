@@ -538,7 +538,7 @@ describe('resolveBentoTranslationBundle', () => {
         await settle(core);
         const before = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
 
-        core.localization.customTranslations = { 'en-US': { 'transactions.common.actions.copy.labels.default': 'Custom copy' } };
+        core.localization.customTranslations = { 'en-US': { 'transactions.common.copy.label': 'Custom copy' } };
         await core.localization.ready;
 
         const after = resolveBentoTranslationBundle(core, 'transactions', 'transactions');

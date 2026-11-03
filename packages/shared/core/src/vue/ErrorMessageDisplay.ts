@@ -70,22 +70,20 @@ export const ErrorMessageDisplay = defineComponent({
         };
 
         const renderButtons = () => {
-            const { onContactSupport, refreshComponent, contactSupportLabel } = errorInfo.value;
+            const { onContactSupport, refreshComponent } = errorInfo.value;
             const buttons: VNode[] = [];
 
             if (onContactSupport) {
                 buttons.push(
                     h(BentoButton, { type: 'button', variant: 'primary', onClick: () => onContactSupport() }, () =>
-                        i18n.get(
-                            contactSupportLabel ?? getSafeDomainTranslationKey(translationDomain, 'common.actions.contactSupport.labels.reachOut')
-                        )
+                        i18n.get(getSafeDomainTranslationKey(translationDomain, 'common.contactSupport.label'))
                     )
                 );
             } else if (refreshComponent) {
                 const refresh = props.onRefresh ?? refreshCurrentComponent;
                 buttons.push(
                     h(BentoButton, { type: 'button', variant: 'primary', onClick: () => refresh?.() }, () =>
-                        i18n.get(getSafeDomainTranslationKey(translationDomain, 'common.actions.refresh.labels.default'))
+                        i18n.get(getSafeDomainTranslationKey(translationDomain, 'common.refresh.label'))
                     )
                 );
             }

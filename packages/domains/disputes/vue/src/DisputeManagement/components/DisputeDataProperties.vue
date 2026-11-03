@@ -36,9 +36,9 @@ type CustomDataValue = {
 // These three references sit next to each other, so a shared "Copy" name would
 // leave the buttons indistinguishable to a screen reader.
 const COPYABLE_FIELD_LABELS = {
-    disputeId: 'disputes.management.details.actions.copyDisputeReference',
-    paymentPspReference: 'disputes.management.details.actions.copyPaymentReference',
-    paymentMerchantReference: 'disputes.management.details.actions.copyMerchantReference',
+    disputeId: 'disputes.management.details.copy.disputeReference',
+    paymentPspReference: 'disputes.management.details.copy.paymentReference',
+    paymentMerchantReference: 'disputes.management.details.copy.merchantReference',
 } as const satisfies Record<string, DisputesTranslationKey>;
 
 const props = defineProps<{
@@ -156,7 +156,7 @@ async function downloadEvidence(documentType: string) {
                     <BentoTag :label="getDefenseDocumentContent(defenseDocumentConfig, i18n, documentType)?.title ?? documentType" />
                     <BentoButton
                         variant="tertiary"
-                        :aria-label="i18n.get('disputes.management.details.actions.downloadEvidence')"
+                        :aria-label="i18n.get('disputes.management.details.downloadEvidence')"
                         @click="downloadEvidence(documentType)"
                     >
                         <DownloadIcon aria-hidden="true" />

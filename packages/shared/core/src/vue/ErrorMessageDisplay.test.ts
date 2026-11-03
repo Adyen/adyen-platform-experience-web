@@ -128,7 +128,7 @@ describe('ErrorMessageDisplay', () => {
         const [supportButton] = buttons;
 
         expect(buttons).toHaveLength(1);
-        expect((supportButton!.children as { default: () => string }).default()).toBe('transactions.common.actions.contactSupport.labels.reachOut');
+        expect((supportButton!.children as { default: () => string }).default()).toBe('transactions.common.contactSupport.label');
 
         supportButton!.props?.onClick();
 

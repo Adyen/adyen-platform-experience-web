@@ -31,20 +31,15 @@ export const CopyText = defineComponent({
         const { copyText, isCopied, resetCopyState } = useCopyText(
             () => props.textToCopy,
             () => {
-                announce(() => i18n.get(getSafeDomainTranslationKey(translationDomain, 'common.actions.copy.labels.done')));
+                announce(() => i18n.get(getSafeDomainTranslationKey(translationDomain, 'common.copy.done')));
                 props.onCopyText?.();
             }
         );
         const copyButtonLabel = computed(() =>
-            i18n.get(props.copyButtonAriaLabelKey ?? getSafeDomainTranslationKey(translationDomain, 'common.actions.copy.labels.default'))
+            i18n.get(props.copyButtonAriaLabelKey ?? getSafeDomainTranslationKey(translationDomain, 'common.copy.label'))
         );
         const copyButtonTooltip = computed(() =>
-            i18n.get(
-                getSafeDomainTranslationKey(
-                    translationDomain,
-                    isCopied.value ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default'
-                )
-            )
+            i18n.get(getSafeDomainTranslationKey(translationDomain, isCopied.value ? 'common.copy.done' : 'common.copy.label'))
         );
 
         return () => {

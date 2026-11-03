@@ -28,7 +28,7 @@ describe('getPaymentLinksErrorMessage', () => {
         });
 
         expect(getPaymentLinksErrorMessage(error, ERROR_MESSAGE)).toEqual({
-            title: 'payByLink.overview.errors.listEmpty',
+            title: 'payByLink.overview.errors.listEmpty.title',
             messages: ['payByLink.overview.errors.listEmpty.message'],
             imageName: 'no-results-found',
         });

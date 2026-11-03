@@ -95,8 +95,6 @@ const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
             totalPaymentAmount: { visible: statusGroup === 'FRAUD_ALERTS', flex: 1, numeric: true },
         };
     },
-    resolveStandardColumnLabel: (field, defaultLabel) =>
-        field === 'disputeReason' ? i18n.get('disputes.overview.common.fields.disputeReasonLabel') : defaultLabel,
     resolveCustomColumnLabel: key => (i18n.has(key) ? i18n.get(key) : key),
 });
 
@@ -196,8 +194,8 @@ function getTimeToDeadline(dueDate: string): string {
     if (timeRemaining.expired) return formattedDate;
 
     return timeRemaining.days <= 1
-        ? i18n.get('disputes.overview.common.actionNeeded.respondToday', { values: { date: formattedDate } })
-        : i18n.get('disputes.overview.common.actionNeeded.respondDays', { values: { days: timeRemaining.days, date: formattedDate } });
+        ? i18n.get('disputes.overview.actionNeeded.respondToday', { values: { date: formattedDate } })
+        : i18n.get('disputes.overview.actionNeeded.respondDays', { values: { days: timeRemaining.days, date: formattedDate } });
 }
 
 function handleNavigate(page: number) {
@@ -221,7 +219,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
     props.onRowClick?.(dispute);
 }
 const errorInfo = computed(() =>
-    getDisputesErrorConfig(props.error, { errorMessage: 'disputes.overview.common.errors.listUnavailable', onContactSupport: props.onContactSupport })
+    getDisputesErrorConfig(props.error, { errorMessage: 'disputes.overview.errors.listUnavailable', onContactSupport: props.onContactSupport })
 );
 </script>
 

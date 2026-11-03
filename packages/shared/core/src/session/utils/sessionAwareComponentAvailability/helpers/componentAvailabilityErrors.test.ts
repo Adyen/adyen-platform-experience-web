@@ -15,11 +15,9 @@ describe('componentAvailabilityErrors', () => {
         expect(componentAvailabilityErrors('payouts', 'payouts.common.errors.componentUnavailable')).toBe('payouts.overview.errors.unavailable');
         expect(componentAvailabilityErrors('payoutDetails', 'payouts.common.errors.componentUnavailable')).toBe('payouts.details.errors.unavailable');
         expect(componentAvailabilityErrors('reports', 'reports.common.errors.componentUnavailable')).toBe('reports.overview.errors.unavailable');
-        expect(componentAvailabilityErrors('disputes', 'disputes.common.errors.componentUnavailable')).toBe(
-            'disputes.overview.common.errors.unavailable'
-        );
+        expect(componentAvailabilityErrors('disputes', 'disputes.common.errors.componentUnavailable')).toBe('disputes.overview.errors.unavailable');
         expect(componentAvailabilityErrors('disputesManagement', 'disputes.common.errors.componentUnavailable')).toBe(
-            'disputes.management.common.errors.unavailable'
+            'disputes.management.errors.unavailable'
         );
         expect(componentAvailabilityErrors('paymentLinksOverview', 'payByLink.common.errors.componentUnavailable')).toBe(
             'payByLink.overview.errors.unavailable'
@@ -34,11 +32,9 @@ describe('componentAvailabilityErrors', () => {
             'payByLink.settings.errors.unavailable'
         );
         expect(componentAvailabilityErrors('capitalOverview', 'capital.common.errors.componentUnavailable')).toBe(
-            'capital.overview.common.errors.unavailable'
+            'capital.overview.errors.unavailable'
         );
-        expect(componentAvailabilityErrors('capitalOffer', 'capital.common.errors.componentUnavailable')).toBe(
-            'capital.offer.common.errors.unavailable'
-        );
+        expect(componentAvailabilityErrors('capitalOffer', 'capital.common.errors.componentUnavailable')).toBe('capital.offer.errors.unavailable');
     });
 
     test('falls back to the provided message when the component type is unknown', () => {

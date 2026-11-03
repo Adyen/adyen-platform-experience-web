@@ -71,7 +71,7 @@ function onFiltersChange(params: {
 
 const statusGroupItems = computed(() => visibleStatusGroups.value.map(value => ({ label: i18n.get(DISPUTE_STATUS_GROUPS[value]), value })));
 const activeStatusGroupIndex = computed(() => visibleStatusGroups.value.indexOf(statusGroup.value));
-const statusGroupAriaLabel = computed(() => i18n.get('disputes.overview.common.filters.types.statusGroup'));
+const statusGroupAriaLabel = computed(() => i18n.get('disputes.overview.filters.statusGroup'));
 
 function onStatusGroupChange(index: number) {
     statusGroup.value = visibleStatusGroups.value[index] ?? getFallbackStatusGroup();
@@ -136,7 +136,7 @@ function closeModal() {
     <div :class="[styles.root, isMobile ? styles.rootXs : '']">
         <div :class="styles.header">
             <BentoTypography v-if="!hideTitles" el="h2" variant="title" stronger>
-                {{ i18n.get('disputes.overview.common.title') }}
+                {{ i18n.get('disputes.overview.title') }}
             </BentoTypography>
         </div>
 
