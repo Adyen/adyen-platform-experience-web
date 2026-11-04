@@ -131,7 +131,7 @@ describe('getCustomizedComponentDataEventProperties', () => {
         expect(properties).not.toHaveProperty('appearanceTitles');
         expect(properties).not.toHaveProperty('appearanceIllustrations');
         expect(properties).not.toHaveProperty('hasOnDismiss');
-        expect(properties).not.toHaveProperty('hasShowDetails');
+        expect(properties).not.toHaveProperty('hasOnCreate');
         expect(properties).not.toHaveProperty('dataCustomColumns');
         expect(properties).not.toHaveProperty('hiddenDetailFields');
         expect(properties).not.toHaveProperty('fieldsPrefilled');
@@ -152,15 +152,16 @@ describe('getCustomizedComponentDataEventProperties', () => {
             componentName: 'paymentLinkCreation',
             componentProps: {
                 onContactSupport: () => {},
-                onShowDetails: () => {},
+                onCreate: () => {},
             },
         });
 
         expect(properties).toMatchObject({
             hasOnContactSupport: true,
-            hasShowDetails: true,
+            hasOnCreate: true,
         });
         expect(properties).not.toHaveProperty('hasOnRecordSelection');
+        expect(properties).not.toHaveProperty('hasShowDetails');
     });
 
     it('tracks custom columns and hidden detail fields by key', () => {

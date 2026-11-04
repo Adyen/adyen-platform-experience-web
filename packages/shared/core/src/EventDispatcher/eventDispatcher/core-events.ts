@@ -162,12 +162,14 @@ export const getCustomizedComponentDataEventProperties = ({
     componentName,
     componentProps,
 }: ComponentDataEventContext): Record<string, MixpanelProperty> => {
-    const capabilities = COMPONENT_DATA_EVENT_CAPABILITIES[componentName] ?? {};
+    const capabilities: ComponentDataEventCapabilityConfiguration = COMPONENT_DATA_EVENT_CAPABILITIES[componentName] ?? {};
     const callbackProps = capabilities.callbackProps ?? [];
-    const callbackNames = callbackProps.map(path => path.slice(path.lastIndexOf('.') + 1));
-    const supportsCallback = (propName: string): boolean => callbackNames.includes(propName);
-    const hasCallback = (propName: string): boolean =>
-        callbackProps.some(path => path.slice(path.lastIndexOf('.') + 1) === propName && isFunction(getPropertyAtPath(componentProps, path)));
+    const callbackUsage = Object.fromEntries(
+        callbackProps.map(path => {
+            const name = path.slice(path.lastIndexOf('.') + 1);
+            return [`has${name.charAt(0).toUpperCase()}${name.slice(1)}`, isFunction(getPropertyAtPath(componentProps, path))];
+        })
+    );
     const dataCustomization = asRecord(componentProps.dataCustomization);
     const supportsDataGrid = capabilities.dataCustomization?.includes('dataGrid') ?? false;
     const supportsDetails = capabilities.dataCustomization?.includes('details') ?? false;
@@ -189,9 +191,7 @@ export const getCustomizedComponentDataEventProperties = ({
         label: componentName,
         subCategory: getComponentEventSubCategory(componentName),
 
-        ...(supportsCallback('onContactSupport') ? { hasOnContactSupport: hasCallback('onContactSupport') } : {}),
-        ...(supportsCallback('onRecordSelection') ? { hasOnRecordSelection: hasCallback('onRecordSelection') } : {}),
-        ...(supportsCallback('onShowDetails') ? { hasShowDetails: hasCallback('onShowDetails') } : {}),
+        ...callbackUsage,
 
         ...(supportsDataGrid && customColumns !== undefined ? { dataCustomColumns: customColumns } : {}),
         ...(supportsDetails && hiddenDetailFields.length > 0 ? { hiddenDetailFields } : {}),

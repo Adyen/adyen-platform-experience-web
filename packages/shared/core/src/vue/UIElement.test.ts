@@ -536,7 +536,7 @@ describe('UIElement', () => {
             expect(dataEvent.properties).not.toHaveProperty('appearanceTitles');
             expect(dataEvent.properties).not.toHaveProperty('appearanceIllustrations');
             expect(dataEvent.properties).not.toHaveProperty('hasOnDismiss');
-            expect(dataEvent.properties).not.toHaveProperty('hasShowDetails');
+            expect(dataEvent.properties).not.toHaveProperty('hasOnCreate');
 
             element.update({ balanceAccountId: 'BA_NEW' });
             expect(sendAnalyticsEvent).toHaveBeenCalledTimes(2);

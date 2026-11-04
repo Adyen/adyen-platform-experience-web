@@ -1,7 +1,7 @@
 import type { ExternalComponentType } from '@integration-components/types';
 import type { ComponentDataEventCapabilityConfiguration } from './core-events';
 
-export const COMPONENT_DATA_EVENT_CAPABILITIES: Record<ExternalComponentType, ComponentDataEventCapabilityConfiguration> = {
+export const COMPONENT_DATA_EVENT_CAPABILITIES = {
     capitalOffer: {
         callbackProps: ['onContactSupport', 'onSubmit'],
     },
@@ -18,7 +18,7 @@ export const COMPONENT_DATA_EVENT_CAPABILITIES: Record<ExternalComponentType, Co
         dataCustomization: ['details'],
     },
     paymentLinkCreation: {
-        callbackProps: ['onContactSupport', 'onShowDetails'],
+        callbackProps: ['onContactSupport', 'onCreate'],
         fieldsConfig: 'fieldsConfig',
     },
     paymentLinkDetails: {
@@ -54,4 +54,4 @@ export const COMPONENT_DATA_EVENT_CAPABILITIES: Record<ExternalComponentType, Co
         dataCustomization: ['dataGrid', 'details'],
         pagination: true,
     },
-};
+} as const satisfies Record<ExternalComponentType, ComponentDataEventCapabilityConfiguration>;
