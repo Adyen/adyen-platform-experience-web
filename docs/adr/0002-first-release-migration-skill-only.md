@@ -19,12 +19,14 @@ We tested assistants on realistic v1 apps, with and without the skills:
 
 The skill stands alone: each delta file names the v2 props type in the shipped `.d.ts` files instead of pointing to an integration skill.
 
+**How integrators use it:** upgrade to v2, then ask the assistant to "run `npx @adyen/adyen-platform-experience-web skills show migrate-v2` and follow it to migrate this project to v2". Nothing is installed or committed, and every delta is available. Teams that want the skill committed run `skills add` instead.
+
 ### How the migration skill behaves
 
 - **Guardrails come first.** Before editing any file, the assistant checks three things:
     - the git working tree is clean;
     - the installed version matches the skill's version;
-    - every imported component has a delta file.
+    - every imported component has a delta file (only in copies installed with `skills add`, which keep the selected components).
 
     If any check fails, it changes nothing and names the command that fixes it. Placing this as a precondition at the top was much more reliable than placing it as a step in the list.
 
@@ -45,8 +47,10 @@ The skill stands alone: each delta file names the v2 props type in the shipped `
 - One skill to write and review. Domain teams review only their component's delta file.
 - Integrators building new v2 features get no skill yet. Their assistants rely on the `.d.ts` files and the docs.
 - The component prompt in `skills add` only trims the migration skill for now. It stays so the interface doesn't change later.
+- Before the release we check that assistants follow the skill as reliably through `skills show` as when it's installed. If they don't, the docs lead with `skills add` instead.
 
 ## Open questions
 
 - Which `--adyen-sdk-*` variables are public and stable. The skill moves them, and uses them when a theme setting is too broad.
 - A link to the public migration guide, once it's published.
+- On v1, `npx … skills show` fails with npm's generic "could not determine executable to run", because v1 has no CLI. A final v1 patch with a `skills` command that says "upgrade to v2 first" would make that clearer.

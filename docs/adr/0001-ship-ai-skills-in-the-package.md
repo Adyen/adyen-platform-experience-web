@@ -8,7 +8,7 @@ v2 is a major release. Some Core options and component props were removed or ren
 
 Many integrators build with AI coding assistants. Those assistants learned from v1 code and docs, so they tend to suggest v1 patterns. We have no channel to teach them the v2 API.
 
-[Agent Skills](https://agentskills.io/specification) is an open format for this: a folder with a `SKILL.md` that assistants such as Claude Code, Cursor and Codex discover and load on demand. Community tools that install skills from npm packages exist ([skills-npm](https://github.com/antfu/skills-npm), [vercel-labs/skills#2323](https://github.com/vercel-labs/skills/issues/2323)), but they're still experimental and can't trim a skill to the components a platform uses.
+[Agent Skills](https://agentskills.io/specification) is an open format for this: a folder with a `SKILL.md` that assistants such as Claude Code, Cursor and Codex discover and load on demand. Community tools that install skills from npm packages exist ([skills-npm](https://github.com/antfu/skills-npm), [vercel-labs/skills#2323](https://github.com/vercel-labs/skills/issues/2323)), but they're still experimental and can't trim a skill to the components a platform uses. Others read guidance straight from the installed package instead of copying it: [TanStack Intent](https://tanstack.com/intent/latest/docs/overview) prints skills on request, and [Next.js](https://nextjs.org/docs/app/guides/ai-agents) points assistants to docs in `node_modules`.
 
 We need skills that:
 
@@ -21,14 +21,15 @@ We need skills that:
 **Skills ship inside `@adyen/adyen-platform-experience-web`, with a small CLI in the same package.**
 
 - **Location:** skills are assembled into `dist/skills/<name>/` at build time. That path is also the one community installers look for.
-- **CLI:** integrators run `npx @adyen/adyen-platform-experience-web skills <add|list|sync|remove>`. The package is already installed, so nothing extra is downloaded, and the CLI and skills always match the library version. Docs always use the scoped name.
-- **Install:** the CLI copies the skills into the assistant's skill directory (`.claude/skills/`, `.agents/skills/` or `.cursor/skills/`), at the git root by default. Copies work before `npm install`, on Windows, and in assistants that don't follow symlinks. They're meant to be committed, so the whole team gets them.
+- **CLI:** integrators, or their assistants, run `npx @adyen/adyen-platform-experience-web skills <show|add|list|sync|remove>`. The package is already installed, so nothing extra is downloaded, and the CLI and skills always match the library version. Docs always use the scoped name.
+- **Read without installing:** `skills show <skill> [file]` prints a skill from the installed package. The output starts with a short header that lists the skill's files and the command that loads each one, so the assistant reads only the files it needs. Nothing is copied or committed. `file` must stay inside that skill's folder.
+- **Install (optional):** for teams that want the skill committed, `skills add` copies the skills into the assistant's skill directory (`.claude/skills/`, `.agents/skills/` or `.cursor/skills/`), at the git root by default. Copies work before `npm install`, on Windows, and in assistants that don't follow symlinks. They're meant to be committed, so the whole team gets them.
 - **Non-interactive mode:** every prompt has a flag (`--components`, `--agent`, `--yes`, `--dir`), so an assistant can run the CLI itself.
 - **State:** the library version and the selected components are written into each `SKILL.md`'s frontmatter `metadata`. There's no manifest file.
 - **Safety:**
     - Skills contain only markdown: no scripts and no `allowed-tools`.
     - The CLI makes no network calls, sends no telemetry and has no runtime dependencies.
-    - On startup, the CLI checks that the installed library version matches its own.
+    - On startup, the CLI checks that the installed library version matches its own, and exits with a message that names the fix if it doesn't.
 - **Naming:** every skill name starts with `adyen-platform-experience-`, because skill directories are shared with other libraries' skills.
 - **Catalog (end state):**
     - `adyen-platform-experience-core`;
@@ -50,5 +51,6 @@ We need skills that:
 - The release gains a skills assembly step, the CLI build and a `skills:check` lint step. It checks frontmatter, coverage (every exported component has a v2 delta) and size.
 - A PR that changes a component's public behaviour updates its skill. Until v3, a PR that adds a customization option checks whether it replaces a known v1 CSS override.
 - A CLI fix needs a library release, and the tarball grows slightly (markdown plus one bundled file).
+- `skills show` only helps when something tells the assistant to run it. For the migration, the docs give the prompt; integration skills will need another way to be discovered, such as a pointer in `AGENTS.md`.
 - Copied skills go stale if nobody runs `skills sync` after an upgrade. Each skill's version check turns that into a stop (migration) or a warning (integration).
 - At v3, `migrate-v2` leaves the catalog and `migrate-v3` uses the same mechanism.

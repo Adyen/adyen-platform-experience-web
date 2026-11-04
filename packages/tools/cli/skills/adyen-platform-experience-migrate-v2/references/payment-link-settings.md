@@ -2,6 +2,6 @@
 
 New, optional: `storeIds: string[]` limits the component to those stores (one store hides store selection).
 
-Also apply `global.md` and `css-overrides.md`.
+Also apply `references/global.md` and `references/css-overrides.md`.
 
 Exact types: `PaymentLinkSettingsProps` in the package's `.d.ts` files.

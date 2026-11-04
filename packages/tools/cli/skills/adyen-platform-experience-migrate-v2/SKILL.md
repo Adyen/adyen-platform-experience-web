@@ -32,7 +32,7 @@ v2 refreshes the components' look. Most of the API is unchanged, but some Core o
 ## Steps
 
 1. Apply `references/global.md`: Core options, props every component shares, overview pagination and record selection, data customization, and custom translations.
-2. For each component the code uses, apply its file in `references/` (named after the component, e.g. `transactions-overview.md`). For exact v2 signatures, read the component's props type in the installed package's `.d.ts` files, named in each reference file.
+2. For each component the code uses, apply its file in `references/` (named after the component, e.g. `references/transactions-overview.md`). For exact v2 signatures, read the component's props type in the installed package's `.d.ts` files, named in each reference file.
 3. Fix imports from the package and calls on component instances with `references/exports-and-instances.md`.
 4. Search the app for `dataCustomization` and `common.` translation keys: both change silently (a leftover `list` or an old key is ignored, with no type error when the object isn't typed).
 5. Find every `adyen-pe-*` selector and `--adyen-sdk-*` variable in the app's stylesheets and style blocks, and apply `references/css-overrides.md`.
