@@ -53,4 +53,3 @@ The skill stands alone: each delta file names the v2 props type in the shipped `
 
 - Which `--adyen-sdk-*` variables are public and stable. The skill moves them, and uses them when a theme setting is too broad.
 - A link to the public migration guide, once it's published.
-- On v1, `npx … skills show` fails with npm's generic "could not determine executable to run", because v1 has no CLI. A final v1 patch with a `skills` command that says "upgrade to v2 first" would make that clearer.

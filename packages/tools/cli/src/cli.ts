@@ -1,31 +1,20 @@
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { dirname, join, relative, sep } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { add, AGENTS, findInstalled, installRoot, remove, sync } from './install';
+import {
+    COMPONENTS_FIELD,
+    displayPath,
+    listFiles,
+    listSkills,
+    PACKAGE_NAME,
+    readField,
+    type RunOptions,
+    shortName,
+    SKILL_PREFIX,
+    VERSION_FIELD,
+} from './skills';
 
-export const PACKAGE_NAME = '@adyen/adyen-platform-experience-web';
-const SKILL_PREFIX = 'adyen-platform-experience-';
-
-interface Output {
-    write(chunk: string): unknown;
-}
-
-export interface RunOptions {
-    cwd: string;
-    skillsRoot: string;
-    version: string;
-    stdout: Output;
-    stderr: Output;
-}
-
-const shortName = (skill: string) => (skill.startsWith(SKILL_PREFIX) ? skill.slice(SKILL_PREFIX.length) : skill);
-
-const listFiles = (dir: string, root = dir): string[] =>
-    readdirSync(dir, { withFileTypes: true })
-        .flatMap(entry => {
-            const path = join(dir, entry.name);
-            if (entry.isDirectory()) return listFiles(path, root);
-            return entry.isFile() ? [relative(root, path).split(sep).join('/')] : [];
-        })
-        .sort();
+export { PACKAGE_NAME, type RunOptions } from './skills';
 
 const header = (skill: string, version: string, files: string[]) => {
     const command = `npx ${PACKAGE_NAME} skills show ${shortName(skill)}`;
@@ -38,12 +27,6 @@ const header = (skill: string, version: string, files: string[]) => {
         '',
     ].join('\n');
 };
-
-const listSkills = (skillsRoot: string) =>
-    readdirSync(skillsRoot, { withFileTypes: true })
-        .filter(entry => entry.isDirectory() && existsSync(join(skillsRoot, entry.name, 'SKILL.md')))
-        .map(entry => entry.name)
-        .sort();
 
 const show = (skillArg: string, fileArg: string | undefined, options: RunOptions) => {
     const skill = `${SKILL_PREFIX}${shortName(skillArg)}`;
@@ -70,27 +53,46 @@ const show = (skillArg: string, fileArg: string | undefined, options: RunOptions
     return 0;
 };
 
-const readDescription = (skillFile: string) => {
-    const frontmatter = readFileSync(skillFile, 'utf8').split(/^---$/m)[1] ?? '';
-    const line = frontmatter.split('\n').find(entry => entry.startsWith('description:')) ?? '';
-    return line
-        .slice('description:'.length)
-        .trim()
-        .replace(/^(['"])(.*)\1$/, '$2');
-};
+const duplicateReaders = (folders: string[]) =>
+    Object.entries(AGENTS)
+        .filter(([, { reads }]) => folders.filter(folder => reads.includes(folder.split('/')[0]!)).length > 1)
+        .map(([agent]) => agent);
 
-const list = (json: boolean, { skillsRoot, version, stdout }: RunOptions) => {
+const list = (args: string[], { cwd, skillsRoot, version, stdout }: RunOptions) => {
+    const root = installRoot(args, cwd);
+    const installed = findInstalled(root, skillsRoot);
     const skills = listSkills(skillsRoot).map(name => ({
         name,
-        description: readDescription(join(skillsRoot, name, 'SKILL.md')),
+        description: readField(join(skillsRoot, name, 'SKILL.md'), 'description'),
         version,
         show: `npx ${PACKAGE_NAME} skills show ${shortName(name)}`,
+        installed: installed
+            .filter(copy => copy.skill === name)
+            .map(({ folder, dir }) => ({
+                folder,
+                version: readField(join(dir, 'SKILL.md'), VERSION_FIELD),
+                components: readField(join(dir, 'SKILL.md'), COMPONENTS_FIELD).split(',').filter(Boolean),
+            })),
     }));
-    stdout.write(
-        json
-            ? JSON.stringify(skills, null, 2) + '\n'
-            : skills.map(skill => `${skill.name} (${version})\n  ${skill.description}\n  Read it: ${skill.show}\n`).join('\n')
-    );
+    if (args.includes('--json')) {
+        stdout.write(JSON.stringify(skills, null, 2) + '\n');
+        return 0;
+    }
+    const display = (folder: string) => displayPath(cwd, root, folder);
+    const describe = (skill: (typeof skills)[number]) => {
+        const copies = skill.installed.map(
+            copy =>
+                `  Installed in ${display(copy.folder)} (${copy.version === version ? copy.version : `${copy.version}, older than ${version}: run skills sync`})`
+        );
+        const readers = duplicateReaders(skill.installed.map(copy => copy.folder));
+        const warning = readers.length
+            ? [
+                  `  Warning: ${readers.join(', ')} read it from both ${skill.installed.map(copy => display(copy.folder)).join(' and ')}; they may load it twice.`,
+              ]
+            : [];
+        return [`${skill.name} (${version})`, `  ${skill.description}`, `  Read it: ${skill.show}`, ...copies, ...warning, ''].join('\n');
+    };
+    stdout.write(skills.map(describe).join('\n'));
     return 0;
 };
 
@@ -128,7 +130,11 @@ const USAGE = `Usage: npx ${PACKAGE_NAME} <command>
 
 Commands:
   skills show <skill> [file]   Print a skill, or one of its files, without installing it
-  skills list [--json]         List the skills shipped with this version
+  skills list [--json]         List the skills shipped with this version and the installed copies
+  skills add                   Install skills into your assistants' skill folders, to commit for the team
+      [--components <a,b>] [--agent <claude-code,codex,cursor,devin,droid>] [--yes] [--dir <path>]
+  skills sync [--dir <path>]   Re-copy installed skills after upgrading the library
+  skills remove [skill…]       Delete installed skills, e.g. once the migration is done
 
 Example:
   npx ${PACKAGE_NAME} skills show migrate-v2
@@ -138,7 +144,10 @@ const resolveCommand = ([group, command, ...args]: string[], options: RunOptions
     if (group !== 'skills') return undefined;
     const [skill, file] = args;
     if (command === 'show' && skill) return () => show(skill, file, options);
-    if (command === 'list') return () => list(args.includes('--json'), options);
+    if (command === 'list') return () => list(args, options);
+    if (command === 'add') return () => add(args, options);
+    if (command === 'sync') return () => sync(args, options);
+    if (command === 'remove') return () => remove(args, options);
     return undefined;
 };
 
