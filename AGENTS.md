@@ -165,6 +165,7 @@ pnpm run test:integration
 - **Storybook**: `.storybook/main.ts` — Storybook config
 - **API endpoints**: `endpoints/endpoints.ts`
 - **Env defaults**: `envs/env.default`
+- **Skills CLI**: `packages/tools/cli` — the package's `bin` (`skills show`, `skills list`). Logic in `src/cli.ts`, tests in `src/cli.test.ts`. `pnpm run build` builds the SDK, then the CLI into `dist/cli/` and copies `skills/` into `dist/skills/` with the package version stamped in each `SKILL.md`
 
 ### Quick Find Commands
 
