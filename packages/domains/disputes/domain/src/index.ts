@@ -6,5 +6,6 @@ export * from './DisputeManagement/constants';
 export * from './DisputeManagement/detailItems';
 export * from './DisputeManagement/types';
 export * from './DisputeManagement/utils';
+export * from './DisputesOverview/analyticsConstants';
 export * from './DisputesOverview/constants';
 export * from './DisputesOverview/types';
