@@ -30,6 +30,7 @@ export interface SetupContext {
     analyticsPayload?: Array<URLSearchParams> | undefined;
     analyticsEnabled?: boolean;
     refresh: (signal: AbortSignal) => Promise<void>;
+    sendAnalyticsEvent: (payload: URLSearchParams) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -63,10 +64,17 @@ export class SetupContext {
                     this._extraConfig = deepFreeze(rest);
                     if (this.analyticsEnabled) {
                         this._setAnalyticsUserProfile()?.then(() => {
-                            this.setCustomTranslationsAnalytics();
+                            this.flushAnalyticsPayloads();
                         });
                     }
                 }));
+        };
+
+        this.sendAnalyticsEvent = payload => {
+            if (!this.analyticsEnabled) return;
+
+            this.analyticsPayload = [...(this.analyticsPayload ?? []), payload];
+            void this.flushAnalyticsPayloads();
         };
     }
 
@@ -76,6 +84,45 @@ export class SetupContext {
 
     get extraConfig() {
         return this._extraConfig;
+    }
+
+    /**
+     * Sends every queued analytics payload through the `sendTrackEvent` endpoint.
+     * The queue is detached first, so concurrent flushes (e.g. a setup refresh
+     * completing while a runtime event is sent) cannot deliver a payload twice.
+     * Failed payloads are re-queued and retried on the next flush.
+     */
+    private async flushAnalyticsPayloads(): Promise<void> {
+        const payloads = this.analyticsPayload;
+        if (!payloads || payloads.length === 0) return;
+
+        this.analyticsPayload = undefined;
+
+        if (!this._endpoints?.sendTrackEvent) {
+            // The setup endpoint has not resolved yet; keep the payloads queued for the next refresh.
+            this.analyticsPayload = [...(this.analyticsPayload ?? []), ...payloads];
+            return;
+        }
+
+        const retryPayload: URLSearchParams[] = [];
+        await Promise.all(
+            payloads.map((payload: URLSearchParams) => {
+                return this._endpoints.sendTrackEvent!(
+                    {
+                        body: payload,
+                        contentType: 'application/x-www-form-urlencoded',
+                        keepalive: true,
+                    },
+                    EMPTY_OBJECT
+                ).catch(() => {
+                    retryPayload.push(payload);
+                });
+            })
+        );
+
+        if (retryPayload.length > 0) {
+            this.analyticsPayload = [...(this.analyticsPayload ?? []), ...retryPayload];
+        }
     }
 
     private _fetchSetupEndpoint(signal: AbortSignal) {
@@ -99,29 +146,6 @@ export class SetupContext {
                 },
                 EMPTY_OBJECT
             );
-        }
-        return;
-    }
-
-    private async setCustomTranslationsAnalytics() {
-        if (this.analyticsPayload && this.analyticsPayload?.length > 0 && this._endpoints && this._endpoints.sendTrackEvent) {
-            const retryPayload: URLSearchParams[] = [];
-            Promise.all(
-                this.analyticsPayload.map((payload: URLSearchParams) => {
-                    return this._endpoints.sendTrackEvent!(
-                        {
-                            body: payload,
-                            contentType: 'application/x-www-form-urlencoded',
-                            keepalive: true,
-                        },
-                        EMPTY_OBJECT
-                    ).catch(() => {
-                        retryPayload.push(payload);
-                    });
-                })
-            ).finally(() => {
-                this.analyticsPayload = retryPayload.length > 0 ? retryPayload : undefined;
-            });
         }
         return;
     }

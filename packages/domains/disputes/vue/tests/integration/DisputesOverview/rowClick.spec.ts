@@ -1,11 +1,14 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
+import { disputesOverviewAnalyticsEventProperties, disputeDetailsAnalyticsEventProperties } from '../../../../fixtures/constants/analytics';
 
 const STORY_ID = 'mocked-disputes-disputes-overview--default';
 
 test.describe('Disputes Overview - Row click', () => {
-    test('should open the dispute management modal when a row is clicked', async ({ page }) => {
+    test('should open the dispute management modal when a row is clicked', async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', disputesOverviewAnalyticsEventProperties]]);
 
         await expect(page.getByText('No chargebacks found')).toBeHidden();
 
@@ -16,5 +19,7 @@ test.describe('Disputes Overview - Row click', () => {
 
         await expect(disputeManagementModal).toBeVisible();
         await expect(disputeManagementModal.getByText('Dispute management', { exact: true })).toHaveCount(0);
+
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', disputeDetailsAnalyticsEventProperties]]);
     });
 });

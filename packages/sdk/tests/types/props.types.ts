@@ -1,4 +1,7 @@
+import type { COMPONENT_DATA_EVENT_CAPABILITIES } from '@integration-components/core/EventDispatcher/eventDispatcher/component-data-capabilities';
+import type { ComponentDataEventCapabilityConfiguration } from '@integration-components/core/EventDispatcher/eventDispatcher/core-events';
 import type { UIElementProps } from '@integration-components/core/vue';
+import type { ExternalComponentType } from '@integration-components/types';
 import type * as SDK from '../../src';
 import type {
     CapitalOfferProps,
@@ -111,6 +114,55 @@ export type _PaymentLinkCreationTakesOnCreate = Assert<HasKey<PaymentLinkCreatio
 export type _PayoutDetailsKeepsRequiredIdAndDate = Assert<Same<Pick<PayoutDetailsProps, 'id' | 'date'>, { id: string; date: string }>>;
 export type _CapitalOfferPropsDoNotRequireSubmit = Assert<Pick<CapitalOfferProps, never> extends Pick<CapitalOfferProps, 'onSubmit'> ? true : false>;
 export type _CapitalOfferDoesNotPublishFundsRequest = Assert<LacksKey<CapitalOfferProps, 'onFundsRequest'>>;
+
+/**
+ * The "Customized component data" analytics event only reports what each component's public props can carry.
+ * Adding, renaming or removing a public callback, `dataCustomization` section, `pagination` or `fieldsConfig`
+ * prop fails this check until `COMPONENT_DATA_EVENT_CAPABILITIES` is updated to match.
+ */
+type PublishedPropsByComponentType = {
+    [K in ComponentExportNames as (typeof SDK)[K] extends { type: infer TType extends string } ? TType : never]: PublishedProps[K];
+};
+
+type PublicDataEventProps<TProps> = TProps extends unknown
+    ?
+          | {
+                [K in keyof TProps & string]-?: K extends `on${string}`
+                    ? NonNullable<TProps[K]> extends (...args: never[]) => unknown
+                        ? K
+                        : never
+                    : never;
+            }[keyof TProps & string]
+          | (TProps extends { dataCustomization?: infer TCustomization } ? `dataCustomization.${keyof NonNullable<TCustomization> & string}` : never)
+          | Extract<keyof TProps, 'pagination' | 'fieldsConfig'>
+    : never;
+
+type TrackedDataEventProps<TCapabilities> =
+    | (TCapabilities extends { callbackProps: readonly (infer TName)[] } ? TName : never)
+    | (TCapabilities extends { dataCustomization: readonly (infer TSection extends string)[] } ? `dataCustomization.${TSection}` : never)
+    | (TCapabilities extends { pagination: true } ? 'pagination' : never)
+    | (TCapabilities extends { fieldsConfig: infer TPath } ? TPath : never);
+
+/** Fails when a capability field is added or removed, so `TrackedDataEventProps` keeps reading every field. */
+export type _TrackedDataEventPropsCoversEveryCapability = Assert<
+    Same<keyof ComponentDataEventCapabilityConfiguration, 'callbackProps' | 'dataCustomization' | 'fieldsConfig' | 'pagination'>
+>;
+
+type ExpectNever<T extends never> = T;
+type Drift<C extends string, TPublic, TTracked> = `${C}:${(Exclude<TPublic, TTracked> | Exclude<TTracked, TPublic>) & string}`;
+
+export type _EveryExternalComponentTypeIsAnSdkComponent = Assert<Same<keyof PublishedPropsByComponentType, ExternalComponentType>>;
+
+/** Lists `component:prop` for every prop that is public but untracked, or tracked but not public. */
+export type _DataEventCapabilitiesMatchPublicProps = ExpectNever<
+    {
+        [C in ExternalComponentType]: Drift<
+            C,
+            PublicDataEventProps<PublishedPropsByComponentType[C & keyof PublishedPropsByComponentType]>,
+            TrackedDataEventProps<(typeof COMPONENT_DATA_EVENT_CAPABILITIES)[C]>
+        >;
+    }[ExternalComponentType]
+>;
 
 type SelectionPayload<TProps extends { onRecordSelection?: (...args: never[]) => void }> = Parameters<NonNullable<TProps['onRecordSelection']>>[0];
 type SelectionComponents = Pick<PublishedProps, 'TransactionsOverview' | 'PayoutsOverview' | 'DisputesOverview' | 'PaymentLinksOverview'>;

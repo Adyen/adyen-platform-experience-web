@@ -1,12 +1,14 @@
-import { test, expect } from '@playwright/test';
-import { getComponentRoot, goToStory, setTime } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, getComponentRoot, goToStory, setTime } from '@integration-components/testing/playwright/utils';
+import { paymentLinkDetailsAnalyticsEventProperties } from '../../../../fixtures/constants/analytics';
 
 const STORY_ID = 'mocked-pay-by-link-payment-link-details--default';
 
 test.describe('Default', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', paymentLinkDetailsAnalyticsEventProperties]]);
     });
 
     test('should render details screen', async ({ page }) => {

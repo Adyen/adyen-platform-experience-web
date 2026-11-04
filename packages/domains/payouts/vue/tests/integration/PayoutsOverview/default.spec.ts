@@ -1,6 +1,12 @@
-import { test, expect } from '@playwright/test';
-import { clickOutsideDialog, expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import {
+    clickOutsideDialog,
+    expectAnalyticsEvents,
+    expectBalanceAccountPaginationReset,
+    goToStory,
+} from '@integration-components/testing/playwright/utils';
 import { testBalanceAccountFilter, testDateRangeFilter } from '../../../../fixtures/integration/filters';
+import { payoutDetailsAnalyticsEventProperties, payoutsOverviewAnalyticsEventProperties } from '../../../../fixtures/constants/analytics';
 import { openPayoutDetailsModal } from './shared/utils';
 
 const STORY_ID = 'mocked-payouts-payouts-overview--default';
@@ -8,9 +14,10 @@ const STORY_ID = 'mocked-payouts-payouts-overview--default';
 test.describe('Default', () => {
     const NOW = Date.now();
 
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await page.clock.setFixedTime(NOW);
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', payoutsOverviewAnalyticsEventProperties]]);
     });
 
     test.describe('Render', () => {
@@ -51,8 +58,9 @@ test.describe('Default', () => {
     });
 
     test.describe('Details modal', () => {
-        test.beforeEach(async ({ page }) => {
+        test.beforeEach(async ({ page, analyticsEvents }) => {
             await openPayoutDetailsModal(page, 0);
+            await expectAnalyticsEvents(analyticsEvents, [['Landed on page', payoutDetailsAnalyticsEventProperties]]);
         });
 
         test('should render payout details modal and close the modal when dismissed', async ({ page }) => {
