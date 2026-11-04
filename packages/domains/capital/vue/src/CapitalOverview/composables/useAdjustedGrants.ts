@@ -1,12 +1,12 @@
 import { computed, watch, toValue, type MaybeRefOrGetter } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { EnhancedCapitalState, getAdjustedGrants } from '@integration-components/capital/domain';
-import type { IGrant, IGrantsResponseDTO } from '@integration-components/types';
+import type { IGrant, IGrantsResponse } from '@integration-components/types';
 import { useAsyncRequest } from '@integration-components/composables-vue';
 
 export const useAdjustedGrants = (capitalState: MaybeRefOrGetter<EnhancedCapitalState>, requestedGrant?: MaybeRefOrGetter<IGrant | undefined>) => {
     const config = useConfigContext();
-    const request = useAsyncRequest<IGrantsResponseDTO>();
+    const request = useAsyncRequest<IGrantsResponse>();
     const getGrants = computed(() => config.endpoints.getGrants);
     const grants = computed(() => getAdjustedGrants(toValue(capitalState), request.data.value?.data, toValue(requestedGrant)));
     const isEnabled = computed(() => {

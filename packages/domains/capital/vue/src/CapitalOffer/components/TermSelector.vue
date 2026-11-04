@@ -8,7 +8,7 @@ import {
     sharedCapitalOfferAnalyticsEventProperties,
 } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import type { IOffer } from '@integration-components/types';
 import { useFormatTermLabel } from '../composables/useFormatTermLabel';
 import useContainerQuery from '@integration-components/composables-vue/useContainerQuery';
 import { BREAKPOINTS } from '@integration-components/utils';
@@ -20,7 +20,7 @@ const props = defineProps<{
     areAvailableTermsLoading: boolean;
     estimatedTerms: number[];
     isEarlyRenewal: boolean;
-    offersByTerm: Record<number, IGrantOfferResponseDTO>;
+    offersByTerm: Record<number, IOffer>;
     term: number | undefined;
 }>();
 
