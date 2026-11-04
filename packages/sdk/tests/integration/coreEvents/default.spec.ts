@@ -4,24 +4,27 @@ import { expectAnalyticsEvents, goToStory, updateStoryArgs } from '@integration-
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../domains/capital/fixtures/CapitalOverview/constants/analytics';
 import { sharedTransactionsListAnalyticsEventProperties } from '../../../../domains/transactions/fixtures/constants/TransactionsOverview';
 
+// The Storybook container always initializes Core in light mode with every global appearance toggle set.
+const STORYBOOK_GLOBAL_APPEARANCE = ['container', 'illustrations', 'titles'];
+
 const scenarios = [
     {
         componentName: 'capitalOverview',
         storyId: 'mocked-capital-capital-overview--eligible',
-        styleProperties: {},
+        styleProperties: { appearance: STORYBOOK_GLOBAL_APPEARANCE },
         dataProperties: { hasOnContactSupport: false },
         landedProperties: {
             ...sharedCapitalOverviewAnalyticsEventProperties,
             hasGrants: true,
             hasOffer: true,
         },
-        themeChanges: [{ themeDark: true, theme: 'dark', previousTheme: 'default' }],
+        themeChanges: [{ themeDark: true, theme: 'dark', previousTheme: 'light' }],
         getComponent: (page: Page) => page.getByTestId('capital-header'),
     },
     {
         componentName: 'transactions',
         storyId: 'mocked-transactions-transactions-overview--default',
-        styleProperties: { appearance: ['dataGrid'] },
+        styleProperties: { appearance: [...STORYBOOK_GLOBAL_APPEARANCE, 'dataGrid'] },
         dataProperties: {
             hasOnContactSupport: false,
             hasOnRecordSelection: false,
@@ -30,7 +33,7 @@ const scenarios = [
         },
         landedProperties: sharedTransactionsListAnalyticsEventProperties,
         themeChanges: [
-            { themeDark: true, theme: 'dark', previousTheme: 'default' },
+            { themeDark: true, theme: 'dark', previousTheme: 'light' },
             { themeDark: false, theme: 'light', previousTheme: 'dark' },
         ],
         getComponent: (page: Page) => page.getByRole('grid'),
@@ -53,7 +56,9 @@ for (const { componentName, storyId, styleProperties, dataProperties, landedProp
                             subCategory: 'Core',
                             label: 'core',
                             locale: 'en-US',
+                            themeMode: 'light',
                             hasCustomTheme: false,
+                            appearance: STORYBOOK_GLOBAL_APPEARANCE,
                         },
                     ],
                     [
