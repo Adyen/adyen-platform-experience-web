@@ -26,7 +26,7 @@ v2 refreshes the components' look. Most of the API is unchanged, but some Core o
 ## Rules while migrating
 
 - **No DOM or classname workarounds.** Don't replace a removed override with `:deep()`, `querySelector` into a component, or new `.adyen-pe-*` selectors. Use the options in `references/css-overrides.md`; if v2 has no equivalent, delete the override and report what it did.
-- **Theme changes are global: propose, don't apply.** Don't write `customTheme`, `themeMode` or `--adyen-sdk-*` theme variables until the user confirms. Propose them at the end with a clear warning that they change every matching element in all Adyen components (see `references/css-overrides.md`, rule 3).
+- **Theme changes are global: propose, don't apply.** Don't add `customTheme`, `themeMode` or new `--adyen-sdk-*` values until the user confirms. Propose them at the end with a clear warning that they change every matching element in all Adyen components (see `references/css-overrides.md`, rule 3). This doesn't cover `--adyen-sdk-*` variables the app already sets: move those as they are, without asking (rule 1), because they already applied to every component in v1.
 - **Searching for overrides.** When searching for `adyen-pe-` selectors, exclude the assistant skill folders (`.agents/`, `.claude/`, `.cursor/`, `.factory/`): this skill quotes those selectors.
 
 ## Steps
