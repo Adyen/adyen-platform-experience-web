@@ -1,0 +1,16 @@
+{
+    "name": "@integration-components/tools-cli",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "packages/tools/cli/src",
+    "tags": ["type:tool", "scope:cli"],
+    "targets": {
+        "build": {
+            "dependsOn": ["@integration-components/sdk:build"],
+            "inputs": ["default", "{workspaceRoot}/package.json"],
+            "outputs": ["{workspaceRoot}/dist/cli", "{workspaceRoot}/dist/skills"]
+        },
+        "types:check": {},
+        "types:watch": {}
+    }
+}
