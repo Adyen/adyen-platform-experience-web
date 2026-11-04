@@ -3,7 +3,7 @@
  */
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { dirname, join, parse } from 'node:path';
 import { expect, test } from 'vitest';
 import { runProcessTranslationsScript } from './testing/testProject';
 
@@ -75,6 +75,25 @@ test('a per-key grammar violation fails with its rule and the offending key', ()
     } finally {
         rmSync(root, { recursive: true, force: true });
     }
+});
+
+test('a domains directory outside the project and the temp directory is rejected', () => {
+    const result = runLint(parse(process.cwd()).root);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toBe('');
+    expect(result.stderr).toContain('the domains directory must exist inside the project or the OS temp directory');
+});
+
+test('a domains directory that does not exist is rejected without crashing', () => {
+    const root = mkdtempSync(join(tmpdir(), 'lint-keyspace-'));
+    rmSync(root, { recursive: true, force: true });
+
+    const result = runLint(root);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('the domains directory must exist inside the project or the OS temp directory');
+    expect(result.stderr).not.toContain('ENOENT');
 });
 
 test('a keyspace-wide violation fails even though every key passes on its own', () => {
