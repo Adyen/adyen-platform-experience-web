@@ -304,6 +304,26 @@ export const paymentLinkDetailsMockedResponses = {
             ),
         ],
     },
+    errorDetailsUnprocessableEntity: {
+        handlers: [
+            http.get(
+                mockPayByLinkEndpoints.details,
+                withDelay(() => {
+                    return HttpResponse.json(
+                        {
+                            type: 'https://docs.adyen.com/errors/unprocessable-entity',
+                            errorCode: '30_102',
+                            title: 'Unprocessable Entity',
+                            detail: 'Payment link not found',
+                            requestId: '769ac4ce59f0f159ad672d38d3291e91',
+                            status: 422,
+                        },
+                        { status: 422 }
+                    );
+                })
+            ),
+        ],
+    },
     errorExpiration: {
         handlers: [
             http.post(
