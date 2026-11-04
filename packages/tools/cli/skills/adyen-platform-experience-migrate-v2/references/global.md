@@ -46,4 +46,4 @@ All `common.*` keys are now scoped to their domain. Re-key every custom translat
 
 ## Styling
 
-See `css-overrides.md`.
+See `references/css-overrides.md`.

@@ -12,7 +12,7 @@ v2 exports far fewer names than v1: the internals v1 exposed (HTTP helpers, conf
 | `TransactionsListCustomization`, `PayoutsListCustomization`, `ReportsListCustomization`, `DisputesListCustomization` | `TransactionsDataGridCustomization`, `PayoutsDataGridCustomization`, `ReportsDataGridCustomization`, `DisputesDataGridCustomization` |
 | `onErrorHandler`                                                                                                     | `ErrorHandler`                                                                                                                       |
 | `Locale`                                                                                                             | `SupportedLocales`                                                                                                                   |
-| `Translations`, `TranslationSourceRecord`                                                                            | `CustomTranslations` for custom text; locale objects are no longer needed (see `availableTranslations` in `global.md`)               |
+| `Translations`, `TranslationSourceRecord`                                                                            | `CustomTranslations` for custom text; locale objects are no longer needed (see `availableTranslations` in `references/global.md`)    |
 
 ## Removed, no public equivalent
 
