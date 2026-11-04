@@ -27,7 +27,7 @@ function onInput(next: string | number) {
     <FieldWrapper v-if="config.visible" name="telephoneNumber">
         <BentoInputFieldPhoneNumber
             v-model:selected-country="selectedCountry"
-            :label="i18n.get('payByLink.creation.fields.shopperPhone.label')"
+            :label="i18n.get('payByLink.creation.shopperPhone.label')"
             :optional="!config.required"
             :model-value="value"
             :readonly="config.readOnly"

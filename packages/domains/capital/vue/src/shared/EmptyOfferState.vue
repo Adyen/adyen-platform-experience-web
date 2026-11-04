@@ -6,7 +6,7 @@ const { i18n } = useCoreContext();
 </script>
 
 <template>
-    <EmptyState :title="i18n.get('capital.offer.common.noOfferTitle')" type="highlight">
-        {{ i18n.get('capital.offer.common.noOfferDescription') }}
+    <EmptyState :title="i18n.get('capital.offer.noOffer.title')" type="highlight">
+        {{ i18n.get('capital.offer.noOffer.description') }}
     </EmptyState>
 </template>

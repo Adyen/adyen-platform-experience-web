@@ -7,7 +7,7 @@ import {
     getPaymentLinkErrorMessageContent,
     PAYMENT_LINKS_ANALYTICS_CATEGORY,
     PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_DETAILS,
-    type PayByLinkTranslationKey
+    type PayByLinkTranslationKey,
 } from '@integration-components/payByLink/domain';
 import type { PaymentLinkDetailsComponentProps } from '../../types';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';

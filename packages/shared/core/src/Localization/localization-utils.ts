@@ -2,16 +2,12 @@ import Localization from './Localization';
 import { isFunction, struct } from '@integration-components/utils';
 import { formatLocale, loadTranslations, parseLocale } from './utils';
 import { EXCLUDE_PROPS, FALLBACK_LOCALE } from './constants/localization';
-import type { CustomTranslations, Locale, Translations } from '../translations';
+import type { Locale } from '../translations';
 import { SupportedLocales } from './types';
 
 export function createTranslationsLoader(this: Localization) {
     type TranslationsLoader = {
-        load: (
-            fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>,
-            customTranslations?: CustomTranslations,
-            defaultTranslations?: Translations
-        ) => ReturnType<typeof loadTranslations>;
+        load: (fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>) => ReturnType<typeof loadTranslations>;
         get locale(): Locale;
         set locale(locale: string);
         supportedLocales: Locale[];
@@ -23,11 +19,8 @@ export function createTranslationsLoader(this: Localization) {
 
     return struct<TranslationsLoader>({
         load: {
-            value: (
-                fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>,
-                customTranslations?: CustomTranslations,
-                defaultTranslations?: Translations
-            ) => loadTranslations(_locale, fetchTranslationFromCdnPromise, customTranslations, defaultTranslations),
+            value: (fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>) =>
+                loadTranslations(_locale, fetchTranslationFromCdnPromise),
         },
         locale: {
             get: () => _locale,

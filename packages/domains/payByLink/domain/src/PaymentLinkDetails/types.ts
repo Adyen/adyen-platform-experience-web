@@ -18,6 +18,8 @@ export type ListItemData = {
     key: PayByLinkTranslationKey;
     value?: string;
     isCopyable?: boolean;
+    /** Names the copy button after its own field, so the buttons in a list stay distinguishable. */
+    copyAriaLabelKey?: PayByLinkTranslationKey;
     linkUrl?: string;
 };
 
