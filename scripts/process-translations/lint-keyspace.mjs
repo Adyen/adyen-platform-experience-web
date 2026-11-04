@@ -18,7 +18,8 @@ const projectRoot = path.resolve(scriptDirectory, '../..');
 // e.g. a staged copy of the catalogs to check them before they land. The
 // mirror must sit inside this checkout or the OS temp directory (symlinks
 // resolved), so the argument cannot point the lint anywhere else on disk.
-const mirrorRoots = [projectRoot, tmpdir()].map(root => realpathSync(root));
+const projectRootPrefix = `${realpathSync(projectRoot)}${path.sep}`;
+const tempRootPrefix = `${realpathSync(tmpdir())}${path.sep}`;
 const resolveDomainsDirectory = argument => {
     if (!argument) return path.join(projectRoot, 'packages/domains');
     let directory;
@@ -27,7 +28,8 @@ const resolveDomainsDirectory = argument => {
     } catch {
         return null;
     }
-    return mirrorRoots.some(root => directory.startsWith(`${root}${path.sep}`)) ? directory : null;
+    if (directory.startsWith(projectRootPrefix) || directory.startsWith(tempRootPrefix)) return directory;
+    return null;
 };
 const domainsDirectory = resolveDomainsDirectory(process.argv[2]);
 const englishLocale = 'en-US';
