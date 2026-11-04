@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import {
-    ACTIVE_GRANT,
-    ACTIVE_GRANT_NL,
+    ACTIVE_LOAN,
     DEFAULT_GRANT,
-    FAILED_GRANT,
-    PENDING_GRANT,
-    PENDING_GRANT_WITH_SINGLE_ACTION,
-    REPAID_GRANT,
-    REVOKED_GRANT,
-    WRITTEN_OFF_GRANT,
-} from '../../../../mocks/mock-data/capital';
+    SINGLE_ACTION_LOAN,
+    PENDING_LOAN,
+    REVOKED_LOAN,
+    WRITTEN_OFF_LOAN,
+    FAILED_LOAN,
+    REPAID_LOAN,
+    ACTIVE_WITHOUT_REPAYMENT_ACCOUNT,
+} from '../../../../mocks/mock-data';
 import { getEnhancedGrant, getGrantConfig, GrantConfig } from './grant';
 
 describe('getGrantConfig', () => {
@@ -19,9 +19,9 @@ describe('getGrantConfig', () => {
     });
 
     test('returns config for pending grant', () => {
-        const config = getGrantConfig(PENDING_GRANT);
+        const config = getGrantConfig(PENDING_LOAN);
         expect(config).toEqual<GrantConfig>({
-            amount: ACTIVE_GRANT.grantAmount,
+            amount: ACTIVE_LOAN.grantAmount,
             amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
             areActionsVisible: false,
             areDetailsVisible: false,
@@ -40,9 +40,9 @@ describe('getGrantConfig', () => {
     });
 
     test('returns config for pending grant with actions', () => {
-        const config = getGrantConfig(PENDING_GRANT_WITH_SINGLE_ACTION);
+        const config = getGrantConfig(SINGLE_ACTION_LOAN);
         expect(config).toEqual<GrantConfig>({
-            amount: ACTIVE_GRANT.grantAmount,
+            amount: ACTIVE_LOAN.grantAmount,
             amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
             areActionsVisible: true,
             areDetailsVisible: false,
@@ -61,9 +61,9 @@ describe('getGrantConfig', () => {
     });
 
     test('returns config for pending grant with locally completed actions', () => {
-        const config = getGrantConfig(PENDING_GRANT_WITH_SINGLE_ACTION, true);
+        const config = getGrantConfig(SINGLE_ACTION_LOAN, true);
         expect(config).toEqual<GrantConfig>({
-            amount: ACTIVE_GRANT.grantAmount,
+            amount: ACTIVE_LOAN.grantAmount,
             amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
             areActionsVisible: true,
             areDetailsVisible: false,
@@ -82,13 +82,13 @@ describe('getGrantConfig', () => {
     });
 
     test('returns config for active grant', () => {
-        const config = getGrantConfig(ACTIVE_GRANT);
+        const config = getGrantConfig(ACTIVE_LOAN);
         expect(config).toEqual<GrantConfig>({
-            amount: ACTIVE_GRANT.remainingTotalAmount,
+            amount: ACTIVE_LOAN.remainingTotalAmount,
             amountLabelKey: 'capital.overview.grants.item.amounts.remaining',
             areActionsVisible: false,
             areDetailsVisible: true,
-            areRepaymentDetailsVisible: false,
+            areRepaymentDetailsVisible: true,
             isAmountColorSecondary: false,
             isBackgroundFilled: false,
             isGrantIdVisible: false,
@@ -103,13 +103,13 @@ describe('getGrantConfig', () => {
     });
 
     test('enables unscheduled repayment details for active grants with a repayment account', () => {
-        expect(getGrantConfig(ACTIVE_GRANT_NL).areRepaymentDetailsVisible).toBe(true);
+        expect(getGrantConfig(ACTIVE_WITHOUT_REPAYMENT_ACCOUNT).areRepaymentDetailsVisible).toBe(false);
     });
 
     test('returns config for failed grant', () => {
-        const config = getGrantConfig(FAILED_GRANT);
+        const config = getGrantConfig(FAILED_LOAN);
         expect(config).toEqual<GrantConfig>({
-            amount: ACTIVE_GRANT.grantAmount,
+            amount: ACTIVE_LOAN.grantAmount,
             amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
             areActionsVisible: false,
             areDetailsVisible: false,
@@ -128,9 +128,9 @@ describe('getGrantConfig', () => {
     });
 
     test('returns config for repaid grant', () => {
-        const config = getGrantConfig(REPAID_GRANT);
+        const config = getGrantConfig(REPAID_LOAN);
         expect(config).toEqual<GrantConfig>({
-            amount: ACTIVE_GRANT.grantAmount,
+            amount: ACTIVE_LOAN.grantAmount,
             amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
             areActionsVisible: false,
             areDetailsVisible: false,
@@ -149,9 +149,9 @@ describe('getGrantConfig', () => {
     });
 
     test('returns config for revoked grant', () => {
-        const config = getGrantConfig(REVOKED_GRANT);
+        const config = getGrantConfig(REVOKED_LOAN);
         expect(config).toEqual<GrantConfig>({
-            amount: ACTIVE_GRANT.grantAmount,
+            amount: ACTIVE_LOAN.grantAmount,
             amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
             areActionsVisible: false,
             areDetailsVisible: false,
@@ -170,9 +170,9 @@ describe('getGrantConfig', () => {
     });
 
     test('returns config for written off grant', () => {
-        const config = getGrantConfig(WRITTEN_OFF_GRANT);
+        const config = getGrantConfig(WRITTEN_OFF_LOAN);
         expect(config).toEqual<GrantConfig>({
-            amount: ACTIVE_GRANT.grantAmount,
+            amount: ACTIVE_LOAN.grantAmount,
             amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
             areActionsVisible: false,
             areDetailsVisible: false,

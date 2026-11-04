@@ -6,6 +6,7 @@ import { components as onboardingConfigurationComponents } from '../resources/On
 
 export type ICapitalState = Schema<capitalStateComponents, 'CapitalStateDTO'>;
 export type IDynamicOffersConfig = Schema<capitalStateComponents, 'DynamicOffersResponseV2DTO'>;
+export type IGrantResponseDTO = Schema<capitalGrantsComponents, 'GrantResponseDTO'>;
 export type IGrantsResponseDTO = Schema<capitalGrantsComponents, 'GrantsResponseDTO'>;
 export type IGrant = Schema<capitalGrantsComponents, 'GrantResponseDTO'>;
 export type INLCapitalFundsCollection = Schema<capitalGrantsComponents, 'NLCapitalFundsCollection'>;
@@ -15,6 +16,7 @@ export type ICreateGrantOfferRequest = Schema<capitalGrantOffersComponents, 'Cre
 export type IGrantOfferResponseDTO = Schema<capitalGrantOffersComponents, 'GrantOfferResponseDTO'>;
 export type IGrantOffersResponseDTO = Schema<capitalGrantOffersComponents, 'GrantOffersResponseDTO'>;
 export type IGrantStatus = Schema<capitalGrantsComponents, 'GrantStatus'>;
+export type IGrantOfferContractType = Schema<capitalGrantsComponents, 'GrantOfferContractType'>;
 export type IMissingAction = Schema<capitalGrantsComponents, 'MissingActionDTO'>;
 export type IMissingActionType = Schema<capitalGrantsComponents, 'MissingActionType'>;
 export type IOnboardingConfiguration = Schema<onboardingConfigurationComponents, 'OnboardingConfigurationResponseDTO'>;

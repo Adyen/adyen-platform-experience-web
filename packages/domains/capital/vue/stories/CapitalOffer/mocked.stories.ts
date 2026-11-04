@@ -33,74 +33,122 @@ export const Ineligible: ElementStory<CapitalOfferExternalProps> = {
     },
 };
 
-export const Eligible: ElementStory<CapitalOfferExternalProps> = {
-    name: 'Eligible',
+export const EligibleWithOngoingLoan: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Eligible with ongoing - Loan',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.eligible,
+            handlers: capitalOfferHandlers.eligibleWithOngoingLoan,
         },
     },
 };
 
-export const EligibleCA: ElementStory<CapitalOfferExternalProps> = {
-    name: 'Eligible CA',
+export const EligibleWithOngoingCashAdvance: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Eligible with ongoing - Cash advance',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.eligibleCA,
+            handlers: capitalOfferHandlers.eligibleWithOngoingCashAdvance,
         },
     },
 };
 
-export const EligibleUS: ElementStory<CapitalOfferExternalProps> = {
-    name: 'Eligible US',
+export const EligibleLoan: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Eligible - Loan',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.eligibleUS,
+            handlers: capitalOfferHandlers.eligibleLoan,
         },
     },
 };
 
-export const EligibleWithOngoingGrants: ElementStory<CapitalOfferExternalProps> = {
-    name: 'Eligible with ongoing grants',
+export const EligibleCashAdvance: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Eligible - Cash advance',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.eligibleWithOngoingGrants,
+            handlers: capitalOfferHandlers.eligibleCashAdvance,
         },
     },
 };
 
-export const EarlyRenewal: ElementStory<CapitalOfferExternalProps> = {
-    name: 'Early renewal',
+export const SingleTermLoan: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Single term - Loan',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.earlyRenewal,
+            handlers: capitalOfferHandlers.singleTermLoan,
         },
     },
 };
 
-export const SingleTerm: ElementStory<CapitalOfferExternalProps> = {
-    name: 'Single term',
+export const SingleTermCashAdvance: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Single term - Cash advance',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.singleTerm,
+            handlers: capitalOfferHandlers.singleTermCashAdvance,
+        },
+    },
+};
+
+export const EligibleCALoan: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Eligible CA - Loan',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.eligibleCALoan,
+        },
+    },
+};
+
+export const EligibleUSLoan: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Eligible US - Loan',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.eligibleUSLoan,
+        },
+    },
+};
+
+export const EarlyRenewalLoan: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Early renewal - Loan',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.earlyRenewalLoan,
+        },
+    },
+};
+
+export const EarlyRenewalCashAdvance: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Early renewal - Cash advance',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.earlyRenewalCashAdvance,
         },
     },
 };
@@ -153,50 +201,98 @@ export const ErrorTemporaryOffer: ElementStory<CapitalOfferExternalProps> = {
     },
 };
 
-export const ErrorReview: ElementStory<CapitalOfferExternalProps> = {
-    name: 'Error - Review',
+export const ErrorReviewLoan: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error - Review - Loan',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.errorReview,
+            handlers: capitalOfferHandlers.errorReviewLoan,
         },
     },
 };
 
-export const ErrorSubmit: ElementStory<CapitalOfferExternalProps> = {
-    name: 'Error - Submit',
+export const ErrorReviewCashAdvance: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error - Review - Cash advance',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.errorSubmit,
+            handlers: capitalOfferHandlers.errorReviewCashAdvance,
         },
     },
 };
 
-export const ErrorWithCodeSubmit: ElementStory<CapitalOfferExternalProps> = {
-    name: 'Error (with code) - Submit',
+export const ErrorSubmitLoan: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error - Submit - Loan',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.errorWithCodeSubmit,
+            handlers: capitalOfferHandlers.errorSubmitLoan,
         },
     },
 };
 
-export const ErrorBalanceAccount: ElementStory<CapitalOfferExternalProps> = {
-    name: 'Error - Balance account',
+export const ErrorSubmitCashAdvance: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error - Submit - Cash advance',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOfferHandlers.errorBalanceAccount,
+            handlers: capitalOfferHandlers.errorSubmitCashAdvance,
+        },
+    },
+};
+
+export const ErrorWithCodeSubmitLoan: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error (with code) - Submit - Loan',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorWithCodeSubmitLoan,
+        },
+    },
+};
+
+export const ErrorWithCodeSubmitCashAdvance: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error (with code) - Submit - Cash advance',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorWithCodeSubmitCashAdvance,
+        },
+    },
+};
+
+export const ErrorBalanceAccountLoan: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error - Balance account - Loan',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorBalanceAccountLoan,
+        },
+    },
+};
+
+export const ErrorBalanceAccountCashAdvance: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Error - Balance account - Cash advance',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.errorBalanceAccountCashAdvance,
         },
     },
 };
