@@ -7,14 +7,14 @@ import {
     sharedCapitalOfferAnalyticsEventProperties,
 } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import type { IOffer } from '@integration-components/types';
 import { useFinancingDetailItems, type FinancingDetailItemKey } from '../../composables/useFinancingDetailItems';
 import FinancingDetailList from '../FinancingDetailList/FinancingDetailList.vue';
 import styles from './OfferSummaryDetails.module.scss';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
-    grantOffer: IGrantOfferResponseDTO;
+    grantOffer: IOffer;
     hasBalanceAccountError?: boolean;
 }>();
 

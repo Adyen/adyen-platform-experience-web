@@ -8,7 +8,7 @@ import {
     type OnSubmitCallback,
 } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import type { IOffer } from '@integration-components/types';
 import { useRequestFunds } from '../../composables/useRequestFunds';
 import CapitalError from '../../../shared/CapitalError.vue';
 import Highlights from '../Highlights/Highlights.vue';
@@ -19,7 +19,7 @@ import styles from './OfferSummary.module.scss';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
-    offer: IGrantOfferResponseDTO;
+    offer: IOffer;
     onBack: () => void;
     onContactSupport?: () => void;
     onSubmit?: OnSubmitCallback;
