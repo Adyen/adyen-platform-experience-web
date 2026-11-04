@@ -1,4 +1,6 @@
+import { realpathSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { grammarViolations, keyspaceViolations } from './key-grammar.mjs';
@@ -13,8 +15,21 @@ import { grammarViolations, keyspaceViolations } from './key-grammar.mjs';
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(scriptDirectory, '../..');
 // Optional argument: lint a mirrored domains tree instead of the live one,
-// e.g. a staged copy of the catalogs to check them before they land.
-const domainsDirectory = process.argv[2] ? path.resolve(process.argv[2]) : path.join(projectRoot, 'packages/domains');
+// e.g. a staged copy of the catalogs to check them before they land. The
+// mirror must sit inside this checkout or the OS temp directory (symlinks
+// resolved), so the argument cannot point the lint anywhere else on disk.
+const mirrorRoots = [projectRoot, tmpdir()].map(root => realpathSync(root));
+const resolveDomainsDirectory = argument => {
+    if (!argument) return path.join(projectRoot, 'packages/domains');
+    let directory;
+    try {
+        directory = realpathSync(path.resolve(argument));
+    } catch {
+        return null;
+    }
+    return mirrorRoots.some(root => directory.startsWith(`${root}${path.sep}`)) ? directory : null;
+};
+const domainsDirectory = resolveDomainsDirectory(process.argv[2]);
 const englishLocale = 'en-US';
 
 const REPORT_LIMIT = 30;
@@ -60,6 +75,11 @@ const lintDomainCatalog = async (violations, entry) => {
 };
 
 const main = async () => {
+    if (!domainsDirectory) {
+        logError('keyspace lint: the domains directory must exist inside the project or the OS temp directory.');
+        process.exitCode = 1;
+        return;
+    }
     const domainEntries = (await readdir(domainsDirectory, { withFileTypes: true })).filter(entry => entry.isDirectory());
     const violations = [];
     let checkedDomains = 0;
