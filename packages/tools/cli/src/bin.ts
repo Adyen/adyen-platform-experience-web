@@ -19,4 +19,6 @@ process.exitCode = await run(process.argv.slice(2), {
     version,
     stdout: process.stdout,
     stderr: process.stderr,
+    stdin: process.stdin,
+    isTTY: Boolean(process.stdin.isTTY && process.stdout.isTTY),
 });
