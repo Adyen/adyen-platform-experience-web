@@ -870,7 +870,7 @@
     "payouts.overview.filters.date.thisMonth": "Date-range filter option for the current calendar month.",
     "payouts.overview.filters.date.thisWeek": "Date-range filter option for the current calendar week.",
     "payouts.overview.filters.date.yearToDate": "Date-range filter option from the start of the current year.",
-    "payouts.overview.generateInfo": "The preparation of payout information happens at midnight (12:00 AM) in UTC timezone. Payout, in this context, refers to a user's money that gets paid into their designated bank account. UTC here refers to the Coordinated Universal Time, which is the reference origin (0) for other timezones.",
+    "payouts.overview.generateInfo": "Helper text in the payouts overview explaining that payout information is available only after the payout has been fully processed, not at a fixed daily time. A payout is money paid into the user's designated bank account.",
     "payouts.overview.list.adjustmentAmount": "Column heading in the payouts overview table.",
     "payouts.overview.list.createdAt": "Label for a checkbox that toggles the selection of the transaction creation date column",
     "payouts.overview.list.fundsCapturedAmount": "Column heading in the payouts overview table.",
