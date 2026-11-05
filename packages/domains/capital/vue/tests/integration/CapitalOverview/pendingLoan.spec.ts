@@ -2,9 +2,9 @@ import { test, expect } from '@integration-components/testing/fixtures/eventDisp
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../fixtures/CapitalOverview/constants/analytics';
 
-const STORY_ID = 'mocked-capital-capital-overview--pending';
+const STORY_ID = 'mocked-capital-capital-overview--pending-loan';
 
-test.describe('Pending', () => {
+test.describe('Pending - Loan', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedCapitalOverviewAnalyticsEventProperties]]);
@@ -32,6 +32,6 @@ test.describe('Pending', () => {
     test('should render a tooltip with the grant ID when "Grant ID" label is hovered', async ({ page }) => {
         await page.getByText('Grant ID').hover();
 
-        await expect(page.getByRole('tooltip', { name: '7e18b082372f' })).toBeVisible();
+        await expect(page.getByRole('tooltip', { name: '66e12a9a64a6' })).toBeVisible();
     });
 });

@@ -3,7 +3,7 @@ import { expectAnalyticsEvents, goToStory } from '@integration-components/testin
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../fixtures/CapitalOverview/constants/analytics';
 import type { Page } from '@playwright/test';
 
-const STORY_ID = 'mocked-capital-capital-overview--early-renewal';
+const STORY_ID = 'mocked-capital-capital-overview--early-renewal-loan';
 
 const getOfferButton = (page: Page) => page.getByTestId('capital-header').getByRole('button', { name: 'Request a new loan' });
 
@@ -18,7 +18,7 @@ const goToOfferSummary = async (page: Page) => {
     await getOfferModal(page).getByRole('button', { name: 'Review request' }).click();
 };
 
-test.describe('Early renewal', () => {
+test.describe('Early renewal - Loan', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
         await expectAnalyticsEvents(analyticsEvents, [
