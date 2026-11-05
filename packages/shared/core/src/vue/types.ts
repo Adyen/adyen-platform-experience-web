@@ -26,7 +26,7 @@ export interface CoreInstance {
     getCdnConfig: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
     getCdnDataset: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
     getImageAsset: (props: AssetOptions) => string;
-    update: (options: Partial<CoreOptions>) => Promise<CoreInstance>;
+    update: (options: Partial<Omit<CoreOptions, 'translations' | 'locale'>>) => Promise<CoreInstance>;
     registerThemeRoot: (root: Element) => void;
     unregisterThemeRoot: (root: Element) => void;
 }
