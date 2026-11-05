@@ -2,6 +2,7 @@
  * @vitest-environment jsdom
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { decodeAnalyticsEvent as decodeEvent } from '@integration-components/testing';
 import Core from './Core';
 import { CDN_ENVIRONMENTS } from './constants';
 import { SERVER_SIDE_INITIALIZATION_WARNING } from './runtime';
@@ -298,5 +299,127 @@ describe('Core', () => {
                 .map(([url]) => String(url))
                 .sort()
         ).toEqual([`${cdnTranslationsUrl}/bento/de-DE.json`, `${cdnTranslationsUrl}/de-DE.json`]);
+    });
+
+    describe('core event analytics', () => {
+        it('sends "Initiated core" once on the first initialize and never on update', async () => {
+            const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
+            const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
+
+            expect(sendAnalyticsEvent).not.toHaveBeenCalled();
+
+            await core.initialize();
+
+            expect(sendAnalyticsEvent).toHaveBeenCalledOnce();
+
+            const { event, properties } = decodeEvent(sendAnalyticsEvent.mock.calls[0]![0]);
+            expect(event).toBe('Initiated core');
+            expect(properties).toMatchObject({
+                category: 'PIE',
+                subCategory: 'Core',
+                label: 'core',
+                locale: 'en-US',
+                hasCustomTheme: false,
+            });
+            expect(properties).not.toHaveProperty('themeMode');
+
+            await core.initialize();
+            await core.update({ locale: 'de-DE' });
+
+            expect(sendAnalyticsEvent).toHaveBeenCalledOnce();
+        });
+
+        it('queues "Initiated core" ahead of the "Customized translation" event without dropping either', async () => {
+            const core = new Core({
+                locale: 'en-US',
+                onSessionCreate: vi.fn(),
+                translations: { 'en-US': { 'transactions.common.errors.updateFilters': 'Custom message.' } },
+            });
+            const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
+
+            await core.initialize();
+
+            expect(sendAnalyticsEvent.mock.calls.map(([payload]) => decodeEvent(payload).event)).toEqual([
+                'Initiated core',
+                'Customized translation',
+            ]);
+        });
+
+        it('snapshots the theme configuration in "Initiated core"', async () => {
+            const core = new Core({
+                locale: 'en-US',
+                onSessionCreate: vi.fn(),
+                themeMode: 'dark',
+                customTheme: { dark: { primary: '#84adff' } },
+                appearance: { titles: 'hidden' },
+            });
+            const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
+
+            await core.initialize();
+
+            const { properties } = decodeEvent(sendAnalyticsEvent.mock.calls[0]![0]);
+            expect(properties).toMatchObject({
+                themeMode: 'dark',
+                hasCustomTheme: true,
+                customThemeVariables: ['primary'],
+                appearance: ['titles'],
+                appearanceTitles: 'hidden',
+            });
+        });
+
+        it('does not send core events when analytics is disabled', async () => {
+            const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn(), analytics: { enabled: false } });
+            const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
+
+            await core.initialize();
+            await core.update({ themeMode: 'dark' });
+
+            expect(sendAnalyticsEvent).not.toHaveBeenCalled();
+        });
+
+        it('sends "Updated theme (runtime)" on each runtime theme change, never on construction', async () => {
+            const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn(), themeMode: 'dark' });
+            const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
+
+            await core.initialize();
+
+            // Construction already applied the theme, so only Initiated core has fired.
+            expect(sendAnalyticsEvent.mock.calls.map(([payload]) => decodeEvent(payload).event)).toEqual(['Initiated core']);
+
+            await core.update({ themeMode: 'dark' });
+            // An identical mode is not a change.
+            expect(sendAnalyticsEvent).toHaveBeenCalledOnce();
+
+            await core.update({ themeMode: 'light' });
+
+            expect(sendAnalyticsEvent).toHaveBeenCalledTimes(2);
+            const { event, properties } = decodeEvent(sendAnalyticsEvent.mock.calls[1]![0]);
+            expect(event).toBe('Updated theme (runtime)');
+            expect(properties).toMatchObject({
+                category: 'PIE',
+                subCategory: 'Core',
+                theme: 'light',
+                previousTheme: 'dark',
+                components: [],
+            });
+        });
+
+        it('records the registered components in "Updated theme (runtime)"', async () => {
+            const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
+            const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
+
+            core.registerComponent({ _id: 'first', core, type: 'transactions', update: vi.fn(), unmount: vi.fn() });
+            core.registerComponent({ _id: 'second', core, type: 'capitalOffer', update: vi.fn(), unmount: vi.fn() });
+
+            await core.initialize();
+            await core.update({ customTheme: { dark: { primary: '#84adff' } }, themeMode: 'dark' });
+
+            const themeEvents = sendAnalyticsEvent.mock.calls
+                .map(([payload]) => decodeEvent(payload))
+                .filter(({ event }) => event === 'Updated theme (runtime)');
+
+            expect(themeEvents).toHaveLength(1);
+            expect(themeEvents[0]!.properties.components).toEqual(['transactions', 'capitalOffer']);
+        });
     });
 });

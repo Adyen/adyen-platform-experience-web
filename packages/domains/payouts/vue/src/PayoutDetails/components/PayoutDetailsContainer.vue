@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useBalanceAccounts, ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
+import { useBalanceAccounts, ComponentShell, useLandedPageEvent, type ComponentShellState } from '@integration-components/composables-vue';
 import { isFunction } from '@integration-components/utils';
 import PayoutData from './PayoutData.vue';
 import PayoutSkeleton from './PayoutSkeleton.vue';
 import { usePayoutDetails } from '../composables/usePayoutDetails';
-import { PAYOUT_TABLE_FIELDS } from '@integration-components/payouts/domain';
 import type { PayoutDetailsComponentProps } from '../types';
 import type { CustomDataRetrieved } from '@integration-components/types';
+import { PAYOUT_TABLE_FIELDS, PAYOUTS_ANALYTICS_CATEGORY, PAYOUTS_ANALYTICS_SUBCATEGORY_DETAILS } from '@integration-components/payouts/domain';
 
 const props = defineProps<
     PayoutDetailsComponentProps & {
@@ -20,6 +20,10 @@ const { data, error, isFetching } = usePayoutDetails(() => ({
     balanceAccountId: props.id,
     createdAt: props.date,
 }));
+
+const analyticsProps = { category: PAYOUTS_ANALYTICS_CATEGORY, subCategory: PAYOUTS_ANALYTICS_SUBCATEGORY_DETAILS } as const;
+
+useLandedPageEvent(analyticsProps, () => !!data.value);
 
 // Balance-account description fallback: only fetched when consumer doesn't pass one.
 const hasDescription = computed(() => !!props.balanceAccountDescription);

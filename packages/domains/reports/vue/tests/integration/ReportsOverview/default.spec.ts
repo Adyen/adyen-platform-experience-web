@@ -1,6 +1,8 @@
-import { expect, test, type Page } from '@playwright/test';
-import { expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import type { Page } from '@playwright/test';
+import { expectAnalyticsEvents, expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
 import { testBalanceAccountFilter, testDateRangeFilter } from '../../../../fixtures/integration/filters';
+import { reportsOverviewAnalyticsEventProperties } from '../../../../fixtures/constants/analytics';
 
 const STORY_ID = 'mocked-reports-reports-overview--default';
 const REPORTS_PER_PAGE = 10;
@@ -11,9 +13,10 @@ const getReportRows = (page: Page) => getReportsDataGrid(page).getByRole('rowgro
 test.describe('Default', () => {
     const NOW = Date.now();
 
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await page.clock.setFixedTime(NOW);
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', reportsOverviewAnalyticsEventProperties]]);
     });
 
     test.describe('Render', () => {

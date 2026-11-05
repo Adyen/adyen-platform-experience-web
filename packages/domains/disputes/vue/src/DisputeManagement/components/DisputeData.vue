@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoButtonActions, BentoCard, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
+import { ComponentShell, useLandedPageEvent, type ComponentShellState } from '@integration-components/composables-vue';
+import {
+    DISPUTES_ANALYTICS_CATEGORY,
+    DISPUTES_ANALYTICS_SUBCATEGORY_DETAILS,
+    DISPUTE_DETAILS_RESERVED_FIELDS_SET,
+    getDisputeType,
+    isDisputeActionNeeded,
+} from '@integration-components/disputes/domain';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
-import { ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
-import { DISPUTE_DETAILS_RESERVED_FIELDS_SET, getDisputeType, isDisputeActionNeeded } from '@integration-components/disputes/domain';
 import { isFunction, parsePaymentMethodType } from '@integration-components/utils';
 import type { CustomButtonObject, CustomDataRetrieved } from '@integration-components/types';
 import { useDisputeDetails } from '../composables/useDisputeDetails';
@@ -37,6 +43,11 @@ watch(data, nextData => {
 });
 
 const dispute = computed(() => storedDispute.value || data.value);
+
+const analyticsProps = { category: DISPUTES_ANALYTICS_CATEGORY, subCategory: DISPUTES_ANALYTICS_SUBCATEGORY_DETAILS } as const;
+
+useLandedPageEvent(analyticsProps, () => !!dispute.value);
+
 const defensibility = computed(() => dispute.value?.dispute.defensibility);
 const acceptAuthorization = computed(() => isFunction(config.endpoints?.acceptDispute));
 const defendAuthorization = computed(() => isFunction(config.endpoints?.getApplicableDefenseDocuments));
