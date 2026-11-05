@@ -241,7 +241,7 @@
     "payByLink.settings.navigation.termsAndConditions": "Terms and conditions",
     "payByLink.settings.navigation.theme": "Theme",
     "payByLink.settings.terms.requirements.actions.confirmRequirements": "Confirm requirements",
-    "payByLink.settings.terms.requirements.actions.goBack": "Go back",
+    "payByLink.settings.terms.requirements.actions.dismiss": "Dismiss",
     "payByLink.settings.terms.requirements.contactInformation.description": "Shoppers must be able to contact you if they have questions, so the contact information shown on your website or app must include your:",
     "payByLink.settings.terms.requirements.contactInformation.emailAddress": "Email address.",
     "payByLink.settings.terms.requirements.contactInformation.legalEntityName": "Legal entity name.",

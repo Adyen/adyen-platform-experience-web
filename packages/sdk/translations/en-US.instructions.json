@@ -806,7 +806,7 @@
     "payByLink.settings.inputs.file.errors.disallowedType": "Will be displayed as input validation error message if at least one uploaded file is of a file type that is not accepted.",
     "payByLink.settings.inputs.file.errors.tooLarge": "Will be displayed as input validation error message if at least one uploaded file is of a size larger than the maximum allowed file size.",
     "payByLink.settings.terms.requirements.actions.confirmRequirements": "Label for a button that confirms the user has reviewed and accepted all the terms and conditions requirements.",
-    "payByLink.settings.terms.requirements.actions.goBack": "Label for a button that navigates the user back to the previous screen from the requirements view.",
+    "payByLink.settings.terms.requirements.actions.dismiss": "Label for a button that dismisses the terms and conditions requirements modal and returns the user to the previous screen.",
     "payByLink.settings.termsAndConditions.alert.urlChange": "Alert message informing the user that their terms and conditions URL has been modified and requires reconfirmation.",
     "payByLink.settings.termsAndConditions.error.requirementsNotChecked": "Validation error message displayed when the user attempts to proceed without confirming acceptance of the terms and conditions requirements.",
     "payByLink.settings.termsAndConditions.error.urlValidation": "Validation error message displayed when the entered URL format is invalid.",

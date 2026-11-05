@@ -38,7 +38,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
     }
 
     actions.push({
-        title: i18n.get('payByLink.settings.terms.requirements.actions.goBack'),
+        title: i18n.get('payByLink.settings.terms.requirements.actions.dismiss'),
         event: () => emit('goBack'),
         variant: 'secondary',
     });
