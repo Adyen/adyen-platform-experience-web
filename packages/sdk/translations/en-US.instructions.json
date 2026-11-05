@@ -802,6 +802,7 @@
     "payByLink.settings.alerts.validation.error": "Validation alert displayed when one or more Pay by Link settings fields contain errors.",
     "payByLink.settings.errors.unavailable": "Heading, error, or form text shown in payment-link settings.",
     "payByLink.settings.requirements.confirmRequirements": "Label for a button that confirms the user has reviewed and accepted all the terms and conditions requirements.",
+    "payByLink.settings.requirements.dismiss": "Label for a button that dismisses the terms and conditions requirements modal and returns the user to the previous screen.",
     "payByLink.settings.termsAndConditions.alerts.urlChange": "Alert message informing the user that their terms and conditions URL has been modified and requires reconfirmation.",
     "payByLink.settings.termsAndConditions.errors.couldNotLoad": "Heading, error, or form text shown in payment-link settings.",
     "payByLink.settings.termsAndConditions.errors.requirementsNotChecked": "Validation error message displayed when the user attempts to proceed without confirming acceptance of the terms and conditions requirements.",
