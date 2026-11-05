@@ -14,8 +14,9 @@ const shipSkills = (): Plugin => ({
         const target = join(distDir, 'skills');
         rmSync(target, { recursive: true, force: true });
         cpSync(resolve(__dirname, 'skills'), target, { recursive: true });
-        for (const skill of readdirSync(target)) {
-            const file = join(target, skill, 'SKILL.md');
+        for (const entry of readdirSync(target, { withFileTypes: true })) {
+            if (!entry.isDirectory()) continue;
+            const file = join(target, entry.name, 'SKILL.md');
             const content = readFileSync(file, 'utf8');
             if (!VERSION_FIELD.test(content)) throw new Error(`${file} has no adyen-platform-experience-version field`);
             writeFileSync(file, content.replace(VERSION_FIELD, `$1'${version}'`));

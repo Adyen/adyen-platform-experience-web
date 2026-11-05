@@ -85,6 +85,22 @@ describe('skills add', () => {
     });
 });
 
+describe('skills add, when writing fails', () => {
+    test('reports the error in one line and exits 1 instead of throwing', async () => {
+        const project = makeProject();
+        writeFile(join(project, 'not-a-folder'), '');
+
+        const { code, stderr } = await runCli(
+            ['skills', 'add', '--components', 'capital-offer', '--agent', 'codex', '--yes', '--dir', 'not-a-folder'],
+            { cwd: project }
+        );
+
+        expect(code).toBe(1);
+        expect(stderr).toMatch(/^Error: .*not-a-folder/);
+        expect(stderr.trim().split('\n')).toHaveLength(1);
+    });
+});
+
 describe('skills add, again', () => {
     test('replaces an installed copy with the new selection and says so', async () => {
         const project = makeProject();

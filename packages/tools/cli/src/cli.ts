@@ -163,10 +163,15 @@ export async function run(argv: string[], options: RunOptions): Promise<number> 
         return 1;
     }
 
-    const error = installError(options.cwd, options.version);
-    if (error) {
-        options.stderr.write(error);
+    try {
+        const error = installError(options.cwd, options.version);
+        if (error) {
+            options.stderr.write(error);
+            return 1;
+        }
+        return await action();
+    } catch (thrown) {
+        options.stderr.write(`Error: ${thrown instanceof Error ? thrown.message : String(thrown)}\n`);
         return 1;
     }
-    return action();
 }
