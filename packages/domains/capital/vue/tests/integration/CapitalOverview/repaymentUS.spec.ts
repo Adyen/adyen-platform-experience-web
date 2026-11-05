@@ -45,8 +45,8 @@ test.describe('Repayment US', () => {
                 expect(getRepaymentModal(page).getByText('Country/region')).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('US', { exact: true })).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('Your verified bank accounts')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('NL**INGB******8101')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('NL**INGB******4151')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('****8101')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('****4151')).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('How to send a loan payment')).toBeVisible(),
                 expect(
                     getRepaymentModal(page).getByText('Add Adyen N.V. San Francisco Branch as a payee using your bank’s website or app.')
