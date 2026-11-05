@@ -31,7 +31,7 @@ The skill stands alone: each delta file names the v2 props type in the shipped `
     If any check fails, it changes nothing and names the command that fixes it. Placing this as a precondition at the top was much more reliable than placing it as a step in the list.
 
 - **CSS overrides take one of four paths,** decided by what the override styled:
-    1. **Move:** `--adyen-sdk-*` variables move from `:root` to the mount element or `.adyen-pe-component`.
+    1. **Move:** `--adyen-sdk-*` variables are public and stable. They move as they are, without asking, from `:root` to the mount element or `.adyen-pe-component`: they already applied to every component in v1.
     2. **Replace:** overrides an option now covers become that option. Examples are the card look, titles, row density, and hidden columns or tabs.
     3. **Propose a theme:** colours, dark mode and corner radius map to Core `customTheme` and `themeMode`. **Theme settings change every component, so the assistant proposes them with a warning and applies them only after the user confirms.**
     4. **Delete and report:** overrides with no v2 equivalent match nothing in v2. They're deleted and listed in the report with what they did.
@@ -51,5 +51,4 @@ The skill stands alone: each delta file names the v2 props type in the shipped `
 
 ## Open questions
 
-- Which `--adyen-sdk-*` variables are public and stable. The skill moves them, and uses them when a theme setting is too broad.
 - A link to the public migration guide, once it's published.
