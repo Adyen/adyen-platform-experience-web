@@ -9,6 +9,8 @@ Variable names are unchanged and still supported, but v2 defines every variable 
 - for one component: onto its mount element, with a selector that outranks the SDK's attribute selector, e.g. `#transactions-overview { --adyen-sdk-border-radius-s: 10px; }`;
 - for every component: onto `.adyen-pe-component { ... }`.
 
+Move them with the same values, without asking: they already applied to every component in v1, so moving them doesn't widen their effect. Don't turn them into a theme proposal; rule 3 is for overrides that set colours or `border-radius` directly.
+
 ## 2. Overrides that v2 options replace
 
 | What the v1 override did                                    | Example v1 selectors                                    | v2 replacement                                                       |
@@ -43,7 +45,7 @@ For overrides that set colours or `border-radius`, look at the properties, not t
 
 **Theme changes are global: propose them, don't apply them.** A v1 override usually styled one element; a theme setting changes every element with that role, in every component that uses this Core instance, on every page. So:
 
-1. Don't write `customTheme`, `themeMode` or theme variables during the migration. Migrate everything else, and delete the v1 overrides as usual (they match nothing in v2).
+1. Don't write `customTheme`, `themeMode` or new theme variables during the migration (variables the app already set are moved by rule 1). Migrate everything else, and delete the v1 overrides as usual (they match nothing in v2).
 2. End your turn with a **theme proposal**: for each v1 override, the setting and value that would replace it, and a clear warning of what else it changes. For example: "`customTheme.light.outline: '#e5e7eb'` would replace your border colour on the transactions table. **This changes every border and divider in all Adyen components, not only that table.**" Then ask: "Do you want me to apply these theme settings?"
 3. Apply them only after the user confirms. If the user already confirmed in this conversation, apply them directly. When you apply them, add a comment next to `customTheme`: `// Applies to every Adyen component that uses this core.`
 

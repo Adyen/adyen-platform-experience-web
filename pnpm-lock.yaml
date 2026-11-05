@@ -764,6 +764,15 @@ importers:
         specifier: workspace:*
         version: link:../types
 
+  packages/tools/cli:
+    devDependencies:
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+      vite:
+        specifier: 'catalog:'
+        version: 7.3.7(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0)
+
   packages/tools/storybook:
     dependencies:
       '@integration-components/core':
