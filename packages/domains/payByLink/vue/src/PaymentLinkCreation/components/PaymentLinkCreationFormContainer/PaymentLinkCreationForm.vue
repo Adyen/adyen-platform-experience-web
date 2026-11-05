@@ -43,6 +43,10 @@ const wizard = usePaymentLinkWizard({
     i18n,
     steps: formData.formSteps,
     defaults: () => props.fieldsConfig?.data,
+    allowedOptions: () => {
+        const countryCodes = formData.countriesData.value?.data?.map(({ countryCode }) => countryCode);
+        return { countryCode: countryCodes, 'billingAddress.country': countryCodes, 'deliveryAddress.country': countryCodes };
+    },
 });
 const { getMappedInvalidFields } = useInvalidFields();
 
@@ -70,7 +74,7 @@ watch(
 
 // Seed the form's store value when a single store is auto-selected (store step skipped).
 watch(
-    formData.selectedStore,
+    () => formData.selectedStore.value,
     storeId => {
         if (storeId && !wizard.getValue('store')) {
             const name = formData.storesSelectorItems.value.find(item => item.id === storeId)?.name ?? storeId;

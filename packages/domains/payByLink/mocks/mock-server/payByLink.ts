@@ -213,6 +213,47 @@ export const paymentLinkCreationMockedResponses = {
             ),
         ],
     },
+    disallowedPrefilledOptions: {
+        handlers: [
+            http.get(
+                mockPayByLinkEndpoints.configuration,
+                withDelay(() => {
+                    return HttpResponse.json<IPaymentLinkConfiguration>({
+                        ...PAY_BY_LINK_CONFIGURATION.STORE_NY_001,
+                        currency: { required: true, options: ['USD', 'GBP'] },
+                        linkType: { required: true, options: ['singleUse'] },
+                        linkValidity: {
+                            required: true,
+                            options: [
+                                { quantity: 24, durationUnit: 'hour', type: 'fixed' },
+                                { quantity: 30, durationUnit: 'day', type: 'fixed' },
+                            ],
+                        },
+                        countryCode: { required: false, options: ['US', 'GB'] },
+                        shopperLocale: { required: false, options: ['es-ES', 'fr-FR'] },
+                    });
+                })
+            ),
+            http.get(
+                mockPayByLinkEndpoints.countries,
+                withDelay(() => {
+                    return HttpResponse.json({
+                        data: COUNTRIES.filter(({ countryCode }) => ['GB', 'MX', 'US'].includes(countryCode)),
+                    });
+                })
+            ),
+            http.get(
+                '/datasets/languages.json',
+                withDelay(() => {
+                    return HttpResponse.json([
+                        { text: 'English (US)', value: 'en-US' },
+                        { text: 'Español', value: 'es-ES' },
+                        { text: 'Français', value: 'fr-FR' },
+                    ]);
+                })
+            ),
+        ],
+    },
     submitNetworkError: {
         handlers: [
             http.post(
