@@ -5,9 +5,9 @@ import {
     sharedGrantItemAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
 
-const STORY_ID = 'mocked-capital-capital-overview--multiple-hosted-actions';
+const STORY_ID = 'mocked-capital-capital-overview--hosted-actions-loan';
 
-test.describe('Multiple hosted actions', () => {
+test.describe('Hosted actions - Loan', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedCapitalOverviewAnalyticsEventProperties]]);

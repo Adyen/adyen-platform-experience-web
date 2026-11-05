@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
-const STORY_ID = 'mocked-capital-capital-offer--eligible-us';
+const STORY_ID = 'mocked-capital-capital-offer--eligible-us-loan';
 
-test.describe('Eligible US', () => {
+test.describe('Eligible US - Loan', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
     });
