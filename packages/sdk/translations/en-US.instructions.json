@@ -875,7 +875,7 @@
     "payouts.overview.errors.listEmpty": "Heading, helper text, error, or status shown in the payouts overview. A payout is money paid into the user’s designated bank account.",
     "payouts.overview.errors.listUnavailable": "Heading, helper text, error, or status shown in the payouts overview. A payout is money paid into the user’s designated bank account.",
     "payouts.overview.errors.unavailable": "Heading, helper text, error, or status shown in the payouts overview. A payout is money paid into the user’s designated bank account.",
-    "payouts.overview.generateInfo": "The preparation of payout information happens at midnight (12:00 AM) in UTC timezone. Payout, in this context, refers to a user's money that gets paid into their designated bank account. UTC here refers to the Coordinated Universal Time, which is the reference origin (0) for other timezones.",
+    "payouts.overview.generateInfo": "Helper text in the payouts overview explaining that payout information is available only after the payout has been fully processed, not at a fixed daily time. A payout is money paid into the user's designated bank account.",
     "payouts.overview.list.fields.adjustmentAmount": "Column heading in the payouts overview table.",
     "payouts.overview.list.fields.createdAt": "Label for a checkbox that toggles the selection of the transaction creation date column",
     "payouts.overview.list.fields.fundsCapturedAmount": "Column heading in the payouts overview table.",
