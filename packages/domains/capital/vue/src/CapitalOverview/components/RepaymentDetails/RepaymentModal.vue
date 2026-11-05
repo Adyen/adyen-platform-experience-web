@@ -23,8 +23,8 @@ const instructionItems = computed(() => [
               values: { beneficiaryName: bankAccount.value.beneficiaryName },
           })
         : undefined,
-    i18n.get('capital.overview.repayment.instructions.sendingPayment'),
-    i18n.get('capital.overview.repayment.instructions.waiting'),
+    i18n.get('capital.overview.repayment.instructions.sendingPayment.loan'),
+    i18n.get('capital.overview.repayment.instructions.waiting.loan'),
 ]);
 </script>
 
@@ -34,7 +34,7 @@ const instructionItems = computed(() => [
         <template #content>
             <div v-if="bankAccount" :class="styles.root">
                 <BentoTypography>
-                    {{ i18n.get('capital.overview.repayment.subtitle') }}
+                    {{ i18n.get('capital.overview.repayment.subtitle.loan') }}
                 </BentoTypography>
                 <BentoCard>
                     {{ i18n.get('capital.overview.repayment.accountDetails.title') }}
@@ -65,7 +65,7 @@ const instructionItems = computed(() => [
 
                     <div>
                         <BentoTypography el="span" variant="caption" stronger>
-                            {{ i18n.get('capital.overview.repayment.instructions.title') }}
+                            {{ i18n.get('capital.overview.repayment.instructions.title.loan') }}
                         </BentoTypography>
                         <ul :class="styles.list">
                             <li v-for="item in instructionItems" :key="item" :class="styles.instructionListItem">
@@ -77,7 +77,7 @@ const instructionItems = computed(() => [
                     </div>
 
                     <BentoTypography el="span" variant="caption" :class="styles.verifiedBankAccountNotice">
-                        {{ i18n.get('capital.overview.repayment.instructions.verifiedAccount') }}
+                        {{ i18n.get('capital.overview.repayment.instructions.verifiedAccount.loan') }}
                     </BentoTypography>
                 </div>
             </div>

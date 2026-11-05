@@ -75,7 +75,7 @@ const handleInput = (event: Event) => {
     <div :class="styles.root">
         <label :id="labelId" :for="sliderId" :class="styles.label">
             <BentoTypography variant="body" stronger>
-                {{ i18n.get('capital.offer.selection.slider.a11y.label') }}
+                {{ i18n.get('capital.offer.selection.slider.a11y.label.loan') }}
             </BentoTypography>
         </label>
         <output :aria-labelledby="labelId" :for="sliderId" aria-live="polite">

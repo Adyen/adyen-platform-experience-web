@@ -24,7 +24,7 @@ const {
 const capitalState = computed(() => props.capitalState ?? backendCapitalState.value);
 const dynamicOfferConfig = computed(() => capitalState.value && getDynamicOfferConfig(capitalState.value));
 const activeStep = ref<'selection' | 'summary'>('selection');
-const titleKey = computed(() => (activeStep.value === 'summary' ? 'capital.offer.summary.title' : 'capital.offer.selection.title'));
+const titleKey = computed(() => (activeStep.value === 'summary' ? 'capital.offer.summary.title.loan' : 'capital.offer.selection.title.loan'));
 const createdOffer = ref<IGrantOfferResponseDTO>();
 const shellState = computed<ComponentShellState>(() => (isCapitalStateLoading.value ? 'loading' : 'ready'));
 

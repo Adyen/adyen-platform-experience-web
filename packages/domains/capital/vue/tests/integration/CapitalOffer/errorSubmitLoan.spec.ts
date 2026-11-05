@@ -7,7 +7,7 @@ test.describe('Error - Submit - Loan', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await page.getByRole('button', { name: 'Review request' }).click();
-        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
+        await page.getByRole('button', { name: 'Submit €13,000 request' }).click();
     });
 
     test('should render an error message', async ({ page }) => {

@@ -16,7 +16,7 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const requestedGrant = ref<IGrant>();
 const { capitalState } = useEnhancedCapitalState(() => true, requestedGrant);
-const offerTitleKey = ref<CapitalTranslationKey>('capital.offer.selection.title');
+const offerTitleKey = ref<CapitalTranslationKey>('capital.offer.selection.title.loan');
 const offerTitle = computed(() => i18n.get(offerTitleKey.value));
 
 const handleOfferTitleChange = (title: CapitalTranslationKey) => {

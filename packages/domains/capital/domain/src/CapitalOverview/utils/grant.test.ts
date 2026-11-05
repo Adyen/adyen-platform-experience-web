@@ -22,7 +22,7 @@ describe('getGrantConfig', () => {
         const config = getGrantConfig(PENDING_LOAN);
         expect(config).toEqual<GrantConfig>({
             amount: ACTIVE_LOAN.grantAmount,
-            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
+            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds.loan',
             areActionsVisible: false,
             areDetailsVisible: false,
             areRepaymentDetailsVisible: false,
@@ -35,7 +35,7 @@ describe('getGrantConfig', () => {
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
             statusKey: 'capital.overview.grants.common.statuses.pending',
             statusTagVariant: 'Default',
-            statusTooltipKey: 'capital.overview.grants.common.statuses.pending.description.awaitingFunds',
+            statusTooltipKey: 'capital.overview.grants.common.statuses.pending.description.awaitingFunds.loan',
         });
     });
 
@@ -43,7 +43,7 @@ describe('getGrantConfig', () => {
         const config = getGrantConfig(SINGLE_ACTION_LOAN);
         expect(config).toEqual<GrantConfig>({
             amount: ACTIVE_LOAN.grantAmount,
-            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
+            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds.loan',
             areActionsVisible: true,
             areDetailsVisible: false,
             areRepaymentDetailsVisible: false,
@@ -64,7 +64,7 @@ describe('getGrantConfig', () => {
         const config = getGrantConfig(SINGLE_ACTION_LOAN, true);
         expect(config).toEqual<GrantConfig>({
             amount: ACTIVE_LOAN.grantAmount,
-            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
+            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds.loan',
             areActionsVisible: true,
             areDetailsVisible: false,
             areRepaymentDetailsVisible: false,
@@ -77,7 +77,7 @@ describe('getGrantConfig', () => {
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
             statusKey: 'capital.overview.grants.common.statuses.pending',
             statusTagVariant: 'Default',
-            statusTooltipKey: 'capital.overview.grants.common.statuses.pending.description.awaitingFunds',
+            statusTooltipKey: 'capital.overview.grants.common.statuses.pending.description.awaitingFunds.loan',
         });
     });
 
@@ -110,7 +110,7 @@ describe('getGrantConfig', () => {
         const config = getGrantConfig(FAILED_LOAN);
         expect(config).toEqual<GrantConfig>({
             amount: ACTIVE_LOAN.grantAmount,
-            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
+            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds.loan',
             areActionsVisible: false,
             areDetailsVisible: false,
             areRepaymentDetailsVisible: false,
@@ -121,9 +121,9 @@ describe('getGrantConfig', () => {
             isPendingAlertVisible: false,
             isProgressBarVisible: false,
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
-            statusKey: 'capital.overview.grants.common.statuses.failed',
+            statusKey: 'capital.overview.grants.common.statuses.failed.loan',
             statusTagVariant: 'Error',
-            statusTooltipKey: 'capital.overview.grants.common.statuses.failed.description',
+            statusTooltipKey: 'capital.overview.grants.common.statuses.failed.description.loan',
         });
     });
 
@@ -131,7 +131,7 @@ describe('getGrantConfig', () => {
         const config = getGrantConfig(REPAID_LOAN);
         expect(config).toEqual<GrantConfig>({
             amount: ACTIVE_LOAN.grantAmount,
-            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
+            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds.loan',
             areActionsVisible: false,
             areDetailsVisible: false,
             areRepaymentDetailsVisible: false,
@@ -142,7 +142,7 @@ describe('getGrantConfig', () => {
             isPendingAlertVisible: false,
             isProgressBarVisible: false,
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
-            statusKey: 'capital.overview.grants.common.statuses.fullyRepaid',
+            statusKey: 'capital.overview.grants.common.statuses.fullyRepaid.loan',
             statusTagVariant: 'Light',
             statusTooltipKey: undefined,
         });
@@ -152,7 +152,7 @@ describe('getGrantConfig', () => {
         const config = getGrantConfig(REVOKED_LOAN);
         expect(config).toEqual<GrantConfig>({
             amount: ACTIVE_LOAN.grantAmount,
-            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
+            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds.loan',
             areActionsVisible: false,
             areDetailsVisible: false,
             areRepaymentDetailsVisible: false,
@@ -165,7 +165,7 @@ describe('getGrantConfig', () => {
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
             statusKey: 'capital.overview.grants.common.statuses.revoked',
             statusTagVariant: 'Warning',
-            statusTooltipKey: 'capital.overview.grants.common.statuses.revoked.description',
+            statusTooltipKey: 'capital.overview.grants.common.statuses.revoked.description.loan',
         });
     });
 
@@ -173,7 +173,7 @@ describe('getGrantConfig', () => {
         const config = getGrantConfig(WRITTEN_OFF_LOAN);
         expect(config).toEqual<GrantConfig>({
             amount: ACTIVE_LOAN.grantAmount,
-            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
+            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds.loan',
             areActionsVisible: false,
             areDetailsVisible: false,
             areRepaymentDetailsVisible: false,
@@ -184,9 +184,9 @@ describe('getGrantConfig', () => {
             isPendingAlertVisible: false,
             isProgressBarVisible: false,
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
-            statusKey: 'capital.overview.grants.common.statuses.writtenOff',
+            statusKey: 'capital.overview.grants.common.statuses.writtenOff.loan',
             statusTagVariant: 'Warning',
-            statusTooltipKey: 'capital.overview.grants.common.statuses.writtenOff.description',
+            statusTooltipKey: 'capital.overview.grants.common.statuses.writtenOff.description.loan',
         });
     });
 });

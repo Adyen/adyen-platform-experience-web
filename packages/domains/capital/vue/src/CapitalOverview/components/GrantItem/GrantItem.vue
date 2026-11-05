@@ -35,7 +35,7 @@ const areActionsLocallyCompleted = ref(false);
 const isGrantDetailsOpen = ref(false);
 const grantConfig = computed(() => getGrantConfig(props.grant, areActionsLocallyCompleted.value));
 const termEndLabel = computed(() =>
-    i18n.get('capital.overview.grants.item.termEnds', {
+    i18n.get('capital.overview.grants.item.termEnds.loan', {
         values: { date: dateFormat(grantConfig.value.repaymentPeriodEndDate, DATE_FORMAT_CAPITAL_OVERVIEW) },
     })
 );
@@ -48,7 +48,7 @@ const repaymentPercentage = computed(() => {
 const repaymentRatioParts = computed(() => {
     const repaidAmountPlaceholder = '__REPAID_AMOUNT_PLACEHOLDER__';
     return i18n
-        .get('capital.overview.grants.item.progressBar.repaymentRatio', {
+        .get('capital.overview.grants.item.progressBar.repaymentRatio.loan', {
             values: { repaidAmount: repaidAmountPlaceholder, totalAmount: formatAmount(props.grant.totalAmount) },
         })
         .split(repaidAmountPlaceholder);
@@ -157,7 +157,7 @@ const closeRepaymentModal = () => {
                                 is-underline-visible
                                 :text-to-copy="props.grant.id"
                                 type="Text"
-                                :visible-text="i18n.get('capital.common.fields.grantID')"
+                                :visible-text="i18n.get('capital.common.fields.grantID.loan')"
                                 @click.stop
                             />
                         </div>
@@ -168,7 +168,7 @@ const closeRepaymentModal = () => {
                         variant="secondary"
                         @click.stop="openRepaymentDetails"
                     >
-                        {{ i18n.get('capital.overview.grants.item.actions.sendRepayment') }}
+                        {{ i18n.get('capital.overview.grants.item.actions.sendRepayment.loan') }}
                     </BentoButton>
                     <Actions
                         v-if="grantConfig.areActionsVisible && props.grant.missingActions"
