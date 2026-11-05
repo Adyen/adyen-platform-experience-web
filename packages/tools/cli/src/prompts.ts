@@ -34,20 +34,17 @@ export const createPrompter = ({ stdin, stdout }: Pick<RunOptions, 'stdin' | 'st
             const answer = await ask(`Choose (${hint}): `);
             if (answer === undefined) return undefined;
             if (!answer && defaults.length) return defaults;
-            const picked = answer
+            const tokens = answer
                 .split(',')
-                .map(token => token.trim().toLowerCase())
-                .filter(Boolean)
-                .map(token =>
-                    token === 'all'
-                        ? choices
-                        : /^\d+$/.test(token)
-                          ? choices.filter((_, index) => index + 1 === Number(token))
-                          : choices.filter(choice => choice.group?.toLowerCase() === token)
-                );
-            const invalid = answer.split(',').filter((token, index) => token.trim() && !picked[index]?.length);
-            if (picked.length && !invalid.length) return [...new Set(picked.flat().map(choice => choice.value))];
-            stdout.write(`${invalid.map(token => token.trim()).join(', ') || 'That'} isn't one of the options.\n`);
+                .map(token => token.trim())
+                .filter(Boolean);
+            const matches = (token: string) =>
+                token.toLowerCase() === 'all'
+                    ? choices
+                    : choices.filter((choice, index) => String(index + 1) === token || choice.group?.toLowerCase() === token.toLowerCase());
+            const invalid = tokens.filter(token => !matches(token).length);
+            if (tokens.length && !invalid.length) return [...new Set(tokens.flatMap(token => matches(token).map(choice => choice.value)))];
+            stdout.write(`${invalid.join(', ') || 'That'} isn't one of the options.\n`);
         }
     };
 

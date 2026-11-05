@@ -1,9 +1,11 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { parseArgs } from 'node:util';
 import { add, AGENTS, findInstalled, installRoot, remove, sync } from './install';
 import {
     COMPONENTS_FIELD,
     displayPath,
+    type Flags,
     listFiles,
     listSkills,
     PACKAGE_NAME,
@@ -58,8 +60,8 @@ const duplicateReaders = (folders: string[]) =>
         .filter(([, { reads }]) => folders.filter(folder => reads.includes(folder.split('/')[0]!)).length > 1)
         .map(([agent]) => agent);
 
-const list = (args: string[], { cwd, skillsRoot, version, stdout }: RunOptions) => {
-    const root = installRoot(args, cwd);
+const list = (flags: Flags, { cwd, skillsRoot, version, stdout }: RunOptions) => {
+    const root = installRoot(flags, cwd);
     const installed = findInstalled(root, skillsRoot);
     const skills = listSkills(skillsRoot).map(name => ({
         name,
@@ -74,7 +76,7 @@ const list = (args: string[], { cwd, skillsRoot, version, stdout }: RunOptions) 
                 components: readField(join(dir, 'SKILL.md'), COMPONENTS_FIELD).split(',').filter(Boolean),
             })),
     }));
-    if (args.includes('--json')) {
+    if (flags.json) {
         stdout.write(JSON.stringify(skills, null, 2) + '\n');
         return 0;
     }
@@ -96,34 +98,25 @@ const list = (args: string[], { cwd, skillsRoot, version, stdout }: RunOptions) 
     return 0;
 };
 
-const findInstall = (cwd: string): { version: string } | { pnp: true } | undefined => {
+const installError = (cwd: string, version: string) => {
     let pnp = false;
     for (let dir = cwd; ; dir = dirname(dir)) {
         const manifest = join(dir, 'node_modules', PACKAGE_NAME, 'package.json');
-        if (existsSync(manifest)) return { version: JSON.parse(readFileSync(manifest, 'utf8')).version };
+        if (existsSync(manifest)) {
+            const installed = JSON.parse(readFileSync(manifest, 'utf8')).version;
+            return installed === version
+                ? undefined
+                : `This project has ${PACKAGE_NAME} ${installed} installed, but this CLI is ${version}.\n` +
+                      `Run the command without @latest (npx ${PACKAGE_NAME} …) so it uses the installed copy.\n`;
+        }
         pnp ||= existsSync(join(dir, '.pnp.cjs'));
-        if (dirname(dir) === dir) return pnp ? { pnp } : undefined;
+        if (dirname(dir) === dir) break;
     }
-};
-
-const installError = (cwd: string, version: string) => {
-    const install = findInstall(cwd);
-    if (!install)
-        return (
-            `${PACKAGE_NAME} isn't installed in ${cwd} or any parent directory.\n` +
-            'Run this command from the app that depends on it, after upgrading it to v2.\n'
-        );
-    if ('pnp' in install)
-        return (
-            "Yarn Plug'n'Play isn't supported yet: this command needs node_modules.\n" +
-            'Set `nodeLinker: node-modules` in .yarnrc.yml and run yarn install, or follow the migration guide.\n'
-        );
-    if (install.version !== version)
-        return (
-            `This project has ${PACKAGE_NAME} ${install.version} installed, but this CLI is ${version}.\n` +
-            `Run the command without @latest (npx ${PACKAGE_NAME} …) so it uses the installed copy.\n`
-        );
-    return undefined;
+    return pnp
+        ? "Yarn Plug'n'Play isn't supported yet: this command needs node_modules.\n" +
+              'Set `nodeLinker: node-modules` in .yarnrc.yml and run yarn install, or follow the migration guide.\n'
+        : `${PACKAGE_NAME} isn't installed in ${cwd} or any parent directory.\n` +
+              'Run this command from the app that depends on it, after upgrading it to v2.\n';
 };
 
 const USAGE = `Usage: npx ${PACKAGE_NAME} <command>
@@ -140,24 +133,49 @@ Example:
   npx ${PACKAGE_NAME} skills show migrate-v2
 `;
 
-const resolveCommand = ([group, command, ...args]: string[], options: RunOptions) => {
+const OPTIONS = {
+    components: { type: 'string' },
+    agent: { type: 'string' },
+    yes: { type: 'boolean' },
+    dir: { type: 'string' },
+    json: { type: 'boolean' },
+    help: { type: 'boolean', short: 'h' },
+} as const;
+
+const parse = (argv: string[]) => {
+    try {
+        const { positionals, values } = parseArgs({ args: argv, options: OPTIONS, allowPositionals: true, strict: true });
+        return { positionals, flags: values as Flags };
+    } catch (thrown) {
+        const message = thrown instanceof Error ? thrown.message : String(thrown);
+        const unknown = /^Unknown option '([^']+)'/.exec(message)?.[1];
+        return { error: unknown ? `Unknown option: ${unknown}` : message };
+    }
+};
+
+const resolveCommand = ([group, command, ...args]: string[], flags: Flags, options: RunOptions) => {
     if (group !== 'skills') return undefined;
     const [skill, file] = args;
     if (command === 'show' && skill) return () => show(skill, file, options);
-    if (command === 'list') return () => list(args, options);
-    if (command === 'add') return () => add(args, options);
-    if (command === 'sync') return () => sync(args, options);
-    if (command === 'remove') return () => remove(args, options);
+    if (command === 'list') return () => list(flags, options);
+    if (command === 'add') return () => add(flags, options);
+    if (command === 'sync') return () => sync(flags, options);
+    if (command === 'remove') return () => remove(args, flags, options);
     return undefined;
 };
 
 export async function run(argv: string[], options: RunOptions): Promise<number> {
-    if (argv.includes('--help') || argv.includes('-h')) {
+    const parsed = parse(argv);
+    if ('error' in parsed) {
+        options.stderr.write(`${parsed.error}\n\n${USAGE}`);
+        return 1;
+    }
+    if (parsed.flags.help) {
         options.stdout.write(USAGE);
         return 0;
     }
 
-    const action = resolveCommand(argv, options);
+    const action = resolveCommand(parsed.positionals, parsed.flags, options);
     if (!action) {
         options.stderr.write(USAGE);
         return 1;

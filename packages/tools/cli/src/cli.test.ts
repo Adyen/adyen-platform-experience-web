@@ -92,6 +92,19 @@ describe('usage', () => {
         expect(stderr).toContain('skills show <skill> [file]');
     });
 
+    test.each([
+        [['skills', 'add', '--component', 'capital-offer', '--agent', 'codex', '--yes'], '--component'],
+        [['skills', 'list', '--jsno'], '--jsno'],
+    ])('rejects an unknown flag in %j instead of ignoring it', async (argv, flag) => {
+        const project = makeProject();
+        const { code, stdout, stderr } = await runCli(argv, { cwd: project });
+
+        expect(code).toBe(1);
+        expect(stdout).toBe('');
+        expect(stderr).toContain(`Unknown option: ${flag}`);
+        expect(stderr).toContain('Usage:');
+    });
+
     test('prints usage on --help, even outside a project', async () => {
         const { code, stdout } = await runCli(['--help'], { cwd: makeProject(null) });
 

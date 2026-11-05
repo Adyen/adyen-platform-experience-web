@@ -5,6 +5,7 @@ import {
     COMPONENTS_FIELD,
     displayPath,
     findGitRoot,
+    type Flags,
     listFiles,
     listSkills,
     PACKAGE_NAME,
@@ -16,12 +17,12 @@ import {
     VERSION_FIELD,
 } from './skills';
 
-export const AGENTS: Record<string, { reads: string[]; own: string; detect: string }> = {
-    'claude-code': { reads: ['.claude'], own: '.claude', detect: '.claude' },
-    codex: { reads: ['.agents'], own: '.agents', detect: '.agents' },
-    cursor: { reads: ['.claude', '.agents', '.cursor'], own: '.cursor', detect: '.cursor' },
-    devin: { reads: ['.claude', '.agents', '.cursor'], own: '.agents', detect: '.devin' },
-    droid: { reads: ['.factory'], own: '.factory', detect: '.factory' },
+export const AGENTS: Record<string, { reads: string[]; detect: string }> = {
+    'claude-code': { reads: ['.claude'], detect: '.claude' },
+    codex: { reads: ['.agents'], detect: '.agents' },
+    cursor: { reads: ['.cursor', '.claude', '.agents'], detect: '.cursor' },
+    devin: { reads: ['.agents', '.claude', '.cursor'], detect: '.devin' },
+    droid: { reads: ['.factory'], detect: '.factory' },
 };
 
 const DOMAINS: Record<string, string[]> = {
@@ -39,16 +40,9 @@ const componentChoices = (components: string[]): Choice[] =>
     );
 
 const folderSet = (agents: string[]) => {
-    const folders = new Set(
-        agents
-            .map(agent => AGENTS[agent]!)
-            .filter(({ reads }) => reads.length === 1)
-            .map(({ own }) => own)
-    );
-    for (const agent of agents) {
-        const { reads, own } = AGENTS[agent]!;
-        if (!reads.some(folder => folders.has(folder))) folders.add(own);
-    }
+    const reads = agents.map(agent => AGENTS[agent]!.reads);
+    const folders = new Set(reads.filter(folders => folders.length === 1).flat());
+    for (const candidates of reads) if (!candidates.some(folder => folders.has(folder))) folders.add(candidates[0]!);
     return [...folders].map(folder => `${folder}/skills`);
 };
 
@@ -56,21 +50,13 @@ interface AddFlags {
     components?: string[];
     agents?: string[];
     yes: boolean;
-    dir?: string;
 }
 
-const parseFlags = (args: string[]): AddFlags => {
-    const value = (flag: string) => {
-        const index = args.indexOf(flag);
-        return index === -1 ? undefined : args[index + 1];
-    };
-    const list = (flag: string) =>
-        value(flag)
-            ?.split(',')
-            .map(item => item.trim())
-            .filter(Boolean);
-    return { components: list('--components'), agents: list('--agent'), yes: args.includes('--yes'), dir: value('--dir') };
-};
+const splitList = (value?: string) =>
+    value
+        ?.split(',')
+        .map(item => item.trim())
+        .filter(Boolean);
 
 const install = (skillDir: string, target: string, components: string[]) => {
     const shipped = readField(join(skillDir, 'SKILL.md'), COMPONENTS_FIELD).split(',');
@@ -121,27 +107,27 @@ const askMissing = async (flags: AddFlags, components: string[], root: string, p
     return Boolean(flags.components && flags.agents);
 };
 
-export const add = async (args: string[], options: RunOptions) => {
-    const flags = parseFlags(args);
+export const add = async (flags: Flags, options: RunOptions) => {
+    const selection: AddFlags = { components: splitList(flags.components), agents: splitList(flags.agent), yes: Boolean(flags.yes) };
     const components = shippedComponents(options.skillsRoot);
-    const root = installRoot(args, options.cwd);
+    const root = installRoot(flags, options.cwd);
     const prompter = options.isTTY ? createPrompter(options) : undefined;
     try {
-        if (prompter && !(await askMissing(flags, components, root, prompter))) {
+        if (prompter && !(await askMissing(selection, components, root, prompter))) {
             options.stderr.write('No answer, so nothing was installed.\n');
             return 1;
         }
-        const errors = flagErrors(flags, components);
+        const errors = flagErrors(selection, components);
         if (errors.length) {
             options.stderr.write(errors.join('\n') + '\n');
             return 1;
         }
 
-        const selected = flags.components!;
-        const dirs = folderSet(flags.agents!);
+        const selected = selection.components!;
+        const dirs = folderSet(selection.agents!);
         const count = `${selected.length} component${selected.length === 1 ? '' : 's'}`;
         const where = dirs.map(dir => displayPath(options.cwd, root, dir)).join(', ');
-        if (prompter && !flags.yes && !(await prompter.confirm(`Install the skill for ${count} into ${where}?`))) {
+        if (prompter && !selection.yes && !(await prompter.confirm(`Install the skill for ${count} into ${where}?`))) {
             options.stdout.write('Nothing installed.\n');
             return 0;
         }
@@ -169,17 +155,11 @@ export const findInstalled = (root: string, skillsRoot: string) =>
             .filter(({ dir }) => existsSync(join(dir, 'SKILL.md')))
     );
 
-export const installRoot = (args: string[], cwd: string) => {
-    const { dir } = parseFlags(args);
-    return dir ? resolve(cwd, dir) : (findGitRoot(cwd) ?? cwd);
-};
+export const installRoot = ({ dir }: Flags, cwd: string) => (dir ? resolve(cwd, dir) : (findGitRoot(cwd) ?? cwd));
 
-const VALUE_FLAGS = ['--components', '--agent', '--dir'];
-const positionals = (args: string[]) => args.filter((arg, index) => !arg.startsWith('--') && !VALUE_FLAGS.includes(args[index - 1] ?? ''));
-
-export const remove = (args: string[], options: RunOptions) => {
-    const root = installRoot(args, options.cwd);
-    const named = positionals(args).map(name => `${SKILL_PREFIX}${shortName(name)}`);
+export const remove = (names: string[], flags: Flags, options: RunOptions) => {
+    const root = installRoot(flags, options.cwd);
+    const named = names.map(name => `${SKILL_PREFIX}${shortName(name)}`);
     const installed = findInstalled(root, options.skillsRoot).filter(({ skill }) => !named.length || named.includes(skill));
     const missing = named.filter(skill => !installed.some(copy => copy.skill === skill));
     if (missing.length || !installed.length) {
@@ -193,8 +173,8 @@ export const remove = (args: string[], options: RunOptions) => {
     return 0;
 };
 
-export const sync = (args: string[], options: RunOptions) => {
-    const root = installRoot(args, options.cwd);
+export const sync = (flags: Flags, options: RunOptions) => {
+    const root = installRoot(flags, options.cwd);
     const installed = findInstalled(root, options.skillsRoot);
     if (!installed.length) {
         options.stderr.write(`No installed skills found under ${root}. Install one with: npx ${PACKAGE_NAME} skills add\n`);

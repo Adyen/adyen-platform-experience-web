@@ -20,6 +20,15 @@ export interface RunOptions {
     isTTY?: boolean;
 }
 
+export interface Flags {
+    components?: string;
+    agent?: string;
+    yes?: boolean;
+    dir?: string;
+    json?: boolean;
+    help?: boolean;
+}
+
 export const shortName = (skill: string) => (skill.startsWith(SKILL_PREFIX) ? skill.slice(SKILL_PREFIX.length) : skill);
 
 export const listFiles = (dir: string, root = dir): string[] =>
