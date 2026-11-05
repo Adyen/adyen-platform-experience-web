@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { dirname, matchesGlob, relative, resolve } from 'node:path';
 import { ALLOWED_DECLARATION_EXPORTS, ALLOWED_RUNTIME_EXPORTS } from './allowed-exports.js';
 import ts from 'typescript';
 
@@ -297,4 +297,117 @@ export function diff(baseline: Snapshot, current: Snapshot): string[] {
     }
 
     return diffs;
+}
+
+function getImportSpecifiers(sourceFile: ts.SourceFile): string[] {
+    const specifiers: string[] = [];
+
+    const visit = (node: ts.Node) => {
+        const isStaticImport = (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) && node.moduleSpecifier;
+        const isLazyImport = ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword;
+        const specifier = isStaticImport ? (node as ts.ImportDeclaration).moduleSpecifier : isLazyImport ? node.arguments[0] : undefined;
+        if (specifier && ts.isStringLiteralLike(specifier) && specifier.text.startsWith('.')) specifiers.push(specifier.text);
+        ts.forEachChild(node, visit);
+    };
+
+    visit(sourceFile);
+    return specifiers;
+}
+
+/** Every module the package entry can load, following static and lazy relative imports. */
+function collectReachableModules(entry: string): string[] {
+    const reached = new Set<string>();
+    const pending = [entry];
+
+    while (pending.length) {
+        const file = pending.pop()!;
+        if (reached.has(file) || !existsSync(file)) continue;
+
+        reached.add(file);
+        const sourceFile = ts.createSourceFile(file, readFileSync(file, 'utf-8'), ts.ScriptTarget.Latest, false, ts.ScriptKind.JS);
+        getImportSpecifiers(sourceFile).forEach(specifier => pending.push(resolve(dirname(file), specifier)));
+    }
+
+    return [...reached];
+}
+
+function getRootIdentifier(expression: ts.Expression): string | undefined {
+    let current = expression;
+
+    while (ts.isPropertyAccessExpression(current) || ts.isElementAccessExpression(current) || ts.isCallExpression(current)) {
+        current = current.expression;
+    }
+
+    return ts.isIdentifier(current) ? current.text : undefined;
+}
+
+function getImportedNames(sourceFile: ts.SourceFile): Set<string> {
+    const names = new Set<string>();
+
+    for (const statement of sourceFile.statements) {
+        const clause = ts.isImportDeclaration(statement) ? statement.importClause : undefined;
+        if (!clause) continue;
+        if (clause.name) names.add(clause.name.text);
+        if (clause.namedBindings && ts.isNamespaceImport(clause.namedBindings)) names.add(clause.namedBindings.name.text);
+        if (clause.namedBindings && ts.isNamedImports(clause.namedBindings))
+            clause.namedBindings.elements.forEach(({ name }) => names.add(name.text));
+    }
+
+    return names;
+}
+
+function flattenExpressions(expression: ts.Expression): ts.Expression[] {
+    if (ts.isParenthesizedExpression(expression)) return flattenExpressions(expression.expression);
+    if (ts.isBinaryExpression(expression) && expression.operatorToken.kind === ts.SyntaxKind.CommaToken) {
+        return [...flattenExpressions(expression.left), ...flattenExpressions(expression.right)];
+    }
+    return [expression];
+}
+
+/**
+ * A module registers itself on import when its top level changes something it imported
+ * (e.g. `format.hex = parse` or `autodetect.push(...)`). Dropping such a module breaks its importers.
+ */
+export function registersItselfOnImport(code: string): boolean {
+    const sourceFile = ts.createSourceFile('module.js', code, ts.ScriptTarget.Latest, false, ts.ScriptKind.JS);
+    const importedNames = getImportedNames(sourceFile);
+    if (importedNames.size === 0) return false;
+
+    return sourceFile.statements.some(
+        statement =>
+            ts.isExpressionStatement(statement) &&
+            flattenExpressions(statement.expression).some(expression => {
+                const isAssignment = ts.isBinaryExpression(expression) && expression.operatorToken.kind === ts.SyntaxKind.EqualsToken;
+                const target = isAssignment ? expression.left : ts.isCallExpression(expression) ? expression.expression : undefined;
+                const root = target && getRootIdentifier(target);
+                const isMutation = isAssignment || (target && ts.isPropertyAccessExpression(target));
+                return !!root && importedNames.has(root) && !!isMutation;
+            })
+    );
+}
+
+function isCoveredBySideEffects(sideEffects: unknown, file: string): boolean {
+    if (sideEffects === undefined || sideEffects === true) return true;
+    if (!Array.isArray(sideEffects)) return false;
+
+    return sideEffects.some(pattern => {
+        const normalized = String(pattern).replace(/^\.\//, '');
+        return matchesGlob(file, normalized.includes('/') ? normalized : `**/${normalized}`);
+    });
+}
+
+/**
+ * Bundlers may drop any published module that "sideEffects" does not list, so every module that registers itself
+ * on import must be covered.
+ */
+export function getSideEffectViolations(root: string): string[] {
+    const { module: entry, sideEffects } = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf-8'));
+    if (!entry || !existsSync(resolve(root, entry))) return [];
+
+    return collectReachableModules(resolve(root, entry))
+        .map(path => relative(root, path))
+        .filter(file => !isCoveredBySideEffects(sideEffects, file))
+        .filter(file => registersItselfOnImport(readFileSync(resolve(root, file), 'utf-8')))
+        .sort()
+        .map(file => `  ${file} registers itself on import but is not listed in "sideEffects"`);
 }
