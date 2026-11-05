@@ -1,13 +1,16 @@
 import type { Page } from '@playwright/test';
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
-import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../fixtures/CapitalOverview/constants/analytics';
+import {
+    sharedCapitalOverviewAnalyticsEventProperties,
+    sharedSendRepaymentButtonAnalyticsEventProperties,
+} from '../../../../fixtures/CapitalOverview/constants/analytics';
 
-const STORY_ID = 'mocked-capital-capital-overview--grants';
+const STORY_ID = 'mocked-capital-capital-overview--grants-loan';
 
 const getGrantDetailsToggle = (page: Page) => page.getByLabel('Show grant details').first();
 
-test.describe('Grants', () => {
+test.describe('Grants - Loan', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });
@@ -20,6 +23,7 @@ test.describe('Grants', () => {
             expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible(),
             expect(page.getByRole('radio', { name: 'In progress' })).toBeVisible(),
             expect(page.getByRole('radio', { name: 'Closed' })).toBeVisible(),
+            expect(page.getByRole('button', { name: 'Send repayment', exact: true }).first()).toHaveText('Send repayment'),
         ]);
     });
 
@@ -36,7 +40,7 @@ test.describe('Grants', () => {
             expect(page.getByText('€12,000.00 of €20,220.00 repaid')).toBeVisible(),
             expect(progressBar).toHaveAttribute('aria-valuenow', '59.34718100890207'),
             expect(progressBar).toHaveAttribute('aria-valuemax', '100'),
-            expect(page.getByRole('button', { name: 'Send repayment', exact: true }).first()).toBeHidden(),
+            expect(page.getByRole('button', { name: 'Send repayment', exact: true }).first()).toBeVisible(),
             expect(getGrantDetailsToggle(page)).toBeVisible(),
         ]);
     });
@@ -89,9 +93,51 @@ test.describe('Grants', () => {
         await expect(page.getByRole('tooltip', { name: 'Minimum repayment every 30 days to repay the financing on time' })).toBeVisible();
     });
 
+    test('should show repayment details after send repayment button is clicked', async ({ page, analyticsEvents }) => {
+        await page.getByRole('button', { name: 'Send repayment', exact: true }).click();
+        await expectAnalyticsEvents(analyticsEvents, [['Clicked button', sharedSendRepaymentButtonAnalyticsEventProperties]]);
+
+        const repaymentModal = page.getByRole('dialog');
+        const copyIconButtons = repaymentModal.getByRole('button', { name: /^Copy (IBAN|account owner)$/ });
+
+        await Promise.all([
+            expect(repaymentModal.getByText('Pay off your loan faster by making one-time payments.')).toBeVisible(),
+            expect(repaymentModal.getByText('Loan repayment bank account')).toBeVisible(),
+            expect(copyIconButtons).toHaveCount(2),
+            expect(repaymentModal.getByText('IBAN')).toBeVisible(),
+            expect(repaymentModal.getByText('NL69 RABO 1319 7782 91')).toBeVisible(),
+            expect(repaymentModal.getByText('Account owned by')).toBeVisible(),
+            expect(repaymentModal.getByText('Adyen N.V.', { exact: true }).first()).toBeVisible(),
+            expect(repaymentModal.getByText('Country/region')).toBeVisible(),
+            expect(repaymentModal.getByText('NL', { exact: true })).toBeVisible(),
+            expect(repaymentModal.getByText('Your verified bank accounts')).toBeVisible(),
+            expect(repaymentModal.getByText('NL**INGB******8101')).toBeVisible(),
+            expect(repaymentModal.getByText('NL**INGB******4151')).toBeVisible(),
+            expect(repaymentModal.getByText('How to send a loan payment')).toBeVisible(),
+            expect(repaymentModal.getByText('Add Adyen N.V. as a payee using your bank’s website or app.')).toBeVisible(),
+            expect(repaymentModal.getByText('Send your payment.')).toBeVisible(),
+            expect(repaymentModal.getByText('Wait 1-3 business days for the payment to be applied to your loan.')).toBeVisible(),
+            expect(repaymentModal.getByText('Payments made from a verified account are usually applied faster.')).toBeVisible(),
+        ]);
+    });
+
+    test('should return to grants list when send repayment dismiss button is clicked', async ({ page, analyticsEvents }) => {
+        await page.getByRole('button', { name: 'Send repayment', exact: true }).click();
+        await expectAnalyticsEvents(analyticsEvents, [['Clicked button', sharedSendRepaymentButtonAnalyticsEventProperties]]);
+
+        const dismissButton = page.getByRole('dialog').getByRole('button', { name: 'Close', exact: true });
+
+        await dismissButton.click();
+        await dismissButton.waitFor({ state: 'detached' });
+        await Promise.all([
+            expect(page.getByTestId('grant-amount-label').first()).toBeVisible(),
+            expect(page.getByRole('progressbar').first()).toBeVisible(),
+            expect(page.getByRole('button', { name: 'Send repayment', exact: true }).first()).toBeVisible(),
+        ]);
+    });
+
     test('should render closed grants when closed tab is clicked', async ({ page }) => {
         await page.getByRole('radio', { name: 'Closed' }).click();
-
         await Promise.all([
             expect(page.getByText('Requested funds', { exact: true })).toHaveCount(4),
             expect(page.getByText('€20,000.00')).toHaveCount(4),

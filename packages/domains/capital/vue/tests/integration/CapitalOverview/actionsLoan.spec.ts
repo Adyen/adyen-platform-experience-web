@@ -6,7 +6,7 @@ import {
     sharedGrantItemAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
 
-const STORY_ID = 'mocked-capital-capital-overview--multiple-actions';
+const STORY_ID = 'mocked-capital-capital-overview--actions-loan';
 
 const submitBusinessFinancingInformation = async (page: Page) => {
     await page.getByRole('button', { name: 'Submit information', exact: true }).click();
@@ -54,7 +54,7 @@ const clickedButtonEvents = {
     finishedTerms: ['Clicked button', { ...sharedCapitalOverviewAnalyticsEventProperties, subCategory: 'ToS', label: 'Finish ToS' }],
 } satisfies Record<string, [event: PageAnalyticsEvent['event'], properties: Partial<PageAnalyticsEvent['properties']>]>;
 
-test.describe('Multiple actions', () => {
+test.describe('Actions - Loan', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedCapitalOverviewAnalyticsEventProperties]]);
