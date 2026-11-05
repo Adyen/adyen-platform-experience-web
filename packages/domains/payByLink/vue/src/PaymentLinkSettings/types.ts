@@ -1,4 +1,5 @@
 import type { UIElementProps } from '@integration-components/core/vue';
+import type { IPaymentLinkTermsAndConditions } from '@integration-components/types';
 import type { PaymentLinkSettingsItem, PaymentLinkSettingsProps } from '../../../domain/src';
 
 export type {
@@ -15,10 +16,12 @@ export type {
 
 export type PaymentLinkSettingsExternalProps = UIElementProps & PaymentLinkSettingsProps;
 
+export type PaymentLinkSettingsNavigateBack = (savedTermsAndConditions?: IPaymentLinkTermsAndConditions) => void;
+
 export type PaymentLinkSettingsComponentProps = Omit<PaymentLinkSettingsExternalProps, 'core' | 'appearance'> & {
     embeddedInOverview?: boolean;
     hideTitle?: boolean;
-    navigateBack?: () => void;
+    navigateBack?: PaymentLinkSettingsNavigateBack;
     onContactSupport?: () => void;
     settingsItems?: PaymentLinkSettingsItem[];
 };

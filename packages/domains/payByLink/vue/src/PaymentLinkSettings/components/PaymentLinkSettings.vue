@@ -8,7 +8,7 @@ import { useCoreContext, useModalContext } from '@integration-components/core/vu
 import type { PayByLinkTranslationKey } from '@integration-components/payByLink/domain';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../constants';
-import type { PaymentLinkSettingsItem } from '../types';
+import type { PaymentLinkSettingsItem, PaymentLinkSettingsNavigateBack } from '../types';
 import SettingsError from './SettingsError.vue';
 import StoreSelector from './StoreSelector.vue';
 import SecondaryNav from './SecondaryNav.vue';
@@ -21,7 +21,7 @@ const ERROR_MESSAGE_KEY: PayByLinkTranslationKey = 'payByLink.settings.errors.un
 const props = defineProps<{
     hideTitle?: boolean;
     onContactSupport?: () => void;
-    navigateBack?: () => void;
+    navigateBack?: PaymentLinkSettingsNavigateBack;
 }>();
 
 const { i18n } = useCoreContext();

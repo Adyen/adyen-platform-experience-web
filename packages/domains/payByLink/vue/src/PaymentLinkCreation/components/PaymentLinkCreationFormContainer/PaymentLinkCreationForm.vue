@@ -2,6 +2,7 @@
 import { computed, defineAsyncComponent, provide, ref, watch } from 'vue';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
+import type { IPaymentLinkSettings } from '@integration-components/types';
 import {
     BentoAlert,
     BentoButton,
@@ -84,7 +85,6 @@ const isSameAddress = ref(!(props.fieldsConfig?.data?.billingAddress || props.fi
 const isSubmitting = ref(false);
 const submitError = ref<any>(null);
 const isSubmitError = ref(false);
-const selectedStoreNavigationCache = ref('');
 const showTermsAndConditions = ref(false);
 const titleKey = computed<TranslationKey>(() => (showTermsAndConditions.value ? 'payByLink.settings.title' : 'payByLink.creation.form.title'));
 
@@ -132,15 +132,13 @@ function handleStepSelect(index: number) {
 
 function handleSetupTermsAndConditions() {
     if (!formData.selectedStore.value) return;
-    selectedStoreNavigationCache.value = formData.selectedStore.value;
-    formData.setSelectedStore('');
     showTermsAndConditions.value = true;
 }
 
-function navigateBackFromTermsAndConditions() {
-    formData.setSelectedStore(selectedStoreNavigationCache.value);
+function navigateBackFromTermsAndConditions(savedSettings?: IPaymentLinkSettings) {
+    if (savedSettings?.termsOfServiceUrl) formData.setSettingsData(savedSettings);
+    else formData.refreshSettings();
     showTermsAndConditions.value = false;
-    selectedStoreNavigationCache.value = '';
 }
 
 async function handleSubmit() {
@@ -191,7 +189,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
     <PaymentLinkSettingsContainer
         v-if="showTermsAndConditions"
         hide-title
-        :store-ids="selectedStoreNavigationCache"
+        :store-ids="formData.selectedStore.value"
         :settings-items="TERMS_AND_CONDITIONS_SETTINGS_ITEMS"
         :navigate-back="navigateBackFromTermsAndConditions"
         :embedded-in-overview="props.embeddedInOverview"

@@ -76,6 +76,12 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationComp
         }
     }
 
+    const refreshSettings = () => fetchSettings(selectedStore.value);
+    const setSettingsData = (settings: IPaymentLinkSettings) => {
+        settingsData.value = settings;
+        settingsError.value = undefined;
+    };
+
     async function fetchCountries() {
         const fn = endpoints.countries;
         if (!isFunction(fn)) return;
@@ -201,6 +207,8 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationComp
         storesData,
         configurationData,
         settingsData,
+        setSettingsData,
+        refreshSettings,
         countriesData,
         countryDatasetData,
         isFetchingCountries,

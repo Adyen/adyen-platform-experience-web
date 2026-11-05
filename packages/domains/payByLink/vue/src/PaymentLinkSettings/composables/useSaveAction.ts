@@ -2,10 +2,11 @@ import { onUnmounted, ref, type Ref } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { isFunction, isUndefined } from '@integration-components/utils';
 import type { EndpointHttpCallables } from '@integration-components/core';
+import type { IPaymentLinkTermsAndConditions } from '@integration-components/types';
 import { menuItem } from '../constants';
 import { isThemePayload } from '@integration-components/payByLink/domain';
 import { getThemePayload } from '../utils/getThemePayload';
-import type { PaymentLinkSettingsData, PaymentLinkSettingsItem, PaymentLinkSettingsPayload } from '../types';
+import type { PaymentLinkSettingsData, PaymentLinkSettingsItem, PaymentLinkSettingsNavigateBack, PaymentLinkSettingsPayload } from '../types';
 
 type UpdatePayByLinkThemeRequest = Parameters<EndpointHttpCallables<'updatePayByLinkTheme'>>[0];
 type SavePayByLinkSettingsRequest = Parameters<EndpointHttpCallables<'savePayByLinkSettings'>>[0];
@@ -21,7 +22,7 @@ export interface UseSaveActionParams {
     setSaveActionCalled: (value: boolean) => void;
     setSavedData: (data: PaymentLinkSettingsData) => void;
     setPayload: (payload: PaymentLinkSettingsPayload) => void;
-    navigateBack?: () => void;
+    navigateBack?: PaymentLinkSettingsNavigateBack;
 }
 
 export function useSaveAction({
@@ -44,9 +45,9 @@ export function useSaveAction({
         if (navigationTimeout.value) clearTimeout(navigationTimeout.value);
     });
 
-    const onSaveComplete = () => {
+    const onSaveComplete = (savedTermsAndConditions: IPaymentLinkTermsAndConditions) => {
         if (navigateBack && isFunction(navigateBack)) {
-            navigationTimeout.value = setTimeout(() => navigateBack(), 500);
+            navigationTimeout.value = setTimeout(() => navigateBack(savedTermsAndConditions), 500);
         } else {
             setIsSaving(false);
         }
@@ -89,12 +90,12 @@ export function useSaveAction({
                 { contentType: 'application/json', body: currentPayload as unknown as SavePayByLinkSettingsRequest['body'] },
                 { path: { storeId: store } }
             );
-            const savedData = !data || !data.termsOfServiceUrl ? { termsOfServiceUrl: '' } : data;
+            const savedData = data?.termsOfServiceUrl ? data : { termsOfServiceUrl: '' };
             setSavedData(savedData);
             setPayload(savedData);
             setIsSaveError(false);
             setIsSaveSuccess(true);
-            onSaveComplete();
+            onSaveComplete(savedData);
         } catch {
             setIsSaveError(true);
             setIsSaveSuccess(false);

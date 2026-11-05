@@ -3,7 +3,14 @@ import { useResponsiveContainer, containerQueries } from '@integration-component
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import type { StoreIds } from '@integration-components/payByLink/domain';
 import { DEFAULT_MENU_ITEM, menuItem } from '../constants';
-import type { MenuItemType, PaymentLinkSettingsData, PaymentLinkSettingsItem, PaymentLinkSettingsPayload, StoreItem } from '../types';
+import type {
+    MenuItemType,
+    PaymentLinkSettingsData,
+    PaymentLinkSettingsItem,
+    PaymentLinkSettingsNavigateBack,
+    PaymentLinkSettingsPayload,
+    StoreItem,
+} from '../types';
 import { useSettingsPermission } from './useSettingsPermission';
 import { useStores } from './useStores';
 import { useStoreTheme } from './useStoreTheme';
@@ -40,7 +47,7 @@ export interface PaymentLinkSettingsContextValue {
     setIsShowingRequirements: (value: boolean) => void;
     onSave: () => void;
     embeddedInOverview?: boolean;
-    navigateBack?: () => void;
+    navigateBack?: PaymentLinkSettingsNavigateBack;
 }
 
 const PAYMENT_LINK_SETTINGS_CONTEXT: InjectionKey<PaymentLinkSettingsContextValue> = Symbol('PaymentLinkSettingsContext');
@@ -49,7 +56,7 @@ export interface ProvidePaymentLinkSettingsOptions {
     selectedMenuItems: MenuItemType[];
     storeIds?: StoreIds;
     embeddedInOverview?: boolean;
-    navigateBack?: () => void;
+    navigateBack?: PaymentLinkSettingsNavigateBack;
 }
 
 export function providePaymentLinkSettings(options: ProvidePaymentLinkSettingsOptions): PaymentLinkSettingsContextValue {

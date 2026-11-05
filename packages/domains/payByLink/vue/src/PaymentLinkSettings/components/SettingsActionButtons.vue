@@ -5,10 +5,11 @@ import { useCoreContext } from '@integration-components/core/vue';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { useSettingsPermission } from '../composables/useSettingsPermission';
 import { menuItem } from '../constants';
+import type { PaymentLinkSettingsNavigateBack } from '../types';
 import styles from './SettingsActionButtons.module.scss';
 
 const props = defineProps<{
-    navigateBack?: () => void;
+    navigateBack?: PaymentLinkSettingsNavigateBack;
     closeContent?: () => void;
 }>();
 
@@ -37,7 +38,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
         buttons.push({
             title: i18n.get('payByLink.common.actions.goBack'),
             disabled: isLoading.value,
-            event: props.navigateBack ?? props.closeContent,
+            event: () => (props.navigateBack ?? props.closeContent)?.(),
             variant: 'secondary',
         });
     }
