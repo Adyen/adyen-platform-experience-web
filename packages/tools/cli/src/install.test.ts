@@ -218,6 +218,18 @@ describe('skills add, interactive', () => {
         expect(installedFiles(join(project, '.agents', 'skills', SKILL))).not.toContain('references/payouts-overview.md');
     });
 
+    test('accepts an answer with stray commas and spaces', async () => {
+        const project = makeProject();
+
+        const { code, stdout } = await runCli(['skills', 'add', '--agent', 'codex', '--yes'], { cwd: project, isTTY: true, input: '1,, 2 ,\n' });
+
+        expect(code).toBe(0);
+        expect(stdout).not.toContain("isn't one of the options");
+        const files = installedFiles(join(project, '.agents', 'skills', SKILL));
+        expect(files).toContain('references/capital-offer.md');
+        expect(files).toContain('references/payouts-overview.md');
+    });
+
     test('stops without installing when the input ends before an answer', async () => {
         const project = makeProject();
 

@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { run } from './cli';
 
-const MIN_NODE_MAJOR = 18;
+const MIN_NODE_MAJOR = 20;
 
 if (Number(process.versions.node.split('.')[0]) < MIN_NODE_MAJOR) {
     process.stderr.write(`This command needs Node.js ${MIN_NODE_MAJOR} or later; you're running ${process.versions.node}.\n`);
