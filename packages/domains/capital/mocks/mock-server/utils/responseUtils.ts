@@ -1,13 +1,17 @@
 import { DefaultBodyType, HttpResponse, JsonBodyType, StrictRequest, StrictResponse } from 'msw';
 import { calculateOffers, calculateSelectedOffer } from './offerUtils';
 import {
-    CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS,
-    CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION,
-    DYNAMIC_CAPITAL_OFFER,
-    PENDING_GRANT_WITH_MULTIPLE_ACTIONS,
-    PENDING_GRANT_WITH_SINGLE_ACTION,
-} from '../../mock-data/capital';
-import { ICreateGrantOfferRequest } from '@integration-components/types';
+    CAPITAL_STATE_ACTIONS_CASH_ADVANCE,
+    CAPITAL_STATE_ACTIONS_LOAN,
+    CAPITAL_STATE_SINGLE_ACTION_CASH_ADVANCE,
+    CAPITAL_STATE_SINGLE_ACTION_LOAN,
+    DYNAMIC_OFFER_CONFIG_LOAN,
+    ACTIONS_CASH_ADVANCE,
+    ACTIONS_LOAN,
+    SINGLE_ACTION_CASH_ADVANCE,
+    SINGLE_ACTION_LOAN,
+} from '../../mock-data';
+import { ICreateGrantOfferRequest, IGrantOfferContractType } from '@integration-components/types';
 import { uuid } from '@integration-components/utils';
 import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
 
@@ -55,23 +59,39 @@ export const getGenericError = () => {
 export const getErrorResponse = (error: AdyenPlatformExperienceError, status: number) =>
     HttpResponse.json({ ...error, status, detail: 'detail' }, { status });
 
-export const getAsyncCapitalStateResponse = (url: string) =>
+export const getAsyncCapitalStateLoanResponse = (url: string) =>
     getResponseAfterTimeLimit(
         url,
-        HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION),
-        HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS),
+        HttpResponse.json(CAPITAL_STATE_SINGLE_ACTION_LOAN),
+        HttpResponse.json(CAPITAL_STATE_ACTIONS_LOAN),
         ASYNC_ACTION_DELAY_MS
     );
 
-export const getAsyncGrantsResponse = (url: string) =>
+export const getAsyncCapitalStateCashAdvanceResponse = (url: string) =>
     getResponseAfterTimeLimit(
         url,
-        HttpResponse.json({ data: [PENDING_GRANT_WITH_SINGLE_ACTION] }),
-        HttpResponse.json({ data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] }),
+        HttpResponse.json(CAPITAL_STATE_SINGLE_ACTION_CASH_ADVANCE),
+        HttpResponse.json(CAPITAL_STATE_ACTIONS_CASH_ADVANCE),
         ASYNC_ACTION_DELAY_MS
     );
 
-export const getDynamicOfferResponse = (request: StrictRequest<DefaultBodyType>, retriesLimit?: number) => {
+export const getAsyncGrantsLoanResponse = (url: string) =>
+    getResponseAfterTimeLimit(
+        url,
+        HttpResponse.json({ data: [SINGLE_ACTION_LOAN] }),
+        HttpResponse.json({ data: [ACTIONS_LOAN] }),
+        ASYNC_ACTION_DELAY_MS
+    );
+
+export const getAsyncGrantsCashAdvanceResponse = (url: string) =>
+    getResponseAfterTimeLimit(
+        url,
+        HttpResponse.json({ data: [SINGLE_ACTION_CASH_ADVANCE] }),
+        HttpResponse.json({ data: [ACTIONS_CASH_ADVANCE] }),
+        ASYNC_ACTION_DELAY_MS
+    );
+
+export const getDynamicOfferResponse = (request: StrictRequest<DefaultBodyType>, retriesLimit?: number, contractType?: IGrantOfferContractType) => {
     const url = new URL(request.url);
     const { amount, currency } = { amount: url.searchParams.get('amount'), currency: url.searchParams.get('currency') };
     const numberAmount = Number(amount);
@@ -79,12 +99,12 @@ export const getDynamicOfferResponse = (request: StrictRequest<DefaultBodyType>,
     if (!numberAmount || !currency) return;
 
     const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'ServerError', 'Message', '500');
-    const response = calculateOffers(numberAmount, currency, DYNAMIC_CAPITAL_OFFER.maxAmount.value);
+    const response = calculateOffers(numberAmount, currency, DYNAMIC_OFFER_CONFIG_LOAN.maxAmount.value, contractType);
     return getResponseAfterRetriesLimit(request.url, getErrorResponse(error, 500), HttpResponse.json(response), retriesLimit);
 };
 
-export const getCreateOfferResponse = async (request: StrictRequest<DefaultBodyType>) => {
+export const getCreateOfferResponse = async (request: StrictRequest<DefaultBodyType>, contractType?: IGrantOfferContractType) => {
     const { amount, currency, selectedEstimatedRepaymentTermDays } = (await request.json()) as ICreateGrantOfferRequest;
-    const offer = calculateSelectedOffer(amount, currency, selectedEstimatedRepaymentTermDays);
+    const offer = calculateSelectedOffer(amount, currency, selectedEstimatedRepaymentTermDays, contractType);
     return HttpResponse.json({ ...offer, id: uuid() });
 };

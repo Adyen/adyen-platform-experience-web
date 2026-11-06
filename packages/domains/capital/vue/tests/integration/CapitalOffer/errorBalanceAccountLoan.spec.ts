@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
-const STORY_ID = 'mocked-capital-capital-offer--error-with-code-submit';
+const STORY_ID = 'mocked-capital-capital-offer--error-balance-account-loan';
 
-test.describe('Error (with code) - Submit', () => {
+test.describe('Error - Balance account - Loan', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await page.getByRole('button', { name: 'Review request' }).click();
@@ -11,17 +11,10 @@ test.describe('Error (with code) - Submit', () => {
     });
 
     test('should render an error message', async ({ page }) => {
-        await expect(page.getByText('Something went wrong.')).toBeVisible();
-        await expect(page.getByText("We couldn't continue with the offer.")).toBeVisible();
-        await expect(page.getByText('Contact support for help and share error code 226ac4ce59f0f159ad672d38d3291e93')).toBeVisible();
+        await expect(page.getByTestId('primary-account-warning-icon')).toBeVisible();
+        await expect(page.getByText('There is no primary account configured')).toBeVisible();
+        await expect(page.getByText("We couldn't continue with the offer. Contact support for help.")).toBeVisible();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeHidden();
-        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
-    });
-
-    test('should render offer summary screen when back button is clicked', async ({ page }) => {
-        await expect(page.getByText('Something went wrong.')).toBeVisible();
-        await page.getByRole('button', { name: 'Go back' }).click();
-        await expect(page.getByTestId('capital-offer-summary')).toBeVisible();
     });
 });
 

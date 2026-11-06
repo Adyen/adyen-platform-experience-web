@@ -1,13 +1,19 @@
 import {
     CAPITAL_STATE_INELIGIBLE,
-    CAPITAL_STATE_CLOSED_GRANTS,
-    CAPITAL_STATE_RENEWABLE_GRANT,
-    CAPITAL_STATE_ACTIVE_GRANT,
     CAPITAL_STATE_UNSUPPORTED_REGION,
-    CAPITAL_STATE_US,
-    CAPITAL_STATE_CA,
-    CAPITAL_STATE_SINGLE_TERM,
-} from '../mock-data/capital';
+    CAPITAL_STATE_ELIGIBLE_CA_LOAN,
+    CAPITAL_STATE_ELIGIBLE_US_LOAN,
+    CAPITAL_STATE_RENEWABLE_LOAN,
+    CAPITAL_STATE_RENEWABLE_CASH_ADVANCE,
+    CAPITAL_STATE_SINGLE_TERM_LOAN,
+    CAPITAL_STATE_SINGLE_TERM_CASH_ADVANCE,
+    CAPITAL_STATE_ELIGIBLE_LOAN,
+    CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE,
+    CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN,
+    CAPITAL_STATE_ELIGIBLE_AND_ONGOING_CASH_ADVANCE,
+    SIGNED_OFFER_LOAN,
+    SIGNED_OFFER_CASH_ADVANCE,
+} from '../mock-data';
 import { http, HttpResponse } from 'msw';
 import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
 import { CAPITAL_ENDPOINTS } from '../endpoints';
@@ -33,51 +39,131 @@ export const capitalOfferHandlers = {
             })
         ),
     ],
-    eligible: [
+    eligibleWithOngoingLoan: [
         http.get(
             CAPITAL_ENDPOINTS.capitalState,
             withDelay(() => {
-                return HttpResponse.json(CAPITAL_STATE_CLOSED_GRANTS);
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN);
             })
         ),
     ],
-    eligibleCA: [
+    eligibleWithOngoingCashAdvance: [
         http.get(
             CAPITAL_ENDPOINTS.capitalState,
             withDelay(() => {
-                return HttpResponse.json(CAPITAL_STATE_CA);
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_AND_ONGOING_CASH_ADVANCE);
             })
         ),
     ],
-    eligibleUS: [
+    eligibleLoan: [
         http.get(
             CAPITAL_ENDPOINTS.capitalState,
             withDelay(() => {
-                return HttpResponse.json(CAPITAL_STATE_US);
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_LOAN);
+            })
+        ),
+        http.post(
+            CAPITAL_ENDPOINTS.requestFunds,
+            withDelay(() => {
+                return HttpResponse.json(SIGNED_OFFER_LOAN);
             })
         ),
     ],
-    eligibleWithOngoingGrants: [
+    eligibleCashAdvance: [
         http.get(
             CAPITAL_ENDPOINTS.capitalState,
             withDelay(() => {
-                return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE);
+            })
+        ),
+        http.post(
+            CAPITAL_ENDPOINTS.requestFunds,
+            withDelay(() => {
+                return HttpResponse.json(SIGNED_OFFER_CASH_ADVANCE);
             })
         ),
     ],
-    earlyRenewal: [
+    singleTermLoan: [
         http.get(
             CAPITAL_ENDPOINTS.capitalState,
             withDelay(() => {
-                return HttpResponse.json(CAPITAL_STATE_RENEWABLE_GRANT);
+                return HttpResponse.json(CAPITAL_STATE_SINGLE_TERM_LOAN);
+            })
+        ),
+        http.post(
+            CAPITAL_ENDPOINTS.requestFunds,
+            withDelay(() => {
+                return HttpResponse.json(SIGNED_OFFER_LOAN);
             })
         ),
     ],
-    singleTerm: [
+    singleTermCashAdvance: [
         http.get(
             CAPITAL_ENDPOINTS.capitalState,
             withDelay(() => {
-                return HttpResponse.json(CAPITAL_STATE_SINGLE_TERM);
+                return HttpResponse.json(CAPITAL_STATE_SINGLE_TERM_CASH_ADVANCE);
+            })
+        ),
+        http.post(
+            CAPITAL_ENDPOINTS.requestFunds,
+            withDelay(() => {
+                return HttpResponse.json(SIGNED_OFFER_CASH_ADVANCE);
+            })
+        ),
+    ],
+    eligibleCALoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_CA_LOAN);
+            })
+        ),
+        http.post(
+            CAPITAL_ENDPOINTS.requestFunds,
+            withDelay(() => {
+                return HttpResponse.json(SIGNED_OFFER_LOAN);
+            })
+        ),
+    ],
+    eligibleUSLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_US_LOAN);
+            })
+        ),
+        http.post(
+            CAPITAL_ENDPOINTS.requestFunds,
+            withDelay(() => {
+                return HttpResponse.json(SIGNED_OFFER_LOAN);
+            })
+        ),
+    ],
+    earlyRenewalLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_RENEWABLE_LOAN);
+            })
+        ),
+        http.post(
+            CAPITAL_ENDPOINTS.requestFunds,
+            withDelay(() => {
+                return HttpResponse.json(SIGNED_OFFER_LOAN);
+            })
+        ),
+    ],
+    earlyRenewalCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_RENEWABLE_CASH_ADVANCE);
+            })
+        ),
+        http.post(
+            CAPITAL_ENDPOINTS.requestFunds,
+            withDelay(() => {
+                return HttpResponse.json(SIGNED_OFFER_CASH_ADVANCE);
             })
         ),
     ],
@@ -97,7 +183,13 @@ export const capitalOfferHandlers = {
             })
         ),
     ],
-    errorReview: [
+    errorReviewLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_LOAN);
+            })
+        ),
         http.post(
             CAPITAL_ENDPOINTS.createOffer,
             withDelay(() => {
@@ -105,7 +197,27 @@ export const capitalOfferHandlers = {
             })
         ),
     ],
-    errorSubmit: [
+    errorReviewCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE);
+            })
+        ),
+        http.post(
+            CAPITAL_ENDPOINTS.createOffer,
+            withDelay(() => {
+                return getErrorResponse(getGenericError(), 500);
+            })
+        ),
+    ],
+    errorSubmitLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_LOAN);
+            })
+        ),
         http.post(
             CAPITAL_ENDPOINTS.requestFunds,
             withDelay(() => {
@@ -113,7 +225,27 @@ export const capitalOfferHandlers = {
             })
         ),
     ],
-    errorWithCodeSubmit: [
+    errorSubmitCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE);
+            })
+        ),
+        http.post(
+            CAPITAL_ENDPOINTS.requestFunds,
+            withDelay(() => {
+                return getErrorResponse(getGenericError(), 500);
+            })
+        ),
+    ],
+    errorWithCodeSubmitLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_LOAN);
+            })
+        ),
         http.post(
             CAPITAL_ENDPOINTS.requestFunds,
             withDelay(() => {
@@ -122,7 +254,43 @@ export const capitalOfferHandlers = {
             })
         ),
     ],
-    errorBalanceAccount: [
+    errorWithCodeSubmitCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE);
+            })
+        ),
+        http.post(
+            CAPITAL_ENDPOINTS.requestFunds,
+            withDelay(() => {
+                const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '226ac4ce59f0f159ad672d38d3291e93', 'Message', '30_600');
+                return getErrorResponse(error, 500);
+            })
+        ),
+    ],
+    errorBalanceAccountLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_LOAN);
+            })
+        ),
+        http.post(
+            CAPITAL_ENDPOINTS.requestFunds,
+            withDelay(() => {
+                const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingPrimaryBalanceAccountException', 'Message', '30_013');
+                return getErrorResponse(error, 422);
+            })
+        ),
+    ],
+    errorBalanceAccountCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE);
+            })
+        ),
         http.post(
             CAPITAL_ENDPOINTS.requestFunds,
             withDelay(() => {

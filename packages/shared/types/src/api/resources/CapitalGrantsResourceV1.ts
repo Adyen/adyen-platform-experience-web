@@ -79,6 +79,7 @@ export interface components {
         GrantResponseDTO: {
             balanceAccountCode: string;
             balanceAccountDescription?: string;
+            contractType?: components['schemas']['GrantOfferContractType'];
             /** Format: int32 */
             expectedRepaymentPeriodDays: number;
             feesAmount: components['schemas']['Amount'];
@@ -110,6 +111,8 @@ export interface components {
             transferInstruments?: components['schemas']['TransferInstrumentReference'][];
             unscheduledRepaymentAccounts?: components['schemas']['FundsCollectionDetailDTO'][];
         };
+        /** @enum {string} */
+        GrantOfferContractType: 'cashAdvance' | 'loan';
         /** @enum {string} */
         GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
         GrantsResponseDTO: {

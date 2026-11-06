@@ -9,7 +9,7 @@ import {
     sharedCapitalOfferSummaryAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOffer/constants/analytics';
 
-const STORY_ID = 'mocked-capital-capital-offer--early-renewal';
+const STORY_ID = 'mocked-capital-capital-offer--early-renewal-loan';
 
 const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await page.getByRole('button', { name: 'Review request' }).click();
@@ -33,7 +33,7 @@ const expectPageLoadAnalyticsEvents = (analyticsEvents: PageAnalyticsEvent[]) =>
         ],
     ]);
 
-test.describe('Early renewal', () => {
+test.describe('Early renewal - Loan', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });

@@ -1,4 +1,4 @@
-import { CAPITAL_STATE_FIRST_OFFER, SIGNED_OFFER } from '../mock-data/capital';
+import { CAPITAL_STATE_ELIGIBLE_LOAN } from '../mock-data';
 import { http, HttpResponse } from 'msw';
 import { CAPITAL_ENDPOINTS } from '../endpoints';
 import { getCreateOfferResponse, getDynamicOfferResponse } from './utils';
@@ -8,7 +8,7 @@ export const capitalDefaultHandlers = [
     http.get(
         CAPITAL_ENDPOINTS.capitalState,
         withDelay(() => {
-            return HttpResponse.json(CAPITAL_STATE_FIRST_OFFER);
+            return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_LOAN);
         })
     ),
     http.get(
@@ -21,12 +21,6 @@ export const capitalDefaultHandlers = [
         CAPITAL_ENDPOINTS.createOffer,
         withDelay(({ request }) => {
             return getCreateOfferResponse(request);
-        })
-    ),
-    http.post(
-        CAPITAL_ENDPOINTS.requestFunds,
-        withDelay(() => {
-            return HttpResponse.json(SIGNED_OFFER);
         })
     ),
 ];
