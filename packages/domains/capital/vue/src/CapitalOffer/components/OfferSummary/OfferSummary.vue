@@ -32,7 +32,7 @@ const isEarlyRenewal = computed(() => !!renewableGrant.value);
 const offerAmount = computed(() => i18n.amount(props.offer.grantAmount.value, props.offer.grantAmount.currency, { minimumFractionDigits: 0 }));
 const highlights = computed(() => [
     {
-        label: i18n.get('capital.common.fields.financing'),
+        label: i18n.get('capital.common.fields.financing.loan'),
         value: offerAmount.value,
     },
     {
@@ -48,7 +48,7 @@ const highlights = computed(() => [
         value: '=',
     },
     {
-        label: i18n.get('capital.common.fields.totalRepaymentAmount'),
+        label: i18n.get('capital.common.fields.totalRepaymentAmount.loan'),
         value: i18n.amount(props.offer.totalAmount.value, props.offer.totalAmount.currency, { minimumFractionDigits: 0 }),
     },
 ]);
@@ -87,7 +87,7 @@ function handleBack() {
 
 const actions = computed<BentoButtonActionsList>(() => [
     {
-        title: i18n.get('capital.offer.summary.actions.requestFundsWithAmount', { values: { amount: offerAmount.value } }),
+        title: i18n.get('capital.offer.summary.actions.submit', { values: { amount: offerAmount.value } }),
         state: isRequestFundsLoading.value ? 'loading' : undefined,
         disabled: !!requestFundsError.value || !!requestedFunds.value,
         event: handleRequestFunds,
@@ -132,10 +132,10 @@ const actions = computed<BentoButtonActionsList>(() => [
             </BentoAlert>
             <BentoAlert v-if="isEarlyRenewal">
                 <template #default>
-                    {{ i18n.get('capital.offer.summary.earlyRenewalNotice.title') }}
+                    {{ i18n.get('capital.offer.summary.renewalNotice.title.loan') }}
                 </template>
                 <template #description>
-                    {{ i18n.get('capital.offer.summary.earlyRenewalNotice.description') }}
+                    {{ i18n.get('capital.offer.summary.renewalNotice.description.loan') }}
                 </template>
             </BentoAlert>
             <LegalNotice :region="props.capitalState.region" />

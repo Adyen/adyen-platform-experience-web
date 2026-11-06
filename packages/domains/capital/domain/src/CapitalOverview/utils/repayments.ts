@@ -102,17 +102,17 @@ export const getBankAccountFieldCopyButtonTranslationKey = (field: string): Capi
 export const getBankAccountFieldTranslationKey = (field: string): CapitalTranslationKey => {
     switch (field) {
         case 'accountNumber':
-            return 'capital.overview.repayment.accountDetails.fields.accountNumber';
+            return 'capital.overview.repayment.accountFields.accountNumber';
         case 'beneficiaryName':
-            return 'capital.overview.repayment.accountDetails.fields.beneficiaryName';
+            return 'capital.overview.repayment.accountFields.beneficiaryName';
         case 'iban':
-            return 'capital.overview.repayment.accountDetails.fields.iban';
+            return 'capital.overview.repayment.accountFields.iban';
         case 'region':
-            return 'capital.overview.repayment.accountDetails.fields.countryOrRegion';
+            return 'capital.overview.repayment.accountFields.countryOrRegion';
         case 'routingNumber':
-            return 'capital.overview.repayment.accountDetails.fields.routingNumber';
+            return 'capital.overview.repayment.accountFields.routingNumber';
         case 'sortCode':
-            return 'capital.overview.repayment.accountDetails.fields.sortCode';
+            return 'capital.overview.repayment.accountFields.sortCode';
         default:
             return field as CapitalTranslationKey;
     }

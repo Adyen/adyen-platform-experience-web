@@ -34,17 +34,17 @@ const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
 const getStatusKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): CapitalTranslationKey | undefined => {
     switch (status) {
         case 'Failed':
-            return 'capital.overview.grants.common.statuses.failed';
+            return 'capital.overview.grantItem.statuses.failed.loan';
         case 'Pending':
             return !areActionsLocallyCompleted && missingActions?.length
-                ? 'capital.overview.grants.common.statuses.actionNeeded'
-                : 'capital.overview.grants.common.statuses.pending';
+                ? 'capital.overview.grantItem.statuses.actionNeeded'
+                : 'capital.overview.grantItem.statuses.pending';
         case 'Repaid':
-            return 'capital.overview.grants.common.statuses.fullyRepaid';
+            return 'capital.overview.grantItem.statuses.repaid.loan';
         case 'Revoked':
-            return 'capital.overview.grants.common.statuses.revoked';
+            return 'capital.overview.grantItem.statuses.revoked';
         case 'WrittenOff':
-            return 'capital.overview.grants.common.statuses.writtenOff';
+            return 'capital.overview.grantItem.statuses.writtenOff.loan';
         default:
             return undefined;
     }
@@ -69,15 +69,13 @@ const getStatusTagVariant = ({ status, missingActions }: IGrant, areActionsLocal
 const getStatusTooltipKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): CapitalTranslationKey | undefined => {
     switch (status) {
         case 'Pending':
-            return !areActionsLocallyCompleted && missingActions?.length
-                ? undefined
-                : 'capital.overview.grants.common.statuses.pending.description.awaitingFunds';
+            return !areActionsLocallyCompleted && missingActions?.length ? undefined : 'capital.overview.grantItem.statuses.pendingDescription.loan';
         case 'Failed':
-            return 'capital.overview.grants.common.statuses.failed.description';
+            return 'capital.overview.grantItem.statuses.failedDescription.loan';
         case 'WrittenOff':
-            return 'capital.overview.grants.common.statuses.writtenOff.description';
+            return 'capital.overview.grantItem.statuses.writtenOffDescription.loan';
         case 'Revoked':
-            return 'capital.overview.grants.common.statuses.revoked.description';
+            return 'capital.overview.grantItem.statuses.revokedDescription.loan';
         default:
             return undefined;
     }
@@ -89,7 +87,7 @@ export const getGrantConfig = (grant: IGrant, areActionsLocallyCompleted?: boole
 
     return {
         amount: isGrantActive ? grant.remainingTotalAmount : grant.grantAmount,
-        amountLabelKey: isGrantActive ? 'capital.overview.grants.item.amounts.remaining' : 'capital.overview.grants.item.amounts.requestedFunds',
+        amountLabelKey: isGrantActive ? 'capital.overview.grantItem.remainingGrantAmount' : 'capital.overview.grantItem.grantAmount.loan',
         areActionsVisible: hasActions,
         areDetailsVisible: isGrantActive,
         areRepaymentDetailsVisible: isGrantActive && !!grant.unscheduledRepaymentAccounts?.length,
