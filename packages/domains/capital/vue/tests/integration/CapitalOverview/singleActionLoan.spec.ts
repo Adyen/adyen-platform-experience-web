@@ -23,7 +23,7 @@ test.describe('Single action - Loan', () => {
                 )
             ).toBeVisible(),
             expect(page.getByRole('button', { name: 'Sign terms & conditions' })).toBeVisible(),
-            expect(page.getByRole('progressbar', { name: 'Grant repayment' })).toHaveCount(0),
+            expect(page.getByRole('progressbar')).toHaveCount(0),
             expect(page.getByRole('button', { name: 'Show grant details' })).toHaveCount(0),
         ]);
     });

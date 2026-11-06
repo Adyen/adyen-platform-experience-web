@@ -19,7 +19,7 @@ test.describe('Grants - Loan', () => {
 
     test('should render grants screen with tabs', async ({ page }) => {
         await Promise.all([
-            expect(page.getByText('Adyen Capital')).toBeVisible(),
+            expect(page.getByText('Adyen Capital', { exact: true })).toBeVisible(),
             expect(page.getByText('Adyen Capital is provided by Adyen N.V.')).toBeVisible(),
             expect(page.getByRole('radio', { name: 'In progress' })).toBeVisible(),
             expect(page.getByRole('radio', { name: 'Closed' })).toBeVisible(),
