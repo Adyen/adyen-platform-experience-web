@@ -31,7 +31,7 @@ export function useFinancingDetailItems() {
             case 'financing':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.financing'),
+                    label: i18n.get('capital.common.fields.financing.loan'),
                     value: i18n.amount(financingDetails.grantAmount.value, financingDetails.grantAmount.currency),
                 };
             case 'fees':
@@ -43,14 +43,14 @@ export function useFinancingDetailItems() {
             case 'totalRepaymentAmount':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.totalRepaymentAmount'),
+                    label: i18n.get('capital.common.fields.totalRepaymentAmount.loan'),
                     value: i18n.amount(financingDetails.totalAmount.value, financingDetails.totalAmount.currency),
                 };
             case 'dailyRepaymentRate':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.dailyRepaymentRate'),
-                    value: i18n.get('capital.common.values.percentage', {
+                    label: i18n.get('capital.common.fields.dailyRepaymentRate.loan'),
+                    value: i18n.get('capital.common.values.percentageOfDailySales', {
                         values: { percentage: calculatePercentageFromBasisPoints(financingDetails.repaymentRate) },
                     }),
                 };
@@ -62,7 +62,7 @@ export function useFinancingDetailItems() {
                           value: i18n.get('capital.common.values.percentage', {
                               values: { percentage: calculatePercentageFromBasisPoints(financingDetails.aprBasisPoints) },
                           }),
-                          info: i18n.get('capital.common.fields.annualPercentageRate.description'),
+                          info: i18n.get('capital.common.fields.annualPercentageRateDescription'),
                       }
                     : undefined;
             case 'repaymentThreshold':
@@ -70,14 +70,14 @@ export function useFinancingDetailItems() {
                     key: key,
                     label: i18n.get('capital.common.fields.repaymentThreshold'),
                     value: i18n.amount(financingDetails.thresholdAmount.value, financingDetails.thresholdAmount.currency),
-                    info: i18n.get('capital.common.fields.repaymentThreshold.description', {
+                    info: i18n.get('capital.common.fields.repaymentThresholdDescription', {
                         values: { days: CAPITAL_REPAYMENT_FREQUENCY },
                     }),
                 };
             case 'expectedRepaymentPeriod':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.expectedRepaymentPeriod'),
+                    label: i18n.get('capital.common.fields.expectedRepaymentPeriod.loan'),
                     value: formatTermLabel(financingDetails.expectedRepaymentPeriodDays),
                 };
             case 'maximumRepaymentDate':

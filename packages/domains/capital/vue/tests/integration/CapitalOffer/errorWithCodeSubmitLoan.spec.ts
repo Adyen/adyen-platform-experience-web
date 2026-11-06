@@ -7,7 +7,7 @@ test.describe('Error (with code) - Submit - Loan', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await page.getByRole('button', { name: 'Review request' }).click();
-        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
+        await page.getByRole('button', { name: 'Submit €13,000 request' }).click();
     });
 
     test('should render an error message', async ({ page }) => {
@@ -29,7 +29,7 @@ test.describe('onContactSupport prop', () => {
     test('should render support button when prop is set', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
         await page.getByRole('button', { name: 'Review request' }).click();
-        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
+        await page.getByRole('button', { name: 'Submit €13,000 request' }).click();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
     });
 });
