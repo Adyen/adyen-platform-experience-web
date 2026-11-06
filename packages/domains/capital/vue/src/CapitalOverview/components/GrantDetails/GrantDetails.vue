@@ -25,7 +25,7 @@ const { i18n } = useCoreContext();
 
 const requestedFunds = computed(() => i18n.amount(props.grant.grantAmount.value, props.grant.grantAmount.currency));
 const requestedFundsText = computed(() =>
-    i18n.get('capital.overview.grants.item.details.requestedFunds', {
+    i18n.get('capital.overview.grantItem.requestedFunds', {
         values: { amount: requestedFunds.value },
     })
 );
@@ -51,7 +51,7 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
         },
         {
             key: 'capital.common.fields.repaymentThreshold',
-            labelInfo: i18n.get('capital.common.fields.repaymentThreshold.description', {
+            labelInfo: i18n.get('capital.common.fields.repaymentThresholdDescription', {
                 values: { days: CAPITAL_REPAYMENT_FREQUENCY },
             }),
             value: formatAmount(enhancedGrant.thresholdAmount),

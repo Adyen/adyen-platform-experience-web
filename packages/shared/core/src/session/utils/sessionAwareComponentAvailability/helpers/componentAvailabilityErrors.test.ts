@@ -34,11 +34,9 @@ describe('componentAvailabilityErrors', () => {
             'payByLink.settings.errors.unavailable'
         );
         expect(componentAvailabilityErrors('capitalOverview', 'capital.common.errors.componentUnavailable')).toBe(
-            'capital.overview.common.errors.unavailable'
+            'capital.overview.errors.unavailable'
         );
-        expect(componentAvailabilityErrors('capitalOffer', 'capital.common.errors.componentUnavailable')).toBe(
-            'capital.offer.common.errors.unavailable'
-        );
+        expect(componentAvailabilityErrors('capitalOffer', 'capital.common.errors.componentUnavailable')).toBe('capital.offer.errors.unavailable');
     });
 
     test('falls back to the provided message when the component type is unknown', () => {

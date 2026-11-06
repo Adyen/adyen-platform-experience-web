@@ -105,7 +105,7 @@ const handleChange = (term: number) => {
         :hide-label="false"
         :items="items"
         :items-per-row="itemsPerRow"
-        :label="i18n.get('capital.offer.selection.termOptions.title.loan')"
+        :label="i18n.get('capital.offer.selection.repaymentPlan.loan')"
         :layout="isWideContainer ? 'horizontal' : 'vertical'"
         :model-value="props.term"
         variant="radio"

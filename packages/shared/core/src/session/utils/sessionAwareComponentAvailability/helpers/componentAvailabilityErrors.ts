@@ -26,9 +26,9 @@ function componentAvailabilityErrors(type: ExternalComponentType | undefined, fa
         case 'paymentLinkDetails':
             return 'payByLink.details.errors.unavailable';
         case 'capitalOffer':
-            return 'capital.offer.common.errors.unavailable';
+            return 'capital.offer.errors.unavailable';
         case 'capitalOverview':
-            return 'capital.overview.common.errors.unavailable';
+            return 'capital.overview.errors.unavailable';
         case 'paymentLinkSettings':
             return 'payByLink.settings.errors.unavailable';
         default:

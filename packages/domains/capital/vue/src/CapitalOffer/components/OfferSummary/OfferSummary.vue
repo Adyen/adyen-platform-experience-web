@@ -87,7 +87,7 @@ function handleBack() {
 
 const actions = computed<BentoButtonActionsList>(() => [
     {
-        title: i18n.get('capital.offer.summary.actions.requestFundsWithAmount', { values: { amount: offerAmount.value } }),
+        title: i18n.get('capital.offer.summary.actions.submit', { values: { amount: offerAmount.value } }),
         state: isRequestFundsLoading.value ? 'loading' : undefined,
         disabled: !!requestFundsError.value || !!requestedFunds.value,
         event: handleRequestFunds,
@@ -132,10 +132,10 @@ const actions = computed<BentoButtonActionsList>(() => [
             </BentoAlert>
             <BentoAlert v-if="isEarlyRenewal">
                 <template #default>
-                    {{ i18n.get('capital.offer.summary.earlyRenewalNotice.title.loan') }}
+                    {{ i18n.get('capital.offer.summary.renewalNotice.title.loan') }}
                 </template>
                 <template #description>
-                    {{ i18n.get('capital.offer.summary.earlyRenewalNotice.description.loan') }}
+                    {{ i18n.get('capital.offer.summary.renewalNotice.description.loan') }}
                 </template>
             </BentoAlert>
             <LegalNotice :region="props.capitalState.region" />

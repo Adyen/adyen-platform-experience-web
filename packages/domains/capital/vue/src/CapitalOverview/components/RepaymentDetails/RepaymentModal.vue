@@ -19,12 +19,12 @@ const transferInstrumentItems = computed(() => getTransferInstrumentIds(props.gr
 
 const instructionItems = computed(() => [
     bankAccount.value
-        ? i18n.get('capital.overview.repayment.instructions.addingBeneficiary', {
+        ? i18n.get('capital.overview.repayment.steps.addBeneficiary', {
               values: { beneficiaryName: bankAccount.value.beneficiaryName },
           })
         : undefined,
-    i18n.get('capital.overview.repayment.instructions.sendingPayment.loan'),
-    i18n.get('capital.overview.repayment.instructions.waiting.loan'),
+    i18n.get('capital.overview.repayment.steps.transfer.loan'),
+    i18n.get('capital.overview.repayment.steps.wait'),
 ]);
 </script>
 
@@ -37,7 +37,7 @@ const instructionItems = computed(() => [
                     {{ i18n.get('capital.overview.repayment.subtitle.loan') }}
                 </BentoTypography>
                 <BentoCard>
-                    {{ i18n.get('capital.overview.repayment.accountDetails.title') }}
+                    {{ i18n.get('capital.overview.repayment.accountTitle') }}
                     <template #description>
                         <AccountDetails :bank-account="bankAccount" />
                     </template>
@@ -46,7 +46,7 @@ const instructionItems = computed(() => [
                     <template v-if="transferInstrumentItems.length">
                         <div>
                             <BentoTypography el="span" variant="caption" stronger>
-                                {{ i18n.get('capital.overview.repayment.transferInstruments') }}
+                                {{ i18n.get('capital.overview.repayment.transferInstrumentsTitle') }}
                             </BentoTypography>
                             <ul :class="styles.transferInstrumentList">
                                 <li
@@ -65,7 +65,7 @@ const instructionItems = computed(() => [
 
                     <div>
                         <BentoTypography el="span" variant="caption" stronger>
-                            {{ i18n.get('capital.overview.repayment.instructions.title.loan') }}
+                            {{ i18n.get('capital.overview.repayment.stepsTitle.loan') }}
                         </BentoTypography>
                         <ul :class="styles.list">
                             <li v-for="item in instructionItems" :key="item" :class="styles.instructionListItem">
@@ -77,7 +77,7 @@ const instructionItems = computed(() => [
                     </div>
 
                     <BentoTypography el="span" variant="caption" :class="styles.verifiedBankAccountNotice">
-                        {{ i18n.get('capital.overview.repayment.instructions.verifiedAccount.loan') }}
+                        {{ i18n.get('capital.overview.repayment.verifiedAccountNote.loan') }}
                     </BentoTypography>
                 </div>
             </div>

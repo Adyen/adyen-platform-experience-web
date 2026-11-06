@@ -3,7 +3,7 @@ import { test, expect } from '@integration-components/testing/fixtures/eventDisp
 import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
 import {
     sharedCapitalOverviewAnalyticsEventProperties,
-    sharedSendRepaymentButtonAnalyticsEventProperties,
+    openRepaymentButtonAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--grants-loan';
@@ -95,7 +95,7 @@ test.describe('Grants - Loan', () => {
 
     test('should show repayment details after send repayment button is clicked', async ({ page, analyticsEvents }) => {
         await page.getByRole('button', { name: 'Send repayment', exact: true }).click();
-        await expectAnalyticsEvents(analyticsEvents, [['Clicked button', sharedSendRepaymentButtonAnalyticsEventProperties]]);
+        await expectAnalyticsEvents(analyticsEvents, [['Clicked button', openRepaymentButtonAnalyticsEventProperties]]);
 
         const repaymentModal = page.getByRole('dialog');
         const copyIconButtons = repaymentModal.getByRole('button', { name: /^Copy (IBAN|account owner)$/ });
@@ -123,7 +123,7 @@ test.describe('Grants - Loan', () => {
 
     test('should return to grants list when send repayment dismiss button is clicked', async ({ page, analyticsEvents }) => {
         await page.getByRole('button', { name: 'Send repayment', exact: true }).click();
-        await expectAnalyticsEvents(analyticsEvents, [['Clicked button', sharedSendRepaymentButtonAnalyticsEventProperties]]);
+        await expectAnalyticsEvents(analyticsEvents, [['Clicked button', openRepaymentButtonAnalyticsEventProperties]]);
 
         const dismissButton = page.getByRole('dialog').getByRole('button', { name: 'Close', exact: true });
 

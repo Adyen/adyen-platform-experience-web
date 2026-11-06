@@ -35,7 +35,7 @@ const areActionsLocallyCompleted = ref(false);
 const isGrantDetailsOpen = ref(false);
 const grantConfig = computed(() => getGrantConfig(props.grant, areActionsLocallyCompleted.value));
 const termEndLabel = computed(() =>
-    i18n.get('capital.overview.grants.item.termEnds.loan', {
+    i18n.get('capital.overview.grantItem.termEnds.loan', {
         values: { date: dateFormat(grantConfig.value.repaymentPeriodEndDate, DATE_FORMAT_CAPITAL_OVERVIEW) },
     })
 );
@@ -48,7 +48,7 @@ const repaymentPercentage = computed(() => {
 const repaymentRatioParts = computed(() => {
     const repaidAmountPlaceholder = '__REPAID_AMOUNT_PLACEHOLDER__';
     return i18n
-        .get('capital.overview.grants.item.progressBar.repaymentRatio.loan', {
+        .get('capital.overview.grantItem.repaymentRatio.loan', {
             values: { repaidAmount: repaidAmountPlaceholder, totalAmount: formatAmount(props.grant.totalAmount) },
         })
         .split(repaidAmountPlaceholder);
@@ -106,7 +106,7 @@ const closeRepaymentModal = () => {
 <template>
     <div :class="styles.root">
         <BentoCard
-            :aria-label="i18n.get('capital.overview.grants.item.details.a11y.label')"
+            :aria-label="i18n.get('capital.overview.grantItem.showDetails.a11y.label')"
             :background="grantConfig.isBackgroundFilled ? 'secondary' : 'primary'"
             :clickable="grantConfig.areDetailsVisible"
             :closed="!isGrantDetailsOpen"
@@ -152,7 +152,7 @@ const closeRepaymentModal = () => {
                         </div>
                         <div v-if="grantConfig.isGrantIdVisible" :class="styles.grantID">
                             <CopyText
-                                copy-button-aria-label-key="capital.overview.grants.item.actions.copyGrantID"
+                                copy-button-aria-label-key="capital.overview.grantItem.actions.copyGrantID"
                                 data-testid="grant-id-copy-text"
                                 is-underline-visible
                                 :text-to-copy="props.grant.id"
@@ -168,7 +168,7 @@ const closeRepaymentModal = () => {
                         variant="secondary"
                         @click.stop="openRepaymentDetails"
                     >
-                        {{ i18n.get('capital.overview.grants.item.actions.sendRepayment.loan') }}
+                        {{ i18n.get('capital.overview.grantItem.actions.sendRepayment.loan') }}
                     </BentoButton>
                     <Actions
                         v-if="grantConfig.areActionsVisible && props.grant.missingActions"
@@ -179,7 +179,7 @@ const closeRepaymentModal = () => {
                         @complete="handleActionsComplete"
                     />
                     <BentoAlert v-if="grantConfig.isPendingAlertVisible" :class="styles.alert" type="highlight">
-                        {{ i18n.get('capital.overview.grants.item.alerts.processingRequest') }}
+                        {{ i18n.get('capital.overview.grantItem.alerts.processingRequest') }}
                     </BentoAlert>
                 </div>
                 <GrantDetails v-if="grantConfig.areDetailsVisible && isGrantDetailsOpen" :grant="props.grant" />

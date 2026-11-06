@@ -62,7 +62,7 @@ export function useFinancingDetailItems() {
                           value: i18n.get('capital.common.values.percentage', {
                               values: { percentage: calculatePercentageFromBasisPoints(financingDetails.aprBasisPoints) },
                           }),
-                          info: i18n.get('capital.common.fields.annualPercentageRate.description'),
+                          info: i18n.get('capital.common.fields.annualPercentageRateDescription'),
                       }
                     : undefined;
             case 'repaymentThreshold':
@@ -70,7 +70,7 @@ export function useFinancingDetailItems() {
                     key: key,
                     label: i18n.get('capital.common.fields.repaymentThreshold'),
                     value: i18n.amount(financingDetails.thresholdAmount.value, financingDetails.thresholdAmount.currency),
-                    info: i18n.get('capital.common.fields.repaymentThreshold.description', {
+                    info: i18n.get('capital.common.fields.repaymentThresholdDescription', {
                         values: { days: CAPITAL_REPAYMENT_FREQUENCY },
                     }),
                 };

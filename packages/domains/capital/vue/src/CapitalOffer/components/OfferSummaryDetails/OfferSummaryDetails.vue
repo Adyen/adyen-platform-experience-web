@@ -51,16 +51,16 @@ const handleActiveTabIndexUpdate = (index: number) => {
 <template>
     <section>
         <BentoTabs v-if="isEarlyRenewal" @update:active-tab-index="handleActiveTabIndexUpdate($event)">
-            <BentoTab :title="i18n.get('capital.offer.summary.earlyRenewal.tabs.newGrant.loan')">
+            <BentoTab :title="i18n.get('capital.offer.summary.renewalTabs.newGrant.loan')">
                 <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="offerItems" :class="styles.list" />
             </BentoTab>
-            <BentoTab :title="i18n.get('capital.offer.summary.earlyRenewal.tabs.currentGrant.loan')">
+            <BentoTab :title="i18n.get('capital.offer.summary.renewalTabs.currentGrant.loan')">
                 <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="renewableGrantItems" :class="styles.list" />
             </BentoTab>
         </BentoTabs>
         <template v-else>
             <BentoTypography variant="body" strongest>
-                {{ i18n.get('capital.common.termsTitle.loan') }}
+                {{ i18n.get('capital.offer.termsTitle.loan') }}
             </BentoTypography>
             <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="offerItems" :class="styles.list" />
         </template>
