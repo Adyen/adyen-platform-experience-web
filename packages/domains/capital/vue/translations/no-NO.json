@@ -65,7 +65,7 @@
     "capital.offer.amountToReceive": "Beløp du mottat",
     "capital.offer.cashAdvance.currentRemainingGrantAmount": "Gjenstår å innfri på nåværende forskudd",
     "capital.offer.cashAdvance.newGrantAmount": "Nytt forskudd",
-    "capital.offer.cashAdvance.regulatoryNotice": "Dette kontantforskuddet for forhandlere er et kjøp av dine fremtidige fordringer, ikke et lån eller en kredittfasilitet. Det er ikke regulert av Financial Conduct Authority og omfattes ikke av beskyttelsen i Financial Services and Markets Act 2000 eller Consumer Credit Act 1974.",
+    "capital.offer.cashAdvance.regulatoryNotice.GB": "Dette kontantforskuddet for forhandlere er et kjøp av dine fremtidige fordringer, ikke et lån eller en kredittfasilitet. Det er ikke regulert av Financial Conduct Authority og omfattes ikke av beskyttelsen i Financial Services and Markets Act 2000 eller Consumer Credit Act 1974.",
     "capital.offer.cashAdvance.termsTitle": "Forskuddsvilkår",
     "capital.offer.errors.accountInactive": "Kontoen din er inaktiv",
     "capital.offer.errors.cannotContinue": "Vi kunne ikke gå videre med Adyen Capital-tilbudet.",

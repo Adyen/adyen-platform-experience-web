@@ -65,7 +65,7 @@
     "capital.offer.amountToReceive": "Summa, jonka saat",
     "capital.offer.cashAdvance.currentRemainingGrantAmount": "Nykyisestä ennakosta jäljellä oleva takaisin maksettava summa",
     "capital.offer.cashAdvance.newGrantAmount": "Uusi ennakko",
-    "capital.offer.cashAdvance.regulatoryNotice": "Tämä kauppiaan käteisennakko on tulevien saataviesi ostamista, ei laina eikä luottojärjestely. Financial Conduct Authority ei sääntele sitä, eikä siihen sovelleta Financial Services and Markets Act 2000 -lain tai Consumer Credit Act 1974 -lain mukaisia suojia.",
+    "capital.offer.cashAdvance.regulatoryNotice.GB": "Tämä kauppiaan käteisennakko on tulevien saataviesi ostamista, ei laina eikä luottojärjestely. Financial Conduct Authority ei sääntele sitä, eikä siihen sovelleta Financial Services and Markets Act 2000 -lain tai Consumer Credit Act 1974 -lain mukaisia suojia.",
     "capital.offer.cashAdvance.termsTitle": "Ennakon ehdot",
     "capital.offer.errors.accountInactive": "Tilisi ei ole aktiivinen",
     "capital.offer.errors.cannotContinue": "Adyen Capital -tarjouksen jatkaminen ei onnistunut.",

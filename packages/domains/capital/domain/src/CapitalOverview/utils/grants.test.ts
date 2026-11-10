@@ -36,6 +36,20 @@ describe('getAdjustedGrants', () => {
 
         expect(getAdjustedGrants(state, response, undefined)).toEqual([RENEWING_ACTIVE_LOAN, REPAID_LOAN]);
     });
+
+    test('removes grants with an unsupported contract type', () => {
+        const state = getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_LOAN, localSupportedRegions);
+        const grantWithoutContractType = { ...REPAID_LOAN, contractType: 'HardwareFinancing' } as unknown as IGrant;
+
+        expect(getAdjustedGrants(state, [PENDING_LOAN, grantWithoutContractType], undefined)).toEqual([PENDING_LOAN]);
+    });
+
+    test('does not prepend a requested grant with an unsupported contract type', () => {
+        const state = getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_LOAN, localSupportedRegions);
+        const requestedGrant = { ...PENDING_LOAN, contractType: undefined } as unknown as IGrant;
+
+        expect(getAdjustedGrants(state, [REPAID_LOAN], requestedGrant)).toEqual([REPAID_LOAN]);
+    });
 });
 
 describe('getGroupedGrants', () => {

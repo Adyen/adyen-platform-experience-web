@@ -12,7 +12,9 @@ import {
     SINGLE_ACTION_CASH_ADVANCE,
     ACTIONS_LOAN,
     ACTIONS_CASH_ADVANCE,
+    RENEWABLE_UNSUPPORTED_CONTRACT,
 } from './grants';
+import { UNSUPPORTED_CONTRACT_TYPE } from './contractType';
 
 export const REPAYMENT_TERM_QUARTER = 90;
 export const REPAYMENT_TERM_HALF = 180;
@@ -45,6 +47,11 @@ export const DYNAMIC_OFFER_CONFIG_CASH_ADVANCE: IDynamicOffersConfig = {
         currency: 'GBP',
     },
 };
+
+export const DYNAMIC_OFFER_CONFIG_UNSUPPORTED_CONTRACT = {
+    ...DYNAMIC_OFFER_CONFIG_LOAN,
+    contractType: UNSUPPORTED_CONTRACT_TYPE,
+} satisfies IDynamicOffersConfig;
 
 const CAPITAL_STATE_DEFAULT_LOAN: ICapitalState = {
     activeOrPendingGrants: [],
@@ -92,6 +99,12 @@ export const CAPITAL_STATE_FIRST_TIME_ELIGIBLE_CASH_ADVANCE: ICapitalState = {
     hasClosedGrants: false,
 };
 
+export const CAPITAL_STATE_FIRST_TIME_ELIGIBLE_UNSUPPORTED_CONTRACT: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT_LOAN,
+    dynamicOffer: DYNAMIC_OFFER_CONFIG_UNSUPPORTED_CONTRACT,
+    hasClosedGrants: false,
+};
+
 export const CAPITAL_STATE_ELIGIBLE_LOAN: ICapitalState = {
     ...CAPITAL_STATE_DEFAULT_LOAN,
     dynamicOffer: DYNAMIC_OFFER_CONFIG_LOAN,
@@ -101,6 +114,12 @@ export const CAPITAL_STATE_ELIGIBLE_LOAN: ICapitalState = {
 export const CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE: ICapitalState = {
     ...CAPITAL_STATE_DEFAULT_CASH_ADVANCE,
     dynamicOffer: DYNAMIC_OFFER_CONFIG_CASH_ADVANCE,
+    hasClosedGrants: true,
+};
+
+export const CAPITAL_STATE_ELIGIBLE_UNSUPPORTED_CONTRACT: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT_LOAN,
+    dynamicOffer: DYNAMIC_OFFER_CONFIG_UNSUPPORTED_CONTRACT,
     hasClosedGrants: true,
 };
 
@@ -197,6 +216,12 @@ export const CAPITAL_STATE_RENEWABLE_CASH_ADVANCE: ICapitalState = {
     ...CAPITAL_STATE_DEFAULT_CASH_ADVANCE,
     activeOrPendingGrants: [RENEWABLE_CASH_ADVANCE],
     dynamicOffer: DYNAMIC_OFFER_CONFIG_CASH_ADVANCE,
+};
+
+export const CAPITAL_STATE_RENEWABLE_UNSUPPORTED_CONTRACT: ICapitalState = {
+    ...CAPITAL_STATE_DEFAULT_LOAN,
+    activeOrPendingGrants: [RENEWABLE_UNSUPPORTED_CONTRACT],
+    dynamicOffer: DYNAMIC_OFFER_CONFIG_UNSUPPORTED_CONTRACT,
 };
 
 export const CAPITAL_STATE_GRANTS_LOAN: ICapitalState = {

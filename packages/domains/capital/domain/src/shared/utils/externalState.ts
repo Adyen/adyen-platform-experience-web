@@ -13,8 +13,8 @@ export type ExternalCapitalState =
     | {
           isAvailable: true;
           isRegionSupported: true;
-          hasGrants: boolean;
-          hasRenewableGrants: boolean;
+          hasCapital: boolean;
+          hasRenewableCapital: boolean;
           dynamicOfferConfig?: {
               minAmount: number;
               maxAmount: number;
@@ -46,8 +46,8 @@ export const getExternalCapitalState = async (session: AuthSession, getCdnConfig
     return {
         isAvailable,
         isRegionSupported,
-        hasGrants,
-        hasRenewableGrants: !!renewableGrants.length,
+        hasCapital: hasGrants,
+        hasRenewableCapital: !!renewableGrants.length,
         dynamicOfferConfig: dynamicOfferConfig && {
             minAmount: dynamicOfferConfig.minAmount.value,
             maxAmount: dynamicOfferConfig.maxAmount.value,

@@ -9,9 +9,10 @@ import { useEnhancedCapitalState } from '../../../shared/composables/useEnhanced
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import GrantList from '../GrantList/GrantList.vue';
 import CapitalError from '../../../shared/CapitalError.vue';
-import OfferAlert from '../OfferAlert.vue';
+import OfferAlert from '../OfferAlert/OfferAlert.vue';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
 import { ComponentShell, ComponentShellState, useLandedPageEvent } from '@integration-components/composables-vue';
+import { CONTRACT_KEYS } from './contractKeys';
 import styles from './CapitalOverview.module.scss';
 import OfferModal from '../OfferModal.vue';
 import UnsupportedRegionState from '../../../shared/UnsupportedRegionState.vue';
@@ -27,6 +28,10 @@ const isEarlyRenewal = computed(() => !!capitalState.value?.renewableGrants.leng
 const isOfferModalOpen = ref(false);
 const shouldTrackOfferClose = ref(true);
 const shellState = computed<ComponentShellState>(() => (isLoading.value ? 'loading' : 'ready'));
+const providerInfo = computed(() => {
+    const key = `capital.common.providerInfo.${capitalState.value?.region}`;
+    return i18n.has(key) ? i18n.get(key) : undefined;
+});
 
 useLandedPageEvent(
     () => ({
@@ -71,13 +76,10 @@ const handleSubmit: OnSubmitCallback = (data, renewsGrantId) => {
 };
 
 const headerActions = computed<BentoButtonActionsList | undefined>(() => {
-    if (error.value || !capitalState.value?.isRegionSupported || !capitalState.value.dynamicOfferConfig) return undefined;
-    return [
-        {
-            title: i18n.get(capitalState.value.hasGrants ? 'capital.overview.loan.requestNewGrant' : 'capital.overview.loan.requestFirstGrant'),
-            event: openOfferModal,
-        },
-    ];
+    const dynamicOfferConfig = capitalState.value?.dynamicOfferConfig;
+    if (error.value || !capitalState.value?.isRegionSupported || !dynamicOfferConfig) return undefined;
+    const titleKeys = capitalState.value.hasGrants ? CONTRACT_KEYS.requestNewGrant : CONTRACT_KEYS.requestFirstGrant;
+    return [{ title: i18n.get(titleKeys[dynamicOfferConfig.contractType]), event: openOfferModal }];
 });
 </script>
 
@@ -87,7 +89,7 @@ const headerActions = computed<BentoButtonActionsList | undefined>(() => {
             <template #loading>
                 <CapitalOverviewLoadingSkeleton />
             </template>
-            <CapitalHeader :actions="headerActions" :region="capitalState?.region" title-key="capital.common.title" />
+            <CapitalHeader :actions="headerActions" :subtitle="providerInfo" :title="i18n.get('capital.common.title')" />
             <CapitalError v-if="error" :error="error" :on-contact-support="props.onContactSupport" />
             <template v-else-if="capitalState">
                 <UnsupportedRegionState v-if="!capitalState.isRegionSupported" />

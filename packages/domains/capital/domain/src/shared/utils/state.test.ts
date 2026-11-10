@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import type { IDynamicOffersConfig } from '@integration-components/types';
 import localSupportedRegions from '../../config/supportedRegions.json';
 import {
     ACTIVE_LOAN,
@@ -19,11 +20,7 @@ describe('getEnhancedCapitalState', () => {
         expect(getEnhancedCapitalState(undefined, localSupportedRegions)).toBeUndefined();
     });
 
-    test('returns dynamic offer when there are no ongoing grants or there is a valid renewal', () => {
-        expect(getEnhancedCapitalState(CAPITAL_STATE_INELIGIBLE, localSupportedRegions)).toMatchObject({ dynamicOfferConfig: undefined });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN, localSupportedRegions)).toMatchObject({
-            dynamicOfferConfig: undefined,
-        });
+    test('returns dynamic offer', () => {
         expect(getEnhancedCapitalState(CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN, localSupportedRegions)).toMatchObject({
             dynamicOfferConfig: CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN.dynamicOffer,
         });
@@ -32,6 +29,28 @@ describe('getEnhancedCapitalState', () => {
         });
         expect(getEnhancedCapitalState(CAPITAL_STATE_RENEWABLE_LOAN, localSupportedRegions)).toMatchObject({
             dynamicOfferConfig: CAPITAL_STATE_RENEWABLE_LOAN.dynamicOffer,
+        });
+    });
+
+    test('returns no offer when ineligible', () => {
+        expect(getEnhancedCapitalState(CAPITAL_STATE_INELIGIBLE, localSupportedRegions)).toMatchObject({ dynamicOfferConfig: undefined });
+    });
+
+    test('returns no offer when there are ongoing grants and no renewal', () => {
+        expect(getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN, localSupportedRegions)).toMatchObject({
+            dynamicOfferConfig: undefined,
+        });
+    });
+
+    test('returns no offer and no renewable grants when contract type is unsupported', () => {
+        const state = {
+            ...CAPITAL_STATE_RENEWABLE_LOAN,
+            dynamicOffer: { ...CAPITAL_STATE_RENEWABLE_LOAN.dynamicOffer!, contractType: 'HardwareFinancing' } as unknown as IDynamicOffersConfig,
+        };
+
+        expect(getEnhancedCapitalState(state, localSupportedRegions)).toMatchObject({
+            dynamicOfferConfig: undefined,
+            renewableGrants: [],
         });
     });
 
