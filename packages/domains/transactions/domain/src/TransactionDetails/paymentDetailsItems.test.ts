@@ -35,7 +35,7 @@ describe('getPaymentDetailsItems', () => {
                 key: 'transactions.details.fields.referenceID',
                 value: 'TX_ID',
                 copyable: true,
-                copyAriaLabelKey: 'transactions.details.actions.copyReferenceID',
+                copyAriaLabelKey: 'transactions.details.copy.referenceID',
                 trackingName: 'Reference ID',
             },
             {
@@ -43,7 +43,7 @@ describe('getPaymentDetailsItems', () => {
                 key: 'transactions.details.fields.merchantReference',
                 value: 'MERCHANT_REF',
                 copyable: true,
-                copyAriaLabelKey: 'transactions.details.actions.copyMerchantReference',
+                copyAriaLabelKey: 'transactions.details.copy.merchantReference',
                 trackingName: 'Merchant reference',
             },
             {
@@ -51,7 +51,7 @@ describe('getPaymentDetailsItems', () => {
                 key: 'transactions.details.fields.pspReference',
                 value: 'PSP_REF',
                 copyable: true,
-                copyAriaLabelKey: 'transactions.details.actions.copyPspReference',
+                copyAriaLabelKey: 'transactions.details.copy.pspReference',
                 trackingName: 'PSP reference',
             },
         ]);

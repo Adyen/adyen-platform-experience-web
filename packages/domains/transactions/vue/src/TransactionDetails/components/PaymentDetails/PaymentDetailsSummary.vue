@@ -19,9 +19,9 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 
 const paymentAmountKeys = {
-    grossAmount: 'transactions.details.summary.fields.grossAmount',
-    netAmount: 'transactions.details.summary.fields.netAmount',
-    originalAmount: 'transactions.details.summary.fields.originalAmount',
+    grossAmount: 'transactions.details.summary.grossAmount',
+    netAmount: 'transactions.details.summary.netAmount',
+    originalAmount: 'transactions.details.summary.originalAmount',
 } as const;
 
 function formatAmount(amount?: IAmount): string | null {

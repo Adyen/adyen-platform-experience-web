@@ -21,10 +21,10 @@ const alertTitle = computed(() => (props.missingActions.length > 1 ? alertTitles
 
 <template>
     <BentoAlert v-if="error" type="critical">
-        {{ i18n.get('capital.overview.grants.item.alerts.somethingWentWrong') }}
+        {{ i18n.get('capital.overview.grants.alerts.somethingWentWrong') }}
         <template #actions>
             <BentoButton variant="tertiary" @click="refreshComponent">
-                {{ i18n.get('capital.common.actions.refresh.labels.default') }}
+                {{ i18n.get('capital.common.refresh.label') }}
             </BentoButton>
         </template>
     </BentoAlert>

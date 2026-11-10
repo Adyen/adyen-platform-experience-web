@@ -10,7 +10,7 @@ const hasError = computed(() => !!error.value);
 
 const errorInfo = computed<ErrorMessageInfo>(() => ({
     title: 'disputes.common.errors.somethingWentWrong',
-    messages: ['disputes.overview.common.errors.unavailable'],
+    messages: ['disputes.overview.errors.unavailable'],
     onContactSupport: props.onContactSupport,
 }));
 </script>

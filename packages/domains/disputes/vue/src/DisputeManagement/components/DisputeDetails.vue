@@ -33,7 +33,7 @@ onMounted(() => getDisputesConfig());
 <template>
     <div v-if="!shouldHideTitle && flowState === DisputeFlowState.Details" :class="styles.title">
         <BentoTypography el="h1" variant="title" stronger>
-            {{ i18n.get('disputes.management.common.title') }}
+            {{ i18n.get('disputes.management.title') }}
         </BentoTypography>
     </div>
 

@@ -35,8 +35,8 @@ describe('getCapitalErrorMessage', () => {
 
     test.each([
         ['30_016', COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong, COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers],
-        ['30_011', 'capital.offer.common.errors.accountInactive', COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers],
-        ['30_600', COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong, 'capital.offer.common.errors.cannotContinue'],
+        ['30_011', 'capital.offer.errors.accountInactive', COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers],
+        ['30_600', COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong, 'capital.offer.errors.cannotContinue'],
     ])('returns a specific message with support callback for error code %s', (errorCode, title, firstMessage) => {
         const onContactSupport = vi.fn();
 
@@ -59,7 +59,7 @@ describe('getCapitalErrorMessage', () => {
 
     test('omits translation values when a capital error has no request ID', () => {
         expect(getCapitalErrorMessage(createAdyenPlatformExperienceError('30_011', ''))).toEqual({
-            title: 'capital.offer.common.errors.accountInactive',
+            title: 'capital.offer.errors.accountInactive',
             message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'capital.common.errors.errorCodeSupport'],
             translationValues: undefined,
             onContactSupport: undefined,
@@ -78,7 +78,7 @@ describe('getCapitalErrorConfig', () => {
     test('maps common translation keys to the capital namespace', () => {
         expect(getCapitalErrorConfig(createAdyenPlatformExperienceError('30_016'), vi.fn())).toMatchObject({
             title: 'capital.common.errors.somethingWentWrong',
-            messages: ['capital.offer.common.errors.unavailable', 'capital.common.errors.errorCode'],
+            messages: ['capital.offer.errors.unavailable', 'capital.common.errors.errorCode'],
         });
     });
 
@@ -97,8 +97,8 @@ describe('getCapitalErrorConfig', () => {
 describe('getBalanceAccountErrorMessage', () => {
     test('returns balance account error message when error code is 30_013', () => {
         expect(getBalanceAccountErrorMessage(createAdyenErrorResponse(422, '30_013'))).toEqual({
-            title: 'capital.offer.common.errors.noPrimaryAccount',
-            message: 'capital.offer.common.errors.cannotContinueSupport',
+            title: 'capital.offer.errors.noPrimaryAccount',
+            message: 'capital.offer.errors.cannotContinueSupport',
         });
     });
 

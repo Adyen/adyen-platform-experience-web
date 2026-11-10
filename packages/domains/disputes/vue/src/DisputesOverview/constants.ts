@@ -10,7 +10,7 @@ export const DEFAULT_DISPUTE_STATUS_GROUP: IDisputeStatusGroup = 'CHARGEBACKS';
 export const DISPUTES_TABLE_FIELDS = Object.keys(FIELD_KEYS) as DisputesTableFields[];
 
 export const LIMIT_SELECT_ARIA_LABEL_KEYS = {
-    CHARGEBACKS: 'disputes.overview.chargebacks.limitSelect.a11y.label',
-    FRAUD_ALERTS: 'disputes.overview.fraudAlerts.limitSelect.a11y.label',
-    ONGOING_AND_CLOSED: 'disputes.overview.ongoingAndClosed.limitSelect.a11y.label',
+    CHARGEBACKS: 'disputes.overview.chargebacks.limitSelect.a11yLabel',
+    FRAUD_ALERTS: 'disputes.overview.fraudAlerts.limitSelect.a11yLabel',
+    ONGOING_AND_CLOSED: 'disputes.overview.ongoingAndClosed.limitSelect.a11yLabel',
 } as const satisfies Record<IDisputeStatusGroup, DisputesTranslationKey>;
