@@ -10,6 +10,7 @@ import {
     useTableColumns,
     useCondensedDataGrid,
     useResponsiveContainer,
+    useShouldHideIllustrations,
     useTimezoneAwareDateFormatting,
 } from '@integration-components/composables-vue';
 import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
@@ -56,6 +57,7 @@ const { i18n } = useCoreContext();
 const { dateFormat } = useTimezoneAwareDateFormatting();
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
 const isCondensed = useCondensedDataGrid();
+const hideIllustrations = useShouldHideIllustrations();
 
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 const errorInfo = computed(() => getPaymentLinksErrorMessage(props.error, 'payByLink.overview.errors.couldNotLoadLinks', props.onContactSupport));
@@ -157,7 +159,7 @@ const paginationProps = computed(() => {
 });
 
 const emptyStateProps = computed(() => ({
-    image: 'no-results-found' as const,
+    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
     variant: 'embedded' as const,
     title: i18n.get('payByLink.overview.errors.listEmpty'),
     description: i18n.get('payByLink.overview.errors.listEmpty.message'),
