@@ -1,0 +1,1787 @@
+# v1 key	domain	v2 key
+balanceAccounts.all	disputes	disputes.overview.filters.account.all
+button.clearAll	-	(no match)
+calendar.controls	-	(no match)
+calendar.nextMonth	-	(no match)
+calendar.previousMonth	-	(no match)
+calendar.timezone	-	(no match)
+capital.accountIsInactive	capital	capital.offer.errors.accountInactive
+capital.actionNeeded	capital	capital.overview.grants.statuses.actionNeeded.label
+capital.annualPercentageRate	capital	capital.common.fields.annualPercentageRate.label
+capital.annualPercentageRateIsTheCostOfBorrowingForALoan	capital	capital.common.fields.annualPercentageRate.description
+capital.bankAccountDetails	capital	capital.overview.repayment.accountDetails.title
+capital.bankAccountIban	capital	capital.overview.repayment.accountDetails.fields.iban
+capital.bankAccountNumber	capital	capital.overview.repayment.accountDetails.fields.accountNumber
+capital.bankCountryOrRegion	capital	capital.overview.repayment.accountDetails.fields.countryOrRegion
+capital.bankRoutingNumber	capital	capital.overview.repayment.accountDetails.fields.routingNumber
+capital.bankSortCode	capital	capital.overview.repayment.accountDetails.fields.sortCode
+capital.businessFinancing	capital	capital.common.title
+capital.businessFinancingOffer	capital	capital.offer.selection.title
+capital.businessFinancingSummary	capital	capital.offer.summary.title
+capital.closed	capital	capital.overview.grants.tabs.closed
+capital.common.actions.contactSupport	-	(no match)
+capital.common.actions.goBack	capital	capital.common.goBack.label
+capital.common.errors.unsupportedRegion	capital	capital.common.errors.unsupportedRegion.message
+capital.common.fields.account	capital	capital.common.fields.account.label
+capital.common.fields.accountDescription	capital	capital.common.fields.account.description
+capital.common.fields.accountID	capital	capital.common.fields.accountID.label
+capital.common.fields.annualPercentageRate	capital	capital.common.fields.annualPercentageRate.label
+capital.common.fields.dailyRepaymentRate	capital	capital.common.fields.dailyRepaymentRate.label
+capital.common.fields.expectedRepaymentPeriod	capital	capital.common.fields.expectedRepaymentPeriod.label
+capital.common.fields.fees	capital	capital.common.fields.fees.label
+capital.common.fields.financing	capital	capital.common.fields.financing.label
+capital.common.fields.grantID	capital	capital.common.fields.grantID.label
+capital.common.fields.maximumRepaymentDate	capital	capital.common.fields.maximumRepaymentDate.label
+capital.common.fields.maximumRepaymentPeriod	capital	capital.common.fields.maximumRepaymentPeriod.label
+capital.common.fields.remainingAmount	capital	capital.common.fields.remainingAmount.label
+capital.common.fields.remainingFees	capital	capital.common.fields.remainingFees.label
+capital.common.fields.repaidAmount	capital	capital.common.fields.repaidAmount.label
+capital.common.fields.repaidFees	capital	capital.common.fields.repaidFees.label
+capital.common.fields.repaymentThreshold	capital	capital.common.fields.repaymentThreshold.label
+capital.common.fields.totalFees	capital	capital.common.fields.totalFees.label
+capital.common.fields.totalRepaymentAmount	capital	capital.common.fields.totalRepaymentAmount.label
+capital.common.termsTitle	-	(no match)
+capital.dailyRepaymentRate	capital	capital.common.fields.dailyRepaymentRate.label
+capital.daysAndDaysLeft	capital	capital.common.values.daysWithDaysLeft
+capital.expectedRepaymentPeriod	capital	capital.common.fields.expectedRepaymentPeriod.label
+capital.failed	capital	capital.overview.grants.statuses.failed.label
+capital.fees	capital	capital.common.fields.fees.label
+capital.fullyRepaid	capital	capital.overview.grants.statuses.fullyRepaid.label
+capital.goToTermsAndConditions	capital	capital.overview.grants.viewTermsAndConditions.label
+capital.grantID	capital	capital.common.fields.grantID.label
+capital.howMuchMoneyDoYouNeed	capital	capital.offer.selection.slider.a11yLabel
+capital.inProgress	capital	capital.overview.grants.tabs.inProgress
+capital.legalSubtitleAU	capital	capital.common.loanProviderInfo.AU
+capital.legalSubtitleCA	capital	capital.common.loanProviderInfo.CA
+capital.legalSubtitleEU	capital	capital.common.loanProviderInfo.EU
+capital.legalSubtitleGB	capital	capital.common.loanProviderInfo.GB
+capital.legalSubtitleUS	capital	capital.common.loanProviderInfo.US
+capital.maximumRepaymentPeriod	capital	capital.common.fields.maximumRepaymentPeriod.label
+capital.minimumRepaymentToRepayTheFinancingOnTime	capital	capital.common.fields.repaymentThreshold.description
+capital.needSomeExtraMoney	-	(no match)
+capital.offer.common.errors.accountInactive	capital	capital.offer.errors.accountInactive
+capital.offer.common.errors.cannotContinue	capital	capital.offer.errors.cannotContinue
+capital.offer.common.errors.cannotContinueSupport	capital	capital.offer.errors.cannotContinueSupport
+capital.offer.common.errors.noPrimaryAccount	capital	capital.offer.errors.noPrimaryAccount
+capital.offer.common.errors.unavailable	capital	capital.offer.errors.unavailable
+capital.offer.common.fundingRequestInfo	-	(no match)
+capital.offer.common.noOfferDescription	-	(no match)
+capital.offer.common.noOfferTitle	-	(no match)
+capital.offer.common.repaymentInfo	-	(no match)
+capital.offer.selection.actions.reviewOffer	capital	capital.offer.selection.reviewOffer
+capital.offer.selection.actions.reviewOffer.states.loading	-	(no match)
+capital.offer.selection.slider.a11y.label	capital	capital.offer.selection.slider.a11yLabel
+capital.offer.selection.slider.markers.max	capital	capital.offer.selection.slider.max
+capital.offer.selection.slider.markers.min	capital	capital.offer.selection.slider.min
+capital.offer.summary.actions.requestFunds	-	(no match)
+capital.offer.summary.actions.requestFunds.states.loading	-	(no match)
+capital.offer.summary.actions.requestFundsWithAmount	capital	capital.offer.summary.requestFundsWithAmount
+capital.offer.summary.earlyRenewal.tabs.currentGrant	capital	capital.offer.summary.earlyRenewal.currentGrant
+capital.offer.summary.earlyRenewal.tabs.newGrant	capital	capital.offer.summary.earlyRenewal.newGrant
+capital.offer.summary.legalNotice.US.note	capital	capital.offer.legalNotice.US.note
+capital.offer.summary.legalNotice.US.title	capital	capital.offer.legalNotice.US.title
+capital.offerLegalNoticeDescriptionUS	capital	capital.offer.legalNotice.US.note
+capital.offerLegalNoticeTitleUS	capital	capital.offer.legalNotice.US.title
+capital.oneMonth	capital	capital.common.values.oneMonth
+capital.overview.common.titles.qualificationIntro	-	(no match)
+capital.overview.grants.common.statuses.actionNeeded	capital	capital.overview.grants.statuses.actionNeeded.label
+capital.overview.grants.common.statuses.failed	capital	capital.overview.grants.statuses.failed.label
+capital.overview.grants.common.statuses.failed.description	capital	capital.overview.grants.statuses.failed.description
+capital.overview.grants.common.statuses.fullyRepaid	capital	capital.overview.grants.statuses.fullyRepaid.label
+capital.overview.grants.common.statuses.pending	capital	capital.overview.grants.statuses.pending.label
+capital.overview.grants.common.statuses.pending.description.awaitingFunds	capital	capital.overview.grants.statuses.pending.description
+capital.overview.grants.common.statuses.pending.description.signTerms	-	(no match)
+capital.overview.grants.common.statuses.revoked	capital	capital.overview.grants.statuses.revoked.label
+capital.overview.grants.common.statuses.revoked.description	capital	capital.overview.grants.statuses.revoked.description
+capital.overview.grants.common.statuses.writtenOff	capital	capital.overview.grants.statuses.writtenOff.label
+capital.overview.grants.common.statuses.writtenOff.description	capital	capital.overview.grants.statuses.writtenOff.description
+capital.overview.grants.item.actions.copyGrantID	capital	capital.overview.grants.copy.grantID
+capital.overview.grants.item.actions.sendRepayment	capital	capital.overview.grants.sendRepayment
+capital.overview.grants.item.actions.submitInformation	capital	capital.overview.grants.submitInformation.label
+capital.overview.grants.item.actions.submitInformationSuccess	capital	capital.overview.grants.submitInformation.success
+capital.overview.grants.item.actions.viewTermsAndConditions	capital	capital.overview.grants.viewTermsAndConditions.label
+capital.overview.grants.item.actions.viewTermsAndConditionsSuccess	capital	capital.overview.grants.viewTermsAndConditions.success
+capital.overview.grants.item.alerts.actionNeeded	capital	capital.overview.grants.alerts.actionNeeded
+capital.overview.grants.item.alerts.actionNeededBy	capital	capital.overview.grants.alerts.actionNeededBy
+capital.overview.grants.item.alerts.actionNeededByMany	capital	capital.overview.grants.alerts.actionNeededByMany
+capital.overview.grants.item.alerts.actionNeededMany	capital	capital.overview.grants.alerts.actionNeededMany
+capital.overview.grants.item.alerts.actionsCompleted	capital	capital.overview.grants.alerts.actionsCompleted
+capital.overview.grants.item.alerts.offerExpiration	-	(no match)
+capital.overview.grants.item.alerts.processingRequest	capital	capital.overview.grants.alerts.processingRequest
+capital.overview.grants.item.alerts.signTermsAndConditions	-	(no match)
+capital.overview.grants.item.alerts.signTermsAndConditionsBy	-	(no match)
+capital.overview.grants.item.alerts.somethingWentWrong	capital	capital.overview.grants.alerts.somethingWentWrong
+capital.overview.grants.item.amounts.remaining	capital	capital.overview.grants.amounts.remaining
+capital.overview.grants.item.amounts.repaid	-	(no match)
+capital.overview.grants.item.amounts.requestedFunds	capital	capital.overview.grants.amounts.requestedFunds
+capital.overview.grants.item.details.a11y.label	capital	capital.overview.grants.details.a11yLabel
+capital.overview.grants.item.details.requestedFunds	capital	capital.overview.grants.details.requestedFunds
+capital.overview.grants.item.progressBar.a11y.label	-	(no match)
+capital.overview.grants.item.termEnds	capital	capital.overview.grants.termEnds
+capital.overview.grants.list.tabs.a11y.label	capital	capital.overview.grants.tabs.a11yLabel
+capital.overview.grants.list.tabs.labels.closed	capital	capital.overview.grants.tabs.closed
+capital.overview.grants.list.tabs.labels.inProgress	capital	capital.overview.grants.tabs.inProgress
+capital.overview.grants.newGrant.actions.newGrant	capital	capital.overview.grants.newGrant.requestNewLoan
+capital.overview.grants.newGrant.title.part1	-	(no match)
+capital.overview.grants.newGrant.title.part2	-	(no match)
+capital.overview.prequalified.actions.seeOptions	-	(no match)
+capital.overview.prequalified.alreadyQualifyInfo.part1	-	(no match)
+capital.overview.prequalified.alreadyQualifyInfo.part2	-	(no match)
+capital.overview.repayment.actions.copyAccountNumber	capital	capital.overview.repayment.accountDetails.copy.accountNumber
+capital.overview.repayment.actions.copyBeneficiaryName	capital	capital.overview.repayment.accountDetails.copy.beneficiaryName
+capital.overview.repayment.actions.copyIban	capital	capital.overview.repayment.accountDetails.copy.iban
+capital.overview.repayment.actions.copyRoutingNumber	capital	capital.overview.repayment.accountDetails.copy.routingNumber
+capital.overview.repayment.actions.copySortCode	capital	capital.overview.repayment.accountDetails.copy.sortCode
+capital.overview.unqualified.soonQualifyInfo	-	(no match)
+capital.pending	capital	capital.overview.grants.statuses.pending.label
+capital.primaryAccount	capital	capital.common.values.primaryAccount
+capital.remaining	capital	capital.overview.grants.amounts.remaining
+capital.remainingAmount	capital	capital.common.fields.remainingAmount.label
+capital.remainingFees	capital	capital.common.fields.remainingFees.label
+capital.repaid	-	(no match)
+capital.repaidAmount	capital	capital.common.fields.repaidAmount.label
+capital.repaidFees	capital	capital.common.fields.repaidFees.label
+capital.repaymentThreshold	capital	capital.common.fields.repaymentThreshold.label
+capital.requestFunds	-	(no match)
+capital.requestedFunds	capital	capital.overview.grants.amounts.requestedFunds
+capital.requesting	-	(no match)
+capital.reviewOffer	capital	capital.offer.selection.reviewOffer
+capital.revoked	capital	capital.overview.grants.statuses.revoked.label
+capital.seeNewOffer	-	(no match)
+capital.seeOptions	-	(no match)
+capital.sendRepayment	-	(no match)
+capital.signTermsAndConditionsToReceiveFunds	-	(no match)
+capital.signTheTermsToReceiveYourFunds	-	(no match)
+capital.submitInformation	capital	capital.overview.grants.submitInformation.label
+capital.termEnds	-	(no match)
+capital.thereIsNoPrimaryAccountConfigured	capital	capital.offer.errors.noPrimaryAccount
+capital.thisOfferExpiresOn	-	(no match)
+capital.totalFees	capital	capital.common.fields.totalFees.label
+capital.totalRepaymentAmount	capital	capital.common.fields.totalRepaymentAmount.label
+capital.unsupportedRegionDescription	capital	capital.common.errors.unsupportedRegion.message
+capital.unsupportedRegionTitle	capital	capital.common.errors.unsupportedRegion.title
+capital.weCouldNotContinueWithTheOffer	capital	capital.offer.errors.cannotContinue
+capital.weCouldNotContinueWithTheOfferContactSupportForHelp	capital	capital.offer.errors.cannotContinueSupport
+capital.weCouldNotLoadFinancialOffers	capital	capital.offer.errors.unavailable
+capital.weCouldNotProcessThisRequestTryAgain	capital	capital.overview.grants.statuses.failed.description
+capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteTheseActions	capital	capital.overview.grants.alerts.actionNeededMany
+capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisAction	capital	capital.overview.grants.alerts.actionNeeded
+capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisActionBy	capital	capital.overview.grants.alerts.actionNeededBy
+capital.weReceivedYourRequestAndWeAreWorkingOnItNowCheckBackSoon	capital	capital.overview.grants.alerts.processingRequest
+capital.writtenOff	capital	capital.overview.grants.statuses.writtenOff.label
+capital.xDays	capital	capital.common.values.numberOfDays
+capital.xMonths	capital	capital.common.values.numberOfMonths
+capital.xPercent	capital	capital.common.values.percentage
+capital.youAcceptedButThenReturnedTheseFunds	capital	capital.overview.grants.statuses.revoked.description
+capital.youAcceptedTheseFundsButDidNotRepayThem	capital	capital.overview.grants.statuses.writtenOff.description
+capital.youAreRequestingFundingOf	-	(no match)
+capital.youHaveBeenPrequalifiedForBusinessFinancingUpToX.part1	-	(no match)
+capital.youHaveBeenPrequalifiedForBusinessFinancingUpToX.part2	-	(no match)
+capital.youShouldGetTheFundsWithinOneBusinessDay	capital	capital.overview.grants.statuses.pending.description
+capital.youWillNeedToRepayAMinimumOfXEveryXDaysToPayOffTheFunds	-	(no match)
+capital.youWillSoonQualifyForAFinancialOffer	-	(no match)
+capital.yourRequestedFundsWere	-	(no match)
+common.actions.apply.labels.default	-	(no match)
+common.actions.contactSupport.labels.default	-	(no match)
+common.actions.contactSupport.labels.reachOut	-	(no match)
+common.actions.copy.labels.default	-	(no match)
+common.actions.copy.labels.done	capital	capital.common.copy.done
+common.actions.copy.labels.done	disputes	disputes.common.copy.done
+common.actions.copy.labels.done	payByLink	payByLink.common.copy.done
+common.actions.copy.labels.done	payouts	payouts.common.copy.done
+common.actions.copy.labels.done	reports	reports.common.copy.done
+common.actions.copy.labels.done	transactions	transactions.common.copy.done
+common.actions.copy.labels.errorCode	-	(no match)
+common.actions.dismiss.labels.close	-	(no match)
+common.actions.dismiss.labels.dismiss	-	(no match)
+common.actions.download.labels.default	-	(no match)
+common.actions.download.labels.inProgress	-	(no match)
+common.actions.refresh.labels.default	-	(no match)
+common.actions.reset.labels.default	-	(no match)
+common.errors.accountInvalid	-	(no match)
+common.errors.accountUnavailable	-	(no match)
+common.errors.componentUnavailable	capital	capital.common.errors.componentUnavailable
+common.errors.componentUnavailable	disputes	disputes.common.errors.componentUnavailable
+common.errors.componentUnavailable	payByLink	payByLink.common.errors.componentUnavailable
+common.errors.componentUnavailable	payouts	payouts.common.errors.componentUnavailable
+common.errors.componentUnavailable	reports	reports.common.errors.componentUnavailable
+common.errors.componentUnavailable	transactions	transactions.common.errors.componentUnavailable
+common.errors.contactSupport	capital	capital.common.errors.contactSupport
+common.errors.contactSupport	disputes	disputes.common.errors.contactSupport
+common.errors.contactSupport	payByLink	payByLink.common.errors.contactSupport
+common.errors.contactSupport	payouts	payouts.common.errors.contactSupport
+common.errors.contactSupport	reports	reports.common.errors.contactSupport
+common.errors.contactSupport	transactions	transactions.common.errors.contactSupport
+common.errors.errorCode	capital	capital.common.errors.errorCode
+common.errors.errorCode	disputes	disputes.common.errors.errorCode
+common.errors.errorCode	payByLink	payByLink.common.errors.errorCode
+common.errors.errorCode	payouts	payouts.common.errors.errorCode
+common.errors.errorCode	reports	reports.common.errors.errorCode
+common.errors.errorCode	transactions	transactions.common.errors.errorCode
+common.errors.errorCodeSupport	capital	capital.common.errors.errorCodeSupport
+common.errors.errorCodeSupport	disputes	disputes.common.errors.errorCodeSupport
+common.errors.errorCodeSupport	payByLink	payByLink.common.errors.errorCodeSupport
+common.errors.errorCodeSupport	payouts	payouts.common.errors.errorCodeSupport
+common.errors.errorCodeSupport	reports	reports.common.errors.errorCodeSupport
+common.errors.errorCodeSupport	transactions	transactions.common.errors.errorCodeSupport
+common.errors.fieldRequired	payByLink	payByLink.creation.errors.fieldRequired
+common.errors.maxLength	payByLink	payByLink.creation.errors.maxLength
+common.errors.minLength	payByLink	payByLink.creation.errors.minLength
+common.errors.noResults	disputes	disputes.common.errors.noResults
+common.errors.noResults	payByLink	payByLink.common.errors.noResults
+common.errors.noResults	payouts	payouts.common.errors.noResults
+common.errors.noResults	reports	reports.common.errors.noResults
+common.errors.noResults	transactions	transactions.common.errors.noResults
+common.errors.notFound	disputes	disputes.common.errors.notFound
+common.errors.notFound	payByLink	payByLink.common.errors.notFound
+common.errors.notFound	payouts	payouts.common.errors.notFound
+common.errors.notFound	reports	reports.common.errors.notFound
+common.errors.notFound	transactions	transactions.common.errors.notFound
+common.errors.requestInvalid	disputes	disputes.common.errors.requestInvalid
+common.errors.requestInvalid	payByLink	payByLink.common.errors.requestInvalid
+common.errors.requestInvalid	payouts	payouts.common.errors.requestInvalid
+common.errors.requestInvalid	reports	reports.common.errors.requestInvalid
+common.errors.requestInvalid	transactions	transactions.common.errors.requestInvalid
+common.errors.retry	capital	capital.common.errors.retry
+common.errors.retry	disputes	disputes.common.errors.retry
+common.errors.retry	payByLink	payByLink.common.errors.retry
+common.errors.retry	payouts	payouts.common.errors.retry
+common.errors.retry	reports	reports.common.errors.retry
+common.errors.retry	transactions	transactions.common.errors.retry
+common.errors.somethingWentWrong	capital	capital.common.errors.somethingWentWrong
+common.errors.somethingWentWrong	disputes	disputes.common.errors.somethingWentWrong
+common.errors.somethingWentWrong	payByLink	payByLink.common.errors.somethingWentWrong
+common.errors.somethingWentWrong	payouts	payouts.common.errors.somethingWentWrong
+common.errors.somethingWentWrong	reports	reports.common.errors.somethingWentWrong
+common.errors.somethingWentWrong	transactions	transactions.common.errors.somethingWentWrong
+common.errors.unexpected	disputes	disputes.common.errors.unexpected
+common.errors.unexpected	payByLink	payByLink.common.errors.unexpected
+common.errors.unexpected	payouts	payouts.common.errors.unexpected
+common.errors.unexpected	reports	reports.common.errors.unexpected
+common.errors.unexpected	transactions	transactions.common.errors.unexpected
+common.errors.updateFilters	payouts	payouts.common.errors.updateFilters
+common.errors.updateFilters	reports	reports.common.errors.updateFilters
+common.errors.updateFilters	transactions	transactions.common.errors.updateFilters
+common.filters.controls.resetAll.label	-	(no match)
+common.filters.label	disputes	disputes.common.filters.label
+common.filters.label	payByLink	payByLink.common.filters.label
+common.filters.label	payouts	payouts.common.filters.label
+common.filters.label	reports	reports.common.filters.label
+common.filters.label	transactions	transactions.common.filters.label
+common.filters.mobile.label	-	(no match)
+common.filters.types.account.label	disputes	disputes.overview.filters.account.label
+common.filters.types.account.label	payouts	payouts.overview.filters.account
+common.filters.types.account.label	reports	reports.overview.filters.account
+common.filters.types.account.label	transactions	transactions.overview.filters.account
+common.filters.types.account.options.all	disputes	disputes.overview.filters.account.all
+common.filters.types.amount.errors.negative	transactions	transactions.details.refund.amount.errors.negative
+common.filters.types.amount.errors.smallerMax	-	(no match)
+common.filters.types.amount.inputs.max.label	-	(no match)
+common.filters.types.amount.inputs.min.label	-	(no match)
+common.filters.types.amount.range.between	-	(no match)
+common.filters.types.amount.range.max	-	(no match)
+common.filters.types.amount.range.min	-	(no match)
+common.filters.types.amount.range.only	-	(no match)
+common.filters.types.date.calendar.label	-	(no match)
+common.filters.types.date.calendar.navigation.label	-	(no match)
+common.filters.types.date.calendar.navigation.nextMonth	-	(no match)
+common.filters.types.date.calendar.navigation.previousMonth	-	(no match)
+common.filters.types.date.label	disputes	disputes.overview.filters.date.label
+common.filters.types.date.label	payouts	payouts.overview.filters.date.label
+common.filters.types.date.label	reports	reports.overview.filters.date.label
+common.filters.types.date.label	transactions	transactions.overview.filters.date.label
+common.filters.types.date.range.between	-	(no match)
+common.filters.types.date.range.since	-	(no match)
+common.filters.types.date.range.until	-	(no match)
+common.filters.types.date.rangeSelect.label	-	(no match)
+common.filters.types.date.rangeSelect.options.custom	disputes	disputes.overview.filters.date.custom
+common.filters.types.date.rangeSelect.options.custom	payByLink	payByLink.overview.filters.date.custom
+common.filters.types.date.rangeSelect.options.custom	payouts	payouts.overview.filters.date.custom
+common.filters.types.date.rangeSelect.options.custom	reports	reports.overview.filters.date.custom
+common.filters.types.date.rangeSelect.options.custom	transactions	transactions.overview.filters.date.custom
+common.filters.types.date.rangeSelect.options.last180Days	disputes	disputes.overview.filters.date.last180Days
+common.filters.types.date.rangeSelect.options.last180Days	payouts	payouts.overview.filters.date.last180Days
+common.filters.types.date.rangeSelect.options.last180Days	reports	reports.overview.filters.date.last180Days
+common.filters.types.date.rangeSelect.options.last180Days	transactions	transactions.overview.filters.date.last180Days
+common.filters.types.date.rangeSelect.options.last30Days	disputes	disputes.overview.filters.date.last30Days
+common.filters.types.date.rangeSelect.options.last30Days	payByLink	payByLink.overview.filters.date.last30Days
+common.filters.types.date.rangeSelect.options.last30Days	payouts	payouts.overview.filters.date.last30Days
+common.filters.types.date.rangeSelect.options.last30Days	reports	reports.overview.filters.date.last30Days
+common.filters.types.date.rangeSelect.options.last30Days	transactions	transactions.overview.filters.date.last30Days
+common.filters.types.date.rangeSelect.options.last7Days	disputes	disputes.overview.filters.date.last7Days
+common.filters.types.date.rangeSelect.options.last7Days	payByLink	payByLink.overview.filters.date.last7Days
+common.filters.types.date.rangeSelect.options.last7Days	payouts	payouts.overview.filters.date.last7Days
+common.filters.types.date.rangeSelect.options.last7Days	reports	reports.overview.filters.date.last7Days
+common.filters.types.date.rangeSelect.options.last7Days	transactions	transactions.overview.filters.date.last7Days
+common.filters.types.date.rangeSelect.options.last90Days	disputes	disputes.overview.filters.date.last90Days
+common.filters.types.date.rangeSelect.options.last90Days	payouts	payouts.overview.filters.date.last90Days
+common.filters.types.date.rangeSelect.options.last90Days	reports	reports.overview.filters.date.last90Days
+common.filters.types.date.rangeSelect.options.last90Days	transactions	transactions.overview.filters.date.last90Days
+common.filters.types.date.rangeSelect.options.lastMonth	disputes	disputes.overview.filters.date.lastMonth
+common.filters.types.date.rangeSelect.options.lastMonth	payByLink	payByLink.overview.filters.date.lastMonth
+common.filters.types.date.rangeSelect.options.lastMonth	payouts	payouts.overview.filters.date.lastMonth
+common.filters.types.date.rangeSelect.options.lastMonth	reports	reports.overview.filters.date.lastMonth
+common.filters.types.date.rangeSelect.options.lastMonth	transactions	transactions.overview.filters.date.lastMonth
+common.filters.types.date.rangeSelect.options.lastWeek	disputes	disputes.overview.filters.date.lastWeek
+common.filters.types.date.rangeSelect.options.lastWeek	payByLink	payByLink.overview.filters.date.lastWeek
+common.filters.types.date.rangeSelect.options.lastWeek	payouts	payouts.overview.filters.date.lastWeek
+common.filters.types.date.rangeSelect.options.lastWeek	reports	reports.overview.filters.date.lastWeek
+common.filters.types.date.rangeSelect.options.lastWeek	transactions	transactions.overview.filters.date.lastWeek
+common.filters.types.date.rangeSelect.options.thisMonth	disputes	disputes.overview.filters.date.thisMonth
+common.filters.types.date.rangeSelect.options.thisMonth	payByLink	payByLink.overview.filters.date.thisMonth
+common.filters.types.date.rangeSelect.options.thisMonth	payouts	payouts.overview.filters.date.thisMonth
+common.filters.types.date.rangeSelect.options.thisMonth	reports	reports.overview.filters.date.thisMonth
+common.filters.types.date.rangeSelect.options.thisMonth	transactions	transactions.overview.filters.date.thisMonth
+common.filters.types.date.rangeSelect.options.thisWeek	disputes	disputes.overview.filters.date.thisWeek
+common.filters.types.date.rangeSelect.options.thisWeek	payByLink	payByLink.overview.filters.date.thisWeek
+common.filters.types.date.rangeSelect.options.thisWeek	payouts	payouts.overview.filters.date.thisWeek
+common.filters.types.date.rangeSelect.options.thisWeek	reports	reports.overview.filters.date.thisWeek
+common.filters.types.date.rangeSelect.options.thisWeek	transactions	transactions.overview.filters.date.thisWeek
+common.filters.types.date.rangeSelect.options.yearToDate	disputes	disputes.overview.filters.date.yearToDate
+common.filters.types.date.rangeSelect.options.yearToDate	payouts	payouts.overview.filters.date.yearToDate
+common.filters.types.date.rangeSelect.options.yearToDate	reports	reports.overview.filters.date.yearToDate
+common.filters.types.date.rangeSelect.options.yearToDate	transactions	transactions.overview.filters.date.yearToDate
+common.filters.types.date.timezoneInfo	-	(no match)
+common.inputs.file.actions.delete	-	(no match)
+common.inputs.file.errors.default	-	(no match)
+common.inputs.file.errors.disallowedType	disputes	disputes.common.file.errors.disallowedType
+common.inputs.file.errors.invalidDimensions	-	(no match)
+common.inputs.file.errors.maxDimensions	-	(no match)
+common.inputs.file.errors.required	-	(no match)
+common.inputs.file.errors.tooLarge	-	(no match)
+common.inputs.file.errors.tooMany	-	(no match)
+common.inputs.file.labels.default	-	(no match)
+common.inputs.search.clearSearch	-	(no match)
+common.inputs.select.errors.noOptions	-	(no match)
+common.inputs.select.placeholder	-	(no match)
+common.modal.controls.dismiss.label	-	(no match)
+common.pagination.controls.limitSelect	-	(no match)
+common.pagination.controls.limitSelect.label	-	(no match)
+common.pagination.controls.nextPage.label	-	(no match)
+common.pagination.controls.previousPage.label	-	(no match)
+common.pagination.label	disputes	disputes.overview.pagination.a11yLabel
+common.pagination.label	payByLink	payByLink.overview.pagination.a11yLabel
+common.pagination.label	payouts	payouts.overview.pagination.a11yLabel
+common.pagination.label	reports	reports.overview.pagination.a11yLabel
+common.pagination.label	transactions	transactions.overview.pagination.a11yLabel
+common.tags.noData	disputes	disputes.common.tags.noData
+common.tags.noData	transactions	transactions.common.tags.noData
+common.timeline.timelineItem.showLess	-	(no match)
+common.timeline.timelineItem.showMoreItems	-	(no match)
+common.timeline.timelineItem.timeGap.a11y.label	-	(no match)
+common.timeline.timelineItem.timeGap.unit.day	-	(no match)
+common.timeline.timelineItem.timeGap.unit.day__plural	-	(no match)
+disputes.accept	-	(no match)
+disputes.accept.accepted	disputes	disputes.common.statuses.accepted
+disputes.accept.chargeback	-	(no match)
+disputes.accept.disputeAccepted	disputes	disputes.management.accept.chargeback.accepted
+disputes.accept.disputeDisclaimer	disputes	disputes.management.accept.chargeback.disclaimer
+disputes.accept.iAgree	disputes	disputes.management.accept.agree
+disputes.accept.requestForInformation	disputes	disputes.management.accept.requestForInformation.title
+disputes.accept.requestForInformationAccepted	disputes	disputes.management.accept.requestForInformation.accepted
+disputes.accept.requestForInformationDisclaimer	disputes	disputes.management.accept.requestForInformation.disclaimer
+disputes.acceptedOn	disputes	disputes.management.details.fields.acceptedOn
+disputes.account	disputes	disputes.management.details.fields.account
+disputes.alert.autoDefended	disputes	disputes.management.details.alerts.autoDefended
+disputes.alert.notDefendable	disputes	disputes.management.details.alerts.notDefendable
+disputes.alert.notDefendedExpired	disputes	disputes.management.details.alerts.notDefendedExpired
+disputes.alert.notDefendedLost	disputes	disputes.management.details.alerts.notDefendedLost
+disputes.alert.responseDeadline	disputes	disputes.management.details.alerts.responseDeadline
+disputes.contactSupport.toDefendDispute	disputes	disputes.management.details.alerts.contactSupport.chargeback
+disputes.contactSupport.toDefendRequestForInformation	disputes	disputes.management.details.alerts.contactSupport.requestForInformation
+disputes.contactSupport.toResolveNotificationOfFraud	disputes	disputes.management.details.alerts.contactSupport.notificationOfFraud
+disputes.currency	disputes	disputes.overview.fields.currency
+disputes.defend.chargeback	-	(no match)
+disputes.defend.chargebackFeeInformation	disputes	disputes.management.defend.chargeback.feeInfo
+disputes.defend.continue	disputes	disputes.management.defend.continue
+disputes.defend.defended	-	(no match)
+disputes.defend.evidenceSubmitted	disputes	disputes.management.defend.evidenceSubmitted
+disputes.defend.selectDefenseReason	disputes	disputes.management.defend.chargeback.selectDefenseReason
+disputes.defend.somethingWentWrong	disputes	disputes.management.defend.errors.somethingWentWrong
+disputes.defend.submit	disputes	disputes.management.defend.submit
+disputes.defend.submitSuccessfulInformation	disputes	disputes.management.defend.chargeback.submitSuccessInfo
+disputes.defend.uploadDocumentsInformation	disputes	disputes.management.defend.documentUploadInfo
+disputes.defendedOn	disputes	disputes.management.details.fields.defendedOn
+disputes.defenseDocument.CopyOfSalesDraftDetails	disputes	disputes.management.defenseDocuments.CopyOfSalesDraftDetails
+disputes.defenseDocument.CopyOfSalesDraftTitle	disputes	disputes.management.defenseDocuments.CopyOfSalesDraftTitle
+disputes.defenseDocument.SplitSales	disputes	disputes.management.defenseDocuments.SplitSales
+disputes.defenseDocument.SplitSalesHelp	disputes	disputes.management.defenseDocuments.SplitSalesHelp
+disputes.defenseDocument.SupplementalDocumentsDetails	disputes	disputes.management.defenseDocuments.SupplementalDocumentsDetails
+disputes.defenseDocument.SupplementalDocumentsTitle	disputes	disputes.management.defenseDocuments.SupplementalDocumentsTitle
+disputes.defenseDocument.TEDocumentDetails	disputes	disputes.management.defenseDocuments.TEDocumentDetails
+disputes.defenseDocument.TEDocumentTitle	disputes	disputes.management.defenseDocuments.TEDocumentTitle
+disputes.defenseDocument.acquirerRepresentmentForm	disputes	disputes.management.defenseDocuments.acquirerRepresentmentForm
+disputes.defenseDocument.acquirerRepresentmentFormAutomaticallyGenerated	disputes	disputes.management.defenseDocuments.acquirerRepresentmentFormAutomaticallyGenerated
+disputes.defenseDocument.acquirerRetrievalFulfilmentForm	disputes	disputes.management.defenseDocuments.acquirerRetrievalFulfilmentForm
+disputes.defenseDocument.acquirerRetrievalFulfilmentFormAutomaticallyGenerated	disputes	disputes.management.defenseDocuments.acquirerRetrievalFulfilmentFormAutomaticallyGenerated
+disputes.defenseDocument.additionalInformation	disputes	disputes.management.defenseDocuments.additionalInformation
+disputes.defenseDocument.additionalTransactions	disputes	disputes.management.defenseDocuments.additionalTransactions
+disputes.defenseDocument.additionalTransactionsConnectedWithDisputedFlight	disputes	disputes.management.defenseDocuments.additionalTransactionsConnectedWithDisputedFlight
+disputes.defenseDocument.alternativeDefenseMaterial	disputes	disputes.management.defenseDocuments.alternativeDefenseMaterial
+disputes.defenseDocument.amexFaxCover	disputes	disputes.management.defenseDocuments.amexFaxCover
+disputes.defenseDocument.appropriateExplanation	disputes	disputes.management.defenseDocuments.appropriateExplanation
+disputes.defenseDocument.appropriateExplanationAndDocTwoSeparateTransactions	disputes	disputes.management.defenseDocuments.appropriateExplanationAndDocTwoSeparateTransactions
+disputes.defenseDocument.authorizationNotObtained	disputes	disputes.management.defenseDocuments.authorizationNotObtained
+disputes.defenseDocument.authorizationNotObtainedHelp	disputes	disputes.management.defenseDocuments.authorizationNotObtainedHelp
+disputes.defenseDocument.autoGeneratedDocRetrievalRequestFulfilled	disputes	disputes.management.defenseDocuments.autoGeneratedDocRetrievalRequestFulfilled
+disputes.defenseDocument.automaticallyGeneratedTransactionDetails	disputes	disputes.management.defenseDocuments.automaticallyGeneratedTransactionDetails
+disputes.defenseDocument.avsDocumentation	disputes	disputes.management.defenseDocuments.avsDocumentation
+disputes.defenseDocument.cancelledRecurringBilling	disputes	disputes.management.defenseDocuments.cancelledRecurringBilling
+disputes.defenseDocument.cardRecoveryBulletinOrExceptionFile	disputes	disputes.management.defenseDocuments.cardRecoveryBulletinOrExceptionFile
+disputes.defenseDocument.cardRecoveryBulletinOrExceptionFileHelp	disputes	disputes.management.defenseDocuments.cardRecoveryBulletinOrExceptionFileHelp
+disputes.defenseDocument.cardholderAgreedToAmountRange	disputes	disputes.management.defenseDocuments.cardholderAgreedToAmountRange
+disputes.defenseDocument.cardholderResponsibleForAddendumTransaction	disputes	disputes.management.defenseDocuments.cardholderResponsibleForAddendumTransaction
+disputes.defenseDocument.cardholderResponsibleForDisputedAmount	disputes	disputes.management.defenseDocuments.cardholderResponsibleForDisputedAmount
+disputes.defenseDocument.chargeToWrongAccountNumber	disputes	disputes.management.defenseDocuments.chargeToWrongAccountNumber
+disputes.defenseDocument.chargeToWrongAccountNumberHelp	disputes	disputes.management.defenseDocuments.chargeToWrongAccountNumberHelp
+disputes.defenseDocument.chargebackRemediedOrInvalid	disputes	disputes.management.defenseDocuments.chargebackRemediedOrInvalid
+disputes.defenseDocument.clearingText	disputes	disputes.management.defenseDocuments.clearingText
+disputes.defenseDocument.compellingEvidence	disputes	disputes.management.defenseDocuments.compellingEvidence
+disputes.defenseDocument.copyOfInvoice	disputes	disputes.management.defenseDocuments.copyOfInvoice
+disputes.defenseDocument.copyOfInvoiceOrOtherRelevantTransactionDetails	disputes	disputes.management.defenseDocuments.copyOfInvoiceOrOtherRelevantTransactionDetails
+disputes.defenseDocument.copyOfTid	disputes	disputes.management.defenseDocuments.copyOfTid
+disputes.defenseDocument.coverPageForAmexDisputes	disputes	disputes.management.defenseDocuments.coverPageForAmexDisputes
+disputes.defenseDocument.creditNotProcessed	disputes	disputes.management.defenseDocuments.creditNotProcessed
+disputes.defenseDocument.creditNotProcessedHelp	disputes	disputes.management.defenseDocuments.creditNotProcessedHelp
+disputes.defenseDocument.creditNotProcessedReason	disputes	disputes.management.defenseDocuments.creditNotProcessedReason
+disputes.defenseDocument.creditsOfMilesShowingConnectionToCardholder	disputes	disputes.management.defenseDocuments.creditsOfMilesShowingConnectionToCardholder
+disputes.defenseDocument.customerWrittenConfirmation	disputes	disputes.management.defenseDocuments.customerWrittenConfirmation
+disputes.defenseDocument.defenseMaterial	disputes	disputes.management.defenseDocuments.defenseMaterial
+disputes.defenseDocument.deffectiveMerchandise	disputes	disputes.management.defenseDocuments.deffectiveMerchandise
+disputes.defenseDocument.deffectiveMerchandiseHelp	disputes	disputes.management.defenseDocuments.deffectiveMerchandiseHelp
+disputes.defenseDocument.deliveryOfFlightTicketAtAddress	disputes	disputes.management.defenseDocuments.deliveryOfFlightTicketAtAddress
+disputes.defenseDocument.descriptionOfDisputeReason	disputes	disputes.management.defenseDocuments.descriptionOfDisputeReason
+disputes.defenseDocument.descriptionOfMerchandiseOrServices	disputes	disputes.management.defenseDocuments.descriptionOfMerchandiseOrServices
+disputes.defenseDocument.differentSignature	disputes	disputes.management.defenseDocuments.differentSignature
+disputes.defenseDocument.differentSignatureHelp	disputes	disputes.management.defenseDocuments.differentSignatureHelp
+disputes.defenseDocument.disclosureAtPointOfInteraction	disputes	disputes.management.defenseDocuments.disclosureAtPointOfInteraction
+disputes.defenseDocument.docAllOfFollowing	disputes	disputes.management.defenseDocuments.docAllOfFollowing
+disputes.defenseDocument.docCardholderIssuedPaperAirlineTickets	disputes	disputes.management.defenseDocuments.docCardholderIssuedPaperAirlineTickets
+disputes.defenseDocument.docChargebackCodeNotApplicable	disputes	disputes.management.defenseDocuments.docChargebackCodeNotApplicable
+disputes.defenseDocument.docCorrectCurrency	disputes	disputes.management.defenseDocuments.docCorrectCurrency
+disputes.defenseDocument.docIdentifyTransaction	disputes	disputes.management.defenseDocuments.docIdentifyTransaction
+disputes.defenseDocument.docMerchandiseNotCounterfeit	disputes	disputes.management.defenseDocuments.docMerchandiseNotCounterfeit
+disputes.defenseDocument.docProvingCardHolderParticipated	disputes	disputes.management.defenseDocuments.docProvingCardHolderParticipated
+disputes.defenseDocument.docRemediesChargeback	disputes	disputes.management.defenseDocuments.docRemediesChargeback
+disputes.defenseDocument.docTermsOfSaleNotMisrepresented	disputes	disputes.management.defenseDocuments.docTermsOfSaleNotMisrepresented
+disputes.defenseDocument.docTransactionOccurredOnPos	disputes	disputes.management.defenseDocuments.docTransactionOccurredOnPos
+disputes.defenseDocument.docTwoDifferentTransactions	disputes	disputes.management.defenseDocuments.docTwoDifferentTransactions
+disputes.defenseDocument.docViaFraudReporter	disputes	disputes.management.defenseDocuments.docViaFraudReporter
+disputes.defenseDocument.docsTwoTransactionsWithSameShopper	disputes	disputes.management.defenseDocuments.docsTwoTransactionsWithSameShopper
+disputes.defenseDocument.documentCanBeCreditReasonDue	disputes	disputes.management.defenseDocuments.documentCanBeCreditReasonDue
+disputes.defenseDocument.documentCanBeProofOfDelivery	disputes	disputes.management.defenseDocuments.documentCanBeProofOfDelivery
+disputes.defenseDocument.documentCanBeSubscriptionAgreement	disputes	disputes.management.defenseDocuments.documentCanBeSubscriptionAgreement
+disputes.defenseDocument.documentCanBetUrlReturnPolicy	disputes	disputes.management.defenseDocuments.documentCanBetUrlReturnPolicy
+disputes.defenseDocument.documentContainingImportantShipmentData	disputes	disputes.management.defenseDocuments.documentContainingImportantShipmentData
+disputes.defenseDocument.documentShipmentDate	disputes	disputes.management.defenseDocuments.documentShipmentDate
+disputes.defenseDocument.documentationOfPositiveAvsResponseXOrY	disputes	disputes.management.defenseDocuments.documentationOfPositiveAvsResponseXOrY
+disputes.defenseDocument.duplicateProcessing	disputes	disputes.management.defenseDocuments.duplicateProcessing
+disputes.defenseDocument.duplicateProcessingHelp	disputes	disputes.management.defenseDocuments.duplicateProcessingHelp
+disputes.defenseDocument.evidenceCardHolderParticipation	disputes	disputes.management.defenseDocuments.evidenceCardHolderParticipation
+disputes.defenseDocument.evidenceProofingParticipationOfCardholder	disputes	disputes.management.defenseDocuments.evidenceProofingParticipationOfCardholder
+disputes.defenseDocument.evidenceTransactionWasRecurring	disputes	disputes.management.defenseDocuments.evidenceTransactionWasRecurring
+disputes.defenseDocument.expiredCard	disputes	disputes.management.defenseDocuments.expiredCard
+disputes.defenseDocument.expiredCardHelp	disputes	disputes.management.defenseDocuments.expiredCardHelp
+disputes.defenseDocument.explanation	disputes	disputes.management.defenseDocuments.explanation
+disputes.defenseDocument.explanationWhyCancellationCodeInvalid	disputes	disputes.management.defenseDocuments.explanationWhyCancellationCodeInvalid
+disputes.defenseDocument.falseTransaction	disputes	disputes.management.defenseDocuments.falseTransaction
+disputes.defenseDocument.firstChargebackNumberAndDate	disputes	disputes.management.defenseDocuments.firstChargebackNumberAndDate
+disputes.defenseDocument.flightManifest	disputes	disputes.management.defenseDocuments.flightManifest
+disputes.defenseDocument.flightManifestShowingCardholderName	disputes	disputes.management.defenseDocuments.flightManifestShowingCardholderName
+disputes.defenseDocument.flightTicket	disputes	disputes.management.defenseDocuments.flightTicket
+disputes.defenseDocument.flightTicketUsed	disputes	disputes.management.defenseDocuments.flightTicketUsed
+disputes.defenseDocument.flightTicketWithCardholderName	disputes	disputes.management.defenseDocuments.flightTicketWithCardholderName
+disputes.defenseDocument.flightTookPlace	disputes	disputes.management.defenseDocuments.flightTookPlace
+disputes.defenseDocument.frequentFlyerInformation	disputes	disputes.management.defenseDocuments.frequentFlyerInformation
+disputes.defenseDocument.ifDelayedProofShowingMerchantAbleToProvideServices	disputes	disputes.management.defenseDocuments.ifDelayedProofShowingMerchantAbleToProvideServices
+disputes.defenseDocument.incorrectAmount	disputes	disputes.management.defenseDocuments.incorrectAmount
+disputes.defenseDocument.latePresentment	disputes	disputes.management.defenseDocuments.latePresentment
+disputes.defenseDocument.latePresentmentHelp	disputes	disputes.management.defenseDocuments.latePresentmentHelp
+disputes.defenseDocument.latestRecurringTransactions	disputes	disputes.management.defenseDocuments.latestRecurringTransactions
+disputes.defenseDocument.memberMessageText	disputes	disputes.management.defenseDocuments.memberMessageText
+disputes.defenseDocument.memberMessageTextSentToSchemes	disputes	disputes.management.defenseDocuments.memberMessageTextSentToSchemes
+disputes.defenseDocument.merchandiseDescription	disputes	disputes.management.defenseDocuments.merchandiseDescription
+disputes.defenseDocument.merchandiseNotAsDescribed	disputes	disputes.management.defenseDocuments.merchandiseNotAsDescribed
+disputes.defenseDocument.merchandiseNotReceived	disputes	disputes.management.defenseDocuments.merchandiseNotReceived
+disputes.defenseDocument.merchandiseNotReceivedHelp	disputes	disputes.management.defenseDocuments.merchandiseNotReceivedHelp
+disputes.defenseDocument.merchandiseSentToAvsConfirmedBillingAddress	disputes	disputes.management.defenseDocuments.merchandiseSentToAvsConfirmedBillingAddress
+disputes.defenseDocument.merchantFraudPerformanceProgram	disputes	disputes.management.defenseDocuments.merchantFraudPerformanceProgram
+disputes.defenseDocument.merchantFraudPerformanceProgramHelp	disputes	disputes.management.defenseDocuments.merchantFraudPerformanceProgramHelp
+disputes.defenseDocument.merchantObtainedCardAtTimeReservationMade	disputes	disputes.management.defenseDocuments.merchantObtainedCardAtTimeReservationMade
+disputes.defenseDocument.merchantWrittenRebuttal	disputes	disputes.management.defenseDocuments.merchantWrittenRebuttal
+disputes.defenseDocument.missingSignature	disputes	disputes.management.defenseDocuments.missingSignature
+disputes.defenseDocument.missingSignatureHelp	disputes	disputes.management.defenseDocuments.missingSignatureHelp
+disputes.defenseDocument.moreThanOneTransactionProcessed	disputes	disputes.management.defenseDocuments.moreThanOneTransactionProcessed
+disputes.defenseDocument.mpiData	disputes	disputes.management.defenseDocuments.mpiData
+disputes.defenseDocument.noNotification	disputes	disputes.management.defenseDocuments.noNotification
+disputes.defenseDocument.nonMatchingAccountNumber	disputes	disputes.management.defenseDocuments.nonMatchingAccountNumber
+disputes.defenseDocument.nonMatchingAccountNumberHelp	disputes	disputes.management.defenseDocuments.nonMatchingAccountNumberHelp
+disputes.defenseDocument.numberAndDateOfOriginalChargeback	disputes	disputes.management.defenseDocuments.numberAndDateOfOriginalChargeback
+disputes.defenseDocument.originalAmount	disputes	disputes.management.defenseDocuments.originalAmount
+disputes.defenseDocument.originalAmountIfDisputedRepresentsPartialShipment	disputes	disputes.management.defenseDocuments.originalAmountIfDisputedRepresentsPartialShipment
+disputes.defenseDocument.other	disputes	disputes.management.defenseDocuments.other
+disputes.defenseDocument.otherHelp	disputes	disputes.management.defenseDocuments.otherHelp
+disputes.defenseDocument.paidByOtherMeansThanJCBCard	disputes	disputes.management.defenseDocuments.paidByOtherMeansThanJCBCard
+disputes.defenseDocument.paidByOtherMeansThanJCBCardHelp	disputes	disputes.management.defenseDocuments.paidByOtherMeansThanJCBCardHelp
+disputes.defenseDocument.paperAirlineTicket	disputes	disputes.management.defenseDocuments.paperAirlineTicket
+disputes.defenseDocument.passengerId	disputes	disputes.management.defenseDocuments.passengerId
+disputes.defenseDocument.passengerIdLinkedToCardholder	disputes	disputes.management.defenseDocuments.passengerIdLinkedToCardholder
+disputes.defenseDocument.previousTransactionsNotDisputed	disputes	disputes.management.defenseDocuments.previousTransactionsNotDisputed
+disputes.defenseDocument.printedSignedReceipt	disputes	disputes.management.defenseDocuments.printedSignedReceipt
+disputes.defenseDocument.processingError	disputes	disputes.management.defenseDocuments.processingError
+disputes.defenseDocument.processingErrorHelp	disputes	disputes.management.defenseDocuments.processingErrorHelp
+disputes.defenseDocument.proofAirlineTicketsWereUsed	disputes	disputes.management.defenseDocuments.proofAirlineTicketsWereUsed
+disputes.defenseDocument.proofCardAndCardholderSignature	disputes	disputes.management.defenseDocuments.proofCardAndCardholderSignature
+disputes.defenseDocument.proofCardPresence	disputes	disputes.management.defenseDocuments.proofCardPresence
+disputes.defenseDocument.proofFlightTookPlace	disputes	disputes.management.defenseDocuments.proofFlightTookPlace
+disputes.defenseDocument.proofGoodsServicesWereProvided	disputes	disputes.management.defenseDocuments.proofGoodsServicesWereProvided
+disputes.defenseDocument.proofGoodsWereDeliveredAsDescribed	disputes	disputes.management.defenseDocuments.proofGoodsWereDeliveredAsDescribed
+disputes.defenseDocument.proofMerchantHadNotReceivedPreviousChargeback	disputes	disputes.management.defenseDocuments.proofMerchantHadNotReceivedPreviousChargeback
+disputes.defenseDocument.proofMerchantHadNotReceivedPreviousChargebackAutoGenerated	disputes	disputes.management.defenseDocuments.proofMerchantHadNotReceivedPreviousChargebackAutoGenerated
+disputes.defenseDocument.proofMerchantNotNotifiedOfCancellation	disputes	disputes.management.defenseDocuments.proofMerchantNotNotifiedOfCancellation
+disputes.defenseDocument.proofOfAccountTakeover	disputes	disputes.management.defenseDocuments.proofOfAccountTakeover
+disputes.defenseDocument.proofOfAddendum	disputes	disputes.management.defenseDocuments.proofOfAddendum
+disputes.defenseDocument.proofOfDelayedDelivery	disputes	disputes.management.defenseDocuments.proofOfDelayedDelivery
+disputes.defenseDocument.proofOfFulfillment	disputes	disputes.management.defenseDocuments.proofOfFulfillment
+disputes.defenseDocument.proofOfInvalidChargeback	disputes	disputes.management.defenseDocuments.proofOfInvalidChargeback
+disputes.defenseDocument.proofOfNoCancellation	disputes	disputes.management.defenseDocuments.proofOfNoCancellation
+disputes.defenseDocument.proofOfNoChargebackReceived	disputes	disputes.management.defenseDocuments.proofOfNoChargebackReceived
+disputes.defenseDocument.proofOfNoShow	disputes	disputes.management.defenseDocuments.proofOfNoShow
+disputes.defenseDocument.proofOfRecurringTransaction	disputes	disputes.management.defenseDocuments.proofOfRecurringTransaction
+disputes.defenseDocument.proofOfRefund	disputes	disputes.management.defenseDocuments.proofOfRefund
+disputes.defenseDocument.proofOfRetailSale	disputes	disputes.management.defenseDocuments.proofOfRetailSale
+disputes.defenseDocument.proofProvidedMerchandise	disputes	disputes.management.defenseDocuments.proofProvidedMerchandise
+disputes.defenseDocument.proofRecurringContractNotCancelledAtTimeOfSettlement	disputes	disputes.management.defenseDocuments.proofRecurringContractNotCancelledAtTimeOfSettlement
+disputes.defenseDocument.proofRenewedMembership	disputes	disputes.management.defenseDocuments.proofRenewedMembership
+disputes.defenseDocument.proofShowingCardholderRenewedMembership	disputes	disputes.management.defenseDocuments.proofShowingCardholderRenewedMembership
+disputes.defenseDocument.proofShowingTrackingInformation	disputes	disputes.management.defenseDocuments.proofShowingTrackingInformation
+disputes.defenseDocument.proofValidIncreaseOfAmount	disputes	disputes.management.defenseDocuments.proofValidIncreaseOfAmount
+disputes.defenseDocument.provideRefundId	disputes	disputes.management.defenseDocuments.provideRefundId
+disputes.defenseDocument.provingTransactionResultedFromAccountTakeover	disputes	disputes.management.defenseDocuments.provingTransactionResultedFromAccountTakeover
+disputes.defenseDocument.reasonForInvalidation	disputes	disputes.management.defenseDocuments.reasonForInvalidation
+disputes.defenseDocument.reasonForInvalidationOfChargeback	disputes	disputes.management.defenseDocuments.reasonForInvalidationOfChargeback
+disputes.defenseDocument.reasonableAmount	disputes	disputes.management.defenseDocuments.reasonableAmount
+disputes.defenseDocument.rebuttalCancellationNotAccepted	disputes	disputes.management.defenseDocuments.rebuttalCancellationNotAccepted
+disputes.defenseDocument.rebuttalGivenToCardholder	disputes	disputes.management.defenseDocuments.rebuttalGivenToCardholder
+disputes.defenseDocument.rebuttalStatingCancellationNotAccepted	disputes	disputes.management.defenseDocuments.rebuttalStatingCancellationNotAccepted
+disputes.defenseDocument.receiptOfFlightTicketAtBillingAddress	disputes	disputes.management.defenseDocuments.receiptOfFlightTicketAtBillingAddress
+disputes.defenseDocument.receiptOrOther	disputes	disputes.management.defenseDocuments.receiptOrOther
+disputes.defenseDocument.resultsOfMpiCalls	disputes	disputes.management.defenseDocuments.resultsOfMpiCalls
+disputes.defenseDocument.retrievalRequestFulfilled	disputes	disputes.management.defenseDocuments.retrievalRequestFulfilled
+disputes.defenseDocument.retrievalRequestNotHonored	disputes	disputes.management.defenseDocuments.retrievalRequestNotHonored
+disputes.defenseDocument.retrievalRequestNotHonoredHelp	disputes	disputes.management.defenseDocuments.retrievalRequestNotHonoredHelp
+disputes.defenseDocument.serviceNotRendered	disputes	disputes.management.defenseDocuments.serviceNotRendered
+disputes.defenseDocument.serviceNotRenderedHelp	disputes	disputes.management.defenseDocuments.serviceNotRenderedHelp
+disputes.defenseDocument.shipToAddress	disputes	disputes.management.defenseDocuments.shipToAddress
+disputes.defenseDocument.shipToAddressIfApplicable	disputes	disputes.management.defenseDocuments.shipToAddressIfApplicable
+disputes.defenseDocument.shipmentDocumentation	disputes	disputes.management.defenseDocuments.shipmentDocumentation
+disputes.defenseDocument.signatureOrChipPinEvidence	disputes	disputes.management.defenseDocuments.signatureOrChipPinEvidence
+disputes.defenseDocument.signedTerminalReceipt	disputes	disputes.management.defenseDocuments.signedTerminalReceipt
+disputes.defenseDocument.statementMerchantDidNotReceiveGoods	disputes	disputes.management.defenseDocuments.statementMerchantDidNotReceiveGoods
+disputes.defenseDocument.transactionAfterReservationCancelled	disputes	disputes.management.defenseDocuments.transactionAfterReservationCancelled
+disputes.defenseDocument.transactionAfterReservationCancelledHelp	disputes	disputes.management.defenseDocuments.transactionAfterReservationCancelledHelp
+disputes.defenseDocument.transactionNotRecognizedChipLiabilityShift	disputes	disputes.management.defenseDocuments.transactionNotRecognizedChipLiabilityShift
+disputes.defenseDocument.transactionNotRecognizedChipLiabilityShiftHelp	disputes	disputes.management.defenseDocuments.transactionNotRecognizedChipLiabilityShiftHelp
+disputes.defenseDocument.transactionNotRecognizedContactlessAndCardNotPresented	disputes	disputes.management.defenseDocuments.transactionNotRecognizedContactlessAndCardNotPresented
+disputes.defenseDocument.transactionNotRecognizedContactlessAndCardNotPresentedHelp	disputes	disputes.management.defenseDocuments.transactionNotRecognizedContactlessAndCardNotPresentedHelp
+disputes.defenseDocument.unauthorisedReason	disputes	disputes.management.defenseDocuments.unauthorisedReason
+disputes.defenseDocument.uploadListOfRefundIds	disputes	disputes.management.defenseDocuments.uploadListOfRefundIds
+disputes.defenseDocument.writtenCorrespondenceExchanged	disputes	disputes.management.defenseDocuments.writtenCorrespondenceExchanged
+disputes.defenseDocument.writtenRebutalGoodsRepairedOrReplaced	disputes	disputes.management.defenseDocuments.writtenRebutalGoodsRepairedOrReplaced
+disputes.defenseReason	disputes	disputes.management.details.fields.defenseReason
+disputes.defenseReason.3dSecureFullyAuthenticatedTransaction	disputes	disputes.management.defenseReasons.3dSecureFullyAuthenticatedTransaction
+disputes.defenseReason.3dSecureLiabilityShiftNotFullyAuthenticated	disputes	disputes.management.defenseReasons.3dSecureLiabilityShiftNotFullyAuthenticated
+disputes.defenseReason.accountNumberNotListedInExceptions	disputes	disputes.management.defenseReasons.accountNumberNotListedInExceptions
+disputes.defenseReason.accountNumberNotListedInExceptionsFor60Days	disputes	disputes.management.defenseReasons.accountNumberNotListedInExceptionsFor60Days
+disputes.defenseReason.accountTakeover	disputes	disputes.management.defenseReasons.accountTakeover
+disputes.defenseReason.acquirerDefendChargebackIfIssuerRequested	disputes	disputes.management.defenseReasons.acquirerDefendChargebackIfIssuerRequested
+disputes.defenseReason.acquirerProvidesCorrectDateWithinTimeLimit	disputes	disputes.management.defenseReasons.acquirerProvidesCorrectDateWithinTimeLimit
+disputes.defenseReason.additionalInformation	disputes	disputes.management.defenseReasons.additionalInformation
+disputes.defenseReason.addressMerchandiseSentAvsConfirmed	disputes	disputes.management.defenseReasons.addressMerchandiseSentAvsConfirmed
+disputes.defenseReason.addressVerificationService	disputes	disputes.management.defenseReasons.addressVerificationService
+disputes.defenseReason.addressVerificationServiceAdditionalInformation	disputes	disputes.management.defenseReasons.addressVerificationServiceAdditionalInformation
+disputes.defenseReason.airlineCompellingEvidence	disputes	disputes.management.defenseReasons.airlineCompellingEvidence
+disputes.defenseReason.airlineFlightProvided	disputes	disputes.management.defenseReasons.airlineFlightProvided
+disputes.defenseReason.atmDispute	disputes	disputes.management.defenseReasons.atmDispute
+disputes.defenseReason.authorisationReceivedForAmount	disputes	disputes.management.defenseReasons.authorisationReceivedForAmount
+disputes.defenseReason.authorisedOnline	disputes	disputes.management.defenseReasons.authorisedOnline
+disputes.defenseReason.autoGeneratedRecurringTransactionDetails	disputes	disputes.management.defenseReasons.autoGeneratedRecurringTransactionDetails
+disputes.defenseReason.autoResponseSentToIssuer	disputes	disputes.management.defenseReasons.autoResponseSentToIssuer
+disputes.defenseReason.autoResponseToRfi	disputes	disputes.management.defenseReasons.autoResponseToRfi
+disputes.defenseReason.buyerExceededWindowToFileReturn	disputes	disputes.management.defenseReasons.buyerExceededWindowToFileReturn
+disputes.defenseReason.cancellationCodeWasInvalidAsShownByExplanationProvided	disputes	disputes.management.defenseReasons.cancellationCodeWasInvalidAsShownByExplanationProvided
+disputes.defenseReason.cancellationContractFailed	disputes	disputes.management.defenseReasons.cancellationContractFailed
+disputes.defenseReason.cancellationOrReturns	disputes	disputes.management.defenseReasons.cancellationOrReturns
+disputes.defenseReason.cardAndSignatureForCorporateFleetCardTransaction	disputes	disputes.management.defenseReasons.cardAndSignatureForCorporateFleetCardTransaction
+disputes.defenseReason.cardPresenceProof	disputes	disputes.management.defenseReasons.cardPresenceProof
+disputes.defenseReason.cardPresentAndChipUsedNoPinProvided	disputes	disputes.management.defenseReasons.cardPresentAndChipUsedNoPinProvided
+disputes.defenseReason.cardWithSignatureNotProcessedMastercardNetwork	disputes	disputes.management.defenseReasons.cardWithSignatureNotProcessedMastercardNetwork
+disputes.defenseReason.cardholderAgreedToAmountAsReasonable	disputes	disputes.management.defenseReasons.cardholderAgreedToAmountAsReasonable
+disputes.defenseReason.cardholderBilledForSeparateAdditionalAmount	disputes	disputes.management.defenseReasons.cardholderBilledForSeparateAdditionalAmount
+disputes.defenseReason.cardholderCancelledRecurringServiceButRenewedLater	disputes	disputes.management.defenseReasons.cardholderCancelledRecurringServiceButRenewedLater
+disputes.defenseReason.cardholderDidNotMeetCancellationTerms	disputes	disputes.management.defenseReasons.cardholderDidNotMeetCancellationTerms
+disputes.defenseReason.cardholderNotifiedBeforeRecurringTransaction	disputes	disputes.management.defenseReasons.cardholderNotifiedBeforeRecurringTransaction
+disputes.defenseReason.cardholderNotifiedButNoReply	disputes	disputes.management.defenseReasons.cardholderNotifiedButNoReply
+disputes.defenseReason.cardholderParticipated	disputes	disputes.management.defenseReasons.cardholderParticipated
+disputes.defenseReason.cardholderResponsibleForAddendumTransaction	disputes	disputes.management.defenseReasons.cardholderResponsibleForAddendumTransaction
+disputes.defenseReason.cardholderResponsibleForDisputedAmount	disputes	disputes.management.defenseReasons.cardholderResponsibleForDisputedAmount
+disputes.defenseReason.cardholderShouldHaveReturnedGoods	disputes	disputes.management.defenseReasons.cardholderShouldHaveReturnedGoods
+disputes.defenseReason.cbCodeNotApplicable	disputes	disputes.management.defenseReasons.cbCodeNotApplicable
+disputes.defenseReason.chargebackBundlingInvalid	disputes	disputes.management.defenseReasons.chargebackBundlingInvalid
+disputes.defenseReason.chargebackCodeNA3dSecureNotOffered	disputes	disputes.management.defenseReasons.chargebackCodeNA3dSecureNotOffered
+disputes.defenseReason.chargebackInvalidCorrectAmountAndCurrencyProvided	disputes	disputes.management.defenseReasons.chargebackInvalidCorrectAmountAndCurrencyProvided
+disputes.defenseReason.chargebackReceivedAfterMastercardTimeLimit	disputes	disputes.management.defenseReasons.chargebackReceivedAfterMastercardTimeLimit
+disputes.defenseReason.chipLiabilityShift	disputes	disputes.management.defenseReasons.chipLiabilityShift
+disputes.defenseReason.chipTransaction	disputes	disputes.management.defenseReasons.chipTransaction
+disputes.defenseReason.chipTransactionReportedSAFE	disputes	disputes.management.defenseReasons.chipTransactionReportedSAFE
+disputes.defenseReason.claimNotJustifiedSinceTransactionNotChargebacked	disputes	disputes.management.defenseReasons.claimNotJustifiedSinceTransactionNotChargebacked
+disputes.defenseReason.compellingEvidence	disputes	disputes.management.defenseReasons.compellingEvidence
+disputes.defenseReason.compellingEvidenceRecurringTransactions	disputes	disputes.management.defenseReasons.compellingEvidenceRecurringTransactions
+disputes.defenseReason.correctTransactionAmount	disputes	disputes.management.defenseReasons.correctTransactionAmount
+disputes.defenseReason.correctTransactionCurrency	disputes	disputes.management.defenseReasons.correctTransactionCurrency
+disputes.defenseReason.correctTransactionDateProvided	disputes	disputes.management.defenseReasons.correctTransactionDateProvided
+disputes.defenseReason.creditOrCancellationPolicyDisclosed	disputes	disputes.management.defenseReasons.creditOrCancellationPolicyDisclosed
+disputes.defenseReason.creditOrCancellationPolicyDisclosedToCardholder	disputes	disputes.management.defenseReasons.creditOrCancellationPolicyDisclosedToCardholder
+disputes.defenseReason.creditPreviouslyIssued	disputes	disputes.management.defenseReasons.creditPreviouslyIssued
+disputes.defenseReason.cvc2ValidationProgram	disputes	disputes.management.defenseReasons.cvc2ValidationProgram
+disputes.defenseReason.de22DontMatchInFaceToFaceTransaction	disputes	disputes.management.defenseReasons.de22DontMatchInFaceToFaceTransaction
+disputes.defenseReason.defenseReasonIfProblemsWithScans	disputes	disputes.management.defenseReasons.defenseReasonIfProblemsWithScans
+disputes.defenseReason.deficiencyCorrected	disputes	disputes.management.defenseReasons.deficiencyCorrected
+disputes.defenseReason.delayInSubmittingTransaction	disputes	disputes.management.defenseReasons.delayInSubmittingTransaction
+disputes.defenseReason.disputedSurcharge	disputes	disputes.management.defenseReasons.disputedSurcharge
+disputes.defenseReason.disputedSurchargeIncorrectCalculation	disputes	disputes.management.defenseReasons.disputedSurchargeIncorrectCalculation
+disputes.defenseReason.docToProveNoPaymentByOtherMean	disputes	disputes.management.defenseReasons.docToProveNoPaymentByOtherMean
+disputes.defenseReason.documentationIncreasedDebitCardholderAccount	disputes	disputes.management.defenseReasons.documentationIncreasedDebitCardholderAccount
+disputes.defenseReason.documentationReceivedWasIllegible	disputes	disputes.management.defenseReasons.documentationReceivedWasIllegible
+disputes.defenseReason.documentsSentToFulfillRetrievalRequest	disputes	disputes.management.defenseReasons.documentsSentToFulfillRetrievalRequest
+disputes.defenseReason.duplicateChargeback	disputes	disputes.management.defenseReasons.duplicateChargeback
+disputes.defenseReason.emergencyPaymentAuthorizationService	disputes	disputes.management.defenseReasons.emergencyPaymentAuthorizationService
+disputes.defenseReason.emvDeviceNonEmvCard	disputes	disputes.management.defenseReasons.emvDeviceNonEmvCard
+disputes.defenseReason.emvLiabilityShift	disputes	disputes.management.defenseReasons.emvLiabilityShift
+disputes.defenseReason.evidenceCardholderAuthorizedTransaction	disputes	disputes.management.defenseReasons.evidenceCardholderAuthorizedTransaction
+disputes.defenseReason.evidenceGoodsNotDamaged	disputes	disputes.management.defenseReasons.evidenceGoodsNotDamaged
+disputes.defenseReason.evidenceServicesProvidedAndReceivedWrittenCorrespondence	disputes	disputes.management.defenseReasons.evidenceServicesProvidedAndReceivedWrittenCorrespondence
+disputes.defenseReason.evidenceThatCardholderParticipated	disputes	disputes.management.defenseReasons.evidenceThatCardholderParticipated
+disputes.defenseReason.faceToFaceTransactionNoConflictingInformation	disputes	disputes.management.defenseReasons.faceToFaceTransactionNoConflictingInformation
+disputes.defenseReason.faceToFaceTransactionWithConflictingInformation	disputes	disputes.management.defenseReasons.faceToFaceTransactionWithConflictingInformation
+disputes.defenseReason.fallbackDefenseReasonCode	disputes	disputes.management.defenseReasons.fallbackDefenseReasonCode
+disputes.defenseReason.firstChargebackCodeNotApplicable	disputes	disputes.management.defenseReasons.firstChargebackCodeNotApplicable
+disputes.defenseReason.firstChargebackDoesNotMeetPrerequisites	disputes	disputes.management.defenseReasons.firstChargebackDoesNotMeetPrerequisites
+disputes.defenseReason.firstChargebackInvalid	disputes	disputes.management.defenseReasons.firstChargebackInvalid
+disputes.defenseReason.formatCbmmddyyArdXxxExpected	disputes	disputes.management.defenseReasons.formatCbmmddyyArdXxxExpected
+disputes.defenseReason.formatMultipleTransactionsNnnExpected	disputes	disputes.management.defenseReasons.formatMultipleTransactionsNnnExpected
+disputes.defenseReason.formatRpcsMmddyyExpected	disputes	disputes.management.defenseReasons.formatRpcsMmddyyExpected
+disputes.defenseReason.fraudEvidence	disputes	disputes.management.defenseReasons.fraudEvidence
+disputes.defenseReason.goodsNotReturned	disputes	disputes.management.defenseReasons.goodsNotReturned
+disputes.defenseReason.goodsOrServicesProvided	disputes	disputes.management.defenseReasons.goodsOrServicesProvided
+disputes.defenseReason.goodsRepairedOrReplaced	disputes	disputes.management.defenseReasons.goodsRepairedOrReplaced
+disputes.defenseReason.goodsWereAsDescribed	disputes	disputes.management.defenseReasons.goodsWereAsDescribed
+disputes.defenseReason.goodsWereRepairedOrReplaced	disputes	disputes.management.defenseReasons.goodsWereRepairedOrReplaced
+disputes.defenseReason.identifiedAddendum	disputes	disputes.management.defenseReasons.identifiedAddendum
+disputes.defenseReason.increasedTransactionAmount	disputes	disputes.management.defenseReasons.increasedTransactionAmount
+disputes.defenseReason.intraregionalTransactionReportedSAFE	disputes	disputes.management.defenseReasons.intraregionalTransactionReportedSAFE
+disputes.defenseReason.invalidAcquirerReferenceData	disputes	disputes.management.defenseReasons.invalidAcquirerReferenceData
+disputes.defenseReason.invalidCancellationCode	disputes	disputes.management.defenseReasons.invalidCancellationCode
+disputes.defenseReason.invalidChargeback	disputes	disputes.management.defenseReasons.invalidChargeback
+disputes.defenseReason.invalidChargebackBasedOnMcc	disputes	disputes.management.defenseReasons.invalidChargebackBasedOnMcc
+disputes.defenseReason.invalidChargebackReasonCode	disputes	disputes.management.defenseReasons.invalidChargebackReasonCode
+disputes.defenseReason.invalidMessageText	disputes	disputes.management.defenseReasons.invalidMessageText
+disputes.defenseReason.invalidReferenceDataDocumentationNotRequired	disputes	disputes.management.defenseReasons.invalidReferenceDataDocumentationNotRequired
+disputes.defenseReason.issuerDidNotIncludeTwoSetsOfArns	disputes	disputes.management.defenseReasons.issuerDidNotIncludeTwoSetsOfArns
+disputes.defenseReason.issuerDidNotProvideRequiredDocumentation	disputes	disputes.management.defenseReasons.issuerDidNotProvideRequiredDocumentation
+disputes.defenseReason.issuerHasInitiatedTooManyFraudulentDisputes	disputes	disputes.management.defenseReasons.issuerHasInitiatedTooManyFraudulentDisputes
+disputes.defenseReason.issuerProcessedChargebackMoreThanOnce	disputes	disputes.management.defenseReasons.issuerProcessedChargebackMoreThanOnce
+disputes.defenseReason.justifiedDelayedPresentment	disputes	disputes.management.defenseReasons.justifiedDelayedPresentment
+disputes.defenseReason.liabilityShiftFullAuthenticated	disputes	disputes.management.defenseReasons.liabilityShiftFullAuthenticated
+disputes.defenseReason.manyFraudulentChargebacks	disputes	disputes.management.defenseReasons.manyFraudulentChargebacks
+disputes.defenseReason.membershipRenewedAfterCancellation	disputes	disputes.management.defenseReasons.membershipRenewedAfterCancellation
+disputes.defenseReason.merchandiseNotReturned	disputes	disputes.management.defenseReasons.merchandiseNotReturned
+disputes.defenseReason.merchandiseWasNotCounterfeit	disputes	disputes.management.defenseReasons.merchandiseWasNotCounterfeit
+disputes.defenseReason.merchandiseWasReceivedByShopper	disputes	disputes.management.defenseReasons.merchandiseWasReceivedByShopper
+disputes.defenseReason.merchantCanProvideAdditionalCompellingEvidence	disputes	disputes.management.defenseReasons.merchantCanProvideAdditionalCompellingEvidence
+disputes.defenseReason.merchantCanProvideAdditionalInformation	disputes	disputes.management.defenseReasons.merchantCanProvideAdditionalInformation
+disputes.defenseReason.merchantCantReceiveThisChargebackBasedOnTheirMcc	disputes	disputes.management.defenseReasons.merchantCantReceiveThisChargebackBasedOnTheirMcc
+disputes.defenseReason.merchantNotNotifiedOfCancellation	disputes	disputes.management.defenseReasons.merchantNotNotifiedOfCancellation
+disputes.defenseReason.merchantProvideMissingDocuments	disputes	disputes.management.defenseReasons.merchantProvideMissingDocuments
+disputes.defenseReason.merchantProvidedServicesToCardholderProof	disputes	disputes.management.defenseReasons.merchantProvidedServicesToCardholderProof
+disputes.defenseReason.noCreditSlip	disputes	disputes.management.defenseReasons.noCreditSlip
+disputes.defenseReason.noPriorChargebackReceived	disputes	disputes.management.defenseReasons.noPriorChargebackReceived
+disputes.defenseReason.noShowTransaction	disputes	disputes.management.defenseReasons.noShowTransaction
+disputes.defenseReason.not3dSecureTransaction	disputes	disputes.management.defenseReasons.not3dSecureTransaction
+disputes.defenseReason.notAgreeWithRefund	disputes	disputes.management.defenseReasons.notAgreeWithRefund
+disputes.defenseReason.notPosTransaction	disputes	disputes.management.defenseReasons.notPosTransaction
+disputes.defenseReason.parcelServiceReceipt	disputes	disputes.management.defenseReasons.parcelServiceReceipt
+disputes.defenseReason.pastChargebackTimeLimit	disputes	disputes.management.defenseReasons.pastChargebackTimeLimit
+disputes.defenseReason.paymentByOtherMeans	disputes	disputes.management.defenseReasons.paymentByOtherMeans
+disputes.defenseReason.paypassAmountBelowProtectionAmount	disputes	disputes.management.defenseReasons.paypassAmountBelowProtectionAmount
+disputes.defenseReason.paypassTransaction	disputes	disputes.management.defenseReasons.paypassTransaction
+disputes.defenseReason.pinForOneOrBothTransactions	disputes	disputes.management.defenseReasons.pinForOneOrBothTransactions
+disputes.defenseReason.pinTransaction	disputes	disputes.management.defenseReasons.pinTransaction
+disputes.defenseReason.pinUsedToVerifyCardholder	disputes	disputes.management.defenseReasons.pinUsedToVerifyCardholder
+disputes.defenseReason.posTransactionAndSignedTerminalReceiptAvailable	disputes	disputes.management.defenseReasons.posTransactionAndSignedTerminalReceiptAvailable
+disputes.defenseReason.posTransactionCardholderWasPresentProof	disputes	disputes.management.defenseReasons.posTransactionCardholderWasPresentProof
+disputes.defenseReason.prevChargedbackTwoTransactionsWithSameAccount	disputes	disputes.management.defenseReasons.prevChargedbackTwoTransactionsWithSameAccount
+disputes.defenseReason.previousChargebackCancellingRecurringContract	disputes	disputes.management.defenseReasons.previousChargebackCancellingRecurringContract
+disputes.defenseReason.proofCardholderReceivedMerchandise	disputes	disputes.management.defenseReasons.proofCardholderReceivedMerchandise
+disputes.defenseReason.proofDeficiencyCorrected	disputes	disputes.management.defenseReasons.proofDeficiencyCorrected
+disputes.defenseReason.proofOfCardPresenceAvailableNotAuthorisedMastercardNetwork	disputes	disputes.management.defenseReasons.proofOfCardPresenceAvailableNotAuthorisedMastercardNetwork
+disputes.defenseReason.proofOfCardPresenceMastercardCorporateFleet	disputes	disputes.management.defenseReasons.proofOfCardPresenceMastercardCorporateFleet
+disputes.defenseReason.provideInformationForCollectionOrFraudCase	disputes	disputes.management.defenseReasons.provideInformationForCollectionOrFraudCase
+disputes.defenseReason.provideMissingInformation	disputes	disputes.management.defenseReasons.provideMissingInformation
+disputes.defenseReason.provideTransactionalInfoTravelDetails	disputes	disputes.management.defenseReasons.provideTransactionalInfoTravelDetails
+disputes.defenseReason.provideTransactionalInformation	disputes	disputes.management.defenseReasons.provideTransactionalInformation
+disputes.defenseReason.purchaseProperlyPosted	disputes	disputes.management.defenseReasons.purchaseProperlyPosted
+disputes.defenseReason.qpsTransaction	disputes	disputes.management.defenseReasons.qpsTransaction
+disputes.defenseReason.qpsTransactionWithAmountLessThanChargebackProtectionAmount	disputes	disputes.management.defenseReasons.qpsTransactionWithAmountLessThanChargebackProtectionAmount
+disputes.defenseReason.receiptWithItemsBilledBecauseOfLossTheftDamages	disputes	disputes.management.defenseReasons.receiptWithItemsBilledBecauseOfLossTheftDamages
+disputes.defenseReason.recurringTransactionCompellingEvidence	disputes	disputes.management.defenseReasons.recurringTransactionCompellingEvidence
+disputes.defenseReason.recurringTransactionCompellingMerchantEvidence	disputes	disputes.management.defenseReasons.recurringTransactionCompellingMerchantEvidence
+disputes.defenseReason.reponseToRfi	disputes	disputes.management.defenseReasons.reponseToRfi
+disputes.defenseReason.reponseToRfiCardPresent	disputes	disputes.management.defenseReasons.reponseToRfiCardPresent
+disputes.defenseReason.requiredDocumentationNotReceived	disputes	disputes.management.defenseReasons.requiredDocumentationNotReceived
+disputes.defenseReason.responseToRfiAirlines	disputes	disputes.management.defenseReasons.responseToRfiAirlines
+disputes.defenseReason.responseToRfiCarRental	disputes	disputes.management.defenseReasons.responseToRfiCarRental
+disputes.defenseReason.retrievalRequestFulfilled	disputes	disputes.management.defenseReasons.retrievalRequestFulfilled
+disputes.defenseReason.returnNotAccepted	disputes	disputes.management.defenseReasons.returnNotAccepted
+disputes.defenseReason.scanningError	disputes	disputes.management.defenseReasons.scanningError
+disputes.defenseReason.serviceCancelledButMerchantNotNotified	disputes	disputes.management.defenseReasons.serviceCancelledButMerchantNotNotified
+disputes.defenseReason.serviceNotCancelled	disputes	disputes.management.defenseReasons.serviceNotCancelled
+disputes.defenseReason.serviceNotCancelledEvidence	disputes	disputes.management.defenseReasons.serviceNotCancelledEvidence
+disputes.defenseReason.servicesProvidedAfterCancellation	disputes	disputes.management.defenseReasons.servicesProvidedAfterCancellation
+disputes.defenseReason.servicesProvidedAndUsedAfterCancellation	disputes	disputes.management.defenseReasons.servicesProvidedAndUsedAfterCancellation
+disputes.defenseReason.shopperClaimsRefundWasPromisedButNotExecuted	disputes	disputes.management.defenseReasons.shopperClaimsRefundWasPromisedButNotExecuted
+disputes.defenseReason.shopperUsedAirlineTicket	disputes	disputes.management.defenseReasons.shopperUsedAirlineTicket
+disputes.defenseReason.signedImprintedSalesSlipInvoicePosReceipt	disputes	disputes.management.defenseReasons.signedImprintedSalesSlipInvoicePosReceipt
+disputes.defenseReason.signedTerminalReceiptAvailable	disputes	disputes.management.defenseReasons.signedTerminalReceiptAvailable
+disputes.defenseReason.supplyDefenseMaterial	disputes	disputes.management.defenseReasons.supplyDefenseMaterial
+disputes.defenseReason.surchargeCorrectlyProcessed	disputes	disputes.management.defenseReasons.surchargeCorrectlyProcessed
+disputes.defenseReason.surchargeIncorrectlyCalculatedByIssuer	disputes	disputes.management.defenseReasons.surchargeIncorrectlyCalculatedByIssuer
+disputes.defenseReason.termsOfSaleWereNotMisrepresented	disputes	disputes.management.defenseReasons.termsOfSaleWereNotMisrepresented
+disputes.defenseReason.thisReasonIsTechnical	disputes	disputes.management.defenseReasons.thisReasonIsTechnical
+disputes.defenseReason.timeBetweenAuthorisationAndSettlementWithinTimeLimits	disputes	disputes.management.defenseReasons.timeBetweenAuthorisationAndSettlementWithinTimeLimits
+disputes.defenseReason.transactioAuthorisedEmergencyPaymentAuthorizationService	disputes	disputes.management.defenseReasons.transactioAuthorisedEmergencyPaymentAuthorizationService
+disputes.defenseReason.transactionAmountAlreadyRefunded	disputes	disputes.management.defenseReasons.transactionAmountAlreadyRefunded
+disputes.defenseReason.transactionApproved3dSecureAuthenticated	disputes	disputes.management.defenseReasons.transactionApproved3dSecureAuthenticated
+disputes.defenseReason.transactionBetweenChipLiabilityShiftProgramCustomers	disputes	disputes.management.defenseReasons.transactionBetweenChipLiabilityShiftProgramCustomers
+disputes.defenseReason.transactionFallsCvc2ValidationProgram	disputes	disputes.management.defenseReasons.transactionFallsCvc2ValidationProgram
+disputes.defenseReason.transactionFromAccountTakeover	disputes	disputes.management.defenseReasons.transactionFromAccountTakeover
+disputes.defenseReason.transactionInformationDocument	disputes	disputes.management.defenseReasons.transactionInformationDocument
+disputes.defenseReason.transactionIssuerApproved3dSecureAuthenticated	disputes	disputes.management.defenseReasons.transactionIssuerApproved3dSecureAuthenticated
+disputes.defenseReason.transactionNotChargebackedAutoDefense	disputes	disputes.management.defenseReasons.transactionNotChargebackedAutoDefense
+disputes.defenseReason.transactionNotFully3dSecureAuthenticated	disputes	disputes.management.defenseReasons.transactionNotFully3dSecureAuthenticated
+disputes.defenseReason.transactionNotRecurring	disputes	disputes.management.defenseReasons.transactionNotRecurring
+disputes.defenseReason.transactionNotRecurringTransactionInstallment	disputes	disputes.management.defenseReasons.transactionNotRecurringTransactionInstallment
+disputes.defenseReason.transactionSettledWithinTimeLimit	disputes	disputes.management.defenseReasons.transactionSettledWithinTimeLimit
+disputes.defenseReason.transactionWasAuthorised	disputes	disputes.management.defenseReasons.transactionWasAuthorised
+disputes.defenseReason.transactionWasAuthorisedOnline	disputes	disputes.management.defenseReasons.transactionWasAuthorisedOnline
+disputes.defenseReason.transactionWasECommerceGivenChargebackReasonNotApplicable	disputes	disputes.management.defenseReasons.transactionWasECommerceGivenChargebackReasonNotApplicable
+disputes.defenseReason.transactionWasInFaceToFaceEnvironment	disputes	disputes.management.defenseReasons.transactionWasInFaceToFaceEnvironment
+disputes.defenseReason.transactionWasProperlyIdentifiedAsInstallmentTransaction	disputes	disputes.management.defenseReasons.transactionWasProperlyIdentifiedAsInstallmentTransaction
+disputes.defenseReason.transactionWasResultOfGuaranteedReservation	disputes	disputes.management.defenseReasons.transactionWasResultOfGuaranteedReservation
+disputes.defenseReason.transactionsInitiatedDueToLossTheftOrDamages	disputes	disputes.management.defenseReasons.transactionsInitiatedDueToLossTheftOrDamages
+disputes.defenseReason.twoDifferentTidsNonAtm	disputes	disputes.management.defenseReasons.twoDifferentTidsNonAtm
+disputes.defenseReason.twoDifferentTidsWithSameCardholderAccount	disputes	disputes.management.defenseReasons.twoDifferentTidsWithSameCardholderAccount
+disputes.defenseReason.twoDifferentTransactions	disputes	disputes.management.defenseReasons.twoDifferentTransactions
+disputes.defenseReason.twoPreviousFraudRelatedChargebacks	disputes	disputes.management.defenseReasons.twoPreviousFraudRelatedChargebacks
+disputes.defenseReason.twoSeparateTransactions	disputes	disputes.management.defenseReasons.twoSeparateTransactions
+disputes.defenseReason.unfoundedCardholderDispute	disputes	disputes.management.defenseReasons.unfoundedCardholderDispute
+disputes.defenseReason.unreasonableAmount	disputes	disputes.management.defenseReasons.unreasonableAmount
+disputes.defenseReason.uploadReturnPolicyDocument	disputes	disputes.management.defenseReasons.uploadReturnPolicyDocument
+disputes.defenseReason.useThisDefenseReasonIfApplicable	disputes	disputes.management.defenseReasons.useThisDefenseReasonIfApplicable
+disputes.defenseReason.validityOfTransactionChargedExplanation	disputes	disputes.management.defenseReasons.validityOfTransactionChargedExplanation
+disputes.defenseReason.waiverFormAbsolvingMerchantResponsibility	disputes	disputes.management.defenseReasons.waiverFormAbsolvingMerchantResponsibility
+disputes.disputeManagementTitle	disputes	disputes.management.title
+disputes.disputeReason	-	(no match)
+disputes.disputeReference	disputes	disputes.management.details.fields.disputeReference
+disputes.disputedAmount	disputes	disputes.overview.fields.disputedAmount
+disputes.documentRequirements	disputes	disputes.management.defend.documentRequirements.title
+disputes.documentRequirements.acceptableFormatAndSize	disputes	disputes.management.defend.documentRequirements.formatAndSize
+disputes.documentRequirements.mustBeInEnglish	disputes	disputes.management.defend.documentRequirements.language
+disputes.documentRequirements.recommendedSize	disputes	disputes.management.defend.documentRequirements.recommendedSize
+disputes.empty.noChargebacksFound	disputes	disputes.overview.chargebacks.errors.listEmpty
+disputes.empty.noDisputesFound	disputes	disputes.overview.ongoingAndClosed.errors.listEmpty
+disputes.empty.noFraudAlertsFound	disputes	disputes.overview.fraudAlerts.errors.listEmpty
+disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewChargebacks	disputes	disputes.overview.chargebacks.errors.updateFilters
+disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewDisputes	disputes	disputes.overview.ongoingAndClosed.errors.updateFilters
+disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewFraudAlerts	disputes	disputes.overview.fraudAlerts.errors.updateFilters
+disputes.error.couldNotLoadDisputesOverview	disputes	disputes.overview.errors.unavailable
+disputes.error.entityWasNotFoundDetail	disputes	disputes.management.errors.notFound
+disputes.error.failedRetry	disputes	disputes.management.details.errors.downloadFailure
+disputes.error.weCouldNotLoadYourDispute	disputes	disputes.management.errors.unavailable
+disputes.error.weCouldNotLoadYourDisputes	disputes	disputes.overview.errors.listUnavailable
+disputes.error.weCouldNotProcessTheDisputePleaseTryAgainOrContactSupport	disputes	disputes.management.defend.errors.defenseFailed
+disputes.evidence	disputes	disputes.management.details.fields.evidence
+disputes.expiredOn	disputes	disputes.management.details.fields.expiredOn
+disputes.goBack	disputes	disputes.common.goBack.label
+disputes.gridCell.dueDate	-	(no match)
+disputes.inputError.fileIsOverSizeLimitForTypeChooseASmallerFileAndTryAgain	disputes	disputes.management.defend.file.errors.tooLarge
+disputes.inputError.somethingWentWrongPleaseCheckYourDocuments	-	(no match)
+disputes.inputError.uploadAtLeastOneSupportingDocumentToContinue	-	(no match)
+disputes.issuerComment.showLess	disputes	disputes.management.details.issuerComment.showLess
+disputes.issuerComment.showMore	disputes	disputes.management.details.issuerComment.showMore
+disputes.issuerComment.title	disputes	disputes.management.details.issuerComment.title
+disputes.management.accept.chargeback.actions.accept	disputes	disputes.management.accept.chargeback.accept
+disputes.management.accept.common.accepted	disputes	disputes.common.statuses.accepted
+disputes.management.accept.common.agree	disputes	disputes.management.accept.agree
+disputes.management.accept.requestForInformation.actions.accept	disputes	disputes.management.accept.requestForInformation.accept
+disputes.management.common.actions.goBack	disputes	disputes.common.goBack.label
+disputes.management.common.actions.showDetails	disputes	disputes.management.actions.showDetails
+disputes.management.common.defenseDocuments.CopyOfSalesDraftDetails	disputes	disputes.management.defenseDocuments.CopyOfSalesDraftDetails
+disputes.management.common.defenseDocuments.CopyOfSalesDraftTitle	disputes	disputes.management.defenseDocuments.CopyOfSalesDraftTitle
+disputes.management.common.defenseDocuments.SplitSales	disputes	disputes.management.defenseDocuments.SplitSales
+disputes.management.common.defenseDocuments.SplitSalesHelp	disputes	disputes.management.defenseDocuments.SplitSalesHelp
+disputes.management.common.defenseDocuments.SupplementalDocumentsDetails	disputes	disputes.management.defenseDocuments.SupplementalDocumentsDetails
+disputes.management.common.defenseDocuments.SupplementalDocumentsTitle	disputes	disputes.management.defenseDocuments.SupplementalDocumentsTitle
+disputes.management.common.defenseDocuments.TEDocumentDetails	disputes	disputes.management.defenseDocuments.TEDocumentDetails
+disputes.management.common.defenseDocuments.TEDocumentTitle	disputes	disputes.management.defenseDocuments.TEDocumentTitle
+disputes.management.common.defenseDocuments.acquirerRepresentmentForm	disputes	disputes.management.defenseDocuments.acquirerRepresentmentForm
+disputes.management.common.defenseDocuments.acquirerRepresentmentFormAutomaticallyGenerated	disputes	disputes.management.defenseDocuments.acquirerRepresentmentFormAutomaticallyGenerated
+disputes.management.common.defenseDocuments.acquirerRetrievalFulfilmentForm	disputes	disputes.management.defenseDocuments.acquirerRetrievalFulfilmentForm
+disputes.management.common.defenseDocuments.acquirerRetrievalFulfilmentFormAutomaticallyGenerated	disputes	disputes.management.defenseDocuments.acquirerRetrievalFulfilmentFormAutomaticallyGenerated
+disputes.management.common.defenseDocuments.additionalInformation	disputes	disputes.management.defenseDocuments.additionalInformation
+disputes.management.common.defenseDocuments.additionalTransactions	disputes	disputes.management.defenseDocuments.additionalTransactions
+disputes.management.common.defenseDocuments.additionalTransactionsConnectedWithDisputedFlight	disputes	disputes.management.defenseDocuments.additionalTransactionsConnectedWithDisputedFlight
+disputes.management.common.defenseDocuments.alternativeDefenseMaterial	disputes	disputes.management.defenseDocuments.alternativeDefenseMaterial
+disputes.management.common.defenseDocuments.amexFaxCover	disputes	disputes.management.defenseDocuments.amexFaxCover
+disputes.management.common.defenseDocuments.appropriateExplanation	disputes	disputes.management.defenseDocuments.appropriateExplanation
+disputes.management.common.defenseDocuments.appropriateExplanationAndDocTwoSeparateTransactions	disputes	disputes.management.defenseDocuments.appropriateExplanationAndDocTwoSeparateTransactions
+disputes.management.common.defenseDocuments.authorizationNotObtained	disputes	disputes.management.defenseDocuments.authorizationNotObtained
+disputes.management.common.defenseDocuments.authorizationNotObtainedHelp	disputes	disputes.management.defenseDocuments.authorizationNotObtainedHelp
+disputes.management.common.defenseDocuments.autoGeneratedDocRetrievalRequestFulfilled	disputes	disputes.management.defenseDocuments.autoGeneratedDocRetrievalRequestFulfilled
+disputes.management.common.defenseDocuments.automaticallyGeneratedTransactionDetails	disputes	disputes.management.defenseDocuments.automaticallyGeneratedTransactionDetails
+disputes.management.common.defenseDocuments.avsDocumentation	disputes	disputes.management.defenseDocuments.avsDocumentation
+disputes.management.common.defenseDocuments.cancelledRecurringBilling	disputes	disputes.management.defenseDocuments.cancelledRecurringBilling
+disputes.management.common.defenseDocuments.cardRecoveryBulletinOrExceptionFile	disputes	disputes.management.defenseDocuments.cardRecoveryBulletinOrExceptionFile
+disputes.management.common.defenseDocuments.cardRecoveryBulletinOrExceptionFileHelp	disputes	disputes.management.defenseDocuments.cardRecoveryBulletinOrExceptionFileHelp
+disputes.management.common.defenseDocuments.cardholderAgreedToAmountRange	disputes	disputes.management.defenseDocuments.cardholderAgreedToAmountRange
+disputes.management.common.defenseDocuments.cardholderResponsibleForAddendumTransaction	disputes	disputes.management.defenseDocuments.cardholderResponsibleForAddendumTransaction
+disputes.management.common.defenseDocuments.cardholderResponsibleForDisputedAmount	disputes	disputes.management.defenseDocuments.cardholderResponsibleForDisputedAmount
+disputes.management.common.defenseDocuments.chargeToWrongAccountNumber	disputes	disputes.management.defenseDocuments.chargeToWrongAccountNumber
+disputes.management.common.defenseDocuments.chargeToWrongAccountNumberHelp	disputes	disputes.management.defenseDocuments.chargeToWrongAccountNumberHelp
+disputes.management.common.defenseDocuments.chargebackRemediedOrInvalid	disputes	disputes.management.defenseDocuments.chargebackRemediedOrInvalid
+disputes.management.common.defenseDocuments.clearingText	disputes	disputes.management.defenseDocuments.clearingText
+disputes.management.common.defenseDocuments.compellingEvidence	disputes	disputes.management.defenseDocuments.compellingEvidence
+disputes.management.common.defenseDocuments.copyOfInvoice	disputes	disputes.management.defenseDocuments.copyOfInvoice
+disputes.management.common.defenseDocuments.copyOfInvoiceOrOtherRelevantTransactionDetails	disputes	disputes.management.defenseDocuments.copyOfInvoiceOrOtherRelevantTransactionDetails
+disputes.management.common.defenseDocuments.copyOfTid	disputes	disputes.management.defenseDocuments.copyOfTid
+disputes.management.common.defenseDocuments.coverPageForAmexDisputes	disputes	disputes.management.defenseDocuments.coverPageForAmexDisputes
+disputes.management.common.defenseDocuments.creditNotProcessed	disputes	disputes.management.defenseDocuments.creditNotProcessed
+disputes.management.common.defenseDocuments.creditNotProcessedHelp	disputes	disputes.management.defenseDocuments.creditNotProcessedHelp
+disputes.management.common.defenseDocuments.creditNotProcessedReason	disputes	disputes.management.defenseDocuments.creditNotProcessedReason
+disputes.management.common.defenseDocuments.creditsOfMilesShowingConnectionToCardholder	disputes	disputes.management.defenseDocuments.creditsOfMilesShowingConnectionToCardholder
+disputes.management.common.defenseDocuments.customerWrittenConfirmation	disputes	disputes.management.defenseDocuments.customerWrittenConfirmation
+disputes.management.common.defenseDocuments.defenseMaterial	disputes	disputes.management.defenseDocuments.defenseMaterial
+disputes.management.common.defenseDocuments.deffectiveMerchandise	disputes	disputes.management.defenseDocuments.deffectiveMerchandise
+disputes.management.common.defenseDocuments.deffectiveMerchandiseHelp	disputes	disputes.management.defenseDocuments.deffectiveMerchandiseHelp
+disputes.management.common.defenseDocuments.deliveryOfFlightTicketAtAddress	disputes	disputes.management.defenseDocuments.deliveryOfFlightTicketAtAddress
+disputes.management.common.defenseDocuments.descriptionOfDisputeReason	disputes	disputes.management.defenseDocuments.descriptionOfDisputeReason
+disputes.management.common.defenseDocuments.descriptionOfMerchandiseOrServices	disputes	disputes.management.defenseDocuments.descriptionOfMerchandiseOrServices
+disputes.management.common.defenseDocuments.differentSignature	disputes	disputes.management.defenseDocuments.differentSignature
+disputes.management.common.defenseDocuments.differentSignatureHelp	disputes	disputes.management.defenseDocuments.differentSignatureHelp
+disputes.management.common.defenseDocuments.disclosureAtPointOfInteraction	disputes	disputes.management.defenseDocuments.disclosureAtPointOfInteraction
+disputes.management.common.defenseDocuments.docAllOfFollowing	disputes	disputes.management.defenseDocuments.docAllOfFollowing
+disputes.management.common.defenseDocuments.docCardholderIssuedPaperAirlineTickets	disputes	disputes.management.defenseDocuments.docCardholderIssuedPaperAirlineTickets
+disputes.management.common.defenseDocuments.docChargebackCodeNotApplicable	disputes	disputes.management.defenseDocuments.docChargebackCodeNotApplicable
+disputes.management.common.defenseDocuments.docCorrectCurrency	disputes	disputes.management.defenseDocuments.docCorrectCurrency
+disputes.management.common.defenseDocuments.docIdentifyTransaction	disputes	disputes.management.defenseDocuments.docIdentifyTransaction
+disputes.management.common.defenseDocuments.docMerchandiseNotCounterfeit	disputes	disputes.management.defenseDocuments.docMerchandiseNotCounterfeit
+disputes.management.common.defenseDocuments.docProvingCardHolderParticipated	disputes	disputes.management.defenseDocuments.docProvingCardHolderParticipated
+disputes.management.common.defenseDocuments.docRemediesChargeback	disputes	disputes.management.defenseDocuments.docRemediesChargeback
+disputes.management.common.defenseDocuments.docTermsOfSaleNotMisrepresented	disputes	disputes.management.defenseDocuments.docTermsOfSaleNotMisrepresented
+disputes.management.common.defenseDocuments.docTransactionOccurredOnPos	disputes	disputes.management.defenseDocuments.docTransactionOccurredOnPos
+disputes.management.common.defenseDocuments.docTwoDifferentTransactions	disputes	disputes.management.defenseDocuments.docTwoDifferentTransactions
+disputes.management.common.defenseDocuments.docViaFraudReporter	disputes	disputes.management.defenseDocuments.docViaFraudReporter
+disputes.management.common.defenseDocuments.docsTwoTransactionsWithSameShopper	disputes	disputes.management.defenseDocuments.docsTwoTransactionsWithSameShopper
+disputes.management.common.defenseDocuments.documentCanBeCreditReasonDue	disputes	disputes.management.defenseDocuments.documentCanBeCreditReasonDue
+disputes.management.common.defenseDocuments.documentCanBeProofOfDelivery	disputes	disputes.management.defenseDocuments.documentCanBeProofOfDelivery
+disputes.management.common.defenseDocuments.documentCanBeSubscriptionAgreement	disputes	disputes.management.defenseDocuments.documentCanBeSubscriptionAgreement
+disputes.management.common.defenseDocuments.documentCanBetUrlReturnPolicy	disputes	disputes.management.defenseDocuments.documentCanBetUrlReturnPolicy
+disputes.management.common.defenseDocuments.documentContainingImportantShipmentData	disputes	disputes.management.defenseDocuments.documentContainingImportantShipmentData
+disputes.management.common.defenseDocuments.documentShipmentDate	disputes	disputes.management.defenseDocuments.documentShipmentDate
+disputes.management.common.defenseDocuments.documentationOfPositiveAvsResponseXOrY	disputes	disputes.management.defenseDocuments.documentationOfPositiveAvsResponseXOrY
+disputes.management.common.defenseDocuments.duplicateProcessing	disputes	disputes.management.defenseDocuments.duplicateProcessing
+disputes.management.common.defenseDocuments.duplicateProcessingHelp	disputes	disputes.management.defenseDocuments.duplicateProcessingHelp
+disputes.management.common.defenseDocuments.evidenceCardHolderParticipation	disputes	disputes.management.defenseDocuments.evidenceCardHolderParticipation
+disputes.management.common.defenseDocuments.evidenceProofingParticipationOfCardholder	disputes	disputes.management.defenseDocuments.evidenceProofingParticipationOfCardholder
+disputes.management.common.defenseDocuments.evidenceTransactionWasRecurring	disputes	disputes.management.defenseDocuments.evidenceTransactionWasRecurring
+disputes.management.common.defenseDocuments.expiredCard	disputes	disputes.management.defenseDocuments.expiredCard
+disputes.management.common.defenseDocuments.expiredCardHelp	disputes	disputes.management.defenseDocuments.expiredCardHelp
+disputes.management.common.defenseDocuments.explanation	disputes	disputes.management.defenseDocuments.explanation
+disputes.management.common.defenseDocuments.explanationWhyCancellationCodeInvalid	disputes	disputes.management.defenseDocuments.explanationWhyCancellationCodeInvalid
+disputes.management.common.defenseDocuments.falseTransaction	disputes	disputes.management.defenseDocuments.falseTransaction
+disputes.management.common.defenseDocuments.firstChargebackNumberAndDate	disputes	disputes.management.defenseDocuments.firstChargebackNumberAndDate
+disputes.management.common.defenseDocuments.flightManifest	disputes	disputes.management.defenseDocuments.flightManifest
+disputes.management.common.defenseDocuments.flightManifestShowingCardholderName	disputes	disputes.management.defenseDocuments.flightManifestShowingCardholderName
+disputes.management.common.defenseDocuments.flightTicket	disputes	disputes.management.defenseDocuments.flightTicket
+disputes.management.common.defenseDocuments.flightTicketUsed	disputes	disputes.management.defenseDocuments.flightTicketUsed
+disputes.management.common.defenseDocuments.flightTicketWithCardholderName	disputes	disputes.management.defenseDocuments.flightTicketWithCardholderName
+disputes.management.common.defenseDocuments.flightTookPlace	disputes	disputes.management.defenseDocuments.flightTookPlace
+disputes.management.common.defenseDocuments.frequentFlyerInformation	disputes	disputes.management.defenseDocuments.frequentFlyerInformation
+disputes.management.common.defenseDocuments.ifDelayedProofShowingMerchantAbleToProvideServices	disputes	disputes.management.defenseDocuments.ifDelayedProofShowingMerchantAbleToProvideServices
+disputes.management.common.defenseDocuments.incorrectAmount	disputes	disputes.management.defenseDocuments.incorrectAmount
+disputes.management.common.defenseDocuments.latePresentment	disputes	disputes.management.defenseDocuments.latePresentment
+disputes.management.common.defenseDocuments.latePresentmentHelp	disputes	disputes.management.defenseDocuments.latePresentmentHelp
+disputes.management.common.defenseDocuments.latestRecurringTransactions	disputes	disputes.management.defenseDocuments.latestRecurringTransactions
+disputes.management.common.defenseDocuments.memberMessageText	disputes	disputes.management.defenseDocuments.memberMessageText
+disputes.management.common.defenseDocuments.memberMessageTextSentToSchemes	disputes	disputes.management.defenseDocuments.memberMessageTextSentToSchemes
+disputes.management.common.defenseDocuments.merchandiseDescription	disputes	disputes.management.defenseDocuments.merchandiseDescription
+disputes.management.common.defenseDocuments.merchandiseNotAsDescribed	disputes	disputes.management.defenseDocuments.merchandiseNotAsDescribed
+disputes.management.common.defenseDocuments.merchandiseNotReceived	disputes	disputes.management.defenseDocuments.merchandiseNotReceived
+disputes.management.common.defenseDocuments.merchandiseNotReceivedHelp	disputes	disputes.management.defenseDocuments.merchandiseNotReceivedHelp
+disputes.management.common.defenseDocuments.merchandiseSentToAvsConfirmedBillingAddress	disputes	disputes.management.defenseDocuments.merchandiseSentToAvsConfirmedBillingAddress
+disputes.management.common.defenseDocuments.merchantFraudPerformanceProgram	disputes	disputes.management.defenseDocuments.merchantFraudPerformanceProgram
+disputes.management.common.defenseDocuments.merchantFraudPerformanceProgramHelp	disputes	disputes.management.defenseDocuments.merchantFraudPerformanceProgramHelp
+disputes.management.common.defenseDocuments.merchantObtainedCardAtTimeReservationMade	disputes	disputes.management.defenseDocuments.merchantObtainedCardAtTimeReservationMade
+disputes.management.common.defenseDocuments.merchantWrittenRebuttal	disputes	disputes.management.defenseDocuments.merchantWrittenRebuttal
+disputes.management.common.defenseDocuments.missingSignature	disputes	disputes.management.defenseDocuments.missingSignature
+disputes.management.common.defenseDocuments.missingSignatureHelp	disputes	disputes.management.defenseDocuments.missingSignatureHelp
+disputes.management.common.defenseDocuments.moreThanOneTransactionProcessed	disputes	disputes.management.defenseDocuments.moreThanOneTransactionProcessed
+disputes.management.common.defenseDocuments.mpiData	disputes	disputes.management.defenseDocuments.mpiData
+disputes.management.common.defenseDocuments.noNotification	disputes	disputes.management.defenseDocuments.noNotification
+disputes.management.common.defenseDocuments.nonMatchingAccountNumber	disputes	disputes.management.defenseDocuments.nonMatchingAccountNumber
+disputes.management.common.defenseDocuments.nonMatchingAccountNumberHelp	disputes	disputes.management.defenseDocuments.nonMatchingAccountNumberHelp
+disputes.management.common.defenseDocuments.numberAndDateOfOriginalChargeback	disputes	disputes.management.defenseDocuments.numberAndDateOfOriginalChargeback
+disputes.management.common.defenseDocuments.originalAmount	disputes	disputes.management.defenseDocuments.originalAmount
+disputes.management.common.defenseDocuments.originalAmountIfDisputedRepresentsPartialShipment	disputes	disputes.management.defenseDocuments.originalAmountIfDisputedRepresentsPartialShipment
+disputes.management.common.defenseDocuments.other	disputes	disputes.management.defenseDocuments.other
+disputes.management.common.defenseDocuments.otherHelp	disputes	disputes.management.defenseDocuments.otherHelp
+disputes.management.common.defenseDocuments.paidByOtherMeansThanJCBCard	disputes	disputes.management.defenseDocuments.paidByOtherMeansThanJCBCard
+disputes.management.common.defenseDocuments.paidByOtherMeansThanJCBCardHelp	disputes	disputes.management.defenseDocuments.paidByOtherMeansThanJCBCardHelp
+disputes.management.common.defenseDocuments.paperAirlineTicket	disputes	disputes.management.defenseDocuments.paperAirlineTicket
+disputes.management.common.defenseDocuments.passengerId	disputes	disputes.management.defenseDocuments.passengerId
+disputes.management.common.defenseDocuments.passengerIdLinkedToCardholder	disputes	disputes.management.defenseDocuments.passengerIdLinkedToCardholder
+disputes.management.common.defenseDocuments.previousTransactionsNotDisputed	disputes	disputes.management.defenseDocuments.previousTransactionsNotDisputed
+disputes.management.common.defenseDocuments.printedSignedReceipt	disputes	disputes.management.defenseDocuments.printedSignedReceipt
+disputes.management.common.defenseDocuments.processingError	disputes	disputes.management.defenseDocuments.processingError
+disputes.management.common.defenseDocuments.processingErrorHelp	disputes	disputes.management.defenseDocuments.processingErrorHelp
+disputes.management.common.defenseDocuments.proofAirlineTicketsWereUsed	disputes	disputes.management.defenseDocuments.proofAirlineTicketsWereUsed
+disputes.management.common.defenseDocuments.proofCardAndCardholderSignature	disputes	disputes.management.defenseDocuments.proofCardAndCardholderSignature
+disputes.management.common.defenseDocuments.proofCardPresence	disputes	disputes.management.defenseDocuments.proofCardPresence
+disputes.management.common.defenseDocuments.proofFlightTookPlace	disputes	disputes.management.defenseDocuments.proofFlightTookPlace
+disputes.management.common.defenseDocuments.proofGoodsServicesWereProvided	disputes	disputes.management.defenseDocuments.proofGoodsServicesWereProvided
+disputes.management.common.defenseDocuments.proofGoodsWereDeliveredAsDescribed	disputes	disputes.management.defenseDocuments.proofGoodsWereDeliveredAsDescribed
+disputes.management.common.defenseDocuments.proofMerchantHadNotReceivedPreviousChargeback	disputes	disputes.management.defenseDocuments.proofMerchantHadNotReceivedPreviousChargeback
+disputes.management.common.defenseDocuments.proofMerchantHadNotReceivedPreviousChargebackAutoGenerated	disputes	disputes.management.defenseDocuments.proofMerchantHadNotReceivedPreviousChargebackAutoGenerated
+disputes.management.common.defenseDocuments.proofMerchantNotNotifiedOfCancellation	disputes	disputes.management.defenseDocuments.proofMerchantNotNotifiedOfCancellation
+disputes.management.common.defenseDocuments.proofOfAccountTakeover	disputes	disputes.management.defenseDocuments.proofOfAccountTakeover
+disputes.management.common.defenseDocuments.proofOfAddendum	disputes	disputes.management.defenseDocuments.proofOfAddendum
+disputes.management.common.defenseDocuments.proofOfDelayedDelivery	disputes	disputes.management.defenseDocuments.proofOfDelayedDelivery
+disputes.management.common.defenseDocuments.proofOfFulfillment	disputes	disputes.management.defenseDocuments.proofOfFulfillment
+disputes.management.common.defenseDocuments.proofOfInvalidChargeback	disputes	disputes.management.defenseDocuments.proofOfInvalidChargeback
+disputes.management.common.defenseDocuments.proofOfNoCancellation	disputes	disputes.management.defenseDocuments.proofOfNoCancellation
+disputes.management.common.defenseDocuments.proofOfNoChargebackReceived	disputes	disputes.management.defenseDocuments.proofOfNoChargebackReceived
+disputes.management.common.defenseDocuments.proofOfNoShow	disputes	disputes.management.defenseDocuments.proofOfNoShow
+disputes.management.common.defenseDocuments.proofOfRecurringTransaction	disputes	disputes.management.defenseDocuments.proofOfRecurringTransaction
+disputes.management.common.defenseDocuments.proofOfRefund	disputes	disputes.management.defenseDocuments.proofOfRefund
+disputes.management.common.defenseDocuments.proofOfRetailSale	disputes	disputes.management.defenseDocuments.proofOfRetailSale
+disputes.management.common.defenseDocuments.proofProvidedMerchandise	disputes	disputes.management.defenseDocuments.proofProvidedMerchandise
+disputes.management.common.defenseDocuments.proofRecurringContractNotCancelledAtTimeOfSettlement	disputes	disputes.management.defenseDocuments.proofRecurringContractNotCancelledAtTimeOfSettlement
+disputes.management.common.defenseDocuments.proofRenewedMembership	disputes	disputes.management.defenseDocuments.proofRenewedMembership
+disputes.management.common.defenseDocuments.proofShowingCardholderRenewedMembership	disputes	disputes.management.defenseDocuments.proofShowingCardholderRenewedMembership
+disputes.management.common.defenseDocuments.proofShowingTrackingInformation	disputes	disputes.management.defenseDocuments.proofShowingTrackingInformation
+disputes.management.common.defenseDocuments.proofValidIncreaseOfAmount	disputes	disputes.management.defenseDocuments.proofValidIncreaseOfAmount
+disputes.management.common.defenseDocuments.provideRefundId	disputes	disputes.management.defenseDocuments.provideRefundId
+disputes.management.common.defenseDocuments.provingTransactionResultedFromAccountTakeover	disputes	disputes.management.defenseDocuments.provingTransactionResultedFromAccountTakeover
+disputes.management.common.defenseDocuments.reasonForInvalidation	disputes	disputes.management.defenseDocuments.reasonForInvalidation
+disputes.management.common.defenseDocuments.reasonForInvalidationOfChargeback	disputes	disputes.management.defenseDocuments.reasonForInvalidationOfChargeback
+disputes.management.common.defenseDocuments.reasonableAmount	disputes	disputes.management.defenseDocuments.reasonableAmount
+disputes.management.common.defenseDocuments.rebuttalCancellationNotAccepted	disputes	disputes.management.defenseDocuments.rebuttalCancellationNotAccepted
+disputes.management.common.defenseDocuments.rebuttalGivenToCardholder	disputes	disputes.management.defenseDocuments.rebuttalGivenToCardholder
+disputes.management.common.defenseDocuments.rebuttalStatingCancellationNotAccepted	disputes	disputes.management.defenseDocuments.rebuttalStatingCancellationNotAccepted
+disputes.management.common.defenseDocuments.receiptOfFlightTicketAtBillingAddress	disputes	disputes.management.defenseDocuments.receiptOfFlightTicketAtBillingAddress
+disputes.management.common.defenseDocuments.receiptOrOther	disputes	disputes.management.defenseDocuments.receiptOrOther
+disputes.management.common.defenseDocuments.resultsOfMpiCalls	disputes	disputes.management.defenseDocuments.resultsOfMpiCalls
+disputes.management.common.defenseDocuments.retrievalRequestFulfilled	disputes	disputes.management.defenseDocuments.retrievalRequestFulfilled
+disputes.management.common.defenseDocuments.retrievalRequestNotHonored	disputes	disputes.management.defenseDocuments.retrievalRequestNotHonored
+disputes.management.common.defenseDocuments.retrievalRequestNotHonoredHelp	disputes	disputes.management.defenseDocuments.retrievalRequestNotHonoredHelp
+disputes.management.common.defenseDocuments.serviceNotRendered	disputes	disputes.management.defenseDocuments.serviceNotRendered
+disputes.management.common.defenseDocuments.serviceNotRenderedHelp	disputes	disputes.management.defenseDocuments.serviceNotRenderedHelp
+disputes.management.common.defenseDocuments.shipToAddress	disputes	disputes.management.defenseDocuments.shipToAddress
+disputes.management.common.defenseDocuments.shipToAddressIfApplicable	disputes	disputes.management.defenseDocuments.shipToAddressIfApplicable
+disputes.management.common.defenseDocuments.shipmentDocumentation	disputes	disputes.management.defenseDocuments.shipmentDocumentation
+disputes.management.common.defenseDocuments.signatureOrChipPinEvidence	disputes	disputes.management.defenseDocuments.signatureOrChipPinEvidence
+disputes.management.common.defenseDocuments.signedTerminalReceipt	disputes	disputes.management.defenseDocuments.signedTerminalReceipt
+disputes.management.common.defenseDocuments.statementMerchantDidNotReceiveGoods	disputes	disputes.management.defenseDocuments.statementMerchantDidNotReceiveGoods
+disputes.management.common.defenseDocuments.transactionAfterReservationCancelled	disputes	disputes.management.defenseDocuments.transactionAfterReservationCancelled
+disputes.management.common.defenseDocuments.transactionAfterReservationCancelledHelp	disputes	disputes.management.defenseDocuments.transactionAfterReservationCancelledHelp
+disputes.management.common.defenseDocuments.transactionNotRecognizedChipLiabilityShift	disputes	disputes.management.defenseDocuments.transactionNotRecognizedChipLiabilityShift
+disputes.management.common.defenseDocuments.transactionNotRecognizedChipLiabilityShiftHelp	disputes	disputes.management.defenseDocuments.transactionNotRecognizedChipLiabilityShiftHelp
+disputes.management.common.defenseDocuments.transactionNotRecognizedContactlessAndCardNotPresented	disputes	disputes.management.defenseDocuments.transactionNotRecognizedContactlessAndCardNotPresented
+disputes.management.common.defenseDocuments.transactionNotRecognizedContactlessAndCardNotPresentedHelp	disputes	disputes.management.defenseDocuments.transactionNotRecognizedContactlessAndCardNotPresentedHelp
+disputes.management.common.defenseDocuments.unauthorisedReason	disputes	disputes.management.defenseDocuments.unauthorisedReason
+disputes.management.common.defenseDocuments.uploadListOfRefundIds	disputes	disputes.management.defenseDocuments.uploadListOfRefundIds
+disputes.management.common.defenseDocuments.writtenCorrespondenceExchanged	disputes	disputes.management.defenseDocuments.writtenCorrespondenceExchanged
+disputes.management.common.defenseDocuments.writtenRebutalGoodsRepairedOrReplaced	disputes	disputes.management.defenseDocuments.writtenRebutalGoodsRepairedOrReplaced
+disputes.management.common.defenseReasons.3dSecureFullyAuthenticatedTransaction	disputes	disputes.management.defenseReasons.3dSecureFullyAuthenticatedTransaction
+disputes.management.common.defenseReasons.3dSecureLiabilityShiftNotFullyAuthenticated	disputes	disputes.management.defenseReasons.3dSecureLiabilityShiftNotFullyAuthenticated
+disputes.management.common.defenseReasons.accountNumberNotListedInExceptions	disputes	disputes.management.defenseReasons.accountNumberNotListedInExceptions
+disputes.management.common.defenseReasons.accountNumberNotListedInExceptionsFor60Days	disputes	disputes.management.defenseReasons.accountNumberNotListedInExceptionsFor60Days
+disputes.management.common.defenseReasons.accountTakeover	disputes	disputes.management.defenseReasons.accountTakeover
+disputes.management.common.defenseReasons.acquirerDefendChargebackIfIssuerRequested	disputes	disputes.management.defenseReasons.acquirerDefendChargebackIfIssuerRequested
+disputes.management.common.defenseReasons.acquirerProvidesCorrectDateWithinTimeLimit	disputes	disputes.management.defenseReasons.acquirerProvidesCorrectDateWithinTimeLimit
+disputes.management.common.defenseReasons.additionalInformation	disputes	disputes.management.defenseReasons.additionalInformation
+disputes.management.common.defenseReasons.addressMerchandiseSentAvsConfirmed	disputes	disputes.management.defenseReasons.addressMerchandiseSentAvsConfirmed
+disputes.management.common.defenseReasons.addressVerificationService	disputes	disputes.management.defenseReasons.addressVerificationService
+disputes.management.common.defenseReasons.addressVerificationServiceAdditionalInformation	disputes	disputes.management.defenseReasons.addressVerificationServiceAdditionalInformation
+disputes.management.common.defenseReasons.airlineCompellingEvidence	disputes	disputes.management.defenseReasons.airlineCompellingEvidence
+disputes.management.common.defenseReasons.airlineFlightProvided	disputes	disputes.management.defenseReasons.airlineFlightProvided
+disputes.management.common.defenseReasons.atmDispute	disputes	disputes.management.defenseReasons.atmDispute
+disputes.management.common.defenseReasons.authorisationReceivedForAmount	disputes	disputes.management.defenseReasons.authorisationReceivedForAmount
+disputes.management.common.defenseReasons.authorisedOnline	disputes	disputes.management.defenseReasons.authorisedOnline
+disputes.management.common.defenseReasons.autoGeneratedRecurringTransactionDetails	disputes	disputes.management.defenseReasons.autoGeneratedRecurringTransactionDetails
+disputes.management.common.defenseReasons.autoResponseSentToIssuer	disputes	disputes.management.defenseReasons.autoResponseSentToIssuer
+disputes.management.common.defenseReasons.autoResponseToRfi	disputes	disputes.management.defenseReasons.autoResponseToRfi
+disputes.management.common.defenseReasons.buyerExceededWindowToFileReturn	disputes	disputes.management.defenseReasons.buyerExceededWindowToFileReturn
+disputes.management.common.defenseReasons.cancellationCodeWasInvalidAsShownByExplanationProvided	disputes	disputes.management.defenseReasons.cancellationCodeWasInvalidAsShownByExplanationProvided
+disputes.management.common.defenseReasons.cancellationContractFailed	disputes	disputes.management.defenseReasons.cancellationContractFailed
+disputes.management.common.defenseReasons.cancellationOrReturns	disputes	disputes.management.defenseReasons.cancellationOrReturns
+disputes.management.common.defenseReasons.cardAndSignatureForCorporateFleetCardTransaction	disputes	disputes.management.defenseReasons.cardAndSignatureForCorporateFleetCardTransaction
+disputes.management.common.defenseReasons.cardPresenceProof	disputes	disputes.management.defenseReasons.cardPresenceProof
+disputes.management.common.defenseReasons.cardPresentAndChipUsedNoPinProvided	disputes	disputes.management.defenseReasons.cardPresentAndChipUsedNoPinProvided
+disputes.management.common.defenseReasons.cardWithSignatureNotProcessedMastercardNetwork	disputes	disputes.management.defenseReasons.cardWithSignatureNotProcessedMastercardNetwork
+disputes.management.common.defenseReasons.cardholderAgreedToAmountAsReasonable	disputes	disputes.management.defenseReasons.cardholderAgreedToAmountAsReasonable
+disputes.management.common.defenseReasons.cardholderBilledForSeparateAdditionalAmount	disputes	disputes.management.defenseReasons.cardholderBilledForSeparateAdditionalAmount
+disputes.management.common.defenseReasons.cardholderCancelledRecurringServiceButRenewedLater	disputes	disputes.management.defenseReasons.cardholderCancelledRecurringServiceButRenewedLater
+disputes.management.common.defenseReasons.cardholderDidNotMeetCancellationTerms	disputes	disputes.management.defenseReasons.cardholderDidNotMeetCancellationTerms
+disputes.management.common.defenseReasons.cardholderNotifiedBeforeRecurringTransaction	disputes	disputes.management.defenseReasons.cardholderNotifiedBeforeRecurringTransaction
+disputes.management.common.defenseReasons.cardholderNotifiedButNoReply	disputes	disputes.management.defenseReasons.cardholderNotifiedButNoReply
+disputes.management.common.defenseReasons.cardholderParticipated	disputes	disputes.management.defenseReasons.cardholderParticipated
+disputes.management.common.defenseReasons.cardholderResponsibleForAddendumTransaction	disputes	disputes.management.defenseReasons.cardholderResponsibleForAddendumTransaction
+disputes.management.common.defenseReasons.cardholderResponsibleForDisputedAmount	disputes	disputes.management.defenseReasons.cardholderResponsibleForDisputedAmount
+disputes.management.common.defenseReasons.cardholderShouldHaveReturnedGoods	disputes	disputes.management.defenseReasons.cardholderShouldHaveReturnedGoods
+disputes.management.common.defenseReasons.cbCodeNotApplicable	disputes	disputes.management.defenseReasons.cbCodeNotApplicable
+disputes.management.common.defenseReasons.chargebackBundlingInvalid	disputes	disputes.management.defenseReasons.chargebackBundlingInvalid
+disputes.management.common.defenseReasons.chargebackCodeNA3dSecureNotOffered	disputes	disputes.management.defenseReasons.chargebackCodeNA3dSecureNotOffered
+disputes.management.common.defenseReasons.chargebackInvalidCorrectAmountAndCurrencyProvided	disputes	disputes.management.defenseReasons.chargebackInvalidCorrectAmountAndCurrencyProvided
+disputes.management.common.defenseReasons.chargebackReceivedAfterMastercardTimeLimit	disputes	disputes.management.defenseReasons.chargebackReceivedAfterMastercardTimeLimit
+disputes.management.common.defenseReasons.chipLiabilityShift	disputes	disputes.management.defenseReasons.chipLiabilityShift
+disputes.management.common.defenseReasons.chipTransaction	disputes	disputes.management.defenseReasons.chipTransaction
+disputes.management.common.defenseReasons.chipTransactionReportedSAFE	disputes	disputes.management.defenseReasons.chipTransactionReportedSAFE
+disputes.management.common.defenseReasons.claimNotJustifiedSinceTransactionNotChargebacked	disputes	disputes.management.defenseReasons.claimNotJustifiedSinceTransactionNotChargebacked
+disputes.management.common.defenseReasons.compellingEvidence	disputes	disputes.management.defenseReasons.compellingEvidence
+disputes.management.common.defenseReasons.compellingEvidenceRecurringTransactions	disputes	disputes.management.defenseReasons.compellingEvidenceRecurringTransactions
+disputes.management.common.defenseReasons.correctTransactionAmount	disputes	disputes.management.defenseReasons.correctTransactionAmount
+disputes.management.common.defenseReasons.correctTransactionCurrency	disputes	disputes.management.defenseReasons.correctTransactionCurrency
+disputes.management.common.defenseReasons.correctTransactionDateProvided	disputes	disputes.management.defenseReasons.correctTransactionDateProvided
+disputes.management.common.defenseReasons.creditOrCancellationPolicyDisclosed	disputes	disputes.management.defenseReasons.creditOrCancellationPolicyDisclosed
+disputes.management.common.defenseReasons.creditOrCancellationPolicyDisclosedToCardholder	disputes	disputes.management.defenseReasons.creditOrCancellationPolicyDisclosedToCardholder
+disputes.management.common.defenseReasons.creditPreviouslyIssued	disputes	disputes.management.defenseReasons.creditPreviouslyIssued
+disputes.management.common.defenseReasons.cvc2ValidationProgram	disputes	disputes.management.defenseReasons.cvc2ValidationProgram
+disputes.management.common.defenseReasons.de22DontMatchInFaceToFaceTransaction	disputes	disputes.management.defenseReasons.de22DontMatchInFaceToFaceTransaction
+disputes.management.common.defenseReasons.defenseReasonIfProblemsWithScans	disputes	disputes.management.defenseReasons.defenseReasonIfProblemsWithScans
+disputes.management.common.defenseReasons.deficiencyCorrected	disputes	disputes.management.defenseReasons.deficiencyCorrected
+disputes.management.common.defenseReasons.delayInSubmittingTransaction	disputes	disputes.management.defenseReasons.delayInSubmittingTransaction
+disputes.management.common.defenseReasons.disputedSurcharge	disputes	disputes.management.defenseReasons.disputedSurcharge
+disputes.management.common.defenseReasons.disputedSurchargeIncorrectCalculation	disputes	disputes.management.defenseReasons.disputedSurchargeIncorrectCalculation
+disputes.management.common.defenseReasons.docToProveNoPaymentByOtherMean	disputes	disputes.management.defenseReasons.docToProveNoPaymentByOtherMean
+disputes.management.common.defenseReasons.documentationIncreasedDebitCardholderAccount	disputes	disputes.management.defenseReasons.documentationIncreasedDebitCardholderAccount
+disputes.management.common.defenseReasons.documentationReceivedWasIllegible	disputes	disputes.management.defenseReasons.documentationReceivedWasIllegible
+disputes.management.common.defenseReasons.documentsSentToFulfillRetrievalRequest	disputes	disputes.management.defenseReasons.documentsSentToFulfillRetrievalRequest
+disputes.management.common.defenseReasons.duplicateChargeback	disputes	disputes.management.defenseReasons.duplicateChargeback
+disputes.management.common.defenseReasons.emergencyPaymentAuthorizationService	disputes	disputes.management.defenseReasons.emergencyPaymentAuthorizationService
+disputes.management.common.defenseReasons.emvDeviceNonEmvCard	disputes	disputes.management.defenseReasons.emvDeviceNonEmvCard
+disputes.management.common.defenseReasons.emvLiabilityShift	disputes	disputes.management.defenseReasons.emvLiabilityShift
+disputes.management.common.defenseReasons.evidenceCardholderAuthorizedTransaction	disputes	disputes.management.defenseReasons.evidenceCardholderAuthorizedTransaction
+disputes.management.common.defenseReasons.evidenceGoodsNotDamaged	disputes	disputes.management.defenseReasons.evidenceGoodsNotDamaged
+disputes.management.common.defenseReasons.evidenceServicesProvidedAndReceivedWrittenCorrespondence	disputes	disputes.management.defenseReasons.evidenceServicesProvidedAndReceivedWrittenCorrespondence
+disputes.management.common.defenseReasons.evidenceThatCardholderParticipated	disputes	disputes.management.defenseReasons.evidenceThatCardholderParticipated
+disputes.management.common.defenseReasons.faceToFaceTransactionNoConflictingInformation	disputes	disputes.management.defenseReasons.faceToFaceTransactionNoConflictingInformation
+disputes.management.common.defenseReasons.faceToFaceTransactionWithConflictingInformation	disputes	disputes.management.defenseReasons.faceToFaceTransactionWithConflictingInformation
+disputes.management.common.defenseReasons.fallbackDefenseReasonCode	disputes	disputes.management.defenseReasons.fallbackDefenseReasonCode
+disputes.management.common.defenseReasons.firstChargebackCodeNotApplicable	disputes	disputes.management.defenseReasons.firstChargebackCodeNotApplicable
+disputes.management.common.defenseReasons.firstChargebackDoesNotMeetPrerequisites	disputes	disputes.management.defenseReasons.firstChargebackDoesNotMeetPrerequisites
+disputes.management.common.defenseReasons.firstChargebackInvalid	disputes	disputes.management.defenseReasons.firstChargebackInvalid
+disputes.management.common.defenseReasons.formatCbmmddyyArdXxxExpected	disputes	disputes.management.defenseReasons.formatCbmmddyyArdXxxExpected
+disputes.management.common.defenseReasons.formatMultipleTransactionsNnnExpected	disputes	disputes.management.defenseReasons.formatMultipleTransactionsNnnExpected
+disputes.management.common.defenseReasons.formatRpcsMmddyyExpected	disputes	disputes.management.defenseReasons.formatRpcsMmddyyExpected
+disputes.management.common.defenseReasons.fraudEvidence	disputes	disputes.management.defenseReasons.fraudEvidence
+disputes.management.common.defenseReasons.goodsNotReturned	disputes	disputes.management.defenseReasons.goodsNotReturned
+disputes.management.common.defenseReasons.goodsOrServicesProvided	disputes	disputes.management.defenseReasons.goodsOrServicesProvided
+disputes.management.common.defenseReasons.goodsRepairedOrReplaced	disputes	disputes.management.defenseReasons.goodsRepairedOrReplaced
+disputes.management.common.defenseReasons.goodsWereAsDescribed	disputes	disputes.management.defenseReasons.goodsWereAsDescribed
+disputes.management.common.defenseReasons.goodsWereRepairedOrReplaced	disputes	disputes.management.defenseReasons.goodsWereRepairedOrReplaced
+disputes.management.common.defenseReasons.identifiedAddendum	disputes	disputes.management.defenseReasons.identifiedAddendum
+disputes.management.common.defenseReasons.increasedTransactionAmount	disputes	disputes.management.defenseReasons.increasedTransactionAmount
+disputes.management.common.defenseReasons.intraregionalTransactionReportedSAFE	disputes	disputes.management.defenseReasons.intraregionalTransactionReportedSAFE
+disputes.management.common.defenseReasons.invalidAcquirerReferenceData	disputes	disputes.management.defenseReasons.invalidAcquirerReferenceData
+disputes.management.common.defenseReasons.invalidCancellationCode	disputes	disputes.management.defenseReasons.invalidCancellationCode
+disputes.management.common.defenseReasons.invalidChargeback	disputes	disputes.management.defenseReasons.invalidChargeback
+disputes.management.common.defenseReasons.invalidChargebackBasedOnMcc	disputes	disputes.management.defenseReasons.invalidChargebackBasedOnMcc
+disputes.management.common.defenseReasons.invalidChargebackReasonCode	disputes	disputes.management.defenseReasons.invalidChargebackReasonCode
+disputes.management.common.defenseReasons.invalidMessageText	disputes	disputes.management.defenseReasons.invalidMessageText
+disputes.management.common.defenseReasons.invalidReferenceDataDocumentationNotRequired	disputes	disputes.management.defenseReasons.invalidReferenceDataDocumentationNotRequired
+disputes.management.common.defenseReasons.issuerDidNotIncludeTwoSetsOfArns	disputes	disputes.management.defenseReasons.issuerDidNotIncludeTwoSetsOfArns
+disputes.management.common.defenseReasons.issuerDidNotProvideRequiredDocumentation	disputes	disputes.management.defenseReasons.issuerDidNotProvideRequiredDocumentation
+disputes.management.common.defenseReasons.issuerHasInitiatedTooManyFraudulentDisputes	disputes	disputes.management.defenseReasons.issuerHasInitiatedTooManyFraudulentDisputes
+disputes.management.common.defenseReasons.issuerProcessedChargebackMoreThanOnce	disputes	disputes.management.defenseReasons.issuerProcessedChargebackMoreThanOnce
+disputes.management.common.defenseReasons.justifiedDelayedPresentment	disputes	disputes.management.defenseReasons.justifiedDelayedPresentment
+disputes.management.common.defenseReasons.liabilityShiftFullAuthenticated	disputes	disputes.management.defenseReasons.liabilityShiftFullAuthenticated
+disputes.management.common.defenseReasons.manyFraudulentChargebacks	disputes	disputes.management.defenseReasons.manyFraudulentChargebacks
+disputes.management.common.defenseReasons.membershipRenewedAfterCancellation	disputes	disputes.management.defenseReasons.membershipRenewedAfterCancellation
+disputes.management.common.defenseReasons.merchandiseNotReturned	disputes	disputes.management.defenseReasons.merchandiseNotReturned
+disputes.management.common.defenseReasons.merchandiseWasNotCounterfeit	disputes	disputes.management.defenseReasons.merchandiseWasNotCounterfeit
+disputes.management.common.defenseReasons.merchandiseWasReceivedByShopper	disputes	disputes.management.defenseReasons.merchandiseWasReceivedByShopper
+disputes.management.common.defenseReasons.merchantCanProvideAdditionalCompellingEvidence	disputes	disputes.management.defenseReasons.merchantCanProvideAdditionalCompellingEvidence
+disputes.management.common.defenseReasons.merchantCanProvideAdditionalInformation	disputes	disputes.management.defenseReasons.merchantCanProvideAdditionalInformation
+disputes.management.common.defenseReasons.merchantCantReceiveThisChargebackBasedOnTheirMcc	disputes	disputes.management.defenseReasons.merchantCantReceiveThisChargebackBasedOnTheirMcc
+disputes.management.common.defenseReasons.merchantNotNotifiedOfCancellation	disputes	disputes.management.defenseReasons.merchantNotNotifiedOfCancellation
+disputes.management.common.defenseReasons.merchantProvideMissingDocuments	disputes	disputes.management.defenseReasons.merchantProvideMissingDocuments
+disputes.management.common.defenseReasons.merchantProvidedServicesToCardholderProof	disputes	disputes.management.defenseReasons.merchantProvidedServicesToCardholderProof
+disputes.management.common.defenseReasons.noCreditSlip	disputes	disputes.management.defenseReasons.noCreditSlip
+disputes.management.common.defenseReasons.noPriorChargebackReceived	disputes	disputes.management.defenseReasons.noPriorChargebackReceived
+disputes.management.common.defenseReasons.noShowTransaction	disputes	disputes.management.defenseReasons.noShowTransaction
+disputes.management.common.defenseReasons.not3dSecureTransaction	disputes	disputes.management.defenseReasons.not3dSecureTransaction
+disputes.management.common.defenseReasons.notAgreeWithRefund	disputes	disputes.management.defenseReasons.notAgreeWithRefund
+disputes.management.common.defenseReasons.notPosTransaction	disputes	disputes.management.defenseReasons.notPosTransaction
+disputes.management.common.defenseReasons.parcelServiceReceipt	disputes	disputes.management.defenseReasons.parcelServiceReceipt
+disputes.management.common.defenseReasons.pastChargebackTimeLimit	disputes	disputes.management.defenseReasons.pastChargebackTimeLimit
+disputes.management.common.defenseReasons.paymentByOtherMeans	disputes	disputes.management.defenseReasons.paymentByOtherMeans
+disputes.management.common.defenseReasons.paypassAmountBelowProtectionAmount	disputes	disputes.management.defenseReasons.paypassAmountBelowProtectionAmount
+disputes.management.common.defenseReasons.paypassTransaction	disputes	disputes.management.defenseReasons.paypassTransaction
+disputes.management.common.defenseReasons.pinForOneOrBothTransactions	disputes	disputes.management.defenseReasons.pinForOneOrBothTransactions
+disputes.management.common.defenseReasons.pinTransaction	disputes	disputes.management.defenseReasons.pinTransaction
+disputes.management.common.defenseReasons.pinUsedToVerifyCardholder	disputes	disputes.management.defenseReasons.pinUsedToVerifyCardholder
+disputes.management.common.defenseReasons.posTransactionAndSignedTerminalReceiptAvailable	disputes	disputes.management.defenseReasons.posTransactionAndSignedTerminalReceiptAvailable
+disputes.management.common.defenseReasons.posTransactionCardholderWasPresentProof	disputes	disputes.management.defenseReasons.posTransactionCardholderWasPresentProof
+disputes.management.common.defenseReasons.prevChargedbackTwoTransactionsWithSameAccount	disputes	disputes.management.defenseReasons.prevChargedbackTwoTransactionsWithSameAccount
+disputes.management.common.defenseReasons.previousChargebackCancellingRecurringContract	disputes	disputes.management.defenseReasons.previousChargebackCancellingRecurringContract
+disputes.management.common.defenseReasons.proofCardholderReceivedMerchandise	disputes	disputes.management.defenseReasons.proofCardholderReceivedMerchandise
+disputes.management.common.defenseReasons.proofDeficiencyCorrected	disputes	disputes.management.defenseReasons.proofDeficiencyCorrected
+disputes.management.common.defenseReasons.proofOfCardPresenceAvailableNotAuthorisedMastercardNetwork	disputes	disputes.management.defenseReasons.proofOfCardPresenceAvailableNotAuthorisedMastercardNetwork
+disputes.management.common.defenseReasons.proofOfCardPresenceMastercardCorporateFleet	disputes	disputes.management.defenseReasons.proofOfCardPresenceMastercardCorporateFleet
+disputes.management.common.defenseReasons.provideInformationForCollectionOrFraudCase	disputes	disputes.management.defenseReasons.provideInformationForCollectionOrFraudCase
+disputes.management.common.defenseReasons.provideMissingInformation	disputes	disputes.management.defenseReasons.provideMissingInformation
+disputes.management.common.defenseReasons.provideTransactionalInfoTravelDetails	disputes	disputes.management.defenseReasons.provideTransactionalInfoTravelDetails
+disputes.management.common.defenseReasons.provideTransactionalInformation	disputes	disputes.management.defenseReasons.provideTransactionalInformation
+disputes.management.common.defenseReasons.purchaseProperlyPosted	disputes	disputes.management.defenseReasons.purchaseProperlyPosted
+disputes.management.common.defenseReasons.qpsTransaction	disputes	disputes.management.defenseReasons.qpsTransaction
+disputes.management.common.defenseReasons.qpsTransactionWithAmountLessThanChargebackProtectionAmount	disputes	disputes.management.defenseReasons.qpsTransactionWithAmountLessThanChargebackProtectionAmount
+disputes.management.common.defenseReasons.receiptWithItemsBilledBecauseOfLossTheftDamages	disputes	disputes.management.defenseReasons.receiptWithItemsBilledBecauseOfLossTheftDamages
+disputes.management.common.defenseReasons.recurringTransactionCompellingEvidence	disputes	disputes.management.defenseReasons.recurringTransactionCompellingEvidence
+disputes.management.common.defenseReasons.recurringTransactionCompellingMerchantEvidence	disputes	disputes.management.defenseReasons.recurringTransactionCompellingMerchantEvidence
+disputes.management.common.defenseReasons.reponseToRfi	disputes	disputes.management.defenseReasons.reponseToRfi
+disputes.management.common.defenseReasons.reponseToRfiCardPresent	disputes	disputes.management.defenseReasons.reponseToRfiCardPresent
+disputes.management.common.defenseReasons.requiredDocumentationNotReceived	disputes	disputes.management.defenseReasons.requiredDocumentationNotReceived
+disputes.management.common.defenseReasons.responseToRfiAirlines	disputes	disputes.management.defenseReasons.responseToRfiAirlines
+disputes.management.common.defenseReasons.responseToRfiCarRental	disputes	disputes.management.defenseReasons.responseToRfiCarRental
+disputes.management.common.defenseReasons.retrievalRequestFulfilled	disputes	disputes.management.defenseReasons.retrievalRequestFulfilled
+disputes.management.common.defenseReasons.returnNotAccepted	disputes	disputes.management.defenseReasons.returnNotAccepted
+disputes.management.common.defenseReasons.scanningError	disputes	disputes.management.defenseReasons.scanningError
+disputes.management.common.defenseReasons.serviceCancelledButMerchantNotNotified	disputes	disputes.management.defenseReasons.serviceCancelledButMerchantNotNotified
+disputes.management.common.defenseReasons.serviceNotCancelled	disputes	disputes.management.defenseReasons.serviceNotCancelled
+disputes.management.common.defenseReasons.serviceNotCancelledEvidence	disputes	disputes.management.defenseReasons.serviceNotCancelledEvidence
+disputes.management.common.defenseReasons.servicesProvidedAfterCancellation	disputes	disputes.management.defenseReasons.servicesProvidedAfterCancellation
+disputes.management.common.defenseReasons.servicesProvidedAndUsedAfterCancellation	disputes	disputes.management.defenseReasons.servicesProvidedAndUsedAfterCancellation
+disputes.management.common.defenseReasons.shopperClaimsRefundWasPromisedButNotExecuted	disputes	disputes.management.defenseReasons.shopperClaimsRefundWasPromisedButNotExecuted
+disputes.management.common.defenseReasons.shopperUsedAirlineTicket	disputes	disputes.management.defenseReasons.shopperUsedAirlineTicket
+disputes.management.common.defenseReasons.signedImprintedSalesSlipInvoicePosReceipt	disputes	disputes.management.defenseReasons.signedImprintedSalesSlipInvoicePosReceipt
+disputes.management.common.defenseReasons.signedTerminalReceiptAvailable	disputes	disputes.management.defenseReasons.signedTerminalReceiptAvailable
+disputes.management.common.defenseReasons.supplyDefenseMaterial	disputes	disputes.management.defenseReasons.supplyDefenseMaterial
+disputes.management.common.defenseReasons.surchargeCorrectlyProcessed	disputes	disputes.management.defenseReasons.surchargeCorrectlyProcessed
+disputes.management.common.defenseReasons.surchargeIncorrectlyCalculatedByIssuer	disputes	disputes.management.defenseReasons.surchargeIncorrectlyCalculatedByIssuer
+disputes.management.common.defenseReasons.termsOfSaleWereNotMisrepresented	disputes	disputes.management.defenseReasons.termsOfSaleWereNotMisrepresented
+disputes.management.common.defenseReasons.thisReasonIsTechnical	disputes	disputes.management.defenseReasons.thisReasonIsTechnical
+disputes.management.common.defenseReasons.timeBetweenAuthorisationAndSettlementWithinTimeLimits	disputes	disputes.management.defenseReasons.timeBetweenAuthorisationAndSettlementWithinTimeLimits
+disputes.management.common.defenseReasons.transactioAuthorisedEmergencyPaymentAuthorizationService	disputes	disputes.management.defenseReasons.transactioAuthorisedEmergencyPaymentAuthorizationService
+disputes.management.common.defenseReasons.transactionAmountAlreadyRefunded	disputes	disputes.management.defenseReasons.transactionAmountAlreadyRefunded
+disputes.management.common.defenseReasons.transactionApproved3dSecureAuthenticated	disputes	disputes.management.defenseReasons.transactionApproved3dSecureAuthenticated
+disputes.management.common.defenseReasons.transactionBetweenChipLiabilityShiftProgramCustomers	disputes	disputes.management.defenseReasons.transactionBetweenChipLiabilityShiftProgramCustomers
+disputes.management.common.defenseReasons.transactionFallsCvc2ValidationProgram	disputes	disputes.management.defenseReasons.transactionFallsCvc2ValidationProgram
+disputes.management.common.defenseReasons.transactionFromAccountTakeover	disputes	disputes.management.defenseReasons.transactionFromAccountTakeover
+disputes.management.common.defenseReasons.transactionInformationDocument	disputes	disputes.management.defenseReasons.transactionInformationDocument
+disputes.management.common.defenseReasons.transactionIssuerApproved3dSecureAuthenticated	disputes	disputes.management.defenseReasons.transactionIssuerApproved3dSecureAuthenticated
+disputes.management.common.defenseReasons.transactionNotChargebackedAutoDefense	disputes	disputes.management.defenseReasons.transactionNotChargebackedAutoDefense
+disputes.management.common.defenseReasons.transactionNotFully3dSecureAuthenticated	disputes	disputes.management.defenseReasons.transactionNotFully3dSecureAuthenticated
+disputes.management.common.defenseReasons.transactionNotRecurring	disputes	disputes.management.defenseReasons.transactionNotRecurring
+disputes.management.common.defenseReasons.transactionNotRecurringTransactionInstallment	disputes	disputes.management.defenseReasons.transactionNotRecurringTransactionInstallment
+disputes.management.common.defenseReasons.transactionSettledWithinTimeLimit	disputes	disputes.management.defenseReasons.transactionSettledWithinTimeLimit
+disputes.management.common.defenseReasons.transactionWasAuthorised	disputes	disputes.management.defenseReasons.transactionWasAuthorised
+disputes.management.common.defenseReasons.transactionWasAuthorisedOnline	disputes	disputes.management.defenseReasons.transactionWasAuthorisedOnline
+disputes.management.common.defenseReasons.transactionWasECommerceGivenChargebackReasonNotApplicable	disputes	disputes.management.defenseReasons.transactionWasECommerceGivenChargebackReasonNotApplicable
+disputes.management.common.defenseReasons.transactionWasInFaceToFaceEnvironment	disputes	disputes.management.defenseReasons.transactionWasInFaceToFaceEnvironment
+disputes.management.common.defenseReasons.transactionWasProperlyIdentifiedAsInstallmentTransaction	disputes	disputes.management.defenseReasons.transactionWasProperlyIdentifiedAsInstallmentTransaction
+disputes.management.common.defenseReasons.transactionWasResultOfGuaranteedReservation	disputes	disputes.management.defenseReasons.transactionWasResultOfGuaranteedReservation
+disputes.management.common.defenseReasons.transactionsInitiatedDueToLossTheftOrDamages	disputes	disputes.management.defenseReasons.transactionsInitiatedDueToLossTheftOrDamages
+disputes.management.common.defenseReasons.twoDifferentTidsNonAtm	disputes	disputes.management.defenseReasons.twoDifferentTidsNonAtm
+disputes.management.common.defenseReasons.twoDifferentTidsWithSameCardholderAccount	disputes	disputes.management.defenseReasons.twoDifferentTidsWithSameCardholderAccount
+disputes.management.common.defenseReasons.twoDifferentTransactions	disputes	disputes.management.defenseReasons.twoDifferentTransactions
+disputes.management.common.defenseReasons.twoPreviousFraudRelatedChargebacks	disputes	disputes.management.defenseReasons.twoPreviousFraudRelatedChargebacks
+disputes.management.common.defenseReasons.twoSeparateTransactions	disputes	disputes.management.defenseReasons.twoSeparateTransactions
+disputes.management.common.defenseReasons.unfoundedCardholderDispute	disputes	disputes.management.defenseReasons.unfoundedCardholderDispute
+disputes.management.common.defenseReasons.unreasonableAmount	disputes	disputes.management.defenseReasons.unreasonableAmount
+disputes.management.common.defenseReasons.uploadReturnPolicyDocument	disputes	disputes.management.defenseReasons.uploadReturnPolicyDocument
+disputes.management.common.defenseReasons.useThisDefenseReasonIfApplicable	disputes	disputes.management.defenseReasons.useThisDefenseReasonIfApplicable
+disputes.management.common.defenseReasons.validityOfTransactionChargedExplanation	disputes	disputes.management.defenseReasons.validityOfTransactionChargedExplanation
+disputes.management.common.defenseReasons.waiverFormAbsolvingMerchantResponsibility	disputes	disputes.management.defenseReasons.waiverFormAbsolvingMerchantResponsibility
+disputes.management.common.errors.notFound	disputes	disputes.management.errors.notFound
+disputes.management.common.errors.unavailable	disputes	disputes.management.errors.unavailable
+disputes.management.common.title	disputes	disputes.management.title
+disputes.management.defend.common.actions.addOptionalDocument	disputes	disputes.management.defend.addOptionalDocument
+disputes.management.defend.common.actions.continue	disputes	disputes.management.defend.continue
+disputes.management.defend.common.actions.deleteOptionalDocument	disputes	disputes.management.defend.deleteOptionalDocument
+disputes.management.defend.common.actions.submit	disputes	disputes.management.defend.submit
+disputes.management.defend.common.defended	-	(no match)
+disputes.management.defend.common.documentRequirements	disputes	disputes.management.defend.documentRequirements.title
+disputes.management.defend.common.documentRequirements.formatAndSize	disputes	disputes.management.defend.documentRequirements.formatAndSize
+disputes.management.defend.common.documentRequirements.language	disputes	disputes.management.defend.documentRequirements.language
+disputes.management.defend.common.documentRequirements.recommendedSize	disputes	disputes.management.defend.documentRequirements.recommendedSize
+disputes.management.defend.common.documentTypes.optional	disputes	disputes.management.defend.documentTypes.optional
+disputes.management.defend.common.documentTypes.required	disputes	disputes.management.defend.documentTypes.required
+disputes.management.defend.common.documentUploadInfo	disputes	disputes.management.defend.documentUploadInfo
+disputes.management.defend.common.errors.defenseFailed	disputes	disputes.management.defend.errors.defenseFailed
+disputes.management.defend.common.errors.somethingWentWrong	disputes	disputes.management.defend.errors.somethingWentWrong
+disputes.management.defend.common.evidenceSubmitted	disputes	disputes.management.defend.evidenceSubmitted
+disputes.management.defend.common.inputs.documentSelect.a11y.label	disputes	disputes.management.defend.documentSelect.a11yLabel
+disputes.management.defend.common.inputs.file.errors.default	-	(no match)
+disputes.management.defend.common.inputs.file.errors.required	-	(no match)
+disputes.management.defend.common.inputs.file.errors.tooLarge	disputes	disputes.management.defend.file.errors.tooLarge
+disputes.management.defend.common.inputs.reasonSelect.a11y.label	disputes	disputes.management.defend.reasonSelect.a11yLabel
+disputes.management.details.actions.accept	disputes	disputes.management.details.accept
+disputes.management.details.actions.contactSupport	-	(no match)
+disputes.management.details.actions.copyDisputeReference	disputes	disputes.management.details.copy.disputeReference
+disputes.management.details.actions.copyMerchantReference	disputes	disputes.management.details.copy.merchantReference
+disputes.management.details.actions.copyPaymentReference	disputes	disputes.management.details.copy.paymentReference
+disputes.management.details.actions.defendChargeback	disputes	disputes.management.details.defendChargeback
+disputes.management.details.actions.downloadEvidence	disputes	disputes.management.details.downloadEvidence
+disputes.management.details.actions.submitInformation	disputes	disputes.management.details.submitInformation
+disputes.management.details.issuerComment	disputes	disputes.management.details.issuerComment.title
+disputes.merchantReference	disputes	disputes.management.details.fields.merchantReference
+disputes.openedOn	-	(no match)
+disputes.overview.chargebacks.limitSelect.a11y.label	disputes	disputes.overview.chargebacks.limitSelect.a11yLabel
+disputes.overview.common.actionNeeded.dueDate	-	(no match)
+disputes.overview.common.actionNeeded.respondDays	disputes	disputes.overview.actionNeeded.respondDays
+disputes.overview.common.actionNeeded.respondToday	disputes	disputes.overview.actionNeeded.respondToday
+disputes.overview.common.errors.listUnavailable	disputes	disputes.overview.errors.listUnavailable
+disputes.overview.common.errors.unavailable	disputes	disputes.overview.errors.unavailable
+disputes.overview.common.fields.currency	disputes	disputes.overview.fields.currency
+disputes.overview.common.fields.disputeReason	disputes	disputes.overview.fields.reason
+disputes.overview.common.fields.disputeReasonLabel	disputes	disputes.overview.fields.disputeReason
+disputes.overview.common.fields.disputedAmount	disputes	disputes.overview.fields.disputedAmount
+disputes.overview.common.fields.openedOn	disputes	disputes.overview.fields.openedOn
+disputes.overview.common.fields.paymentMethod	disputes	disputes.overview.fields.paymentMethod
+disputes.overview.common.fields.reason	disputes	disputes.overview.fields.reason
+disputes.overview.common.fields.respondBy	disputes	disputes.overview.fields.respondBy
+disputes.overview.common.fields.status	disputes	disputes.overview.fields.status
+disputes.overview.common.fields.totalPaymentAmount	disputes	disputes.overview.fields.totalPaymentAmount
+disputes.overview.common.filters.a11y.label	disputes	disputes.common.filters.label
+disputes.overview.common.filters.types.disputeReason	disputes	disputes.overview.filters.disputeReason
+disputes.overview.common.filters.types.disputeReasonLabel	-	(no match)
+disputes.overview.common.filters.types.paymentMethod	disputes	disputes.overview.filters.paymentMethod
+disputes.overview.common.filters.types.statusGroup	disputes	disputes.overview.filters.statusGroup
+disputes.overview.common.pagination.a11y.label	disputes	disputes.overview.pagination.a11yLabel
+disputes.overview.common.statusGroups.chargebacks	disputes	disputes.overview.statusGroups.chargebacks
+disputes.overview.common.statusGroups.fraudAlerts	disputes	disputes.overview.statusGroups.fraudAlerts
+disputes.overview.common.statusGroups.ongoingAndClosed	disputes	disputes.overview.statusGroups.ongoingAndClosed
+disputes.overview.common.title	disputes	disputes.overview.title
+disputes.overview.fraudAlerts.limitSelect.a11y.label	disputes	disputes.overview.fraudAlerts.limitSelect.a11yLabel
+disputes.overview.ongoingAndClosed.limitSelect.a11y.label	disputes	disputes.overview.ongoingAndClosed.limitSelect.a11yLabel
+disputes.paymentMethod	-	(no match)
+disputes.paymentReference	disputes	disputes.management.details.fields.paymentReference
+disputes.reason	disputes	disputes.overview.fields.reason
+disputes.reasonCategory.adjustment	disputes	disputes.common.reasonCategories.adjustment
+disputes.reasonCategory.authorisationError	disputes	disputes.common.reasonCategories.authorisationError
+disputes.reasonCategory.consumerDispute	disputes	disputes.common.reasonCategories.consumerDispute
+disputes.reasonCategory.fraud	disputes	disputes.common.reasonCategories.fraud
+disputes.reasonCategory.other	disputes	disputes.common.reasonCategories.other
+disputes.reasonCategory.processingError	disputes	disputes.common.reasonCategories.processingError
+disputes.reasonCategory.requestForInformation	disputes	disputes.common.reasonCategories.requestForInformation
+disputes.reasonCode	disputes	disputes.management.details.fields.reasonCode
+disputes.respondBy	-	(no match)
+disputes.showDisputeDetails	disputes	disputes.management.actions.showDetails
+disputes.status	disputes	disputes.overview.fields.status
+disputes.status.accepted	disputes	disputes.common.statuses.accepted
+disputes.status.expired	disputes	disputes.common.statuses.expired
+disputes.status.lost	disputes	disputes.common.statuses.lost
+disputes.status.pending	disputes	disputes.common.statuses.pending
+disputes.status.responded	disputes	disputes.common.statuses.responded
+disputes.status.undefended	disputes	disputes.common.statuses.undefended
+disputes.status.unresponded	disputes	disputes.common.statuses.unresponded
+disputes.status.won	disputes	disputes.common.statuses.won
+disputes.statusGroup.chargebacks	disputes	disputes.overview.statusGroups.chargebacks
+disputes.statusGroup.fraudAlerts	disputes	disputes.overview.statusGroups.fraudAlerts
+disputes.statusGroup.ongoingAndClosed	disputes	disputes.overview.statusGroups.ongoingAndClosed
+disputes.title	disputes	disputes.overview.title
+disputes.totalPaymentAmount	disputes	disputes.overview.fields.totalPaymentAmount
+disputes.type.chargeback	disputes	disputes.management.details.types.chargeback
+disputes.type.notificationOfFraud	disputes	disputes.management.details.types.notificationOfFraud
+disputes.type.requestForInformation	disputes	disputes.management.details.types.requestForInformation
+disputes.uploadDocuments.addOptionalDocument	disputes	disputes.management.defend.addOptionalDocument
+disputes.uploadDocuments.extraRequiredDocument	disputes	disputes.management.defend.documentTypes.required
+disputes.uploadDocuments.optionalDocument	disputes	disputes.management.defend.documentTypes.optional
+disputes.uploadDocuments.selectDocumentType	disputes	disputes.management.defend.documentSelect.a11yLabel
+error.pleaseTryAgainLater	reports	reports.overview.errors.retryDownload
+error.somethingWentWrongWithDownload	-	(no match)
+filter.date.since	-	(no match)
+filter.date.until	-	(no match)
+filterPlaceholder.category	transactions	transactions.overview.filters.category
+filterPlaceholder.currency	transactions	transactions.overview.filters.currency
+filterPlaceholder.status	transactions	transactions.overview.list.status
+inputError.disallowedFileType	disputes	disputes.common.file.errors.disallowedType
+inputError.fileRequired	-	(no match)
+inputError.tooManyFiles	-	(no match)
+inputError.veryLargeFile	-	(no match)
+pagination.nextPage	-	(no match)
+pagination.previousPage	-	(no match)
+pagination.showing	-	(no match)
+payByLink.common.actions.goBack	payByLink	payByLink.common.goBack.label
+payByLink.common.fields.optional.label	-	(no match)
+payByLink.common.status.active	payByLink	payByLink.common.statuses.active
+payByLink.common.status.completed	payByLink	payByLink.common.statuses.completed
+payByLink.common.status.expired	payByLink	payByLink.common.statuses.expired
+payByLink.common.status.paymentPending	payByLink	payByLink.common.statuses.paymentPending
+payByLink.creation.errors.invalidFields.reason.amountTooHigh	payByLink	payByLink.creation.errors.invalidFields.amountTooHigh
+payByLink.creation.fields.amount.currency.ariaLabel	payByLink	payByLink.creation.amount.currency.a11yLabel
+payByLink.creation.fields.amount.label	payByLink	payByLink.creation.amount.label
+payByLink.creation.fields.amountValue.error.currency	payByLink	payByLink.creation.amountValue.errors.currency
+payByLink.creation.fields.amountValue.error.negativeNumber	payByLink	payByLink.creation.amountValue.errors.negativeNumber
+payByLink.creation.fields.billingAddress.city.label	payByLink	payByLink.creation.billingAddress.city
+payByLink.creation.fields.billingAddress.country.label	payByLink	payByLink.creation.billingAddress.country
+payByLink.creation.fields.billingAddress.houseNumberOrName.label	payByLink	payByLink.creation.billingAddress.houseNumberOrName
+payByLink.creation.fields.billingAddress.label	payByLink	payByLink.creation.billingAddress.label
+payByLink.creation.fields.billingAddress.postalCode.label	payByLink	payByLink.creation.billingAddress.postalCode
+payByLink.creation.fields.billingAddress.street.label	payByLink	payByLink.creation.billingAddress.street
+payByLink.creation.fields.billingAndDeliverySeparateAddress.label	-	(no match)
+payByLink.creation.fields.country.label	payByLink	payByLink.creation.country
+payByLink.creation.fields.deliverAt.label	payByLink	payByLink.creation.deliverAt
+payByLink.creation.fields.deliveryAddress.city.label	payByLink	payByLink.creation.deliveryAddress.city
+payByLink.creation.fields.deliveryAddress.country.label	payByLink	payByLink.creation.deliveryAddress.country
+payByLink.creation.fields.deliveryAddress.houseNumberOrName.label	payByLink	payByLink.creation.deliveryAddress.houseNumberOrName
+payByLink.creation.fields.deliveryAddress.postalCode.label	payByLink	payByLink.creation.deliveryAddress.postalCode
+payByLink.creation.fields.deliveryAddress.street.label	payByLink	payByLink.creation.deliveryAddress.street
+payByLink.creation.fields.description.label	payByLink	payByLink.creation.description.label
+payByLink.creation.fields.description.supportText	payByLink	payByLink.creation.description.supportText
+payByLink.creation.fields.language.label	payByLink	payByLink.creation.language
+payByLink.creation.fields.linkType.label	payByLink	payByLink.creation.linkType
+payByLink.creation.fields.merchantReference.label	payByLink	payByLink.creation.merchantReference
+payByLink.creation.fields.phoneNumber.errors.requiredPhoneCode	payByLink	payByLink.creation.phoneNumber.errors.requiredPhoneCode
+payByLink.creation.fields.phoneNumber.errors.requiredPhoneNumber	-	(no match)
+payByLink.creation.fields.sendLinkToShopper.label	-	(no match)
+payByLink.creation.fields.sendPaymentSuccessToShopper.label	-	(no match)
+payByLink.creation.fields.shippingAndBillingSameAddress.label	payByLink	payByLink.creation.shippingAndBillingSameAddress
+payByLink.creation.fields.shopperEmail.error.validEmail	payByLink	payByLink.creation.shopperEmail.errors.validEmail
+payByLink.creation.fields.shopperEmail.label	payByLink	payByLink.creation.shopperEmail.label
+payByLink.creation.fields.shopperLastName.label	payByLink	payByLink.creation.shopperLastName
+payByLink.creation.fields.shopperName.label	payByLink	payByLink.creation.shopperName
+payByLink.creation.fields.shopperPhone.label	payByLink	payByLink.creation.shopperPhone.label
+payByLink.creation.fields.shopperPhone.phonePrefix.placeholder	payByLink	payByLink.creation.shopperPhone.phonePrefix
+payByLink.creation.fields.shopperReference.label	payByLink	payByLink.creation.shopperReference
+payByLink.creation.fields.store.label	payByLink	payByLink.creation.store
+payByLink.creation.fields.validity.customDuration.error.durationTooLong	payByLink	payByLink.creation.validity.durationTooLong
+payByLink.creation.fields.validity.customDuration.error.invalidDurationValue	payByLink	payByLink.creation.validity.invalidDurationValue
+payByLink.creation.fields.validity.customDuration.error.missingDurationUnit	payByLink	payByLink.creation.validity.missingDurationUnit
+payByLink.creation.fields.validity.customDuration.error.missingDurationValue	payByLink	payByLink.creation.validity.missingDurationValue
+payByLink.creation.fields.validity.customDuration.label	payByLink	payByLink.creation.validity.customDuration
+payByLink.creation.fields.validity.label	payByLink	payByLink.creation.validity.label
+payByLink.creation.fields.validity.linkValidityUnit.custom	payByLink	payByLink.creation.validity.linkValidityUnit.custom
+payByLink.creation.fields.validity.linkValidityUnit.day	payByLink	payByLink.creation.validity.linkValidityUnit.day
+payByLink.creation.fields.validity.linkValidityUnit.day__plural	payByLink	payByLink.creation.validity.linkValidityUnit.day__plural
+payByLink.creation.fields.validity.linkValidityUnit.hour	payByLink	payByLink.creation.validity.linkValidityUnit.hour
+payByLink.creation.fields.validity.linkValidityUnit.hour__plural	payByLink	payByLink.creation.validity.linkValidityUnit.hour__plural
+payByLink.creation.fields.validity.linkValidityUnit.minute	payByLink	payByLink.creation.validity.linkValidityUnit.minute
+payByLink.creation.fields.validity.linkValidityUnit.minute__plural	payByLink	payByLink.creation.validity.linkValidityUnit.minute__plural
+payByLink.creation.fields.validity.linkValidityUnit.week	payByLink	payByLink.creation.validity.linkValidityUnit.week
+payByLink.creation.fields.validity.linkValidityUnit.week__plural	payByLink	payByLink.creation.validity.linkValidityUnit.week__plural
+payByLink.creation.fields.validity.supportText	payByLink	payByLink.creation.validity.supportText
+payByLink.creation.form.alert.invalidFields	payByLink	payByLink.creation.alerts.invalidFields
+payByLink.creation.form.alert.somethingWentWrong	payByLink	payByLink.creation.alerts.somethingWentWrong
+payByLink.creation.form.error.submit.contactSupport	-	(no match)
+payByLink.creation.form.linkTypes.open	payByLink	payByLink.creation.linkTypes.open
+payByLink.creation.form.linkTypes.singleUse	payByLink	payByLink.creation.linkTypes.singleUse
+payByLink.creation.form.steps.back	-	(no match)
+payByLink.creation.form.steps.continue	payByLink	payByLink.creation.steps.continue
+payByLink.creation.form.steps.customer	payByLink	payByLink.creation.steps.customer
+payByLink.creation.form.steps.payment	payByLink	payByLink.creation.steps.payment
+payByLink.creation.form.steps.store	payByLink	payByLink.creation.steps.store
+payByLink.creation.form.steps.submit	payByLink	payByLink.creation.steps.submit
+payByLink.creation.form.steps.summary	payByLink	payByLink.creation.steps.summary
+payByLink.creation.form.title	payByLink	payByLink.creation.title
+payByLink.creation.sections.billingAddress.label	payByLink	payByLink.creation.billingAddress.label
+payByLink.creation.sections.deliveryAddress.label	payByLink	payByLink.creation.sections.deliveryAddress
+payByLink.creation.steps.a11y.label	payByLink	payByLink.creation.steps.a11yLabel
+payByLink.creation.storeForm.alerts.tcSetupRequired	payByLink	payByLink.creation.storeForm.alerts.tcSetupRequired.description
+payByLink.creation.storeForm.alerts.tcSetupRequiredTitle	payByLink	payByLink.creation.storeForm.alerts.tcSetupRequired.title
+payByLink.creation.success.copiedToClipboard	payByLink	payByLink.creation.success.copy.done
+payByLink.creation.success.copyLink	payByLink	payByLink.creation.success.copy.link
+payByLink.creation.summary.alertDescription	payByLink	payByLink.creation.summary.alerts.description
+payByLink.creation.summary.back	-	(no match)
+payByLink.creation.summary.billingAddress	payByLink	payByLink.creation.summary.billingAddress.title
+payByLink.creation.summary.deliveryAddress	-	(no match)
+payByLink.creation.summary.fields.amountValue	payByLink	payByLink.creation.summary.amountValue
+payByLink.creation.summary.fields.billingAddress	payByLink	payByLink.creation.summary.billingAddress.title
+payByLink.creation.summary.fields.billingAddress.city	payByLink	payByLink.creation.summary.billingAddress.city
+payByLink.creation.summary.fields.billingAddress.country	payByLink	payByLink.creation.summary.billingAddress.country
+payByLink.creation.summary.fields.billingAddress.houseNumberOrName	payByLink	payByLink.creation.summary.billingAddress.houseNumberOrName
+payByLink.creation.summary.fields.billingAddress.postalCode	payByLink	payByLink.creation.summary.billingAddress.postalCode
+payByLink.creation.summary.fields.billingAddress.stateOrProvince	-	(no match)
+payByLink.creation.summary.fields.billingAddress.street	payByLink	payByLink.creation.summary.billingAddress.street
+payByLink.creation.summary.fields.countryCode	payByLink	payByLink.creation.summary.countryCode
+payByLink.creation.summary.fields.currency	payByLink	payByLink.creation.summary.currency
+payByLink.creation.summary.fields.deliveryAddress	payByLink	payByLink.creation.summary.deliveryAddress.title
+payByLink.creation.summary.fields.deliveryAddress.city	payByLink	payByLink.creation.summary.deliveryAddress.city
+payByLink.creation.summary.fields.deliveryAddress.country	payByLink	payByLink.creation.summary.deliveryAddress.country
+payByLink.creation.summary.fields.deliveryAddress.houseNumberOrName	payByLink	payByLink.creation.summary.deliveryAddress.houseNumberOrName
+payByLink.creation.summary.fields.deliveryAddress.postalCode	payByLink	payByLink.creation.summary.deliveryAddress.postalCode
+payByLink.creation.summary.fields.deliveryAddress.stateOrProvince	-	(no match)
+payByLink.creation.summary.fields.deliveryAddress.street	payByLink	payByLink.creation.summary.deliveryAddress.street
+payByLink.creation.summary.fields.description	payByLink	payByLink.creation.summary.description
+payByLink.creation.summary.fields.emailAddress	payByLink	payByLink.creation.summary.emailAddress
+payByLink.creation.summary.fields.emailNotifications	payByLink	payByLink.creation.summary.emailNotifications.title
+payByLink.creation.summary.fields.emailNotifications.emailCreation	payByLink	payByLink.creation.summary.emailNotifications.emailCreation
+payByLink.creation.summary.fields.emailNotifications.paymentSuccess	payByLink	payByLink.creation.summary.emailNotifications.paymentSuccess
+payByLink.creation.summary.fields.linkType	payByLink	payByLink.creation.summary.linkType
+payByLink.creation.summary.fields.linkValidity	payByLink	payByLink.creation.summary.linkValidity
+payByLink.creation.summary.fields.merchantReference	payByLink	payByLink.creation.summary.merchantReference
+payByLink.creation.summary.fields.phoneNumber	payByLink	payByLink.creation.summary.phoneNumber
+payByLink.creation.summary.fields.shopperLastName	payByLink	payByLink.creation.summary.shopperLastName
+payByLink.creation.summary.fields.shopperName	payByLink	payByLink.creation.summary.shopperName
+payByLink.creation.summary.fields.shopperReference	payByLink	payByLink.creation.summary.shopperReference
+payByLink.creation.summary.fields.store	payByLink	payByLink.creation.summary.store
+payByLink.details.actions.copied	-	(no match)
+payByLink.details.actions.copyLink	-	(no match)
+payByLink.details.actions.goBack	-	(no match)
+payByLink.details.expiration.actions.confirmExpiration	payByLink	payByLink.details.expiration.confirmExpiration
+payByLink.details.expiration.actions.goBack	-	(no match)
+payByLink.details.expiration.errorDescription	payByLink	payByLink.details.expiration.error.description
+payByLink.details.expiration.errorTitle	payByLink	payByLink.details.expiration.error.title
+payByLink.details.expirationSuccess.actions.goBackToList	-	(no match)
+payByLink.details.expirationSuccess.actions.showDetails	payByLink	payByLink.details.expirationSuccess.showDetails
+payByLink.details.fields.billingAddress.city	payByLink	payByLink.details.billingAddress.city
+payByLink.details.fields.billingAddress.country	payByLink	payByLink.details.billingAddress.country
+payByLink.details.fields.billingAddress.houseNumberOrName	payByLink	payByLink.details.billingAddress.houseNumberOrName
+payByLink.details.fields.billingAddress.postalCode	payByLink	payByLink.details.billingAddress.postalCode
+payByLink.details.fields.billingAddress.street	payByLink	payByLink.details.billingAddress.street
+payByLink.details.fields.billingAddress.title	payByLink	payByLink.details.billingAddress.title
+payByLink.details.fields.createdOn	payByLink	payByLink.details.createdOn
+payByLink.details.fields.description	payByLink	payByLink.details.description
+payByLink.details.fields.expiresOn	payByLink	payByLink.details.expiresOn
+payByLink.details.fields.linkType	payByLink	payByLink.details.linkType
+payByLink.details.fields.merchantReference	payByLink	payByLink.details.merchantReference
+payByLink.details.fields.paymentLinkId	payByLink	payByLink.details.paymentLinkId
+payByLink.details.fields.shippingAddress.city	payByLink	payByLink.details.shippingAddress.city
+payByLink.details.fields.shippingAddress.country	payByLink	payByLink.details.shippingAddress.country
+payByLink.details.fields.shippingAddress.houseNumberOrName	payByLink	payByLink.details.shippingAddress.houseNumberOrName
+payByLink.details.fields.shippingAddress.postalCode	payByLink	payByLink.details.shippingAddress.postalCode
+payByLink.details.fields.shippingAddress.street	payByLink	payByLink.details.shippingAddress.street
+payByLink.details.fields.shippingAddress.title	payByLink	payByLink.details.shippingAddress.title
+payByLink.details.fields.shopper.country	payByLink	payByLink.details.shopper.country
+payByLink.details.fields.shopper.email	payByLink	payByLink.details.shopper.email
+payByLink.details.fields.shopper.fullName	payByLink	payByLink.details.shopper.fullName
+payByLink.details.fields.shopper.phone	payByLink	payByLink.details.shopper.phone
+payByLink.details.fields.shopper.reference	payByLink	payByLink.details.shopper.reference
+payByLink.details.fields.store	payByLink	payByLink.details.store
+payByLink.overview.actions.settings.a11y.label	payByLink	payByLink.overview.settings.a11yLabel
+payByLink.overview.common.actionNeeded.expiresAt	payByLink	payByLink.overview.actionNeeded.expiresAt
+payByLink.overview.common.actionNeeded.expiresDays	payByLink	payByLink.overview.actionNeeded.expiresDays
+payByLink.overview.common.actionNeeded.expiresToday	payByLink	payByLink.overview.actionNeeded.expiresToday
+payByLink.overview.errors.listEmpty	payByLink	payByLink.overview.errors.listEmpty.title
+payByLink.overview.errors.listUnavailable	-	(no match)
+payByLink.overview.filters.label	payByLink	payByLink.common.filters.label
+payByLink.overview.filters.types.linkTypes.label	payByLink	payByLink.overview.filters.linkTypes
+payByLink.overview.filters.types.merchantReference.label	payByLink	payByLink.overview.filters.merchantReference
+payByLink.overview.filters.types.paymentLinkID.label	payByLink	payByLink.overview.filters.paymentLinkID
+payByLink.overview.filters.types.status.label	payByLink	payByLink.overview.filters.status
+payByLink.overview.filters.types.stores.label	payByLink	payByLink.overview.filters.stores
+payByLink.overview.list.actions.createPaymentLink	payByLink	payByLink.overview.list.createPaymentLink
+payByLink.overview.list.fields.amount	payByLink	payByLink.overview.list.amount
+payByLink.overview.list.fields.createdAt	payByLink	payByLink.overview.list.createdAt
+payByLink.overview.list.fields.currency	payByLink	payByLink.overview.list.currency
+payByLink.overview.list.fields.expirationDate	payByLink	payByLink.overview.list.expirationDate
+payByLink.overview.list.fields.id	payByLink	payByLink.overview.list.id
+payByLink.overview.list.fields.linkType	payByLink	payByLink.overview.list.linkType
+payByLink.overview.list.fields.merchantReference	payByLink	payByLink.overview.list.merchantReference
+payByLink.overview.list.fields.shopperEmail	payByLink	payByLink.overview.list.shopperEmail
+payByLink.overview.list.fields.status	payByLink	payByLink.overview.list.status
+payByLink.overview.list.fields.store	payByLink	payByLink.overview.list.store
+payByLink.overview.list.filters.types.statusGroup	payByLink	payByLink.overview.list.filters.statusGroup
+payByLink.overview.pagination.controls.limitSelect.label	-	(no match)
+payByLink.overview.pagination.label	payByLink	payByLink.overview.pagination.a11yLabel
+payByLink.settings.common.action.save	payByLink	payByLink.settings.actions.save
+payByLink.settings.common.alerts.saveError	payByLink	payByLink.settings.alerts.save.error
+payByLink.settings.common.alerts.saveSuccess	payByLink	payByLink.settings.alerts.save.success
+payByLink.settings.common.alerts.validationError	payByLink	payByLink.settings.alerts.validation.error
+payByLink.settings.errors.couldNotLoadSettings	payByLink	payByLink.settings.errors.unavailable
+payByLink.settings.terms.requirements.actions.confirmRequirements	payByLink	payByLink.settings.requirements.confirmRequirements
+payByLink.settings.terms.requirements.actions.goBack	-	(no match)
+payByLink.settings.terms.requirements.contactInformation.description	payByLink	payByLink.settings.contactInformation.description
+payByLink.settings.terms.requirements.contactInformation.emailAddress	payByLink	payByLink.settings.contactInformation.emailAddress
+payByLink.settings.terms.requirements.contactInformation.legalEntityName	payByLink	payByLink.settings.contactInformation.legalEntityName
+payByLink.settings.terms.requirements.contactInformation.phoneNumber	payByLink	payByLink.settings.contactInformation.phoneNumber
+payByLink.settings.terms.requirements.contactInformation.title	payByLink	payByLink.settings.contactInformation.title
+payByLink.settings.terms.requirements.deliveryInformation.deliveryRegions	payByLink	payByLink.settings.deliveryInformation.deliveryRegions
+payByLink.settings.terms.requirements.deliveryInformation.deliveryTime	payByLink	payByLink.settings.deliveryInformation.deliveryTime
+payByLink.settings.terms.requirements.deliveryInformation.description	payByLink	payByLink.settings.deliveryInformation.description
+payByLink.settings.terms.requirements.deliveryInformation.title	payByLink	payByLink.settings.deliveryInformation.title
+payByLink.settings.terms.requirements.generalTerms.description	payByLink	payByLink.settings.generalTerms.description
+payByLink.settings.terms.requirements.generalTerms.governingLaw	payByLink	payByLink.settings.generalTerms.governingLaw
+payByLink.settings.terms.requirements.generalTerms.legalEntity	payByLink	payByLink.settings.generalTerms.legalEntity
+payByLink.settings.terms.requirements.generalTerms.paymentExplanation	payByLink	payByLink.settings.generalTerms.paymentExplanation
+payByLink.settings.terms.requirements.generalTerms.productDescription	payByLink	payByLink.settings.generalTerms.productDescription
+payByLink.settings.terms.requirements.generalTerms.thirdParties	payByLink	payByLink.settings.generalTerms.thirdParties
+payByLink.settings.terms.requirements.generalTerms.title	payByLink	payByLink.settings.generalTerms.title
+payByLink.settings.terms.requirements.privacyPolicy.cookiePolicy	payByLink	payByLink.settings.privacyPolicy.cookiePolicy
+payByLink.settings.terms.requirements.privacyPolicy.dataSharing	payByLink	payByLink.settings.privacyPolicy.dataSharing
+payByLink.settings.terms.requirements.privacyPolicy.dataStoring	payByLink	payByLink.settings.privacyPolicy.dataStoring
+payByLink.settings.terms.requirements.privacyPolicy.description	payByLink	payByLink.settings.privacyPolicy.description
+payByLink.settings.terms.requirements.privacyPolicy.title	payByLink	payByLink.settings.privacyPolicy.title
+payByLink.settings.terms.requirements.refundPolicy.description	payByLink	payByLink.settings.refundPolicy.description
+payByLink.settings.terms.requirements.refundPolicy.moneyBack	payByLink	payByLink.settings.refundPolicy.moneyBack
+payByLink.settings.terms.requirements.refundPolicy.returnOrCancel	payByLink	payByLink.settings.refundPolicy.returnOrCancel
+payByLink.settings.terms.requirements.refundPolicy.returnProcess	payByLink	payByLink.settings.refundPolicy.returnProcess
+payByLink.settings.terms.requirements.refundPolicy.title	payByLink	payByLink.settings.refundPolicy.title
+payByLink.settings.terms.requirements.title	payByLink	payByLink.settings.requirements.title
+payByLink.settings.termsAndConditions.alert.urlChange	payByLink	payByLink.settings.termsAndConditions.alerts.urlChange
+payByLink.settings.termsAndConditions.error.requirementsNotChecked	payByLink	payByLink.settings.termsAndConditions.errors.requirementsNotChecked
+payByLink.settings.termsAndConditions.error.urlValidation	payByLink	payByLink.settings.termsAndConditions.errors.urlValidation
+payByLink.settings.termsAndConditions.requirement.checkbox.part1	payByLink	payByLink.settings.termsAndConditions.requirements.checkbox.part1
+payByLink.settings.termsAndConditions.requirement.checkbox.part2	payByLink	payByLink.settings.termsAndConditions.requirements.checkbox.part2
+payByLink.settings.termsAndConditions.urlInput.label	payByLink	payByLink.settings.termsAndConditions.urlInput
+payByLink.settings.theme.action.logo.remove	payByLink	payByLink.settings.theme.logo.remove
+payByLink.settings.theme.brandName.input.label	payByLink	payByLink.settings.theme.brandName.label
+payByLink.settings.theme.brandName.input.placeholder	payByLink	payByLink.settings.theme.brandName.placeholder
+payByLink.settings.theme.inputs.brandName.errors.missing	payByLink	payByLink.settings.theme.brandName.missingError
+payByLink.settings.theme.limitations.file.input.imageSize.text	-	(no match)
+payByLink.settings.theme.limitations.file.input.maxSize.text	-	(no match)
+payByLink.settings.theme.limitations.file.input.supportedFile.text	-	(no match)
+payByLink.settings.theme.logo.input.label	payByLink	payByLink.settings.theme.logo.label
+payByLink.settings.theme.wideLogo.input.label	payByLink	payByLink.settings.theme.wideLogo
+payByLink.settings.themes.inputs.file.errors.fullWidthLogo.invalidDimensions	payByLink	payByLink.settings.theme.fullWidthLogo.invalidDimensionsError
+payByLink.settings.themes.inputs.file.errors.fullWidthLogo.maxDimension	payByLink	payByLink.settings.theme.fullWidthLogo.invalidDimensionsError
+payByLink.settings.themes.inputs.file.errors.logo.invalidDimensions	payByLink	payByLink.settings.theme.logo.invalidDimensionsError
+payByLink.settings.themes.inputs.file.errors.logo.maxDimension	payByLink	payByLink.settings.theme.logo.invalidDimensionsError
+payouts.details.breakdown.adjustments.types.correction	payouts	payouts.details.breakdown.types.adjustments.correction
+payouts.details.breakdown.adjustments.types.fee	payouts	payouts.details.breakdown.types.adjustments.fee
+payouts.details.breakdown.adjustments.types.grantIssued	payouts	payouts.details.breakdown.types.adjustments.grantIssued
+payouts.details.breakdown.adjustments.types.grantRepayment	payouts	payouts.details.breakdown.types.adjustments.grantRepayment
+payouts.details.breakdown.adjustments.types.other	payouts	payouts.details.breakdown.types.adjustments.other
+payouts.details.breakdown.adjustments.types.refund	payouts	payouts.details.breakdown.types.adjustments.refund
+payouts.details.breakdown.adjustments.types.transfer	payouts	payouts.details.breakdown.types.adjustments.transfer
+payouts.details.breakdown.fields.additions	payouts	payouts.details.breakdown.additions
+payouts.details.breakdown.fields.adjustments	payouts	payouts.details.breakdown.adjustments
+payouts.details.breakdown.fields.fundsCaptured	payouts	payouts.details.breakdown.fundsCaptured
+payouts.details.breakdown.fields.netPayout	payouts	payouts.details.breakdown.netPayout
+payouts.details.breakdown.fields.remainingAmount	payouts	payouts.details.breakdown.remainingAmount
+payouts.details.breakdown.fields.subtractions	payouts	payouts.details.breakdown.subtractions
+payouts.details.breakdown.fundsCaptured.types.capture	payouts	payouts.details.breakdown.types.fundsCaptured.capture
+payouts.details.breakdown.fundsCaptured.types.chargeback	payouts	payouts.details.breakdown.types.fundsCaptured.chargeback
+payouts.details.breakdown.fundsCaptured.types.correction	payouts	payouts.details.breakdown.types.adjustments.correction
+payouts.details.breakdown.fundsCaptured.types.refund	payouts	payouts.details.breakdown.types.adjustments.refund
+payouts.overview.filters.label	payouts	payouts.common.filters.label
+payouts.overview.list.fields.adjustmentAmount	payouts	payouts.overview.list.adjustmentAmount
+payouts.overview.list.fields.createdAt	payouts	payouts.overview.list.createdAt
+payouts.overview.list.fields.fundsCapturedAmount	payouts	payouts.overview.list.fundsCapturedAmount
+payouts.overview.list.fields.payoutAmount	payouts	payouts.overview.list.payoutAmount
+payouts.overview.pagination.controls.limitSelect.label	-	(no match)
+payouts.overview.pagination.label	payouts	payouts.overview.pagination.a11yLabel
+rangePreset.custom	disputes	disputes.overview.filters.date.custom
+rangePreset.custom	payByLink	payByLink.overview.filters.date.custom
+rangePreset.custom	payouts	payouts.overview.filters.date.custom
+rangePreset.custom	reports	reports.overview.filters.date.custom
+rangePreset.custom	transactions	transactions.overview.filters.date.custom
+rangePreset.last30Days	disputes	disputes.overview.filters.date.last30Days
+rangePreset.last30Days	payByLink	payByLink.overview.filters.date.last30Days
+rangePreset.last30Days	payouts	payouts.overview.filters.date.last30Days
+rangePreset.last30Days	reports	reports.overview.filters.date.last30Days
+rangePreset.last30Days	transactions	transactions.overview.filters.date.last30Days
+rangePreset.last7Days	disputes	disputes.overview.filters.date.last7Days
+rangePreset.last7Days	payByLink	payByLink.overview.filters.date.last7Days
+rangePreset.last7Days	payouts	payouts.overview.filters.date.last7Days
+rangePreset.last7Days	reports	reports.overview.filters.date.last7Days
+rangePreset.last7Days	transactions	transactions.overview.filters.date.last7Days
+rangePreset.lastMonth	disputes	disputes.overview.filters.date.lastMonth
+rangePreset.lastMonth	payByLink	payByLink.overview.filters.date.lastMonth
+rangePreset.lastMonth	payouts	payouts.overview.filters.date.lastMonth
+rangePreset.lastMonth	reports	reports.overview.filters.date.lastMonth
+rangePreset.lastMonth	transactions	transactions.overview.filters.date.lastMonth
+rangePreset.lastWeek	disputes	disputes.overview.filters.date.lastWeek
+rangePreset.lastWeek	payByLink	payByLink.overview.filters.date.lastWeek
+rangePreset.lastWeek	payouts	payouts.overview.filters.date.lastWeek
+rangePreset.lastWeek	reports	reports.overview.filters.date.lastWeek
+rangePreset.lastWeek	transactions	transactions.overview.filters.date.lastWeek
+rangePreset.thisMonth	disputes	disputes.overview.filters.date.thisMonth
+rangePreset.thisMonth	payByLink	payByLink.overview.filters.date.thisMonth
+rangePreset.thisMonth	payouts	payouts.overview.filters.date.thisMonth
+rangePreset.thisMonth	reports	reports.overview.filters.date.thisMonth
+rangePreset.thisMonth	transactions	transactions.overview.filters.date.thisMonth
+rangePreset.thisWeek	disputes	disputes.overview.filters.date.thisWeek
+rangePreset.thisWeek	payByLink	payByLink.overview.filters.date.thisWeek
+rangePreset.thisWeek	payouts	payouts.overview.filters.date.thisWeek
+rangePreset.thisWeek	reports	reports.overview.filters.date.thisWeek
+rangePreset.thisWeek	transactions	transactions.overview.filters.date.thisWeek
+rangePreset.yearToDate	disputes	disputes.overview.filters.date.yearToDate
+rangePreset.yearToDate	payouts	payouts.overview.filters.date.yearToDate
+rangePreset.yearToDate	reports	reports.overview.filters.date.yearToDate
+rangePreset.yearToDate	transactions	transactions.overview.filters.date.yearToDate
+refund.amountAlreadyRefunded	transactions	transactions.details.refund.alerts.refundedAmount
+refund.amountFailed	transactions	transactions.details.refund.alerts.notPossibleAmount
+refund.amountInProgress	transactions	transactions.details.refund.alerts.inProgressAmount
+refund.fee	-	(no match)
+refund.fullAmountFailed	transactions	transactions.details.refund.alerts.notPossible
+refund.fullAmountRefunded	transactions	transactions.details.refund.alerts.refundedFull
+refund.goToPayment	transactions	transactions.details.actions.goToPayment
+refund.maximumRefundable	transactions	transactions.details.refund.alerts.refundableMaximum
+refund.onlyRefundable	transactions	transactions.details.refund.alerts.refundableAmount
+refund.originalAmount	transactions	transactions.details.summary.originalAmount
+refund.originalPayment	-	(no match)
+refund.paymentPspReference	-	(no match)
+refund.pspReference	transactions	transactions.details.fields.pspReference
+refund.refundFee	-	(no match)
+refund.refundPspReference	transactions	transactions.details.fields.refundPspReference
+refund.returnToRefund	transactions	transactions.details.actions.backToRefund
+refund.theRefundIsBeingProcessed	-	(no match)
+refundAmount.excess	transactions	transactions.details.refund.amount.errors.excess
+refundAmount.required	transactions	transactions.details.refund.amount.errors.required
+refundReason.duplicate	transactions	transactions.details.refundReasons.duplicate
+refundReason.fraudulent	transactions	transactions.details.refundReasons.fraudulent
+refundReason.issue_with_item_sold	transactions	transactions.details.refundReasons.issueWithItemSold
+refundReason.other	transactions	transactions.details.refundReasons.other
+refundReason.requested_by_customer	transactions	transactions.details.refundReasons.requestedByCustomer
+refundReference.placeholder	-	(no match)
+refunded.full	transactions	transactions.details.refundedStates.full
+refunded.partial	transactions	transactions.details.refundedStates.partial
+reportType.payout	reports	reports.common.types.payout
+reports.overview.errors.download	-	(no match)
+reports.overview.filters.label	reports	reports.common.filters.label
+reports.overview.list.controls.downloadReport.label	reports	reports.overview.list.downloadReport
+reports.overview.list.fields.createdAt	reports	reports.overview.list.createdAt
+reports.overview.list.fields.reportFile	reports	reports.overview.list.reportFile
+reports.overview.list.fields.reportType	reports	reports.overview.list.reportType
+reports.overview.pagination.controls.limitSelect.label	-	(no match)
+reports.overview.pagination.label	reports	reports.overview.pagination.a11yLabel
+reportsError.tooManyDownloads	reports	reports.overview.errors.tooManyDownloads
+select.filter.placeholder	-	(no match)
+select.noOptionsFound	-	(no match)
+tooltip.ATM	transactions	transactions.common.types.ATM.description
+tooltip.Capital	transactions	transactions.common.types.Capital.description
+tooltip.Chargeback	transactions	transactions.common.types.Chargeback.description
+tooltip.Correction	transactions	transactions.common.types.Correction.description
+tooltip.Fee	transactions	transactions.common.types.Fee.description
+tooltip.Other	transactions	transactions.common.types.Other.description
+tooltip.Payment	transactions	transactions.common.types.Payment.description
+tooltip.Refund	transactions	transactions.common.types.Refund.description
+tooltip.Transfer	transactions	transactions.common.types.Transfer.description
+tooltip.totalIncoming	transactions	transactions.overview.totals.tags.incoming.description
+tooltip.totalOutgoing	transactions	transactions.overview.totals.tags.outgoing.description
+transactions.common.types.ATM	transactions	transactions.common.types.ATM.label
+transactions.common.types.Capital	transactions	transactions.common.types.Capital.label
+transactions.common.types.Chargeback	transactions	transactions.common.types.Chargeback.label
+transactions.common.types.Correction	transactions	transactions.common.types.Correction.label
+transactions.common.types.Fee	transactions	transactions.common.types.Fee.label
+transactions.common.types.Other	transactions	transactions.common.types.Other.label
+transactions.common.types.Payment	transactions	transactions.common.types.Payment.label
+transactions.common.types.Refund	transactions	transactions.common.types.Refund.label
+transactions.common.types.Transfer	transactions	transactions.common.types.Transfer.label
+transactions.details.actions.copyMerchantReference	-	(no match)
+transactions.details.actions.copyPspReference	-	(no match)
+transactions.details.actions.copyReferenceID	-	(no match)
+transactions.details.common.refundReasons.duplicate	transactions	transactions.details.refundReasons.duplicate
+transactions.details.common.refundReasons.fraudulent	transactions	transactions.details.refundReasons.fraudulent
+transactions.details.common.refundReasons.issueWithItemSold	transactions	transactions.details.refundReasons.issueWithItemSold
+transactions.details.common.refundReasons.other	transactions	transactions.details.refundReasons.other
+transactions.details.common.refundReasons.requestedByCustomer	transactions	transactions.details.refundReasons.requestedByCustomer
+transactions.details.common.refundTypes.full	transactions	transactions.details.refundTypes.full
+transactions.details.common.refundTypes.partial	transactions	transactions.details.refundTypes.partial
+transactions.details.common.refundedStates.full	transactions	transactions.details.refundedStates.full
+transactions.details.common.refundedStates.partial	transactions	transactions.details.refundedStates.partial
+transactions.details.fields.fee	-	(no match)
+transactions.details.fields.originalAmount	transactions	transactions.details.summary.originalAmount
+transactions.details.fields.originalPayment	-	(no match)
+transactions.details.fields.paymentPspReference	-	(no match)
+transactions.details.fields.refundFee	-	(no match)
+transactions.details.refund.actions.back	-	(no match)
+transactions.details.refund.actions.refund.labels.amount	transactions	transactions.details.refund.submit.amount
+transactions.details.refund.actions.refund.labels.inProgress	-	(no match)
+transactions.details.refund.actions.refund.labels.payment	transactions	transactions.details.actions.refund
+transactions.details.refund.inputs.amount.errors.excess	transactions	transactions.details.refund.amount.errors.excess
+transactions.details.refund.inputs.amount.errors.negative	transactions	transactions.details.refund.amount.errors.negative
+transactions.details.refund.inputs.amount.errors.required	transactions	transactions.details.refund.amount.errors.required
+transactions.details.refund.inputs.amount.label	transactions	transactions.details.refund.amount.label
+transactions.details.refund.inputs.reason.label	transactions	transactions.details.refund.reason.label
+transactions.details.refund.inputs.reference.label	-	(no match)
+transactions.details.refund.inputs.reference.placeholder	-	(no match)
+transactions.details.summary.adjustments.types.fee	transactions	transactions.details.summary.adjustments.fee.label
+transactions.details.summary.adjustments.types.other	transactions	transactions.details.summary.adjustments.other.label
+transactions.details.summary.adjustments.types.split	transactions	transactions.details.summary.adjustments.split.label
+transactions.details.summary.adjustments.types.surcharge	transactions	transactions.details.summary.adjustments.surcharge.label
+transactions.details.summary.adjustments.types.surcharge.information	transactions	transactions.details.summary.adjustments.surcharge.info
+transactions.details.summary.adjustments.types.tip	transactions	transactions.details.summary.adjustments.tip.label
+transactions.details.summary.adjustments.types.tip.information	transactions	transactions.details.summary.adjustments.tip.info
+transactions.details.summary.fields.grossAmount	transactions	transactions.details.summary.grossAmount
+transactions.details.summary.fields.netAmount	transactions	transactions.details.summary.netAmount
+transactions.details.summary.fields.originalAmount	transactions	transactions.details.summary.originalAmount
+transactions.details.timeline.fields.amount	transactions	transactions.details.timeline.amount
+transactions.details.timeline.fields.status	transactions	transactions.details.timeline.status
+transactions.details.viewSelect.a11y.label	transactions	transactions.details.viewSelect.a11yLabel
+transactions.overview.balances.currency.label	transactions	transactions.overview.filters.currency
+transactions.overview.balances.error	transactions	transactions.overview.balances.errors.load
+transactions.overview.balances.labels.available	-	(no match)
+transactions.overview.balances.labels.default	-	(no match)
+transactions.overview.balances.labels.reserved	-	(no match)
+transactions.overview.balances.lists.available	-	(no match)
+transactions.overview.balances.lists.default	-	(no match)
+transactions.overview.balances.lists.reserved	-	(no match)
+transactions.overview.balances.tags.available	transactions	transactions.overview.balances.tags.available.label
+transactions.overview.balances.tags.balance	-	(no match)
+transactions.overview.balances.tags.reserved	transactions	transactions.overview.balances.tags.reserved.label
+transactions.overview.export.actions.cancel	transactions	transactions.overview.export.cancel
+transactions.overview.export.actions.download	transactions	transactions.overview.export.download.label
+transactions.overview.export.actions.download.info	transactions	transactions.overview.export.download.info
+transactions.overview.export.actions.error	transactions	transactions.overview.export.errors.download
+transactions.overview.export.columns.types.all	transactions	transactions.overview.export.columns.all
+transactions.overview.export.columns.types.amountBeforeDeductions	transactions	transactions.overview.export.columns.amountBeforeDeductions
+transactions.overview.export.columns.types.balanceAccountId	transactions	transactions.overview.export.columns.balanceAccountId
+transactions.overview.export.columns.types.category	transactions	transactions.overview.export.columns.category
+transactions.overview.export.columns.types.createdAt	transactions	transactions.overview.export.columns.createdAt
+transactions.overview.export.columns.types.currency	transactions	transactions.overview.export.columns.currency
+transactions.overview.export.columns.types.id	transactions	transactions.overview.export.columns.id
+transactions.overview.export.columns.types.netAmount	transactions	transactions.overview.export.columns.netAmount
+transactions.overview.export.columns.types.paymentMethod	transactions	transactions.overview.export.columns.paymentMethod
+transactions.overview.export.columns.types.paymentPspReference	transactions	transactions.overview.export.columns.paymentPspReference
+transactions.overview.export.columns.types.status	transactions	transactions.overview.export.columns.status
+transactions.overview.export.filters.types.account	transactions	transactions.overview.export.filters.account
+transactions.overview.export.filters.types.category	transactions	transactions.overview.export.filters.category
+transactions.overview.export.filters.types.currency	transactions	transactions.overview.export.filters.currency
+transactions.overview.export.filters.types.date	transactions	transactions.overview.export.filters.date
+transactions.overview.export.filters.types.paymentPspReference	transactions	transactions.overview.export.filters.paymentPspReference
+transactions.overview.export.filters.types.status	transactions	transactions.overview.export.columns.status
+transactions.overview.filters.label	transactions	transactions.common.filters.label
+transactions.overview.filters.types.amount.label	transactions	transactions.overview.list.amount
+transactions.overview.filters.types.category.label	transactions	transactions.overview.filters.category
+transactions.overview.filters.types.currency.label	transactions	transactions.overview.filters.currency
+transactions.overview.filters.types.paymentPspReference.errors.invalidLength	transactions	transactions.overview.filters.paymentPspReference.errors.invalidLength
+transactions.overview.filters.types.paymentPspReference.fromDateInfo	-	(no match)
+transactions.overview.filters.types.paymentPspReference.label	transactions	transactions.overview.filters.paymentPspReference.label
+transactions.overview.filters.types.paymentPspReference.placeholder	transactions	transactions.overview.filters.paymentPspReference.placeholder
+transactions.overview.filters.types.status.label	transactions	transactions.overview.list.status
+transactions.overview.list.fields.amount	transactions	transactions.overview.list.amount
+transactions.overview.list.fields.createdAt	transactions	transactions.overview.list.createdAt
+transactions.overview.list.fields.currency	transactions	transactions.overview.list.currency
+transactions.overview.list.fields.grossAmount	transactions	transactions.overview.list.grossAmount
+transactions.overview.list.fields.netAmount	transactions	transactions.overview.list.netAmount
+transactions.overview.list.fields.paymentMethod	transactions	transactions.overview.list.paymentMethod
+transactions.overview.list.fields.status	transactions	transactions.overview.list.status
+transactions.overview.list.fields.transactionType	transactions	transactions.overview.list.transactionType
+transactions.overview.pagination.controls.limitSelect.label	-	(no match)
+transactions.overview.pagination.label	transactions	transactions.overview.pagination.a11yLabel
+transactions.overview.totals.currency.label	transactions	transactions.overview.filters.currency
+transactions.overview.totals.error	transactions	transactions.overview.totals.errors.load
+transactions.overview.totals.labels.default	-	(no match)
+transactions.overview.totals.labels.incoming	-	(no match)
+transactions.overview.totals.labels.outgoing	-	(no match)
+transactions.overview.totals.lists.default	-	(no match)
+transactions.overview.totals.lists.incoming	-	(no match)
+transactions.overview.totals.lists.outgoing	-	(no match)
+transactions.overview.totals.tags.incoming	transactions	transactions.overview.totals.tags.incoming.label
+transactions.overview.totals.tags.outgoing	transactions	transactions.overview.totals.tags.outgoing.label
+transactions.overview.totals.tags.periodResult	transactions	transactions.overview.totals.tags.periodResult.label
+transactions.overview.viewSelect.a11y.label	transactions	transactions.overview.viewSelect.a11yLabel
+txType.ATM	transactions	transactions.common.types.ATM.label
+txType.Capital	transactions	transactions.common.types.Capital.label
+txType.Chargeback	transactions	transactions.common.types.Chargeback.label
+txType.Correction	transactions	transactions.common.types.Correction.label
+txType.Fee	transactions	transactions.common.types.Fee.label
+txType.Other	transactions	transactions.common.types.Other.label
+txType.Payment	transactions	transactions.common.types.Payment.label
+txType.Refund	transactions	transactions.common.types.Refund.label
+txType.Transfer	transactions	transactions.common.types.Transfer.label
+uploadFile.browse	-	(no match)
+uploadedFile.remove	-	(no match)

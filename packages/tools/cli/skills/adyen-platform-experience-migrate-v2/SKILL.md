@@ -41,11 +41,11 @@ v2 refreshes the components' look. Most of the API is unchanged, but some Core o
 1. Apply `references/global.md`: Core options, props every component shares, overview pagination and record selection, data customization, and custom translations.
 2. For each component the code uses, apply its file in `references/` (named after the component, e.g. `references/transactions-overview.md`). For exact v2 signatures, read the component's props type in the installed package's `.d.ts` files, named in each reference file.
 3. Fix imports from the package and calls on component instances with `references/exports-and-instances.md`.
-4. Search the app for `dataCustomization` and `common.` translation keys: both change silently (a leftover `list` or an old key is ignored, with no type error when the object isn't typed).
+4. Search the app for `dataCustomization` and for every custom translation key: both change silently (a leftover `list` or an old key is ignored, with no type error). Re-key translations with `references/translation-keys.tsv`, as `references/global.md` describes.
 5. Find every `adyen-pe-*` selector and `--adyen-sdk-*` variable in the app's stylesheets and style blocks, and apply `references/css-overrides.md`.
 6. Run the project's type-check and build, and fix what they report.
 7. Verify before reporting. A failed edit or command leaves no type error, so check the files themselves:
-    - re-run the searches from steps 4 and 5: no `.adyen-pe-*` selector other than `.adyen-pe-component` may remain, no `--adyen-sdk-*` variable at document level, and no `dataCustomization.list` or `common.` translation key;
+    - re-run the searches from steps 4 and 5: no `.adyen-pe-*` selector other than `.adyen-pe-component` may remain, no `--adyen-sdk-*` variable at document level, no `dataCustomization.list`, and no custom translation key that `references/translation-keys.tsv` lists as a v1 key;
     - re-read every file you meant to change, and fix any change that didn't land.
 
     Report only changes you've confirmed this way.
