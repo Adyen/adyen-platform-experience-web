@@ -22,12 +22,14 @@ import Actions from '../Actions/Actions.vue';
 import GrantDetails from '../GrantDetails/GrantDetails.vue';
 import styles from './GrantItem.module.scss';
 import RepaymentModal from '../RepaymentDetails/RepaymentModal.vue';
+import { useCapitalCopy } from '../../../shared/composables/useCapitalCopy';
 
 const props = defineProps<{
     grant: IGrant;
 }>();
 
 const { i18n } = useCoreContext();
+const { getContractCopy } = useCapitalCopy();
 const userEvents = useEventDispatcherContext();
 const { dateFormat } = useTimezoneAwareDateFormatting();
 
@@ -47,11 +49,9 @@ const repaymentPercentage = computed(() => {
 
 const repaymentRatioParts = computed(() => {
     const repaidAmountPlaceholder = '__REPAID_AMOUNT_PLACEHOLDER__';
-    return i18n
-        .get('capital.overview.grantItem.repaymentRatio.loan', {
-            values: { repaidAmount: repaidAmountPlaceholder, totalAmount: formatAmount(props.grant.totalAmount) },
-        })
-        .split(repaidAmountPlaceholder);
+    return getContractCopy('capital.overview.grantItem.repaymentRatio', props.grant.contractType, {
+        values: { repaidAmount: repaidAmountPlaceholder, totalAmount: formatAmount(props.grant.totalAmount) },
+    }).split(repaidAmountPlaceholder);
 });
 
 const formatAmount = (amount: IAmount) => {
@@ -124,11 +124,13 @@ const closeRepaymentModal = () => {
                                     {{ formatAmount(grantConfig.amount) }}
                                 </BentoTypography>
                             </div>
-                            <BentoTypography v-if="props.grant.status === 'Active'" variant="caption">
-                                <time :datetime="grantConfig.repaymentPeriodEndDate.toISOString()">
-                                    {{ termEndLabel }}
-                                </time>
-                            </BentoTypography>
+                            <template v-if="props.grant.status === 'Active'">
+                                <BentoTypography v-if="props.grant.contractType === 'loan'" variant="caption">
+                                    <time :datetime="grantConfig.repaymentPeriodEndDate.toISOString()">
+                                        {{ termEndLabel }}
+                                    </time>
+                                </BentoTypography>
+                            </template>
                             <BentoTag
                                 v-else-if="grantConfig.statusKey"
                                 v-bento-tooltip="statusTooltip"
@@ -157,7 +159,7 @@ const closeRepaymentModal = () => {
                                 is-underline-visible
                                 :text-to-copy="props.grant.id"
                                 type="Text"
-                                :visible-text="i18n.get('capital.common.fields.grantID.loan')"
+                                :visible-text="getContractCopy('capital.common.fields.grantID', props.grant.contractType)"
                                 @click.stop
                             />
                         </div>
@@ -168,11 +170,12 @@ const closeRepaymentModal = () => {
                         variant="secondary"
                         @click.stop="openRepaymentDetails"
                     >
-                        {{ i18n.get('capital.overview.grantItem.actions.sendRepayment.loan') }}
+                        {{ getContractCopy('capital.overview.grantItem.actions.sendRepayment', props.grant.contractType) }}
                     </BentoButton>
                     <Actions
                         v-if="grantConfig.areActionsVisible && props.grant.missingActions"
                         :class-name="styles.alert"
+                        :contract-type="props.grant.contractType"
                         :grant-id="props.grant.id"
                         :missing-actions="props.grant.missingActions"
                         :offer-expires-at="props.grant.offerExpiresAt"

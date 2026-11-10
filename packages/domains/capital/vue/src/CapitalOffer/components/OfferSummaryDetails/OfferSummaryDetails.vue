@@ -6,8 +6,9 @@ import {
     type EnhancedCapitalState,
     sharedCapitalOfferAnalyticsEventProperties,
 } from '@integration-components/capital/domain';
-import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
+import { useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import { useCapitalCopy } from '../../../shared/composables/useCapitalCopy';
 import { useFinancingDetailItems, type FinancingDetailItemKey } from '../../composables/useFinancingDetailItems';
 import FinancingDetailList from '../FinancingDetailList/FinancingDetailList.vue';
 import styles from './OfferSummaryDetails.module.scss';
@@ -18,9 +19,9 @@ const props = defineProps<{
     hasBalanceAccountError?: boolean;
 }>();
 
-const { i18n } = useCoreContext();
+const { getContractCopy } = useCapitalCopy();
 const userEvents = useEventDispatcherContext();
-const { getItems } = useFinancingDetailItems();
+const { getItems } = useFinancingDetailItems(props.capitalState.dynamicOfferConfig?.contractType);
 const renewableGrantDetails = computed(() => getRenewableGrantDetails(props.capitalState));
 const isEarlyRenewal = computed(() => !!renewableGrantDetails.value);
 const itemKeys = computed(
@@ -28,16 +29,18 @@ const itemKeys = computed(
         [
             ...(isEarlyRenewal.value ? ['financing', 'fees', 'totalRepaymentAmount'] : []),
             'dailyRepaymentRate',
-            'annualPercentageRate',
-            'repaymentThreshold',
+            ...(props.grantOffer.contractType === 'loan' ? ['annualPercentageRate'] : []),
+            ...(props.grantOffer.contractType === 'loan' ? ['repaymentThreshold'] : []),
             'expectedRepaymentPeriod',
-            'maximumRepaymentDate',
+            ...(props.grantOffer.contractType === 'loan' ? ['maximumRepaymentDate'] : []),
             'account',
         ] as FinancingDetailItemKey[]
 );
 
 const offerItems = computed(() => getItems(props.grantOffer, itemKeys.value));
-const renewableGrantItems = computed(() => (renewableGrantDetails.value ? getItems(renewableGrantDetails.value, itemKeys.value) : []));
+const renewableGrantItems = computed(() => {
+    return renewableGrantDetails.value ? getItems(renewableGrantDetails.value, itemKeys.value) : [];
+});
 
 const handleActiveTabIndexUpdate = (index: number) => {
     userEvents.addEvent?.('Moved tabs', {
@@ -51,16 +54,16 @@ const handleActiveTabIndexUpdate = (index: number) => {
 <template>
     <section>
         <BentoTabs v-if="isEarlyRenewal" @update:active-tab-index="handleActiveTabIndexUpdate($event)">
-            <BentoTab :title="i18n.get('capital.offer.summary.renewalTabs.newGrant.loan')">
+            <BentoTab :title="getContractCopy('capital.offer.summary.renewalTabs.newGrant', props.grantOffer.contractType)">
                 <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="offerItems" :class="styles.list" />
             </BentoTab>
-            <BentoTab :title="i18n.get('capital.offer.summary.renewalTabs.currentGrant.loan')">
+            <BentoTab :title="getContractCopy('capital.offer.summary.renewalTabs.currentGrant', props.grantOffer.contractType)">
                 <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="renewableGrantItems" :class="styles.list" />
             </BentoTab>
         </BentoTabs>
         <template v-else>
             <BentoTypography variant="body" strongest>
-                {{ i18n.get('capital.offer.termsTitle.loan') }}
+                {{ getContractCopy('capital.offer.termsTitle', props.grantOffer.contractType) }}
             </BentoTypography>
             <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="offerItems" :class="styles.list" />
         </template>

@@ -2,22 +2,24 @@
 import { computed } from 'vue';
 import { BentoButtonActions, BentoHeader, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext, useShouldHideTitles } from '@integration-components/core/vue';
-import type { TranslationKey } from '@integration-components/core';
 import styles from './CapitalHeader.module.scss';
+import { IContractType } from '@integration-components/types';
 
 const props = defineProps<{
     actions?: BentoButtonActionsList;
+    contractType?: IContractType;
     hideSubtitle?: boolean;
     region?: string;
-    titleKey: TranslationKey;
+    title: string;
 }>();
 
 const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
-const title = computed(() => (hideTitles.value || withinModal ? undefined : i18n.get(props.titleKey)));
+const title = computed(() => (hideTitles.value || withinModal ? undefined : props.title));
 const subtitle = computed(() => {
-    const key = `capital.common.providerInfo.${props.region}`;
+    const keyBase = `capital.common.providerInfo.${props.region}`;
+    const key = props.contractType === 'cashAdvance' ? `${keyBase}.cashAdvance` : keyBase;
     return !props.hideSubtitle && i18n.has(key) ? i18n.get(key) : undefined;
 });
 </script>

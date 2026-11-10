@@ -15,7 +15,7 @@ import { useCoreContext, useEventDispatcherContext } from '@integration-componen
 import { useOffers } from '../../composables/useOffers';
 import { useCreateOffer } from '../../composables/useCreateOffer';
 import type { IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
-import { BentoButtonActions, type BentoButtonActionsList, BentoLoadingSkeletonShape } from '@adyen/bento-vue3';
+import { BentoAlert, BentoButtonActions, type BentoButtonActionsList, BentoLoadingSkeletonShape, BentoTypography } from '@adyen/bento-vue3';
 import AmountSelector from '../AmountSelector/AmountSelector.vue';
 import CapitalError from '../../../shared/CapitalError.vue';
 import OfferSelectionDetails from '../OfferSelectionDetails.vue';
@@ -128,6 +128,9 @@ const actions = computed<BentoButtonActionsList>(() => {
         <CapitalError v-if="offersError || createOfferError" :error="createOfferError ?? offersError" :on-contact-support="props.onContactSupport" />
         <EmptyOfferState v-else-if="hasNoOffers" />
         <template v-else-if="amountValue">
+            <BentoTypography v-if="props.dynamicOfferConfig.contractType === 'cashAdvance'" variant="body">
+                {{ i18n.get('capital.offer.selection.financingTypeDescription.cashAdvance') }}
+            </BentoTypography>
             <AmountSelector
                 :amount-value="amountValue"
                 :dynamic-offer-config="dynamicOfferConfig"
@@ -137,12 +140,14 @@ const actions = computed<BentoButtonActionsList>(() => {
             />
             <RenewalHighlights
                 v-if="renewableGrant"
+                :contract-type="props.dynamicOfferConfig.contractType"
                 :new-grant-amount-value="amountValue"
                 :remaining-grant-amount="renewableGrant.remainingGrantAmount"
             />
             <TermSelector
                 v-if="estimatedTerms.length > 1"
                 :are-available-terms-loading="areAmountAndOffersUpdating"
+                :contract-type="props.dynamicOfferConfig.contractType"
                 :estimated-terms="estimatedTerms"
                 :is-early-renewal="isEarlyRenewal"
                 :offers-by-term="offersByTerm"
@@ -151,6 +156,16 @@ const actions = computed<BentoButtonActionsList>(() => {
             />
             <BentoLoadingSkeletonShape v-if="areDetailsLoading" variant="rectangle" height="208px" width="100%" />
             <OfferSelectionDetails v-else-if="selectedOffer" :has-expected-repayment-period="hasSingleTerm" :offer="selectedOffer" />
+            <template v-if="props.dynamicOfferConfig.contractType === 'cashAdvance'">
+                <BentoTypography variant="caption">
+                    {{ i18n.get('capital.common.fields.expectedRepaymentPeriodDescription.cashAdvance') }}
+                </BentoTypography>
+                <BentoAlert variant="tip">
+                    <template #description>
+                        {{ i18n.get('capital.offer.regulatoryNotice.cashAdvance') }}
+                    </template>
+                </BentoAlert>
+            </template>
             <BentoButtonActions :actions="actions" />
         </template>
     </div>

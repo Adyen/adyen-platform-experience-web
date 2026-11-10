@@ -5,6 +5,7 @@ import { components as capitalStateComponents } from '../resources/CapitalStateR
 import { components as onboardingConfigurationComponents } from '../resources/OnboardingConfigurationResourceV1';
 
 export type ICapitalState = Schema<capitalStateComponents, 'CapitalStateDTO'>;
+export type IContractType = Schema<capitalStateComponents, 'GrantOfferContractType'>;
 export type IDynamicOffersConfig = Schema<capitalStateComponents, 'DynamicOffersResponseV2DTO'>;
 export type IGrantResponseDTO = Schema<capitalGrantsComponents, 'GrantResponseDTO'>;
 export type IGrantsResponseDTO = Schema<capitalGrantsComponents, 'GrantsResponseDTO'>;

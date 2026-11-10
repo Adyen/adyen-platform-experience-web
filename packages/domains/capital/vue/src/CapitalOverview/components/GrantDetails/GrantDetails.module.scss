@@ -5,9 +5,8 @@
 }
 
 .content {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
     padding-top: style.token(spacer-060);
-}
-
-.header {
-    margin-bottom: style.token(spacer-060);
 }

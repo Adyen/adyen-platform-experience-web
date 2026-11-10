@@ -1,7 +1,9 @@
 import { CAPITAL_REPAYMENT_FREQUENCY, calculatePercentageFromBasisPoints, FinancingDetails } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
+import { useCapitalCopy } from '../../shared/composables/useCapitalCopy';
 import { useFormatTermLabel } from './useFormatTermLabel';
 import { useFormatMaxRepaymentDate } from './useFormatMaxRepaymentDate';
+import { IContractType } from '@integration-components/types';
 
 export type FinancingDetailItemKey =
     | 'financing'
@@ -21,8 +23,9 @@ export type FinancingDetailItem = {
     info?: string;
 };
 
-export function useFinancingDetailItems() {
+export function useFinancingDetailItems(contractType?: IContractType) {
     const { i18n } = useCoreContext();
+    const { getContractCopy } = useCapitalCopy();
     const formatTermLabel = useFormatTermLabel();
     const formatMaxRepaymentDate = useFormatMaxRepaymentDate();
 
@@ -31,7 +34,7 @@ export function useFinancingDetailItems() {
             case 'financing':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.financing.loan'),
+                    label: getContractCopy('capital.common.fields.financing', contractType),
                     value: i18n.amount(financingDetails.grantAmount.value, financingDetails.grantAmount.currency),
                 };
             case 'fees':
@@ -43,13 +46,13 @@ export function useFinancingDetailItems() {
             case 'totalRepaymentAmount':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.totalRepaymentAmount.loan'),
+                    label: getContractCopy('capital.common.fields.totalRepaymentAmount', contractType),
                     value: i18n.amount(financingDetails.totalAmount.value, financingDetails.totalAmount.currency),
                 };
             case 'dailyRepaymentRate':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.dailyRepaymentRate.loan'),
+                    label: getContractCopy('capital.common.fields.dailyRepaymentRate', contractType),
                     value: i18n.get('capital.common.values.percentageOfDailySales', {
                         values: { percentage: calculatePercentageFromBasisPoints(financingDetails.repaymentRate) },
                     }),
@@ -68,16 +71,16 @@ export function useFinancingDetailItems() {
             case 'repaymentThreshold':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.repaymentThreshold'),
+                    label: i18n.get('capital.common.fields.repaymentThreshold.loan'),
                     value: i18n.amount(financingDetails.thresholdAmount.value, financingDetails.thresholdAmount.currency),
-                    info: i18n.get('capital.common.fields.repaymentThresholdDescription', {
+                    info: i18n.get('capital.common.fields.repaymentThresholdDescription.loan', {
                         values: { days: CAPITAL_REPAYMENT_FREQUENCY },
                     }),
                 };
             case 'expectedRepaymentPeriod':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.expectedRepaymentPeriod.loan'),
+                    label: getContractCopy('capital.common.fields.expectedRepaymentPeriod', contractType),
                     value: formatTermLabel(financingDetails.expectedRepaymentPeriodDays),
                 };
             case 'maximumRepaymentDate':

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoLoadingSkeletonShape } from '@adyen/bento-vue3';
-import type { IMissingAction } from '@integration-components/types';
+import type { IContractType, IMissingAction } from '@integration-components/types';
 import EmbeddedActions from '../EmbeddedActions.vue';
 import HostedActions from '../HostedActions.vue';
 import { useMissingActionsPolling } from '../../composables/useMissingActionsPolling';
@@ -9,6 +9,7 @@ import { useOnboardingConfig } from '../../composables/useOnboardingConfig';
 import styles from './Actions.module.scss';
 
 const props = defineProps<{
+    contractType?: IContractType;
     grantId: string;
     missingActions: IMissingAction[];
     offerExpiresAt?: string;
@@ -33,12 +34,13 @@ const isLoading = computed(() => !isPollingComplete.value || isFetchingOnboardin
         <template v-else>
             <EmbeddedActions
                 v-if="onboardingConfiguration"
+                :contract-type="props.contractType"
                 :expiration-date="props.offerExpiresAt"
                 :legal-entity-id="onboardingConfiguration.legalEntityId"
                 :missing-actions="missingActions"
                 @complete="emit('complete')"
             />
-            <HostedActions v-else :expiration-date="props.offerExpiresAt" :missing-actions="missingActions" />
+            <HostedActions v-else :contract-type="props.contractType" :expiration-date="props.offerExpiresAt" :missing-actions="missingActions" />
         </template>
     </div>
 </template>

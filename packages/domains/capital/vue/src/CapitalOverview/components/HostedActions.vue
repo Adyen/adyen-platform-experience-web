@@ -2,12 +2,13 @@
 import { computed } from 'vue';
 import { BentoAlert, BentoButton } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import type { IMissingAction } from '@integration-components/types';
+import type { IContractType, IMissingAction } from '@integration-components/types';
 import { GRANT_ACTION_CONFIGS } from '../../../../domain/src/CapitalOverview/constants';
 import { useActionsAlertTitles } from '../composables/useActionsAlertTitles';
 import { useHostedAction } from '../composables/useHostedAction';
 
 const props = defineProps<{
+    contractType?: IContractType;
     expirationDate?: string;
     missingActions: IMissingAction[];
 }>();
@@ -15,7 +16,10 @@ const props = defineProps<{
 const { i18n, refreshComponent } = useCoreContext();
 const { error, handleActionClick, loadingAction } = useHostedAction();
 
-const alertTitles = useActionsAlertTitles(() => props.expirationDate);
+const alertTitles = useActionsAlertTitles(
+    () => props.expirationDate,
+    () => props.contractType
+);
 const alertTitle = computed(() => (props.missingActions.length > 1 ? alertTitles.value.multiple : alertTitles.value.single));
 </script>
 

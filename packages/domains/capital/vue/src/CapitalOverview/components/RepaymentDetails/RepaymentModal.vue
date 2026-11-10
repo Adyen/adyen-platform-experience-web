@@ -4,6 +4,7 @@ import { BentoCard, BentoDivider, BentoModal, BentoTypography } from '@adyen/ben
 import { getBankAccount, getTransferInstrumentIds } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IGrant } from '@integration-components/types';
+import { useCapitalCopy } from '../../../shared/composables/useCapitalCopy';
 import AccountDetails from '../AccountDetails/AccountDetails.vue';
 import styles from './RepaymentModal.module.scss';
 
@@ -14,6 +15,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { getContractCopy } = useCapitalCopy();
 const bankAccount = computed(() => getBankAccount(props.grant));
 const transferInstrumentItems = computed(() => getTransferInstrumentIds(props.grant));
 
@@ -23,7 +25,9 @@ const instructionItems = computed(() => [
               values: { beneficiaryName: bankAccount.value.beneficiaryName },
           })
         : undefined,
-    i18n.get('capital.overview.repayment.steps.transfer.loan'),
+    getContractCopy('capital.overview.repayment.steps.transfer', props.grant.contractType, {
+        values: { amount: i18n.amount(props.grant.remainingTotalAmount.value, props.grant.remainingTotalAmount.currency) },
+    }),
     i18n.get('capital.overview.repayment.steps.wait'),
 ]);
 </script>
@@ -34,7 +38,7 @@ const instructionItems = computed(() => [
         <template #content>
             <div v-if="bankAccount" :class="styles.root">
                 <BentoTypography>
-                    {{ i18n.get('capital.overview.repayment.subtitle.loan') }}
+                    {{ getContractCopy('capital.overview.repayment.subtitle', props.grant.contractType) }}
                 </BentoTypography>
                 <BentoCard>
                     {{ i18n.get('capital.overview.repayment.accountTitle') }}
@@ -62,10 +66,9 @@ const instructionItems = computed(() => [
                         </div>
                         <BentoDivider />
                     </template>
-
                     <div>
                         <BentoTypography el="span" variant="caption" stronger>
-                            {{ i18n.get('capital.overview.repayment.stepsTitle.loan') }}
+                            {{ getContractCopy('capital.overview.repayment.stepsTitle', props.grant.contractType) }}
                         </BentoTypography>
                         <ul :class="styles.list">
                             <li v-for="item in instructionItems" :key="item" :class="styles.instructionListItem">
@@ -75,9 +78,8 @@ const instructionItems = computed(() => [
                             </li>
                         </ul>
                     </div>
-
                     <BentoTypography el="span" variant="caption" :class="styles.verifiedBankAccountNotice">
-                        {{ i18n.get('capital.overview.repayment.verifiedAccountNote.loan') }}
+                        {{ i18n.get('capital.overview.repayment.verifiedAccountNote') }}
                     </BentoTypography>
                 </div>
             </div>

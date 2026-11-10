@@ -2,22 +2,25 @@
 @use '@integration-components/style/breakpoints' as *;
 
 .content {
-    align-items: center;
-    display: grid;
-    gap: style.token(spacer-070);
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 3fr) minmax(0, 1fr) minmax(0, 3fr);
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
 
-    @include adyen-pe-screen-sm-and-down {
-        align-items: flex-start;
-        display: flex;
-        flex-direction: column;
-        gap: style.token(spacer-060);
+    @include adyen-pe-screen-sm-and-up {
+        align-items: center;
+        display: grid;
+        gap: style.token(spacer-070);
+        grid-template-columns: minmax(0, 4fr) minmax(0, 1fr) minmax(0, 6fr) minmax(0, 1fr) minmax(0, 6fr);
     }
 }
 
 .item {
     display: flex;
     flex-direction: column;
+
+    @include adyen-pe-screen-sm-and-up {
+        text-align: center;
+    }
 }
 
 .itemCenter {

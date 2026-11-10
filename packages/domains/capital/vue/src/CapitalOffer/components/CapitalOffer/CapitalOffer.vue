@@ -13,9 +13,13 @@ import EmptyOfferState from '../../../shared/EmptyOfferState.vue';
 import UnsupportedRegionState from '../../../shared/UnsupportedRegionState.vue';
 import styles from './CapitalOffer.module.scss';
 import OfferSelectionLoadingSkeleton from '../OfferSelectionLoadingSkeleton/OfferSelectionLoadingSkeleton.vue';
+import { useCapitalCopy } from '../../../shared/composables/useCapitalCopy';
+import { useCoreContext } from '@integration-components/core/vue';
 
 const props = defineProps<CapitalOfferComponentProps>();
 
+const { i18n } = useCoreContext();
+const { getContractCopy } = useCapitalCopy();
 const {
     capitalState: backendCapitalState,
     error: capitalStateError,
@@ -24,7 +28,15 @@ const {
 const capitalState = computed(() => props.capitalState ?? backendCapitalState.value);
 const dynamicOfferConfig = computed(() => capitalState.value && getDynamicOfferConfig(capitalState.value));
 const activeStep = ref<'selection' | 'summary'>('selection');
-const titleKey = computed(() => (activeStep.value === 'summary' ? 'capital.offer.summary.title.loan' : 'capital.offer.selection.title.loan'));
+const title = computed(() => {
+    if (!dynamicOfferConfig.value?.contractType) {
+        return i18n.get('capital.offer.selection.title');
+    }
+    return getContractCopy(
+        activeStep.value === 'summary' ? 'capital.offer.summary.title' : 'capital.offer.selection.title',
+        dynamicOfferConfig.value?.contractType
+    );
+});
 const createdOffer = ref<IGrantOfferResponseDTO>();
 const shellState = computed<ComponentShellState>(() => (isCapitalStateLoading.value ? 'loading' : 'ready'));
 
@@ -37,7 +49,7 @@ useLandedPageEvent(
     () => !!capitalState.value
 );
 
-watch(titleKey, title => props.onTitleChange?.(title), { immediate: true });
+watch(title, titleValue => props.onTitleChange?.(titleValue), { immediate: true });
 
 const handleOfferSelect = (offer: IGrantOfferResponseDTO) => {
     createdOffer.value = offer;
@@ -55,9 +67,14 @@ const handleSummaryBack = () => {
             <template #loading>
                 <OfferSelectionLoadingSkeleton />
             </template>
+            <CapitalHeader
+                :contract-type="dynamicOfferConfig?.contractType"
+                :hide-subtitle="props.hideSubtitle"
+                :region="capitalState?.region"
+                :title="title"
+            />
             <CapitalError v-if="capitalStateError" :error="capitalStateError" :on-contact-support="props.onContactSupport" />
             <template v-else-if="capitalState">
-                <CapitalHeader :hide-subtitle="props.hideSubtitle" :region="capitalState.region" :title-key="titleKey" />
                 <UnsupportedRegionState v-if="!capitalState.isRegionSupported" />
                 <EmptyOfferState v-else-if="!dynamicOfferConfig" />
                 <template v-else>

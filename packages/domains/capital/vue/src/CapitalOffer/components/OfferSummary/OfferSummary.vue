@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoAlert, BentoButton, BentoButtonActions, type BentoButtonActionsList } from '@adyen/bento-vue3';
+import { BentoAlert, BentoButton, BentoButtonActions, type BentoButtonActionsList, BentoTypography } from '@adyen/bento-vue3';
 import {
     getBalanceAccountErrorMessage,
     sharedCapitalOfferAnalyticsEventProperties,
@@ -10,6 +10,7 @@ import {
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IGrantOfferResponseDTO } from '@integration-components/types';
 import { useRequestFunds } from '../../composables/useRequestFunds';
+import { useCapitalCopy } from '../../../shared/composables/useCapitalCopy';
 import CapitalError from '../../../shared/CapitalError.vue';
 import Highlights from '../Highlights/Highlights.vue';
 import LegalNotice from '../LegalNotice/LegalNotice.vue';
@@ -26,13 +27,14 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { getContractCopy } = useCapitalCopy();
 const userEvents = useEventDispatcherContext();
 const renewableGrant = computed(() => props.capitalState.renewableGrants[0]);
 const isEarlyRenewal = computed(() => !!renewableGrant.value);
 const offerAmount = computed(() => i18n.amount(props.offer.grantAmount.value, props.offer.grantAmount.currency, { minimumFractionDigits: 0 }));
 const highlights = computed(() => [
     {
-        label: i18n.get('capital.common.fields.financing.loan'),
+        label: getContractCopy('capital.common.fields.financing', props.offer.contractType),
         value: offerAmount.value,
     },
     {
@@ -48,7 +50,7 @@ const highlights = computed(() => [
         value: '=',
     },
     {
-        label: i18n.get('capital.common.fields.totalRepaymentAmount.loan'),
+        label: getContractCopy('capital.common.fields.totalRepaymentAmount', props.offer.contractType),
         value: i18n.amount(props.offer.totalAmount.value, props.offer.totalAmount.currency, { minimumFractionDigits: 0 }),
     },
 ]);
@@ -111,6 +113,7 @@ const actions = computed<BentoButtonActionsList>(() => [
             <div :class="styles.highlights">
                 <RenewalHighlights
                     v-if="renewableGrant"
+                    :contract-type="props.offer.contractType"
                     :new-grant-amount-value="props.offer.grantAmount.value"
                     :remaining-grant-amount="renewableGrant.remainingGrantAmount"
                 />
@@ -130,12 +133,33 @@ const actions = computed<BentoButtonActionsList>(() => [
                     </BentoButton>
                 </template>
             </BentoAlert>
+            <BentoTypography v-if="props.offer.contractType === 'cashAdvance'" variant="caption">
+                {{ i18n.get('capital.common.fields.expectedRepaymentPeriodDescription.cashAdvance') }}
+            </BentoTypography>
             <BentoAlert v-if="isEarlyRenewal">
                 <template #default>
-                    {{ i18n.get('capital.offer.summary.renewalNotice.title.loan') }}
+                    {{ getContractCopy('capital.offer.summary.renewalNotice.title', props.offer.contractType) }}
                 </template>
                 <template #description>
-                    {{ i18n.get('capital.offer.summary.renewalNotice.description.loan') }}
+                    {{ getContractCopy('capital.offer.summary.renewalNotice.description', props.offer.contractType) }}
+                    <template v-if="props.offer.contractType === 'cashAdvance'">
+                        <p>
+                            <strong>{{ i18n.get('capital.offer.summary.renewalNotice.nextSteps.title.cashAdvance') }}</strong>
+                        </p>
+                        <ul>
+                            <li>
+                                {{ i18n.get('capital.offer.summary.renewalNotice.nextSteps.acceptedItem.cashAdvance') }}
+                            </li>
+                            <li>
+                                {{ i18n.get('capital.offer.summary.renewalNotice.nextSteps.declinedItem.cashAdvance') }}
+                            </li>
+                        </ul>
+                    </template>
+                </template>
+            </BentoAlert>
+            <BentoAlert v-if="props.offer.contractType === 'cashAdvance'" variant="tip">
+                <template #description>
+                    {{ i18n.get('capital.offer.regulatoryNotice.cashAdvance') }}
                 </template>
             </BentoAlert>
             <LegalNotice :region="props.capitalState.region" />

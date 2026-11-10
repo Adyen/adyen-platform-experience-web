@@ -5,6 +5,7 @@ import { OnSubmitCallback } from '@integration-components/capital/domain';
 import type { BentoButtonActionsList } from '@adyen/bento-vue3';
 import { IGrant } from '@integration-components/types';
 import { CapitalOverviewComponentProps } from '../../types';
+import { useCapitalCopy } from '../../../shared/composables/useCapitalCopy';
 import { useEnhancedCapitalState } from '../../../shared/composables/useEnhancedCapitalState';
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import GrantList from '../GrantList/GrantList.vue';
@@ -20,6 +21,7 @@ import CapitalOverviewLoadingSkeleton from '../CapitalOverviewLoadingSkeleton/Ca
 const props = defineProps<CapitalOverviewComponentProps>();
 
 const { i18n } = useCoreContext();
+const { getContractCopy } = useCapitalCopy();
 const userEvents = useEventDispatcherContext();
 const requestedGrant = ref<IGrant>();
 const { capitalState, error, isLoading } = useEnhancedCapitalState(() => true, requestedGrant);
@@ -74,8 +76,9 @@ const headerActions = computed<BentoButtonActionsList | undefined>(() => {
     if (error.value || !capitalState.value?.isRegionSupported || !capitalState.value.dynamicOfferConfig) return undefined;
     return [
         {
-            title: i18n.get(
-                capitalState.value.hasGrants ? 'capital.overview.actions.requestNewGrant.loan' : 'capital.overview.actions.requestFirstGrant.loan'
+            title: getContractCopy(
+                capitalState.value.hasGrants ? 'capital.overview.actions.requestNewGrant' : 'capital.overview.actions.requestFirstGrant',
+                capitalState.value.dynamicOfferConfig.contractType
             ),
             event: openOfferModal,
         },
@@ -89,7 +92,12 @@ const headerActions = computed<BentoButtonActionsList | undefined>(() => {
             <template #loading>
                 <CapitalOverviewLoadingSkeleton />
             </template>
-            <CapitalHeader :actions="headerActions" :region="capitalState?.region" title-key="capital.common.title" />
+            <CapitalHeader
+                :actions="headerActions"
+                :contract-type="capitalState?.dynamicOfferConfig?.contractType"
+                :region="capitalState?.region"
+                :title="i18n.get('capital.common.title')"
+            />
             <CapitalError v-if="error" :error="error" :on-contact-support="props.onContactSupport" />
             <template v-else-if="capitalState">
                 <UnsupportedRegionState v-if="!capitalState.isRegionSupported" />

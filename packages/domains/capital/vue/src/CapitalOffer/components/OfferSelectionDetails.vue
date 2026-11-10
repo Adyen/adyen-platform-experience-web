@@ -4,15 +4,15 @@ import type { IGrantOfferResponseDTO } from '@integration-components/types';
 import { useFinancingDetailItems, type FinancingDetailItemKey } from '../composables/useFinancingDetailItems';
 import FinancingDetailList from './FinancingDetailList/FinancingDetailList.vue';
 import { BentoCard } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useCapitalCopy } from '../../shared/composables/useCapitalCopy';
 
 const props = defineProps<{
     hasExpectedRepaymentPeriod: boolean;
     offer: IGrantOfferResponseDTO;
 }>();
 
-const { i18n } = useCoreContext();
-const { getItems } = useFinancingDetailItems();
+const { getContractCopy } = useCapitalCopy();
+const { getItems } = useFinancingDetailItems(props.offer.contractType);
 const itemKeys = computed(
     () =>
         [
@@ -20,7 +20,7 @@ const itemKeys = computed(
             'totalRepaymentAmount',
             'dailyRepaymentRate',
             ...(props.hasExpectedRepaymentPeriod ? ['expectedRepaymentPeriod'] : []),
-            'maximumRepaymentDate',
+            ...(props.offer.contractType === 'loan' ? ['maximumRepaymentDate'] : []),
         ] as FinancingDetailItemKey[]
 );
 const items = computed(() => getItems(props.offer, itemKeys.value));
@@ -28,7 +28,7 @@ const items = computed(() => getItems(props.offer, itemKeys.value));
 
 <template>
     <BentoCard background="secondary">
-        {{ i18n.get('capital.offer.termsTitle.loan') }}
+        {{ getContractCopy('capital.offer.termsTitle', props.offer.contractType) }}
         <template #content>
             <FinancingDetailList :items="items" />
         </template>

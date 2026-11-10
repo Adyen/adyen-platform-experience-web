@@ -1,5 +1,5 @@
 import type { IGrant } from '@integration-components/types';
-import type { CapitalTranslationKey } from '../../shared';
+import { getContractTranslationKey, type CapitalTranslationKey } from '../../shared';
 
 export type GrantStatusVariant = 'Default' | 'Warning' | 'Error' | 'Light';
 
@@ -31,20 +31,23 @@ const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
     return endDate;
 };
 
-const getStatusKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): CapitalTranslationKey | undefined => {
+const getStatusKey = (
+    { status, missingActions, contractType = 'loan' }: IGrant,
+    areActionsLocallyCompleted?: boolean
+): CapitalTranslationKey | undefined => {
     switch (status) {
         case 'Failed':
-            return 'capital.overview.grantItem.statuses.failed.loan';
+            return getContractTranslationKey('capital.overview.grantItem.statuses.failed', contractType);
         case 'Pending':
             return !areActionsLocallyCompleted && missingActions?.length
                 ? 'capital.overview.grantItem.statuses.actionNeeded'
                 : 'capital.overview.grantItem.statuses.pending';
         case 'Repaid':
-            return 'capital.overview.grantItem.statuses.repaid.loan';
+            return getContractTranslationKey('capital.overview.grantItem.statuses.repaid', contractType);
         case 'Revoked':
             return 'capital.overview.grantItem.statuses.revoked';
         case 'WrittenOff':
-            return 'capital.overview.grantItem.statuses.writtenOff.loan';
+            return getContractTranslationKey('capital.overview.grantItem.statuses.writtenOff', contractType);
         default:
             return undefined;
     }
@@ -66,16 +69,23 @@ const getStatusTagVariant = ({ status, missingActions }: IGrant, areActionsLocal
     }
 };
 
-const getStatusTooltipKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): CapitalTranslationKey | undefined => {
+const getStatusTooltipKey = (
+    { status, missingActions, contractType = 'loan' }: IGrant,
+    areActionsLocallyCompleted?: boolean
+): CapitalTranslationKey | undefined => {
     switch (status) {
-        case 'Pending':
-            return !areActionsLocallyCompleted && missingActions?.length ? undefined : 'capital.overview.grantItem.statuses.pendingDescription.loan';
         case 'Failed':
-            return 'capital.overview.grantItem.statuses.failedDescription.loan';
-        case 'WrittenOff':
-            return 'capital.overview.grantItem.statuses.writtenOffDescription.loan';
+            return getContractTranslationKey('capital.overview.grantItem.statuses.failedDescription', contractType);
+        case 'Pending':
+            return !areActionsLocallyCompleted && missingActions?.length
+                ? undefined
+                : getContractTranslationKey('capital.overview.grantItem.statuses.pendingDescription', contractType);
+        case 'Repaid':
+            return contractType === 'cashAdvance' ? 'capital.overview.grantItem.statuses.repaidDescription.cashAdvance' : undefined;
         case 'Revoked':
-            return 'capital.overview.grantItem.statuses.revokedDescription.loan';
+            return getContractTranslationKey('capital.overview.grantItem.statuses.revokedDescription', contractType);
+        case 'WrittenOff':
+            return getContractTranslationKey('capital.overview.grantItem.statuses.writtenOffDescription', contractType);
         default:
             return undefined;
     }
@@ -87,7 +97,9 @@ export const getGrantConfig = (grant: IGrant, areActionsLocallyCompleted?: boole
 
     return {
         amount: isGrantActive ? grant.remainingTotalAmount : grant.grantAmount,
-        amountLabelKey: isGrantActive ? 'capital.overview.grantItem.remainingGrantAmount' : 'capital.overview.grantItem.grantAmount.loan',
+        amountLabelKey: isGrantActive
+            ? 'capital.overview.grantItem.remainingGrantAmount'
+            : getContractTranslationKey('capital.overview.grantItem.grantAmount', grant.contractType ?? 'loan'),
         areActionsVisible: hasActions,
         areDetailsVisible: isGrantActive,
         areRepaymentDetailsVisible: isGrantActive && !!grant.unscheduledRepaymentAccounts?.length,

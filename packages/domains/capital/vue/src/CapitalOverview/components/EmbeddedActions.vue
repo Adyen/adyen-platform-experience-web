@@ -4,12 +4,13 @@ import { BentoAlert, BentoButtonActions, BentoModal, type BentoButtonActionsList
 import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-16/vue/checkmark-circle-fill';
 import { getMissingActionsMetadata } from '@integration-components/capital/domain';
 import { useConfigContext, useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import type { IMissingAction, IMissingActionType } from '@integration-components/types';
+import type { IContractType, IMissingAction, IMissingActionType } from '@integration-components/types';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../domain/src/CapitalOverview/constants';
 import { useActionsAlertTitles } from '../composables/useActionsAlertTitles';
 
 const props = defineProps<{
+    contractType?: IContractType;
     expirationDate?: string;
     legalEntityId: string;
     missingActions: IMissingAction[];
@@ -32,7 +33,10 @@ const closeTimeouts = new Map<IMissingActionType, ReturnType<typeof setTimeout>>
 
 const missingActionsMetadata = computed(() => getMissingActionsMetadata(props.missingActions, completedActions.value));
 const areActionsCompleted = computed(() => missingActionsMetadata.value.areActionsCompleted);
-const alertTitles = useActionsAlertTitles(() => props.expirationDate);
+const alertTitles = useActionsAlertTitles(
+    () => props.expirationDate,
+    () => props.contractType
+);
 const alertTitle = computed(() => {
     if (areActionsCompleted.value) {
         return i18n.get('capital.overview.grantItem.alerts.actionsCompleted');
