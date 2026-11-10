@@ -85,4 +85,24 @@ describe('usePaymentLinkWizard - allowed options', () => {
 
         expect(wizard.getValue('linkType')).toBe('');
     });
+
+    test('clears a prefilled value once the configuration loads after the defaults', async () => {
+        const { wizard, stepFields } = createWizard([], { defaults: () => ({ linkType: 'open' }) });
+
+        expect(wizard.getValue('linkType')).toBe('open');
+        stepFields.value = [field('linkType', ['singleUse'])];
+        await nextTick();
+
+        expect(wizard.getValue('linkType')).toBe('');
+    });
+
+    test('ignores a default value that is not allowed when the defaults change after the configuration loads', async () => {
+        const defaults = ref<ReturnType<NonNullable<WizardParams['defaults']>>>();
+        const { wizard } = createWizard([field('linkType', ['singleUse'])], { defaults: () => defaults.value });
+
+        defaults.value = { linkType: 'open' };
+        await nextTick();
+
+        expect(wizard.getValue('linkType')).toBe('');
+    });
 });
