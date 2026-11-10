@@ -44,7 +44,7 @@ const quickSelectRanges = createQuickSelectRanges(
         thisMonth: quickSelectDateRanges.thisMonth,
         lastMonth: quickSelectDateRanges.lastMonth,
     },
-    'payByLink.overview.common.filters.types.date.rangeSelect.options.',
+    'payByLink.overview.filters.date.',
     key => i18n.get(key)
 );
 
@@ -93,7 +93,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
     if (showStoreFilter.value) {
         config.push({
             field: 'storeIds',
-            label: i18n.get('payByLink.overview.filters.types.stores.label'),
+            label: i18n.get('payByLink.overview.filters.stores'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
             visible: !props.compact,
             defaultValue: [],
@@ -112,7 +112,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
     config.push({
         field: 'dateRange',
-        label: i18n.get('payByLink.overview.common.filters.types.date.label'),
+        label: i18n.get('payByLink.overview.filters.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         visible: !props.compact,
         defaultValue: defaultDateRange,
@@ -125,7 +125,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
     if (showLinkTypesFilter.value) {
         config.push({
             field: 'linkTypes',
-            label: i18n.get('payByLink.overview.filters.types.linkTypes.label'),
+            label: i18n.get('payByLink.overview.filters.linkTypes'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
             visible: !props.compact,
             disabled: !!props.filterError,
@@ -138,7 +138,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
     if (showStatusFilter.value) {
         config.push({
             field: 'statuses',
-            label: i18n.get('payByLink.overview.filters.types.status.label'),
+            label: i18n.get('payByLink.overview.filters.status'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
             visible: !props.compact,
             disabled: !!props.filterError,
@@ -153,14 +153,14 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
     config.push({
         field: 'merchantReference',
-        label: i18n.get('payByLink.overview.filters.types.merchantReference.label'),
+        label: i18n.get('payByLink.overview.filters.merchantReference'),
         type: BentoFilterItemType.INPUT,
         visible: !props.compact,
     });
 
     config.push({
         field: 'paymentLinkId',
-        label: i18n.get('payByLink.overview.filters.types.paymentLinkID.label'),
+        label: i18n.get('payByLink.overview.filters.paymentLinkID'),
         type: BentoFilterItemType.INPUT,
         visible: !props.compact,
     });

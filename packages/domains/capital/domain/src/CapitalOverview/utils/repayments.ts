@@ -87,15 +87,15 @@ export const getBankAccountFieldTextToCopy = (field: string, value?: string) => 
 export const getBankAccountFieldCopyButtonTranslationKey = (field: string): CapitalTranslationKey | undefined => {
     switch (field) {
         case 'accountNumber':
-            return 'capital.overview.repayment.actions.copyAccountNumber';
+            return 'capital.overview.repayment.accountDetails.copy.accountNumber';
         case 'beneficiaryName':
-            return 'capital.overview.repayment.actions.copyBeneficiaryName';
+            return 'capital.overview.repayment.accountDetails.copy.beneficiaryName';
         case 'iban':
-            return 'capital.overview.repayment.actions.copyIban';
+            return 'capital.overview.repayment.accountDetails.copy.iban';
         case 'routingNumber':
-            return 'capital.overview.repayment.actions.copyRoutingNumber';
+            return 'capital.overview.repayment.accountDetails.copy.routingNumber';
         case 'sortCode':
-            return 'capital.overview.repayment.actions.copySortCode';
+            return 'capital.overview.repayment.accountDetails.copy.sortCode';
     }
 };
 

@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
-import { expectAnalyticsEvents, getClipboardContent, getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
+import { expectAnalyticsEvents, getClipboardContent, goToStory } from '@integration-components/testing/playwright/utils';
 import { sharedAnalyticsEventProperties, sharedCopyButtonAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionDetails';
 
 const STORY_ID = 'mocked-transactions-transaction-details--default';
@@ -72,8 +72,9 @@ test.describe('Default', () => {
             ];
 
             for (const { name, subSectionName, value } of copyButtons) {
-                await page.getByRole('button', { name, exact: true, disabled: false }).click();
-                await expect(getComponentRoot(page).getByText('Copied', { exact: true })).toBeAttached();
+                const copyButton = page.getByRole('button', { name, exact: true, disabled: false });
+                await copyButton.click();
+                await expect(copyButton.locator('..').getByText('Copied', { exact: true })).toBeAttached();
 
                 await expectAnalyticsEvents(analyticsEvents, [['Clicked button', { ...sharedCopyButtonAnalyticsEventProperties, subSectionName }]]);
 
