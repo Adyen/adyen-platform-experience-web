@@ -8,7 +8,7 @@ import { SDK_BENTO_TRANSLATION_SOURCES, SDK_TRANSLATION_SOURCES } from '../../..
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
 import { ThemeManager } from './theme/ThemeManager';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
-import type { CoreOptions, OnErrorHandler, ResolvedEnvironment } from './types';
+import type { CoreOptions, CoreUpdateOptions, OnErrorHandler, ResolvedEnvironment } from './types';
 import type { I18n } from './Localization/types';
 
 /**
@@ -187,8 +187,8 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
      * Apply a partial options patch, re-initialize, and propagate the update to
      * every registered component that belongs to this Core instance.
      */
-    public async update(options: Partial<CoreOptions<CustomTranslations>> = EMPTY_OBJECT as Partial<CoreOptions<CustomTranslations>>): Promise<this> {
-        this.setOptions(options);
+    public async update(options: CoreUpdateOptions<CustomTranslations> = EMPTY_OBJECT as CoreUpdateOptions<CustomTranslations>): Promise<this> {
+        this.setOptions(options as Partial<CoreOptions<CustomTranslations>>);
 
         const optionKeys = Object.keys(options);
         const hasOnlyThemeOptions = optionKeys.length > 0 && optionKeys.every(option => option === 'themeMode' || option === 'customTheme');
