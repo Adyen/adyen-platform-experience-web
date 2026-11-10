@@ -23,7 +23,7 @@
         "@integration-components/testing": "workspace:*",
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*",
-        "zod": "4.2.1"
+        "zod": "4.6.6"
     },
     "peerDependencies": {
         "vue": "catalog:"
