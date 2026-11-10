@@ -19,6 +19,7 @@ interface Props<TComponentAppearance extends GlobalAppearance = GlobalAppearance
     componentAppearance?: TComponentAppearance;
     globalAppearance?: GlobalAppearance;
     refreshComponent: () => void;
+    refreshKey?: number;
 }
 
 const props = defineProps<Props>();
@@ -62,7 +63,7 @@ useBentoTranslationOverrides(props.bentoOverrides);
                         data-testid="component-container"
                         :class="[styles.container, appearance?.container === 'hidden' ? styles.containerHidden : '']"
                     >
-                        <ComponentAvailabilityGate :type="props.componentName" :on-contact-support="getOnContactSupport()">
+                        <ComponentAvailabilityGate :key="props.refreshKey" :type="props.componentName" :on-contact-support="getOnContactSupport()">
                             <slot />
                         </ComponentAvailabilityGate>
                     </div>
