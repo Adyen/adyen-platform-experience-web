@@ -74,6 +74,14 @@ export const ELIGIBILITY_AVAILABLE = {
         ...baseEligibility,
         transferInstruments: [ELIGIBLE_TRANSFER_INSTRUMENTS.visa],
     },
+    singleEligibleTransferInstrument: {
+        ...baseEligibility,
+        transferInstruments: [
+            ELIGIBLE_TRANSFER_INSTRUMENTS.bank,
+            INELIGIBLE_TRANSFER_INSTRUMENTS.noInstantTransferRoute,
+            INELIGIBLE_TRANSFER_INSTRUMENTS.transferInstrumentCurrencyMismatch,
+        ],
+    },
     withIneligibleTransferInstruments: {
         ...baseEligibility,
         transferInstruments: [...Object.values(ELIGIBLE_TRANSFER_INSTRUMENTS), ...Object.values(INELIGIBLE_TRANSFER_INSTRUMENTS)],

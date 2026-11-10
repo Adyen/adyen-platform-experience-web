@@ -1,0 +1,58 @@
+@use '@integration-components/style';
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-090);
+}
+
+.amount {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-050);
+    margin: 0;
+}
+
+.detail {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-040);
+    justify-content: space-between;
+}
+
+// Inline, so on narrow screens the info icon stays next to the last word of a wrapped label.
+.label {
+    color: style.token(color-label-secondary);
+    min-width: 0;
+}
+
+.info {
+    margin-inline-start: style.token(spacer-040);
+    vertical-align: middle;
+}
+
+.value {
+    flex: 1;
+    margin: 0;
+    text-align: end;
+    white-space: nowrap;
+}
+
+.loadingValue {
+    margin-inline-start: auto;
+    max-width: calc(#{style.token(spacer-120)} * 2);
+}
+
+.loadingSummary {
+    max-width: calc(#{style.token(spacer-120)} * 4);
+}
+
+.actions {
+    justify-content: flex-end;
+}
