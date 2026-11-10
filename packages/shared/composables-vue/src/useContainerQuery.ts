@@ -23,8 +23,7 @@ const matchesWidth = ([type, breakpoint, minMax]: ContainerQuery, width: number)
             return width <= breakpoint;
         case 'only':
             if (!minMax) return width === breakpoint;
-            if (minMax.max !== undefined) return width <= minMax.max;
-            return minMax.min !== undefined && width >= minMax.min;
+            return (minMax.min === undefined || width >= minMax.min) && (minMax.max === undefined || width <= minMax.max);
         default:
             return false;
     }
@@ -34,6 +33,11 @@ const resolveMatches = (el: HTMLElement, query: ContainerQuery, queryKey: string
     const width = el.offsetWidth;
     const resolvedQueries = resolvedQueriesByContainer.get(el) ?? new Map<string, boolean>();
     const previous = resolvedQueries.get(queryKey);
+    // A width of 0 means the container is hidden (e.g. display: none). Keep the last result, so the layout doesn't
+    // switch while hidden and flash when shown again. The stored result is left untouched so that every query of
+    // this container keeps agreeing, and the next real measurement updates it.
+    if (width === 0) return previous ?? matchesWidth(query, width);
+
     const next = matchesWidth(query, width);
     // Accept the new result only if it would also hold for a container SCROLLBAR_WIDTH_TOLERANCE px narrower.
     // Shrinking past a breakpoint therefore switches to the narrower layout immediately, but growing back only
@@ -41,11 +45,8 @@ const resolveMatches = (el: HTMLElement, query: ContainerQuery, queryKey: string
     // With no previous result (first measurement), the raw width is used as is.
     const matches = previous === undefined || matchesWidth(query, width - SCROLLBAR_WIDTH_TOLERANCE) === next ? next : previous;
 
+    resolvedQueries.set(queryKey, matches);
     resolvedQueriesByContainer.set(el, resolvedQueries);
-    // A width of 0 means the container is hidden (e.g. display: none). Forget the stored result so that
-    // when it's shown again the real width is used, instead of keeping the narrow layout from width 0.
-    if (width > 0) resolvedQueries.set(queryKey, matches);
-    else resolvedQueries.delete(queryKey);
 
     return matches;
 };

@@ -165,14 +165,45 @@ describe('useContainerQuery', () => {
         expect(isCompact.value).toBe(false);
     });
 
-    test('evaluates the width as is when the container is shown again after being hidden', () => {
-        const { element, resizeTo } = createContainer(WIDTH_WITH_SCROLLBAR);
-        const isCompact = mountCompactQuery(element);
-        expect(isCompact.value).toBe(true);
+    test('matches "only" ranges against both the min and the max bound', () => {
+        const { element, resizeTo } = createContainer(350);
+        let only!: ReturnType<typeof useContainerQuery>;
+        mountInContainer(
+            element,
+            defineComponent({
+                setup() {
+                    only = useContainerQuery(['only', 400, { min: 400, max: 700 }]);
+                    return () => h('div');
+                },
+            })
+        );
+        expect(only.value).toBe(false);
+
+        resizeTo(500);
+        expect(only.value).toBe(true);
+    });
+
+    test('keeps the current layout in every query of the container while it is hidden', () => {
+        const { element, resizeTo } = createContainer(600);
+        let first!: ReturnType<typeof useContainerQuery>;
+        let second!: ReturnType<typeof useContainerQuery>;
+        mountInContainer(
+            element,
+            defineComponent({
+                setup() {
+                    first = useContainerQuery(COMPACT_QUERY);
+                    second = useContainerQuery(COMPACT_QUERY);
+                    return () => h('div');
+                },
+            })
+        );
+        expect([first.value, second.value]).toEqual([false, false]);
 
         resizeTo(0);
-        resizeTo(WIDTH_WITHOUT_SCROLLBAR);
-        expect(isCompact.value).toBe(false);
+        expect([first.value, second.value]).toEqual([false, false]);
+
+        resizeTo(600);
+        expect([first.value, second.value]).toEqual([false, false]);
     });
 
     test('shares the resolved state with queries mounted later in the same container', async () => {
