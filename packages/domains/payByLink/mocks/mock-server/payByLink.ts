@@ -291,6 +291,19 @@ export const paymentLinkDetailsMockedResponses = {
             ),
         ],
     },
+    errorDetailsServerError: {
+        handlers: [
+            http.get(
+                mockPayByLinkEndpoints.details,
+                withDelay(() => {
+                    return HttpResponse.json(
+                        { title: 'Internal Server Error', requestId: '769ac4ce59f0f159ad672d38d3291e91', status: 500 },
+                        { status: 500 }
+                    );
+                })
+            ),
+        ],
+    },
     errorExpiration: {
         handlers: [
             http.post(
@@ -384,9 +397,9 @@ export const payByLinkMocks = [
 
             const url = new URL(request.url);
             const cursor = url.searchParams.get('cursor');
-            const limit = url.searchParams.get('limit') ? parseInt(url.searchParams.get('limit')!, 10) : defaultPaginationLimit;
+            const limit = url.searchParams.get('limit') ? Number.parseInt(url.searchParams.get('limit')!, 10) : defaultPaginationLimit;
 
-            const startIndex = cursor ? parseInt(cursor, 10) : 0;
+            const startIndex = cursor ? Number.parseInt(cursor, 10) : 0;
             const endIndex = Math.min(startIndex + limit, STORES.length);
             const data = STORES.slice(startIndex, endIndex);
 
