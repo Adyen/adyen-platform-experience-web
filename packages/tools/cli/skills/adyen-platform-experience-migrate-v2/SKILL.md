@@ -32,6 +32,7 @@ v2 refreshes the components' look. Most of the API is unchanged, but some Core o
 ## Rules while migrating
 
 - **No DOM or classname workarounds.** Don't replace a removed override with `:deep()`, `querySelector` into a component, or new `.adyen-pe-*` selectors. Use the options in `references/css-overrides.md`; if v2 has no equivalent, delete the override and report what it did.
+- **Only pass what the v2 types declare.** If a v1 option isn't in the component's v2 props type, it was removed, even if the component still reads it at runtime. Delete it and report it; don't keep it through a local type, a cast or `@ts-ignore`.
 - **Theme changes are global: propose, don't apply.** Don't add `customTheme`, `themeMode` or new `--adyen-sdk-*` values until the user confirms. Propose them at the end with a clear warning that they change every matching element in all Adyen components (see `references/css-overrides.md`, rule 3). This doesn't cover `--adyen-sdk-*` variables the app already sets: move those as they are, without asking (rule 1), because they already applied to every component in v1.
 - **Searching for overrides.** When searching for `adyen-pe-` selectors, exclude the assistant skill folders (`.agents/`, `.claude/`, `.cursor/`, `.factory/`): this skill quotes those selectors.
 
@@ -43,7 +44,13 @@ v2 refreshes the components' look. Most of the API is unchanged, but some Core o
 4. Search the app for `dataCustomization` and `common.` translation keys: both change silently (a leftover `list` or an old key is ignored, with no type error when the object isn't typed).
 5. Find every `adyen-pe-*` selector and `--adyen-sdk-*` variable in the app's stylesheets and style blocks, and apply `references/css-overrides.md`.
 6. Run the project's type-check and build, and fix what they report.
-7. End with a report:
+7. Verify before reporting. A failed edit or command leaves no type error, so check the files themselves:
+    - re-run the searches from steps 4 and 5: no `.adyen-pe-*` selector other than `.adyen-pe-component` may remain, no `--adyen-sdk-*` variable at document level, and no `dataCustomization.list` or `common.` translation key;
+    - re-read every file you meant to change, and fix any change that didn't land.
+
+    Report only changes you've confirmed this way.
+
+8. End with a report:
     - every removed option or callback with no replacement, and what it did in this app;
     - every CSS override found, with file and line, and what you did with it: the v2 option that replaced it, where you moved it, or, if v2 has no equivalent, that you deleted it and what it did (suggest a feature request to Adyen);
     - the theme proposal with its warnings, and the question whether to apply it (unless the user already confirmed);
