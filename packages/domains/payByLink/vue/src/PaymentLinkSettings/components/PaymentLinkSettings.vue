@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoDivider, BentoTypography } from '@adyen/bento-vue3';
-import { useCoreContext, useModalContext } from '@integration-components/core/vue';
-import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
+import { useLandedPageEvent, useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
+import { PAYMENT_LINKS_ANALYTICS_CATEGORY, PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_SETTINGS } from '../../../../domain/src';
+import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import type { PayByLinkTranslationKey } from '@integration-components/payByLink/domain';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../constants';
@@ -20,7 +21,6 @@ const ERROR_MESSAGE_KEY: PayByLinkTranslationKey = 'payByLink.settings.errors.un
 const props = defineProps<{
     hideTitle?: boolean;
     onContactSupport?: () => void;
-    onDismiss?: () => void;
     navigateBack?: () => void;
 }>();
 
@@ -42,6 +42,10 @@ const {
     themeError,
     termsAndConditionsError,
 } = usePaymentLinkSettingsContext();
+
+const analyticsProps = { category: PAYMENT_LINKS_ANALYTICS_CATEGORY, subCategory: PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_SETTINGS } as const;
+
+useLandedPageEvent(analyticsProps, () => menuItems.length > 0);
 
 const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 const contentVisible = ref(!isSmContainer.value || menuItems.length === 1);
@@ -106,7 +110,6 @@ const showActionButtons = computed(
             <SettingsActionButtons
                 v-if="showActionButtons"
                 :navigate-back="props.navigateBack"
-                :on-dismiss="props.onDismiss"
                 :close-content="isSmContainer ? closeContent : undefined"
             />
         </template>

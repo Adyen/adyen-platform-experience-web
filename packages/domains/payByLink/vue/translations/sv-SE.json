@@ -158,7 +158,6 @@
     "payByLink.details.expiration.errorDescription": "Vi kunde inte inaktivera betalningslänken. Vänligen försök igen.",
     "payByLink.details.expiration.errorTitle": "Någonting gick fel",
     "payByLink.details.expiration.title": "Länken upphör att gälla",
-    "payByLink.details.expirationSuccess.actions.goBackToList": "Gå tillbaka till betalningslänkarna",
     "payByLink.details.expirationSuccess.actions.showDetails": "Visa uppgifter",
     "payByLink.details.expirationSuccess.description": "Betalningslänken är nu utgången och kan inte användas av konsumenten.",
     "payByLink.details.expirationSuccess.title": "Länken har avaktiverats",

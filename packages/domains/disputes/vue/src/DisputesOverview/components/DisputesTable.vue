@@ -47,6 +47,7 @@ const props = defineProps<{
     activeBalanceAccount?: IBalanceAccountBase;
     showPagination: boolean;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     onRowClick?: (dispute: IDisputeListItem) => void;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<DisputesTableFields>>[];
     onDataRetrieve?: OnDataRetrievedCallback<IDisputeListItem[], CustomDataRetrieved[]>;
@@ -223,6 +224,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
             :error="props.error"
             :error-message="'disputes.overview.common.errors.listUnavailable'"
             :on-contact-support="props.onContactSupport"
+            :on-refresh="props.onRefresh"
             :variant="isMobile ? 'condensed' : 'embedded'"
             :refresh-icon="RefreshIcon"
         />

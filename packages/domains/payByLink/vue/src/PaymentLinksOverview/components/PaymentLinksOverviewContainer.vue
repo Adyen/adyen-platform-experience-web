@@ -16,7 +16,6 @@ const { filters: filterOptions, isFetching: isFilterOptionsLoading, error: filte
         :on-record-selection="props.onRecordSelection"
         :on-contact-support="props.onContactSupport"
         :payment-link-creation="props.paymentLinkCreation"
-        :payment-link-settings="props.paymentLinkSettings"
         :stores="filteredStores"
         :all-stores="allStores"
         :is-filters-loading="isStoresLoading || isFilterOptionsLoading"

@@ -20,8 +20,7 @@ test.describe('Refundable - Full amount', () => {
     test('should only allow to refund full payment amount', async ({ page }) => {
         await page.getByRole('button', { name: 'Refund payment', exact: true, disabled: false }).click();
 
-        // [TODO]: Address missing ARIA label association with spinbutton (number input)
-        const amountInput = page.getByRole('spinbutton', { /*name: 'Amount to refund', exact: true,*/ disabled: true });
+        const amountInput = page.getByRole('spinbutton', { name: 'Amount to refund', exact: true, disabled: true });
         const refundButton = page.getByRole('button', { name: 'Refund €607.50', exact: true, disabled: false });
 
         await expect(amountInput).toBeVisible();

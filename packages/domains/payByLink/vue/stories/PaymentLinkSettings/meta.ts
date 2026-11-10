@@ -7,7 +7,6 @@ export const paymentLinkSettingsMeta: Meta<ElementProps<PaymentLinkSettingsExter
     title: 'Components/Pay by Link/Payment Link Settings',
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
         storeIds: { control: 'object' },
     },
     args: {

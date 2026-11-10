@@ -1,8 +1,8 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
 import {
+    openRepaymentButtonAnalyticsEventProperties,
     sharedCapitalOverviewAnalyticsEventProperties,
-    sharedSendRepaymentButtonAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
 import type { Page } from '@playwright/test';
 
@@ -24,7 +24,7 @@ test.describe('Repayment without transfer instruments', () => {
     test.describe('Send repayment view', () => {
         test.beforeEach(async ({ page, analyticsEvents }) => {
             await page.getByRole('button', { name: 'Send repayment', exact: true }).click();
-            await expectAnalyticsEvents(analyticsEvents, [['Clicked button', sharedSendRepaymentButtonAnalyticsEventProperties]]);
+            await expectAnalyticsEvents(analyticsEvents, [['Clicked button', openRepaymentButtonAnalyticsEventProperties]]);
         });
 
         test('should show repayment details after "Send repayment" button is clicked', async ({ page }) => {

@@ -1,6 +1,9 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
-import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../fixtures/CapitalOverview/constants/analytics';
+import {
+    sharedCapitalOverviewAnalyticsEventProperties,
+    sharedGrantItemAnalyticsEventProperties,
+} from '../../../../fixtures/CapitalOverview/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--multiple-hosted-actions';
 
@@ -28,11 +31,7 @@ test.describe('Multiple hosted actions', () => {
     });
 
     test('should go to terms of service page when signing button is clicked', async ({ page, analyticsEvents }) => {
-        const analyticsEventProperties = {
-            ...sharedCapitalOverviewAnalyticsEventProperties,
-            subCategory: 'Missing action',
-            label: 'Go to terms & conditions button clicked',
-        };
+        const analyticsEventProperties = { ...sharedGrantItemAnalyticsEventProperties, label: 'Open ToS' };
         const redirectionURL = 'https://www.adyen.com/';
 
         await page.getByRole('button', { name: 'Sign terms & conditions', exact: true }).click();
@@ -43,11 +42,7 @@ test.describe('Multiple hosted actions', () => {
     });
 
     test('should go to business financing page when information submit button is clicked', async ({ page, analyticsEvents }) => {
-        const analyticsEventProperties = {
-            ...sharedCapitalOverviewAnalyticsEventProperties,
-            subCategory: 'Missing action',
-            label: 'Submit information for AnaCredit button',
-        };
+        const analyticsEventProperties = { ...sharedGrantItemAnalyticsEventProperties, label: 'Open AnaCredit information' };
         const redirectionURL = 'https://www.adyen.com/capital';
 
         await page.getByRole('button', { name: 'Submit information', exact: true }).click();

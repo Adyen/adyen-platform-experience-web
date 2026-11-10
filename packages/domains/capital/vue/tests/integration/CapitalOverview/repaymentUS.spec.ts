@@ -1,8 +1,9 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
 import {
+    dismissRepaymentAnalyticsEventProperties,
+    openRepaymentButtonAnalyticsEventProperties,
     sharedCapitalOverviewAnalyticsEventProperties,
-    sharedSendRepaymentButtonAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
 import type { Page } from '@playwright/test';
 
@@ -24,7 +25,7 @@ test.describe('Repayment US', () => {
     test.describe('Send repayment view', () => {
         test.beforeEach(async ({ page, analyticsEvents }) => {
             await page.getByRole('button', { name: 'Send repayment', exact: true }).click();
-            await expectAnalyticsEvents(analyticsEvents, [['Clicked button', sharedSendRepaymentButtonAnalyticsEventProperties]]);
+            await expectAnalyticsEvents(analyticsEvents, [['Clicked button', openRepaymentButtonAnalyticsEventProperties]]);
         });
 
         test('should show repayment details after "Send repayment" button is clicked', async ({ page }) => {
@@ -56,11 +57,12 @@ test.describe('Repayment US', () => {
             ]);
         });
 
-        test('should return to grants list when send repayment dismiss button is clicked', async ({ page }) => {
+        test('should return to grants list when send repayment dismiss button is clicked', async ({ page, analyticsEvents }) => {
             const dismissButton = getRepaymentModal(page).getByRole('button', { name: 'Close', exact: true });
 
             await dismissButton.click();
             await dismissButton.waitFor({ state: 'detached' });
+            await expectAnalyticsEvents(analyticsEvents, [['Clicked button', dismissRepaymentAnalyticsEventProperties]]);
             await Promise.all([
                 expect(page.getByTestId('grant-amount-label').first()).toBeVisible(),
                 expect(page.getByRole('progressbar').first()).toBeVisible(),

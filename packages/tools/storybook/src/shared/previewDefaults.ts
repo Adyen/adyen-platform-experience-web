@@ -68,7 +68,6 @@ export const sharedPreviewConfig = {
                 disable: true,
             },
         },
-        balanceAccountId: { type: 'string' as const },
         skipDecorators: {
             table: {
                 disable: true,

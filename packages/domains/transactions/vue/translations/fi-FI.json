@@ -42,7 +42,6 @@
     "transactions.details.actions.copyReferenceID": "Kopioi viitetunnus",
     "transactions.details.actions.goToPayment": "Siirry maksuun",
     "transactions.details.actions.refund": "Palautusmaksu",
-    "transactions.details.common.actions.goBack": "Palaa takaisin",
     "transactions.details.common.refundedStates.full": "Täysin hyvitetty",
     "transactions.details.common.refundedStates.partial": "Osittain hyvitetty",
     "transactions.details.common.refundReasons.duplicate": "Kopio",

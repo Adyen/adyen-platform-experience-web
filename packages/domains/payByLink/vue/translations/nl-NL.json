@@ -158,7 +158,6 @@
     "payByLink.details.expiration.errorDescription": "We konden de betalingslink niet deactiveren. Probeer het opnieuw.",
     "payByLink.details.expiration.errorTitle": "Er is iets misgegaan.",
     "payByLink.details.expiration.title": "Deze link laten verlopen",
-    "payByLink.details.expirationSuccess.actions.goBackToList": "Terug naar betalingslinks",
     "payByLink.details.expirationSuccess.actions.showDetails": "Details tonen",
     "payByLink.details.expirationSuccess.description": "De betalingslink is nu verlopen en kan niet meer door de klant worden gebruikt.",
     "payByLink.details.expirationSuccess.title": "Link is gedeactiveerd",

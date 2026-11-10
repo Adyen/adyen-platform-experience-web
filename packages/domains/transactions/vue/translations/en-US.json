@@ -42,7 +42,6 @@
     "transactions.details.actions.copyReferenceID": "Copy reference ID",
     "transactions.details.actions.goToPayment": "Go to payment",
     "transactions.details.actions.refund": "Refund payment",
-    "transactions.details.common.actions.goBack": "Go back",
     "transactions.details.common.refundedStates.full": "Fully refunded",
     "transactions.details.common.refundedStates.partial": "Partially refunded",
     "transactions.details.common.refundReasons.duplicate": "Duplicate",

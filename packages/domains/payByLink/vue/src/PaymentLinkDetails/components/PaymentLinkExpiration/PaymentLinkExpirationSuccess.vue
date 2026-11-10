@@ -7,16 +7,12 @@ import { ResponsiveButtonActions } from '@integration-components/composables-vue
 import styles from './PaymentLinkExpirationSuccess.module.scss';
 
 const props = defineProps<{
-    onDismiss?: () => void;
     onShowDetails: () => void;
 }>();
 
 const { i18n } = useCoreContext();
 
 const actionButtons = computed<BentoButtonActionsList>(() => [
-    ...(props.onDismiss
-        ? [{ title: i18n.get('payByLink.details.expirationSuccess.actions.goBackToList'), event: props.onDismiss, variant: 'secondary' as const }]
-        : []),
     {
         title: i18n.get('payByLink.details.expirationSuccess.actions.showDetails'),
         event: props.onShowDetails,

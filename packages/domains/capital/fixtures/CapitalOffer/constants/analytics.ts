@@ -1,28 +1,25 @@
 export const sharedCapitalOfferAnalyticsEventProperties = {
     componentName: 'capitalOffer',
     category: 'Capital offer component',
-    subCategory: 'Capital offer',
 } as const;
 
 export const sharedCapitalOfferSelectionAnalyticsEventProperties = {
     ...sharedCapitalOfferAnalyticsEventProperties,
-    subCategory: 'Business financing offer',
+    subCategory: 'Offer selection',
 } as const;
 
 export const sharedCapitalOfferSummaryAnalyticsEventProperties = {
     ...sharedCapitalOfferAnalyticsEventProperties,
-    subCategory: 'Business financing summary',
+    subCategory: 'Offer summary',
 } as const;
 
 export const landedOnPageAnalyticsEventProperties = {
-    ...sharedCapitalOfferAnalyticsEventProperties,
-    label: 'Capital offer',
+    ...sharedCapitalOfferSelectionAnalyticsEventProperties,
     isEarlyRenewal: false,
 } as const;
 
-export const sliderChangedAnalyticsEventProperties = {
+export const changedOfferAmountAnalyticsEventProperties = {
     ...sharedCapitalOfferSelectionAnalyticsEventProperties,
-    label: 'Slider changed',
     currency: 'EUR',
     value: 1300000,
     valuePercentage: 50,
@@ -32,7 +29,7 @@ export const sliderChangedAnalyticsEventProperties = {
     isEarlyRenewal: false,
 };
 
-export const selectedRepaymentTermAnalyticsEventProperties = {
+export const changedOfferTermAnalyticsEventProperties = {
     ...sharedCapitalOfferSelectionAnalyticsEventProperties,
     allTerms: [90, 180, 360],
     availableRates: [800, 1100, 1500],

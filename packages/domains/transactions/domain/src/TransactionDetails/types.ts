@@ -5,7 +5,6 @@ import {
     ILineItem,
     IRefundReason,
     ITransactionWithDetails,
-    WithDismissCallback,
 } from '@integration-components/types';
 
 export type TransactionDetailsCustomization = DetailsDataCustomizationObject<TransactionDetailsFields, TransactionDetails, CustomDataRetrieved>;
@@ -17,7 +16,7 @@ export type TransactionDetails = ITransactionWithDetails & {
     lineItems?: ILineItem[];
 };
 
-export type TransactionDetailsProps = WithDismissCallback & {
+export type TransactionDetailsProps = {
     dataCustomization?: { details?: TransactionDetailsCustomization };
     id: string;
 };

@@ -2,9 +2,14 @@
 import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
+import { ComponentShell, useLandedPageEvent, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
+import {
+    getPaymentLinkErrorMessageContent,
+    PAYMENT_LINKS_ANALYTICS_CATEGORY,
+    PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_DETAILS,
+    type PayByLinkTranslationKey,
+} from '@integration-components/payByLink/domain';
 import type { PaymentLinkDetailsComponentProps } from '../../types';
-import { ComponentShell, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
-import { type PayByLinkTranslationKey, getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';
 import PaymentLinkDetailsContent from './PaymentLinkDetailsContent.vue';
 import PaymentLinkExpiration from '../PaymentLinkExpiration/PaymentLinkExpiration.vue';
@@ -19,6 +24,10 @@ const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
 const { paymentLink, error, isFetching, refetch } = usePaymentLinkDetails(() => ({ id: props.id }));
+
+const analyticsProps = { category: PAYMENT_LINKS_ANALYTICS_CATEGORY, subCategory: PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_DETAILS } as const;
+
+useLandedPageEvent(analyticsProps, () => !!paymentLink.value);
 
 const shellState = computed<ComponentShellState>(() => {
     if (isFetching.value) return 'loading';
@@ -77,13 +86,7 @@ function handleNavigationToDetailsAfterExpiration() {
         </div>
 
         <div :class="styles.content">
-            <ComponentShell
-                :state="shellState"
-                :error-info="errorInfo"
-                :on-dismiss="props.onDismiss"
-                dismiss-label="payByLink.common.actions.goBack"
-                :on-refresh="refetch"
-            >
+            <ComponentShell :state="shellState" :error-info="errorInfo" :on-refresh="refetch">
                 <template #loading>
                     <PaymentLinkSkeleton />
                 </template>
@@ -97,17 +100,10 @@ function handleNavigationToDetailsAfterExpiration() {
 
                 <PaymentLinkExpirationSuccess
                     v-else-if="activeScreen === 'expirationSuccess'"
-                    :on-dismiss="props.onDismiss"
                     :on-show-details="handleNavigationToDetailsAfterExpiration"
                 />
 
-                <PaymentLinkDetailsContent
-                    v-else-if="paymentLink"
-                    :payment-link="paymentLink"
-                    :on-dismiss="props.onDismiss"
-                    :on-expire="handleExpireNow"
-                    :is-dismiss-button-hidden="props.isDismissButtonHidden"
-                />
+                <PaymentLinkDetailsContent v-else-if="paymentLink" :payment-link="paymentLink" :on-expire="handleExpireNow" />
             </ComponentShell>
         </div>
     </div>

@@ -24,7 +24,7 @@ import PaymentLinkCreationFormSkeleton from './PaymentLinkCreationFormSkeleton.v
 import ArrowRightIcon from '@adyen/ui-assets-icons-16/vue/arrow-right';
 import styles from './PaymentLinkCreationForm.module.scss';
 
-type PaymentLinkCreationFormProps = Pick<PaymentLinkCreationComponentProps, 'fieldsConfig' | 'storeIds' | 'onDismiss' | 'onContactSupport'> & {
+type PaymentLinkCreationFormProps = Pick<PaymentLinkCreationComponentProps, 'fieldsConfig' | 'storeIds' | 'onContactSupport'> & {
     formData: ReturnType<typeof usePaymentLinkFormData>;
     embeddedInOverview?: boolean;
     onTitleChange?: (title: TranslationKey | undefined) => void;
@@ -117,10 +117,7 @@ function handleContinue() {
 }
 
 function handlePrevious() {
-    if (wizard.isFirstStep.value) {
-        props.onDismiss?.();
-        return;
-    }
+    if (wizard.isFirstStep.value) return;
     submitError.value = null;
     isSubmitError.value = false;
     wizard.prev();
@@ -177,7 +174,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
         },
     ];
 
-    if (!wizard.isFirstStep.value || props.onDismiss) {
+    if (!wizard.isFirstStep.value) {
         actions.push({
             title: i18n.get('payByLink.creation.form.steps.back'),
             disabled: isSubmitting.value,

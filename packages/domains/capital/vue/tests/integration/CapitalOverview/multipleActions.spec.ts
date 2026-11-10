@@ -2,8 +2,8 @@ import type { Page } from '@playwright/test';
 import { test, expect, type PageAnalyticsEvent } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 import {
-    sharedActionAnalyticsEventProps,
     sharedCapitalOverviewAnalyticsEventProperties,
+    sharedGrantItemAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--multiple-actions';
@@ -39,31 +39,19 @@ const completeTermsOfService = async (page: Page) => {
 };
 
 const clickedButtonEvents = {
-    submitInformationClicked: [
-        'Clicked button',
-        { ...sharedCapitalOverviewAnalyticsEventProperties, subCategory: 'Missing action', label: 'Submit information for AnaCredit button' },
-    ],
-    signTermsClicked: [
-        'Clicked button',
-        { ...sharedCapitalOverviewAnalyticsEventProperties, subCategory: 'Missing action', label: 'Go to terms & conditions button clicked' },
-    ],
+    submitInformationClicked: ['Clicked button', { ...sharedGrantItemAnalyticsEventProperties, label: 'Open AnaCredit information' }],
+    signTermsClicked: ['Clicked button', { ...sharedGrantItemAnalyticsEventProperties, label: 'Open ToS' }],
     dismissedAnaCredit: [
         'Clicked button',
-        { ...sharedActionAnalyticsEventProps, subCategory: 'Information', label: 'Dismissed AnaCredit information' },
+        { ...sharedCapitalOverviewAnalyticsEventProperties, subCategory: 'AnaCredit information', label: 'Dismiss AnaCredit information' },
     ],
     submittedAnaCredit: [
         'Clicked button',
-        { ...sharedActionAnalyticsEventProps, subCategory: 'Information', label: 'Submitted AnaCredit information' },
+        { ...sharedCapitalOverviewAnalyticsEventProperties, subCategory: 'AnaCredit information', label: 'Finish AnaCredit information' },
     ],
-    dismissedTerms: [
-        'Clicked button',
-        { ...sharedActionAnalyticsEventProps, subCategory: 'Terms & conditions', label: 'Dismissed terms & conditions' },
-    ],
-    signedTerms: ['Clicked button', { ...sharedActionAnalyticsEventProps, subCategory: 'Terms & conditions', label: 'Signed terms & conditions' }],
-    finishedTerms: [
-        'Clicked button',
-        { ...sharedActionAnalyticsEventProps, subCategory: 'Terms & conditions', label: 'Finished terms & conditions' },
-    ],
+    dismissedTerms: ['Clicked button', { ...sharedCapitalOverviewAnalyticsEventProperties, subCategory: 'ToS', label: 'Dismiss ToS' }],
+    signedTerms: ['Clicked button', { ...sharedCapitalOverviewAnalyticsEventProperties, subCategory: 'ToS', label: 'Sign ToS' }],
+    finishedTerms: ['Clicked button', { ...sharedCapitalOverviewAnalyticsEventProperties, subCategory: 'ToS', label: 'Finish ToS' }],
 } satisfies Record<string, [event: PageAnalyticsEvent['event'], properties: Partial<PageAnalyticsEvent['properties']>]>;
 
 test.describe('Multiple actions', () => {

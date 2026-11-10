@@ -5,8 +5,8 @@ import DisputesOverview from './DisputesOverview.vue';
 import type { DisputesOverviewComponentProps } from '../types';
 
 const props = defineProps<DisputesOverviewComponentProps>();
-const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(() => props.balanceAccountId);
-const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
+const { balanceAccounts, isFetching, error } = useBalanceAccounts();
+const hasError = computed(() => !!error.value);
 
 const errorInfo = computed<ErrorMessageInfo>(() => ({
     title: 'disputes.common.errors.somethingWentWrong',
@@ -21,7 +21,6 @@ const errorInfo = computed<ErrorMessageInfo>(() => ({
 
         <DisputesOverview
             v-else
-            :balance-account-id="props.balanceAccountId"
             :pagination="props.pagination"
             :on-contact-support="props.onContactSupport"
             :on-record-selection="props.onRecordSelection"

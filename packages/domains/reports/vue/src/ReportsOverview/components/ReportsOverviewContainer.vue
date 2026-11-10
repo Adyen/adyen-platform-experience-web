@@ -5,8 +5,8 @@ import { ComponentShell, useBalanceAccounts, type ErrorMessageInfo } from '@inte
 import type { ReportsOverviewComponentProps } from '../types';
 
 const props = defineProps<ReportsOverviewComponentProps>();
-const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(() => props.balanceAccountId);
-const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
+const { balanceAccounts, isFetching, error } = useBalanceAccounts();
+const hasError = computed(() => !!error.value);
 
 const errorInfo = computed<ErrorMessageInfo>(() => ({
     title: 'reports.common.errors.somethingWentWrong',
@@ -22,7 +22,6 @@ const errorInfo = computed<ErrorMessageInfo>(() => ({
         <!-- Main content -->
         <ReportsOverview
             v-else
-            :balance-account-id="props.balanceAccountId"
             :pagination="props.pagination"
             :on-contact-support="props.onContactSupport"
             :data-customization="props.dataCustomization"

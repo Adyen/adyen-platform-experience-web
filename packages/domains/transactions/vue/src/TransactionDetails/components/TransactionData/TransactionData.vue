@@ -19,7 +19,6 @@ const props = defineProps<{
     extraFields: Record<string, any> | undefined;
     dataCustomization?: { details?: TransactionDetailsCustomization };
     fetchingTransaction: boolean;
-    onDismiss?: () => void;
     refreshTransaction: () => void;
     transaction: TransactionDetails;
     transactionNavigator: TransactionNavigatorState;
@@ -96,6 +95,5 @@ watch(refundMeta.refundLocked, isLocked => {
         :set-active-view="setActiveView"
         :transaction="props.transaction"
         :transaction-navigator="props.transactionNavigator"
-        :on-dismiss="props.onDismiss"
     />
 </template>

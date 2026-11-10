@@ -1,4 +1,7 @@
+import type { COMPONENT_DATA_EVENT_CAPABILITIES } from '@integration-components/core/EventDispatcher/eventDispatcher/component-data-capabilities';
+import type { ComponentDataEventCapabilityConfiguration } from '@integration-components/core/EventDispatcher/eventDispatcher/core-events';
 import type { UIElementProps } from '@integration-components/core/vue';
+import type { ExternalComponentType } from '@integration-components/types';
 import type * as SDK from '../../src';
 import type {
     CapitalOfferProps,
@@ -57,19 +60,6 @@ type DataGridComponents = Pick<
     'DisputesOverview' | 'PaymentLinksOverview' | 'PayoutsOverview' | 'ReportsOverview' | 'TransactionsOverview'
 >;
 type NonDataGridComponents = Omit<PublishedProps, keyof DataGridComponents>;
-type BalanceAccountComponents = Pick<PublishedProps, 'DisputesOverview' | 'PayoutsOverview' | 'ReportsOverview' | 'TransactionsOverview'>;
-type DismissibleComponents = Pick<
-    PublishedProps,
-    | 'CapitalOffer'
-    | 'DisputeManagement'
-    | 'PaymentLinkCreation'
-    | 'PaymentLinkDetails'
-    | 'PaymentLinkSettings'
-    | 'PayoutDetails'
-    | 'TransactionDetails'
->;
-
-type PropPresence<TProps extends Record<string, unknown>, TKey extends string> = { [K in keyof TProps]: HasKey<TProps[K], TKey> };
 
 export type _SdkExportsAtLeastOneComponent = Assert<[ComponentExportNames] extends [never] ? false : true>;
 export type _EverySdkComponentHasPublishedProps = Assert<Every<{ [K in ComponentExportNames]: K extends keyof PropsAliases ? true : false }, true>>;
@@ -83,9 +73,7 @@ export type _CoreOptionsMatchFactoryParameters = Assert<Same<CoreOptions, Parame
 export type _EveryComponentUsesUIElementProps = Assert<
     Every<{ [K in keyof PublishedProps]: PublishedProps[K] extends UIElementProps ? true : false }, true>
 >;
-export type _BalanceAccountComponentsTakeBalanceAccountId = Assert<Every<PropPresence<BalanceAccountComponents, 'balanceAccountId'>, true>>;
-export type _DismissibleComponentsTakeOnDismiss = Assert<Every<PropPresence<DismissibleComponents, 'onDismiss'>, true>>;
-type ForbiddenProps = 'onError' | 'ref';
+type ForbiddenProps = 'onDismiss' | 'onError' | 'ref';
 export type _NoComponentTakesForbiddenProps = Assert<
     Every<{ [K in keyof PublishedProps]: [Extract<keyof PublishedProps[K], ForbiddenProps>] extends [never] ? true : false }, true>
 >;
@@ -101,7 +89,7 @@ export type _OtherComponentsRejectDataGridAppearance = Assert<
 type InternalOnlyProps = {
     CapitalOffer: 'capitalState' | 'hideSubtitle' | 'hideTitle' | 'onTitleChange';
     PaymentLinkCreation: 'embeddedInOverview' | 'onShowDetails';
-    PaymentLinkDetails: 'isDismissButtonHidden' | 'onTitleChange' | 'onUpdate';
+    PaymentLinkDetails: 'onTitleChange' | 'onUpdate';
     PaymentLinkSettings: 'embeddedInOverview' | 'hideTitle' | 'navigateBack' | 'settingsItems';
     PayoutDetails: 'balanceAccountDescription';
     PaymentLinksOverview: 'paymentLinkCreation' | 'paymentLinkSettings';
@@ -113,15 +101,67 @@ export type _NoComponentPublishesInternalOnlyProps = Assert<
 
 type RemovedProps = {
     CapitalOffer: 'onOfferDismiss';
+    DisputesOverview: 'balanceAccountId';
     PaymentLinkCreation: 'onPaymentLinkCreated';
     PaymentLinksOverview: 'balanceAccountId';
+    PayoutsOverview: 'balanceAccountId';
+    ReportsOverview: 'balanceAccountId';
+    TransactionsOverview: 'balanceAccountId';
 };
 
 export type _NoComponentPublishesRemovedProps = Assert<Every<{ [K in keyof RemovedProps]: LacksKey<PublishedProps[K], RemovedProps[K]> }, true>>;
 export type _PaymentLinkCreationTakesOnCreate = Assert<HasKey<PaymentLinkCreationProps, 'onCreate'>>;
 export type _PayoutDetailsKeepsRequiredIdAndDate = Assert<Same<Pick<PayoutDetailsProps, 'id' | 'date'>, { id: string; date: string }>>;
-export type _CapitalOfferPropsDoNotRequireFundsRequest = Assert<
-    Pick<CapitalOfferProps, never> extends Pick<CapitalOfferProps, 'onFundsRequest'> ? true : false
+export type _CapitalOfferPropsDoNotRequireSubmit = Assert<Pick<CapitalOfferProps, never> extends Pick<CapitalOfferProps, 'onSubmit'> ? true : false>;
+export type _CapitalOfferDoesNotPublishFundsRequest = Assert<LacksKey<CapitalOfferProps, 'onFundsRequest'>>;
+
+/**
+ * The "Customized component data" analytics event only reports what each component's public props can carry.
+ * Adding, renaming or removing a public callback, `dataCustomization` section, `pagination` or `fieldsConfig`
+ * prop fails this check until `COMPONENT_DATA_EVENT_CAPABILITIES` is updated to match.
+ */
+type PublishedPropsByComponentType = {
+    [K in ComponentExportNames as (typeof SDK)[K] extends { type: infer TType extends string } ? TType : never]: PublishedProps[K];
+};
+
+type PublicDataEventProps<TProps> = TProps extends unknown
+    ?
+          | {
+                [K in keyof TProps & string]-?: K extends `on${string}`
+                    ? NonNullable<TProps[K]> extends (...args: never[]) => unknown
+                        ? K
+                        : never
+                    : never;
+            }[keyof TProps & string]
+          | (TProps extends { dataCustomization?: infer TCustomization } ? `dataCustomization.${keyof NonNullable<TCustomization> & string}` : never)
+          | Extract<keyof TProps, 'pagination' | 'fieldsConfig'>
+    : never;
+
+type TrackedDataEventProps<TCapabilities> =
+    | (TCapabilities extends { callbackProps: readonly (infer TName)[] } ? TName : never)
+    | (TCapabilities extends { dataCustomization: readonly (infer TSection extends string)[] } ? `dataCustomization.${TSection}` : never)
+    | (TCapabilities extends { pagination: true } ? 'pagination' : never)
+    | (TCapabilities extends { fieldsConfig: infer TPath } ? TPath : never);
+
+/** Fails when a capability field is added or removed, so `TrackedDataEventProps` keeps reading every field. */
+export type _TrackedDataEventPropsCoversEveryCapability = Assert<
+    Same<keyof ComponentDataEventCapabilityConfiguration, 'callbackProps' | 'dataCustomization' | 'fieldsConfig' | 'pagination'>
+>;
+
+type ExpectNever<T extends never> = T;
+type Drift<C extends string, TPublic, TTracked> = `${C}:${(Exclude<TPublic, TTracked> | Exclude<TTracked, TPublic>) & string}`;
+
+export type _EveryExternalComponentTypeIsAnSdkComponent = Assert<Same<keyof PublishedPropsByComponentType, ExternalComponentType>>;
+
+/** Lists `component:prop` for every prop that is public but untracked, or tracked but not public. */
+export type _DataEventCapabilitiesMatchPublicProps = ExpectNever<
+    {
+        [C in ExternalComponentType]: Drift<
+            C,
+            PublicDataEventProps<PublishedPropsByComponentType[C & keyof PublishedPropsByComponentType]>,
+            TrackedDataEventProps<(typeof COMPONENT_DATA_EVENT_CAPABILITIES)[C]>
+        >;
+    }[ExternalComponentType]
 >;
 
 type SelectionPayload<TProps extends { onRecordSelection?: (...args: never[]) => void }> = Parameters<NonNullable<TProps['onRecordSelection']>>[0];

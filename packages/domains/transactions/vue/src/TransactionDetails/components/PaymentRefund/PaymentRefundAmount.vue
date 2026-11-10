@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { BentoInputField, BentoTypography } from '@adyen/bento-vue3';
+import { BentoInputField } from '@adyen/bento-vue3';
 import { getDecimalAmount, getDivider, normalizeAmountInput } from '@integration-components/core/Localization/amount/amount-util';
 import { useUniqueId } from '@integration-components/composables-vue';
 import layoutStyles from '../TransactionDataLayout.module.scss';
-import styles from './PaymentRefund.module.scss';
 
 const props = defineProps<{
     currency: string;
@@ -69,27 +68,21 @@ function onInput(rawValue: string) {
 
 <template>
     <div :class="layoutStyles.container">
-        <div :class="styles.inputHead">
-            <BentoTypography variant="body" stronger>
-                {{ i18n.get('transactions.details.refund.inputs.amount.label') }}
-            </BentoTypography>
-        </div>
-        <div>
-            <BentoInputField
-                :id="inputId"
-                variant="static-value"
-                type="number"
-                :disabled="props.disabled"
-                :model-value="inputValue"
-                :min="0"
-                :error-message="errorMessage || undefined"
-                :lang="i18n.locale"
-                @update:model-value="onInput"
-            >
-                <template v-if="props.currency" #staticValue>
-                    {{ props.currency }}
-                </template>
-            </BentoInputField>
-        </div>
+        <BentoInputField
+            :id="inputId"
+            :label="i18n.get('transactions.details.refund.inputs.amount.label')"
+            variant="static-value"
+            type="number"
+            :disabled="props.disabled"
+            :model-value="inputValue"
+            :min="0"
+            :error-message="errorMessage || undefined"
+            :lang="i18n.locale"
+            @update:model-value="onInput"
+        >
+            <template v-if="props.currency" #staticValue>
+                {{ props.currency }}
+            </template>
+        </BentoInputField>
     </div>
 </template>

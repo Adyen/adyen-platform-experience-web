@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
-import { openCreatePaymentLinkModal, openSettingsModal } from '../../../../fixtures/integration/utils';
+import { openCreatePaymentLinkModal } from '../../../../fixtures/integration/utils';
 import {
     PREFILLED_MERCHANT_REFERENCE,
     PREFILLED_STORE,
@@ -8,14 +8,6 @@ import {
 } from '../../../../fixtures/constants/PaymentLinksOverview';
 
 test.describe('PayByLinkOverview - With props to sub-components', () => {
-    test('should drill the props down to the settings sub component', async ({ page }) => {
-        await goToStory(page, { id: WITH_PROPS_TO_SUB_COMPONENTS_STORY_ID });
-
-        const dialog = await openSettingsModal(page);
-
-        await expect(dialog.getByRole('button', { name: 'Go back', exact: true })).toBeVisible();
-    });
-
     test('should drill the props down to the link creation sub component', async ({ page }) => {
         await goToStory(page, { id: WITH_PROPS_TO_SUB_COMPONENTS_STORY_ID });
 

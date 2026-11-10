@@ -25,8 +25,6 @@ export const ComponentShell = defineComponent({
         errorMessage: { type: String as PropType<DomainTranslationKey | undefined>, default: undefined },
         notFoundMessage: { type: String as PropType<DomainTranslationKey | undefined>, default: undefined },
         onContactSupport: { type: Function as PropType<(() => void) | undefined>, default: undefined },
-        onDismiss: { type: Function as PropType<(() => void) | undefined>, default: undefined },
-        dismissLabel: { type: String as PropType<DomainTranslationKey | undefined>, default: undefined },
         onRefresh: { type: Function as PropType<(() => void) | undefined>, default: undefined },
     },
 
@@ -54,8 +52,6 @@ export const ComponentShell = defineComponent({
                         errorMessage: props.errorMessage,
                         notFoundMessage: props.notFoundMessage,
                         onContactSupport: props.onContactSupport,
-                        onDismiss: props.onDismiss,
-                        dismissLabel: props.dismissLabel,
                         onRefresh: props.onRefresh,
                         withImage: true,
                         absolutePosition: false,

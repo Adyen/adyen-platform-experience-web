@@ -69,7 +69,7 @@ test.describe('Default', () => {
         });
 
         test('should render transaction totals and account balances', async ({ page }) => {
-            // [TODO]: Fix accessible names for the totals and balances expandable cards
+            // [TODO]: Match exact names once BentoCard accepts an accessible name for expandable cards (the name is now the whole header text)
             let balancesCardButton = page.getByRole('button', { name: /^Available balance/i, expanded: false });
             let totalsCardButton = page.getByRole('button', { name: /^Total incoming/i, expanded: false });
 
@@ -100,6 +100,8 @@ test.describe('Default', () => {
             await expect(balancesCard.getByText('Reserved balance', { exact: true }).first()).toBeVisible();
             await expect(balancesCard.getByText(/USD/)).toHaveCount(2);
             await expect(balancesCard.getByText(/EUR/)).toHaveCount(2);
+            await expect(balancesCardButton.getByRole('listitem')).toHaveCount(0);
+            await expect(balancesCard.getByRole('list').getByRole('listitem')).toHaveCount(1);
 
             await totalsCardButton.click();
 
@@ -113,6 +115,8 @@ test.describe('Default', () => {
             await expect(totalsCard.getByText('Total outgoing', { exact: true }).first()).toBeVisible();
             await expect(totalsCard.getByText(/USD/)).toHaveCount(2);
             await expect(totalsCard.getByText(/EUR/)).toHaveCount(2);
+            await expect(totalsCardButton.getByRole('listitem')).toHaveCount(0);
+            await expect(totalsCard.getByRole('list').getByRole('listitem')).toHaveCount(1);
         });
 
         test('should not refetch transactions when returning from Insights with unchanged filters', async ({ page, analyticsEvents }) => {

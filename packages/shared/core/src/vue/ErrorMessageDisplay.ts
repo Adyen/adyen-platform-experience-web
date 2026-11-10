@@ -17,8 +17,6 @@ export const ErrorMessageDisplay = defineComponent({
         notFoundMessage: { type: String as PropType<DomainTranslationKey>, default: undefined },
         errorInfo: { type: Object as PropType<ErrorMessageInfo>, default: undefined },
         onContactSupport: { type: Function as PropType<() => void>, default: undefined },
-        onDismiss: { type: Function as PropType<() => void>, default: undefined },
-        dismissLabel: { type: String as PropType<DomainTranslationKey>, default: undefined },
         onRefresh: { type: Function as PropType<() => void>, default: undefined },
         withImage: { type: Boolean, default: false },
         outlined: { type: Boolean, default: true },
@@ -88,11 +86,6 @@ export const ErrorMessageDisplay = defineComponent({
         const renderButtons = () => {
             const { onContactSupport, refreshComponent, contactSupportLabel } = errorInfo.value;
             const buttons: VNode[] = [];
-
-            if (props.onDismiss && props.dismissLabel) {
-                const dismiss = props.onDismiss;
-                buttons.push(h(BentoButton, { type: 'button', variant: 'secondary', onClick: () => dismiss() }, () => i18n.get(props.dismissLabel!)));
-            }
 
             if (onContactSupport) {
                 buttons.push(

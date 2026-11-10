@@ -4,7 +4,7 @@ import { BentoTypography, BentoTabs, BentoTab, BentoButtonActions, BentoAlert, t
 import PlusIcon from '@adyen/ui-assets-icons-16/vue/plus';
 import SettingsIcon from '@adyen/ui-assets-icons-16/vue/settings';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
+import { useLandedPageEvent, useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
 import PaymentLinksFilters from './PaymentLinksFilters.vue';
 import PaymentLinksTable from './PaymentLinksTable.vue';
 import PaymentLinkDetailsModal from './PaymentLinkDetailsModal.vue';
@@ -14,7 +14,12 @@ import { DEFAULT_PAYMENT_LINK_STATUS_GROUP, PAYMENT_LINK_STATUS_GROUPS_TABS } fr
 import type { PaymentLinksFiltersValue } from './PaymentLinksFilters.vue';
 import type { IPaymentLinkFilters, IPaymentLinkItem, IPaymentLinkStatusGroup } from '@integration-components/types';
 import type { PaymentLinkCreationFormValues, StoreData, PaymentLinksOverviewModalType } from '../../../../domain/src';
-import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../../../../domain/src';
+import {
+    ACCOUNT_MISCONFIGURATION,
+    PAYMENT_LINKS_ANALYTICS_CATEGORY,
+    PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_OVERVIEW,
+    WRONG_STORE_IDS,
+} from '../../../../domain/src';
 import type { PaymentLinksOverviewComponentProps } from '../types';
 import { createPaymentLinksError } from '../utils/error';
 import styles from './PaymentLinksOverview.module.scss';
@@ -34,6 +39,10 @@ const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
 const config = useConfigContext();
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
+
+const analyticsProps = { category: PAYMENT_LINKS_ANALYTICS_CATEGORY, subCategory: PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_OVERVIEW } as const;
+
+useLandedPageEvent(analyticsProps);
 
 let statusGroupDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -279,6 +288,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
             :error="paymentLinksError"
             :loading="statusGroupFetchPending || paymentLinksListResult.fetching.value || props.isFiltersLoading"
             :on-contact-support="props.onContactSupport"
+            :on-refresh="paymentLinksListResult.refresh"
             :on-row-click="onRowClick"
             :show-pagination="true"
             :payment-links="paymentLinksListResult.records.value"
@@ -306,7 +316,6 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
             :modal-type="modalType"
             :store-ids="props.storeIds"
             :payment-link-creation="props.paymentLinkCreation"
-            :payment-link-settings="props.paymentLinkSettings"
             :on-create="onCreate"
             :on-contact-support="props.onContactSupport"
             :on-close="onCloseModal"

@@ -46,23 +46,9 @@ describe('useBalanceAccounts', () => {
         expect(getBalanceAccounts).toHaveBeenCalledOnce();
         expect(result.balanceAccounts.value).toEqual([accounts[0]]);
         expect(result.error.value).toBeUndefined();
-        expect(result.isBalanceAccountIdWrong.value).toBe(false);
 
         balanceAccountId.value = 'INVALID';
         expect(result.balanceAccounts.value).toEqual([]);
-        expect(result.isBalanceAccountIdWrong.value).toBe(true);
-
-        scope.stop();
-    });
-
-    test('does not mark an ID invalid when the endpoint returns no accounts', async () => {
-        const getBalanceAccounts = vi.fn().mockResolvedValue({ data: [] });
-        const { result, scope } = createHook(getBalanceAccounts, 'BA1');
-
-        await vi.waitFor(() => expect(result.isFetching.value).toBe(false));
-
-        expect(result.balanceAccounts.value).toEqual([]);
-        expect(result.isBalanceAccountIdWrong.value).toBe(false);
 
         scope.stop();
     });
@@ -114,7 +100,6 @@ describe('useBalanceAccounts', () => {
         await vi.waitFor(() => expect(result.isFetching.value).toBe(false));
 
         expect(result.balanceAccounts.value).toEqual([]);
-        expect(result.isBalanceAccountIdWrong.value).toBe(false);
 
         scope.stop();
     });

@@ -158,7 +158,6 @@
     "payByLink.details.expiration.errorDescription": "Vi kunne ikke deaktivere betalingslinket. Prøv igen.",
     "payByLink.details.expiration.errorTitle": "Noget gik galt.",
     "payByLink.details.expiration.title": "Deaktiver dette link",
-    "payByLink.details.expirationSuccess.actions.goBackToList": "Gå tilbage til betalingslinks",
     "payByLink.details.expirationSuccess.actions.showDetails": "Vis oplysninger",
     "payByLink.details.expirationSuccess.description": "Betalingslinket er nu udløbet og kan ikke bruges af kunden.",
     "payByLink.details.expirationSuccess.title": "Linket er blevet deaktiveret",

@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { BentoDropdown, BentoTypography } from '@adyen/bento-vue3';
+import { BentoDropdown } from '@adyen/bento-vue3';
 import { getTransactionRefundReason, REFUND_REASONS } from '../../../../../domain/src';
 import type { RefundReason } from '../../../../../domain/src';
 import layoutStyles from '../TransactionDataLayout.module.scss';
-import styles from './PaymentRefund.module.scss';
 
 const props = defineProps<{
     disabled: boolean;
@@ -34,19 +33,13 @@ function onUpdate(value: string | number | { value?: string | number } | Array<u
 
 <template>
     <div :class="layoutStyles.container">
-        <div :class="styles.inputHead">
-            <BentoTypography variant="body" stronger>
-                {{ i18n.get('transactions.details.refund.inputs.reason.label') }}
-            </BentoTypography>
-        </div>
-        <div>
-            <BentoDropdown
-                :placeholder="i18n.get('transactions.details.refund.inputs.reason.label')"
-                :items="refundReasons"
-                :model-value="props.reason"
-                :disabled="props.disabled"
-                @update:model-value="onUpdate"
-            />
-        </div>
+        <BentoDropdown
+            :label="i18n.get('transactions.details.refund.inputs.reason.label')"
+            :placeholder="i18n.get('transactions.details.refund.inputs.reason.label')"
+            :items="refundReasons"
+            :model-value="props.reason"
+            :disabled="props.disabled"
+            @update:model-value="onUpdate"
+        />
     </div>
 </template>

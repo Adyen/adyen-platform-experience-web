@@ -11,9 +11,7 @@ import { isFunction } from '@integration-components/utils';
 
 const props = defineProps<{
     paymentLink: IPaymentLinkDetails;
-    onDismiss?: () => void;
     onExpire: () => void;
-    isDismissButtonHidden?: boolean;
 }>();
 
 const { i18n } = useCoreContext();
@@ -52,9 +50,6 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
             : []),
         ...(status !== 'expired' && status !== 'completed' && isFunction(config.endpoints.expirePayByLinkPaymentLink)
             ? [{ title: i18n.get('payByLink.details.actions.expire'), event: props.onExpire, variant: 'secondary' as const }]
-            : []),
-        ...(!props.isDismissButtonHidden && props.onDismiss
-            ? [{ title: i18n.get('payByLink.common.actions.goBack'), event: props.onDismiss, variant: 'secondary' as const }]
             : []),
     ];
 });

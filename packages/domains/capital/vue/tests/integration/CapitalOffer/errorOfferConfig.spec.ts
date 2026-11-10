@@ -22,10 +22,3 @@ test.describe('onContactSupport prop', () => {
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
     });
 });
-
-test.describe('onDismiss prop', () => {
-    test('should render dismiss button when prop is set', async ({ page }) => {
-        await goToStory(page, { id: STORY_ID, args: { onDismiss: 'Enabled' } });
-        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
-    });
-});

@@ -158,7 +158,6 @@
     "payByLink.details.expiration.errorDescription": "No hemos podido desactivar el enlace de pago. Inténtalo de nuevo.",
     "payByLink.details.expiration.errorTitle": "Se ha producido un error",
     "payByLink.details.expiration.title": "Caducar este enlace",
-    "payByLink.details.expirationSuccess.actions.goBackToList": "Volver a los enlaces de pago",
     "payByLink.details.expirationSuccess.actions.showDetails": "Mostrar detalles",
     "payByLink.details.expirationSuccess.description": "El enlace de pago ya está caducado y el comprador no puede utilizarlo.",
     "payByLink.details.expirationSuccess.title": "Se ha desactivado el enlace",

@@ -16,10 +16,3 @@ test.describe('Error - Offer', () => {
         await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();
     });
 });
-
-test.describe('onDismiss prop', () => {
-    test('should render dismiss button when prop is set', async ({ page }) => {
-        await goToStory(page, { id: STORY_ID, args: { onDismiss: 'Enabled' } });
-        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
-    });
-});

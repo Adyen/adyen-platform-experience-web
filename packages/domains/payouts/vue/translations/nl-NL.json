@@ -31,7 +31,6 @@
     "payouts.details.breakdown.fundsCaptured.types.chargeback": "Chargebacks",
     "payouts.details.breakdown.fundsCaptured.types.correction": "Correcties",
     "payouts.details.breakdown.fundsCaptured.types.refund": "Refunds",
-    "payouts.details.common.actions.goBack": "Terug",
     "payouts.details.errors.unavailable": "We konden de uitbetalingsgegevens niet laden.",
     "payouts.details.tags.netPayout": "Netto uitbetaling",
     "payouts.details.tags.sameDaySum": "Som van uitbetalingen op dezelfde dag",
