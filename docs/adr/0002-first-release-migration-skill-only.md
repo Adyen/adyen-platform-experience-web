@@ -24,7 +24,7 @@ The skill stands alone: each delta file names the v2 props type in the shipped `
 ### How the migration skill behaves
 
 - **Guardrails come first.** Before editing any file, the assistant checks three things:
-    - the git working tree is clean;
+    - the git working tree is clean, apart from the upgrade itself: the version change in `package.json` (or in a pnpm catalog in `pnpm-workspace.yaml`), lockfiles, and the skill's own files. Those can't be committed before the skill runs, so they become part of the migration diff;
     - the installed version matches the skill's version;
     - every imported component has a delta file (only in copies installed with `skills add`, which keep the selected components).
 

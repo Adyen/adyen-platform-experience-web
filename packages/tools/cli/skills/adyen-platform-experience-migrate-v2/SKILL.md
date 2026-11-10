@@ -13,7 +13,13 @@ metadata:
 
 Do not edit, create or delete any file until all three checks pass. If one fails, make no changes at all: tell the user what failed and the command that fixes it, then end your turn. Don't migrate "partially" or "anyway", and don't fix the problem yourself.
 
-1. **Clean working tree.** Run `git status --porcelain`. If it prints anything, the check fails: ask the user to commit or stash their changes first, so the migration is one diff they can review and revert.
+1. **Clean working tree, apart from the upgrade.** Run `git status --porcelain --untracked-files=all`. The check passes if it prints nothing, or only these:
+    - `package.json` files, and `pnpm-workspace.yaml` when the version is set in a pnpm catalog, where `git diff` shows that the only change is the `@adyen/adyen-platform-experience-web` version;
+    - lockfiles: `package-lock.json`, `npm-shrinkwrap.json`, `pnpm-lock.yaml`, `yarn.lock`, `bun.lock` or `bun.lockb`;
+    - files of this skill in `.agents/skills/`, `.claude/skills/`, `.cursor/skills/` or `.factory/skills/`, written by `skills add` or `skills sync`.
+
+    Anything else fails the check, including any other change in a `package.json` or `pnpm-workspace.yaml`: ask the user to commit or stash it first, so the migration is one diff they can review and revert.
+
 2. **Matching version.** Read `version` from `node_modules/@adyen/adyen-platform-experience-web/package.json`. If it isn't exactly the `metadata.adyen-platform-experience-version` above, the check fails: tell the user to run `npx @adyen/adyen-platform-experience-web skills sync` (or to upgrade the package first if it's still 1.x).
 3. **Every component covered.** List the components the app imports from `@adyen/adyen-platform-experience-web`. If any isn't in `metadata.adyen-platform-experience-components` above, the check fails: tell the user to run `npx @adyen/adyen-platform-experience-web skills add` and select it.
 
@@ -41,4 +47,5 @@ v2 refreshes the components' look. Most of the API is unchanged, but some Core o
     - every removed option or callback with no replacement, and what it did in this app;
     - every CSS override found, with file and line, and what you did with it: the v2 option that replaced it, where you moved it, or, if v2 has no equivalent, that you deleted it and what it did (suggest a feature request to Adyen);
     - the theme proposal with its warnings, and the question whether to apply it (unless the user already confirmed);
-    - a reminder that v2 also refreshes the components' look, so the user should review each page that shows a component, even where no code changed.
+    - a reminder that v2 also refreshes the components' look, so the user should review each page that shows a component, even where no code changed;
+    - if the upgrade wasn't committed: that the version change, the lockfile and the skill files are part of this diff, so the user commits them together with the migration.
