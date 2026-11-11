@@ -25,7 +25,7 @@ const { i18n } = useCoreContext();
 
 const requestedFunds = computed(() => i18n.amount(props.grant.grantAmount.value, props.grant.grantAmount.currency));
 const requestedFundsText = computed(() =>
-    i18n.get('capital.overview.grants.item.details.requestedFunds', {
+    i18n.get('capital.overview.grants.details.requestedFunds', {
         values: { amount: requestedFunds.value },
     })
 );
@@ -35,22 +35,22 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
     const formatAmount = (amount: { value: number; currency: string }) => i18n.amount(amount.value, amount.currency);
     const items: GrantDetailItem[] = [
         {
-            key: 'capital.common.fields.remainingAmount',
+            key: 'capital.common.fields.remainingAmount.label',
             value: formatAmount(enhancedGrant.remainingGrantAmount),
         },
-        { key: 'capital.common.fields.remainingFees', value: formatAmount(enhancedGrant.remainingFeesAmount) },
-        { key: 'capital.common.fields.repaidAmount', value: formatAmount(enhancedGrant.repaidGrantAmount) },
-        { key: 'capital.common.fields.repaidFees', value: formatAmount(enhancedGrant.repaidFeesAmount) },
-        { key: 'capital.common.fields.totalRepaymentAmount', value: formatAmount(enhancedGrant.totalAmount) },
-        { key: 'capital.common.fields.totalFees', value: formatAmount(enhancedGrant.feesAmount) },
+        { key: 'capital.common.fields.remainingFees.label', value: formatAmount(enhancedGrant.remainingFeesAmount) },
+        { key: 'capital.common.fields.repaidAmount.label', value: formatAmount(enhancedGrant.repaidGrantAmount) },
+        { key: 'capital.common.fields.repaidFees.label', value: formatAmount(enhancedGrant.repaidFeesAmount) },
+        { key: 'capital.common.fields.totalRepaymentAmount.label', value: formatAmount(enhancedGrant.totalAmount) },
+        { key: 'capital.common.fields.totalFees.label', value: formatAmount(enhancedGrant.feesAmount) },
         {
-            key: 'capital.common.fields.dailyRepaymentRate',
+            key: 'capital.common.fields.dailyRepaymentRate.label',
             value: i18n.get('capital.common.values.percentage', {
                 values: { percentage: calculatePercentageFromBasisPoints(enhancedGrant.repaymentRate) },
             }),
         },
         {
-            key: 'capital.common.fields.repaymentThreshold',
+            key: 'capital.common.fields.repaymentThreshold.label',
             labelInfo: i18n.get('capital.common.fields.repaymentThreshold.description', {
                 values: { days: CAPITAL_REPAYMENT_FREQUENCY },
             }),
@@ -59,7 +59,7 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
         ...(enhancedGrant.maximumRepaymentPeriodMonths
             ? ([
                   {
-                      key: 'capital.common.fields.maximumRepaymentPeriod',
+                      key: 'capital.common.fields.maximumRepaymentPeriod.label',
                       value: i18n.get('capital.common.values.numberOfMonths', {
                           values: { months: enhancedGrant.maximumRepaymentPeriodMonths },
                       }),
@@ -67,7 +67,7 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
               ] satisfies GrantDetailItem[])
             : []),
         {
-            key: 'capital.common.fields.expectedRepaymentPeriod',
+            key: 'capital.common.fields.expectedRepaymentPeriod.label',
             value: i18n.get('capital.common.values.daysWithDaysLeft', {
                 values: {
                     days: enhancedGrant.expectedRepaymentPeriodDays,
@@ -75,9 +75,9 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
                 },
             }),
         },
-        { key: 'capital.common.fields.grantID', value: enhancedGrant.id },
-        { key: 'capital.common.fields.accountDescription', value: enhancedGrant.balanceAccountDescription ?? '' },
-        { key: 'capital.common.fields.accountID', value: enhancedGrant.balanceAccountCode ?? '' },
+        { key: 'capital.common.fields.grantID.label', value: enhancedGrant.id },
+        { key: 'capital.common.fields.account.description', value: enhancedGrant.balanceAccountDescription ?? '' },
+        { key: 'capital.common.fields.accountID.label', value: enhancedGrant.balanceAccountCode ?? '' },
     ];
 
     return items;

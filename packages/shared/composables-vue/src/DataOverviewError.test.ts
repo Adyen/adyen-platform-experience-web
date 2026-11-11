@@ -14,7 +14,7 @@ vi.mock('@integration-components/core/vue', async () => {
     const useConfigContext = vi.fn(() => ({ hasError: false }));
 
     return {
-        getDomainTranslationKey: (domain: string, key: string) => `${domain}.${key}`,
+        getSafeDomainTranslationKey: (domain: string, key: string) => `${domain}.${key}`,
         getErrorMessage: vi.fn(),
         useCoreContext,
         useConfigContext,
@@ -96,7 +96,7 @@ describe('DataOverviewError', () => {
 
         expect(rendered.props?.title).toBe('transactions.common.errors.somethingWentWrong');
         expect(rendered.props?.action).toMatchObject({
-            title: 'transactions.common.actions.contactSupport.labels.reachOut',
+            title: 'transactions.common.contactSupport.label',
             variant: 'primary',
         });
         rendered.props?.action.event();
@@ -119,7 +119,7 @@ describe('DataOverviewError', () => {
 
         const action = view().props?.action;
         expect(action).toMatchObject({
-            title: 'transactions.common.actions.refresh.labels.default',
+            title: 'transactions.common.refresh.label',
             icon: refreshIcon,
             variant: 'primary',
         });
@@ -140,7 +140,7 @@ describe('DataOverviewError', () => {
 
         const action = view().props?.action;
         expect(action).toMatchObject({
-            title: 'transactions.common.actions.refresh.labels.default',
+            title: 'transactions.common.refresh.label',
             variant: 'primary',
         });
 

@@ -1,5 +1,5 @@
 import type { SessionRequest } from './ConfigContext.types';
-import type { CustomTranslations as Translations } from './translations';
+import type { CustomTranslations as Translations, Translations as LocaleTranslations } from './translations';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '@integration-components/utils/types';
 import { SupportedLocales } from './Localization/types';
 import type { ThemeProps } from '@adyen/adyen-shared-web';
@@ -61,6 +61,12 @@ interface _CoreOptions<CustomTranslations extends Translations = Record<never, n
 
 export type CoreOptions<CustomTranslations extends object = Record<never, never>> = _CoreOptions<
     CustomTranslations extends Translations ? CustomTranslations : Record<never, never>
+>;
+
+export type UpdateTranslations = Record<string, LocaleTranslations & Record<string, string>>;
+
+export type CoreUpdateOptions<CustomTranslations extends object = Record<never, never>> = Partial<
+    Omit<CoreOptions<CustomTranslations>, 'translations'> & { translations: UpdateTranslations }
 >;
 
 export type DevEnvironment = 'test' | 'live' | 'beta';

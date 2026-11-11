@@ -1,4 +1,4 @@
-import type { ICapitalState, IDynamicOffersConfig, IGrant, IGrantOfferResponseDTO } from '@integration-components/types';
+import type { ICapitalState, IDynamicOffersConfig, IGrant, IOffer } from '@integration-components/types';
 import { type SupportedRegions } from './regions';
 
 export type EnhancedCapitalState = {
@@ -11,7 +11,7 @@ export type EnhancedCapitalState = {
 };
 
 export type FinancingDetails = Pick<
-    IGrantOfferResponseDTO,
+    IOffer,
     | 'aprBasisPoints'
     | 'expectedRepaymentPeriodDays'
     | 'feesAmount'

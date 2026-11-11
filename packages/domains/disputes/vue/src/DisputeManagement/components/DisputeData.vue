@@ -8,6 +8,7 @@ import {
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
     getDisputeType,
     isDisputeActionNeeded,
+    getDisputesErrorConfig,
 } from '@integration-components/disputes/domain';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { isFunction, parsePaymentMethodType } from '@integration-components/utils';
@@ -59,6 +60,14 @@ const shellState = computed<ComponentShellState>(() => {
     return 'ready';
 });
 
+const errorInfo = computed(() =>
+    getDisputesErrorConfig(error.value, {
+        errorMessage: 'disputes.management.errors.unavailable',
+        notFoundMessage: 'disputes.management.errors.notFound',
+        onContactSupport: props.onContactSupport,
+    })
+);
+
 const disputeType = computed(() => getDisputeType(i18n, dispute.value?.dispute.type));
 const isFraudNotification = computed(() => dispute.value?.dispute.type === 'NOTIFICATION_OF_FRAUD');
 const isDefended = computed(() => !!dispute.value?.defense?.defendedOn);
@@ -100,8 +109,8 @@ const alertMode = computed<DisputeDataAlertMode | undefined>(() => {
 
 const defendButtonLabel = computed(() =>
     dispute.value?.dispute.type === 'REQUEST_FOR_INFORMATION'
-        ? i18n.get('disputes.management.details.actions.submitInformation')
-        : i18n.get('disputes.management.details.actions.defendChargeback')
+        ? i18n.get('disputes.management.details.submitInformation')
+        : i18n.get('disputes.management.details.defendChargeback')
 );
 
 const extraFields = ref<Record<string, unknown> | undefined>();
@@ -164,14 +173,14 @@ const actionButtons = computed(() => {
     }
     if (isAcceptable.value) {
         buttons.push({
-            title: i18n.get('disputes.management.details.actions.accept'),
+            title: i18n.get('disputes.management.details.accept'),
             event: onAcceptClick,
             variant: 'secondary' as const,
         });
     }
     if (showContactSupport.value && props.onContactSupport) {
         buttons.push({
-            title: i18n.get('disputes.management.details.actions.contactSupport'),
+            title: i18n.get('disputes.common.contactSupport.label'),
             event: props.onContactSupport,
             variant: 'secondary' as const,
         });
@@ -199,14 +208,7 @@ const paymentMethodDetail = computed(() =>
 
 <template>
     <div :class="styles.root">
-        <ComponentShell
-            :state="shellState"
-            :error="error"
-            :error-message="'disputes.management.common.errors.unavailable'"
-            :not-found-message="'disputes.management.common.errors.notFound'"
-            :on-contact-support="props.onContactSupport"
-            :on-refresh="retryFetch"
-        >
+        <ComponentShell :state="shellState" :error-info="errorInfo" :on-refresh="retryFetch">
             <template #loading>
                 <DisputeSkeleton />
             </template>

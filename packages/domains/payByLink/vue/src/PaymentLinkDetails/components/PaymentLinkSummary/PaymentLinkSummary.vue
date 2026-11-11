@@ -47,7 +47,7 @@ const formattedExpirationDate = computed(() =>
                 </BentoTypography>
                 <div>
                     <BentoTypography el="span" variant="body" :class="styles.expiresLabel">
-                        {{ `${i18n.get('payByLink.details.fields.expiresOn')}: ` }}
+                        {{ `${i18n.get('payByLink.details.expiresOn')}: ` }}
                     </BentoTypography>
                     <BentoTypography el="span" variant="body">
                         {{ formattedExpirationDate }}
