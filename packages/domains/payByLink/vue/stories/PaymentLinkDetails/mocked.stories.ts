@@ -82,6 +82,20 @@ export const ErrorDetailsServerError: ElementStory<PaymentLinkDetailsExternalPro
     },
 };
 
+export const ErrorDetailsUnprocessableEntity: ElementStory<PaymentLinkDetailsExternalProps> = {
+    name: 'Error - Details (unprocessable entity)',
+    args: {
+        id: 'PLTEST001',
+        mockedApi: true,
+        onContactSupport: action('onContactSupport'),
+    },
+    parameters: {
+        msw: {
+            handlers: paymentLinkDetailsMockedResponses.errorDetailsUnprocessableEntity,
+        },
+    },
+};
+
 export const ErrorExpire: ElementStory<PaymentLinkDetailsExternalProps> = {
     name: 'Error - Expire',
     args: {
