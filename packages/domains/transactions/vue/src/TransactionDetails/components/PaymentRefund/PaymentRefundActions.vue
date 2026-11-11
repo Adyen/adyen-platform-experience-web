@@ -35,9 +35,9 @@ const refundDisabled = computed(() => props.disabled || isLoading.value || !amou
 const refundButtonLabel = computed(() => {
     if (amountWithinRange.value) {
         const values = { amount: i18n.amount(props.refundAmount, props.currency) };
-        return i18n.get('transactions.details.refund.actions.refund.labels.amount', { values });
+        return i18n.get('transactions.details.refund.submit.amount', { values });
     }
-    return i18n.get('transactions.details.refund.actions.refund.labels.payment');
+    return i18n.get('transactions.details.refund.submit.label');
 });
 
 watch(isLoading, v => props.setRefundInProgress(v));
@@ -82,7 +82,7 @@ const primaryAction = computed(() => ({
 const secondaryAction = computed(() => ({
     disabled: props.disabled,
     event: props.showDetails,
-    title: i18n.get('transactions.details.refund.actions.back'),
+    title: i18n.get('transactions.common.goBack.label'),
     variant: 'secondary' as const,
 }));
 </script>

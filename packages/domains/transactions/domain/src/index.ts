@@ -11,3 +11,4 @@ export * from './shared/inputNormalizer';
 export * from './shared/refundLineItemHelpers';
 export * from './shared/transactionNavigator';
 export * from './shared/types';
+export * from './shared/errors';

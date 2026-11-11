@@ -11,14 +11,14 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const creditorInfo = computed(() =>
-    i18n.get('capital.offer.summary.legalNotice.US.title', {
+    i18n.get('capital.offer.legalNotice.US.title', {
         values: { break: '\n' },
     })
 );
 const noticeParts = computed(() => {
     const emailPlaceholder = '__EMAIL_PLACEHOLDER__';
     return i18n
-        .get('capital.offer.summary.legalNotice.US.note', {
+        .get('capital.offer.legalNotice.US.note', {
             values: { break: '\n\n', email: emailPlaceholder },
         })
         .split(emailPlaceholder);

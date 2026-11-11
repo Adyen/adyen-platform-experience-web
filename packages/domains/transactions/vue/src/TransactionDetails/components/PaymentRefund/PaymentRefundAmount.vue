@@ -29,9 +29,9 @@ const validationError = ref<'excess' | 'negative' | 'required' | undefined>(unde
 const errorMessages = computed(() => {
     const values = { amount: i18n.amount(refundableAmount.value, props.currency) };
     return {
-        excess: i18n.get('transactions.details.refund.inputs.amount.errors.excess', { values }),
-        negative: i18n.get('transactions.details.refund.inputs.amount.errors.negative'),
-        required: i18n.get('transactions.details.refund.inputs.amount.errors.required'),
+        excess: i18n.get('transactions.details.refund.amount.errors.excess', { values }),
+        negative: i18n.get('transactions.details.refund.amount.errors.negative'),
+        required: i18n.get('transactions.details.refund.amount.errors.required'),
     };
 });
 
@@ -70,7 +70,7 @@ function onInput(rawValue: string) {
     <div :class="layoutStyles.container">
         <BentoInputField
             :id="inputId"
-            :label="i18n.get('transactions.details.refund.inputs.amount.label')"
+            :label="i18n.get('transactions.details.refund.amount.label')"
             variant="static-value"
             type="number"
             :disabled="props.disabled"
