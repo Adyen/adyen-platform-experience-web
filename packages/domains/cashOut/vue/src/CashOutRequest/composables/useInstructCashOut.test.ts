@@ -4,9 +4,11 @@ import type { ICashOutResponse } from '@integration-components/types';
 import { useInstructCashOut } from './useInstructCashOut';
 
 const endpoints: { instructCashOut?: ReturnType<typeof vi.fn> } = {};
+const core: { externalErrorHandler?: ReturnType<typeof vi.fn> } = {};
 
 vi.mock('@integration-components/core/vue', () => ({
     useConfigContext: () => ({ endpoints }),
+    useCoreContext: () => core,
 }));
 
 const CASH_OUT: ICashOutResponse = {
@@ -28,6 +30,7 @@ const renderInstructCashOut = () => {
 describe('useInstructCashOut', () => {
     beforeEach(() => {
         endpoints.instructCashOut = vi.fn(async () => CASH_OUT);
+        core.externalErrorHandler = vi.fn();
     });
 
     test('should instruct the cashOut of the amount to the transfer instrument and return it', async () => {
@@ -46,6 +49,70 @@ describe('useInstructCashOut', () => {
             },
             { path: { accountKey: 'BA1' } }
         );
+
+        stop();
+    });
+
+    test('should send the reference and the description given by the integration', async () => {
+        const { state, stop } = renderInstructCashOut();
+
+        await state.instructCashOut({ ...PARAMS, referenceForBeneficiary: 'REF123', transferDescription: 'Weekly cashOut' });
+
+        expect(endpoints.instructCashOut).toHaveBeenCalledWith(
+            expect.objectContaining({
+                body: {
+                    amount: 1000,
+                    currency: 'EUR',
+                    counterparty: { transferInstrumentId: 'TI1' },
+                    description: 'Weekly cashOut',
+                    referenceForBeneficiary: 'REF123',
+                },
+            }),
+            { path: { accountKey: 'BA1' } }
+        );
+
+        stop();
+    });
+
+    test('should report a failed cashOut to the onError of the SDK', async () => {
+        const error = new Error('failed');
+        endpoints.instructCashOut!.mockRejectedValue(error);
+        const { state, stop } = renderInstructCashOut();
+
+        await state.instructCashOut(PARAMS);
+
+        expect(core.externalErrorHandler).toHaveBeenCalledWith(error);
+
+        stop();
+    });
+
+    test('should not report a cashOut that succeeds', async () => {
+        const { state, stop } = renderInstructCashOut();
+
+        await state.instructCashOut(PARAMS);
+
+        expect(core.externalErrorHandler).not.toHaveBeenCalled();
+
+        stop();
+    });
+
+    test('should fail quietly when the SDK has no onError', async () => {
+        core.externalErrorHandler = undefined;
+        endpoints.instructCashOut!.mockRejectedValue(new Error('failed'));
+        const { state, stop } = renderInstructCashOut();
+
+        await expect(state.instructCashOut(PARAMS)).resolves.toBeUndefined();
+
+        stop();
+    });
+
+    test('should leave out an empty reference and description, so the API generates them', async () => {
+        const { state, stop } = renderInstructCashOut();
+
+        await state.instructCashOut({ ...PARAMS, referenceForBeneficiary: '', transferDescription: '' });
+
+        const [[{ body }]] = endpoints.instructCashOut!.mock.calls as [[{ body: Record<string, unknown> }]];
+        expect(JSON.parse(JSON.stringify(body))).toEqual({ amount: 1000, currency: 'EUR', counterparty: { transferInstrumentId: 'TI1' } });
 
         stop();
     });

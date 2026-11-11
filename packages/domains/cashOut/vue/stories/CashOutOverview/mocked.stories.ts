@@ -20,8 +20,9 @@ export const Default: ElementStory = {
     },
 };
 
+// The session gives one balance account: an account holder with a single one, or a session scoped to a balance account.
 export const SingleBalanceAccount: ElementStory = {
-    name: 'Single balance account',
+    name: 'Single balance account (or balance account session)',
     args: { mockedApi: true },
     parameters: {
         msw: {
@@ -91,6 +92,15 @@ export const CashOutNotConfigured: ElementStory = {
     args: { mockedApi: true },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.cashOutNotConfigured },
+    },
+};
+
+// Without the role to instruct a cashOut, the request in the modal shows the cashOut without "Cash out now".
+export const ViewOnly: ElementStory = {
+    name: 'View only - Role not assigned',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.instructRoleNotAssigned },
     },
 };
 

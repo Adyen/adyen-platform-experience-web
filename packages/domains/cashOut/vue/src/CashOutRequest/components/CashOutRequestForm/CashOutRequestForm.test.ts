@@ -154,14 +154,16 @@ const mockFees = () => {
 
 type FormProps = {
     eligibility: ICashOutEligibility;
+    referenceForBeneficiary?: string;
+    transferDescription?: string;
     onResult?: (result: unknown) => void;
     onContactSupport?: () => void;
     onFeesError?: (error: Error) => void;
 };
 
-const renderForm = ({ eligibility, onResult = vi.fn(), onContactSupport, onFeesError = vi.fn() }: FormProps) => {
+const renderForm = ({ onResult = vi.fn(), onFeesError = vi.fn(), ...props }: FormProps) => {
     const target = document.createElement('div');
-    const app = createApp(CashOutRequestForm, { balanceAccountId: 'BA1', eligibility, onResult, onContactSupport, onFeesError });
+    const app = createApp(CashOutRequestForm, { balanceAccountId: 'BA1', onResult, onFeesError, ...props });
     app.mount(target);
 
     const findButton = (title: string) => [...target.querySelectorAll('button')].find(button => button.textContent === title);
@@ -303,6 +305,28 @@ describe('CashOutRequestForm', () => {
                 transferInstrumentId: 'TI1',
             });
             expect(onResult).toHaveBeenCalledWith({ status: 'success', cashOut: CASH_OUT_RESPONSE });
+
+            unmount();
+        });
+
+        test('should send the reference and the description given by the integration', async () => {
+            const fees = mockFees();
+            fees.fees.value = feesOf(1101);
+            const instruct = mockInstructCashOut();
+            const onResult = vi.fn();
+            const { findButton, unmount } = renderForm({
+                eligibility: SINGLE_TRANSFER_INSTRUMENT,
+                onResult,
+                referenceForBeneficiary: 'REF123',
+                transferDescription: 'Weekly cashOut',
+            });
+
+            findButton(CASH_OUT)?.click();
+            await vi.waitFor(() => expect(onResult).toHaveBeenCalled());
+
+            expect(instruct.instructCashOut).toHaveBeenCalledWith(
+                expect.objectContaining({ referenceForBeneficiary: 'REF123', transferDescription: 'Weekly cashOut' })
+            );
 
             unmount();
         });
