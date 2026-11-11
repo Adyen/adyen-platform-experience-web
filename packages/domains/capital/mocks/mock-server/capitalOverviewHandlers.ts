@@ -274,7 +274,7 @@ export const capitalOverviewHandlers = {
         http.get(
             CAPITAL_ENDPOINTS.onboardingConfiguration,
             withDelay(() => {
-                return HttpResponse.json(undefined, { status: 204 });
+                return new HttpResponse(null, { status: 204 });
             })
         ),
         http.get(
@@ -339,7 +339,7 @@ export const capitalOverviewHandlers = {
         http.get(
             CAPITAL_ENDPOINTS.onboardingConfiguration,
             withDelay(() => {
-                return HttpResponse.json(undefined, { status: 204 });
+                return new HttpResponse(null, { status: 204 });
             })
         ),
         http.get(
