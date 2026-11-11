@@ -998,7 +998,7 @@
     "payouts.overview.filters.date.thisMonth": "This month",
     "payouts.overview.filters.date.thisWeek": "This week",
     "payouts.overview.filters.date.yearToDate": "Year to date",
-    "payouts.overview.generateInfo": "Payout information is generated each day at midnight, UTC time.",
+    "payouts.overview.generateInfo": "Payout information becomes available after the payout has been fully processed.",
     "payouts.overview.list.adjustmentAmount": "Adjustments",
     "payouts.overview.list.createdAt": "Date",
     "payouts.overview.list.fundsCapturedAmount": "Funds captured",
