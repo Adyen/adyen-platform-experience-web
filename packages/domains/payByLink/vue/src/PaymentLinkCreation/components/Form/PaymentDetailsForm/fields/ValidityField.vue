@@ -55,11 +55,16 @@ watch(
         if (!items.length) return;
         const q = wizard.getValue('linkValidity.quantity');
         const u = wizard.getValue('linkValidity.durationUnit');
-        if (!q || !u) {
+        const isPreset = items.some(item => item.value === `${q} ${u}`);
+        const isCustom = items.some(item => item.value === FLEXIBLE_VALIDITY_ID) && unitItems.value.some(item => item.value === u);
+        if (!q || !u || !(isPreset || isCustom)) {
             const [firstQty, firstUnit] = `${items[0]?.value}`.split(' ');
             if (firstQty && firstUnit && items[0]?.value !== FLEXIBLE_VALIDITY_ID) {
                 wizard.setValue('linkValidity.quantity', firstQty);
                 wizard.setValue('linkValidity.durationUnit', firstUnit);
+            } else if (q && u) {
+                wizard.setValue('linkValidity.quantity', '');
+                wizard.setValue('linkValidity.durationUnit', '');
             }
         }
         selection.value = resolveSelection();
