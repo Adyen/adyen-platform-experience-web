@@ -3,6 +3,7 @@ import localSupportedRegions from '../../config/supportedRegions.json';
 import {
     ACTIVE_LOAN,
     CAPITAL_STATE_ACTIVE,
+    CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN,
     CAPITAL_STATE_ELIGIBLE_LOAN,
     CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN,
     CAPITAL_STATE_GRANTS_LOAN,
@@ -20,16 +21,17 @@ describe('getEnhancedCapitalState', () => {
 
     test('returns dynamic offer when there are no ongoing grants or there is a valid renewal', () => {
         expect(getEnhancedCapitalState(CAPITAL_STATE_INELIGIBLE, localSupportedRegions)).toMatchObject({ dynamicOfferConfig: undefined });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN, localSupportedRegions)).toMatchObject({
+            dynamicOfferConfig: undefined,
+        });
         expect(getEnhancedCapitalState(CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN, localSupportedRegions)).toMatchObject({
             dynamicOfferConfig: CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN.dynamicOffer,
         });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_PENDING_LOAN, localSupportedRegions)).toMatchObject({ dynamicOfferConfig: undefined });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_ACTIVE, localSupportedRegions)).toMatchObject({ dynamicOfferConfig: undefined });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_RENEWABLE_LOAN, localSupportedRegions)).toMatchObject({
-            dynamicOfferConfig: CAPITAL_STATE_RENEWABLE_LOAN.dynamicOffer,
-        });
         expect(getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_LOAN, localSupportedRegions)).toMatchObject({
             dynamicOfferConfig: CAPITAL_STATE_ELIGIBLE_LOAN.dynamicOffer,
+        });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_RENEWABLE_LOAN, localSupportedRegions)).toMatchObject({
+            dynamicOfferConfig: CAPITAL_STATE_RENEWABLE_LOAN.dynamicOffer,
         });
     });
 

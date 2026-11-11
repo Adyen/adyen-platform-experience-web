@@ -103,7 +103,7 @@ export const capitalOfferHandlers = {
         http.get(
             CAPITAL_ENDPOINTS.dynamicOffer,
             withDelay(({ request }) => {
-                return getDynamicOfferResponse(request, 'Loan', 10);
+                return getDynamicOfferResponse(request, 'CashAdvance', 10);
             })
         ),
         ...defaultHandlersCashAdvance,

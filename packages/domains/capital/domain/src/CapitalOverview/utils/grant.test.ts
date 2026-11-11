@@ -102,7 +102,8 @@ describe('getGrantConfig', () => {
         });
     });
 
-    test('enables unscheduled repayment details for active grants with a repayment account', () => {
+    test('defines the visibility of repayment details for active grants', () => {
+        expect(getGrantConfig(ACTIVE_LOAN).areRepaymentDetailsVisible).toBe(true);
         expect(getGrantConfig(ACTIVE_WITHOUT_REPAYMENT_ACCOUNT).areRepaymentDetailsVisible).toBe(false);
     });
 
