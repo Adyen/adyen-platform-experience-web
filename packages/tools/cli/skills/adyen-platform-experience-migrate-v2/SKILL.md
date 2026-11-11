@@ -46,14 +46,14 @@ v2 refreshes the components' look. Most of the API is unchanged, but some Core o
 6. Run the project's type-check and build, and fix what they report.
 7. Verify before reporting. A failed edit or command leaves no type error, so check the files themselves:
     - re-run the searches from steps 4 and 5: no `.adyen-pe-*` selector other than `.adyen-pe-component` may remain, no `--adyen-sdk-*` variable at document level, no `dataCustomization.list`, and no custom translation key that `references/translation-keys.tsv` lists as a v1 key;
-    - for every override you replaced with an option (for example `appearance`, `tabs`, `pagination` or a hidden `dataGrid` field), find that option in the code, in the file where you meant to add it;
+    - for every override you replaced with an option, search for that option and note the file and line where it is, e.g. `grep -rn "container: 'hidden'" src`, `grep -rn "FRAUD_ALERTS" src` or `grep -rn "visibility: 'hidden'" src`. If the search finds nothing, add the option now;
     - re-read every file you meant to change, and fix any change that didn't land.
 
     Report only changes you've confirmed this way.
 
 8. End with a report:
     - every removed option or callback with no replacement, and what it did in this app;
-    - every CSS override found, with file and line, and what you did with it: the v2 option that replaced it, where you moved it, or, if v2 has no equivalent, that you deleted it and what it did (suggest a feature request to Adyen);
+    - every CSS override found, with file and line, and what you did with it: the v2 option that replaced it, with the file and line your search found it at, where you moved it, or, if v2 has no equivalent, that you deleted it and what it did (suggest a feature request to Adyen);
     - the theme proposal with its warnings, and the question whether to apply it (unless the user already confirmed);
     - a reminder that v2 also refreshes the components' look, so the user should review each page that shows a component, even where no code changed;
     - if the upgrade wasn't committed: that the version change, the lockfile and the skill files are part of this diff, so the user commits them together with the migration.
