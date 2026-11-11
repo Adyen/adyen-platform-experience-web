@@ -57,7 +57,7 @@ export type DefinedInEveryDomain<R extends string> = DefinedInDomain<Translation
 export const getSafeDomainTranslationKey = <D extends TranslationDomain, R extends string>(
     domain: D,
     key: R & DefinedInDomain<D, R>
-): DomainTranslationKey<D> => `${domain}.${key}` as DomainTranslationKey<D>;
+): NoInfer<DomainTranslationKey<D>> => `${domain}.${key}` as DomainTranslationKey<D>;
 
 /**
  * Builds the key without checking that it exists. Only for lookups that are expected to miss, where
