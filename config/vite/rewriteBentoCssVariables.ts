@@ -10,21 +10,26 @@ const BENTO_LIGHT_DEFAULTS_REGEX = /:root(?=\s*\{[^{}]*(?:--b-|--adyen-sdk-))/g;
 const BENTO_VARIABLE_TEST_REGEX = /(^|[^\w-])--b-/;
 const BENTO_DARK_THEME_TEST_REGEX = /(^|[^\w-])\.b-dark-theme(?![\w-])/;
 const SDK_VARIABLE_TEST_REGEX = /(^|[^\w-])--adyen-sdk-/;
+const SCRIPT_BENTO_VARIABLE_REGEX = /(["'`]|var\()--b-/g;
+const SCRIPT_BENTO_VARIABLE_TEST_REGEX = /(["'`]|var\()--b-/;
 
 const textDecoder = new TextDecoder();
 const textEncoder = new TextEncoder();
 
+const splitModuleId = (id: string) => {
+    const queryStart = id.indexOf('?');
+    if (queryStart === -1) return { fileName: id, query: null };
+    return { fileName: id.slice(0, queryStart), query: new URLSearchParams(id.slice(queryStart + 1)) };
+};
+
 const isCssAsset = (fileName: string) => /\.css$/i.test(fileName);
 const isStyleModule = (id: string) => {
-    const queryStart = id.indexOf('?');
-    const fileName = queryStart === -1 ? id : id.slice(0, queryStart);
+    const { fileName, query } = splitModuleId(id);
 
     if (/\.(?:css|less|sass|scss|styl|stylus)$/i.test(fileName)) return true;
-    if (queryStart === -1) return false;
-
-    const query = new URLSearchParams(id.slice(queryStart + 1));
-    return query.has('vue') && query.get('type') === 'style';
+    return !!query?.has('vue') && query.get('type') === 'style';
 };
+const isScriptModule = (id: string) => /\.(?:[cm]?[jt]sx?|vue)$/i.test(splitModuleId(id).fileName);
 
 const sourceToString = (source: string | Uint8Array) => (typeof source === 'string' ? source : textDecoder.decode(source));
 
@@ -50,12 +55,15 @@ export const rewriteBentoCssVariables = (): Plugin => ({
     name: 'rewrite-bento-css-variables',
     enforce: 'post',
     transform(code, id) {
-        if (!isStyleModule(id) || !hasBentoStyles(code)) return null;
+        if (isStyleModule(id)) {
+            return hasBentoStyles(code) ? { code: rewriteString(code), map: null } : null;
+        }
 
-        return {
-            code: rewriteString(code),
-            map: null,
-        };
+        if (isScriptModule(id) && SCRIPT_BENTO_VARIABLE_TEST_REGEX.test(code)) {
+            return { code: code.replace(SCRIPT_BENTO_VARIABLE_REGEX, `$1${SDK_VARIABLE_PREFIX}`), map: null };
+        }
+
+        return null;
     },
     generateBundle(_outputOptions, bundle) {
         for (const output of Object.values(bundle)) {
