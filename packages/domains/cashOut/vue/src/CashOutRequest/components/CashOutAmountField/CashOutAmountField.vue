@@ -4,7 +4,7 @@ import { BentoInputField } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { formatAmount as formatInputAmount, normalizeAmountInput } from '@integration-components/core/Localization/amount/amount-util';
 import type { ICashOutAmount } from '@integration-components/types';
-import { useFormatAmount } from '../../composables/useFormatAmount';
+import { useFormatAmount } from '../../../shared/composables/useFormatAmount';
 
 const props = defineProps<{
     disabled?: boolean;

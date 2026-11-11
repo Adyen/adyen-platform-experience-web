@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { BentoDropdown } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
+import { getDropdownValue } from '../utils/getDropdownValue';
 import styles from './BalanceAccountSelector.module.scss';
 
 const props = defineProps<{
@@ -11,11 +12,9 @@ const selectedBalanceAccountId = defineModel<string | undefined>({ required: tru
 
 const { i18n } = useCoreContext();
 
-const onChange = (value: string | number | { value?: string | number } | Array<unknown> | undefined) => {
-    if (Array.isArray(value)) return;
-    const nextValue = typeof value === 'object' && value !== null ? value.value : value;
-    // `!= null` also skips a `null` from Bento, which `String()` would otherwise turn into a "null" balance account id.
-    if (nextValue != null) selectedBalanceAccountId.value = String(nextValue);
+const onChange = (value: Parameters<typeof getDropdownValue>[0]) => {
+    const nextValue = getDropdownValue(value);
+    if (nextValue !== undefined) selectedBalanceAccountId.value = nextValue;
 };
 </script>
 

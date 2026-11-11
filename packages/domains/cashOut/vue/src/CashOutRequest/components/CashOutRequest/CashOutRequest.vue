@@ -2,10 +2,11 @@
 import { computed, ref, watch } from 'vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import { ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
-import type { CashOutRequestProps } from '../../types';
+import type { CashOutRequestProps, CashOutResult } from '../../types';
 import { getCashOutErrorInfo, useCashOutState } from '../../../shared/composables/useCashOutState';
 import CashOutHeader from '../../../shared/CashOutHeader/CashOutHeader.vue';
 import CashOutRequestForm from '../CashOutRequestForm/CashOutRequestForm.vue';
+import CashOutRequestResult from '../CashOutRequestResult/CashOutRequestResult.vue';
 import CashOutRequestSkeleton from '../CashOutRequestSkeleton/CashOutRequestSkeleton.vue';
 import styles from './CashOutRequest.module.scss';
 
@@ -30,10 +31,19 @@ const handleFeesError = (error: AdyenPlatformExperienceError) => {
 watch(selectedBalanceAccountId, () => {
     feesError.value = undefined;
 });
+
+const result = ref<CashOutResult>();
+
+const handleResult = (cashOutResult: CashOutResult) => {
+    result.value = cashOutResult;
+    props.onResultShown?.();
+    if (cashOutResult.status === 'success') props.onSubmit?.(cashOutResult.cashOut);
+};
 </script>
 
 <template>
-    <div :class="styles.root">
+    <CashOutRequestResult v-if="result" :status="result.status" />
+    <div v-else :class="styles.root">
         <CashOutHeader
             v-model:selected-balance-account-id="selectedBalanceAccountId"
             :balance-account-options="balanceAccountOptions"
@@ -50,6 +60,7 @@ watch(selectedBalanceAccountId, () => {
                 :key="selectedBalanceAccountId"
                 :balance-account-id="selectedBalanceAccountId"
                 :eligibility="eligibility"
+                :on-result="handleResult"
                 :on-contact-support="props.onContactSupport"
                 :on-fees-error="handleFeesError"
             />

@@ -4,6 +4,7 @@ import { CashOutOverviewElement } from '../../src';
 
 export const cashOutOverviewMeta: Meta<ElementProps<typeof CashOutOverviewElement>> = {
     argTypes: {
+        onSubmit: enabledDisabledCallbackRadioControls('onSubmit'),
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
     },
     args: {

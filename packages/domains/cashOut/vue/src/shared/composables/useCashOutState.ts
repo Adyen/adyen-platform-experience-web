@@ -1,6 +1,6 @@
 import { computed, toValue, type MaybeRefOrGetter } from 'vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
-import { getCashOutErrorMessage } from '@integration-components/cashOut/domain';
+import { getCashOutErrorMessage, withoutUnreachableCashOut } from '@integration-components/cashOut/domain';
 import type { ComponentShellState, ErrorMessageInfo } from '@integration-components/composables-vue';
 import { useBalanceAccountFilterState } from '@integration-components/composables-vue/useBalanceAccountFilterState';
 import { useBalanceAccounts } from '@integration-components/composables-vue/useBalanceAccounts';
@@ -31,9 +31,10 @@ export const useCashOutState = ({ balanceAccountId, eligibility: givenEligibilit
         eligibility: fetchedEligibility,
         eligibilityError,
         isFetchingEligibility,
+        refreshEligibility,
     } = useCashOutEligibility(() => (usesGivenEligibility.value ? undefined : selectedBalanceAccountId.value));
 
-    const eligibility = computed(() => (usesGivenEligibility.value ? toValue(givenEligibility) : fetchedEligibility.value));
+    const eligibility = computed(() => withoutUnreachableCashOut(usesGivenEligibility.value ? toValue(givenEligibility) : fetchedEligibility.value));
 
     // The HTTP layer throws AdyenPlatformExperienceError at runtime, whatever type the request composables declare.
     const error = computed(() => (balanceAccountsError.value ?? eligibilityError.value) as AdyenPlatformExperienceError | undefined);
@@ -49,5 +50,5 @@ export const useCashOutState = ({ balanceAccountId, eligibility: givenEligibilit
         return 'ready';
     });
 
-    return { balanceAccountOptions, eligibility, errorInfo, selectedBalanceAccountId, shellState } as const;
+    return { balanceAccountOptions, eligibility, errorInfo, refreshEligibility, selectedBalanceAccountId, shellState } as const;
 };

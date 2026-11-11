@@ -4,8 +4,9 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createApp, nextTick, ref, toValue, type PropType } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import type { ICashOutEligibility, ICashOutFees, ICashOutTransferInstrument } from '@integration-components/types';
+import type { ICashOutEligibility, ICashOutFees, ICashOutResponse, ICashOutTransferInstrument } from '@integration-components/types';
 import { useCashOutFees } from '../../composables/useCashOutFees';
+import { useInstructCashOut } from '../../composables/useInstructCashOut';
 import CashOutRequestForm from './CashOutRequestForm.vue';
 
 const CASH_OUT = 'cashOut.request.actions.cashOut.labels.default';
@@ -105,6 +106,10 @@ vi.mock('../../composables/useCashOutFees', () => ({
     useCashOutFees: vi.fn(),
 }));
 
+vi.mock('../../composables/useInstructCashOut', () => ({
+    useInstructCashOut: vi.fn(),
+}));
+
 vi.mock('../CashOutAmountField/CashOutAmountField.vue', async () => {
     const { defineComponent, h } = await import('vue');
 
@@ -123,17 +128,40 @@ vi.mock('../CashOutAmountField/CashOutAmountField.vue', async () => {
     };
 });
 
+const CASH_OUT_RESPONSE: ICashOutResponse = {
+    id: 'CO1',
+    balanceAccount: 'BA1',
+    amount: { value: 22000, currency: 'USD' },
+    fee: { value: 1101, currency: 'USD' },
+    counterparty: { transferInstrumentId: 'TI1' },
+};
+
+const mockInstructCashOut = ({ canInstructCashOut = true } = {}) => {
+    const state = {
+        canInstructCashOut: ref(canInstructCashOut),
+        instructCashOut: vi.fn(async (): Promise<ICashOutResponse | undefined> => CASH_OUT_RESPONSE),
+        isInstructing: ref(false),
+    };
+    vi.mocked(useInstructCashOut).mockReturnValue(state as unknown as ReturnType<typeof useInstructCashOut>);
+    return state;
+};
+
 const mockFees = () => {
     const state = { fees: ref<ICashOutFees>(), feesError: ref<Error>(), isFetchingFees: ref(false) };
     vi.mocked(useCashOutFees).mockReturnValue(state as unknown as ReturnType<typeof useCashOutFees>);
     return state;
 };
 
-type FormProps = { eligibility: ICashOutEligibility; onContactSupport?: () => void; onFeesError?: (error: Error) => void };
+type FormProps = {
+    eligibility: ICashOutEligibility;
+    onResult?: (result: unknown) => void;
+    onContactSupport?: () => void;
+    onFeesError?: (error: Error) => void;
+};
 
-const renderForm = ({ eligibility, onContactSupport, onFeesError = vi.fn() }: FormProps) => {
+const renderForm = ({ eligibility, onResult = vi.fn(), onContactSupport, onFeesError = vi.fn() }: FormProps) => {
     const target = document.createElement('div');
-    const app = createApp(CashOutRequestForm, { balanceAccountId: 'BA1', eligibility, onContactSupport, onFeesError });
+    const app = createApp(CashOutRequestForm, { balanceAccountId: 'BA1', eligibility, onResult, onContactSupport, onFeesError });
     app.mount(target);
 
     const findButton = (title: string) => [...target.querySelectorAll('button')].find(button => button.textContent === title);
@@ -148,6 +176,7 @@ const requestedFeesAmount = () => toValue(vi.mocked(useCashOutFees).mock.calls[0
 describe('CashOutRequestForm', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        mockInstructCashOut();
         vi.mocked(useCoreContext).mockReturnValue({
             i18n: {
                 amount: (value: number, currency: string) => `${value} ${currency}`,
@@ -257,6 +286,70 @@ describe('CashOutRequestForm', () => {
         });
     });
 
+    describe('Cash out', () => {
+        test('should instruct the cashOut of the amount to the selected account and report the cashOut', async () => {
+            const fees = mockFees();
+            fees.fees.value = feesOf(1101);
+            const instruct = mockInstructCashOut();
+            const onResult = vi.fn();
+            const { findButton, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT, onResult });
+
+            findButton(CASH_OUT)?.click();
+            await vi.waitFor(() => expect(onResult).toHaveBeenCalled());
+
+            expect(instruct.instructCashOut).toHaveBeenCalledWith({
+                balanceAccountId: 'BA1',
+                amount: { value: 22000, currency: 'USD' },
+                transferInstrumentId: 'TI1',
+            });
+            expect(onResult).toHaveBeenCalledWith({ status: 'success', cashOut: CASH_OUT_RESPONSE });
+
+            unmount();
+        });
+
+        test('should report an error when the cashOut fails', async () => {
+            const fees = mockFees();
+            fees.fees.value = feesOf(1101);
+            const instruct = mockInstructCashOut();
+            instruct.instructCashOut.mockResolvedValue(undefined);
+            const onResult = vi.fn();
+            const { findButton, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT, onResult });
+
+            findButton(CASH_OUT)?.click();
+            await vi.waitFor(() => expect(onResult).toHaveBeenCalled());
+
+            expect(onResult).toHaveBeenCalledWith({ status: 'error' });
+
+            unmount();
+        });
+
+        test('should not let the form change or be sent again while the cashOut is instructed', async () => {
+            const fees = mockFees();
+            fees.fees.value = feesOf(1101);
+            const instruct = mockInstructCashOut();
+            const { findButton, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT });
+
+            instruct.isInstructing.value = true;
+            await nextTick();
+
+            expect(findButton(CASH_OUT)?.disabled).toBe(true);
+            expect(amountField.disabled).toBe(true);
+
+            unmount();
+        });
+
+        test('should not offer to cash out without the instruct cashOut endpoint', () => {
+            const fees = mockFees();
+            fees.fees.value = feesOf(1101);
+            mockInstructCashOut({ canInstructCashOut: false });
+            const { target, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT });
+
+            expect(target.querySelector('button')).toBeNull();
+
+            unmount();
+        });
+    });
+
     describe('Account', () => {
         test('should show the only account as a detail', () => {
             const fees = mockFees();
@@ -281,7 +374,7 @@ describe('CashOutRequestForm', () => {
             expect(options.map(option => [option.textContent, option.disabled])).toEqual([
                 ['Account TI1', false],
                 ['Account TI2 cashOut.request.fields.transferInstrument.ineligibilityReasons.noInstantTransferRoute', true],
-                ['Account TI3 cashOut.request.fields.transferInstrument.ineligibilityReasons.transferInstrumentCurrencyMismatch', true],
+                ['Account TI3 cashOut.request.fields.transferInstrument.ineligibilityReasons.transferInstrumentCurrencyMismatch USD', true],
             ]);
             expect(findButton(CASH_OUT)?.disabled).toBe(false);
 
@@ -314,6 +407,69 @@ describe('CashOutRequestForm', () => {
                 ['Account TI1', false],
                 ['Account TI2', false],
                 ['Account TI3 cashOut.request.fields.transferInstrument.ineligibilityReasons.noInstantTransferRoute', true],
+            ]);
+
+            unmount();
+        });
+
+        test('should name the currency of the cashOut for an account that cannot receive it', () => {
+            mockFees();
+            const { target, unmount } = renderForm({
+                eligibility: eligibilityOf([
+                    transferInstrumentOf('TI1'),
+                    transferInstrumentOf('TI2'),
+                    transferInstrumentOf('TI3', 'transferInstrumentCurrencyMismatch'),
+                ]),
+            });
+
+            const options = [...target.querySelectorAll<HTMLButtonElement>('[data-testid="option"]')];
+
+            expect(options.at(-1)?.textContent).toBe(
+                'Account TI3 cashOut.request.fields.transferInstrument.ineligibilityReasons.transferInstrumentCurrencyMismatch USD'
+            );
+
+            unmount();
+        });
+
+        test('should show no reason for an account the account holder is not allowed to send cashOuts to', () => {
+            mockFees();
+            const { target, unmount } = renderForm({
+                eligibility: eligibilityOf([
+                    transferInstrumentOf('TI1'),
+                    transferInstrumentOf('TI2'),
+                    transferInstrumentOf('TI3', 'sendToTransferInstrumentNotAllowed'),
+                ]),
+            });
+
+            const options = [...target.querySelectorAll<HTMLButtonElement>('[data-testid="option"]')];
+
+            expect(options.map(option => [option.textContent, option.disabled])).toEqual([
+                ['Account TI1', false],
+                ['Account TI2', false],
+                ['Account TI3', true],
+            ]);
+
+            unmount();
+        });
+
+        test('should list eligible accounts first, keeping the order of the API within each group', () => {
+            mockFees();
+            const { target, unmount } = renderForm({
+                eligibility: eligibilityOf([
+                    transferInstrumentOf('TI1', 'noInstantTransferRoute'),
+                    transferInstrumentOf('TI2'),
+                    transferInstrumentOf('TI3', 'transferInstrumentCurrencyMismatch'),
+                    transferInstrumentOf('TI4'),
+                ]),
+            });
+
+            const options = [...target.querySelectorAll<HTMLButtonElement>('[data-testid="option"]')];
+
+            expect(options.map(option => option.textContent?.split(' ').slice(0, 2).join(' '))).toEqual([
+                'Account TI2',
+                'Account TI4',
+                'Account TI1',
+                'Account TI3',
             ]);
 
             unmount();
