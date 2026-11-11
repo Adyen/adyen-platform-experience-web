@@ -32,9 +32,9 @@ test.describe('Repayment US', () => {
             const copyIconButtons = getRepaymentModal(page).getByRole('button', { name: /^Copy (account number|routing number|account owner)$/ });
 
             await Promise.all([
-                expect(getRepaymentModal(page).getByText('Send repayment')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Pay off your loan faster by making one-time payments.')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Loan repayment bank account')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('Manual bank transfer')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('Repay your loan early by transferring money to this bank account.')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('Adyen’s bank account details')).toBeVisible(),
                 expect(copyIconButtons).toHaveCount(3),
                 expect(getRepaymentModal(page).getByText('Account number')).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('123456789012')).toBeVisible(),
@@ -44,16 +44,16 @@ test.describe('Repayment US', () => {
                 expect(getRepaymentModal(page).getByText('Adyen N.V. San Francisco Branch', { exact: true }).first()).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('Country/region')).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('US', { exact: true })).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Your verified bank accounts')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('Your verified bank accounts', { exact: true })).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('****8101')).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('****4151')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('How to send a loan payment')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('How to send a manual repayment')).toBeVisible(),
                 expect(
                     getRepaymentModal(page).getByText('Add Adyen N.V. San Francisco Branch as a payee using your bank’s website or app.')
                 ).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('Send your payment.')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Wait 1-3 business days for the payment to be applied to your loan.')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Payments made from a verified account are usually applied faster.')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('Wait 1-3 business days for the payment to be applied.')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('Payments must be made from one of your verified bank accounts.')).toBeVisible(),
             ]);
         });
 

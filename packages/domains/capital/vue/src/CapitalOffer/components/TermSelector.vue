@@ -44,7 +44,7 @@ const items = computed(() =>
         if (props.areAvailableTermsLoading) {
             content = CONTENT_LOADING_SKELETON_PLACEHOLDER;
         } else if (offer) {
-            content = i18n.get('capital.offer.selection.termOptions.dailyRatePercentage', {
+            content = i18n.get('capital.common.percentageOfDailySales', {
                 values: { percentage: calculatePercentageFromBasisPoints(offer.repaymentRate) },
             });
         }
@@ -105,7 +105,7 @@ const handleChange = (term: number) => {
         :hide-label="false"
         :items="items"
         :items-per-row="itemsPerRow"
-        :label="i18n.get('capital.offer.selection.termOptions.title')"
+        :label="i18n.get('capital.offer.selection.loan.repaymentPlanTitle')"
         :layout="isWideContainer ? 'horizontal' : 'vertical'"
         :model-value="props.term"
         variant="radio"

@@ -9,7 +9,7 @@ test.describe('Eligible US - Loan', () => {
     });
 
     test('should render US subtitle', async ({ page }) => {
-        await expect(page.getByText('Loans are issued by Adyen N.V. San Francisco Branch and subject to credit approval.')).toBeVisible();
+        await expect(page.getByText('Adyen Capital is provided by Adyen N.V. San Francisco Branch and subject to credit approval.')).toBeVisible();
     });
 
     test('should render the US legal notice in the offer summary', async ({ page }) => {

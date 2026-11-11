@@ -78,8 +78,8 @@ test.describe('Early renewal - Loan', () => {
         await expect(offerSummary.getByText('€2,046.00')).toBeVisible();
         await expect(offerSummary.getByText('Total repayment amount')).toHaveCount(2);
         await expect(offerSummary.getByText('€20,646.00')).toBeVisible();
-        await expect(offerSummary.getByText('Daily repayment rate')).toBeVisible();
-        await expect(offerSummary.getByText('11%')).toBeVisible();
+        await expect(offerSummary.getByText('Daily repayment')).toBeVisible();
+        await expect(offerSummary.getByText('11% of daily sales')).toBeVisible();
         await expect(offerSummary.getByText('30-day repayment minimum')).toBeVisible();
         await expect(offerSummary.getByText('€3,441.00')).toBeVisible();
         await expect(offerSummary.getByText('Expected repayment period')).toBeVisible();
@@ -90,7 +90,7 @@ test.describe('Early renewal - Loan', () => {
         await expect(offerSummary.getByText('Primary account')).toBeVisible();
         await expect(
             offerSummary.getByText(
-                'The terms and conditions of a new loan are separate from those of your existing loan, including, but not limited to, the repayment schedule, fees, and other material provisions. Carefully review all documentation associated with this new loan before accepting it.'
+                'The terms of service of a new loan are separate from those of your existing loan, including, but not limited to, the repayment schedule, fees, and other material provisions. Carefully review all documentation associated with this new loan before accepting it.'
             )
         ).toBeVisible();
         await expect(
@@ -128,8 +128,8 @@ test.describe('Early renewal - Loan', () => {
         await expect(offerSummary.getByText('€220.00')).toBeVisible();
         await expect(offerSummary.getByText('Total repayment amount')).toHaveCount(2);
         await expect(offerSummary.getByText('€20,220.00')).toBeVisible();
-        await expect(offerSummary.getByText('Daily repayment rate')).toBeVisible();
-        await expect(offerSummary.getByText('15%')).toBeVisible();
+        await expect(offerSummary.getByText('Daily repayment')).toBeVisible();
+        await expect(offerSummary.getByText('15% of daily sales')).toBeVisible();
         await expect(offerSummary.getByText('30-day repayment minimum')).toBeVisible();
         await expect(offerSummary.getByText('€800.00')).toBeVisible();
         await expect(offerSummary.getByText('Expected repayment period')).toBeVisible();

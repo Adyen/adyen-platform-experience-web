@@ -7,12 +7,12 @@ test.describe('Error (with code) - Submit - Loan', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await page.getByRole('button', { name: 'Review request' }).click();
-        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
+        await page.getByRole('button', { name: 'Submit €13,000 request' }).click();
     });
 
     test('should render an error message', async ({ page }) => {
         await expect(page.getByText('Something went wrong.')).toBeVisible();
-        await expect(page.getByText("We couldn't continue with the offer.")).toBeVisible();
+        await expect(page.getByText("We couldn't continue with the Adyen Capital offer.")).toBeVisible();
         await expect(page.getByText('Contact support for help and share error code 226ac4ce59f0f159ad672d38d3291e93')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeHidden();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
@@ -29,7 +29,7 @@ test.describe('onContactSupport prop', () => {
     test('should render support button when prop is set', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
         await page.getByRole('button', { name: 'Review request' }).click();
-        await page.getByRole('button', { name: 'Submit request (€13,000)' }).click();
+        await page.getByRole('button', { name: 'Submit €13,000 request' }).click();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
     });
 });

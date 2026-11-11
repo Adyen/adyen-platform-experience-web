@@ -22,8 +22,8 @@ test.describe('Single action - Loan', () => {
                     "You're almost ready. To process your funds, we just need your input. Please complete this action by February 15, 2025."
                 )
             ).toBeVisible(),
-            expect(page.getByRole('button', { name: 'Sign terms & conditions' })).toBeVisible(),
-            expect(page.getByRole('progressbar', { name: 'Grant repayment' })).toHaveCount(0),
+            expect(page.getByRole('button', { name: 'Sign terms of service' })).toBeVisible(),
+            expect(page.getByRole('progressbar')).toHaveCount(0),
             expect(page.getByRole('button', { name: 'Show grant details' })).toHaveCount(0),
         ]);
     });

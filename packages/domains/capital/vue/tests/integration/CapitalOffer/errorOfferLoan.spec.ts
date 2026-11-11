@@ -10,7 +10,7 @@ test.describe('Error - Offer', () => {
 
     test('should render an error message', async ({ page }) => {
         await expect(page.getByText('Something went wrong.')).toBeVisible();
-        await expect(page.getByText("We couldn't load financial offers.")).toBeVisible();
+        await expect(page.getByText("We couldn't load your Adyen Capital offers.")).toBeVisible();
         await expect(page.getByText('Try refreshing the page or come back later.')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();

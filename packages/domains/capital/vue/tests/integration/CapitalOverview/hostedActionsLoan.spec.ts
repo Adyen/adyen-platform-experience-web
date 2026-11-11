@@ -26,7 +26,7 @@ test.describe('Hosted actions - Loan', () => {
                 )
             ).toBeVisible(),
             expect(page.getByRole('button', { name: 'Submit information' })).toBeVisible(),
-            expect(page.getByRole('button', { name: 'Sign terms & conditions' })).toBeVisible(),
+            expect(page.getByRole('button', { name: 'Sign terms of service' })).toBeVisible(),
         ]);
     });
 
@@ -34,7 +34,7 @@ test.describe('Hosted actions - Loan', () => {
         const analyticsEventProperties = { ...sharedGrantItemAnalyticsEventProperties, label: 'Open ToS' };
         const redirectionURL = 'https://www.adyen.com/';
 
-        await page.getByRole('button', { name: 'Sign terms & conditions', exact: true }).click();
+        await page.getByRole('button', { name: 'Sign terms of service', exact: true }).click();
         await page.waitForURL(redirectionURL, { waitUntil: 'domcontentloaded' });
         expect(page.url()).toBe(redirectionURL);
 
