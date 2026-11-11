@@ -14,7 +14,7 @@
         "@integration-components/sdk-internal": "workspace:*",
         "@integration-components/style": "workspace:*",
         "vue": "catalog:",
-        "vue-i18n": "^11.3.2"
+        "vue-i18n": "catalog:"
     },
     "devDependencies": {
         "@integration-components/testing": "workspace:*",

@@ -1,35 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { BentoButton, BentoLink, BentoStructuredListItem, BentoTooltipDirective as vBentoTooltip, BentoTypography } from '@adyen/bento-vue3';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
+import { BentoLink, BentoStructuredListItem, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
+import { CopyText } from '@integration-components/composables-vue';
 import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER, type ListItemData } from '@integration-components/payByLink/domain';
 import styles from './PaymentLinkTabs.module.scss';
 
 const props = defineProps<{
     item: ListItemData;
-    copyId: string;
-    copiedItemId?: string;
-}>();
-
-const emit = defineEmits<{
-    copied: [copyId: string];
-    clearCopied: [];
 }>();
 
 const { i18n } = useCoreContext();
-const isCopied = computed(() => props.copiedItemId === props.copyId);
 const isRedacted = computed(() => typeof props.item.value === 'string' && props.item.value.includes(BACKEND_REDACTED_DATA_MARKER));
-
-async function onCopy() {
-    if (!props.item.value || !navigator.clipboard) return;
-    try {
-        await navigator.clipboard.writeText(props.item.value);
-        emit('copied', props.copyId);
-    } catch {
-        // ignore clipboard errors
-    }
-}
 </script>
 
 <template>
@@ -39,22 +21,19 @@ async function onCopy() {
         </BentoTypography>
 
         <div v-else-if="props.item.isCopyable" :class="styles.copyableValue">
-            <BentoLink v-if="props.item.linkUrl" :to="props.item.linkUrl" target="_blank" rel="noopener noreferrer" external>
-                {{ props.item.value }}
-            </BentoLink>
-            <BentoTypography v-else variant="body">
-                {{ props.item.value }}
-            </BentoTypography>
-            <BentoButton
-                v-bento-tooltip="i18n.get(isCopied ? 'payByLink.common.actions.copy.labels.done' : 'payByLink.common.actions.copy.labels.default')"
-                variant="tertiary"
-                :aria-label="i18n.get('payByLink.common.actions.copy.labels.default')"
-                @click="onCopy"
-                @blur="emit('clearCopied')"
-                @mouseleave="emit('clearCopied')"
+            <CopyText
+                :copy-button-aria-label-key="props.item.copyAriaLabelKey"
+                :show-copy-text-tooltip="false"
+                :text-to-copy="props.item.value ?? ''"
+                type="Default"
             >
-                <CopyIcon />
-            </BentoButton>
+                <BentoLink v-if="props.item.linkUrl" :to="props.item.linkUrl" target="_blank" rel="noopener noreferrer" external>
+                    {{ props.item.value }}
+                </BentoLink>
+                <BentoTypography v-else variant="body">
+                    {{ props.item.value }}
+                </BentoTypography>
+            </CopyText>
         </div>
 
         <BentoTypography v-else variant="body">

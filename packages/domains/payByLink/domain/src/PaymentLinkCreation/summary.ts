@@ -20,7 +20,7 @@ export const getSummaryFieldValue = (fieldName: string, { i18n, values, displayV
     if (fieldName === 'linkValidity.quantity') {
         const unit = values['linkValidity.durationUnit'];
         if (!value || !unit) return '';
-        return i18n.get(`payByLink.creation.fields.validity.linkValidityUnit.${unit}` as PayByLinkTranslationKey, {
+        return i18n.get(`payByLink.creation.validity.linkValidityUnit.${unit}` as PayByLinkTranslationKey, {
             values: { quantity: value },
             count: Number(value),
         });
@@ -33,7 +33,7 @@ export const getSummaryFieldValue = (fieldName: string, { i18n, values, displayV
     }
 
     if (fieldName === 'linkType') {
-        return value ? i18n.get(`payByLink.creation.form.linkTypes.${value as IPaymentLinkType}`) : '';
+        return value ? i18n.get(`payByLink.creation.linkTypes.${value as IPaymentLinkType}`) : '';
     }
 
     if (COUNTRY_FIELDS.includes(fieldName)) {

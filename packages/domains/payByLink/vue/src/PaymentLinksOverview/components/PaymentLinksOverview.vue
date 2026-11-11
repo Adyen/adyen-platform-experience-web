@@ -212,7 +212,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 
     if (config.endpoints?.savePayByLinkSettings) {
         actions.push({
-            title: i18n.get('payByLink.overview.actions.settings.a11y.label'),
+            title: i18n.get('payByLink.overview.settings.a11yLabel'),
             event: openSettingsModal,
             variant: 'secondary',
             condensed: isMobile.value,
@@ -223,7 +223,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 
     if (config.endpoints?.createPBLPaymentLink) {
         actions.push({
-            title: i18n.get('payByLink.overview.list.actions.createPaymentLink'),
+            title: i18n.get('payByLink.overview.list.createPaymentLink'),
             event: openPaymentLinkModal,
             variant: 'primary',
             condensed: isMobile.value,
@@ -250,7 +250,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 
         <div :class="styles.tabsContainer">
             <BentoTabs
-                :aria-label="i18n.get('payByLink.overview.list.filters.types.statusGroup')"
+                :aria-label="i18n.get('payByLink.overview.list.filters.statusGroup')"
                 :active-tab-index="activeStatusGroupTabIndex"
                 @update:active-tab-index="onStatusGroupChange"
             >

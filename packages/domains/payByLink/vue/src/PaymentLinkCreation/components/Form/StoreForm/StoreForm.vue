@@ -26,7 +26,7 @@ const selectedStoreId = computed(() => wizard.getValue('store'));
 const showTcAlert = computed(() => !!props.settingsData && !!props.storesData && !!selectedStoreId.value && !props.termsAndConditionsProvisioned);
 const alertDescriptionKey = computed<PayByLinkTranslationKey>(() =>
     props.canModifySettings
-        ? 'payByLink.creation.storeForm.alerts.tcSetupRequired'
+        ? 'payByLink.creation.storeForm.alerts.tcSetupRequired.description'
         : 'payByLink.creation.storeForm.alerts.tcSetupRequiredWithoutPermissions'
 );
 
@@ -47,12 +47,12 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
     <div :class="layoutStyles.fieldsContainer">
         <StoreField
             name="store"
-            :label="i18n.get('payByLink.creation.fields.store.label')"
+            :label="i18n.get('payByLink.creation.store')"
             :items="props.selectItems"
-            :placeholder="i18n.get('payByLink.creation.inputs.select.placeholder')"
+            :placeholder="i18n.get('payByLink.creation.select')"
         />
         <BentoAlert v-if="showTcAlert" type="warning" role="alert">
-            {{ i18n.get('payByLink.creation.storeForm.alerts.tcSetupRequiredTitle') }}
+            {{ i18n.get('payByLink.creation.storeForm.alerts.tcSetupRequired.title') }}
             <template #description>
                 {{ i18n.get(alertDescriptionKey) }}
             </template>

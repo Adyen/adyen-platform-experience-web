@@ -146,11 +146,11 @@ export function usePaymentLinkFormData(props: () => Pick<PaymentLinkCreationComp
     const stepperItems = computed(() =>
         formSteps.value.map(step => ({
             id: step.id,
-            label: i18n.get(`payByLink.creation.form.steps.${step.id}` as PayByLinkTranslationKey),
+            label: i18n.get(`payByLink.creation.steps.${step.id}` as PayByLinkTranslationKey),
         }))
     );
 
-    const formStepsAriaLabel = computed(() => i18n.get('payByLink.creation.steps.a11y.label'));
+    const formStepsAriaLabel = computed(() => i18n.get('payByLink.creation.steps.a11yLabel'));
 
     const isDataLoading = computed(() => isFetchingConfiguration.value || isFetchingSettings.value || isFetchingStores.value);
     const shouldSkipStoreSelection = computed(() => storesSelectorItems.value.length === 1);

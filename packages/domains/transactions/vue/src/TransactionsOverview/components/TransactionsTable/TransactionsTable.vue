@@ -23,7 +23,7 @@ import {
 } from '@adyen/bento-vue3';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
-import { getTransactionCategoryDescription, getTransactionCategory, TRANSACTION_FIELDS } from '../../../../../domain/src';
+import { getTransactionCategoryDescription, getTransactionCategory, getTransactionsErrorConfig, TRANSACTION_FIELDS } from '../../../../../domain/src';
 import { formatAmountWithCurrencyCode, isValidCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
 import type { TranslationKey } from '@integration-components/core';
 import type { TransactionsTranslationKey } from '@integration-components/transactions/domain';
@@ -63,12 +63,12 @@ const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceA
 const isMobile = useResponsiveContainer(containerQueries.down.sm);
 
 const FIELDS_KEYS = {
-    createdAt: 'transactions.overview.list.fields.createdAt',
-    currency: 'transactions.overview.list.fields.currency',
-    grossAmount: 'transactions.overview.list.fields.grossAmount',
-    netAmount: 'transactions.overview.list.fields.netAmount',
-    paymentMethod: 'transactions.overview.list.fields.paymentMethod',
-    transactionType: 'transactions.overview.list.fields.transactionType',
+    createdAt: 'transactions.overview.list.createdAt',
+    currency: 'transactions.overview.list.currency',
+    grossAmount: 'transactions.overview.list.grossAmount',
+    netAmount: 'transactions.overview.list.netAmount',
+    paymentMethod: 'transactions.overview.list.paymentMethod',
+    transactionType: 'transactions.overview.list.transactionType',
 } satisfies Record<string, TransactionsTranslationKey>;
 
 function amountLabel(defaultLabel: string): string {
@@ -94,7 +94,7 @@ const { columns: desktopColumns, customFieldKeys } = useTableColumns({
     customColumnWidths: () => customColumnWidths.value,
     resolveStandardColumnLabel: (field, defaultLabel) => (isAmountField(field) ? amountLabel(defaultLabel) : defaultLabel),
     resolveCustomColumnLabel: key => {
-        const labelKey = `transactions.overview.list.fields.${key}`;
+        const labelKey = `transactions.overview.list.${key}`;
         return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
     },
 });
@@ -193,18 +193,17 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
         ? formatAmountWithCurrencyCode(amount.value, i18n.locale, amount.currency)
         : i18n.amount(amount.value, amount.currency, { hideCurrency: true });
 }
+const errorInfo = computed(() =>
+    getTransactionsErrorConfig(props.error, {
+        errorMessage: 'transactions.overview.errors.listUnavailable',
+        onContactSupport: props.onContactSupport,
+    })
+);
 </script>
 
 <template>
     <div ref="tableRef">
-        <DataOverviewError
-            v-if="props.error"
-            :error="props.error"
-            :error-message="'transactions.overview.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
-            :on-refresh="props.onRefresh"
-            :refresh-icon="RefreshIcon"
-        />
+        <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" />
 
         <BentoDataGrid
             v-else

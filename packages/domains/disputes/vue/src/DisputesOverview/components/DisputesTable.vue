@@ -18,7 +18,12 @@ import {
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
-import { getDisputeDeadlineTimeRemaining, getDisputeReason, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
+import {
+    getDisputeDeadlineTimeRemaining,
+    getDisputeReason,
+    isDisputeActionNeededUrgently,
+    getDisputesErrorConfig,
+} from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE, mergeRecords } from '@integration-components/utils';
 import type { CustomColumn, CustomDataRetrieved, IBalanceAccountBase, OnDataRetrievedCallback } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
@@ -83,8 +88,6 @@ const {
             totalPaymentAmount: { visible: statusGroup === 'FRAUD_ALERTS', flex: 1, numeric: true },
         };
     },
-    resolveStandardColumnLabel: (field, defaultLabel) =>
-        field === 'disputeReason' ? i18n.get('disputes.overview.common.fields.disputeReasonLabel') : defaultLabel,
     resolveCustomColumnLabel: key => (i18n.has(key) ? i18n.get(key) : key),
 });
 
@@ -199,8 +202,8 @@ function getTimeToDeadline(dueDate: string): string {
     if (timeRemaining.expired) return formattedDate;
 
     return timeRemaining.days <= 1
-        ? i18n.get('disputes.overview.common.actionNeeded.respondToday', { values: { date: formattedDate } })
-        : i18n.get('disputes.overview.common.actionNeeded.respondDays', { values: { days: timeRemaining.days, date: formattedDate } });
+        ? i18n.get('disputes.overview.actionNeeded.respondToday', { values: { date: formattedDate } })
+        : i18n.get('disputes.overview.actionNeeded.respondDays', { values: { days: timeRemaining.days, date: formattedDate } });
 }
 
 function handleNavigate(page: number) {
@@ -219,15 +222,17 @@ function handleItemsPage(size: number) {
 function handleRowClick(item: BentoDatagridDataItem) {
     props.onRowClick?.(getDispute(item));
 }
+
+const errorInfo = computed(() =>
+    getDisputesErrorConfig(props.error, { errorMessage: 'disputes.overview.errors.listUnavailable', onContactSupport: props.onContactSupport })
+);
 </script>
 
 <template>
     <div ref="tableRef" :class="styles.root">
         <DataOverviewError
             v-if="props.error"
-            :error="props.error"
-            :error-message="'disputes.overview.common.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
+            :error-info="errorInfo"
             :on-refresh="props.onRefresh"
             :variant="isMobile ? 'condensed' : 'embedded'"
             :refresh-icon="RefreshIcon"

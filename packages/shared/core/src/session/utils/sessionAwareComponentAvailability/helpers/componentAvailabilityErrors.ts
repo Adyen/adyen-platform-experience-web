@@ -1,4 +1,4 @@
-import { getDomainTranslationKey } from '../../../../translations';
+import { getSafeDomainTranslationKey } from '../../../../translations';
 import type { DomainTranslationKey, TranslationDomain } from '../../../../translations';
 import type { ExternalComponentType } from '@integration-components/types';
 
@@ -12,13 +12,13 @@ function componentAvailabilityErrors(type: ExternalComponentType | undefined, fa
         case 'reports':
             return 'reports.overview.errors.unavailable';
         case 'disputes':
-            return 'disputes.overview.common.errors.unavailable';
+            return 'disputes.overview.errors.unavailable';
         case 'transactionDetails':
             return 'transactions.details.errors.unavailable';
         case 'payoutDetails':
             return 'payouts.details.errors.unavailable';
         case 'disputesManagement':
-            return 'disputes.management.common.errors.unavailable';
+            return 'disputes.management.errors.unavailable';
         case 'paymentLinksOverview':
             return 'payByLink.overview.errors.unavailable';
         case 'paymentLinkCreation':
@@ -26,9 +26,9 @@ function componentAvailabilityErrors(type: ExternalComponentType | undefined, fa
         case 'paymentLinkDetails':
             return 'payByLink.details.errors.unavailable';
         case 'capitalOffer':
-            return 'capital.offer.common.errors.unavailable';
+            return 'capital.offer.errors.unavailable';
         case 'capitalOverview':
-            return 'capital.overview.common.errors.unavailable';
+            return 'capital.overview.errors.unavailable';
         case 'paymentLinkSettings':
             return 'payByLink.settings.errors.unavailable';
         default:
@@ -37,13 +37,13 @@ function componentAvailabilityErrors(type: ExternalComponentType | undefined, fa
 }
 
 export function getComponentAvailabilityErrorTitle(domain: TranslationDomain): DomainTranslationKey {
-    return getDomainTranslationKey(domain, 'common.errors.somethingWentWrong');
+    return getSafeDomainTranslationKey(domain, 'common.errors.somethingWentWrong');
 }
 
 export function getComponentAvailabilityErrorMessages(type: ExternalComponentType | undefined, domain: TranslationDomain): DomainTranslationKey[] {
     return [
-        componentAvailabilityErrors(type, getDomainTranslationKey(domain, 'common.errors.componentUnavailable')),
-        getDomainTranslationKey(domain, 'common.errors.contactSupport'),
+        componentAvailabilityErrors(type, getSafeDomainTranslationKey(domain, 'common.errors.componentUnavailable')),
+        getSafeDomainTranslationKey(domain, 'common.errors.contactSupport'),
     ];
 }
 
