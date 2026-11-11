@@ -86,7 +86,6 @@ function onInput(rawValue: string) {
         :lang="i18n.locale"
         :min="0"
         :model-value="inputValue"
-        required
         @blur="onBlur"
         @update:model-value="onInput"
     >
