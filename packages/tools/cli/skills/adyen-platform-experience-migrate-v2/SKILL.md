@@ -46,6 +46,7 @@ v2 refreshes the components' look. Most of the API is unchanged, but some Core o
 6. Run the project's type-check and build, and fix what they report.
 7. Verify before reporting. A failed edit or command leaves no type error, so check the files themselves:
     - re-run the searches from steps 4 and 5: no `.adyen-pe-*` selector other than `.adyen-pe-component` may remain, no `--adyen-sdk-*` variable at document level, no `dataCustomization.list`, and no custom translation key that `references/translation-keys.tsv` lists as a v1 key;
+    - for every override you replaced with an option (for example `appearance`, `tabs`, `pagination` or a hidden `dataGrid` field), find that option in the code, in the file where you meant to add it;
     - re-read every file you meant to change, and fix any change that didn't land.
 
     Report only changes you've confirmed this way.
