@@ -632,7 +632,7 @@ describe('resolveBentoTranslationBundle', () => {
         const after = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
 
         expect(after).not.toBe(before);
-        // `bento.copyButton.copy` routes to `common.actions.copy.labels.default`, so the merchant value must land here.
+        // bento.copyButton.copy routes to common.copy.label, so the merchant value must land here.
         expect(after.overrides['bento.copyButton.copy']).toBe('Custom copy');
     });
 });
