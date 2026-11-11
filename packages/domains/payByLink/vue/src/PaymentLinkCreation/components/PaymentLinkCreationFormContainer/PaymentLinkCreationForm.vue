@@ -24,6 +24,8 @@ import PaymentLinkCreationFormSkeleton from './PaymentLinkCreationFormSkeleton.v
 import ArrowRightIcon from '@adyen/ui-assets-icons-16/vue/arrow-right';
 import styles from './PaymentLinkCreationForm.module.scss';
 
+console.log('test');
+
 type PaymentLinkCreationFormProps = Pick<PaymentLinkCreationComponentProps, 'fieldsConfig' | 'storeIds' | 'onContactSupport'> & {
     formData: ReturnType<typeof usePaymentLinkFormData>;
     embeddedInOverview?: boolean;
