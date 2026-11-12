@@ -53,6 +53,12 @@ describe('translation-keys.tsv', () => {
         ['disputes.overview.common.fields.respondBy', { disputes: 'disputes.overview.fields.respondBy' }],
         ['payByLink.overview.list.fields.id', { payByLink: 'payByLink.overview.list.id' }],
         ['common.actions.contactSupport.labels.default', { '-': NO_MATCH }],
+        [
+            'common.actions.contactSupport.labels.reachOut',
+            { payByLink: 'payByLink.common.contactSupport.label', capital: 'capital.common.contactSupport.label' },
+        ],
+        ['common.actions.copy.labels.default', { transactions: 'transactions.common.copy.label' }],
+        ['capital.offer.common.noOfferTitle', { capital: 'capital.offer.noOffer.title' }],
     ])('maps %s', (v1Key, expected) => {
         expect(lookUp(v1Key)).toMatchObject(expected);
     });

@@ -40,7 +40,7 @@ capital.common.fields.repaidFees	capital	capital.common.fields.repaidFees.label
 capital.common.fields.repaymentThreshold	capital	capital.common.fields.repaymentThreshold.label
 capital.common.fields.totalFees	capital	capital.common.fields.totalFees.label
 capital.common.fields.totalRepaymentAmount	capital	capital.common.fields.totalRepaymentAmount.label
-capital.common.termsTitle	-	(no match)
+capital.common.termsTitle	capital	capital.common.terms.title
 capital.dailyRepaymentRate	capital	capital.common.fields.dailyRepaymentRate.label
 capital.daysAndDaysLeft	capital	capital.common.values.daysWithDaysLeft
 capital.expectedRepaymentPeriod	capital	capital.common.fields.expectedRepaymentPeriod.label
@@ -65,8 +65,8 @@ capital.offer.common.errors.cannotContinueSupport	capital	capital.offer.errors.c
 capital.offer.common.errors.noPrimaryAccount	capital	capital.offer.errors.noPrimaryAccount
 capital.offer.common.errors.unavailable	capital	capital.offer.errors.unavailable
 capital.offer.common.fundingRequestInfo	-	(no match)
-capital.offer.common.noOfferDescription	-	(no match)
-capital.offer.common.noOfferTitle	-	(no match)
+capital.offer.common.noOfferDescription	capital	capital.offer.noOffer.description
+capital.offer.common.noOfferTitle	capital	capital.offer.noOffer.title
 capital.offer.common.repaymentInfo	-	(no match)
 capital.offer.selection.actions.reviewOffer	capital	capital.offer.selection.reviewOffer
 capital.offer.selection.actions.reviewOffer.states.loading	-	(no match)
@@ -183,8 +183,18 @@ capital.youWillSoonQualifyForAFinancialOffer	-	(no match)
 capital.yourRequestedFundsWere	-	(no match)
 common.actions.apply.labels.default	-	(no match)
 common.actions.contactSupport.labels.default	-	(no match)
-common.actions.contactSupport.labels.reachOut	-	(no match)
-common.actions.copy.labels.default	-	(no match)
+common.actions.contactSupport.labels.reachOut	capital	capital.common.contactSupport.label
+common.actions.contactSupport.labels.reachOut	disputes	disputes.common.contactSupport.label
+common.actions.contactSupport.labels.reachOut	payByLink	payByLink.common.contactSupport.label
+common.actions.contactSupport.labels.reachOut	payouts	payouts.common.contactSupport.label
+common.actions.contactSupport.labels.reachOut	reports	reports.common.contactSupport.label
+common.actions.contactSupport.labels.reachOut	transactions	transactions.common.contactSupport.label
+common.actions.copy.labels.default	capital	capital.common.copy.label
+common.actions.copy.labels.default	disputes	disputes.common.copy.label
+common.actions.copy.labels.default	payByLink	payByLink.common.copy.label
+common.actions.copy.labels.default	payouts	payouts.common.copy.label
+common.actions.copy.labels.default	reports	reports.common.copy.label
+common.actions.copy.labels.default	transactions	transactions.common.copy.label
 common.actions.copy.labels.done	capital	capital.common.copy.done
 common.actions.copy.labels.done	disputes	disputes.common.copy.done
 common.actions.copy.labels.done	payByLink	payByLink.common.copy.done
@@ -194,9 +204,14 @@ common.actions.copy.labels.done	transactions	transactions.common.copy.done
 common.actions.copy.labels.errorCode	-	(no match)
 common.actions.dismiss.labels.close	-	(no match)
 common.actions.dismiss.labels.dismiss	-	(no match)
-common.actions.download.labels.default	-	(no match)
+common.actions.download.labels.default	transactions	transactions.overview.export.download.label
 common.actions.download.labels.inProgress	-	(no match)
-common.actions.refresh.labels.default	-	(no match)
+common.actions.refresh.labels.default	capital	capital.common.refresh.label
+common.actions.refresh.labels.default	disputes	disputes.common.refresh.label
+common.actions.refresh.labels.default	payByLink	payByLink.common.refresh.label
+common.actions.refresh.labels.default	payouts	payouts.common.refresh.label
+common.actions.refresh.labels.default	reports	reports.common.refresh.label
+common.actions.refresh.labels.default	transactions	transactions.common.refresh.label
 common.actions.reset.labels.default	-	(no match)
 common.errors.accountInvalid	-	(no match)
 common.errors.accountUnavailable	-	(no match)
@@ -350,7 +365,7 @@ common.inputs.file.errors.maxDimensions	-	(no match)
 common.inputs.file.errors.required	-	(no match)
 common.inputs.file.errors.tooLarge	-	(no match)
 common.inputs.file.errors.tooMany	-	(no match)
-common.inputs.file.labels.default	-	(no match)
+common.inputs.file.labels.default	disputes	disputes.common.file.label
 common.inputs.search.clearSearch	-	(no match)
 common.inputs.select.errors.noOptions	-	(no match)
 common.inputs.select.placeholder	-	(no match)
@@ -1324,7 +1339,7 @@ pagination.nextPage	-	(no match)
 pagination.previousPage	-	(no match)
 pagination.showing	-	(no match)
 payByLink.common.actions.goBack	payByLink	payByLink.common.goBack.label
-payByLink.common.fields.optional.label	-	(no match)
+payByLink.common.fields.optional.label	payByLink	payByLink.creation.optional
 payByLink.common.status.active	payByLink	payByLink.common.statuses.active
 payByLink.common.status.completed	payByLink	payByLink.common.statuses.completed
 payByLink.common.status.expired	payByLink	payByLink.common.statuses.expired
@@ -1387,7 +1402,7 @@ payByLink.creation.form.alert.somethingWentWrong	payByLink	payByLink.creation.al
 payByLink.creation.form.error.submit.contactSupport	-	(no match)
 payByLink.creation.form.linkTypes.open	payByLink	payByLink.creation.linkTypes.open
 payByLink.creation.form.linkTypes.singleUse	payByLink	payByLink.creation.linkTypes.singleUse
-payByLink.creation.form.steps.back	-	(no match)
+payByLink.creation.form.steps.back	payByLink	payByLink.common.goBack.label
 payByLink.creation.form.steps.continue	payByLink	payByLink.creation.steps.continue
 payByLink.creation.form.steps.customer	payByLink	payByLink.creation.steps.customer
 payByLink.creation.form.steps.payment	payByLink	payByLink.creation.steps.payment
@@ -1403,7 +1418,7 @@ payByLink.creation.storeForm.alerts.tcSetupRequiredTitle	payByLink	payByLink.cre
 payByLink.creation.success.copiedToClipboard	payByLink	payByLink.creation.success.copy.done
 payByLink.creation.success.copyLink	payByLink	payByLink.creation.success.copy.link
 payByLink.creation.summary.alertDescription	payByLink	payByLink.creation.summary.alerts.description
-payByLink.creation.summary.back	-	(no match)
+payByLink.creation.summary.back	payByLink	payByLink.common.goBack.label
 payByLink.creation.summary.billingAddress	payByLink	payByLink.creation.summary.billingAddress.title
 payByLink.creation.summary.deliveryAddress	-	(no match)
 payByLink.creation.summary.fields.amountValue	payByLink	payByLink.creation.summary.amountValue
@@ -1436,11 +1451,11 @@ payByLink.creation.summary.fields.shopperLastName	payByLink	payByLink.creation.s
 payByLink.creation.summary.fields.shopperName	payByLink	payByLink.creation.summary.shopperName
 payByLink.creation.summary.fields.shopperReference	payByLink	payByLink.creation.summary.shopperReference
 payByLink.creation.summary.fields.store	payByLink	payByLink.creation.summary.store
-payByLink.details.actions.copied	-	(no match)
-payByLink.details.actions.copyLink	-	(no match)
-payByLink.details.actions.goBack	-	(no match)
+payByLink.details.actions.copied	payByLink	payByLink.details.copy.done
+payByLink.details.actions.copyLink	payByLink	payByLink.details.copy.link
+payByLink.details.actions.goBack	payByLink	payByLink.common.goBack.label
 payByLink.details.expiration.actions.confirmExpiration	payByLink	payByLink.details.expiration.confirmExpiration
-payByLink.details.expiration.actions.goBack	-	(no match)
+payByLink.details.expiration.actions.goBack	payByLink	payByLink.common.goBack.label
 payByLink.details.expiration.errorDescription	payByLink	payByLink.details.expiration.error.description
 payByLink.details.expiration.errorTitle	payByLink	payByLink.details.expiration.error.title
 payByLink.details.expirationSuccess.actions.goBackToList	-	(no match)
@@ -1501,7 +1516,7 @@ payByLink.settings.common.alerts.saveSuccess	payByLink	payByLink.settings.alerts
 payByLink.settings.common.alerts.validationError	payByLink	payByLink.settings.alerts.validation.error
 payByLink.settings.errors.couldNotLoadSettings	payByLink	payByLink.settings.errors.unavailable
 payByLink.settings.terms.requirements.actions.confirmRequirements	payByLink	payByLink.settings.requirements.confirmRequirements
-payByLink.settings.terms.requirements.actions.goBack	-	(no match)
+payByLink.settings.terms.requirements.actions.goBack	payByLink	payByLink.common.goBack.label
 payByLink.settings.terms.requirements.contactInformation.description	payByLink	payByLink.settings.contactInformation.description
 payByLink.settings.terms.requirements.contactInformation.emailAddress	payByLink	payByLink.settings.contactInformation.emailAddress
 payByLink.settings.terms.requirements.contactInformation.legalEntityName	payByLink	payByLink.settings.contactInformation.legalEntityName
@@ -1670,9 +1685,9 @@ transactions.common.types.Other	transactions	transactions.common.types.Other.lab
 transactions.common.types.Payment	transactions	transactions.common.types.Payment.label
 transactions.common.types.Refund	transactions	transactions.common.types.Refund.label
 transactions.common.types.Transfer	transactions	transactions.common.types.Transfer.label
-transactions.details.actions.copyMerchantReference	-	(no match)
-transactions.details.actions.copyPspReference	-	(no match)
-transactions.details.actions.copyReferenceID	-	(no match)
+transactions.details.actions.copyMerchantReference	transactions	transactions.details.copy.merchantReference
+transactions.details.actions.copyPspReference	transactions	transactions.details.copy.pspReference
+transactions.details.actions.copyReferenceID	transactions	transactions.details.copy.referenceID
 transactions.details.common.refundReasons.duplicate	transactions	transactions.details.refundReasons.duplicate
 transactions.details.common.refundReasons.fraudulent	transactions	transactions.details.refundReasons.fraudulent
 transactions.details.common.refundReasons.issueWithItemSold	transactions	transactions.details.refundReasons.issueWithItemSold
@@ -1687,7 +1702,7 @@ transactions.details.fields.originalAmount	transactions	transactions.details.sum
 transactions.details.fields.originalPayment	-	(no match)
 transactions.details.fields.paymentPspReference	-	(no match)
 transactions.details.fields.refundFee	-	(no match)
-transactions.details.refund.actions.back	-	(no match)
+transactions.details.refund.actions.back	transactions	transactions.common.goBack.label
 transactions.details.refund.actions.refund.labels.amount	transactions	transactions.details.refund.submit.amount
 transactions.details.refund.actions.refund.labels.inProgress	-	(no match)
 transactions.details.refund.actions.refund.labels.payment	transactions	transactions.details.actions.refund
