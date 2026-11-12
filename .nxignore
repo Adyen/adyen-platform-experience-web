@@ -1,6 +1,7 @@
 .nx/
 node_modules/
 dist/
+dist-cdn/
 coverage/
 playwright-report/
 vite.config.ts.timestamp-*

@@ -8,6 +8,24 @@
         "build": {
             "outputs": ["{workspaceRoot}/dist"]
         },
+        "build:cdn": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "vite build --mode cdn",
+                "cwd": "{projectRoot}"
+            },
+            "outputs": ["{workspaceRoot}/dist-cdn"],
+            "cache": true
+        },
+        "build:cdn:test": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "cross-env USE_TEST_CDN=true vite build --mode cdn",
+                "cwd": "{projectRoot}"
+            },
+            "outputs": ["{workspaceRoot}/dist-cdn"],
+            "cache": true
+        },
         "types:check": {},
         "types:watch": {}
     }

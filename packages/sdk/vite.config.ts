@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { getBuildEnvDefines } from '../../config/defines/build-env';
+import { lazyElementComponents } from '../../config/vite/lazyElementComponents';
 import { rewriteBentoCssVariables } from '../../config/vite/rewriteBentoCssVariables';
 import rootPkgJson from '../../package.json';
 
@@ -16,117 +17,141 @@ const translationsLocalFile = resolve(translationsDir, 'local.ts');
 const externalDependencies = Object.keys(rootPkgJson.dependencies);
 const KYC_CUSTOM_ELEMENT_TAGS = ['adyen-business-financing', 'adyen-terms-of-service-management'];
 
+export const CDN_BUILD_MODE = 'cdn';
+export const CDN_OUT_DIR = resolve(rootDir, 'dist-cdn');
+export const CDN_ENTRY_FILE_NAME = 'adyen-platform-experience-web.js';
+
 const shouldExcludeAsset = (id: string) => {
     return externalDependencies.includes(id);
 };
 
-export default defineConfig(({ mode }) => ({
-    root: projectRoot,
-    resolve: {
-        dedupe: ['vue', 'vue-i18n'],
-        alias: [
-            { find: /^@integration-components\/style\/(.+)$/, replacement: `${styleDir}/$1` },
-            { find: /^@integration-components\/style$/, replacement: resolve(styleDir, 'index.scss') },
-            { find: '@integration-components/composables-vue', replacement: resolve(rootDir, 'packages/shared/composables-vue/src') },
-            { find: '@integration-components/assets', replacement: resolve(rootDir, 'packages/shared/assets/src') },
-            { find: '@integration-components/core', replacement: resolve(rootDir, 'packages/shared/core/src') },
-            { find: '@integration-components/types', replacement: resolve(rootDir, 'packages/shared/types/src') },
-            { find: '@integration-components/utils', replacement: resolve(rootDir, 'packages/shared/utils/src') },
-            { find: '@integration-components/sdk-internal', replacement: resolve(rootDir, 'src') },
-            { find: '@integration-components/disputes/publish', replacement: resolve(rootDir, 'packages/domains/disputes/publish/src') },
-            { find: '@integration-components/disputes/vue', replacement: resolve(rootDir, 'packages/domains/disputes/vue/src') },
-            { find: '@integration-components/disputes/domain', replacement: resolve(rootDir, 'packages/domains/disputes/domain/src') },
-            { find: '@integration-components/payouts/publish', replacement: resolve(rootDir, 'packages/domains/payouts/publish/src') },
-            { find: '@integration-components/payouts/vue', replacement: resolve(rootDir, 'packages/domains/payouts/vue/src') },
-            { find: '@integration-components/payouts/domain', replacement: resolve(rootDir, 'packages/domains/payouts/domain/src') },
-            { find: '@integration-components/reports/publish', replacement: resolve(rootDir, 'packages/domains/reports/publish/src') },
-            { find: '@integration-components/reports/vue', replacement: resolve(rootDir, 'packages/domains/reports/vue/src') },
-            { find: '@integration-components/reports/domain', replacement: resolve(rootDir, 'packages/domains/reports/domain/src') },
-            { find: '@integration-components/transactions/publish', replacement: resolve(rootDir, 'packages/domains/transactions/publish/src') },
-            { find: '@integration-components/transactions/vue', replacement: resolve(rootDir, 'packages/domains/transactions/vue/src') },
-            { find: '@integration-components/transactions/domain', replacement: resolve(rootDir, 'packages/domains/transactions/domain/src') },
-            { find: '@integration-components/payByLink/publish', replacement: resolve(rootDir, 'packages/domains/payByLink/publish/src') },
-            { find: '@integration-components/payByLink/vue', replacement: resolve(rootDir, 'packages/domains/payByLink/vue/src') },
-            { find: '@integration-components/payByLink/domain', replacement: resolve(rootDir, 'packages/domains/payByLink/domain/src') },
-            { find: '@integration-components/capital/publish', replacement: resolve(rootDir, 'packages/domains/capital/publish/src') },
-            { find: '@integration-components/capital/vue', replacement: resolve(rootDir, 'packages/domains/capital/vue/src') },
-            { find: '@integration-components/capital/domain', replacement: resolve(rootDir, 'packages/domains/capital/domain/src') },
-        ],
-    },
-    build: {
-        minify: 'terser',
-        terserOptions: {
-            format: { comments: false },
-            compress: { passes: 2 },
-            mangle: true,
-        },
-        sourcemap: false,
-        lib: {
-            cssFileName: 'adyen-platform-experience-web',
-            name: 'AdyenPlatformExperienceWeb',
-            entry: resolve(projectRoot, 'src/index.ts'),
-            fileName: (format, entryName) => {
-                const extension = format === 'cjs' ? 'cjs' : 'js';
-                const normalizedEntry = entryName.replace(/\\/g, '/');
-                const nodeModulesIndex = normalizedEntry.lastIndexOf('node_modules/');
-                if (nodeModulesIndex !== -1) {
-                    const normalized = normalizedEntry.slice(nodeModulesIndex + 'node_modules/'.length);
-                    return `${format}/external/${normalized}.${extension}`;
-                }
-                return `${format}/${normalizedEntry}.${extension}`;
-            },
-        },
-        rollupOptions: {
-            external: shouldExcludeAsset,
-            output: [
-                {
-                    format: 'es',
-                    preserveModules: true,
-                    preserveModulesRoot: rootDir,
-                    sourcemap: false,
-                    indent: false,
-                },
-                {
-                    format: 'cjs',
-                    sourcemap: true,
-                    indent: false,
-                },
+const getNpmFileName = (format: string, entryName: string) => {
+    const extension = format === 'cjs' ? 'cjs' : 'js';
+    const normalizedEntry = entryName.replace(/\\/g, '/');
+    const nodeModulesIndex = normalizedEntry.lastIndexOf('node_modules/');
+    if (nodeModulesIndex !== -1) {
+        const normalized = normalizedEntry.slice(nodeModulesIndex + 'node_modules/'.length);
+        return `${format}/external/${normalized}.${extension}`;
+    }
+    return `${format}/${normalizedEntry}.${extension}`;
+};
+
+export default defineConfig(({ mode }) => {
+    const isCdnBuild = mode === CDN_BUILD_MODE;
+
+    return {
+        root: projectRoot,
+        resolve: {
+            dedupe: ['vue', 'vue-i18n'],
+            alias: [
+                { find: /^@integration-components\/style\/(.+)$/, replacement: `${styleDir}/$1` },
+                { find: /^@integration-components\/style$/, replacement: resolve(styleDir, 'index.scss') },
+                { find: '@integration-components/composables-vue', replacement: resolve(rootDir, 'packages/shared/composables-vue/src') },
+                { find: '@integration-components/assets', replacement: resolve(rootDir, 'packages/shared/assets/src') },
+                { find: '@integration-components/core', replacement: resolve(rootDir, 'packages/shared/core/src') },
+                { find: '@integration-components/types', replacement: resolve(rootDir, 'packages/shared/types/src') },
+                { find: '@integration-components/utils', replacement: resolve(rootDir, 'packages/shared/utils/src') },
+                { find: '@integration-components/sdk-internal', replacement: resolve(rootDir, 'src') },
+                { find: '@integration-components/disputes/publish', replacement: resolve(rootDir, 'packages/domains/disputes/publish/src') },
+                { find: '@integration-components/disputes/vue', replacement: resolve(rootDir, 'packages/domains/disputes/vue/src') },
+                { find: '@integration-components/disputes/domain', replacement: resolve(rootDir, 'packages/domains/disputes/domain/src') },
+                { find: '@integration-components/payouts/publish', replacement: resolve(rootDir, 'packages/domains/payouts/publish/src') },
+                { find: '@integration-components/payouts/vue', replacement: resolve(rootDir, 'packages/domains/payouts/vue/src') },
+                { find: '@integration-components/payouts/domain', replacement: resolve(rootDir, 'packages/domains/payouts/domain/src') },
+                { find: '@integration-components/reports/publish', replacement: resolve(rootDir, 'packages/domains/reports/publish/src') },
+                { find: '@integration-components/reports/vue', replacement: resolve(rootDir, 'packages/domains/reports/vue/src') },
+                { find: '@integration-components/reports/domain', replacement: resolve(rootDir, 'packages/domains/reports/domain/src') },
+                { find: '@integration-components/transactions/publish', replacement: resolve(rootDir, 'packages/domains/transactions/publish/src') },
+                { find: '@integration-components/transactions/vue', replacement: resolve(rootDir, 'packages/domains/transactions/vue/src') },
+                { find: '@integration-components/transactions/domain', replacement: resolve(rootDir, 'packages/domains/transactions/domain/src') },
+                { find: '@integration-components/payByLink/publish', replacement: resolve(rootDir, 'packages/domains/payByLink/publish/src') },
+                { find: '@integration-components/payByLink/vue', replacement: resolve(rootDir, 'packages/domains/payByLink/vue/src') },
+                { find: '@integration-components/payByLink/domain', replacement: resolve(rootDir, 'packages/domains/payByLink/domain/src') },
+                { find: '@integration-components/capital/publish', replacement: resolve(rootDir, 'packages/domains/capital/publish/src') },
+                { find: '@integration-components/capital/vue', replacement: resolve(rootDir, 'packages/domains/capital/vue/src') },
+                { find: '@integration-components/capital/domain', replacement: resolve(rootDir, 'packages/domains/capital/domain/src') },
             ],
         },
-        // Output to root dist/ so the root package.json entry points and CI workflows remain intact.
-        outDir: resolve(rootDir, 'dist'),
-        emptyOutDir: true,
-    },
-    css: {
-        preprocessorOptions: {
-            scss: {
-                api: 'modern-compiler' as const,
-                silenceDeprecations: ['legacy-js-api'],
-                loadPaths: [srcDir, resolve(rootDir, 'node_modules')],
+        build: {
+            minify: 'terser',
+            terserOptions: {
+                format: { comments: false },
+                compress: { passes: 2 },
+                mangle: true,
             },
-        },
-    },
-    define: getBuildEnvDefines(mode),
-    json: {
-        stringify: true,
-    },
-    plugins: [
-        {
-            name: 'stub-dev-only-assets',
-            enforce: 'pre' as const,
-            load(id: string) {
-                if (id === translationsLocalFile) {
-                    return `export const translationsDevAssets = {};`;
-                }
+            sourcemap: false,
+            lib: {
+                cssFileName: 'adyen-platform-experience-web',
+                name: 'AdyenPlatformExperienceWeb',
+                entry: resolve(projectRoot, 'src/index.ts'),
+                fileName: isCdnBuild ? () => CDN_ENTRY_FILE_NAME : getNpmFileName,
             },
+            rollupOptions: isCdnBuild
+                ? {
+                      output: [
+                          {
+                              format: 'es',
+                              chunkFileNames: 'chunks/[name]-[hash].js',
+                              indent: false,
+                          },
+                      ],
+                  }
+                : {
+                      external: shouldExcludeAsset,
+                      output: [
+                          {
+                              format: 'es',
+                              preserveModules: true,
+                              preserveModulesRoot: rootDir,
+                              sourcemap: false,
+                              indent: false,
+                          },
+                          {
+                              format: 'cjs',
+                              sourcemap: true,
+                              indent: false,
+                          },
+                      ],
+                  },
+            // Output to root dist/ so the root package.json entry points and CI workflows remain intact.
+            outDir: isCdnBuild ? CDN_OUT_DIR : resolve(rootDir, 'dist'),
+            emptyOutDir: true,
         },
-        vue({
-            template: {
-                compilerOptions: {
-                    isCustomElement: tag => KYC_CUSTOM_ELEMENT_TAGS.includes(tag),
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    api: 'modern-compiler' as const,
+                    silenceDeprecations: ['legacy-js-api'],
+                    loadPaths: [srcDir, resolve(rootDir, 'node_modules')],
                 },
             },
-        }),
-        rewriteBentoCssVariables(),
-    ],
-}));
+        },
+        define: {
+            ...getBuildEnvDefines(mode),
+            ...(isCdnBuild && { 'process.env.NODE_ENV': JSON.stringify('production') }),
+        },
+        json: {
+            stringify: true,
+        },
+        plugins: [
+            {
+                name: 'stub-dev-only-assets',
+                enforce: 'pre' as const,
+                load(id: string) {
+                    if (id === translationsLocalFile) {
+                        return `export const translationsDevAssets = {};`;
+                    }
+                },
+            },
+            isCdnBuild && lazyElementComponents(),
+            vue({
+                template: {
+                    compilerOptions: {
+                        isCustomElement: tag => KYC_CUSTOM_ELEMENT_TAGS.includes(tag),
+                    },
+                },
+            }),
+            rewriteBentoCssVariables(),
+        ],
+    };
+});

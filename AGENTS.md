@@ -11,6 +11,7 @@ All agent documentation lives under `.agents/` — check the JIT Index below for
 ```bash
 pnpm install                # Install dependencies
 pnpm run build              # Build library (ES + CJS output)
+pnpm run build:cdn          # Build CDN bundle (ESM entry + lazy per-component chunks) into dist-cdn/
 pnpm run types:check        # TypeScript strict type-check
 pnpm run lint               # ESLint + Stylelint
 pnpm run test               # Vitest unit tests (watch mode)
