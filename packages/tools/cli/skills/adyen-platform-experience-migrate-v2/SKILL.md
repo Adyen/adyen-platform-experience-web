@@ -20,7 +20,7 @@ Do not edit, create or delete any file until all three checks pass. If one fails
 
     Anything else fails the check, including any other change in a `package.json` or `pnpm-workspace.yaml`: ask the user to commit or stash it first, so the migration is one diff they can review and revert.
 
-2. **Matching version.** Read `version` from `node_modules/@adyen/adyen-platform-experience-web/package.json`. If it isn't exactly the `metadata.adyen-platform-experience-version` above, the check fails: tell the user to run `npx @adyen/adyen-platform-experience-web skills sync` (or to upgrade the package first if it's still 1.x).
+2. **Matching version.** Find the installed version: `version` in `node_modules/@adyen/adyen-platform-experience-web/package.json`, in the app's folder or, in a workspace that hoists dependencies, the nearest parent folder that has it. With Yarn Plug'n'Play (no `node_modules`), run `yarn info @adyen/adyen-platform-experience-web version`. If the app loads the library with `<script>` tags, use the version in the script URL. If it isn't exactly the `metadata.adyen-platform-experience-version` above, the check fails: tell the user to run `npx @adyen/adyen-platform-experience-web skills sync` (or to upgrade the package first if it's still 1.x).
 3. **Every component covered.** List the components the app imports from `@adyen/adyen-platform-experience-web`. If any isn't in `metadata.adyen-platform-experience-components` above, the check fails: tell the user to run `npx @adyen/adyen-platform-experience-web skills add` and select it.
 
 Only when all three pass, continue.
