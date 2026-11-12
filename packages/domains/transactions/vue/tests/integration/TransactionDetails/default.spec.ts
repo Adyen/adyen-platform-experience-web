@@ -74,7 +74,8 @@ test.describe('Default', () => {
             for (const { name, subSectionName, value } of copyButtons) {
                 const copyButton = page.getByRole('button', { name, exact: true, disabled: false });
                 await copyButton.click();
-                await expect(copyButton.locator('..').getByText('Copied', { exact: true })).toBeAttached();
+                // Bento also announces "Copied" in a visually hidden live region, so more than one element can match.
+                await expect(copyButton.locator('..').getByText('Copied', { exact: true }).first()).toBeAttached();
 
                 await expectAnalyticsEvents(analyticsEvents, [['Clicked button', { ...sharedCopyButtonAnalyticsEventProperties, subSectionName }]]);
 

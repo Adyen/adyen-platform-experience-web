@@ -22,7 +22,7 @@ test.describe('Default', () => {
 
     test.describe('Render', () => {
         test('should render transactions overview', async ({ page }) => {
-            const information = 'Payout information is generated each day at midnight, UTC time.';
+            const information = 'Payout information becomes available after the payout has been fully processed.';
             const toolbar = page.getByRole('toolbar');
             const dataGrid = page.getByRole('grid');
 

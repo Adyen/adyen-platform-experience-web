@@ -1,7 +1,7 @@
 import type { MissingActionsPollingConfig } from './polling';
-import type { IGrantsResponseDTO, IMissingAction, IMissingActionType } from '@integration-components/types';
+import type { IGrantsResponse, IMissingAction, IMissingActionType } from '@integration-components/types';
 
-export const getMissingActions = (grantsResponseData: IGrantsResponseDTO | undefined, grantId: string, initialMissingActions: IMissingAction[]) => {
+export const getMissingActions = (grantsResponseData: IGrantsResponse | undefined, grantId: string, initialMissingActions: IMissingAction[]) => {
     const grant = grantsResponseData?.data?.find(grant => grant.id === grantId);
     return grant?.missingActions ?? initialMissingActions;
 };
