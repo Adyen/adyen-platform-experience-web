@@ -53,7 +53,7 @@ function getValue(field: string) {
 }
 
 function getLabel(field: string) {
-    return i18n.get(`payByLink.creation.fields.${props.prefix}.${field}.label` as PayByLinkTranslationKey);
+    return i18n.get(`payByLink.creation.${props.prefix}.${field}` as PayByLinkTranslationKey);
 }
 
 function getMaxLength(field: string) {
@@ -75,7 +75,7 @@ function onInput(field: string, value: string | number) {
             {{ props.title }}
         </BentoTypography>
         <BentoTypography v-if="props.isOptional" variant="body" :class="styles.optionalLabel">
-            {{ `(${i18n.get('payByLink.creation.fields.optional.label')})` }}
+            {{ `(${i18n.get('payByLink.creation.optional')})` }}
         </BentoTypography>
     </div>
     <BentoFormLayoutGroup :layout="streetRowLayout">

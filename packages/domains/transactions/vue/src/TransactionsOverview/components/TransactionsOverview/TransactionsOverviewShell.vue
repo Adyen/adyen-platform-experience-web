@@ -31,7 +31,7 @@ const bentoViewTabs = computed<BentoSegmentedControlItem[]>(() => viewTabs.value
             <div v-else-if="!isMobile" />
             <BentoSegmentedControl
                 v-if="viewTabs.length > 1"
-                :aria-label="i18n.get('transactions.overview.viewSelect.a11y.label')"
+                :aria-label="i18n.get('transactions.overview.viewSelect.a11yLabel')"
                 :full-width="isMobile"
                 :items="bentoViewTabs"
                 :model-value="activeView"

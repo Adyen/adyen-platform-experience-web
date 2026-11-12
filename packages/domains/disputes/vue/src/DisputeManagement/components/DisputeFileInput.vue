@@ -23,11 +23,11 @@ const accept = '.pdf,.jpg,.jpeg,.tiff';
 
 function validateFile(file: File) {
     if (!(ALLOWED_FILE_TYPES as readonly string[]).includes(file.type)) {
-        return i18n.get('disputes.common.inputs.file.errors.disallowedType');
+        return i18n.get('disputes.common.file.errors.disallowedType');
     }
     const maxSize = DOCUMENT_MAX_SIZE[file.type as keyof typeof DOCUMENT_MAX_SIZE];
     if (maxSize !== undefined && file.size > maxSize) {
-        return i18n.get('disputes.management.defend.common.inputs.file.errors.tooLarge', {
+        return i18n.get('disputes.management.defend.file.errors.tooLarge', {
             values: {
                 size: getHumanReadableFileSize(maxSize),
                 type: file.type.replace(/^([^/]+\/)*/gi, '').toUpperCase(),
@@ -67,7 +67,7 @@ function onUploadError(hasError: boolean) {
         :accept="accept"
         :disabled="props.disabled"
         :error-message="errorMessage"
-        :label="i18n.get('disputes.common.inputs.file.labels.default')"
+        :label="i18n.get('disputes.common.file.label')"
         :max-count="1"
         :required="props.required"
         condensed

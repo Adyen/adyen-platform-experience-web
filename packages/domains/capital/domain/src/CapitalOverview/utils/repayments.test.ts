@@ -1,11 +1,11 @@
 import { describe, expect, test } from 'vitest';
 import {
-    ACTIVE_GRANT,
-    ACTIVE_GRANT_NL,
-    ACTIVE_GRANT_WITHOUT_TRANSFER_INSTRUMENTS,
-    GRANT_GB_ACCOUNT,
-    GRANT_NL_ACCOUNT,
-} from '../../../../mocks/mock-data/capital';
+    ACTIVE_LOAN,
+    ACTIVE_WITHOUT_REPAYMENT_ACCOUNT,
+    ACTIVE_WITHOUT_TRANSFER_INSTRUMENTS,
+    REPAYMENT_ACCOUNT_GB,
+    REPAYMENT_ACCOUNT_NL,
+} from '../../../../mocks/mock-data';
 import {
     getBankAccount,
     getBankAccountDetails,
@@ -20,36 +20,36 @@ import {
 
 describe('getBankAccount', () => {
     test('returns the first repayment bank account', () => {
-        expect(getBankAccount(ACTIVE_GRANT_NL)).toEqual(GRANT_NL_ACCOUNT);
+        expect(getBankAccount(ACTIVE_LOAN)).toEqual(REPAYMENT_ACCOUNT_NL);
     });
 
     test('returns undefined when there are no repayment bank accounts', () => {
-        expect(getBankAccount(ACTIVE_GRANT)).toBeUndefined();
+        expect(getBankAccount(ACTIVE_WITHOUT_REPAYMENT_ACCOUNT)).toBeUndefined();
     });
 });
 
 describe('getTransferInstrumentIds', () => {
     test('returns transfer instrument IDs ', () => {
-        expect(getTransferInstrumentIds(ACTIVE_GRANT)).toEqual(['NL**INGB******8101', 'NL**INGB******4151']);
+        expect(getTransferInstrumentIds(ACTIVE_LOAN)).toEqual(['NL**INGB******8101', 'NL**INGB******4151']);
     });
 
     test('returns an empty array when there are no transfer instruments', () => {
-        expect(getTransferInstrumentIds(ACTIVE_GRANT_WITHOUT_TRANSFER_INSTRUMENTS)).toEqual([]);
+        expect(getTransferInstrumentIds(ACTIVE_WITHOUT_TRANSFER_INSTRUMENTS)).toEqual([]);
     });
 });
 
 describe('getBankAccountFields', () => {
     test('returns bank account fields sorted by provided order, excluding unknown fields and duplicated entries', () => {
-        expect(getBankAccountFields({ ...GRANT_GB_ACCOUNT, order: ['iban', 'iban', 'unknown', 'region'] })).toEqual(['iban', 'region']);
+        expect(getBankAccountFields({ ...REPAYMENT_ACCOUNT_GB, order: ['iban', 'iban', 'unknown', 'region'] })).toEqual(['iban', 'region']);
     });
 });
 
 describe('getBankAccountDetails', () => {
     test('returns formatted account details with their presentation metadata', () => {
-        expect(getBankAccountDetails(GRANT_NL_ACCOUNT)).toEqual([
+        expect(getBankAccountDetails(REPAYMENT_ACCOUNT_NL)).toEqual([
             {
                 content: 'NL69 RABO 1319 7782 91',
-                copyButtonLabel: 'capital.overview.repayment.actions.copyIban',
+                copyButtonLabel: 'capital.overview.repayment.accountDetails.copy.iban',
                 field: 'iban',
                 isPrimary: true,
                 label: 'capital.overview.repayment.accountDetails.fields.iban',
@@ -57,7 +57,7 @@ describe('getBankAccountDetails', () => {
             },
             {
                 content: 'Adyen N.V.',
-                copyButtonLabel: 'capital.overview.repayment.actions.copyBeneficiaryName',
+                copyButtonLabel: 'capital.overview.repayment.accountDetails.copy.beneficiaryName',
                 field: 'beneficiaryName',
                 isPrimary: false,
                 label: 'capital.overview.repayment.accountDetails.fields.beneficiaryName',
@@ -98,18 +98,18 @@ describe('getBankAccountFieldFormattedValue', () => {
 
 describe('getBankAccountFieldTextToCopy', () => {
     test('return the value only if the field is copyable', () => {
-        expect(getBankAccountFieldTextToCopy('iban', GRANT_NL_ACCOUNT.iban)).toBe(GRANT_NL_ACCOUNT.iban);
+        expect(getBankAccountFieldTextToCopy('iban', REPAYMENT_ACCOUNT_NL.iban)).toBe(REPAYMENT_ACCOUNT_NL.iban);
         expect(getBankAccountFieldTextToCopy('region', 'NL')).toBeUndefined();
     });
 });
 
 describe('getBankAccountFieldCopyButtonTranslationKey', () => {
     test.each([
-        ['accountNumber', 'capital.overview.repayment.actions.copyAccountNumber'],
-        ['beneficiaryName', 'capital.overview.repayment.actions.copyBeneficiaryName'],
-        ['iban', 'capital.overview.repayment.actions.copyIban'],
-        ['routingNumber', 'capital.overview.repayment.actions.copyRoutingNumber'],
-        ['sortCode', 'capital.overview.repayment.actions.copySortCode'],
+        ['accountNumber', 'capital.overview.repayment.accountDetails.copy.accountNumber'],
+        ['beneficiaryName', 'capital.overview.repayment.accountDetails.copy.beneficiaryName'],
+        ['iban', 'capital.overview.repayment.accountDetails.copy.iban'],
+        ['routingNumber', 'capital.overview.repayment.accountDetails.copy.routingNumber'],
+        ['sortCode', 'capital.overview.repayment.accountDetails.copy.sortCode'],
         ['region', undefined],
     ])('returns copy button translation key for %s', (field, expected) => {
         expect(getBankAccountFieldCopyButtonTranslationKey(field)).toBe(expected);

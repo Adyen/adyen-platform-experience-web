@@ -38,7 +38,7 @@ const shouldHide = computed(() => !isFetching.value && localeItems.value.length 
     <SelectField
         v-if="config.visible && !shouldHide"
         name="shopperLocale"
-        :label="i18n.get('payByLink.creation.fields.language.label')"
+        :label="i18n.get('payByLink.creation.language')"
         :items="localeItems"
         :loading="isFetching"
         filterable
