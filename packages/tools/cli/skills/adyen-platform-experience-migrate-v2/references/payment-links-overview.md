@@ -1,6 +1,6 @@
 # PaymentLinksOverview: v1 to v2
 
-New, optional: `storeIds: string[]` limits the component to those stores (one store hides store selection).
+`storeIds` (`string | string[]`) is unchanged.
 
 Also apply `references/global.md` and `references/css-overrides.md`.
 
