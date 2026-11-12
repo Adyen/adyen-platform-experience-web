@@ -25,6 +25,15 @@ const runLoad = (id: string) => {
     return load.call({} as never, id);
 };
 
+const getImportedLiteral = (code: unknown) => {
+    const literal = typeof code === 'string' ? /import\(("(?:[^"\\]|\\.)*")\)/.exec(code)?.[1] : undefined;
+    if (!literal) throw new TypeError('Expected the generated code to contain a dynamic import');
+
+    return literal;
+};
+
+const getImportedSpecifier = (code: unknown) => JSON.parse(getImportedLiteral(code)) as string;
+
 describe('lazyElementComponents', () => {
     test('redirects Vue imports made by element files to a lazy wrapper', async () => {
         const { resolve, result } = await runResolveId('./components/TransactionsOverviewContainer.vue', ELEMENT_FILE);
@@ -72,7 +81,16 @@ describe('lazyElementComponents', () => {
         const code = runLoad(`${LAZY_ELEMENT_COMPONENT_PREFIX}${CONTAINER_FILE}`);
 
         expect(code).toContain(`import { defineAsyncComponent } from 'vue';`);
-        expect(code).toContain(`export default defineAsyncComponent(() => import(${JSON.stringify(CONTAINER_FILE)}));`);
+        expect(code).toContain('export default defineAsyncComponent(() => import(');
+        expect(getImportedSpecifier(code)).toBe(CONTAINER_FILE);
+    });
+
+    test('escapes characters that are unsafe to embed in generated code', () => {
+        const unsafeFile = '/repo/<script>\u2028\u2029.vue';
+        const code = runLoad(`${LAZY_ELEMENT_COMPONENT_PREFIX}${unsafeFile}`);
+
+        expect(getImportedLiteral(code)).not.toMatch(/[<>\u2028\u2029]/);
+        expect(getImportedSpecifier(code)).toBe(unsafeFile);
     });
 
     test('ignores ids it did not create', () => {

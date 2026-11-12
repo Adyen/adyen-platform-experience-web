@@ -1,7 +1,7 @@
-import { createApp, h, reactive, ref, shallowRef, type App, type Component } from 'vue';
+import { createApp, defineAsyncComponent, h, reactive, ref, shallowRef, type App, type Component } from 'vue';
 import { createI18n as createVueI18n, type I18n as VueI18n } from 'vue-i18n';
 import type { ExternalComponentType, GlobalAppearance } from '@integration-components/types';
-import { isShallowEqual, uuid } from '@integration-components/utils';
+import { ALREADY_RESOLVED_PROMISE, isShallowEqual, noop, uuid } from '@integration-components/utils';
 import UIElementProvider from './UIElementProvider.vue';
 import type { DomainTranslationBinding } from './Context/types';
 import { applyBentoDomainOverrides, getBentoLocaleMessages } from './bentoTranslations';
@@ -211,6 +211,9 @@ export class UIElement<Props extends Record<string, any> & { appearance?: Global
             this._bentoOverrides = bentoOverrides;
             this._translationDomain = translationDomain;
 
+            const domainTranslationsReady = this.#loadDomainTranslations();
+            const translatedComponent = defineAsyncComponent(() => domainTranslationsReady.catch(noop).then(() => component));
+
             const { refresh, refreshCount } = createRefreshContext();
             this._refreshTranslations = refresh;
 
@@ -228,7 +231,7 @@ export class UIElement<Props extends Record<string, any> & { appearance?: Global
                             globalAppearance: globalAppearance.value,
                             refreshComponent: refresh,
                         },
-                        { default: () => h(component, { ...componentProps, key: refreshCount.value }) }
+                        { default: () => h(translatedComponent, { ...componentProps, key: refreshCount.value }) }
                     );
                 },
             });
@@ -353,9 +356,14 @@ export class UIElement<Props extends Record<string, any> & { appearance?: Global
      * instead of escaping as an unhandled promise rejection.
      */
     #syncTranslationsWhenReady(): void {
-        Promise.all([this.core.localization.ready, this.core.bentoLocalization.ready])
+        Promise.all([this.#loadDomainTranslations(), this.core.localization.ready, this.core.bentoLocalization.ready])
             .then(() => this.#syncTranslations())
             .catch((error: unknown) => this.#reportTranslationSyncError(error));
+    }
+
+    #loadDomainTranslations(): Promise<void> {
+        if (!this._translationDomain) return ALREADY_RESOLVED_PROMISE;
+        return Promise.resolve(this.core.localization.loadDomainTranslations?.(this._translationDomain));
     }
 
     #reportTranslationSyncError(error: unknown): void {

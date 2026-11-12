@@ -268,6 +268,104 @@ describe('Localization', () => {
         });
     });
 
+    describe('loadDomainTranslations', () => {
+        const payoutsKey = 'payouts.common.copy.label' as TranslationKey;
+        const transactionsKey = 'transactions.common.errors.updateFilters' as TranslationKey;
+
+        const createDomainSources = (payouts: () => Promise<Record<string, string>>) => ({
+            defaultTranslations: {},
+            domainDefaultTranslations: {
+                payouts,
+                transactions: () => Promise.resolve({ [transactionsKey]: 'Transactions default' }),
+            },
+            localeTranslations: { 'en-US': Promise.resolve({}) },
+        });
+
+        test('serves the defaults of a domain only after that domain loads', async () => {
+            const localization = new Localization(
+                'en-US',
+                '',
+                createDomainSources(() => Promise.resolve({ [payoutsKey]: 'Copy' }))
+            );
+
+            await localization.ready;
+            expect(localization.get(payoutsKey)).toBe(payoutsKey);
+
+            await localization.loadDomainTranslations('payouts');
+
+            expect(localization.get(payoutsKey)).toBe('Copy');
+            expect(localization.get(transactionsKey)).toBe(transactionsKey);
+        });
+
+        test('loads each domain once and waits for in-flight domain loads in ready', async () => {
+            const loadPayouts = vi.fn(() => Promise.resolve({ [payoutsKey]: 'Copy' }));
+            const localization = new Localization('en-US', '', createDomainSources(loadPayouts));
+
+            const firstLoad = localization.loadDomainTranslations('payouts');
+            const secondLoad = localization.loadDomainTranslations('payouts');
+
+            expect(secondLoad).toBe(firstLoad);
+
+            await localization.ready;
+
+            expect(localization.get(payoutsKey)).toBe('Copy');
+            expect(loadPayouts).toHaveBeenCalledOnce();
+        });
+
+        test('lets custom translations and the active locale catalog win over domain defaults', async () => {
+            const localization = new Localization(
+                'en-US',
+                '',
+                createDomainSources(() => Promise.resolve({ [payoutsKey]: 'Copy' }))
+            );
+            localization.customTranslations = { 'en-US': { [payoutsKey]: 'Custom copy' } };
+
+            await localization.loadDomainTranslations('payouts');
+            await localization.ready;
+
+            expect(localization.get(payoutsKey)).toBe('Custom copy');
+        });
+
+        test('advances the refresh timestamp when a domain loads', async () => {
+            const localization = new Localization(
+                'en-US',
+                '',
+                createDomainSources(() => Promise.resolve({ [payoutsKey]: 'Copy' }))
+            );
+            await localization.ready;
+
+            const timestampBeforeLoad = localization.lastRefreshTimestamp;
+            await new Promise(resolve => setTimeout(resolve, 1));
+            await localization.loadDomainTranslations('payouts');
+
+            expect(localization.lastRefreshTimestamp).toBeGreaterThan(timestampBeforeLoad);
+        });
+
+        test('retries a domain whose load failed, without rejecting ready', async () => {
+            const loadPayouts = vi
+                .fn<() => Promise<Record<string, string>>>()
+                .mockRejectedValueOnce(new Error('Chunk failed'))
+                .mockResolvedValueOnce({ [payoutsKey]: 'Copy' });
+            const localization = new Localization('en-US', '', createDomainSources(loadPayouts));
+
+            await expect(localization.loadDomainTranslations('payouts')).rejects.toThrow('Chunk failed');
+            await expect(localization.ready).resolves.toBeUndefined();
+
+            await localization.loadDomainTranslations('payouts');
+
+            expect(localization.get(payoutsKey)).toBe('Copy');
+            expect(loadPayouts).toHaveBeenCalledTimes(2);
+        });
+
+        test('resolves immediately for sources that do not split defaults by domain', async () => {
+            const localization = new Localization('en-US', '', { defaultTranslations: { [payoutsKey]: 'Copy' }, localeTranslations: {} });
+
+            await localization.loadDomainTranslations('payouts');
+
+            expect(localization.get(payoutsKey)).toBe('Copy');
+        });
+    });
+
     describe('CDN translations cache', () => {
         const cdnTranslationsUrl = 'https://cdn.example/translations';
         const createSources = () => ({

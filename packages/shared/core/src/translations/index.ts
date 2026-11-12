@@ -1,12 +1,10 @@
 import type { KeyOfRecord } from '@integration-components/utils/types';
 import type { BentoTranslationKey } from '@adyen/bento-vue3/translation-keys';
-import EN_US from '../../../../sdk/translations/en-US.json';
-
-const _en_US = { ...EN_US };
+import type EN_US from '../../../../sdk/translations/en-US.json';
 
 export type CustomTranslations = Record<string, Translations>;
 export type Locale = `${Lowercase<string>}-${Uppercase<string>}`;
-export type TranslationKey = KeyOfRecord<typeof _en_US>;
+export type TranslationKey = KeyOfRecord<typeof EN_US>;
 export type Translations = { [key in TranslationKey]?: string };
 
 /**
@@ -65,5 +63,3 @@ export const getSafeDomainTranslationKey = <D extends TranslationDomain, R exten
  */
 export const getUnsafeDomainTranslationKey = (domain: TranslationDomain, key: string): DomainTranslationKey =>
     `${domain}.${key}` as DomainTranslationKey;
-
-export const defaultTranslations: Translations = _en_US as Translations;

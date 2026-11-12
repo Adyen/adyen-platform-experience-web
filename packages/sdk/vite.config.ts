@@ -15,7 +15,7 @@ const translationsDir = resolve(rootDir, 'packages/shared/core/src/translations'
 const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
 const externalDependencies = Object.keys(rootPkgJson.dependencies);
-const KYC_CUSTOM_ELEMENT_TAGS = ['adyen-business-financing', 'adyen-terms-of-service-management'];
+const KYC_CUSTOM_ELEMENT_TAGS = new Set(['adyen-business-financing', 'adyen-terms-of-service-management']);
 
 export const CDN_BUILD_MODE = 'cdn';
 export const CDN_OUT_DIR = resolve(rootDir, 'dist-cdn');
@@ -27,7 +27,7 @@ const shouldExcludeAsset = (id: string) => {
 
 const getNpmFileName = (format: string, entryName: string) => {
     const extension = format === 'cjs' ? 'cjs' : 'js';
-    const normalizedEntry = entryName.replace(/\\/g, '/');
+    const normalizedEntry = entryName.replaceAll('\\', '/');
     const nodeModulesIndex = normalizedEntry.lastIndexOf('node_modules/');
     if (nodeModulesIndex !== -1) {
         const normalized = normalizedEntry.slice(nodeModulesIndex + 'node_modules/'.length);
@@ -139,7 +139,7 @@ export default defineConfig(({ mode }) => {
                 enforce: 'pre' as const,
                 load(id: string) {
                     if (id === translationsLocalFile) {
-                        return `export const translationsDevAssets = {};`;
+                        return `export const translationsDevAssets = {};\nexport const translationsDevDefaults = {};`;
                     }
                 },
             },
@@ -147,7 +147,7 @@ export default defineConfig(({ mode }) => {
             vue({
                 template: {
                     compilerOptions: {
-                        isCustomElement: tag => KYC_CUSTOM_ELEMENT_TAGS.includes(tag),
+                        isCustomElement: tag => KYC_CUSTOM_ELEMENT_TAGS.has(tag),
                     },
                 },
             }),

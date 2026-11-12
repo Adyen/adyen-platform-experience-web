@@ -1,17 +1,25 @@
-import enUS from '../translations/en-US.json' with { type: 'json' };
 import bentoEnUS from '../translations/bento/en-US.json' with { type: 'json' };
 import type { LocalizationSources } from '@integration-components/core/Localization/Localization';
+import type { TranslationDomain } from '@integration-components/core/translations';
 
 export type BentoMirrorTranslationKey = keyof typeof bentoEnUS;
 export const BENTO_TRANSLATION_KEYS = Object.keys(bentoEnUS) as BentoMirrorTranslationKey[];
 export const SDK_BENTO_DEFAULT_TRANSLATIONS = bentoEnUS;
 
 export const SDK_TRANSLATION_SOURCES: LocalizationSources = {
-    defaultTranslations: enUS,
+    defaultTranslations: {},
+    domainDefaultTranslations: {
+        capital: () => import('../../domains/capital/vue/translations/en-US.json').then(({ default: translations }) => translations),
+        disputes: () => import('../../domains/disputes/vue/translations/en-US.json').then(({ default: translations }) => translations),
+        payByLink: () => import('../../domains/payByLink/vue/translations/en-US.json').then(({ default: translations }) => translations),
+        payouts: () => import('../../domains/payouts/vue/translations/en-US.json').then(({ default: translations }) => translations),
+        reports: () => import('../../domains/reports/vue/translations/en-US.json').then(({ default: translations }) => translations),
+        transactions: () => import('../../domains/transactions/vue/translations/en-US.json').then(({ default: translations }) => translations),
+    } satisfies Record<TranslationDomain, () => Promise<Record<string, string>>>,
     localeTranslations: {
         'da-DK': () => import('../translations/da-DK.json').then(({ default: translations }) => translations),
         'de-DE': () => import('../translations/de-DE.json').then(({ default: translations }) => translations),
-        'en-US': Promise.resolve(enUS),
+        'en-US': Promise.resolve({}),
         'es-ES': () => import('../translations/es-ES.json').then(({ default: translations }) => translations),
         'fi-FI': () => import('../translations/fi-FI.json').then(({ default: translations }) => translations),
         'fr-FR': () => import('../translations/fr-FR.json').then(({ default: translations }) => translations),
