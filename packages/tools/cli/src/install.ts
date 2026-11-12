@@ -2,13 +2,13 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node
 import { dirname, join, resolve } from 'node:path';
 import { type Choice, createPrompter } from './prompts';
 import {
+    commandPrefix,
     COMPONENTS_FIELD,
     displayPath,
     findGitRoot,
     type Flags,
     listFiles,
     listSkills,
-    PACKAGE_NAME,
     readField,
     type RunOptions,
     setField,
@@ -177,7 +177,7 @@ export const sync = (flags: Flags, options: RunOptions) => {
     const root = installRoot(flags, options.cwd);
     const installed = findInstalled(root, options.skillsRoot);
     if (!installed.length) {
-        options.stderr.write(`No installed skills found under ${root}. Install one with: npx ${PACKAGE_NAME} skills add\n`);
+        options.stderr.write(`No installed skills found under ${root}. Install one with: ${commandPrefix(options)} skills add\n`);
         return 1;
     }
     for (const { folder, skill, dir } of installed) {

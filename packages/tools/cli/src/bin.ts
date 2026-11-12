@@ -21,4 +21,5 @@ process.exitCode = await run(process.argv.slice(2), {
     stderr: process.stderr,
     stdin: process.stdin,
     isTTY: Boolean(process.stdin.isTTY && process.stdout.isTTY),
+    userAgent: process.env.npm_config_user_agent,
 });

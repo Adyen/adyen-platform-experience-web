@@ -1,8 +1,10 @@
 import { existsSync, readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { add, AGENTS, findInstalled, installRoot, remove, sync } from './install';
 import {
+    commandPrefix,
     COMPONENTS_FIELD,
     displayPath,
     type Flags,
@@ -18,8 +20,8 @@ import {
 
 export { PACKAGE_NAME, type RunOptions } from './skills';
 
-const header = (skill: string, version: string, files: string[]) => {
-    const command = `npx ${PACKAGE_NAME} skills show ${shortName(skill)}`;
+const header = (skill: string, version: string, files: string[], prefix: string) => {
+    const command = `${prefix} skills show ${shortName(skill)}`;
     return [
         `> Skill \`${skill}\` from ${PACKAGE_NAME} ${version}, printed by \`${command}\`.`,
         '> It is not installed in this project. To read a file it mentions, run:',
@@ -51,7 +53,7 @@ const show = (skillArg: string, fileArg: string | undefined, options: RunOptions
     }
 
     const references = files.filter(file => file !== 'SKILL.md');
-    options.stdout.write(header(skill, options.version, references) + readFileSync(join(skillDir, 'SKILL.md'), 'utf8'));
+    options.stdout.write(header(skill, options.version, references, commandPrefix(options)) + readFileSync(join(skillDir, 'SKILL.md'), 'utf8'));
     return 0;
 };
 
@@ -60,14 +62,14 @@ const duplicateReaders = (folders: string[]) =>
         .filter(([, { reads }]) => folders.filter(folder => reads.includes(folder.split('/')[0]!)).length > 1)
         .map(([agent]) => agent);
 
-const list = (flags: Flags, { cwd, skillsRoot, version, stdout }: RunOptions) => {
+const list = (flags: Flags, { cwd, skillsRoot, version, stdout, userAgent }: RunOptions) => {
     const root = installRoot(flags, cwd);
     const installed = findInstalled(root, skillsRoot);
     const skills = listSkills(skillsRoot).map(name => ({
         name,
         description: readField(join(skillsRoot, name, 'SKILL.md'), 'description'),
         version,
-        show: `npx ${PACKAGE_NAME} skills show ${shortName(name)}`,
+        show: `${commandPrefix({ userAgent })} skills show ${shortName(name)}`,
         installed: installed
             .filter(copy => copy.skill === name)
             .map(({ folder, dir }) => ({
@@ -98,28 +100,51 @@ const list = (flags: Flags, { cwd, skillsRoot, version, stdout }: RunOptions) =>
     return 0;
 };
 
-const installError = (cwd: string, version: string) => {
-    let pnp = false;
+// Under Yarn Plug'n'Play there is no node_modules: Yarn's runtime resolves the package from its cache.
+const resolveManifest = (cwd: string) => {
+    try {
+        let dir = dirname(createRequire(join(cwd, 'package.json')).resolve(PACKAGE_NAME));
+        for (; dirname(dir) !== dir; dir = dirname(dir)) {
+            const manifest = join(dir, 'package.json');
+            if (existsSync(manifest) && JSON.parse(readFileSync(manifest, 'utf8')).name === PACKAGE_NAME) return manifest;
+        }
+    } catch {
+        // Not resolvable from here.
+    }
+    return undefined;
+};
+
+const findManifest = (cwd: string) => {
     for (let dir = cwd; ; dir = dirname(dir)) {
         const manifest = join(dir, 'node_modules', PACKAGE_NAME, 'package.json');
-        if (existsSync(manifest)) {
-            const installed = JSON.parse(readFileSync(manifest, 'utf8')).version;
-            return installed === version
-                ? undefined
-                : `This project has ${PACKAGE_NAME} ${installed} installed, but this CLI is ${version}.\n` +
-                      `Run the command without @latest (npx ${PACKAGE_NAME} …) so it uses the installed copy.\n`;
-        }
-        pnp ||= existsSync(join(dir, '.pnp.cjs'));
-        if (dirname(dir) === dir) break;
+        if (existsSync(manifest)) return manifest;
+        if (dirname(dir) === dir) return resolveManifest(cwd);
     }
-    return pnp
-        ? "Yarn Plug'n'Play isn't supported yet: this command needs node_modules.\n" +
-              'Set `nodeLinker: node-modules` in .yarnrc.yml and run yarn install, or follow the migration guide.\n'
+};
+
+const usesPnp = (cwd: string) => {
+    for (let dir = cwd; ; dir = dirname(dir)) {
+        if (existsSync(join(dir, '.pnp.cjs'))) return true;
+        if (dirname(dir) === dir) return false;
+    }
+};
+
+const installError = ({ cwd, version, userAgent }: RunOptions) => {
+    const manifest = findManifest(cwd);
+    if (manifest) {
+        const installed = JSON.parse(readFileSync(manifest, 'utf8')).version;
+        return installed === version
+            ? undefined
+            : `This project has ${PACKAGE_NAME} ${installed} installed, but this CLI is ${version}.\n` +
+                  `Run the command without @latest (${commandPrefix({ userAgent })} …) so it uses the installed copy.\n`;
+    }
+    return usesPnp(cwd)
+        ? `This project uses Yarn Plug'n'Play, so run the command through Yarn: yarn adyen-platform-experience-web skills …\n`
         : `${PACKAGE_NAME} isn't installed in ${cwd} or any parent directory.\n` +
               'Run this command from the app that depends on it, after upgrading it to v2.\n';
 };
 
-const USAGE = `Usage: npx ${PACKAGE_NAME} <command>
+const usage = (prefix: string) => `Usage: ${prefix} <command>
 
 Commands:
   skills show <skill> [file]   Print a skill, or one of its files, without installing it
@@ -130,7 +155,7 @@ Commands:
   skills remove [skill…]       Delete installed skills, e.g. once the migration is done
 
 Example:
-  npx ${PACKAGE_NAME} skills show migrate-v2
+  ${prefix} skills show migrate-v2
 `;
 
 const OPTIONS = {
@@ -167,22 +192,22 @@ const resolveCommand = ([group, command, ...args]: string[], flags: Flags, optio
 export async function run(argv: string[], options: RunOptions): Promise<number> {
     const parsed = parse(argv);
     if ('error' in parsed) {
-        options.stderr.write(`${parsed.error}\n\n${USAGE}`);
+        options.stderr.write(`${parsed.error}\n\n${usage(commandPrefix(options))}`);
         return 1;
     }
     if (parsed.flags.help) {
-        options.stdout.write(USAGE);
+        options.stdout.write(usage(commandPrefix(options)));
         return 0;
     }
 
     const action = resolveCommand(parsed.positionals, parsed.flags, options);
     if (!action) {
-        options.stderr.write(USAGE);
+        options.stderr.write(usage(commandPrefix(options)));
         return 1;
     }
 
     try {
-        const error = installError(options.cwd, options.version);
+        const error = installError(options);
         if (error) {
             options.stderr.write(error);
             return 1;

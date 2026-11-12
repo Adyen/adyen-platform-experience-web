@@ -18,6 +18,7 @@ export interface RunOptions {
     stderr: Output;
     stdin?: NodeJS.ReadableStream;
     isTTY?: boolean;
+    userAgent?: string;
 }
 
 export interface Flags {
@@ -67,3 +68,7 @@ export const findGitRoot = (cwd: string) => {
 };
 
 export const displayPath = (cwd: string, root: string, folder: string) => `${relative(cwd, join(root, folder)) || '.'}/`;
+
+// Yarn Plug'n'Play can't run bins through npx; Yarn runs them by their bin name.
+export const commandPrefix = ({ userAgent }: Pick<RunOptions, 'userAgent'>) =>
+    /^yarn\//.test(userAgent ?? '') ? 'yarn adyen-platform-experience-web' : `npx ${PACKAGE_NAME}`;

@@ -69,11 +69,12 @@ interface RunCliOptions {
     version?: string;
     input?: string;
     isTTY?: boolean;
+    userAgent?: string;
 }
 
 export const runCli = async (
     argv: string[],
-    { cwd = makeProject(), skillsRoot = makeSkillsRoot(), version = VERSION, input, isTTY = false }: RunCliOptions = {}
+    { cwd = makeProject(), skillsRoot = makeSkillsRoot(), version = VERSION, input, isTTY = false, userAgent }: RunCliOptions = {}
 ) => {
     let stdout = '';
     let stderr = '';
@@ -85,6 +86,7 @@ export const runCli = async (
         stderr: { write: (chunk: string) => (stderr += chunk) },
         stdin: Readable.from(input === undefined ? [] : [input]),
         isTTY,
+        userAgent,
     });
     return { code, stdout, stderr };
 };

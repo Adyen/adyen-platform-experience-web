@@ -1,4 +1,5 @@
 import { mkdirSync, symlinkSync } from 'node:fs';
+import Module from 'node:module';
 import { join } from 'node:path';
 import { describe, expect, test } from 'vitest';
 import { makeProject, makeSkillsRoot, makeTempDir, PACKAGE, runCli, SKILL, VERSION, writeFile } from './__testing__';
@@ -134,7 +135,7 @@ describe('version check', () => {
         expect(stderr).toContain('without @latest');
     });
 
-    test("explains that Yarn Plug'n'Play is not supported when the project uses it", async () => {
+    test("tells Yarn Plug'n'Play users to run it through Yarn when it can't resolve the package", async () => {
         const cwd = makeProject(null);
         writeFile(join(cwd, '.pnp.cjs'), '');
 
@@ -142,8 +143,32 @@ describe('version check', () => {
 
         expect(code).toBe(1);
         expect(stdout).toBe('');
-        expect(stderr).toContain("Yarn Plug'n'Play isn't supported yet");
-        expect(stderr).toContain('nodeLinker: node-modules');
+        expect(stderr).toContain('yarn adyen-platform-experience-web skills');
+    });
+
+    test("finds the install through Node module resolution, as Yarn Plug'n'Play provides it", async () => {
+        const cwd = makeProject(null);
+        const pkg = join(cwd, 'deps', PACKAGE);
+        writeFile(join(pkg, 'package.json'), JSON.stringify({ name: PACKAGE, version: VERSION, main: 'index.js' }));
+        writeFile(join(pkg, 'index.js'), '');
+        writeFile(join(cwd, 'package.json'), JSON.stringify({ name: 'app' }));
+        const previous = process.env.NODE_PATH;
+        process.env.NODE_PATH = join(cwd, 'deps');
+        (Module as unknown as { _initPaths: () => void })._initPaths();
+        try {
+            const { code } = await runCli(['skills', 'show', 'migrate-v2'], { cwd });
+            expect(code).toBe(0);
+        } finally {
+            process.env.NODE_PATH = previous;
+            (Module as unknown as { _initPaths: () => void })._initPaths();
+        }
+    });
+
+    test('prints the Yarn command when run through Yarn', async () => {
+        const { stdout } = await runCli(['skills', 'show', 'migrate-v2'], { userAgent: 'yarn/4.5.0 npm/? node/v22.0.0 darwin arm64' });
+
+        expect(stdout).toContain('yarn adyen-platform-experience-web skills show migrate-v2 <file>');
+        expect(stdout).not.toContain('npx');
     });
 
     test('finds the install from a nested directory of the project', async () => {
