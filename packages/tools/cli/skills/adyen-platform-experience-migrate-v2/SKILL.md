@@ -16,6 +16,7 @@ Do not edit, create or delete any file until all three checks pass. If one fails
 1. **Clean working tree, apart from the upgrade.** Run `git status --porcelain --untracked-files=all`. The check passes if it prints nothing, or only these:
     - `package.json` files, and `pnpm-workspace.yaml` when the version is set in a pnpm catalog, where `git diff` shows that the only change is the `@adyen/adyen-platform-experience-web` version;
     - lockfiles: `package-lock.json`, `npm-shrinkwrap.json`, `pnpm-lock.yaml`, `yarn.lock`, `bun.lock` or `bun.lockb`;
+    - files Yarn Plug'n'Play rewrites on install: `.pnp.cjs`, `.pnp.loader.mjs`, `.yarn/install-state.gz`, and the `@adyen-adyen-platform-experience-web-*` zips in `.yarn/cache/`;
     - files of this skill in `.agents/skills/`, `.claude/skills/`, `.cursor/skills/` or `.factory/skills/`, written by `skills add` or `skills sync`.
 
     Anything else fails the check, including any other change in a `package.json` or `pnpm-workspace.yaml`: ask the user to commit or stash it first, so the migration is one diff they can review and revert.
