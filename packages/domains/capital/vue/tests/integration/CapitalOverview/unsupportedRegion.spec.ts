@@ -8,9 +8,9 @@ test.describe('Unsupported region', () => {
         await goToStory(page, { id: STORY_ID });
 
         await Promise.all([
-            expect(page.getByText('Business financing', { exact: true })).toBeVisible(),
+            expect(page.getByText('Adyen Capital', { exact: true })).toBeVisible(),
             expect(page.getByText('Stay tuned!')).toBeVisible(),
-            expect(page.getByText('Business financing isn’t available in your region yet, but check back here for an offer.')).toBeVisible(),
+            expect(page.getByText('Adyen Capital isn’t available in your region yet, but check back here for an offer.')).toBeVisible(),
         ]);
 
         await expectAnalyticsEvents(analyticsEvents, []);
@@ -20,6 +20,6 @@ test.describe('Unsupported region', () => {
 test.describe('mountIfInUnsupportedRegion argument', () => {
     test('should not render the component when argument is false', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { mountIfInUnsupportedRegion: 'false' } });
-        await expect(page.getByText('Business financing')).toBeHidden();
+        await expect(page.getByText('Adyen Capital')).toBeHidden();
     });
 });

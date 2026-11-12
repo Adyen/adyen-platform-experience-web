@@ -114,7 +114,7 @@ const handleReview = async () => {
 const actions = computed<BentoButtonActionsList>(() => {
     return [
         {
-            title: i18n.get('capital.offer.selection.reviewOffer'),
+            title: i18n.get('capital.offer.selection.review'),
             disabled: areDetailsLoading.value,
             state: isCreateOfferLoading.value ? 'loading' : 'start',
             event: handleReview,
