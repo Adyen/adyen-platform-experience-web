@@ -9,7 +9,7 @@ import {
     sharedCapitalOfferSummaryAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOffer/constants/analytics';
 
-const STORY_ID = 'mocked-capital-capital-offer--eligible';
+const STORY_ID = 'mocked-capital-capital-offer--eligible-loan';
 
 const expectPageLoadAnalyticsEvents = (analyticsEvents: PageAnalyticsEvent[]) =>
     expectAnalyticsEvents(analyticsEvents, [
@@ -25,7 +25,7 @@ const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[
     ]);
 };
 
-test.describe('Eligible', () => {
+test.describe('Eligible - Loan', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });

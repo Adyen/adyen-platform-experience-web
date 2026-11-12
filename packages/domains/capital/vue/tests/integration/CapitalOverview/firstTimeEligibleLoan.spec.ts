@@ -5,16 +5,16 @@ import {
     sharedCapitalOfferSummaryAnalyticsEventProperties,
     sharedCapitalOverviewAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
-import type { Page } from '@playwright/test';
 import {
     changedOfferAmountAnalyticsEventProperties,
     changedOfferTermAnalyticsEventProperties,
     landedOnPageAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOffer/constants/analytics';
+import type { Page } from '@playwright/test';
 
-const STORY_ID = 'mocked-capital-capital-overview--eligible';
+const STORY_ID = 'mocked-capital-capital-overview--first-time-eligible-loan';
 
-const getOfferButton = (page: Page) => page.getByTestId('capital-header').getByRole('button', { name: 'Request a new loan' });
+const getOfferButton = (page: Page) => page.getByTestId('capital-header').getByRole('button', { name: 'Request a loan' });
 
 const getOfferModal = (page: Page) => page.getByRole('dialog');
 
@@ -23,10 +23,7 @@ const openOfferAndExpectAnalytics = async (page: Page, analyticsEvents: PageAnal
     await expectAnalyticsEvents(
         analyticsEvents,
         [
-            [
-                'Clicked button',
-                { ...sharedCapitalOverviewAnalyticsEventProperties, label: 'Open offer', hasGrants: true, hasOffer: true, isEarlyRenewal: false },
-            ],
+            ['Clicked button', { ...sharedCapitalOverviewAnalyticsEventProperties, label: 'Open offer', hasOffer: true, isEarlyRenewal: false }],
             ['Landed on page', landedOnPageAnalyticsEventProperties],
             ['Changed offer amount', changedOfferAmountAnalyticsEventProperties],
             ['Changed offer term', changedOfferTermAnalyticsEventProperties],
@@ -44,7 +41,7 @@ const goToOfferSummaryAndExpectAnalytics = async (page: Page, analyticsEvents: P
     ]);
 };
 
-test.describe('Eligible', () => {
+test.describe('First-time eligible - Loan', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
         await expectAnalyticsEvents(analyticsEvents, [
@@ -52,31 +49,28 @@ test.describe('Eligible', () => {
                 'Landed on page',
                 {
                     ...sharedCapitalOverviewAnalyticsEventProperties,
-                    hasGrants: true,
                     hasOffer: true,
                 },
             ],
         ]);
     });
 
-    test('should render new loan alert in grants screen', async ({ page }) => {
+    test('should render offer alert', async ({ page }) => {
         await Promise.all([
             expect(page.getByText('Business financing', { exact: true })).toBeVisible(),
-            expect(page.getByText('You are now eligible to request a new loan up to €25,000')).toBeVisible(),
+            expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible(),
+            expect(page.getByText('You have been pre-qualified for business financing up to €25,000.')).toBeVisible(),
             expect(getOfferButton(page)).toBeVisible(),
         ]);
     });
 
-    test('should open offer in a modal when new loan button is clicked', async ({ page, analyticsEvents }) => {
+    test('should open offer in a modal when options button is clicked', async ({ page, analyticsEvents }) => {
         await openOfferAndExpectAnalytics(page, analyticsEvents);
-
-        const offerModal = getOfferModal(page);
-
-        await expect(offerModal).toBeVisible();
-        await expect(offerModal.getByText('Business financing request')).toBeVisible();
+        await expect(getOfferModal(page)).toBeVisible();
+        await expect(getOfferModal(page).getByText('Business financing request')).toBeVisible();
     });
 
-    test('should close offer modal and track dismissal when close button is clicked', async ({ page, analyticsEvents }) => {
+    test('should close offer modal when close button is clicked', async ({ page, analyticsEvents }) => {
         await openOfferAndExpectAnalytics(page, analyticsEvents);
         await getOfferModal(page).getByRole('button', { name: 'Close', exact: true }).click();
 
@@ -87,7 +81,7 @@ test.describe('Eligible', () => {
         await expect(getOfferModal(page)).toBeHidden();
     });
 
-    test('should close offer modal without tracking dismissal when request submit button in offer summary screen is clicked', async ({
+    test('should close offer modal and show grant in progress when request submit button in offer summary screen is clicked', async ({
         page,
         analyticsEvents,
     }) => {
@@ -99,8 +93,7 @@ test.describe('Eligible', () => {
         ]);
 
         await expect(getOfferModal(page)).toBeHidden();
-        await expect(page.getByRole('button', { name: 'Request a new loan' })).toBeHidden();
-        await expect(page.getByText('In progress')).toBeVisible();
         await expect(page.getByText('Pending')).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Request a loan' })).toBeHidden();
     });
 });
