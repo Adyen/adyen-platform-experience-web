@@ -14,6 +14,7 @@ import type { DomainTranslationBinding } from './Context/types';
 import Localization from '../Localization';
 import Core from '../Core';
 import type { ExternalComponentType } from '@integration-components/types';
+import type { TranslationDomain } from '../translations';
 
 vi.mock('./UIElementProvider.vue', () => ({
     default: 'ui-element-provider',
@@ -193,6 +194,47 @@ describe('UIElement', () => {
         await i18n.ready;
 
         expect(i18n.get('transactions.common.errors.updateFilters')).toBe('Try a different search or reset your filters, and we’ll try again.');
+    });
+
+    test('renders the component and syncs Bento translations only once its domain translations load', async () => {
+        const { createApp: createActualApp, h } = await vi.importActual<typeof import('vue')>('vue');
+        const localization = createLocalization();
+        const loadDomainTranslations = localization.loadDomainTranslations.bind(localization);
+
+        let releaseDomainTranslations!: () => void;
+        const domainTranslationsGate = new Promise<void>(resolve => (releaseDomainTranslations = resolve));
+        const loadDomainTranslationsSpy = vi.fn((domain: TranslationDomain) => domainTranslationsGate.then(() => loadDomainTranslations(domain)));
+        localization.loadDomainTranslations = loadDomainTranslationsSpy;
+
+        const core = {
+            options: { locale: 'en-US' },
+            localization,
+            bentoLocalization: createBentoLocalization(),
+            registerComponent: vi.fn(),
+            remove: vi.fn(),
+            update: vi.fn(),
+        };
+        const component = { render: () => h('p', localization.i18n.get('transactions.common.errors.updateFilters')) } as Component;
+        const element = new UIElement(component, { core }, 'transactions');
+
+        element.mount(document.createElement('div'));
+
+        const target = document.createElement('div');
+        createActualApp(getComponentSubtree(rootComponent.setup()()).type as Component).mount(target);
+        const setLocaleMessage = vi.mocked(createI18n).mock.results[0]?.value.global.setLocaleMessage;
+
+        await new Promise(resolve => setTimeout(resolve));
+
+        expect(loadDomainTranslationsSpy).toHaveBeenCalledWith('transactions');
+        expect(target.textContent).toBe('');
+        expect(setLocaleMessage).not.toHaveBeenCalled();
+
+        releaseDomainTranslations();
+
+        await vi.waitFor(() => {
+            expect(target.textContent).toBe('Try a different search or reset your filters, and we’ll try again.');
+            expect(setLocaleMessage).toHaveBeenCalled();
+        });
     });
 
     test('updates V2 translations after a Core locale or custom translation update', async () => {
@@ -580,6 +622,8 @@ describe('resolveBentoTranslationBundle', () => {
     const createCore = () => {
         const localization = new Localization('en-US', '', SDK_TRANSLATION_SOURCES);
         const bentoLocalization = new Localization('en-US', '', SDK_BENTO_TRANSLATION_SOURCES);
+        void localization.loadDomainTranslations('transactions');
+        void localization.loadDomainTranslations('disputes');
         return { localization, bentoLocalization } as any;
     };
 

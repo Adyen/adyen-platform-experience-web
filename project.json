@@ -5,22 +5,6 @@
     "sourceRoot": "src",
     "tags": ["type:publish"],
     "targets": {
-        "build:umd": {
-            "executor": "nx:run-commands",
-            "options": {
-                "command": "vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json"
-            },
-            "outputs": ["{workspaceRoot}/dist/umd", "{workspaceRoot}/dist/types"],
-            "cache": true
-        },
-        "build:umd:test": {
-            "executor": "nx:run-commands",
-            "options": {
-                "command": "cross-env USE_TEST_CDN=true vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json"
-            },
-            "outputs": ["{workspaceRoot}/dist/umd", "{workspaceRoot}/dist/types"],
-            "cache": true
-        },
         "build:analyse": {
             "executor": "nx:run-commands",
             "options": {
