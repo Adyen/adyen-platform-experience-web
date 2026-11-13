@@ -14,7 +14,7 @@ import {
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { useOffers } from '../../composables/useOffers';
 import { useCreateOffer } from '../../composables/useCreateOffer';
-import type { IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
+import type { IDynamicOffersConfig, IOffer } from '@integration-components/types';
 import { BentoButtonActions, type BentoButtonActionsList, BentoLoadingSkeletonShape } from '@adyen/bento-vue3';
 import AmountSelector from '../AmountSelector/AmountSelector.vue';
 import CapitalError from '../../../shared/CapitalError.vue';
@@ -27,9 +27,9 @@ import EmptyOfferState from '../../../shared/EmptyOfferState.vue';
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
     dynamicOfferConfig: IDynamicOffersConfig;
-    createdOffer: IGrantOfferResponseDTO | undefined;
+    createdOffer: IOffer | undefined;
     onContactSupport?: () => void;
-    onOfferCreate: (offer: IGrantOfferResponseDTO) => void;
+    onOfferCreate: (offer: IOffer) => void;
 }>();
 
 const { i18n } = useCoreContext();
@@ -114,7 +114,7 @@ const handleReview = async () => {
 const actions = computed<BentoButtonActionsList>(() => {
     return [
         {
-            title: i18n.get('capital.offer.selection.reviewOffer'),
+            title: i18n.get('capital.offer.selection.review'),
             disabled: areDetailsLoading.value,
             state: isCreateOfferLoading.value ? 'loading' : 'start',
             event: handleReview,

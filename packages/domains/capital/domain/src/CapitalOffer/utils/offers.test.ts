@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import type { IOffer } from '@integration-components/types';
 import { adjustSelectedTerm, getAvailableTerms, getCreateGrantOfferBody, getDefaultTerm, getOfferForTerm, getOffersByTerm } from './offers';
 
 const OFFER_90_DAYS = {
@@ -12,13 +12,13 @@ const OFFER_90_DAYS = {
     repaymentRate: 1500,
     thresholdAmount: { value: 5000, currency: 'EUR' },
     totalAmount: { value: 101000, currency: 'EUR' },
-} satisfies IGrantOfferResponseDTO;
+} satisfies IOffer;
 
 const OFFER_180_DAYS = {
     ...OFFER_90_DAYS,
     expectedRepaymentPeriodDays: 180,
     id: 'offer-180',
-} satisfies IGrantOfferResponseDTO;
+} satisfies IOffer;
 
 describe('getOffersByTerm', () => {
     test('returns offers indexed by term', () => {

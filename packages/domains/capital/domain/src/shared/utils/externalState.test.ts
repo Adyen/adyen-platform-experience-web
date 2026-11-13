@@ -4,13 +4,13 @@ import { EMPTY_OBJECT } from '@integration-components/utils';
 import { ICapitalState } from '@integration-components/types';
 import localSupportedRegions from '../../config/supportedRegions.json';
 import {
-    CAPITAL_STATE_ACTIVE_GRANT,
-    CAPITAL_STATE_FIRST_OFFER,
-    CAPITAL_STATE_GRANTS,
+    CAPITAL_STATE_ACTIVE,
+    CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN,
+    CAPITAL_STATE_GRANTS_LOAN,
     CAPITAL_STATE_INELIGIBLE,
-    CAPITAL_STATE_RENEWABLE_GRANT,
+    CAPITAL_STATE_RENEWABLE_LOAN,
     CAPITAL_STATE_UNSUPPORTED_REGION,
-} from '../../../../mocks/mock-data/capital';
+} from '../../../../mocks/mock-data';
 import { ExternalCapitalState, getExternalCapitalState } from './externalState';
 
 const createSession = (response: ICapitalState | undefined, shouldReject = false) => {
@@ -49,7 +49,7 @@ describe('getExternalCapitalState', () => {
     test('indicates is the state is available', async () => {
         const { session } = createSession(undefined, true);
         await expect(getExternalCapitalState(session)).resolves.toEqual({ isAvailable: false });
-        await expectCapitalState(CAPITAL_STATE_GRANTS, {
+        await expectCapitalState(CAPITAL_STATE_GRANTS_LOAN, {
             isRegionSupported: true,
         });
     });
@@ -58,7 +58,7 @@ describe('getExternalCapitalState', () => {
         await expectCapitalState(CAPITAL_STATE_UNSUPPORTED_REGION, {
             isRegionSupported: false,
         });
-        await expectCapitalState(CAPITAL_STATE_GRANTS, {
+        await expectCapitalState(CAPITAL_STATE_GRANTS_LOAN, {
             isRegionSupported: true,
         });
     });
@@ -67,25 +67,25 @@ describe('getExternalCapitalState', () => {
         await expectCapitalState(CAPITAL_STATE_INELIGIBLE, {
             dynamicOfferConfig: undefined,
         });
-        await expectCapitalState(CAPITAL_STATE_FIRST_OFFER, {
+        await expectCapitalState(CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN, {
             dynamicOfferConfig: { minAmount: 100000, maxAmount: 2500000, currency: 'EUR' },
         });
     });
 
     test('indicates if there are grants', async () => {
-        await expectCapitalState(CAPITAL_STATE_FIRST_OFFER, {
+        await expectCapitalState(CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN, {
             hasGrants: false,
         });
-        await expectCapitalState(CAPITAL_STATE_ACTIVE_GRANT, {
+        await expectCapitalState(CAPITAL_STATE_ACTIVE, {
             hasGrants: true,
         });
     });
 
     test('indicates if early renewal is available', async () => {
-        await expectCapitalState(CAPITAL_STATE_ACTIVE_GRANT, {
+        await expectCapitalState(CAPITAL_STATE_ACTIVE, {
             hasRenewableGrants: false,
         });
-        await expectCapitalState(CAPITAL_STATE_RENEWABLE_GRANT, {
+        await expectCapitalState(CAPITAL_STATE_RENEWABLE_LOAN, {
             hasRenewableGrants: true,
         });
     });

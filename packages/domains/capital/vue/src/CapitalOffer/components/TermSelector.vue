@@ -8,7 +8,7 @@ import {
     sharedCapitalOfferAnalyticsEventProperties,
 } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import type { IOffer } from '@integration-components/types';
 import { useFormatTermLabel } from '../composables/useFormatTermLabel';
 import useContainerQuery from '@integration-components/composables-vue/useContainerQuery';
 import { BREAKPOINTS } from '@integration-components/utils';
@@ -20,7 +20,7 @@ const props = defineProps<{
     areAvailableTermsLoading: boolean;
     estimatedTerms: number[];
     isEarlyRenewal: boolean;
-    offersByTerm: Record<number, IGrantOfferResponseDTO>;
+    offersByTerm: Record<number, IOffer>;
     term: number | undefined;
 }>();
 
@@ -44,7 +44,7 @@ const items = computed(() =>
         if (props.areAvailableTermsLoading) {
             content = CONTENT_LOADING_SKELETON_PLACEHOLDER;
         } else if (offer) {
-            content = i18n.get('capital.offer.selection.termOptions.dailyRatePercentage', {
+            content = i18n.get('capital.common.percentageOfDailySales', {
                 values: { percentage: calculatePercentageFromBasisPoints(offer.repaymentRate) },
             });
         }
@@ -105,7 +105,7 @@ const handleChange = (term: number) => {
         :hide-label="false"
         :items="items"
         :items-per-row="itemsPerRow"
-        :label="i18n.get('capital.offer.selection.termOptions.title')"
+        :label="i18n.get('capital.offer.selection.loan.repaymentPlanTitle')"
         :layout="isWideContainer ? 'horizontal' : 'vertical'"
         :model-value="props.term"
         variant="radio"

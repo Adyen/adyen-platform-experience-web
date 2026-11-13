@@ -8,7 +8,7 @@ import {
     type OnSubmitCallback,
 } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import type { IOffer } from '@integration-components/types';
 import { useRequestFunds } from '../../composables/useRequestFunds';
 import CapitalError from '../../../shared/CapitalError.vue';
 import Highlights from '../Highlights/Highlights.vue';
@@ -19,7 +19,7 @@ import styles from './OfferSummary.module.scss';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
-    offer: IGrantOfferResponseDTO;
+    offer: IOffer;
     onBack: () => void;
     onContactSupport?: () => void;
     onSubmit?: OnSubmitCallback;
@@ -32,7 +32,7 @@ const isEarlyRenewal = computed(() => !!renewableGrant.value);
 const offerAmount = computed(() => i18n.amount(props.offer.grantAmount.value, props.offer.grantAmount.currency, { minimumFractionDigits: 0 }));
 const highlights = computed(() => [
     {
-        label: i18n.get('capital.common.fields.financing.label'),
+        label: i18n.get('capital.common.fields.loan.financing.label'),
         value: offerAmount.value,
     },
     {
@@ -48,7 +48,7 @@ const highlights = computed(() => [
         value: '=',
     },
     {
-        label: i18n.get('capital.common.fields.totalRepaymentAmount.label'),
+        label: i18n.get('capital.common.fields.loan.totalRepaymentAmount.label'),
         value: i18n.amount(props.offer.totalAmount.value, props.offer.totalAmount.currency, { minimumFractionDigits: 0 }),
     },
 ]);
@@ -87,7 +87,7 @@ function handleBack() {
 
 const actions = computed<BentoButtonActionsList>(() => [
     {
-        title: i18n.get('capital.offer.summary.requestFundsWithAmount', { values: { amount: offerAmount.value } }),
+        title: i18n.get('capital.offer.summary.submit', { values: { amount: offerAmount.value } }),
         state: isRequestFundsLoading.value ? 'loading' : undefined,
         disabled: !!requestFundsError.value || !!requestedFunds.value,
         event: handleRequestFunds,
@@ -132,10 +132,10 @@ const actions = computed<BentoButtonActionsList>(() => [
             </BentoAlert>
             <BentoAlert v-if="isEarlyRenewal">
                 <template #default>
-                    {{ i18n.get('capital.offer.summary.earlyRenewalNotice.title') }}
+                    {{ i18n.get('capital.offer.summary.renewalNotice.loan.title') }}
                 </template>
                 <template #description>
-                    {{ i18n.get('capital.offer.summary.earlyRenewalNotice.description') }}
+                    {{ i18n.get('capital.offer.summary.renewalNotice.loan.description') }}
                 </template>
             </BentoAlert>
             <LegalNotice :region="props.capitalState.region" />

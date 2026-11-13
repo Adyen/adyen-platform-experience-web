@@ -35,7 +35,7 @@ const areActionsCompleted = computed(() => missingActionsMetadata.value.areActio
 const alertTitles = useActionsAlertTitles(() => props.expirationDate);
 const alertTitle = computed(() => {
     if (areActionsCompleted.value) {
-        return i18n.get('capital.overview.grants.alerts.actionsCompleted');
+        return i18n.get('capital.overview.grantAlerts.actionsCompleted');
     }
 
     return props.missingActions.length > 1 ? alertTitles.value.multiple : alertTitles.value.single;
