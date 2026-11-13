@@ -2,22 +2,11 @@
 import { computed } from 'vue';
 import PayoutsOverview from './PayoutsOverview.vue';
 import { ComponentShell, useBalanceAccounts, type ErrorMessageInfo } from '@integration-components/composables-vue';
-import type { PayoutsOverviewExternalProps } from '../types';
+import type { PayoutsOverviewComponentProps } from '../types';
 
-const props = withDefaults(
-    defineProps<{
-        balanceAccountId?: string;
-        allowLimitSelection?: boolean;
-        preferredLimit?: PayoutsOverviewExternalProps['preferredLimit'];
-        onContactSupport?: () => void;
-        onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
-        dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
-    }>(),
-    {}
-);
-
-const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(() => props.balanceAccountId);
-const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
+const props = defineProps<PayoutsOverviewComponentProps>();
+const { balanceAccounts, isFetching, error } = useBalanceAccounts();
+const hasError = computed(() => !!error.value);
 
 const errorInfo = computed<ErrorMessageInfo>(() => ({
     title: 'payouts.common.errors.somethingWentWrong',
@@ -33,9 +22,7 @@ const errorInfo = computed<ErrorMessageInfo>(() => ({
         <!-- Main content -->
         <PayoutsOverview
             v-else
-            :balance-account-id="props.balanceAccountId"
-            :allow-limit-selection="props.allowLimitSelection"
-            :preferred-limit="props.preferredLimit"
+            :pagination="props.pagination"
             :on-contact-support="props.onContactSupport"
             :on-record-selection="props.onRecordSelection"
             :data-customization="props.dataCustomization"

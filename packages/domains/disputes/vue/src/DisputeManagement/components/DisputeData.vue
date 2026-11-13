@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoButtonActions, BentoCard, BentoPaymentMethod, BentoTag, BentoTypography } from '@adyen/bento-vue3';
-import { useConfigContext, useCoreContext, useModalContext } from '@integration-components/core/vue';
-import { ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
+import { ComponentShell, useLandedPageEvent, type ComponentShellState } from '@integration-components/composables-vue';
 import {
+    DISPUTES_ANALYTICS_CATEGORY,
+    DISPUTES_ANALYTICS_SUBCATEGORY_DETAILS,
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
     getDisputeType,
     isDisputeActionNeeded,
-    type DisputeDetailsCustomization,
+    getDisputesErrorConfig,
 } from '@integration-components/disputes/domain';
+import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { isFunction, parsePaymentMethodType } from '@integration-components/utils';
 import type { CustomButtonObject, CustomDataRetrieved } from '@integration-components/types';
 import { useDisputeDetails } from '../composables/useDisputeDetails';
@@ -18,21 +20,19 @@ import DisputeDataProperties from './DisputeDataProperties.vue';
 import DisputeIssuerComments from './DisputeIssuerComments.vue';
 import DisputeSkeleton from './DisputeSkeleton.vue';
 import DisputeStatusTag from './DisputeStatusTag.vue';
-import type { DisputeDataAlertMode, DisputeManagementProps } from '../types';
+import type { DisputeDataAlertMode, DisputeManagementComponentProps } from '../types';
 import flowStyles from './DisputeFlow.module.scss';
 import styles from './DisputeData.module.scss';
 
 const props = defineProps<{
     disputeId: string;
-    dataCustomization?: { details?: DisputeDetailsCustomization };
-    onContactSupport?: () => void;
-    onDismiss?: DisputeManagementProps['onDismiss'];
+    dataCustomization?: DisputeManagementComponentProps['dataCustomization'];
+    onContactSupport?: DisputeManagementComponentProps['onContactSupport'];
 }>();
 
 const { i18n } = useCoreContext();
 const config = useConfigContext();
 const { dispute: storedDispute, setDispute, setFlowState, defenseReasonConfig } = useDisputeFlow();
-const { withinModal } = useModalContext();
 
 const { data, error, isFetching, refetch } = useDisputeDetails(() => ({
     disputeId: props.disputeId,
@@ -44,6 +44,11 @@ watch(data, nextData => {
 });
 
 const dispute = computed(() => storedDispute.value || data.value);
+
+const analyticsProps = { category: DISPUTES_ANALYTICS_CATEGORY, subCategory: DISPUTES_ANALYTICS_SUBCATEGORY_DETAILS } as const;
+
+useLandedPageEvent(analyticsProps, () => !!dispute.value);
+
 const defensibility = computed(() => dispute.value?.dispute.defensibility);
 const acceptAuthorization = computed(() => isFunction(config.endpoints?.acceptDispute));
 const defendAuthorization = computed(() => isFunction(config.endpoints?.getApplicableDefenseDocuments));
@@ -54,6 +59,14 @@ const shellState = computed<ComponentShellState>(() => {
     if (error.value) return 'error';
     return 'ready';
 });
+
+const errorInfo = computed(() =>
+    getDisputesErrorConfig(error.value, {
+        errorMessage: 'disputes.management.errors.unavailable',
+        notFoundMessage: 'disputes.management.errors.notFound',
+        onContactSupport: props.onContactSupport,
+    })
+);
 
 const disputeType = computed(() => getDisputeType(i18n, dispute.value?.dispute.type));
 const isFraudNotification = computed(() => dispute.value?.dispute.type === 'NOTIFICATION_OF_FRAUD');
@@ -96,8 +109,8 @@ const alertMode = computed<DisputeDataAlertMode | undefined>(() => {
 
 const defendButtonLabel = computed(() =>
     dispute.value?.dispute.type === 'REQUEST_FOR_INFORMATION'
-        ? i18n.get('disputes.management.details.actions.submitInformation')
-        : i18n.get('disputes.management.details.actions.defendChargeback')
+        ? i18n.get('disputes.management.details.submitInformation')
+        : i18n.get('disputes.management.details.defendChargeback')
 );
 
 const extraFields = ref<Record<string, unknown> | undefined>();
@@ -160,14 +173,14 @@ const actionButtons = computed(() => {
     }
     if (isAcceptable.value) {
         buttons.push({
-            title: i18n.get('disputes.management.details.actions.accept'),
+            title: i18n.get('disputes.management.details.accept'),
             event: onAcceptClick,
             variant: 'secondary' as const,
         });
     }
     if (showContactSupport.value && props.onContactSupport) {
         buttons.push({
-            title: i18n.get('disputes.management.details.actions.contactSupport'),
+            title: i18n.get('disputes.common.contactSupport.label'),
             event: props.onContactSupport,
             variant: 'secondary' as const,
         });
@@ -178,13 +191,6 @@ const actionButtons = computed(() => {
             event: button.config?.action,
             variant: 'secondary' as const,
             class: button.config?.className,
-        });
-    }
-    if (props.onDismiss && !withinModal) {
-        buttons.push({
-            title: i18n.get('disputes.management.common.actions.goBack'),
-            event: props.onDismiss,
-            variant: 'secondary' as const,
         });
     }
     return buttons;
@@ -202,16 +208,7 @@ const paymentMethodDetail = computed(() =>
 
 <template>
     <div :class="styles.root">
-        <ComponentShell
-            :state="shellState"
-            :error="error"
-            :error-message="'disputes.management.common.errors.unavailable'"
-            :not-found-message="'disputes.management.common.errors.notFound'"
-            :on-contact-support="props.onContactSupport"
-            :on-dismiss="props.onDismiss"
-            :dismiss-label="'disputes.management.common.actions.goBack'"
-            :on-refresh="retryFetch"
-        >
+        <ComponentShell :state="shellState" :error-info="errorInfo" :on-refresh="retryFetch">
             <template #loading>
                 <DisputeSkeleton />
             </template>

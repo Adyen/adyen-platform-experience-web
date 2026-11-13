@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useLandedPageEvent, useDurationEvent } from '@integration-components/composables-vue';
 import { BentoAlert, BentoButton } from '@adyen/bento-vue3';
@@ -9,15 +9,15 @@ import TransactionsTable from '../TransactionsTable/TransactionsTable.vue';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
 import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '@integration-components/transactions/domain';
 import type { ITransaction } from '@integration-components/types';
-import type { IBalanceAccountBase, TransactionsOverviewExternalProps } from '../../types';
+import type { IBalanceAccountBase, TransactionsOverviewComponentProps } from '../../types';
 import styles from '../TransactionsOverview/TransactionsOverview.module.scss';
 
 const props = defineProps<{
     balanceAccounts?: IBalanceAccountBase[];
     isLoadingBalanceAccount: boolean;
-    onContactSupport?: () => void;
-    onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
-    dataCustomization?: TransactionsOverviewExternalProps['dataCustomization'];
+    onContactSupport?: TransactionsOverviewComponentProps['onContactSupport'];
+    onRecordSelection?: TransactionsOverviewComponentProps['onRecordSelection'];
+    dataCustomization?: TransactionsOverviewComponentProps['dataCustomization'];
     onRowClick: (transaction: ITransaction) => void;
 }>();
 
@@ -84,8 +84,28 @@ watch([totalsError, balancesError, totalsRetrying, balancesRetrying], () => {
     nextTick(updateSummaryLayout);
 });
 
+// The sections are absolutely positioned on wider screens, so the summary height has to follow their
+// size changes (loaded figures, a horizontal scrollbar appearing), not just the error state.
+let summaryResizeObserver: ResizeObserver | undefined;
+let summaryLayoutFrame: number | undefined;
+
 onMounted(() => {
     updateSummaryLayout();
+
+    if (typeof ResizeObserver === 'undefined') return;
+    // Deferred to the next frame so the style write doesn't resize observed elements within the same
+    // observation cycle, and so several resizes in one frame collapse into a single update.
+    summaryResizeObserver = new ResizeObserver(() => {
+        if (summaryLayoutFrame !== undefined) cancelAnimationFrame(summaryLayoutFrame);
+        summaryLayoutFrame = requestAnimationFrame(updateSummaryLayout);
+    });
+    if (totalsSectionEl.value) summaryResizeObserver.observe(totalsSectionEl.value);
+    if (balancesSectionEl.value) summaryResizeObserver.observe(balancesSectionEl.value);
+});
+
+onBeforeUnmount(() => {
+    summaryResizeObserver?.disconnect();
+    if (summaryLayoutFrame !== undefined) cancelAnimationFrame(summaryLayoutFrame);
 });
 </script>
 
@@ -94,11 +114,11 @@ onMounted(() => {
         <div ref="totalsSectionEl" :class="[styles.summarySection, styles.summarySectionTotals]">
             <BentoAlert v-if="totalsError" type="warning">
                 <template #default>
-                    {{ i18n.get('transactions.overview.totals.error') }}
+                    {{ i18n.get('transactions.overview.totals.errors.load') }}
                 </template>
                 <template #actions>
                     <BentoButton variant="tertiary" :disabled="!transactionsTotalsResult.canRefresh.value" @click="transactionsTotalsResult.refresh">
-                        {{ i18n.get('transactions.common.actions.refresh.labels.default') }}
+                        {{ i18n.get('transactions.common.refresh.label') }}
                     </BentoButton>
                 </template>
             </BentoAlert>
@@ -109,11 +129,11 @@ onMounted(() => {
         <div ref="balancesSectionEl" :class="[styles.summarySection, styles.summarySectionBalances]">
             <BentoAlert v-if="balancesError" type="warning">
                 <template #default>
-                    {{ i18n.get('transactions.overview.balances.error') }}
+                    {{ i18n.get('transactions.overview.balances.errors.load') }}
                 </template>
                 <template #actions>
                     <BentoButton variant="tertiary" :disabled="!accountBalancesResult.canRefresh.value" @click="accountBalancesResult.refresh">
-                        {{ i18n.get('transactions.common.actions.refresh.labels.default') }}
+                        {{ i18n.get('transactions.common.refresh.label') }}
                     </BentoButton>
                 </template>
             </BentoAlert>
@@ -130,6 +150,7 @@ onMounted(() => {
         :has-multiple-currencies="availableCurrencies.length > 1"
         :loading="loadingTable"
         :on-contact-support="props.onContactSupport"
+        :on-refresh="transactionsListResult.refresh"
         :on-row-click="props.onRowClick"
         :transactions="transactionsListResult.records.value"
         :custom-columns="transactionsListResult.fields.value"

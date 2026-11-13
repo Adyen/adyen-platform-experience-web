@@ -1,16 +1,13 @@
 import type { Ref } from 'vue';
-import type Localization from '../../Localization';
-import type { DevEnvironment } from '../../types';
+import type { I18n } from '../../Localization/types';
+import type { DevEnvironment, OnErrorHandler } from '../../types';
 import type { GlobalAppearance } from '@integration-components/types';
-import type { TranslationDomain, TranslationKey, TranslationOptions } from '../../translations';
+import type { TranslationDomain } from '../../translations';
 
+export type { OnErrorHandler } from '../../types';
 export type { DomainCustomTranslations, DomainTranslationKey, TranslationDomain } from '../../translations';
-export { getDomainTranslationKey } from '../../translations';
-
-export type I18n = Omit<Localization['i18n'], 'get' | 'has'> & {
-    get(key: TranslationKey, options?: TranslationOptions): string;
-    has(key: string, options?: TranslationOptions): key is TranslationKey;
-};
+export { getSafeDomainTranslationKey, getUnsafeDomainTranslationKey } from '../../translations';
+export type { I18n } from '../../Localization/types';
 
 export interface DomainTranslationBinding {
     i18n: I18n;
@@ -26,8 +23,6 @@ export interface AssetOptions {
     extension?: string;
     subFolder?: string;
 }
-
-export type OnErrorHandler = (error: Error) => void;
 
 export interface CoreProviderProps {
     commonProps?: CommonPropsTypes;

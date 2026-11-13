@@ -1,5 +1,5 @@
 import type { IGBCapitalFundsCollection, IGrant, INLCapitalFundsCollection, IUSCapitalFundsCollection } from '@integration-components/types';
-import { TranslationKey } from '@integration-components/core';
+import type { CapitalTranslationKey } from '../../shared';
 import { KeyOfRecord } from '@integration-components/utils/types';
 
 export type CapitalBankAccount = NonNullable<IGrant['unscheduledRepaymentAccounts']>[number] &
@@ -14,10 +14,10 @@ export type AccountFieldMetadata = {
 
 export type AccountDetail = {
     content: string;
-    copyButtonLabel?: TranslationKey;
+    copyButtonLabel?: CapitalTranslationKey;
     field: string;
     isPrimary: boolean;
-    label: TranslationKey;
+    label: CapitalTranslationKey;
     textToCopy?: string;
 };
 
@@ -84,36 +84,36 @@ export const getBankAccountFieldTextToCopy = (field: string, value?: string) => 
     return getBankAccountFieldMetadata(field).isCopyable ? value : undefined;
 };
 
-export const getBankAccountFieldCopyButtonTranslationKey = (field: string): TranslationKey | undefined => {
+export const getBankAccountFieldCopyButtonTranslationKey = (field: string): CapitalTranslationKey | undefined => {
     switch (field) {
         case 'accountNumber':
-            return 'capital.overview.repayment.actions.copyAccountNumber';
+            return 'capital.overview.repayment.copy.accountNumber';
         case 'beneficiaryName':
-            return 'capital.overview.repayment.actions.copyBeneficiaryName';
+            return 'capital.overview.repayment.copy.beneficiaryName';
         case 'iban':
-            return 'capital.overview.repayment.actions.copyIban';
+            return 'capital.overview.repayment.copy.iban';
         case 'routingNumber':
-            return 'capital.overview.repayment.actions.copyRoutingNumber';
+            return 'capital.overview.repayment.copy.routingNumber';
         case 'sortCode':
-            return 'capital.overview.repayment.actions.copySortCode';
+            return 'capital.overview.repayment.copy.sortCode';
     }
 };
 
-export const getBankAccountFieldTranslationKey = (field: string): TranslationKey => {
+export const getBankAccountFieldTranslationKey = (field: string): CapitalTranslationKey => {
     switch (field) {
         case 'accountNumber':
-            return 'capital.overview.repayment.accountDetails.fields.accountNumber';
+            return 'capital.overview.repayment.accountFields.accountNumber';
         case 'beneficiaryName':
-            return 'capital.overview.repayment.accountDetails.fields.beneficiaryName';
+            return 'capital.overview.repayment.accountFields.beneficiaryName';
         case 'iban':
-            return 'capital.overview.repayment.accountDetails.fields.iban';
+            return 'capital.overview.repayment.accountFields.iban';
         case 'region':
-            return 'capital.overview.repayment.accountDetails.fields.countryOrRegion';
+            return 'capital.overview.repayment.accountFields.countryOrRegion';
         case 'routingNumber':
-            return 'capital.overview.repayment.accountDetails.fields.routingNumber';
+            return 'capital.overview.repayment.accountFields.routingNumber';
         case 'sortCode':
-            return 'capital.overview.repayment.accountDetails.fields.sortCode';
+            return 'capital.overview.repayment.accountFields.sortCode';
         default:
-            return field as TranslationKey;
+            return field as CapitalTranslationKey;
     }
 };

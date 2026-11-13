@@ -1,5 +1,5 @@
 import { http, HttpResponse, PathParams, StrictResponse } from 'msw';
-import { compareDates, delay, getPaginationLinks } from '@integration-components/testing/msw';
+import { withDelay, compareDates, getPaginationLinks } from '@integration-components/testing/msw';
 import { DISPUTES_ENDPOINTS } from '../endpoints';
 import { DISPUTE_PAYMENT_SCHEMES } from '@integration-components/disputes/domain';
 import { IDisputeDetail, IDisputeListItem, IDisputeStatusGroup, IDisputeListResponse } from '@integration-components/types/api/models/disputes';
@@ -74,182 +74,191 @@ const manageChargebackListItem = (dispute: IDisputeListItem, callback: (dispute:
 };
 
 export const disputesMocks = [
-    http.get(mockEndpoints.list, async ({ request }) => {
-        if (networkError) return HttpResponse.error();
+    http.get(
+        mockEndpoints.list,
+        withDelay(({ request }) => {
+            if (networkError) return HttpResponse.error();
 
-        const url = new URL(request.url);
-        const searchParams = url.searchParams;
+            const url = new URL(request.url);
+            const searchParams = url.searchParams;
 
-        const balanceAccount = searchParams.get('balanceAccountId');
-        const statusGroup = searchParams.get('statusGroup')! as IDisputeStatusGroup;
-        const reasonCategories = searchParams.getAll('reasonCategories');
-        const schemeCodes = searchParams.getAll('schemeCodes');
-        const createdSince = searchParams.get('createdSince');
-        const createdUntil = searchParams.get('createdUntil');
-        const limit = +(searchParams.get('limit') ?? defaultPaginationLimit);
-        const cursor = +(searchParams.get('cursor') ?? 0);
+            const balanceAccount = searchParams.get('balanceAccountId');
+            const statusGroup = searchParams.get('statusGroup')! as IDisputeStatusGroup;
+            const reasonCategories = searchParams.getAll('reasonCategories');
+            const schemeCodes = searchParams.getAll('schemeCodes');
+            const createdSince = searchParams.get('createdSince');
+            const createdUntil = searchParams.get('createdUntil');
+            const limit = +(searchParams.get('limit') ?? defaultPaginationLimit);
+            const cursor = +(searchParams.get('cursor') ?? 0);
 
-        let disputes: IDisputeListItem[] = [MAIN_BALANCE_ACCOUNT.id, null].includes(balanceAccount) ? getDisputesByStatusGroup(statusGroup) : [];
-        let responseDelay = 200;
+            let disputes: IDisputeListItem[] = [MAIN_BALANCE_ACCOUNT.id, null].includes(balanceAccount) ? getDisputesByStatusGroup(statusGroup) : [];
 
-        if (createdSince || createdUntil) {
-            let paymentSchemesFilter: (paymentMethod: string) => boolean = () => true;
+            if (createdSince || createdUntil) {
+                let paymentSchemesFilter: (paymentMethod: string) => boolean = () => true;
 
-            if (schemeCodes.length) {
-                const checkOtherSchemeCodes = schemeCodes.includes('others');
+                if (schemeCodes.length) {
+                    const checkOtherSchemeCodes = schemeCodes.includes('others');
 
-                paymentSchemesFilter = paymentMethod => {
-                    const schemeCodesRegex = getRegexForPaymentSchemeCodesExcludingOthers(schemeCodes);
-                    let schemeCodeMatchFound = schemeCodesRegex.test(paymentMethod);
+                    paymentSchemesFilter = paymentMethod => {
+                        const schemeCodesRegex = getRegexForPaymentSchemeCodesExcludingOthers(schemeCodes);
+                        let schemeCodeMatchFound = schemeCodesRegex.test(paymentMethod);
 
-                    if (!schemeCodeMatchFound && checkOtherSchemeCodes) {
-                        const allSchemeCodesRegex = getRegexForPaymentSchemeCodesExcludingOthers(Object.keys(DISPUTE_PAYMENT_SCHEMES));
-                        schemeCodeMatchFound ||= !allSchemeCodesRegex.test(paymentMethod);
-                    }
+                        if (!schemeCodeMatchFound && checkOtherSchemeCodes) {
+                            const allSchemeCodesRegex = getRegexForPaymentSchemeCodesExcludingOthers(Object.keys(DISPUTE_PAYMENT_SCHEMES));
+                            schemeCodeMatchFound ||= !allSchemeCodesRegex.test(paymentMethod);
+                        }
 
-                    return schemeCodeMatchFound;
-                };
-            }
-
-            disputes = disputes.filter(
-                ({ createdAt, paymentMethod, reason }) =>
-                    (!reasonCategories.length || reasonCategories.includes(reason.category)) &&
-                    (!createdSince || compareDates(createdAt, createdSince, 'ge')) &&
-                    (!createdUntil || compareDates(createdAt, createdUntil, 'le')) &&
-                    paymentSchemesFilter(paymentMethod.type)
-            );
-            responseDelay = 400;
-        }
-
-        const data = disputes.slice(cursor, cursor + limit);
-
-        await delay(responseDelay);
-        return HttpResponse.json({ data, _links: getPaginationLinks(cursor, limit, disputes.length) });
-    }),
-
-    http.get(mockEndpoints.details, async ({ params }) => {
-        if (networkError) return HttpResponse.error();
-
-        const dispute = getDisputeForRequestPathParams(params);
-        await delay(1000);
-        return HttpResponse.json({ ...getAdditionalDisputeDetails(dispute) });
-    }),
-
-    http.get(mockEndpoints.documents, async ({ params, request }) => {
-        if (networkError) return HttpResponse.error();
-
-        const dispute = getDisputeForRequestPathParams(params);
-        const defenseReason = new URL(request.url).searchParams.get('defenseReason')?.trim();
-        const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason!);
-
-        await delay(400);
-        return HttpResponse.json({ data: defenseDocuments });
-    }),
-
-    http.post(mockEndpoints.accept, async ({ params }) => {
-        if (networkError) return HttpResponse.error();
-
-        manageChargebackListItem(getDisputeForRequestPathParams(params), dispute => {
-            dispute.status = dispute.status === 'UNRESPONDED' ? 'EXPIRED' : 'ACCEPTED';
-            ACCEPTED_DISPUTES.set(dispute, { acceptedOn: getDate(0) });
-            delete dispute.dueDate;
-        });
-
-        await delay(1000);
-        return new HttpResponse(null, { status: 204 });
-    }),
-
-    http.post(mockEndpoints.defend, async ({ params, request }) => {
-        if (networkError) return HttpResponse.error();
-
-        const dispute = getDisputeForRequestPathParams(params);
-
-        try {
-            // Expects a multipart/form-data request
-            const formData = await request.formData();
-
-            // Expects a `defenseReason` to be provided
-            const defenseReason = formData.get('defenseReason');
-
-            if (typeof defenseReason !== 'string' || !defenseReason.trim()) {
-                // Defense reason is missing (this is definitely a bad request)
-                return HttpResponse.json({ error: 'Missing defense reason' }, { status: 400 });
-            }
-
-            const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason.trim());
-            const suppliedDocuments: string[] = [];
-
-            // Some defense reasons require that at least one of certain types of documents be provided
-            // Initially check to see if the current defense reason is one of such
-            let missingOneOrMoreDocuments = defenseDocuments.some(({ requirementLevel }) => requirementLevel === 'ONE_OR_MORE');
-
-            for (const applicableDocument of defenseDocuments) {
-                // Check through the applicable defense documents
-                const file = formData.get(applicableDocument.documentTypeCode);
-
-                if (file instanceof File) {
-                    // A file was uploaded for the corresponding form data field
-                    suppliedDocuments.push(applicableDocument.documentTypeCode);
-
-                    if (applicableDocument.requirementLevel === 'ONE_OR_MORE') {
-                        // Since a file has been uploaded for at least one of some expected types of documents,
-                        // mark as no longer missing the expected documents
-                        missingOneOrMoreDocuments = false;
-                    }
-
-                    // everything is good (continue to next applicable document)
-                    continue;
+                        return schemeCodeMatchFound;
+                    };
                 }
 
-                if (applicableDocument.requirementLevel === 'REQUIRED') {
-                    // No file was uploaded for the corresponding form data field
-                    // Since this document is required (this is definitely a bad request)
-                    return HttpResponse.json({ error: `Missing ${applicableDocument.documentTypeCode} document` }, { status: 400 });
-                }
+                disputes = disputes.filter(
+                    ({ createdAt, paymentMethod, reason }) =>
+                        (!reasonCategories.length || reasonCategories.includes(reason.category)) &&
+                        (!createdSince || compareDates(createdAt, createdSince, 'ge')) &&
+                        (!createdUntil || compareDates(createdAt, createdUntil, 'le')) &&
+                        paymentSchemesFilter(paymentMethod.type)
+                );
             }
 
-            if (missingOneOrMoreDocuments) {
-                return HttpResponse.json({ error: 'Missing one or more expected documents' }, { status: 400 });
-            }
+            const data = disputes.slice(cursor, cursor + limit);
+            return HttpResponse.json({ data, _links: getPaginationLinks(cursor, limit, disputes.length) });
+        })
+    ),
 
-            manageChargebackListItem(dispute, dispute => {
-                dispute.status = dispute.status === 'UNRESPONDED' ? 'RESPONDED' : 'PENDING';
-                DEFENDED_DISPUTES.set(dispute, {
-                    suppliedDocuments,
-                    defendedOn: getDate(0),
-                    reason: defenseReason.trim(),
-                });
+    http.get(
+        mockEndpoints.details,
+        withDelay(({ params }) => {
+            if (networkError) return HttpResponse.error();
+
+            const dispute = getDisputeForRequestPathParams(params);
+            return HttpResponse.json({ ...getAdditionalDisputeDetails(dispute) });
+        })
+    ),
+
+    http.get(
+        mockEndpoints.documents,
+        withDelay(({ params, request }) => {
+            if (networkError) return HttpResponse.error();
+
+            const dispute = getDisputeForRequestPathParams(params);
+            const defenseReason = new URL(request.url).searchParams.get('defenseReason')?.trim();
+            const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason!);
+
+            return HttpResponse.json({ data: defenseDocuments });
+        })
+    ),
+
+    http.post(
+        mockEndpoints.accept,
+        withDelay(({ params }) => {
+            if (networkError) return HttpResponse.error();
+
+            manageChargebackListItem(getDisputeForRequestPathParams(params), dispute => {
+                dispute.status = dispute.status === 'UNRESPONDED' ? 'EXPIRED' : 'ACCEPTED';
+                ACCEPTED_DISPUTES.set(dispute, { acceptedOn: getDate(0) });
+                delete dispute.dueDate;
             });
 
-            await delay(1000);
             return new HttpResponse(null, { status: 204 });
-        } catch {
-            // This request is most likely not a multipart/form-data request (it is a bad request)
-            return HttpResponse.json('', { status: 415 });
-        }
-    }),
+        }, 1000)
+    ),
 
-    http.get(mockEndpoints.download, async ({ params, request }) => {
-        if (networkError) return HttpResponse.error();
+    http.post(
+        mockEndpoints.defend,
+        withDelay(async ({ params, request }) => {
+            if (networkError) return HttpResponse.error();
 
-        getDisputeForRequestPathParams(params);
-        await delay(1000);
+            const dispute = getDisputeForRequestPathParams(params);
 
-        if (downloadFileError) return HttpResponse.error();
+            try {
+                // Expects a multipart/form-data request
+                const formData = await request.formData();
 
-        const url = new URL(request.url);
-        const filename = url.searchParams.get('documentType');
+                // Expects a `defenseReason` to be provided
+                const defenseReason = formData.get('defenseReason');
 
-        const buffer = await fetch(`/mockFiles/report.csv`).then(response => response.arrayBuffer());
+                if (typeof defenseReason !== 'string' || !defenseReason.trim()) {
+                    // Defense reason is missing (this is definitely a bad request)
+                    return HttpResponse.json({ error: 'Missing defense reason' }, { status: 400 });
+                }
 
-        return new HttpResponse(buffer, {
-            headers: {
-                'Content-Disposition': `attachment; filename=${filename}`,
-                'Content-Type': 'text/csv',
-            },
-            status: 200,
-        });
-    }),
+                const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason.trim());
+                const suppliedDocuments: string[] = [];
+
+                // Some defense reasons require that at least one of certain types of documents be provided
+                // Initially check to see if the current defense reason is one of such
+                let missingOneOrMoreDocuments = defenseDocuments.some(({ requirementLevel }) => requirementLevel === 'ONE_OR_MORE');
+
+                for (const applicableDocument of defenseDocuments) {
+                    // Check through the applicable defense documents
+                    const file = formData.get(applicableDocument.documentTypeCode);
+
+                    if (file instanceof File) {
+                        // A file was uploaded for the corresponding form data field
+                        suppliedDocuments.push(applicableDocument.documentTypeCode);
+
+                        if (applicableDocument.requirementLevel === 'ONE_OR_MORE') {
+                            // Since a file has been uploaded for at least one of some expected types of documents,
+                            // mark as no longer missing the expected documents
+                            missingOneOrMoreDocuments = false;
+                        }
+
+                        // everything is good (continue to next applicable document)
+                        continue;
+                    }
+
+                    if (applicableDocument.requirementLevel === 'REQUIRED') {
+                        // No file was uploaded for the corresponding form data field
+                        // Since this document is required (this is definitely a bad request)
+                        return HttpResponse.json({ error: `Missing ${applicableDocument.documentTypeCode} document` }, { status: 400 });
+                    }
+                }
+
+                if (missingOneOrMoreDocuments) {
+                    return HttpResponse.json({ error: 'Missing one or more expected documents' }, { status: 400 });
+                }
+
+                manageChargebackListItem(dispute, dispute => {
+                    dispute.status = dispute.status === 'UNRESPONDED' ? 'RESPONDED' : 'PENDING';
+                    DEFENDED_DISPUTES.set(dispute, {
+                        suppliedDocuments,
+                        defendedOn: getDate(0),
+                        reason: defenseReason.trim(),
+                    });
+                });
+
+                return new HttpResponse(null, { status: 204 });
+            } catch {
+                // This request is most likely not a multipart/form-data request (it is a bad request)
+                return HttpResponse.json('', { status: 415 });
+            }
+        }, 1000)
+    ),
+
+    http.get(
+        mockEndpoints.download,
+        withDelay(async ({ params, request }) => {
+            if (networkError) return HttpResponse.error();
+
+            getDisputeForRequestPathParams(params);
+
+            if (downloadFileError) return HttpResponse.error();
+
+            const url = new URL(request.url);
+            const filename = url.searchParams.get('documentType');
+
+            const buffer = await fetch(`/mockFiles/report.csv`).then(response => response.arrayBuffer());
+
+            return new HttpResponse(buffer, {
+                headers: {
+                    'Content-Disposition': `attachment; filename=${filename}`,
+                    'Content-Type': 'text/csv',
+                },
+                status: 200,
+            });
+        }, 1000)
+    ),
 ];
 
 type GetHttpError = AdyenPlatformExperienceError & { status: number; detail: string };
@@ -268,16 +277,22 @@ const genericError500 = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '7ac7
 const DISPUTES_LIST_ERRORS = {
     internalServerError: {
         handlers: [
-            httpGetInternalError(DISPUTES_ENDPOINTS.list, () => {
-                return getErrorHandler({ ...genericError500 }, 500);
-            }),
+            httpGetInternalError(
+                DISPUTES_ENDPOINTS.list,
+                withDelay(() => {
+                    return getErrorHandler({ ...genericError500 }, 500);
+                })
+            ),
         ],
     },
     networkError: {
         handlers: [
-            http.get(DISPUTES_ENDPOINTS.list, () => {
-                return HttpResponse.error();
-            }),
+            http.get(
+                DISPUTES_ENDPOINTS.list,
+                withDelay(() => {
+                    return HttpResponse.error();
+                })
+            ),
         ],
     },
 };
@@ -285,9 +300,12 @@ const DISPUTES_LIST_ERRORS = {
 export const DISPUTES_LIST_HANDLERS = {
     emptyList: {
         handlers: [
-            httpGetList(DISPUTES_ENDPOINTS.list, () => {
-                return HttpResponse.json({ data: [], _links: { next: { cursor: '' }, prev: { cursor: '' } } });
-            }),
+            httpGetList(
+                DISPUTES_ENDPOINTS.list,
+                withDelay(() => {
+                    return HttpResponse.json({ data: [], _links: { next: { cursor: '' }, prev: { cursor: '' } } });
+                })
+            ),
         ],
     },
     ...DISPUTES_LIST_ERRORS,
@@ -296,50 +314,69 @@ export const DISPUTES_LIST_HANDLERS = {
 const DISPUTE_DETAILS_ERRORS = {
     internalServerError: {
         handlers: [
-            httpGetInternalError(DISPUTES_ENDPOINTS.details, () => {
-                return getErrorHandler({ ...genericError500 }, 500);
-            }),
+            httpGetInternalError(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return getErrorHandler({ ...genericError500 }, 500);
+                })
+            ),
         ],
     },
     networkError: {
         handlers: [
-            http.get(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.error();
-            }),
+            http.get(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.error();
+                })
+            ),
         ],
     },
     unprocessableEntityError: {
         handlers: [
-            httpGetInternalError(DISPUTES_ENDPOINTS.details, () => {
-                const adyenError = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '7ac77fd1d7ac77fd1d', 'Message', '30_112');
-
-                return getErrorHandler({ ...adyenError }, 422);
-            }),
+            httpGetInternalError(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    const adyenError = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '7ac77fd1d7ac77fd1d', 'Message', '30_112');
+                    return getErrorHandler({ ...adyenError }, 422);
+                })
+            ),
         ],
     },
     downloadServerError: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(CHARGEBACK_LOST);
-            }),
-            httpGetInternalError(DISPUTES_ENDPOINTS.download, async () => {
-                await delay(400);
-                return getErrorHandler({ ...genericError500 }, 500);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(CHARGEBACK_LOST);
+                })
+            ),
+            httpGetInternalError(
+                DISPUTES_ENDPOINTS.download,
+                withDelay(() => {
+                    return getErrorHandler({ ...genericError500 }, 500);
+                })
+            ),
         ],
     },
     acceptServerError: {
         handlers: [
-            httpGetInternalError(DISPUTES_ENDPOINTS.accept, () => {
-                return getErrorHandler({ ...genericError500 }, 500);
-            }),
+            httpGetInternalError(
+                DISPUTES_ENDPOINTS.accept,
+                withDelay(() => {
+                    return getErrorHandler({ ...genericError500 }, 500);
+                })
+            ),
         ],
     },
     defendServerError: {
         handlers: [
-            httpPostInternalError(DISPUTES_ENDPOINTS.defend, () => {
-                return getErrorHandler({ ...genericError500 }, 500);
-            }),
+            httpPostInternalError(
+                DISPUTES_ENDPOINTS.defend,
+                withDelay(() => {
+                    return getErrorHandler({ ...genericError500 }, 500);
+                })
+            ),
         ],
     },
 };
@@ -347,107 +384,152 @@ const DISPUTE_DETAILS_ERRORS = {
 export const DISPUTE_DETAILS_HANDLERS = {
     chargebackAutoDefended: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(CHARGEBACK_AUTO_DEFENDED);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(CHARGEBACK_AUTO_DEFENDED);
+                })
+            ),
         ],
     },
     chargebackDefendableExternally: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(CHARGEBACK_DEFENDABLE_EXTERNALLY);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(CHARGEBACK_DEFENDABLE_EXTERNALLY);
+                })
+            ),
         ],
     },
     chargebackDefended: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(CHARGEBACK_DEFENDED);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(CHARGEBACK_DEFENDED);
+                })
+            ),
         ],
     },
     chargebackLostNotDefended: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(CHARGEBACK_LOST_NO_ACTION);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(CHARGEBACK_LOST_NO_ACTION);
+                })
+            ),
         ],
     },
     chargebackNotDefendable: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(CHARGEBACK_NOT_DEFENDABLE);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(CHARGEBACK_NOT_DEFENDABLE);
+                })
+            ),
         ],
     },
     notificationOfFraud: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(NOTIFICATION_OF_FRAUD);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(NOTIFICATION_OF_FRAUD);
+                })
+            ),
         ],
     },
     rfiExpired: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(RFI_EXPIRED);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(RFI_EXPIRED);
+                })
+            ),
         ],
     },
     rfiAcceptable: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(RFI_ACCEPTABLE);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(RFI_ACCEPTABLE);
+                })
+            ),
         ],
     },
     rfiAccepted: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(RFI_ACCEPTED);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(RFI_ACCEPTED);
+                })
+            ),
         ],
     },
     rfiDefendable: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(RFI_DEFENDABLE);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(RFI_DEFENDABLE);
+                })
+            ),
         ],
     },
     rfiUnresponded: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(RFI_UNRESPONDED);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(RFI_UNRESPONDED);
+                })
+            ),
         ],
     },
     chargebackAcceptable: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(CHARGEBACK_ACCEPTABLE);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(CHARGEBACK_ACCEPTABLE);
+                })
+            ),
         ],
     },
     chargebackDefendable: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(CHARGEBACK_DEFENDABLE);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(CHARGEBACK_DEFENDABLE);
+                })
+            ),
         ],
     },
     chargebackLost: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(CHARGEBACK_LOST);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(CHARGEBACK_LOST);
+                })
+            ),
         ],
     },
     chargebackLostWithFeedback: {
         handlers: [
-            httpGetDetails(DISPUTES_ENDPOINTS.details, () => {
-                return HttpResponse.json(CHARGEBACK_LOST_WITH_ISSUER_FEEDBACK);
-            }),
+            httpGetDetails(
+                DISPUTES_ENDPOINTS.details,
+                withDelay(() => {
+                    return HttpResponse.json(CHARGEBACK_LOST_WITH_ISSUER_FEEDBACK);
+                })
+            ),
         ],
     },
     ...DISPUTE_DETAILS_ERRORS,

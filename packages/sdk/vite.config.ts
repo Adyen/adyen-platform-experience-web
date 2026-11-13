@@ -23,9 +23,11 @@ const shouldExcludeAsset = (id: string) => {
 export default defineConfig(({ mode }) => ({
     root: projectRoot,
     resolve: {
+        dedupe: ['vue', 'vue-i18n'],
         alias: [
             { find: /^@integration-components\/style\/(.+)$/, replacement: `${styleDir}/$1` },
             { find: /^@integration-components\/style$/, replacement: resolve(styleDir, 'index.scss') },
+            { find: '@integration-components/composables-vue', replacement: resolve(rootDir, 'packages/shared/composables-vue/src') },
             { find: '@integration-components/assets', replacement: resolve(rootDir, 'packages/shared/assets/src') },
             { find: '@integration-components/core', replacement: resolve(rootDir, 'packages/shared/core/src') },
             { find: '@integration-components/types', replacement: resolve(rootDir, 'packages/shared/types/src') },
@@ -52,17 +54,26 @@ export default defineConfig(({ mode }) => ({
         ],
     },
     build: {
-        minify: true,
+        minify: 'terser',
+        terserOptions: {
+            format: { comments: false },
+            compress: { passes: 2 },
+            mangle: true,
+        },
+        sourcemap: false,
         lib: {
             cssFileName: 'adyen-platform-experience-web',
             name: 'AdyenPlatformExperienceWeb',
             entry: resolve(projectRoot, 'src/index.ts'),
             fileName: (format, entryName) => {
-                if (entryName.includes('node_modules')) {
-                    const normalized = entryName.slice(entryName.lastIndexOf('node_modules/') + 'node_modules/'.length);
-                    return `${format}/external/${normalized}.js`;
+                const extension = format === 'cjs' ? 'cjs' : 'js';
+                const normalizedEntry = entryName.replace(/\\/g, '/');
+                const nodeModulesIndex = normalizedEntry.lastIndexOf('node_modules/');
+                if (nodeModulesIndex !== -1) {
+                    const normalized = normalizedEntry.slice(nodeModulesIndex + 'node_modules/'.length);
+                    return `${format}/external/${normalized}.${extension}`;
                 }
-                return `${format}/${entryName}.js`;
+                return `${format}/${normalizedEntry}.${extension}`;
             },
         },
         rollupOptions: {
@@ -71,7 +82,7 @@ export default defineConfig(({ mode }) => ({
                 {
                     format: 'es',
                     preserveModules: true,
-                    preserveModulesRoot: resolve(rootDir, 'src'),
+                    preserveModulesRoot: rootDir,
                     sourcemap: false,
                     indent: false,
                 },

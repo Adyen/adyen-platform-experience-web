@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { BentoSelectionCardGroup } from '@adyen/bento-vue3';
+import { BentoLoadingSkeletonTypography, BentoSelectionCardGroup } from '@adyen/bento-vue3';
 import {
     calculatePercentageFromBasisPoints,
     getAvailableTerms,
@@ -8,18 +8,19 @@ import {
     sharedCapitalOfferAnalyticsEventProperties,
 } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import type { IOffer } from '@integration-components/types';
 import { useFormatTermLabel } from '../composables/useFormatTermLabel';
 import useContainerQuery from '@integration-components/composables-vue/useContainerQuery';
 import { BREAKPOINTS } from '@integration-components/utils';
 
 const MAX_ITEMS_PER_ROW = 3;
+const CONTENT_LOADING_SKELETON_PLACEHOLDER = 'CONTENT_LOADING_SKELETON_PLACEHOLDER';
 
 const props = defineProps<{
     areAvailableTermsLoading: boolean;
     estimatedTerms: number[];
     isEarlyRenewal: boolean;
-    offersByTerm: Record<number, IGrantOfferResponseDTO>;
+    offersByTerm: Record<number, IOffer>;
     term: number | undefined;
 }>();
 
@@ -38,17 +39,22 @@ const items = computed(() =>
     props.estimatedTerms.map(term => {
         const offer = props.offersByTerm[term];
         const isAvailable = availableTerms.value.includes(term);
+        let content;
+
+        if (props.areAvailableTermsLoading) {
+            content = CONTENT_LOADING_SKELETON_PLACEHOLDER;
+        } else if (offer) {
+            content = i18n.get('capital.common.percentageOfDailySales', {
+                values: { percentage: calculatePercentageFromBasisPoints(offer.repaymentRate) },
+            });
+        }
 
         return {
             disabled: props.areAvailableTermsLoading || !isAvailable,
-            subtitle:
-                props.areAvailableTermsLoading || !offer
-                    ? undefined
-                    : i18n.get('capital.offer.selection.termOptions.dailyRatePercentage', {
-                          values: { percentage: calculatePercentageFromBasisPoints(offer.repaymentRate) },
-                      }),
+            content,
             title: formatTermLabel(term),
             value: term,
+            fullyClickable: true,
         };
     })
 );
@@ -62,16 +68,16 @@ const emitChangeEvent = (term: number) => {
     const selectedRate = props.offersByTerm[term]?.repaymentRate;
     const availableRates = availableTerms.value.map(availableTerm => props.offersByTerm[availableTerm]?.repaymentRate);
 
-    userEvents.addEvent?.('Selected repayment term', {
+    userEvents.addEvent?.('Changed offer term', {
         ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing offer',
+        subCategory: 'Offer selection',
         allTerms: props.estimatedTerms,
-        availableTerms: availableTerms.value,
-        selectedTerm: term,
-        relativeToDefault: getRelativeToDefault(term, 180),
         availableRates,
-        selectedRate,
+        availableTerms: availableTerms.value,
         isEarlyRenewal: props.isEarlyRenewal,
+        relativeToDefault: getRelativeToDefault(term, 180),
+        selectedRate,
+        selectedTerm: term,
     });
 };
 
@@ -95,13 +101,21 @@ const handleChange = (term: number) => {
 
 <template>
     <BentoSelectionCardGroup
+        :aria-busy="props.areAvailableTermsLoading"
         :hide-label="false"
         :items="items"
         :items-per-row="itemsPerRow"
-        :label="i18n.get('capital.offer.selection.termOptions.title')"
+        :label="i18n.get('capital.offer.selection.loan.repaymentPlanTitle')"
         :layout="isWideContainer ? 'horizontal' : 'vertical'"
         :model-value="props.term"
         variant="radio"
         @update:model-value="handleChange"
-    />
+    >
+        <template #content="{ content }">
+            <BentoLoadingSkeletonTypography v-if="content === CONTENT_LOADING_SKELETON_PLACEHOLDER" :lines="1" :last-line-width="70" />
+            <template v-else>
+                {{ content }}
+            </template>
+        </template>
+    </BentoSelectionCardGroup>
 </template>

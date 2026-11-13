@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { BentoAlert, BentoInputField, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { usePaymentLinkSettingsContext } from '../composables/context';
@@ -33,6 +33,9 @@ const fullWidthLogoUrl = ref<string | null>(props.theme.fullWidthLogo ?? null);
 const touchedLogo = ref(false);
 const touchedFullWidthLogo = ref(false);
 const showMissingBrandName = ref(false);
+const logoErrors = reactive<Record<LogoType, boolean>>({ logo: false, fullWidthLogo: false });
+const hasLogoError = computed(() => logoOptionsList.some(type => logoErrors[type]));
+const isValid = computed(() => !!brandName.value && !hasLogoError.value);
 
 function buildInitialPayload(): FormData {
     const formData = new FormData();
@@ -44,9 +47,8 @@ function buildInitialPayload(): FormData {
 
 let themePayload: FormData = buildInitialPayload();
 setPayload(themePayload);
-setIsValid(!!brandName.value);
 
-watch(brandName, value => setIsValid(!!value));
+watch(isValid, setIsValid, { immediate: true });
 
 watch(saveActionCalled, value => {
     if (value) {
@@ -108,6 +110,10 @@ function onLogoChange(type: LogoType, file: File) {
     logoPreview(type, file);
 }
 
+function onLogoValidationChange(type: LogoType, valid: boolean) {
+    logoErrors[type] = !valid;
+}
+
 function onRemoveLogoUrl(type: LogoType) {
     setTouched(type);
     removeFieldFromThemePayload(type);
@@ -122,19 +128,19 @@ function getLogoUrl(type: LogoType) {
 
 <template>
     <div :class="styles.container">
-        <BentoAlert v-if="showMissingBrandName" type="critical" :dismissible="false">
+        <BentoAlert v-if="showMissingBrandName || hasLogoError" type="critical" :dismissible="false">
             <template #description>
-                {{ i18n.get('payByLink.settings.common.alerts.validationError') }}
+                {{ i18n.get('payByLink.settings.alerts.validation.error') }}
             </template>
         </BentoAlert>
         <BentoAlert v-else-if="isSaveSuccess && !navigateBack" type="success" variant="tip" :dismissible="false">
             <template #description>
-                {{ i18n.get('payByLink.settings.common.alerts.saveSuccess') }}
+                {{ i18n.get('payByLink.settings.alerts.save.success') }}
             </template>
         </BentoAlert>
         <BentoAlert v-else-if="isSaveError" type="critical" variant="tip" :dismissible="false">
             <template #description>
-                {{ i18n.get('payByLink.settings.common.alerts.saveError') }}
+                {{ i18n.get('payByLink.settings.alerts.save.error') }}
             </template>
         </BentoAlert>
         <div :class="layoutStyles.contentHeader">
@@ -152,10 +158,10 @@ function getLogoUrl(type: LogoType) {
                     :disabled="!!isSaving"
                     :readonly="!!isSaving"
                     :lang="i18n.locale"
-                    :label="i18n.get('payByLink.settings.theme.brandName.input.label')"
+                    :label="i18n.get('payByLink.settings.theme.brandName.label')"
                     :model-value="brandName"
-                    :placeholder="i18n.get('payByLink.settings.theme.brandName.input.placeholder')"
-                    :error-message="showMissingBrandName ? i18n.get('payByLink.settings.theme.inputs.brandName.errors.missing') : undefined"
+                    :placeholder="i18n.get('payByLink.settings.theme.brandName.placeholder')"
+                    :error-message="showMissingBrandName ? i18n.get('payByLink.settings.theme.brandName.missingError') : undefined"
                     @update:model-value="onBrandNameChange"
                 />
             </div>
@@ -174,6 +180,7 @@ function getLogoUrl(type: LogoType) {
                     :preview-url="isTouched(logoType) ? getLogoUrl(logoType) : null"
                     @file-input-change="onLogoChange"
                     @file-removed="onRemoveLogoUrl"
+                    @validation-change="onLogoValidationChange"
                 />
             </div>
         </div>

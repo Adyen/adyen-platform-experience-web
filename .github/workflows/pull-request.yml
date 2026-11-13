@@ -310,6 +310,12 @@ jobs:
         if: steps.skip-check.outcome != 'success'
         run: pnpm run translations:check
 
+      - name: Validate the translation keyspace
+        if: steps.skip-check.outcome != 'success'
+        run: |
+          pnpm run translations:grammar
+          pnpm run translations:keys
+
       - name: Validate SDK translation instructions
         if: steps.skip-check.outcome != 'success'
         env:
@@ -317,6 +323,14 @@ jobs:
         run: |
           git fetch --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
           node scripts/process-translations/validate-sdk-instructions.mjs "origin/${BASE_REF}"
+
+      - name: Report the translation keyspace diff
+        if: steps.skip-check.outcome != 'success'
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          git fetch --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+          node scripts/process-translations/keyspace-report.mjs "origin/${BASE_REF}"
 
       - name: Run lint checks
         if: steps.skip-check.outcome != 'success' && (github.event.pull_request.base.ref == 'develop' || startsWith(github.event.pull_request.base.ref, 'group/'))

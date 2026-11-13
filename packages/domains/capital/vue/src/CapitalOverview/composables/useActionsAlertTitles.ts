@@ -13,11 +13,11 @@ export const useActionsAlertTitles = (expirationDate: MaybeRefOrGetter<string | 
 
         return {
             multiple: formattedExpirationDate
-                ? i18n.get('capital.overview.grants.item.alerts.actionNeededByMany', { values: { date: formattedExpirationDate } })
-                : i18n.get('capital.overview.grants.item.alerts.actionNeededMany'),
+                ? i18n.get('capital.overview.grantAlerts.loan.actionsNeededWithDeadline', { values: { date: formattedExpirationDate } })
+                : i18n.get('capital.overview.grantAlerts.loan.actionsNeeded'),
             single: formattedExpirationDate
-                ? i18n.get('capital.overview.grants.item.alerts.actionNeededBy', { values: { date: formattedExpirationDate } })
-                : i18n.get('capital.overview.grants.item.alerts.actionNeeded'),
+                ? i18n.get('capital.overview.grantAlerts.loan.singleActionNeededWithDeadline', { values: { date: formattedExpirationDate } })
+                : i18n.get('capital.overview.grantAlerts.loan.singleActionNeeded'),
         };
     });
 };

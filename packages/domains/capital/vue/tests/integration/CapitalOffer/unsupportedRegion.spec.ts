@@ -7,6 +7,7 @@ test.describe('Unsupported region', () => {
     test('should render an info message', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await expect(page.getByText('Stay tuned!')).toBeVisible();
-        await expect(page.getByText('Business financing isn’t available in your region yet, but check back here for an offer.')).toBeVisible();
+        await expect(page.getByText('Adyen Capital isn’t available in your region yet, but check back here for an offer.')).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();
     });
 });

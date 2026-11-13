@@ -2,9 +2,10 @@
  * @vitest-environment jsdom
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { decodeAnalyticsEvent as decodeEvent } from '@integration-components/testing';
 import { createApp, type Component, type VNode } from 'vue';
 import { createI18n } from 'vue-i18n';
-import { UIElement } from './UIElement';
+import { UIElement, resolveBentoTranslationBundle } from './UIElement';
 import type { CoreOptions, GlobalAppearance } from './types';
 import deDE from '../../../../sdk/translations/de-DE.json' with { type: 'json' };
 import { SDK_BENTO_TRANSLATION_SOURCES, SDK_TRANSLATION_SOURCES } from '../../../../sdk/src/translations';
@@ -113,7 +114,7 @@ describe('UIElement', () => {
         };
 
         const component = { render: () => null } as Component;
-        const element = new UIElement(component, { core, balanceAccountId: 'BA_OLD' }, 'transactions');
+        const element = new UIElement(component, { core, id: 'ID_OLD' }, 'transactions');
 
         element.mount(document.createElement('div'));
 
@@ -122,14 +123,14 @@ describe('UIElement', () => {
         const initialProviderKey = view.key;
         const initialComponentKey = getComponentSubtree(view).key;
 
-        element.update({ balanceAccountId: 'BA_NEW' });
+        element.update({ id: 'ID_NEW' });
         view = renderElement();
 
         const updatedComponent = getComponentSubtree(view);
 
         expect(view.key).toBe(initialProviderKey);
         expect(updatedComponent.key).toBe(initialComponentKey);
-        expect(updatedComponent.props?.balanceAccountId).toBe('BA_NEW');
+        expect(updatedComponent.props?.id).toBe('ID_NEW');
 
         view.props?.refreshComponent();
         view = renderElement();
@@ -485,5 +486,153 @@ describe('UIElement', () => {
         } finally {
             consoleError.mockRestore();
         }
+    });
+
+    describe('core component events', () => {
+        test('sends the customized component style and data events once per mount, never on update', () => {
+            const core = new Core({
+                locale: 'en-US',
+                appearance: { titles: 'hidden' },
+                onSessionCreate: vi.fn(),
+            });
+            const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
+            const component = { render: () => null } as Component;
+            const element = new UIElement<{
+                core: Core;
+                onContactSupport?: () => void;
+                onDismiss?: () => void;
+                balanceAccountId?: string;
+                pagination?: { defaultLimit?: number; disableLimitSelection?: boolean };
+            }>(component, { core, onDismiss: () => {}, balanceAccountId: 'BA322KH22322DKGJ4' }, 'transactions');
+
+            element.mount(document.createElement('div'));
+
+            expect(sendAnalyticsEvent).toHaveBeenCalledTimes(2);
+
+            const events = sendAnalyticsEvent.mock.calls.map(([payload]) => decodeEvent(payload));
+            const styleEvent = events[0]!;
+            const dataEvent = events[1]!;
+
+            expect(styleEvent.event).toBe('Customized component style');
+            expect(styleEvent.properties).toMatchObject({
+                category: 'PIE',
+                subCategory: 'Overview',
+                label: 'transactions',
+                // The component falls back to the Core-level appearance.
+                appearance: ['titles'],
+                appearanceTitles: 'hidden',
+            });
+
+            expect(dataEvent.event).toBe('Customized component data');
+            expect(dataEvent.properties).toMatchObject({
+                category: 'PIE',
+                subCategory: 'Overview',
+                label: 'transactions',
+                hasOnContactSupport: false,
+                hasPreferredLimit: false,
+            });
+            expect(dataEvent.properties).not.toHaveProperty('allowLimitSelection');
+            expect(dataEvent.properties).not.toHaveProperty('appearance');
+            expect(dataEvent.properties).not.toHaveProperty('appearanceTitles');
+            expect(dataEvent.properties).not.toHaveProperty('appearanceIllustrations');
+            expect(dataEvent.properties).not.toHaveProperty('hasOnDismiss');
+            expect(dataEvent.properties).not.toHaveProperty('hasOnCreate');
+
+            element.update({ balanceAccountId: 'BA_NEW' });
+            expect(sendAnalyticsEvent).toHaveBeenCalledTimes(2);
+
+            // A remount is a new mount, so the events fire again.
+            element.unmount();
+            element.mount(document.createElement('div'));
+            expect(sendAnalyticsEvent).toHaveBeenCalledTimes(4);
+        });
+
+        test('reports the component-level appearance over the global one', () => {
+            const core = new Core({ locale: 'en-US', appearance: { titles: 'hidden' }, onSessionCreate: vi.fn() });
+            const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
+            const component = { render: () => null } as Component;
+            const element = new UIElement(component, { core, appearance: { titles: 'visible', illustrations: 'hidden' } }, 'transactions');
+
+            element.mount(document.createElement('div'));
+
+            const styleEvent = sendAnalyticsEvent.mock.calls.map(([payload]) => decodeEvent(payload))[0]!;
+            expect(styleEvent.properties).toMatchObject({
+                appearance: ['illustrations', 'titles'],
+                appearanceTitles: 'visible',
+                appearanceIllustrations: 'hidden',
+            });
+        });
+
+        test('does not send component events when analytics is disabled', () => {
+            const core = new Core({ locale: 'en-US', analytics: { enabled: false }, onSessionCreate: vi.fn() });
+            const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
+            const component = { render: () => null } as Component;
+            const element = new UIElement(component, { core }, 'capitalOverview');
+
+            element.mount(document.createElement('div'));
+
+            expect(sendAnalyticsEvent).not.toHaveBeenCalled();
+        });
+    });
+});
+
+describe('resolveBentoTranslationBundle', () => {
+    const createCore = () => {
+        const localization = new Localization('en-US', '', SDK_TRANSLATION_SOURCES);
+        const bentoLocalization = new Localization('en-US', '', SDK_BENTO_TRANSLATION_SOURCES);
+        return { localization, bentoLocalization } as any;
+    };
+
+    const settle = (core: any) => Promise.all([core.localization.ready, core.bentoLocalization.ready]);
+
+    test('reuses one resolved bundle across repeated resolutions in a generation', async () => {
+        const core = createCore();
+        await settle(core);
+
+        const first = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+        const second = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+
+        expect(second).toBe(first);
+        expect(Object.keys(first.messages).length).toBeGreaterThan(0);
+    });
+
+    test('resolves a distinct bundle per domain and component', async () => {
+        const core = createCore();
+        await settle(core);
+
+        const transactions = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+        const disputes = resolveBentoTranslationBundle(core, 'disputes', 'disputes');
+
+        expect(disputes).not.toBe(transactions);
+    });
+
+    test('a locale change produces a fresh bundle', async () => {
+        const core = createCore();
+        await settle(core);
+        const english = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+
+        core.localization.locale = 'de-DE';
+        core.bentoLocalization.locale = 'de-DE';
+        await settle(core);
+
+        const german = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+
+        expect(german).not.toBe(english);
+        expect(german.messages).not.toEqual(english.messages);
+    });
+
+    test('a customTranslations change produces a fresh bundle with the customised override', async () => {
+        const core = createCore();
+        await settle(core);
+        const before = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+
+        core.localization.customTranslations = { 'en-US': { 'transactions.common.copy.label': 'Custom copy' } };
+        await core.localization.ready;
+
+        const after = resolveBentoTranslationBundle(core, 'transactions', 'transactions');
+
+        expect(after).not.toBe(before);
+        // bento.copyButton.copy routes to common.copy.label, so the merchant value must land here.
+        expect(after.overrides['bento.copyButton.copy']).toBe('Custom copy');
     });
 });

@@ -20,12 +20,52 @@ export const Default: ElementStory<PaymentLinkCreationExternalProps> = {
     },
 };
 
+export const SingleOptions: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Single options',
+    args: {
+        ...defaultArgs,
+        storeIds: ['STORE_NY_001'],
+        fieldsConfig: {
+            data: {
+                amount: { value: 12345 },
+                reference: 'SINGLE_OPTIONS',
+                description: 'Payment link with single options',
+                shopperReference: 'SHOPPER001',
+                shopperEmail: 'test@example.com',
+                billingAddress: {
+                    street: 'Gran Via',
+                    houseNumberOrName: '123',
+                    city: 'Madrid',
+                    postalCode: '28001',
+                },
+                deliveryAddress: {
+                    street: 'Gran Via',
+                    houseNumberOrName: '123',
+                    city: 'Madrid',
+                    postalCode: '28001',
+                },
+            },
+        },
+    },
+    parameters: {
+        msw: { ...paymentLinkCreationMockedResponses.singleOptions },
+    },
+};
+
 export const Prefilled: ElementStory<PaymentLinkCreationExternalProps> = {
     name: 'Prefilled',
     args: {
         ...defaultArgs,
         fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
         storeIds: ['STORE_NY_001'],
+    },
+};
+
+export const Loading: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Loading',
+    args: Prefilled.args,
+    parameters: {
+        msw: { ...paymentLinkCreationMockedResponses.loading },
     },
 };
 
@@ -41,8 +81,8 @@ export const OptionalSelectFields: ElementStory<PaymentLinkCreationExternalProps
     },
 };
 
-export const AmbiguousPrefilledPhone: ElementStory<PaymentLinkCreationExternalProps> = {
-    name: 'Ambiguous prefilled phone',
+export const CompactPrefilledPhone: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Compact prefilled phone',
     args: {
         ...defaultArgs,
         fieldsConfig: {

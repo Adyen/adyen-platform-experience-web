@@ -4,7 +4,7 @@ import { BentoTypography, BentoTabs, BentoTab, BentoButtonActions, BentoAlert, t
 import PlusIcon from '@adyen/ui-assets-icons-16/vue/plus';
 import SettingsIcon from '@adyen/ui-assets-icons-16/vue/settings';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
+import { useLandedPageEvent, useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
 import PaymentLinksFilters from './PaymentLinksFilters.vue';
 import PaymentLinksTable from './PaymentLinksTable.vue';
 import PaymentLinkDetailsModal from './PaymentLinkDetailsModal.vue';
@@ -14,31 +14,35 @@ import { DEFAULT_PAYMENT_LINK_STATUS_GROUP, PAYMENT_LINK_STATUS_GROUPS_TABS } fr
 import type { PaymentLinksFiltersValue } from './PaymentLinksFilters.vue';
 import type { IPaymentLinkFilters, IPaymentLinkItem, IPaymentLinkStatusGroup } from '@integration-components/types';
 import type { PaymentLinkCreationFormValues, StoreData, PaymentLinksOverviewModalType } from '../../../../domain/src';
-import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../../../../domain/src';
-import type { PaymentLinksOverviewExternalProps } from '../types';
+import {
+    ACCOUNT_MISCONFIGURATION,
+    PAYMENT_LINKS_ANALYTICS_CATEGORY,
+    PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_OVERVIEW,
+    WRONG_STORE_IDS,
+} from '../../../../domain/src';
+import type { PaymentLinksOverviewComponentProps } from '../types';
 import { createPaymentLinksError } from '../utils/error';
 import styles from './PaymentLinksOverview.module.scss';
 
-const props = defineProps<{
-    allowLimitSelection?: boolean;
-    preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
-    storeIds?: PaymentLinksOverviewExternalProps['storeIds'];
-    onRecordSelection?: PaymentLinksOverviewExternalProps['onRecordSelection'];
-    onContactSupport?: () => void;
-    paymentLinkCreation?: PaymentLinksOverviewExternalProps['paymentLinkCreation'];
-    paymentLinkSettings?: PaymentLinksOverviewExternalProps['paymentLinkSettings'];
-    stores: StoreData[] | undefined;
-    allStores: StoreData[] | undefined;
-    isFiltersLoading: boolean;
-    storeError?: Error;
-    filterOptions: IPaymentLinkFilters | undefined;
-    filterOptionsError?: Error;
-}>();
+const props = defineProps<
+    PaymentLinksOverviewComponentProps & {
+        stores: StoreData[] | undefined;
+        allStores: StoreData[] | undefined;
+        isFiltersLoading: boolean;
+        storeError?: Error;
+        filterOptions: IPaymentLinkFilters | undefined;
+        filterOptionsError?: Error;
+    }
+>();
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
 const config = useConfigContext();
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
+
+const analyticsProps = { category: PAYMENT_LINKS_ANALYTICS_CATEGORY, subCategory: PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_OVERVIEW } as const;
+
+useLandedPageEvent(analyticsProps);
 
 let statusGroupDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -95,8 +99,7 @@ const paymentLinksListResult = usePaymentLinksList(() => ({
     paymentLinkId: filtersValue.value.paymentLinkId,
     createdSince: filtersValue.value.createdSince,
     createdUntil: filtersValue.value.createdUntil,
-    allowLimitSelection: props.allowLimitSelection,
-    preferredLimit: props.preferredLimit,
+    pagination: props.pagination,
     lastRefreshTimestamp: lastRefreshTimestamp.value,
 }));
 
@@ -198,8 +201,8 @@ function refreshPaymentLinkList() {
     lastRefreshTimestamp.value = performance.now();
 }
 
-function onPaymentLinkCreated(paymentLink: PaymentLinkCreationFormValues) {
-    props.paymentLinkCreation?.onPaymentLinkCreated?.(paymentLink);
+function onCreate(paymentLink: PaymentLinkCreationFormValues) {
+    props.paymentLinkCreation?.onCreate?.(paymentLink);
     hasToRefresh.value = true;
 }
 
@@ -209,7 +212,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 
     if (config.endpoints?.savePayByLinkSettings) {
         actions.push({
-            title: i18n.get('payByLink.overview.actions.settings.a11y.label'),
+            title: i18n.get('payByLink.overview.settings.a11yLabel'),
             event: openSettingsModal,
             variant: 'secondary',
             condensed: isMobile.value,
@@ -220,7 +223,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 
     if (config.endpoints?.createPBLPaymentLink) {
         actions.push({
-            title: i18n.get('payByLink.overview.list.actions.createPaymentLink'),
+            title: i18n.get('payByLink.overview.list.createPaymentLink'),
             event: openPaymentLinkModal,
             variant: 'primary',
             condensed: isMobile.value,
@@ -247,7 +250,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
 
         <div :class="styles.tabsContainer">
             <BentoTabs
-                :aria-label="i18n.get('payByLink.overview.list.filters.types.statusGroup')"
+                :aria-label="i18n.get('payByLink.overview.list.filters.statusGroup')"
                 :active-tab-index="activeStatusGroupTabIndex"
                 @update:active-tab-index="onStatusGroupChange"
             >
@@ -285,6 +288,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
             :error="paymentLinksError"
             :loading="statusGroupFetchPending || paymentLinksListResult.fetching.value || props.isFiltersLoading"
             :on-contact-support="props.onContactSupport"
+            :on-refresh="paymentLinksListResult.refresh"
             :on-row-click="onRowClick"
             :show-pagination="true"
             :payment-links="paymentLinksListResult.records.value"
@@ -312,8 +316,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
             :modal-type="modalType"
             :store-ids="props.storeIds"
             :payment-link-creation="props.paymentLinkCreation"
-            :payment-link-settings="props.paymentLinkSettings"
-            :on-payment-link-created="onPaymentLinkCreated"
+            :on-create="onCreate"
             :on-contact-support="props.onContactSupport"
             :on-close="onCloseModal"
         />

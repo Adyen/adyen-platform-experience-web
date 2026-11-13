@@ -4,31 +4,33 @@ import { useCoreContext } from '@integration-components/core/vue';
 import {
     containerQueries,
     getTimezoneAwareDateRangeQueryParams,
+    useLandedPageEvent,
     useResponsiveContainer,
     useShouldHideTitles,
 } from '@integration-components/composables-vue';
 import ReportsFilters from './ReportsFilters.vue';
 import ReportsTable from './ReportsTable.vue';
 import { useReportsList } from '../composables/useReportsList';
-import { EARLIEST_REPORT_SINCE_DATE } from '../../../../domain/src';
+import { EARLIEST_REPORT_SINCE_DATE, REPORTS_ANALYTICS_CATEGORY, REPORTS_ANALYTICS_SUBCATEGORY_OVERVIEW } from '../../../../domain/src';
 import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
-import type { IBalanceAccountBase, ReportsOverviewExternalProps } from '../types';
+import type { IBalanceAccountBase, ReportsOverviewComponentProps } from '../types';
 import { BentoTypography } from '@adyen/bento-vue3';
 import styles from './ReportsOverview.module.scss';
 
-const props = defineProps<{
-    balanceAccountId?: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: ReportsOverviewExternalProps['preferredLimit'];
-    onContactSupport?: () => void;
-    dataCustomization?: any;
-    balanceAccounts: IBalanceAccountBase[] | undefined;
-    isLoadingBalanceAccount: boolean;
-}>();
+const props = defineProps<
+    ReportsOverviewComponentProps & {
+        balanceAccounts: IBalanceAccountBase[] | undefined;
+        isLoadingBalanceAccount: boolean;
+    }
+>();
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
+
+const analyticsProps = { category: REPORTS_ANALYTICS_CATEGORY, subCategory: REPORTS_ANALYTICS_SUBCATEGORY_OVERVIEW } as const;
+
+useLandedPageEvent(analyticsProps);
 
 const initialDateRangeQueryParams = getTimezoneAwareDateRangeQueryParams({
     dateRange: quickSelectDateRanges.last30Days,
@@ -59,8 +61,7 @@ const reportsListResult = useReportsList(() => ({
     balanceAccountId: filterParams.value.balanceAccountId,
     createdSince: filterParams.value.createdSince,
     createdUntil: filterParams.value.createdUntil,
-    allowLimitSelection: props.allowLimitSelection,
-    preferredLimit: props.preferredLimit,
+    pagination: props.pagination,
 }));
 
 const isLoading = computed(
@@ -91,8 +92,9 @@ const listError = computed(() => reportsListResult.error.value as Error | undefi
             :show-pagination="true"
             :error="listError"
             :on-contact-support="props.onContactSupport"
-            :custom-columns="props.dataCustomization?.list?.fields"
-            :on-data-retrieve="props.dataCustomization?.list?.onDataRetrieve"
+            :on-refresh="reportsListResult.refresh"
+            :custom-columns="props.dataCustomization?.dataGrid?.fields"
+            :on-data-retrieve="props.dataCustomization?.dataGrid?.onDataRetrieve"
             :has-next="reportsListResult.hasNext.value"
             :has-previous="reportsListResult.hasPrevious.value"
             :go-to-next-page="reportsListResult.goToNextPage"

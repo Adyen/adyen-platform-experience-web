@@ -8,8 +8,14 @@
     margin-bottom: style.token(spacer-070);
 }
 
+.headerMobile {
+    align-items: stretch;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+}
+
 .toolbar {
-    align-items: center;
+    align-items: start;
     display: flex;
     gap: style.token(spacer-060);
     justify-content: space-between;

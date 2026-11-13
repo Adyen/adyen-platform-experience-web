@@ -3,4 +3,5 @@ import type { PayoutDetailsProps } from '../../../domain/src';
 
 export type { PayoutDetailsCustomization } from '../../../domain/src';
 
-export type PayoutDetailsExternalProps = Omit<PayoutDetailsProps, 'ref'> & UIElementProps;
+export type PayoutDetailsExternalProps = UIElementProps & PayoutDetailsProps;
+export type PayoutDetailsComponentProps = Omit<PayoutDetailsExternalProps, 'core' | 'appearance'>;

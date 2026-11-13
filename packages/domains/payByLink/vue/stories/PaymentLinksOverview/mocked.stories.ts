@@ -1,8 +1,9 @@
 import type { Meta } from '@storybook/vue3';
 import { paymentLinksOverviewMeta } from './meta';
-import type { PaymentLinksOverviewExternalProps } from '../../src';
+import type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewExternalProps } from '../../src';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { payByLinkOverviewMockedResponses } from '../../../mocks/mock-server/payByLink';
+import { PAYMENT_LINKS_FIELDS_CONFIG } from '../utils/constants/paymentLinks';
 
 const meta: Meta<ElementProps<PaymentLinksOverviewExternalProps>> = {
     ...paymentLinksOverviewMeta,
@@ -25,6 +26,17 @@ export const SingleStore: ElementStory<PaymentLinksOverviewExternalProps> = {
     },
 };
 
+export const PrefilledCreation: ElementStory<PaymentLinksOverviewExternalProps> = {
+    name: 'Prefilled creation',
+    args: {
+        mockedApi: true,
+        storeIds: 'STORE_NY_001',
+        paymentLinkCreation: {
+            fieldsConfig: { data: PAYMENT_LINKS_FIELDS_CONFIG.data },
+        },
+    },
+};
+
 export const RestrictedStores: ElementStory<PaymentLinksOverviewExternalProps> = {
     name: 'Restricted stores',
     args: {
@@ -41,7 +53,9 @@ export const WrongStoreIds: ElementStory<PaymentLinksOverviewExternalProps> = {
     },
 };
 
-export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternalProps> = {
+type SubComponentConfigProps = Pick<PaymentLinksOverviewComponentProps, 'paymentLinkCreation'>;
+
+export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternalProps, SubComponentConfigProps> = {
     name: 'With props to sub-components',
     args: {
         mockedApi: true,
@@ -51,9 +65,6 @@ export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternal
                     reference: 'Prefilled Merchant Reference',
                 },
             },
-        },
-        paymentLinkSettings: {
-            onDismiss: () => {},
         },
     },
 };

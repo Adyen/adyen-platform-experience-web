@@ -7,14 +7,13 @@ export const reportsOverviewMeta: Meta<ElementProps<ReportsOverviewExternalProps
     title: 'Components/Reports/Reports Overview',
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
-        allowLimitSelection: { control: 'boolean' },
+        pagination: { control: 'object' },
         dataGridDensity: dataGridDensityControl(),
         appearance: { table: { disable: true } },
     },
     args: {
         component: ReportsOverviewElement,
-        allowLimitSelection: true,
+        pagination: { defaultLimit: 10, disableLimitSelection: false },
         dataGridDensity: 'default',
     },
     parameters: {

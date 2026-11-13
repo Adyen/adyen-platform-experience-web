@@ -1,5 +1,5 @@
-import { IMissingActionType } from '@integration-components/types';
-import { TranslationKey } from '@integration-components/core';
+import type { IMissingActionType } from '@integration-components/types';
+import type { TranslationKey } from '@integration-components/core';
 
 type ActionConfig = {
     buttonLabelKey: TranslationKey;

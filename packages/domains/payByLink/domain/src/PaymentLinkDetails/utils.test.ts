@@ -1,4 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
+import Localization from '@integration-components/core/Localization';
 import { DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS } from '@integration-components/utils';
 import { PAYMENT_LINKS } from '../../../mocks/mock-data/payByLink';
 import { buildPaymentLinkListItems, getPaymentLinkErrorMessageContent } from './utils';
@@ -9,13 +10,29 @@ describe('buildPaymentLinkListItems', () => {
         if (!paymentLink) throw new Error('Missing payment link fixture');
 
         const dateFormat = vi.fn(() => 'formatted date');
+        const i18n = new Localization().i18n;
         buildPaymentLinkListItems(paymentLink, {
-            i18n: { has: () => false, get: key => key },
+            i18n,
             dateFormat,
         });
 
         expect(dateFormat).toHaveBeenNthCalledWith(1, paymentLink.linkInformation.creationDate, DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS);
         expect(dateFormat).toHaveBeenNthCalledWith(2, paymentLink.linkInformation.expirationDate, DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS);
+    });
+
+    test('names every copy button after its own field, including across the two addresses', () => {
+        const paymentLink = PAYMENT_LINKS[0];
+        if (!paymentLink) throw new Error('Missing payment link fixture');
+
+        const items = buildPaymentLinkListItems(paymentLink, { i18n: new Localization().i18n, dateFormat: () => 'formatted date' });
+        const copyableItems = Object.values(items)
+            .flat()
+            .filter(item => item.isCopyable);
+        const labelKeys = copyableItems.map(item => item.copyAriaLabelKey);
+
+        expect(copyableItems.length).toBeGreaterThan(1);
+        expect(labelKeys.filter(Boolean)).toHaveLength(copyableItems.length);
+        expect(new Set(labelKeys).size).toBe(copyableItems.length);
     });
 });
 

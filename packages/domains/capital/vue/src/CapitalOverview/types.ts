@@ -1,8 +1,4 @@
-import type { CoreInstance } from '@integration-components/core/vue';
-import { UIElementProps } from '@integration-components/types';
+import type { UIElementProps } from '@integration-components/core/vue';
 
-export type CapitalOverviewExternalProps = Omit<UIElementProps, 'ref'> & {
-    core: CoreInstance;
-};
-
-export type CapitalOverviewProps = Omit<CapitalOverviewExternalProps, 'core'>;
+export type CapitalOverviewExternalProps = UIElementProps;
+export type CapitalOverviewComponentProps = Omit<CapitalOverviewExternalProps, 'core' | 'appearance'>;

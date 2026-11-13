@@ -13,6 +13,8 @@ test.each([
     [undefined, { illustrations: 'hidden' }, { illustrations: 'hidden' }],
     [{ titles: 'hidden' }, undefined, { titles: 'hidden' }],
     [undefined, { titles: 'hidden' }, { titles: 'hidden' }],
+    [{ container: 'hidden' }, undefined, { container: 'hidden' }],
+    [{ container: 'hidden' }, { container: 'visible' }, { container: 'visible' }],
 ] as const)('resolves global and component appearance', (globalAppearance, componentAppearance, expectedAppearance) => {
     expect(resolveAppearance(globalAppearance, componentAppearance)).toEqual(expectedAppearance);
 });
@@ -34,6 +36,13 @@ test('component appearance overrides global appearance', () => {
 test('resolves component data grid appearance', () => {
     expect(resolveAppearance<DataGridComponentAppearance>({ illustrations: 'hidden' }, { dataGrid: { density: 'condensed' } })).toEqual({
         illustrations: 'hidden',
+        dataGrid: { density: 'condensed' },
+    });
+});
+
+test('inherits the global container alongside component extensions', () => {
+    expect(resolveAppearance<DataGridComponentAppearance>({ container: 'hidden' }, { dataGrid: { density: 'condensed' } })).toEqual({
+        container: 'hidden',
         dataGrid: { density: 'condensed' },
     });
 });

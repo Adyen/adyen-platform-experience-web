@@ -10,6 +10,7 @@ export const hasDataGridAppearance = <TAppearance extends GlobalAppearance>(
 
 // Typed as a record over every GlobalAppearance key, so adding a global field fails to compile until it is listed here.
 const GLOBAL_APPEARANCE_FIELDS: Record<keyof GlobalAppearance, true> = {
+    container: true,
     illustrations: true,
     titles: true,
 };

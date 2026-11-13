@@ -49,7 +49,7 @@ function onCloseModal() {
             size="small"
             :is-open="isOpen"
             :is-dismissible="true"
-            :aria-label="i18n.get('disputes.management.common.title')"
+            :aria-label="i18n.get('disputes.management.title')"
             @close-modal="onCloseModal"
         >
             <!-- Keep this default slot empty — needed for no padding -->
@@ -60,9 +60,8 @@ function onCloseModal() {
                     :id="props.disputeId"
                     :data-customization="props.dataCustomization ? { details: props.dataCustomization } : undefined"
                     :on-contact-support="props.onContactSupport"
-                    :on-dispute-accept="onDisputeManagementSuccessful"
-                    :on-dispute-defend="onDisputeManagementSuccessful"
-                    :on-dismiss="onCloseModal"
+                    :on-accept="onDisputeManagementSuccessful"
+                    :on-defend="onDisputeManagementSuccessful"
                 />
             </template>
         </BentoModal>

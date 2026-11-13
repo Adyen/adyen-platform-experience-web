@@ -14,22 +14,22 @@ import {
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { useOffers } from '../../composables/useOffers';
 import { useCreateOffer } from '../../composables/useCreateOffer';
-import type { IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
-import { BentoButtonActions, type BentoButtonActionsList } from '@adyen/bento-vue3';
+import type { IDynamicOffersConfig, IOffer } from '@integration-components/types';
+import { BentoButtonActions, type BentoButtonActionsList, BentoLoadingSkeletonShape } from '@adyen/bento-vue3';
 import AmountSelector from '../AmountSelector/AmountSelector.vue';
-import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
+import CapitalError from '../../../shared/CapitalError.vue';
 import OfferSelectionDetails from '../OfferSelectionDetails.vue';
 import RenewalHighlights from '../RenewalHighlights.vue';
 import TermSelector from '../TermSelector.vue';
 import styles from './OfferSelection.module.scss';
+import EmptyOfferState from '../../../shared/EmptyOfferState.vue';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
     dynamicOfferConfig: IDynamicOffersConfig;
-    createdOffer: IGrantOfferResponseDTO | undefined;
+    createdOffer: IOffer | undefined;
     onContactSupport?: () => void;
-    onDismiss?: () => void;
-    onOfferCreate: (offer: IGrantOfferResponseDTO) => void;
+    onOfferCreate: (offer: IOffer) => void;
 }>();
 
 const { i18n } = useCoreContext();
@@ -53,13 +53,13 @@ const {
     () => amountValue.value
 );
 const areAmountAndOffersUpdating = computed(() => isAmountChanging.value || areOffersLoading.value || isOffersRequestPending.value);
+const areDetailsLoading = computed(() => !selectedOffer.value || areAmountAndOffersUpdating.value);
 const hasNoOffers = computed(() => offers.value?.offers.length === 0);
 const offersByTerm = computed(() => getOffersByTerm(offers.value?.offers ?? []));
 const availableTerms = computed(() => getAvailableTerms(offersByTerm.value));
 const term = ref<number | undefined>(props.createdOffer?.expectedRepaymentPeriodDays);
 const selectedOffer = computed(() => (term.value === undefined ? undefined : getOfferForTerm(offersByTerm.value, term.value)));
 const { error: createOfferError, isLoading: isCreateOfferLoading, createOffer } = useCreateOffer();
-const isReviewDisabled = computed(() => !selectedOffer.value || areAmountAndOffersUpdating.value || isCreateOfferLoading.value);
 
 // Initializes the selected term and adjusts it when it becomes unavailable
 watch(
@@ -104,8 +104,8 @@ const handleReview = async () => {
     } finally {
         userEvents.addEvent?.('Clicked button', {
             ...sharedCapitalOfferAnalyticsEventProperties,
-            subCategory: 'Business financing offer',
-            label: 'Review offer',
+            subCategory: 'Offer selection',
+            label: 'Review request',
             isEarlyRenewal: isEarlyRenewal.value,
         });
     }
@@ -114,32 +114,19 @@ const handleReview = async () => {
 const actions = computed<BentoButtonActionsList>(() => {
     return [
         {
-            title: i18n.get('capital.offer.selection.actions.reviewOffer'),
-            disabled: isReviewDisabled.value,
+            title: i18n.get('capital.offer.selection.review'),
+            disabled: areDetailsLoading.value,
             state: isCreateOfferLoading.value ? 'loading' : 'start',
             event: handleReview,
         },
-        ...(props.onDismiss
-            ? [
-                  {
-                      title: i18n.get('capital.offer.selection.actions.goBack'),
-                      event: props.onDismiss,
-                  },
-              ]
-            : []),
     ];
 });
 </script>
 
 <template>
-    <div :class="styles.root" data-testid="capital-offer-selection">
-        <CapitalError
-            v-if="offersError || hasNoOffers || createOfferError"
-            :empty-grant-offer="hasNoOffers"
-            :error="createOfferError ?? offersError"
-            :on-back="props.onDismiss"
-            :on-contact-support="props.onContactSupport"
-        />
+    <div :class="styles.root" :aria-busy="areDetailsLoading" data-testid="capital-offer-selection">
+        <CapitalError v-if="offersError || createOfferError" :error="createOfferError ?? offersError" :on-contact-support="props.onContactSupport" />
+        <EmptyOfferState v-else-if="hasNoOffers" />
         <template v-else-if="amountValue">
             <AmountSelector
                 :amount-value="amountValue"
@@ -162,11 +149,8 @@ const actions = computed<BentoButtonActionsList>(() => {
                 :term="term"
                 @term-change="value => (term = value)"
             />
-            <OfferSelectionDetails
-                v-if="selectedOffer && !areAmountAndOffersUpdating"
-                :has-expected-repayment-period="hasSingleTerm"
-                :offer="selectedOffer"
-            />
+            <BentoLoadingSkeletonShape v-if="areDetailsLoading" variant="rectangle" height="208px" width="100%" />
+            <OfferSelectionDetails v-else-if="selectedOffer" :has-expected-repayment-period="hasSingleTerm" :offer="selectedOffer" />
             <BentoButtonActions :actions="actions" />
         </template>
     </div>

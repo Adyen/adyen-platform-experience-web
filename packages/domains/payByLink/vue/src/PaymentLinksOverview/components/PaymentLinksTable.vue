@@ -1,17 +1,26 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { BentoDataGrid, BentoTag, BentoTypography, BentoTooltipDirective as vBentoTooltip } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem, BentoTagVariant } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import {
     containerQueries,
     DataOverviewError,
+    useCustomColumnWidths,
+    useTableColumns,
     useCondensedDataGrid,
     useResponsiveContainer,
     useTimezoneAwareDateFormatting,
 } from '@integration-components/composables-vue';
+import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import { isActionNeededUrgently, BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '../../../../domain/src';
+import {
+    isActionNeededUrgently,
+    BACKEND_REDACTED_DATA_MARKER,
+    FRONTEND_REDACTED_DATA_MARKER,
+    PAYMENT_LINKS_TABLE_FIELDS,
+    type PaymentLinkTableCols,
+} from '../../../../domain/src';
 import {
     DATE_FORMAT_PAYMENT_LINKS_OVERVIEW,
     DATE_FORMAT_PAYMENT_LINKS_OVERVIEW_EXPIRATION_DATE,
@@ -28,6 +37,7 @@ const props = defineProps<{
     error?: Error;
     loading: boolean;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     onRowClick?: (paymentLink: IPaymentLinkItem) => void;
     showPagination: boolean;
     paymentLinks: IPaymentLinkItem[] | undefined;
@@ -72,38 +82,49 @@ function getTimeToDeadline(dueDate: string): string {
     const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
 
     return diffInDays <= 1
-        ? i18n.get('payByLink.overview.common.actionNeeded.expiresToday', { values: { date: formattedDate } })
-        : i18n.get('payByLink.overview.common.actionNeeded.expiresDays', { values: { days: diffInDays, date: formattedDate } });
+        ? i18n.get('payByLink.overview.actionNeeded.expiresToday', { values: { date: formattedDate } })
+        : i18n.get('payByLink.overview.actionNeeded.expiresDays', { values: { days: diffInDays, date: formattedDate } });
 }
+
+const { columns: desktopColumns } = useTableColumns<PaymentLinkTableCols>({
+    fields: PAYMENT_LINKS_TABLE_FIELDS,
+    customColumns: () => undefined,
+    fieldsKeys: {
+        paymentLinkId: 'payByLink.overview.list.id',
+        merchantReference: 'payByLink.overview.list.merchantReference',
+        storeCode: 'payByLink.overview.list.store',
+        currency: 'payByLink.overview.list.currency',
+        amount: 'payByLink.overview.list.amount',
+        status: 'payByLink.overview.list.status',
+        expirationDate: 'payByLink.overview.list.expirationDate',
+        creationDate: 'payByLink.overview.list.createdAt',
+        linkType: 'payByLink.overview.list.linkType',
+        shopperEmail: 'payByLink.overview.list.shopperEmail',
+    },
+    columnConfig: () => ({ storeCode: { visible: !!props.hasMultipleStores }, amount: { numeric: true } }),
+    customColumnWidths: () => customColumnWidths.value,
+});
 
 const columns = computed<BentoColumn[]>(() => {
     if (isMobile.value) {
         return [
-            { field: 'paymentLinkId', label: i18n.get('payByLink.overview.list.fields.id'), flex: 2 },
-            { field: 'amount', label: i18n.get('payByLink.overview.list.fields.amount'), flex: 1, numeric: true },
+            {
+                field: 'paymentLinkId',
+                label: i18n.get('payByLink.overview.list.id'),
+                flex: 2,
+                minWidth: customColumnWidths.value.paymentLinkId,
+            },
+            {
+                field: 'amount',
+                label: i18n.get('payByLink.overview.list.amount'),
+                flex: 1,
+                minWidth: customColumnWidths.value.amount,
+                numeric: true,
+            },
         ];
     }
 
-    const cols: BentoColumn[] = [
-        { field: 'paymentLinkId', label: i18n.get('payByLink.overview.list.fields.id'), autoWidth: true },
-        { field: 'merchantReference', label: i18n.get('payByLink.overview.list.fields.merchantReference'), flex: 1 },
-    ];
-
-    if (props.hasMultipleStores) {
-        cols.push({ field: 'storeCode', label: i18n.get('payByLink.overview.list.fields.store'), autoWidth: true });
-    }
-
-    cols.push(
-        { field: 'currency', label: i18n.get('payByLink.overview.list.fields.currency'), autoWidth: true },
-        { field: 'amount', label: i18n.get('payByLink.overview.list.fields.amount'), autoWidth: true, numeric: true },
-        { field: 'status', label: i18n.get('payByLink.overview.list.fields.status'), autoWidth: true },
-        { field: 'expirationDate', label: i18n.get('payByLink.overview.list.fields.expirationDate'), autoWidth: true },
-        { field: 'creationDate', label: i18n.get('payByLink.overview.list.fields.createdAt'), autoWidth: true },
-        { field: 'linkType', label: i18n.get('payByLink.overview.list.fields.linkType'), autoWidth: true },
-        { field: 'shopperEmail', label: i18n.get('payByLink.overview.list.fields.shopperEmail'), flex: 1 }
-    );
-
-    return cols;
+    return desktopColumns.value;
 });
 
 const gridData = computed<BentoDatagridDataItem[]>(() => {
@@ -115,6 +136,13 @@ const gridData = computed<BentoDatagridDataItem[]>(() => {
     }));
 });
 
+const tableRef = ref<HTMLElement | null>(null);
+const customColumnWidths = useCustomColumnWidths(
+    tableRef,
+    () => [gridData.value, props.loading, isMobile.value, props.hasMultipleStores],
+    () => columns.value
+);
+
 const paginationProps = computed(() => {
     if (!props.showPagination) return undefined;
     return {
@@ -122,7 +150,7 @@ const paginationProps = computed(() => {
         size: props.limit ?? 10,
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
-        pageSizeItems: props.limitOptions,
+        pageSizeItems: asPageSizeItems(props.limitOptions),
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
         hideFirstLastPageButtons: true,
     };
@@ -131,7 +159,7 @@ const paginationProps = computed(() => {
 const emptyStateProps = computed(() => ({
     image: 'no-results-found' as const,
     variant: 'embedded' as const,
-    title: i18n.get('payByLink.overview.errors.listEmpty'),
+    title: i18n.get('payByLink.overview.errors.listEmpty.title'),
     description: i18n.get('payByLink.overview.errors.listEmpty.message'),
 }));
 
@@ -163,13 +191,13 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
 </script>
 
 <template>
-    <div>
+    <div ref="tableRef">
         <DataOverviewError
-            v-if="props.error"
-            :error="props.error"
+            v-if="errorInfo"
             :error-info="errorInfo"
-            :image="errorInfo?.imageName ?? 'wrong-environment'"
+            :image="errorInfo.imageName ?? 'wrong-environment'"
             :variant="isMobile ? 'condensed' : 'embedded'"
+            :on-refresh="props.onRefresh"
             :refresh-icon="RefreshIcon"
         />
 
@@ -177,7 +205,6 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             v-else
             allow-row-clicks
             has-resizable-columns
-            outline
             :columns="columns"
             :data="gridData"
             :loading="props.loading"
@@ -197,7 +224,7 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
                     <time :datetime="item.expirationDate">
                         <BentoTypography variant="caption" :class="styles.mobileExpireDateCell">
                             {{
-                                i18n.get('payByLink.overview.common.actionNeeded.expiresAt', {
+                                i18n.get('payByLink.overview.actionNeeded.expiresAt', {
                                     values: { date: dateFormat(item.expirationDate, DATE_FORMAT_PAYMENT_LINKS_OVERVIEW_EXPIRATION_DATE) },
                                 })
                             }}

@@ -19,6 +19,7 @@ import { useCoreContext, useConfigContext } from '@integration-components/core/v
 import {
     useCustomColumnsData,
     CustomDataCell,
+    useCustomColumnWidths,
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
@@ -27,7 +28,13 @@ import {
     useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
-import { getDisputeDeadlineTimeRemaining, getDisputeReason, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
+import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
+import {
+    getDisputeDeadlineTimeRemaining,
+    getDisputeReason,
+    isDisputeActionNeededUrgently,
+    getDisputesErrorConfig,
+} from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE, mergeRecords } from '@integration-components/utils';
 import type { CustomColumn, CustomDataRetrieved, IBalanceAccountBase, OnDataRetrievedCallback } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
@@ -45,6 +52,7 @@ const props = defineProps<{
     activeBalanceAccount?: IBalanceAccountBase;
     showPagination: boolean;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     onRowClick?: (dispute: IDisputeListItem) => void;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<DisputesTableFields>>[];
     onDataRetrieve?: OnDataRetrievedCallback<IDisputeListItem[], CustomDataRetrieved[]>;
@@ -71,23 +79,22 @@ const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
     fields: DISPUTES_TABLE_FIELDS,
     customColumns: () => props.customColumns,
     fieldsKeys: FIELD_KEYS,
-    customColumnDefaults: () => ({ flex: 1, minWidth: 0 }),
+    customColumnDefaults: () => ({ flex: 1 }),
+    customColumnWidths: () => customColumnWidths.value,
     columnConfig: () => {
         const statusGroup = props.statusGroup;
         return {
-            status: { visible: statusGroup === 'ONGOING_AND_CLOSED', flex: 1, minWidth: 130 },
-            respondBy: { visible: statusGroup === 'CHARGEBACKS', flex: 1, minWidth: 120 },
-            createdAt: { visible: true, flex: 1, minWidth: 120 },
-            paymentMethod: { visible: true, flex: 1.2, minWidth: 150 },
-            disputeReason: { visible: statusGroup !== 'FRAUD_ALERTS', flex: 1.5, minWidth: 180 },
-            reason: { visible: statusGroup === 'FRAUD_ALERTS', flex: 2, minWidth: 220 },
-            currency: { visible: hasMultipleCurrencies.value, flex: 0.7, minWidth: 90 },
-            disputedAmount: { visible: statusGroup !== 'FRAUD_ALERTS', flex: 1, minWidth: 140, numeric: true },
-            totalPaymentAmount: { visible: statusGroup === 'FRAUD_ALERTS', flex: 1, minWidth: 140, numeric: true },
+            status: { visible: statusGroup === 'ONGOING_AND_CLOSED', flex: 1 },
+            respondBy: { visible: statusGroup === 'CHARGEBACKS', flex: 1 },
+            createdAt: { visible: true, flex: 1 },
+            paymentMethod: { visible: true, flex: 1.2 },
+            disputeReason: { visible: statusGroup !== 'FRAUD_ALERTS', flex: 1.5 },
+            reason: { visible: statusGroup === 'FRAUD_ALERTS', flex: 2 },
+            currency: { visible: hasMultipleCurrencies.value, flex: 0.7 },
+            disputedAmount: { visible: statusGroup !== 'FRAUD_ALERTS', flex: 1, numeric: true },
+            totalPaymentAmount: { visible: statusGroup === 'FRAUD_ALERTS', flex: 1, numeric: true },
         };
     },
-    resolveStandardColumnLabel: (field, defaultLabel) =>
-        field === 'disputeReason' ? i18n.get('disputes.overview.common.fields.disputeReasonLabel') : defaultLabel,
     resolveCustomColumnLabel: key => (i18n.has(key) ? i18n.get(key) : key),
 });
 
@@ -134,6 +141,13 @@ const gridData = computed<BentoDatagridDataItem[]>(() => {
     });
 });
 
+const tableRef = ref<HTMLElement | null>(null);
+const customColumnWidths = useCustomColumnWidths(
+    tableRef,
+    () => [gridData.value, isLoading.value, isMobile.value],
+    () => columns.value
+);
+
 const paginationProps = computed(() => {
     if (!props.showPagination) return undefined;
     return {
@@ -141,7 +155,7 @@ const paginationProps = computed(() => {
         size: props.limit ?? 10,
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
-        pageSizeItems: props.limitOptions,
+        pageSizeItems: asPageSizeItems(props.limitOptions),
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
         hideFirstLastPageButtons: true,
     };
@@ -180,8 +194,8 @@ function getTimeToDeadline(dueDate: string): string {
     if (timeRemaining.expired) return formattedDate;
 
     return timeRemaining.days <= 1
-        ? i18n.get('disputes.overview.common.actionNeeded.respondToday', { values: { date: formattedDate } })
-        : i18n.get('disputes.overview.common.actionNeeded.respondDays', { values: { days: timeRemaining.days, date: formattedDate } });
+        ? i18n.get('disputes.overview.actionNeeded.respondToday', { values: { date: formattedDate } })
+        : i18n.get('disputes.overview.actionNeeded.respondDays', { values: { days: timeRemaining.days, date: formattedDate } });
 }
 
 function handleNavigate(page: number) {
@@ -204,15 +218,17 @@ function handleRowClick(item: BentoDatagridDataItem) {
 function handleListItemClick(dispute: IDisputeListItem) {
     props.onRowClick?.(dispute);
 }
+const errorInfo = computed(() =>
+    getDisputesErrorConfig(props.error, { errorMessage: 'disputes.overview.errors.listUnavailable', onContactSupport: props.onContactSupport })
+);
 </script>
 
 <template>
-    <div :class="styles.root">
+    <div ref="tableRef" :class="styles.root">
         <DataOverviewError
             v-if="props.error"
-            :error="props.error"
-            :error-message="'disputes.overview.common.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
+            :error-info="errorInfo"
+            :on-refresh="props.onRefresh"
             :variant="isMobile ? 'condensed' : 'embedded'"
             :refresh-icon="RefreshIcon"
         />
@@ -351,7 +367,7 @@ function handleListItemClick(dispute: IDisputeListItem) {
             </template>
 
             <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">
-                <CustomDataCell :value="item[key]" />
+                <CustomDataCell :value="item[key]" :field="key" />
             </template>
         </BentoDataGrid>
     </div>

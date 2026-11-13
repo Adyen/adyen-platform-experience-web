@@ -64,7 +64,6 @@ export async function http<T>(options: HttpOptions): Promise<T> {
                 try {
                     const contentType = getResponseContentType(res);
 
-                    //TODO: when backend is ready double check this logic
                     switch (contentType) {
                         case 'application/json': {
                             // This could throw an exception if response body content is not valid JSON

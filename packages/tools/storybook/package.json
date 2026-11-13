@@ -16,7 +16,7 @@
         "@integration-components/style": "workspace:*",
         "@integration-components/testing": "workspace:*",
         "vue": "catalog:",
-        "vue-i18n": "^11"
+        "vue-i18n": "catalog:"
     },
     "devDependencies": {
         "@storybook/vue3": "catalog:",
@@ -29,7 +29,8 @@
         "msw-storybook-addon": "^2.0.2",
         "storybook": "catalog:",
         "typescript": "catalog:",
-        "vite": "catalog:"
+        "vite": "catalog:",
+        "vue-tsc": "catalog:"
     },
     "msw": {
         "workerDirectory": [

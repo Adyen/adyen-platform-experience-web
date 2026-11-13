@@ -17,11 +17,11 @@ const { i18n } = useCoreContext();
 </script>
 
 <template>
-    <div role="listitem">
+    <div :role="props.isHeader ? undefined : 'listitem'">
         <SummaryItemPair
-            :label1="i18n.get('transactions.overview.balances.tags.available')"
+            :label1="i18n.get('transactions.overview.balances.tags.available.label')"
             :value1="formattedAvailable"
-            :label2="i18n.get('transactions.overview.balances.tags.reserved')"
+            :label2="i18n.get('transactions.overview.balances.tags.reserved.label')"
             :value2="formattedReserved"
             :tooltip2="props.isHeader ? i18n.get('transactions.overview.balances.tags.reserved.description') : undefined"
             :widths="props.widths"

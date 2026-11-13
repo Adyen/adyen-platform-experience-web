@@ -1,16 +1,15 @@
-import { ref, computed, provide, inject, watch, type InjectionKey } from 'vue';
+import { ref, computed, provide, inject, type InjectionKey } from 'vue';
 import { useAccountBalances } from '@integration-components/composables-vue';
 import { useTransactionsList } from './useTransactionsList';
 import { useTransactionsTotals } from './useTransactionsTotals';
 import { useCurrenciesLookup } from './useCurrenciesLookup';
 import { useTransactionsViewSwitcher, TransactionsView } from './useTransactionsViewSwitcher';
 import { quickSelectDateRanges } from '@integration-components/utils';
-import type { TransactionsFilters, TransactionsOverviewExternalProps } from '../types';
+import type { TransactionsFilters, TransactionsOverviewComponentProps } from '../types';
 
 const INSIGHTS_FILTERS: Set<keyof TransactionsFilters> = new Set(['balanceAccountId', 'createdSince', 'createdUntil']);
 
-const getDefaultFilters = (balanceAccountId?: string): TransactionsFilters => ({
-    balanceAccountId,
+const getDefaultFilters = (): TransactionsFilters => ({
     categories: [],
     statuses: ['Booked'],
     currencies: [],
@@ -23,24 +22,15 @@ export type TransactionsOverviewStateKey = ReturnType<typeof useTransactionsOver
 
 const TRANSACTIONS_OVERVIEW_STATE_KEY: InjectionKey<TransactionsOverviewStateKey> = Symbol('TransactionsOverviewState');
 
-type TransactionsOverviewStateProps = TransactionsOverviewExternalProps & {
+type TransactionsOverviewStateProps = TransactionsOverviewComponentProps & {
     balanceAccounts?: any[];
     isLoadingBalanceAccount?: boolean;
     hideInsights?: boolean;
 };
 
 export function useTransactionsOverviewState(componentProps: () => TransactionsOverviewStateProps) {
-    const filters = ref<TransactionsFilters>(getDefaultFilters(componentProps().balanceAccountId));
+    const filters = ref<TransactionsFilters>(getDefaultFilters());
     const insightsCurrency = ref<string | undefined>(undefined);
-
-    watch(
-        () => componentProps().balanceAccountId,
-        newId => {
-            if (newId !== undefined) {
-                filters.value.balanceAccountId = newId;
-            }
-        }
-    );
 
     const transactionsViewState = useTransactionsViewSwitcher(() => ({
         view: componentProps().hideInsights ? TransactionsView.TRANSACTIONS : undefined,
@@ -72,8 +62,7 @@ export function useTransactionsOverviewState(componentProps: () => TransactionsO
     const transactionsListResult = useTransactionsList(() => ({
         filters: filters.value,
         fetchEnabled: isTransactionsView.value && hasActiveBalanceAccount.value,
-        allowLimitSelection: componentProps().allowLimitSelection,
-        preferredLimit: componentProps().preferredLimit,
+        pagination: componentProps().pagination,
         dataCustomization: componentProps().dataCustomization,
     }));
 

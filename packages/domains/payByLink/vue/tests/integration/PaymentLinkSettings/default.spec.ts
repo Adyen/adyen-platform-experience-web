@@ -1,5 +1,6 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
+import { paymentLinkSettingsAnalyticsEventProperties } from '../../../../fixtures/constants/analytics';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -12,8 +13,16 @@ const fullWidthIcon = path.resolve(dirname, '../../../../fixtures/files/theme-lo
 const invalidDimensionsMessage = 'File dimensions not met with the requirements';
 
 test.describe('Default', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', paymentLinkSettingsAnalyticsEventProperties]]);
+    });
+
+    test('should keep the title in the standalone settings content', async ({ page }) => {
+        await Promise.all([
+            expect(page.getByRole('heading', { name: 'Settings', exact: true })).toBeVisible(),
+            expect(page.getByRole('dialog')).toHaveCount(0),
+        ]);
     });
 
     test('should render the settings sections as accessible navigation items', async ({ page }) => {
@@ -66,13 +75,24 @@ test.describe('Default', () => {
 
         await page.getByRole('button', { name: 'all requirements.' }).click();
         await expect(page.getByText('Terms and conditions requirements for Pay by Link')).toBeVisible();
-        await page.getByRole('button', { name: 'Go back' }).click();
+        await page.getByRole('button', { name: 'Dismiss' }).click();
 
         await page.getByText('I confirm that these Terms').click();
 
         const saveButton = page.getByRole('button', { name: 'Save' });
         await saveButton.click();
 
+        await expect(page.getByText('The changes have been saved successfully.')).toBeVisible();
+    });
+
+    test('should save the existing terms and conditions URL without changes', async ({ page }) => {
+        await page.getByRole('button', { name: 'Terms and conditions' }).click();
+        await expect(page.getByRole('textbox', { name: 'Your terms and conditions URL' })).toHaveValue('https://example.com/terms-and-conditions');
+
+        const saveRequest = page.waitForRequest(request => request.method() === 'POST' && request.url().includes('/paybylink/settings/'));
+        await page.getByRole('button', { name: 'Save' }).click();
+
+        expect((await saveRequest).postDataJSON()).toEqual({ termsOfServiceUrl: 'https://example.com/terms-and-conditions' });
         await expect(page.getByText('The changes have been saved successfully.')).toBeVisible();
     });
 

@@ -1,12 +1,12 @@
 import { computed, onUnmounted, ref, watch, type MaybeRefOrGetter, toValue } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { DYNAMIC_OFFER_DEBOUNCE_MS, DYNAMIC_OFFER_RETRY_COUNT } from '@integration-components/capital/domain';
-import type { IDynamicOffersConfig, IGrantOffersResponseDTO } from '@integration-components/types';
+import type { IDynamicOffersConfig, IOffersResponse } from '@integration-components/types';
 import { useAsyncRequest } from '@integration-components/composables-vue';
 
 export function useOffers(dynamicOfferConfig: MaybeRefOrGetter<IDynamicOffersConfig>, amount: MaybeRefOrGetter<number | undefined>) {
     const config = useConfigContext();
-    const requestState = useAsyncRequest<IGrantOffersResponseDTO>();
+    const requestState = useAsyncRequest<IOffersResponse>();
     const getDynamicGrantOffer = computed(() => config.endpoints.getDynamicGrantOffer);
     const isPending = ref(false);
     const debounceTimeout = ref<ReturnType<typeof setTimeout>>();

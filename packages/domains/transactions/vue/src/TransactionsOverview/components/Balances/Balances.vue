@@ -69,7 +69,7 @@ const { maxWidths, updateMaxWidths } = useMaxWidths();
                     <BentoLoadingIndicator />
                 </div>
                 <BentoDivider />
-                <div :class="styles.expandedList">
+                <div :class="styles.expandedList" role="list">
                     <BalanceItem
                         v-for="balance in availableBalances.slice(1)"
                         :key="balance.currency"

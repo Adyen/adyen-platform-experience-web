@@ -4,34 +4,36 @@ import { useCoreContext } from '@integration-components/core/vue';
 import {
     containerQueries,
     getTimezoneAwareDateRangeQueryParams,
+    useLandedPageEvent,
     useResponsiveContainer,
     useShouldHideTitles,
 } from '@integration-components/composables-vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { quickSelectDateRanges, startOfDay } from '@integration-components/utils';
+import { PAYOUTS_ANALYTICS_CATEGORY, PAYOUTS_ANALYTICS_SUBCATEGORY_OVERVIEW } from '../../../../domain/src';
 import PayoutsFilters from './PayoutsFilters.vue';
 import PayoutsTable from './PayoutsTable.vue';
 import PayoutDetailsModal from './PayoutDetailsModal.vue';
 import { usePayoutsList } from '../composables/usePayoutsList';
 import { EARLIEST_PAYOUT_SINCE_DATE } from '../constants';
-import type { IBalanceAccountBase, PayoutsOverviewExternalProps } from '../types';
+import type { IBalanceAccountBase, PayoutsOverviewComponentProps } from '../types';
 import type { IPayout } from '@integration-components/types';
 import styles from './PayoutsOverview.module.scss';
 
-const props = defineProps<{
-    balanceAccountId?: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: PayoutsOverviewExternalProps['preferredLimit'];
-    onContactSupport?: () => void;
-    onRecordSelection?: PayoutsOverviewExternalProps['onRecordSelection'];
-    dataCustomization?: PayoutsOverviewExternalProps['dataCustomization'];
-    balanceAccounts: IBalanceAccountBase[] | undefined;
-    isLoadingBalanceAccount: boolean;
-}>();
+const props = defineProps<
+    PayoutsOverviewComponentProps & {
+        balanceAccounts: IBalanceAccountBase[] | undefined;
+        isLoadingBalanceAccount: boolean;
+    }
+>();
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
+
+const analyticsProps = { category: PAYOUTS_ANALYTICS_CATEGORY, subCategory: PAYOUTS_ANALYTICS_SUBCATEGORY_OVERVIEW } as const;
+
+useLandedPageEvent(analyticsProps);
 
 const initialDateRangeQueryParams = getTimezoneAwareDateRangeQueryParams({
     dateRange: quickSelectDateRanges.last30Days,
@@ -62,8 +64,7 @@ const payoutsListResult = usePayoutsList(() => ({
     balanceAccountId: filterParams.value.balanceAccountId,
     createdSince: filterParams.value.createdSince,
     createdUntil: filterParams.value.createdUntil,
-    allowLimitSelection: props.allowLimitSelection,
-    preferredLimit: props.preferredLimit,
+    pagination: props.pagination,
 }));
 
 const isLoading = computed(
@@ -93,7 +94,7 @@ function onRowClick(payout: IPayout) {
     // the modal directly.
     if (props.onRecordSelection) {
         props.onRecordSelection({
-            balanceAccountId,
+            id: balanceAccountId,
             date: payout.createdAt ?? '',
             showDetails: showPayoutDetailsModal,
         });
@@ -111,8 +112,8 @@ function closeModal() {
 
 <template>
     <div :class="styles.root">
-        <div v-if="!hideTitles" :class="styles.header">
-            <BentoTypography variant="title">
+        <div :class="styles.header">
+            <BentoTypography v-if="!hideTitles" variant="title">
                 {{ i18n.get('payouts.overview.title') }}
             </BentoTypography>
             <BentoTypography variant="body" :class="styles.description">
@@ -132,8 +133,9 @@ function closeModal() {
             :error="payoutsError"
             :on-row-click="onRowClick"
             :on-contact-support="props.onContactSupport"
-            :custom-columns="props.dataCustomization?.list?.fields"
-            :on-data-retrieve="props.dataCustomization?.list?.onDataRetrieve"
+            :on-refresh="payoutsListResult.refresh"
+            :custom-columns="props.dataCustomization?.dataGrid?.fields"
+            :on-data-retrieve="props.dataCustomization?.dataGrid?.onDataRetrieve"
             :has-next="payoutsListResult.hasNext.value"
             :has-previous="payoutsListResult.hasPrevious.value"
             :go-to-next-page="payoutsListResult.goToNextPage"

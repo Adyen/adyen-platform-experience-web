@@ -1,3 +1,4 @@
+export * from './TransactionDetails/paymentDetailsItems';
 export * from './TransactionDetails/translations';
 export * from './TransactionDetails/types';
 export * from './TransactionDetails/constants';
@@ -9,3 +10,5 @@ export * from './TransactionsOverview/types';
 export * from './shared/inputNormalizer';
 export * from './shared/refundLineItemHelpers';
 export * from './shared/transactionNavigator';
+export * from './shared/types';
+export * from './shared/errors';

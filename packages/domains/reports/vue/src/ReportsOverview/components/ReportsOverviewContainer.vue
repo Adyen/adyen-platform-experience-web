@@ -2,21 +2,11 @@
 import { computed } from 'vue';
 import ReportsOverview from './ReportsOverview.vue';
 import { ComponentShell, useBalanceAccounts, type ErrorMessageInfo } from '@integration-components/composables-vue';
-import type { ReportsOverviewExternalProps } from '../types';
+import type { ReportsOverviewComponentProps } from '../types';
 
-const props = withDefaults(
-    defineProps<{
-        balanceAccountId?: string;
-        allowLimitSelection?: boolean;
-        preferredLimit?: ReportsOverviewExternalProps['preferredLimit'];
-        onContactSupport?: () => void;
-        dataCustomization?: any;
-    }>(),
-    {}
-);
-
-const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(() => props.balanceAccountId);
-const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
+const props = defineProps<ReportsOverviewComponentProps>();
+const { balanceAccounts, isFetching, error } = useBalanceAccounts();
+const hasError = computed(() => !!error.value);
 
 const errorInfo = computed<ErrorMessageInfo>(() => ({
     title: 'reports.common.errors.somethingWentWrong',
@@ -32,9 +22,7 @@ const errorInfo = computed<ErrorMessageInfo>(() => ({
         <!-- Main content -->
         <ReportsOverview
             v-else
-            :balance-account-id="props.balanceAccountId"
-            :allow-limit-selection="props.allowLimitSelection"
-            :preferred-limit="props.preferredLimit"
+            :pagination="props.pagination"
             :on-contact-support="props.onContactSupport"
             :data-customization="props.dataCustomization"
             :balance-accounts="balanceAccounts"

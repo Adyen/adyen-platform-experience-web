@@ -20,7 +20,7 @@ test.describe('Chargeback - Acceptable', () => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
 
         await expect(page.getByRole('button', { name: 'Accept' })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Contact support' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Defend chargeback' })).not.toBeVisible();
     });
 

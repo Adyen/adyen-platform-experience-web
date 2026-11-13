@@ -2,9 +2,14 @@
 import { computed, ref, watch } from 'vue';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
-import { ComponentShell, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
-import type { TranslationKey } from '@integration-components/core';
-import { getPaymentLinkErrorMessageContent } from '@integration-components/payByLink/domain';
+import { ComponentShell, useLandedPageEvent, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
+import {
+    getPaymentLinkErrorMessageContent,
+    PAYMENT_LINKS_ANALYTICS_CATEGORY,
+    PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_DETAILS,
+    type PayByLinkTranslationKey,
+} from '@integration-components/payByLink/domain';
+import type { PaymentLinkDetailsComponentProps } from '../../types';
 import { usePaymentLinkDetails } from '../../composables/usePaymentLinkDetails';
 import PaymentLinkDetailsContent from './PaymentLinkDetailsContent.vue';
 import PaymentLinkExpiration from '../PaymentLinkExpiration/PaymentLinkExpiration.vue';
@@ -13,19 +18,16 @@ import PaymentLinkSkeleton from '../PaymentLinkSkeleton/PaymentLinkSkeleton.vue'
 import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import styles from './PaymentLinkDetails.module.scss';
 
-const props = defineProps<{
-    id: string;
-    onContactSupport?: () => void;
-    onDismiss?: () => void;
-    onUpdate?: () => void;
-    onTitleChange?: (title: TranslationKey | undefined) => void;
-    isDismissButtonHidden?: boolean;
-}>();
+const props = defineProps<PaymentLinkDetailsComponentProps>();
 
 const { i18n } = useCoreContext();
 const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
 const { paymentLink, error, isFetching, refetch } = usePaymentLinkDetails(() => ({ id: props.id }));
+
+const analyticsProps = { category: PAYMENT_LINKS_ANALYTICS_CATEGORY, subCategory: PAYMENT_LINKS_ANALYTICS_SUBCATEGORY_DETAILS } as const;
+
+useLandedPageEvent(analyticsProps, () => !!paymentLink.value);
 
 const shellState = computed<ComponentShellState>(() => {
     if (isFetching.value) return 'loading';
@@ -45,9 +47,11 @@ const errorInfo = computed(() => {
 
 type Screen = 'details' | 'expirationConfirmation' | 'expirationSuccess';
 const activeScreen = ref<Screen>('details');
-const modalTitleKey = computed<TranslationKey | undefined>(() =>
-    activeScreen.value === 'expirationConfirmation' ? 'payByLink.details.expiration.title' : undefined
-);
+const modalTitleKey = computed<PayByLinkTranslationKey | undefined>(() => {
+    if (activeScreen.value === 'details') return 'payByLink.details.title';
+    if (activeScreen.value === 'expirationConfirmation') return 'payByLink.details.expiration.title';
+    return undefined;
+});
 
 watch(modalTitleKey, title => props.onTitleChange?.(title), { immediate: true });
 
@@ -76,19 +80,13 @@ function handleNavigationToDetailsAfterExpiration() {
 <template>
     <div :class="styles.root">
         <div v-if="!withinModal && !hideTitles" :class="activeScreen !== 'details' ? accessibilityStyles.visuallyHidden : undefined">
-            <BentoTypography el="h1" variant="title" large stronger>
+            <BentoTypography el="h1" variant="title">
                 {{ i18n.get('payByLink.details.title') }}
             </BentoTypography>
         </div>
 
         <div :class="styles.content">
-            <ComponentShell
-                :state="shellState"
-                :error-info="errorInfo"
-                :on-dismiss="props.onDismiss"
-                dismiss-label="payByLink.common.actions.goBack"
-                :on-refresh="refetch"
-            >
+            <ComponentShell :state="shellState" :error-info="errorInfo" :on-refresh="refetch">
                 <template #loading>
                     <PaymentLinkSkeleton />
                 </template>
@@ -102,17 +100,10 @@ function handleNavigationToDetailsAfterExpiration() {
 
                 <PaymentLinkExpirationSuccess
                     v-else-if="activeScreen === 'expirationSuccess'"
-                    :on-dismiss="props.onDismiss"
                     :on-show-details="handleNavigationToDetailsAfterExpiration"
                 />
 
-                <PaymentLinkDetailsContent
-                    v-else-if="paymentLink"
-                    :payment-link="paymentLink"
-                    :on-dismiss="props.onDismiss"
-                    :on-expire="handleExpireNow"
-                    :is-dismiss-button-hidden="props.isDismissButtonHidden"
-                />
+                <PaymentLinkDetailsContent v-else-if="paymentLink" :payment-link="paymentLink" :on-expire="handleExpireNow" />
             </ComponentShell>
         </div>
     </div>

@@ -104,6 +104,12 @@ export class AuthSession {
         this._setupContext.analyticsEnabled = analyticsEnabled;
     }
 
+    /**
+     * Sends a core analytics event through the setup session: immediately when the
+     * setup endpoints are live, otherwise queued until the setup endpoint resolves.
+     */
+    public readonly sendAnalyticsEvent = (payload: URLSearchParams) => this._setupContext.sendAnalyticsEvent(payload);
+
     set errorHandler(errorHandler: OnErrorHandler | null) {
         this._specification.errorHandler = errorHandler;
     }

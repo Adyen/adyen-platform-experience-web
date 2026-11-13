@@ -1,4 +1,4 @@
-import type { PaymentLinkCreationComponentProps } from '../../../../domain/src';
+import type { PaymentLinkCreationProps } from '../../../../domain/src';
 
 export const PAYMENT_LINKS_FIELDS_CONFIG = {
     data: {
@@ -32,7 +32,7 @@ export const PAYMENT_LINKS_FIELDS_CONFIG = {
             lastName: 'Doe',
         },
         countryCode: 'ES',
-        telephoneNumber: '+34 3002119220',
+        telephoneNumber: '+34 612345678',
         linkValidity: {
             durationUnit: 'week',
             quantity: 3,
@@ -72,4 +72,4 @@ export const PAYMENT_LINKS_FIELDS_CONFIG = {
             quantity: 'readOnly',
         },
     },
-} satisfies PaymentLinkCreationComponentProps['fieldsConfig'];
+} satisfies PaymentLinkCreationProps['fieldsConfig'];

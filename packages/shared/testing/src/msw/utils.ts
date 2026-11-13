@@ -1,4 +1,4 @@
-import { delay as mswDelay, DelayMode, HttpHandler } from 'msw';
+import { HttpHandler } from 'msw';
 
 export const compareDates = (dateString1: string, dateString2: string, operator: 'ge' | 'le') => {
     const date1 = new Date(dateString1);
@@ -22,11 +22,6 @@ export function computeHash(...strings: string[]) {
         return hash;
     }, 5381);
     return (hash >>> 0).toString(16).padStart(8, '0');
-}
-
-export async function delay(duration?: DelayMode | number): Promise<void> {
-    // Ensure there is no response delay in tests.
-    return Number(process.env.TEST_ENV) === 1 ? mswDelay(0) : mswDelay(duration);
 }
 
 export function getMockHandlers(mocks: HttpHandler[][]): HttpHandler[] {

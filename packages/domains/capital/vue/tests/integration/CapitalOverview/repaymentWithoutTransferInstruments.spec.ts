@@ -1,8 +1,8 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
 import {
+    openRepaymentButtonAnalyticsEventProperties,
     sharedCapitalOverviewAnalyticsEventProperties,
-    sharedSendRepaymentButtonAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
 import type { Page } from '@playwright/test';
 
@@ -24,16 +24,16 @@ test.describe('Repayment without transfer instruments', () => {
     test.describe('Send repayment view', () => {
         test.beforeEach(async ({ page, analyticsEvents }) => {
             await page.getByRole('button', { name: 'Send repayment', exact: true }).click();
-            await expectAnalyticsEvents(analyticsEvents, [['Clicked button', sharedSendRepaymentButtonAnalyticsEventProperties]]);
+            await expectAnalyticsEvents(analyticsEvents, [['Clicked button', openRepaymentButtonAnalyticsEventProperties]]);
         });
 
         test('should show repayment details after "Send repayment" button is clicked', async ({ page }) => {
             const copyIconButtons = getRepaymentModal(page).getByRole('button', { name: /^Copy (IBAN|account owner)$/ });
 
             await Promise.all([
-                expect(getRepaymentModal(page).getByText('Send repayment')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Pay off your loan faster by making one-time payments.')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Loan repayment bank account')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('Manual bank transfer')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('Repay your loan early by transferring money to this bank account.')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('Adyen’s bank account details')).toBeVisible(),
                 expect(copyIconButtons).toHaveCount(2),
                 expect(getRepaymentModal(page).getByText('IBAN')).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('NL69 RABO 1319 7782 91')).toBeVisible(),
@@ -41,12 +41,12 @@ test.describe('Repayment without transfer instruments', () => {
                 expect(getRepaymentModal(page).getByText('Adyen N.V.', { exact: true }).first()).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('Country/region')).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('NL', { exact: true })).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Your verified bank accounts')).toHaveCount(0),
-                expect(getRepaymentModal(page).getByText('How to send a loan payment')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('Your verified bank accounts', { exact: true })).toHaveCount(0),
+                expect(getRepaymentModal(page).getByText('How to send a manual repayment')).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('Add Adyen N.V. as a payee using your bank’s website or app.')).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('Send your payment.')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Wait 1-3 business days for the payment to be applied to your loan.')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Payments made from a verified account are usually applied faster.')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('Wait 1-3 business days for the payment to be applied.')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('Payments must be made from one of your verified bank accounts.')).toBeVisible(),
             ]);
         });
     });

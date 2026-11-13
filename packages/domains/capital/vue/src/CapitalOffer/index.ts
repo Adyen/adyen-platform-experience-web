@@ -1,2 +1,2 @@
 export { CapitalOfferElement } from './CapitalOfferElement';
-export type { CapitalOfferExternalProps } from './types';
+export type { CapitalOfferComponentProps, CapitalOfferExternalProps } from './types';

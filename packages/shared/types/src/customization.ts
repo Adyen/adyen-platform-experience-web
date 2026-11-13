@@ -4,6 +4,7 @@ import type { CustomColumn } from './dataGrid';
 export type DensityMode = 'default' | 'condensed';
 
 export type GlobalAppearance = {
+    container?: 'hidden' | 'visible';
     illustrations?: 'hidden' | 'visible';
     titles?: 'hidden' | 'visible';
 };

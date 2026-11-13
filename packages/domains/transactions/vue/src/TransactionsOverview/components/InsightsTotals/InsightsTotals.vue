@@ -6,6 +6,7 @@ import { BentoTypography, BentoDivider } from '@adyen/bento-vue3';
 import { getTransactionCategory } from '@integration-components/transactions/domain';
 import type { CurrencyLookupRecord } from '../../composables/useCurrenciesLookup';
 import type { useTransactionsTotals } from '../../composables/useTransactionsTotals';
+import InsightsTotalsSkeleton from './InsightsTotalsSkeleton.vue';
 import styles from './InsightsTotals.module.scss';
 
 const props = defineProps<{
@@ -49,17 +50,8 @@ const expensesBreakdown = computed(() => {
 </script>
 
 <template>
-    <div>
-        <template v-if="isLoading">
-            <div>
-                <span />
-                <div :class="styles.breakdowns">
-                    <div v-for="n in 2" :key="n" :class="styles.breakdown">
-                        <span />
-                    </div>
-                </div>
-            </div>
-        </template>
+    <div :aria-busy="isLoading">
+        <InsightsTotalsSkeleton v-if="isLoading" />
 
         <template v-else-if="props.transactionsTotalsResult.error.value">
             <ErrorMessageDisplay
@@ -79,7 +71,7 @@ const expensesBreakdown = computed(() => {
         <template v-else-if="data">
             <div :class="styles.amountDisplay">
                 <BentoTypography variant="body">
-                    {{ i18n.get('transactions.overview.totals.tags.periodResult') }}
+                    {{ i18n.get('transactions.overview.totals.tags.periodResult.label') }}
                 </BentoTypography>
                 <div :class="styles.amountDisplayAmount">
                     <BentoTypography variant="title" medium>
@@ -95,7 +87,7 @@ const expensesBreakdown = computed(() => {
                 <div :class="styles.breakdown">
                     <div :class="styles.amountDisplay">
                         <BentoTypography variant="body">
-                            {{ i18n.get('transactions.overview.totals.tags.incoming') }}
+                            {{ i18n.get('transactions.overview.totals.tags.incoming.label') }}
                         </BentoTypography>
                         <div :class="styles.amountDisplayAmount">
                             <BentoTypography variant="body" strongest>
@@ -110,7 +102,7 @@ const expensesBreakdown = computed(() => {
                         <table :class="styles.breakdownTable">
                             <caption :class="styles.visuallyHidden">
                                 {{
-                                    i18n.get('transactions.overview.totals.tags.incoming')
+                                    i18n.get('transactions.overview.totals.tags.incoming.label')
                                 }}
                             </caption>
                             <tbody>
@@ -128,7 +120,7 @@ const expensesBreakdown = computed(() => {
                 <div :class="styles.breakdown">
                     <div :class="styles.amountDisplay">
                         <BentoTypography variant="body">
-                            {{ i18n.get('transactions.overview.totals.tags.outgoing') }}
+                            {{ i18n.get('transactions.overview.totals.tags.outgoing.label') }}
                         </BentoTypography>
                         <div :class="styles.amountDisplayAmount">
                             <BentoTypography variant="body" strongest>
@@ -143,7 +135,7 @@ const expensesBreakdown = computed(() => {
                         <table :class="styles.breakdownTable">
                             <caption :class="styles.visuallyHidden">
                                 {{
-                                    i18n.get('transactions.overview.totals.tags.outgoing')
+                                    i18n.get('transactions.overview.totals.tags.outgoing.label')
                                 }}
                             </caption>
                             <tbody>

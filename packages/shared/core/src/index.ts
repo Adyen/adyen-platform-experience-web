@@ -14,6 +14,11 @@ export { API_VERSION } from './Http/constants';
 export { default as CURRENCY_DECIMALS } from './Localization/constants/currency-decimals';
 export { default as Localization } from './Localization';
 export type { CustomTranslations, Locale, TranslationKey, Translations, TranslationOptions } from './Localization';
+export type { I18n } from './Localization/types';
+export type { DomainTranslationKey, TranslationDomain } from './translations';
+
+export { createDomainErrorResolver } from './errors/domainErrorResolver';
+export type { DomainErrorContext, DomainErrorVocabulary, ErrorMessageInfo, ErrorWithCode } from './errors/domainErrorResolver';
 
 export { createKeyFactoryFromConfig, createDynamicTranslationFactory } from './translation/factory';
 export type { KeyFactoryConfig, KeyFactoryFunction, TranslationFactoryFunction, TranslationFallbackFunction } from './translation/factory';

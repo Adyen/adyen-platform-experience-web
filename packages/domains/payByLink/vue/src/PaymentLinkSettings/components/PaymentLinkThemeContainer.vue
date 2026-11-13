@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import type { TranslationKey } from '@integration-components/core';
+import { type PayByLinkTranslationKey, isThemeData } from '@integration-components/payByLink/domain';
 import { usePaymentLinkSettingsContext } from '../composables/context';
-import { isThemeData } from '@integration-components/payByLink/domain';
 import LoadingSkeleton from './LoadingSkeleton.vue';
 import SettingsError from './SettingsError.vue';
 import ThemeForm from './ThemeForm.vue';
 import type { ThemeFormData } from '../types';
 import styles from './PaymentLinkThemeContainer.module.scss';
 
-const ERROR_MESSAGE_KEY: TranslationKey = 'payByLink.settings.theme.errors.couldNotLoad';
+const ERROR_MESSAGE_KEY: PayByLinkTranslationKey = 'payByLink.settings.theme.errors.couldNotLoad';
 
 const { savedData: theme, themeError, isLoadingContent } = usePaymentLinkSettingsContext();
 

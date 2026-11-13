@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
-import { expectAnalyticsEvents, getClipboardContent, getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
+import { expectAnalyticsEvents, getClipboardContent, goToStory } from '@integration-components/testing/playwright/utils';
 import { sharedAnalyticsEventProperties, sharedCopyButtonAnalyticsEventProperties } from '../../../../fixtures/constants/TransactionDetails';
 
 const STORY_ID = 'mocked-transactions-transaction-details--default';
@@ -72,8 +72,10 @@ test.describe('Default', () => {
             ];
 
             for (const { name, subSectionName, value } of copyButtons) {
-                await page.getByRole('button', { name, exact: true, disabled: false }).click();
-                await expect(getComponentRoot(page).getByText('Copied', { exact: true })).toBeAttached();
+                const copyButton = page.getByRole('button', { name, exact: true, disabled: false });
+                await copyButton.click();
+                // Bento also announces "Copied" in a visually hidden live region, so more than one element can match.
+                await expect(copyButton.locator('..').getByText('Copied', { exact: true }).first()).toBeAttached();
 
                 await expectAnalyticsEvents(analyticsEvents, [['Clicked button', { ...sharedCopyButtonAnalyticsEventProperties, subSectionName }]]);
 
@@ -98,10 +100,8 @@ test.describe('Default', () => {
             await expect(page.getByText('You can only refund a maximum of €133.75', { exact: true })).toBeVisible();
             await expect(page.getByRole('status')).toHaveCount(1);
 
-            // [TODO]: Address missing ARIA label association with spinbutton (number input)
-            const amountInput = page.getByRole('spinbutton', { /*name: 'Amount to refund', exact: true,*/ disabled: false });
-            // [TODO]: Address missing ARIA label association with combobox (refund reason select dropdown)
-            const reasonSelect = page.getByRole('combobox', { /*name: 'Reason for refund', exact: true,*/ disabled: false, expanded: false });
+            const amountInput = page.getByRole('spinbutton', { name: 'Amount to refund', exact: true, disabled: false });
+            const reasonSelect = page.getByRole('combobox', { name: 'Reason for refund', exact: true, disabled: false, expanded: false });
             const backButton = page.getByRole('button', { name: 'Go back', exact: true, disabled: false });
             const refundButton = page.getByRole('button', { name: 'Refund €133.75', exact: true, disabled: false });
 
@@ -128,12 +128,13 @@ test.describe('Default', () => {
         });
 
         test('should select refund reason', async ({ page }) => {
-            // [TODO]: Address missing ARIA label association with combobox (refund reason select dropdown)
             const reasonSelectCollapsed = page.getByRole('combobox', {
-                /*name: 'Reason for refund', exact: true,*/ disabled: false,
+                name: 'Reason for refund',
+                exact: true,
+                disabled: false,
                 expanded: false,
             });
-            const reasonSelectExpanded = page.getByRole('combobox', { /*name: 'Reason for refund', exact: true,*/ disabled: false, expanded: true });
+            const reasonSelectExpanded = page.getByRole('combobox', { name: 'Reason for refund', exact: true, disabled: false, expanded: true });
             const refundReasons = ['Requested by customer', 'Issue with item sold', 'Fraudulent', 'Duplicate', 'Other'] as const;
             const refundReasonsCount = refundReasons.length;
 
@@ -167,8 +168,7 @@ test.describe('Default', () => {
         });
 
         test('should validate refund amount', async ({ page }) => {
-            // [TODO]: Address missing ARIA label association with spinbutton (number input)
-            const amountInput = page.getByRole('spinbutton', { /*name: 'Amount to refund', exact: true,*/ disabled: false });
+            const amountInput = page.getByRole('spinbutton', { name: 'Amount to refund', exact: true, disabled: false });
 
             // empty amount
             await amountInput.fill('');
@@ -205,12 +205,8 @@ test.describe('Default', () => {
         });
 
         test('should freeze interactions when refund is in progress', async ({ page }) => {
-            // [TODO]: Address missing ARIA label association with spinbutton (number input)
-            const amountInput = page.getByRole('spinbutton', {
-                /*name: 'Amount to refund', exact: true,*/
-            });
-            // [TODO]: Address missing ARIA label association with combobox (refund reason select dropdown)
-            const reasonSelect = page.getByRole('combobox', { /*name: 'Reason for refund', exact: true,*/ expanded: false });
+            const amountInput = page.getByRole('spinbutton', { name: 'Amount to refund', exact: true });
+            const reasonSelect = page.getByRole('combobox', { name: 'Reason for refund', exact: true, expanded: false });
             const disabledRefundButton = page.getByRole('button', { name: 'Refund €133.75', exact: true, disabled: true });
             const enabledRefundButton = page.getByRole('button', { name: 'Refund €133.75', exact: true, disabled: false });
 

@@ -27,7 +27,7 @@ const isMobile = useResponsiveContainer(containerQueries.down.xs);
                 <template #content>
                     <button
                         type="button"
-                        :class="[styles.button, { [styles.buttonActive]: item.value === activeValue, [styles.buttonMobile]: isMobile }]"
+                        :class="[styles.button, item.value === activeValue ? styles.buttonActive : '', isMobile ? styles.buttonMobile : '']"
                         :aria-current="item.value === activeValue ? 'true' : undefined"
                         @click="emit('select', item.value)"
                     >

@@ -1,6 +1,7 @@
 import type { PageAnalyticsEvent } from '../fixtures/eventDispatcher/events';
 import type { Locator, Page, Request } from '@playwright/test';
 import { expect } from '@playwright/test';
+import { CORE_EVENT_NAMES } from '@integration-components/core/EventDispatcher/eventDispatcher/core-events';
 import { BalanceAccountFilter } from './utils/filters';
 import dotenv from 'dotenv';
 
@@ -34,6 +35,22 @@ export const updateStoryArgs = async (page: Page, storyId: string, updatedArgs: 
     );
 };
 
+/**
+ * Core lifecycle events (Initiated core, Customized component style/data, Updated theme) are
+ * emitted by the SDK itself at mount and on runtime updates, independent of any component
+ * interaction. Interaction specs should not have to couple to them, so they are skipped
+ * while matching — unless a spec explicitly lists them in its expectations, which is how
+ * the core-event integration specs assert them.
+ */
+const CORE_LIFECYCLE_EVENT_NAMES = new Set<string>(Object.values(CORE_EVENT_NAMES));
+
+const isCoreLifecycleEvent = (event: PageAnalyticsEvent): boolean => CORE_LIFECYCLE_EVENT_NAMES.has(event.event);
+
+const isExpectedCoreEvent = (event: PageAnalyticsEvent, expectedEventNames: readonly string[]): boolean => expectedEventNames.includes(event.event);
+
+const isRelevantEvent = (event: PageAnalyticsEvent, expectedEventNames: readonly string[]): boolean =>
+    !isCoreLifecycleEvent(event) || isExpectedCoreEvent(event, expectedEventNames);
+
 export const expectAnalyticsEvents = async <T extends PageAnalyticsEvent>(
     analyticsEvents: T[],
     expectedEvents: [event: Awaited<T>['event'], properties: Partial<Awaited<T>['properties']>][],
@@ -41,16 +58,19 @@ export const expectAnalyticsEvents = async <T extends PageAnalyticsEvent>(
 ) => {
     const { strictOrder = true } = options ?? {};
     const numberOfEvents = expectedEvents.length;
-    await expect.poll(() => analyticsEvents.length).toBe(numberOfEvents);
+    const expectedEventNames = expectedEvents.map(([event]) => event);
+    await expect.poll(() => analyticsEvents.filter(event => isRelevantEvent(event, expectedEventNames)).length).toBe(numberOfEvents);
     const actualEvents = [...analyticsEvents];
 
     // drain the analytics events
     analyticsEvents.length = 0;
 
+    const relevantEvents = actualEvents.filter(event => isRelevantEvent(event, expectedEventNames));
+
     if (strictOrder) {
         for (let i = 0; i < numberOfEvents; i++) {
             const [event, properties] = expectedEvents[i]!;
-            const data = actualEvents[i]!;
+            const data = relevantEvents[i]!;
             expect(data.event).toBe(event);
             expect(data.properties).toEqual(expect.objectContaining(properties));
         }
@@ -61,7 +81,7 @@ export const expectAnalyticsEvents = async <T extends PageAnalyticsEvent>(
                 properties: expect.objectContaining(properties),
             })
         );
-        expect(actualEvents).toEqual(expect.arrayContaining(expectedEventMatchers));
+        expect(relevantEvents).toEqual(expect.arrayContaining(expectedEventMatchers));
     }
 };
 

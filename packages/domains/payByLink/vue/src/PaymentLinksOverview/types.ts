@@ -1,7 +1,14 @@
 import type { UIElementProps } from '@integration-components/core/vue';
 import type { GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
-import type { PaymentLinksOverviewProps } from '../../../domain/src';
+import type { PaymentLinkCreationFieldsConfig, PaymentLinkCreationFormValues, PaymentLinksOverviewProps } from '../../../domain/src';
 
 export type PaymentLinksOverviewAppearance = GlobalAppearance & WithDataGridAppearance;
 
-export type PaymentLinksOverviewExternalProps = PaymentLinksOverviewProps & UIElementProps<PaymentLinksOverviewAppearance>;
+export type PaymentLinksOverviewExternalProps = UIElementProps<PaymentLinksOverviewAppearance> & PaymentLinksOverviewProps;
+
+export type PaymentLinksOverviewComponentProps = Omit<PaymentLinksOverviewExternalProps, 'core' | 'appearance'> & {
+    paymentLinkCreation?: {
+        onCreate?: (paymentLink: PaymentLinkCreationFormValues) => void;
+        fieldsConfig?: PaymentLinkCreationFieldsConfig;
+    };
+};

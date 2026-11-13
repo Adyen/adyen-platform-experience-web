@@ -1,2 +1,2 @@
 export { PayoutDetailsElement } from './PayoutDetailsElement';
-export type { PayoutDetailsExternalProps, PayoutDetailsCustomization } from './types';
+export type { PayoutDetailsComponentProps, PayoutDetailsExternalProps, PayoutDetailsCustomization } from './types';

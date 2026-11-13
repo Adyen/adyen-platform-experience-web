@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
+import type { TranslationKey } from '@integration-components/core';
+import {
+    PAYOUT_TABLE_FIELDS,
+    type PayoutsTableFields,
+    type PayoutsTranslationKey,
+    getPayoutsErrorConfig,
+} from '@integration-components/payouts/domain';
 import {
     useCustomColumnsData,
     CustomDataCell,
+    useCustomColumnWidths,
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
@@ -14,10 +22,9 @@ import {
     useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
+import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IPayout, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
-import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import { PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
 import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '@integration-components/utils';
 import styles from './PayoutsTable.module.scss';
 
@@ -26,10 +33,11 @@ const props = defineProps<{
     loading: boolean;
     error?: Error;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     onRowClick?: (payout: IPayout) => void;
     showPagination: boolean;
     data: IPayout[] | undefined;
-    customColumns?: CustomColumn<StringWithAutocompleteOptions<PayoutsTableFields>>[];
+    customColumns?: CustomColumn<PayoutsTableFields>[];
     onDataRetrieve?: OnDataRetrievedCallback<IPayout[], CustomDataRetrieved[]>;
     hasNext?: boolean;
     hasPrevious?: boolean;
@@ -65,11 +73,11 @@ const {
     fields: PAYOUT_TABLE_FIELDS,
     customColumns: () => props.customColumns,
     fieldsKeys: {
-        createdAt: 'payouts.overview.list.fields.createdAt',
-        fundsCapturedAmount: 'payouts.overview.list.fields.fundsCapturedAmount',
-        adjustmentAmount: 'payouts.overview.list.fields.adjustmentAmount',
-        payoutAmount: 'payouts.overview.list.fields.payoutAmount',
-    },
+        createdAt: 'payouts.overview.list.createdAt',
+        fundsCapturedAmount: 'payouts.overview.list.fundsCapturedAmount',
+        adjustmentAmount: 'payouts.overview.list.adjustmentAmount',
+        payoutAmount: 'payouts.overview.list.payoutAmount',
+    } satisfies Record<string, PayoutsTranslationKey>,
     columnConfig: () => ({
         createdAt: { flex: 1 },
         fundsCapturedAmount: { flex: 1, numeric: true },
@@ -77,9 +85,10 @@ const {
         payoutAmount: { flex: 1, numeric: true },
     }),
     customColumnDefaults: () => ({ flex: 1 }),
+    customColumnWidths: () => customColumnWidths.value,
     resolveCustomColumnLabel: key => {
-        const labelKey = `payouts.overview.list.fields.${key}`;
-        return i18n.has(labelKey as any) ? i18n.get(labelKey as any) : i18n.get(key as any);
+        const labelKey = `payouts.overview.list.${key}`;
+        return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
     },
 });
 
@@ -121,6 +130,13 @@ const gridData = computed<BentoDatagridDataItem[]>(() => {
     });
 });
 
+const tableRef = ref<HTMLElement | null>(null);
+const customColumnWidths = useCustomColumnWidths(
+    tableRef,
+    () => [gridData.value, isLoading.value, isMobile.value],
+    () => columns.value
+);
+
 const paginationProps = computed(() => {
     if (!props.showPagination) return undefined;
     return {
@@ -128,7 +144,7 @@ const paginationProps = computed(() => {
         size: props.limit ?? 10,
         hasNext: props.hasNext ?? false,
         hasPrevious: props.hasPrevious ?? false,
-        pageSizeItems: props.limitOptions,
+        pageSizeItems: asPageSizeItems(props.limitOptions),
         hidePageSize: !props.limitOptions || props.limitOptions.length <= 1,
         hideFirstLastPageButtons: true,
     };
@@ -162,24 +178,20 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
     if (!value) return '';
     return i18n.amount(value.value, value.currency, { hideCurrency: false });
 }
+const errorInfo = computed(() =>
+    getPayoutsErrorConfig(props.error, { errorMessage: 'payouts.overview.errors.listUnavailable', onContactSupport: props.onContactSupport })
+);
 </script>
 
 <template>
-    <div :class="styles.root">
+    <div ref="tableRef" :class="styles.root">
         <!-- Error state -->
-        <DataOverviewError
-            v-if="props.error"
-            :error="props.error"
-            :error-message="'payouts.overview.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
-            :refresh-icon="RefreshIcon"
-        />
+        <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" />
 
         <BentoDataGrid
             v-else
             allow-row-clicks
             has-resizable-columns
-            outline
             :condensed="isCondensed"
             :columns="columns"
             :data="gridData"
@@ -214,7 +226,7 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
                 </BentoTypography>
             </template>
             <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">
-                <CustomDataCell :value="item[key]" />
+                <CustomDataCell :value="item[key]" :field="key" />
             </template>
         </BentoDataGrid>
     </div>

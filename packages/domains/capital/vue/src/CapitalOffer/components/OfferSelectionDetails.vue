@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import type { IOffer } from '@integration-components/types';
 import { useFinancingDetailItems, type FinancingDetailItemKey } from '../composables/useFinancingDetailItems';
 import FinancingDetailList from './FinancingDetailList/FinancingDetailList.vue';
 import { BentoCard } from '@adyen/bento-vue3';
@@ -8,7 +8,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 
 const props = defineProps<{
     hasExpectedRepaymentPeriod: boolean;
-    offer: IGrantOfferResponseDTO;
+    offer: IOffer;
 }>();
 
 const { i18n } = useCoreContext();
@@ -28,7 +28,7 @@ const items = computed(() => getItems(props.offer, itemKeys.value));
 
 <template>
     <BentoCard background="secondary">
-        {{ i18n.get('capital.common.termsTitle') }}
+        {{ i18n.get('capital.offer.loan.termsTitle') }}
         <template #content>
             <FinancingDetailList :items="items" />
         </template>
