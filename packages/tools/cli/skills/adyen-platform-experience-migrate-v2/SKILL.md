@@ -56,5 +56,6 @@ v2 refreshes the components' look. Most of the API is unchanged, but some Core o
     - every removed option or callback with no replacement, and what it did in this app;
     - every CSS override found, with file and line, and what you did with it: the v2 option that replaced it, with the file and line your search found it at, where you moved it, or, if v2 has no equivalent, that you deleted it and what it did (suggest a feature request to Adyen);
     - the theme proposal with its warnings, and the question whether to apply it (unless the user already confirmed);
+    - if you applied the theme: a table of every `--adyen-sdk-*` variable you deleted, with its old value and the theme setting that now generates it, plus the ones you kept and why. Say that a shade that looks wrong can be set again on one component's mount element;
     - a reminder that v2 also refreshes the components' look, so the user should review each page that shows a component, even where no code changed;
     - if the upgrade wasn't committed: that the version change, the lockfile and the skill files are part of this diff, so the user commits them together with the migration.
