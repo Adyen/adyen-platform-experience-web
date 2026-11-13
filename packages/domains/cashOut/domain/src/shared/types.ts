@@ -1,10 +1,13 @@
+import type { DomainTranslationKey } from '@integration-components/core';
 import type { ICashOutResponse } from '@integration-components/types';
 
+export type CashOutTranslationKey = DomainTranslationKey<'cashOut'>;
+
 /**
- * What the integration can set on the cashOut, in the CashOut Overview and the CashOut Request alike. The balance accounts come from
- * the session instead: an account holder session offers all of its balance accounts, a balance account session only that one.
+ * What the integration can set on the cashOut of the CashOut Overview. The balance accounts come from the session instead: an
+ * account holder session offers all of its balance accounts, a balance account session only that one.
  */
-export type CashOutIntegrationProps = {
+export interface CashOutOverviewProps {
     /** Called with the cashOut once it is instructed, so the integration can track it by its id. */
     onSubmit?: (cashOut: ICashOutResponse) => void;
     /**
@@ -17,4 +20,7 @@ export type CashOutIntegrationProps = {
      * Supported characters: a-z A-Z 0-9 / - ? : ( ) . , ' + and space. Without it, Adyen generates one.
      */
     transferDescription?: string;
-};
+}
+
+/** The CashOut Request takes the same as the CashOut Overview. */
+export type CashOutRequestProps = CashOutOverviewProps;

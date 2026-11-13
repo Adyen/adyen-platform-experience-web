@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import EmptyState from './EmptyState/EmptyState.vue';
 import { useCoreContext } from '@integration-components/core/vue';
+import { EmptyState } from '@integration-components/composables-vue';
 
 const { i18n } = useCoreContext();
 </script>

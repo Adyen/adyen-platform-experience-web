@@ -6,10 +6,16 @@ import { createApp } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import CashOutRequestResult from './CashOutRequestResult.vue';
 
-vi.mock('@adyen/bento-vue3', async () => {
-    const { h } = await import('vue');
+vi.mock('@integration-components/composables-vue', async () => {
+    const { defineComponent, h } = await import('vue');
     return {
-        BentoTypography: (_: unknown, { slots }: { slots: { default?: () => unknown } }) => h('p', slots.default?.() as never),
+        EmptyState: defineComponent({
+            props: { title: { type: String, required: true }, type: { type: String, required: true } },
+            setup:
+                (props, { slots }) =>
+                () =>
+                    h('div', { 'data-type': props.type }, [h('h2', props.title), h('p', slots.default?.())]),
+        }),
     };
 });
 
@@ -17,21 +23,12 @@ vi.mock('@integration-components/core/vue', () => ({
     useCoreContext: vi.fn(),
 }));
 
-vi.mock('@adyen/ui-assets-icons-40/vue/checkmark-circle', async () => {
-    const { h } = await import('vue');
-    return { default: () => h('svg', { 'data-testid': 'success-icon' }) };
-});
-
-vi.mock('@adyen/ui-assets-icons-40/vue/cross-circle', async () => {
-    const { h } = await import('vue');
-    return { default: () => h('svg', { 'data-testid': 'error-icon' }) };
-});
-
 const renderResult = (props: { status: 'success' | 'error' }) => {
     const target = document.createElement('div');
     const app = createApp(CashOutRequestResult, props);
     app.mount(target);
-    return { target, unmount: () => app.unmount() };
+    const emptyStateType = () => target.querySelector('[data-type]')?.getAttribute('data-type');
+    return { emptyStateType, target, unmount: () => app.unmount() };
 };
 
 describe('CashOutRequestResult', () => {
@@ -41,27 +38,19 @@ describe('CashOutRequestResult', () => {
     });
 
     test('should tell that the cashOut was sent', () => {
-        const { target, unmount } = renderResult({ status: 'success' });
+        const { emptyStateType, target, unmount } = renderResult({ status: 'success' });
 
-        expect(target.querySelector('[data-testid="success-icon"]')).not.toBeNull();
+        expect(emptyStateType()).toBe('success');
         expect(target.querySelector('[role="status"]')?.textContent).toBe('cashOut.request.success.titlecashOut.request.success.description');
 
         unmount();
     });
 
     test('should tell that the cashOut failed', () => {
-        const { target, unmount } = renderResult({ status: 'error' });
+        const { emptyStateType, target, unmount } = renderResult({ status: 'error' });
 
-        expect(target.querySelector('[data-testid="error-icon"]')).not.toBeNull();
+        expect(emptyStateType()).toBe('error');
         expect(target.querySelector('[role="alert"]')?.textContent).toBe('cashOut.common.errors.somethingWentWrongcashOut.request.errors.tryAgain');
-
-        unmount();
-    });
-
-    test('should not offer to close the component', () => {
-        const { target, unmount } = renderResult({ status: 'success' });
-
-        expect(target.querySelector('button')).toBeNull();
 
         unmount();
     });

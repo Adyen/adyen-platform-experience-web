@@ -151,17 +151,24 @@ export type _TrackedDataEventPropsCoversEveryCapability = Assert<
 type ExpectNever<T extends never> = T;
 type Drift<C extends string, TPublic, TTracked> = `${C}:${(Exclude<TPublic, TTracked> | Exclude<TTracked, TPublic>) & string}`;
 
-export type _EveryExternalComponentTypeIsAnSdkComponent = Assert<Same<keyof PublishedPropsByComponentType, ExternalComponentType>>;
+/** Components that exist but are not exported from the SDK yet. Remove an entry once its component is published. */
+type UnpublishedComponentType = 'cashOutOverview' | 'cashOutRequest';
+type PublishedComponentType = Exclude<ExternalComponentType, UnpublishedComponentType>;
+
+/** Fails once an unpublished component is exported, so its entry above gets removed. */
+export type _UnpublishedComponentsAreNotInTheSdk = ExpectNever<Extract<keyof PublishedPropsByComponentType, UnpublishedComponentType>>;
+
+export type _EveryExternalComponentTypeIsAnSdkComponent = Assert<Same<keyof PublishedPropsByComponentType, PublishedComponentType>>;
 
 /** Lists `component:prop` for every prop that is public but untracked, or tracked but not public. */
 export type _DataEventCapabilitiesMatchPublicProps = ExpectNever<
     {
-        [C in ExternalComponentType]: Drift<
+        [C in PublishedComponentType]: Drift<
             C,
             PublicDataEventProps<PublishedPropsByComponentType[C & keyof PublishedPropsByComponentType]>,
             TrackedDataEventProps<(typeof COMPONENT_DATA_EVENT_CAPABILITIES)[C]>
         >;
-    }[ExternalComponentType]
+    }[PublishedComponentType]
 >;
 
 type SelectionPayload<TProps extends { onRecordSelection?: (...args: never[]) => void }> = Parameters<NonNullable<TProps['onRecordSelection']>>[0];

@@ -15,8 +15,7 @@ type CashOutStateOptions = {
     eligibility?: MaybeRefOrGetter<ICashOutEligibility | undefined>;
 };
 
-// The domain types its keys as any `cashOut.` string, which is wider than the generated translation key union.
-export const getCashOutErrorInfo = (error: AdyenPlatformExperienceError | undefined) => getCashOutErrorMessage(error) as ErrorMessageInfo;
+export const getCashOutErrorInfo = (error: AdyenPlatformExperienceError | undefined): ErrorMessageInfo => getCashOutErrorMessage(error);
 
 /** The balance accounts, the selected one and its eligibility, with the component shell state they result in. */
 export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEligibility }: CashOutStateOptions = {}) => {

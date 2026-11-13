@@ -8,6 +8,8 @@ it('matches the tracked props declared by each component external props type', (
     expect(COMPONENT_DATA_EVENT_CAPABILITIES).toEqual({
         capitalOffer: { callbackProps: ['onContactSupport', 'onSubmit'] },
         capitalOverview: { callbackProps: ['onContactSupport'] },
+        cashOutOverview: { callbackProps: ['onContactSupport', 'onSubmit'] },
+        cashOutRequest: { callbackProps: ['onSubmit'] },
         disputes: {
             callbackProps: ['onContactSupport', 'onRecordSelection'],
             dataCustomization: ['dataGrid', 'details'],

@@ -374,9 +374,6 @@ importers:
       '@adyen/bento-vue3':
         specifier: 'catalog:'
         version: 2.11.0-rc.sha-b6ad54d(@vue/compiler-sfc@3.5.43)(vue-i18n@11.4.16(vue@3.5.43(typescript@5.8.3)))(vue@3.5.43(typescript@5.8.3))(zod@4.6.6)
-      '@adyen/ui-assets-icons-40':
-        specifier: 'catalog:'
-        version: 4.9.2(vue@3.5.43(typescript@5.8.3))
       '@integration-components/composables-vue':
         specifier: workspace:*
         version: link:../../shared/composables-vue
@@ -722,6 +719,9 @@ importers:
       '@adyen/ui-assets-icons-16':
         specifier: 'catalog:'
         version: 7.9.3(vue@3.5.43(typescript@5.8.3))
+      '@adyen/ui-assets-icons-24':
+        specifier: 'catalog:'
+        version: 6.9.4(vue@3.5.43(typescript@5.8.3))
       '@integration-components/core':
         specifier: workspace:*
         version: link:../core

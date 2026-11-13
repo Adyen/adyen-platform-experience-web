@@ -17,6 +17,10 @@
     color: style.token(color-label-critical);
 }
 
+.iconSuccess {
+    color: style.token(color-label-success);
+}
+
 .actions {
     display: flex;
     justify-content: center;

@@ -24,6 +24,8 @@ export type ComponentEventSubCategory = 'Overview' | 'Details' | 'Offer';
 const COMPONENT_EVENT_SUB_CATEGORIES: Record<ExternalComponentType, ComponentEventSubCategory> = {
     capitalOverview: 'Overview',
     capitalOffer: 'Offer',
+    cashOutOverview: 'Overview',
+    cashOutRequest: 'Offer',
     disputes: 'Overview',
     disputesManagement: 'Details',
     paymentLinkCreation: 'Offer',

@@ -4,7 +4,7 @@ import type { BentoButtonActionsList } from '@adyen/bento-vue3';
 import { AdyenPlatformExperienceError, AdyenErrorResponse } from '@integration-components/core';
 import { getCapitalErrorConfig } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
-import EmptyState from './EmptyState/EmptyState.vue';
+import { EmptyState } from '@integration-components/composables-vue';
 
 const props = defineProps<{
     error: AdyenErrorResponse | undefined;

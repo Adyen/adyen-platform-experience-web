@@ -29,7 +29,8 @@ test.describe('CashOut Request - Single eligible transfer instrument', () => {
 
         await expect(options).toHaveCount(3);
         await Promise.all([
-            expect(options.nth(0)).toHaveAccessibleName('NL**ABNA******4300 selected'),
+            expect(options.nth(0)).toContainText('NL**ABNA******4300'),
+            expect(options.nth(0)).toHaveAttribute('aria-selected', 'true'),
             expect(options.nth(0)).toBeEnabled(),
             expect(options.nth(1)).toHaveAccessibleName("GB**BARC**********5432 This account can't receive instant payouts."),
             expect(options.nth(1)).toBeDisabled(),

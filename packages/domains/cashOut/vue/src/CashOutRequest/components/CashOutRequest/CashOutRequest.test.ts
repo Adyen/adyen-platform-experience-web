@@ -7,7 +7,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 import type { ComponentShellState } from '@integration-components/composables-vue';
 import type { ICashOutEligibility } from '@integration-components/types';
 import { useCashOutState } from '../../../shared/composables/useCashOutState';
-import type { CashOutRequestProps } from '../../types';
+import type { CashOutRequestComponentProps } from '../../types';
 import CashOutRequest from './CashOutRequest.vue';
 
 const TITLE = 'cashOut.request.title';
@@ -109,7 +109,7 @@ const mockCashOutState = (shellState: ComponentShellState) => {
     return state;
 };
 
-const renderCashOutRequest = (props: Partial<CashOutRequestProps> = {}) => {
+const renderCashOutRequest = (props: Partial<CashOutRequestComponentProps> = {}) => {
     const target = document.createElement('div');
     const app = createApp(CashOutRequest, props);
     app.mount(target);

@@ -1,17 +1,14 @@
-import type { CoreInstance } from '@integration-components/core/vue';
-import type { ICashOutEligibility, ICashOutResponse, UIElementProps } from '@integration-components/types';
-import type { CashOutIntegrationProps } from '../shared/types';
+import type { UIElementProps } from '@integration-components/core/vue';
+import type { CashOutRequestProps } from '@integration-components/cashOut/domain';
+import type { ICashOutEligibility, ICashOutResponse } from '@integration-components/types';
 
-// The standalone component doesn't offer contact support. Errors go to the onError set on Core, as the component has no onError of its own.
-export type CashOutRequestExternalProps = Omit<UIElementProps, 'ref' | 'onContactSupport' | 'onError'> &
-    CashOutIntegrationProps & {
-        core: CoreInstance;
-    };
+// The standalone component doesn't offer contact support. Errors go to the onError set on Core.
+export type CashOutRequestExternalProps = Omit<UIElementProps, 'onContactSupport'> & CashOutRequestProps;
 
 /** How instructing the cashOut ended: the cashOut itself, or an error. */
 export type CashOutResult = { status: 'success'; cashOut: ICashOutResponse } | { status: 'error' };
 
-export type CashOutRequestProps = Omit<CashOutRequestExternalProps, 'core'> & {
+export type CashOutRequestComponentProps = Omit<CashOutRequestExternalProps, 'core' | 'appearance'> & {
     /** The balance account selected initially, which can then be switched. */
     initialBalanceAccountId?: string;
     /** The eligibility of `initialBalanceAccountId`, already loaded by the component that opens this one. */
