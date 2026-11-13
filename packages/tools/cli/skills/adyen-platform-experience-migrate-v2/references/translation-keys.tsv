@@ -6,58 +6,77 @@ calendar.nextMonth	-	(no match)
 calendar.previousMonth	-	(no match)
 calendar.timezone	-	(no match)
 capital.accountIsInactive	capital	capital.offer.errors.accountInactive
-capital.actionNeeded	capital	capital.overview.grants.statuses.actionNeeded.label
-capital.annualPercentageRate	capital	capital.common.fields.annualPercentageRate.label
-capital.annualPercentageRateIsTheCostOfBorrowingForALoan	capital	capital.common.fields.annualPercentageRate.description
-capital.bankAccountDetails	capital	capital.overview.repayment.accountDetails.title
-capital.bankAccountIban	capital	capital.overview.repayment.accountDetails.fields.iban
-capital.bankAccountNumber	capital	capital.overview.repayment.accountDetails.fields.accountNumber
-capital.bankCountryOrRegion	capital	capital.overview.repayment.accountDetails.fields.countryOrRegion
-capital.bankRoutingNumber	capital	capital.overview.repayment.accountDetails.fields.routingNumber
-capital.bankSortCode	capital	capital.overview.repayment.accountDetails.fields.sortCode
+capital.actionNeeded	capital	capital.overview.grantStatuses.actionNeeded.label
+capital.annualPercentageRate	capital	capital.common.fields.loan.annualPercentageRate.label
+capital.annualPercentageRateIsTheCostOfBorrowingForALoan	capital	capital.common.fields.loan.annualPercentageRate.description
+capital.bankAccountDetails	capital	capital.overview.repayment.accountTitle
+capital.bankAccountIban	capital	capital.overview.repayment.accountFields.iban
+capital.bankAccountNumber	capital	capital.overview.repayment.accountFields.accountNumber
+capital.bankCountryOrRegion	capital	capital.overview.repayment.accountFields.countryOrRegion
+capital.bankRoutingNumber	capital	capital.overview.repayment.accountFields.routingNumber
+capital.bankSortCode	capital	capital.overview.repayment.accountFields.sortCode
 capital.businessFinancing	capital	capital.common.title
 capital.businessFinancingOffer	capital	capital.offer.selection.title
-capital.businessFinancingSummary	capital	capital.offer.summary.title
-capital.closed	capital	capital.overview.grants.tabs.closed
+capital.businessFinancingSummary	capital	capital.offer.summary.loan.title
+capital.businessFinancingSummary	capital	capital.offer.summary.cashAdvance.title
+capital.closed	capital	capital.overview.closed
 capital.common.actions.contactSupport	-	(no match)
 capital.common.actions.goBack	capital	capital.common.goBack.label
-capital.common.errors.unsupportedRegion	capital	capital.common.errors.unsupportedRegion.message
+capital.common.errors.unsupportedRegion	capital	capital.common.emptyStates.unsupportedRegion.message
 capital.common.fields.account	capital	capital.common.fields.account.label
 capital.common.fields.accountDescription	capital	capital.common.fields.account.description
 capital.common.fields.accountID	capital	capital.common.fields.accountID.label
-capital.common.fields.annualPercentageRate	capital	capital.common.fields.annualPercentageRate.label
-capital.common.fields.dailyRepaymentRate	capital	capital.common.fields.dailyRepaymentRate.label
-capital.common.fields.expectedRepaymentPeriod	capital	capital.common.fields.expectedRepaymentPeriod.label
+capital.common.fields.annualPercentageRate	capital	capital.common.fields.loan.annualPercentageRate.label
+capital.common.fields.dailyRepaymentRate	capital	capital.common.fields.loan.dailyRepaymentRate.label
+capital.common.fields.dailyRepaymentRate	capital	capital.common.fields.cashAdvance.dailyRepaymentRate.label
+capital.common.fields.expectedRepaymentPeriod	capital	capital.common.fields.loan.expectedRepaymentPeriod.label
+capital.common.fields.expectedRepaymentPeriod	capital	capital.common.fields.cashAdvance.expectedRepaymentPeriod.label
 capital.common.fields.fees	capital	capital.common.fields.fees.label
-capital.common.fields.financing	capital	capital.common.fields.financing.label
-capital.common.fields.grantID	capital	capital.common.fields.grantID.label
-capital.common.fields.maximumRepaymentDate	capital	capital.common.fields.maximumRepaymentDate.label
-capital.common.fields.maximumRepaymentPeriod	capital	capital.common.fields.maximumRepaymentPeriod.label
-capital.common.fields.remainingAmount	capital	capital.common.fields.remainingAmount.label
-capital.common.fields.remainingFees	capital	capital.common.fields.remainingFees.label
-capital.common.fields.repaidAmount	capital	capital.common.fields.repaidAmount.label
-capital.common.fields.repaidFees	capital	capital.common.fields.repaidFees.label
-capital.common.fields.repaymentThreshold	capital	capital.common.fields.repaymentThreshold.label
-capital.common.fields.totalFees	capital	capital.common.fields.totalFees.label
-capital.common.fields.totalRepaymentAmount	capital	capital.common.fields.totalRepaymentAmount.label
-capital.common.termsTitle	capital	capital.common.terms.title
-capital.dailyRepaymentRate	capital	capital.common.fields.dailyRepaymentRate.label
-capital.daysAndDaysLeft	capital	capital.common.values.daysWithDaysLeft
-capital.expectedRepaymentPeriod	capital	capital.common.fields.expectedRepaymentPeriod.label
-capital.failed	capital	capital.overview.grants.statuses.failed.label
+capital.common.fields.financing	capital	capital.common.fields.loan.financing.label
+capital.common.fields.financing	capital	capital.common.fields.cashAdvance.financing.label
+capital.common.fields.grantID	capital	capital.common.fields.loan.grantID.label
+capital.common.fields.grantID	capital	capital.common.fields.cashAdvance.grantID.label
+capital.common.fields.maximumRepaymentDate	capital	capital.common.fields.loan.maximumRepaymentDate.label
+capital.common.fields.maximumRepaymentPeriod	capital	capital.common.fields.loan.maximumRepaymentPeriod.label
+capital.common.fields.remainingAmount	capital	capital.common.fields.loan.remainingAmount.label
+capital.common.fields.remainingAmount	capital	capital.common.fields.cashAdvance.remainingAmount.label
+capital.common.fields.remainingFees	capital	capital.common.fields.loan.remainingFees.label
+capital.common.fields.remainingFees	capital	capital.common.fields.cashAdvance.remainingFees.label
+capital.common.fields.repaidAmount	capital	capital.common.fields.loan.repaidAmount.label
+capital.common.fields.repaidAmount	capital	capital.common.fields.cashAdvance.repaidAmount.label
+capital.common.fields.repaidFees	capital	capital.common.fields.loan.repaidFees.label
+capital.common.fields.repaidFees	capital	capital.common.fields.cashAdvance.repaidFees.label
+capital.common.fields.repaymentThreshold	capital	capital.common.fields.loan.repaymentThreshold.label
+capital.common.fields.totalFees	capital	capital.common.fields.loan.totalFees.label
+capital.common.fields.totalFees	capital	capital.common.fields.cashAdvance.totalFees.label
+capital.common.fields.totalRepaymentAmount	capital	capital.common.fields.loan.totalRepaymentAmount.label
+capital.common.fields.totalRepaymentAmount	capital	capital.common.fields.cashAdvance.totalRepaymentAmount.label
+capital.common.termsTitle	capital	capital.offer.loan.termsTitle
+capital.common.termsTitle	capital	capital.offer.cashAdvance.termsTitle
+capital.dailyRepaymentRate	capital	capital.common.fields.loan.dailyRepaymentRate.label
+capital.dailyRepaymentRate	capital	capital.common.fields.cashAdvance.dailyRepaymentRate.label
+capital.daysAndDaysLeft	capital	capital.common.daysWithDaysLeft
+capital.expectedRepaymentPeriod	capital	capital.common.fields.loan.expectedRepaymentPeriod.label
+capital.expectedRepaymentPeriod	capital	capital.common.fields.cashAdvance.expectedRepaymentPeriod.label
+capital.failed	capital	capital.overview.grantStatuses.loan.failed.label
+capital.failed	capital	capital.overview.grantStatuses.cashAdvance.failed.label
 capital.fees	capital	capital.common.fields.fees.label
-capital.fullyRepaid	capital	capital.overview.grants.statuses.fullyRepaid.label
-capital.goToTermsAndConditions	capital	capital.overview.grants.viewTermsAndConditions.label
-capital.grantID	capital	capital.common.fields.grantID.label
-capital.howMuchMoneyDoYouNeed	capital	capital.offer.selection.slider.a11yLabel
-capital.inProgress	capital	capital.overview.grants.tabs.inProgress
-capital.legalSubtitleAU	capital	capital.common.loanProviderInfo.AU
-capital.legalSubtitleCA	capital	capital.common.loanProviderInfo.CA
-capital.legalSubtitleEU	capital	capital.common.loanProviderInfo.EU
-capital.legalSubtitleGB	capital	capital.common.loanProviderInfo.GB
-capital.legalSubtitleUS	capital	capital.common.loanProviderInfo.US
-capital.maximumRepaymentPeriod	capital	capital.common.fields.maximumRepaymentPeriod.label
-capital.minimumRepaymentToRepayTheFinancingOnTime	capital	capital.common.fields.repaymentThreshold.description
+capital.fullyRepaid	capital	capital.overview.grantStatuses.loan.repaid.label
+capital.fullyRepaid	capital	capital.overview.grantStatuses.cashAdvance.repaid.label
+capital.goToTermsAndConditions	capital	capital.overview.grantItem.signTOS.label
+capital.grantID	capital	capital.common.fields.loan.grantID.label
+capital.grantID	capital	capital.common.fields.cashAdvance.grantID.label
+capital.howMuchMoneyDoYouNeed	capital	capital.offer.selection.loan.amountTitle
+capital.howMuchMoneyDoYouNeed	capital	capital.offer.selection.cashAdvance.amountTitle
+capital.inProgress	capital	capital.overview.inProgress
+capital.legalSubtitleAU	capital	capital.common.providerInfo.AU
+capital.legalSubtitleCA	capital	capital.common.providerInfo.CA
+capital.legalSubtitleEU	capital	capital.common.providerInfo.EU
+capital.legalSubtitleGB	capital	capital.common.providerInfo.GB
+capital.legalSubtitleGB	capital	capital.common.providerInfo.cashAdvance.GB
+capital.legalSubtitleUS	capital	capital.common.providerInfo.US
+capital.maximumRepaymentPeriod	capital	capital.common.fields.loan.maximumRepaymentPeriod.label
+capital.minimumRepaymentToRepayTheFinancingOnTime	capital	capital.common.fields.loan.repaymentThreshold.description
 capital.needSomeExtraMoney	-	(no match)
 capital.offer.common.errors.accountInactive	capital	capital.offer.errors.accountInactive
 capital.offer.common.errors.cannotContinue	capital	capital.offer.errors.cannotContinue
@@ -65,119 +84,150 @@ capital.offer.common.errors.cannotContinueSupport	capital	capital.offer.errors.c
 capital.offer.common.errors.noPrimaryAccount	capital	capital.offer.errors.noPrimaryAccount
 capital.offer.common.errors.unavailable	capital	capital.offer.errors.unavailable
 capital.offer.common.fundingRequestInfo	-	(no match)
-capital.offer.common.noOfferDescription	capital	capital.offer.noOffer.description
-capital.offer.common.noOfferTitle	capital	capital.offer.noOffer.title
+capital.offer.common.noOfferDescription	capital	capital.common.emptyStates.noOffer.message
+capital.offer.common.noOfferTitle	capital	capital.common.emptyStates.noOffer.title
 capital.offer.common.repaymentInfo	-	(no match)
-capital.offer.selection.actions.reviewOffer	capital	capital.offer.selection.reviewOffer
+capital.offer.selection.actions.reviewOffer	capital	capital.offer.selection.review
 capital.offer.selection.actions.reviewOffer.states.loading	-	(no match)
-capital.offer.selection.slider.a11y.label	capital	capital.offer.selection.slider.a11yLabel
-capital.offer.selection.slider.markers.max	capital	capital.offer.selection.slider.max
-capital.offer.selection.slider.markers.min	capital	capital.offer.selection.slider.min
+capital.offer.selection.slider.a11y.label	capital	capital.offer.selection.loan.amountTitle
+capital.offer.selection.slider.a11y.label	capital	capital.offer.selection.cashAdvance.amountTitle
+capital.offer.selection.slider.markers.max	capital	capital.offer.selection.max
+capital.offer.selection.slider.markers.min	capital	capital.offer.selection.min
 capital.offer.summary.actions.requestFunds	-	(no match)
 capital.offer.summary.actions.requestFunds.states.loading	-	(no match)
-capital.offer.summary.actions.requestFundsWithAmount	capital	capital.offer.summary.requestFundsWithAmount
-capital.offer.summary.earlyRenewal.tabs.currentGrant	capital	capital.offer.summary.earlyRenewal.currentGrant
-capital.offer.summary.earlyRenewal.tabs.newGrant	capital	capital.offer.summary.earlyRenewal.newGrant
-capital.offer.summary.legalNotice.US.note	capital	capital.offer.legalNotice.US.note
-capital.offer.summary.legalNotice.US.title	capital	capital.offer.legalNotice.US.title
-capital.offerLegalNoticeDescriptionUS	capital	capital.offer.legalNotice.US.note
-capital.offerLegalNoticeTitleUS	capital	capital.offer.legalNotice.US.title
-capital.oneMonth	capital	capital.common.values.oneMonth
+capital.offer.summary.actions.requestFundsWithAmount	capital	capital.offer.summary.submit
+capital.offer.summary.earlyRenewal.tabs.currentGrant	capital	capital.offer.summary.loan.currentGrant
+capital.offer.summary.earlyRenewal.tabs.currentGrant	capital	capital.offer.summary.cashAdvance.currentGrant
+capital.offer.summary.earlyRenewal.tabs.newGrant	capital	capital.offer.summary.loan.newGrant
+capital.offer.summary.earlyRenewal.tabs.newGrant	capital	capital.offer.summary.cashAdvance.newGrant
+capital.offerLegalNoticeDescriptionUS	capital	capital.offer.summary.legalNotice.US.note
+capital.offerLegalNoticeTitleUS	capital	capital.offer.summary.legalNotice.US.title
+capital.oneMonth	capital	capital.common.oneMonth
 capital.overview.common.titles.qualificationIntro	-	(no match)
-capital.overview.grants.common.statuses.actionNeeded	capital	capital.overview.grants.statuses.actionNeeded.label
-capital.overview.grants.common.statuses.failed	capital	capital.overview.grants.statuses.failed.label
-capital.overview.grants.common.statuses.failed.description	capital	capital.overview.grants.statuses.failed.description
-capital.overview.grants.common.statuses.fullyRepaid	capital	capital.overview.grants.statuses.fullyRepaid.label
-capital.overview.grants.common.statuses.pending	capital	capital.overview.grants.statuses.pending.label
-capital.overview.grants.common.statuses.pending.description.awaitingFunds	capital	capital.overview.grants.statuses.pending.description
+capital.overview.grants.common.statuses.actionNeeded	capital	capital.overview.grantStatuses.actionNeeded.label
+capital.overview.grants.common.statuses.failed	capital	capital.overview.grantStatuses.loan.failed.label
+capital.overview.grants.common.statuses.failed	capital	capital.overview.grantStatuses.cashAdvance.failed.label
+capital.overview.grants.common.statuses.failed.description	capital	capital.overview.grantStatuses.loan.failed.description
+capital.overview.grants.common.statuses.failed.description	capital	capital.overview.grantStatuses.cashAdvance.failed.description
+capital.overview.grants.common.statuses.fullyRepaid	capital	capital.overview.grantStatuses.loan.repaid.label
+capital.overview.grants.common.statuses.fullyRepaid	capital	capital.overview.grantStatuses.cashAdvance.repaid.label
+capital.overview.grants.common.statuses.pending	capital	capital.overview.grantStatuses.pending.label
+capital.overview.grants.common.statuses.pending.description.awaitingFunds	capital	capital.overview.grantStatuses.loan.pending.description
+capital.overview.grants.common.statuses.pending.description.awaitingFunds	capital	capital.overview.grantStatuses.cashAdvance.pending.description
 capital.overview.grants.common.statuses.pending.description.signTerms	-	(no match)
-capital.overview.grants.common.statuses.revoked	capital	capital.overview.grants.statuses.revoked.label
-capital.overview.grants.common.statuses.revoked.description	capital	capital.overview.grants.statuses.revoked.description
-capital.overview.grants.common.statuses.writtenOff	capital	capital.overview.grants.statuses.writtenOff.label
-capital.overview.grants.common.statuses.writtenOff.description	capital	capital.overview.grants.statuses.writtenOff.description
-capital.overview.grants.item.actions.copyGrantID	capital	capital.overview.grants.copy.grantID
-capital.overview.grants.item.actions.sendRepayment	capital	capital.overview.grants.sendRepayment
-capital.overview.grants.item.actions.submitInformation	capital	capital.overview.grants.submitInformation.label
-capital.overview.grants.item.actions.submitInformationSuccess	capital	capital.overview.grants.submitInformation.success
-capital.overview.grants.item.actions.viewTermsAndConditions	capital	capital.overview.grants.viewTermsAndConditions.label
-capital.overview.grants.item.actions.viewTermsAndConditionsSuccess	capital	capital.overview.grants.viewTermsAndConditions.success
-capital.overview.grants.item.alerts.actionNeeded	capital	capital.overview.grants.alerts.actionNeeded
-capital.overview.grants.item.alerts.actionNeededBy	capital	capital.overview.grants.alerts.actionNeededBy
-capital.overview.grants.item.alerts.actionNeededByMany	capital	capital.overview.grants.alerts.actionNeededByMany
-capital.overview.grants.item.alerts.actionNeededMany	capital	capital.overview.grants.alerts.actionNeededMany
-capital.overview.grants.item.alerts.actionsCompleted	capital	capital.overview.grants.alerts.actionsCompleted
+capital.overview.grants.common.statuses.revoked	capital	capital.overview.grantStatuses.revoked.label
+capital.overview.grants.common.statuses.revoked.description	capital	capital.overview.grantStatuses.loan.revoked.description
+capital.overview.grants.common.statuses.revoked.description	capital	capital.overview.grantStatuses.cashAdvance.revoked.description
+capital.overview.grants.common.statuses.writtenOff	capital	capital.overview.grantStatuses.loan.writtenOff.label
+capital.overview.grants.common.statuses.writtenOff	capital	capital.overview.grantStatuses.cashAdvance.writtenOff.label
+capital.overview.grants.common.statuses.writtenOff.description	capital	capital.overview.grantStatuses.loan.writtenOff.description
+capital.overview.grants.common.statuses.writtenOff.description	capital	capital.overview.grantStatuses.cashAdvance.writtenOff.description
+capital.overview.grants.item.actions.copyGrantID	capital	capital.overview.grantItem.copy.grantID
+capital.overview.grants.item.actions.sendRepayment	capital	capital.overview.grantItem.loan.sendRepayment
+capital.overview.grants.item.actions.sendRepayment	capital	capital.overview.grantItem.cashAdvance.sendRepayment
+capital.overview.grants.item.actions.submitInformation	capital	capital.overview.grantItem.submitInformation.label
+capital.overview.grants.item.actions.submitInformationSuccess	capital	capital.overview.grantItem.submitInformation.success
+capital.overview.grants.item.actions.viewTermsAndConditions	capital	capital.overview.grantItem.signTOS.label
+capital.overview.grants.item.actions.viewTermsAndConditionsSuccess	capital	capital.overview.grantItem.signTOS.success
+capital.overview.grants.item.alerts.actionNeeded	capital	capital.overview.grantAlerts.loan.singleActionNeeded
+capital.overview.grants.item.alerts.actionNeeded	capital	capital.overview.grantAlerts.cashAdvance.singleActionNeeded
+capital.overview.grants.item.alerts.actionNeededBy	capital	capital.overview.grantAlerts.loan.singleActionNeededWithDeadline
+capital.overview.grants.item.alerts.actionNeededBy	capital	capital.overview.grantAlerts.cashAdvance.singleActionNeededWithDeadline
+capital.overview.grants.item.alerts.actionNeededByMany	capital	capital.overview.grantAlerts.loan.actionsNeededWithDeadline
+capital.overview.grants.item.alerts.actionNeededByMany	capital	capital.overview.grantAlerts.cashAdvance.actionsNeededWithDeadline
+capital.overview.grants.item.alerts.actionNeededMany	capital	capital.overview.grantAlerts.loan.actionsNeeded
+capital.overview.grants.item.alerts.actionNeededMany	capital	capital.overview.grantAlerts.cashAdvance.actionsNeeded
+capital.overview.grants.item.alerts.actionsCompleted	capital	capital.overview.grantAlerts.actionsCompleted
 capital.overview.grants.item.alerts.offerExpiration	-	(no match)
-capital.overview.grants.item.alerts.processingRequest	capital	capital.overview.grants.alerts.processingRequest
+capital.overview.grants.item.alerts.processingRequest	capital	capital.overview.grantAlerts.processingRequest
 capital.overview.grants.item.alerts.signTermsAndConditions	-	(no match)
 capital.overview.grants.item.alerts.signTermsAndConditionsBy	-	(no match)
-capital.overview.grants.item.alerts.somethingWentWrong	capital	capital.overview.grants.alerts.somethingWentWrong
-capital.overview.grants.item.amounts.remaining	capital	capital.overview.grants.amounts.remaining
+capital.overview.grants.item.alerts.somethingWentWrong	capital	capital.overview.grantAlerts.somethingWentWrong
+capital.overview.grants.item.amounts.remaining	capital	capital.overview.grantItem.remainingGrantAmount
 capital.overview.grants.item.amounts.repaid	-	(no match)
-capital.overview.grants.item.amounts.requestedFunds	capital	capital.overview.grants.amounts.requestedFunds
-capital.overview.grants.item.details.a11y.label	capital	capital.overview.grants.details.a11yLabel
-capital.overview.grants.item.details.requestedFunds	capital	capital.overview.grants.details.requestedFunds
+capital.overview.grants.item.amounts.requestedFunds	capital	capital.overview.grantItem.loan.grantAmount
+capital.overview.grants.item.amounts.requestedFunds	capital	capital.overview.grantItem.cashAdvance.grantAmount
+capital.overview.grants.item.details.a11y.label	capital	capital.overview.grantItem.showDetails.a11yLabel
+capital.overview.grants.item.details.requestedFunds	capital	capital.overview.grantItem.loan.requestedFunds
+capital.overview.grants.item.details.requestedFunds	capital	capital.overview.grantItem.cashAdvance.requestedFunds
 capital.overview.grants.item.progressBar.a11y.label	-	(no match)
-capital.overview.grants.item.termEnds	capital	capital.overview.grants.termEnds
-capital.overview.grants.list.tabs.a11y.label	capital	capital.overview.grants.tabs.a11yLabel
-capital.overview.grants.list.tabs.labels.closed	capital	capital.overview.grants.tabs.closed
-capital.overview.grants.list.tabs.labels.inProgress	capital	capital.overview.grants.tabs.inProgress
-capital.overview.grants.newGrant.actions.newGrant	capital	capital.overview.grants.newGrant.requestNewLoan
+capital.overview.grants.item.termEnds	capital	capital.overview.grantItem.loan.termEnds
+capital.overview.grants.list.tabs.a11y.label	capital	capital.overview.grantList.a11yLabel
+capital.overview.grants.list.tabs.labels.closed	capital	capital.overview.closed
+capital.overview.grants.list.tabs.labels.inProgress	capital	capital.overview.inProgress
+capital.overview.grants.newGrant.actions.newGrant	capital	capital.overview.loan.requestNewGrant
+capital.overview.grants.newGrant.actions.newGrant	capital	capital.overview.cashAdvance.requestNewGrant
 capital.overview.grants.newGrant.title.part1	-	(no match)
 capital.overview.grants.newGrant.title.part2	-	(no match)
 capital.overview.prequalified.actions.seeOptions	-	(no match)
 capital.overview.prequalified.alreadyQualifyInfo.part1	-	(no match)
 capital.overview.prequalified.alreadyQualifyInfo.part2	-	(no match)
-capital.overview.repayment.actions.copyAccountNumber	capital	capital.overview.repayment.accountDetails.copy.accountNumber
-capital.overview.repayment.actions.copyBeneficiaryName	capital	capital.overview.repayment.accountDetails.copy.beneficiaryName
-capital.overview.repayment.actions.copyIban	capital	capital.overview.repayment.accountDetails.copy.iban
-capital.overview.repayment.actions.copyRoutingNumber	capital	capital.overview.repayment.accountDetails.copy.routingNumber
-capital.overview.repayment.actions.copySortCode	capital	capital.overview.repayment.accountDetails.copy.sortCode
+capital.overview.repayment.actions.copyAccountNumber	capital	capital.overview.repayment.copy.accountNumber
+capital.overview.repayment.actions.copyBeneficiaryName	capital	capital.overview.repayment.copy.beneficiaryName
+capital.overview.repayment.actions.copyIban	capital	capital.overview.repayment.copy.iban
+capital.overview.repayment.actions.copyRoutingNumber	capital	capital.overview.repayment.copy.routingNumber
+capital.overview.repayment.actions.copySortCode	capital	capital.overview.repayment.copy.sortCode
 capital.overview.unqualified.soonQualifyInfo	-	(no match)
-capital.pending	capital	capital.overview.grants.statuses.pending.label
+capital.pending	capital	capital.overview.grantStatuses.pending.label
 capital.primaryAccount	capital	capital.common.values.primaryAccount
-capital.remaining	capital	capital.overview.grants.amounts.remaining
-capital.remainingAmount	capital	capital.common.fields.remainingAmount.label
-capital.remainingFees	capital	capital.common.fields.remainingFees.label
+capital.remaining	capital	capital.overview.grantItem.remainingGrantAmount
+capital.remainingAmount	capital	capital.common.fields.loan.remainingAmount.label
+capital.remainingAmount	capital	capital.common.fields.cashAdvance.remainingAmount.label
+capital.remainingFees	capital	capital.common.fields.loan.remainingFees.label
+capital.remainingFees	capital	capital.common.fields.cashAdvance.remainingFees.label
 capital.repaid	-	(no match)
-capital.repaidAmount	capital	capital.common.fields.repaidAmount.label
-capital.repaidFees	capital	capital.common.fields.repaidFees.label
-capital.repaymentThreshold	capital	capital.common.fields.repaymentThreshold.label
+capital.repaidAmount	capital	capital.common.fields.loan.repaidAmount.label
+capital.repaidAmount	capital	capital.common.fields.cashAdvance.repaidAmount.label
+capital.repaidFees	capital	capital.common.fields.loan.repaidFees.label
+capital.repaidFees	capital	capital.common.fields.cashAdvance.repaidFees.label
+capital.repaymentThreshold	capital	capital.common.fields.loan.repaymentThreshold.label
 capital.requestFunds	-	(no match)
-capital.requestedFunds	capital	capital.overview.grants.amounts.requestedFunds
+capital.requestedFunds	capital	capital.overview.grantItem.loan.grantAmount
+capital.requestedFunds	capital	capital.overview.grantItem.cashAdvance.grantAmount
 capital.requesting	-	(no match)
-capital.reviewOffer	capital	capital.offer.selection.reviewOffer
-capital.revoked	capital	capital.overview.grants.statuses.revoked.label
+capital.reviewOffer	capital	capital.offer.selection.review
+capital.revoked	capital	capital.overview.grantStatuses.revoked.label
 capital.seeNewOffer	-	(no match)
 capital.seeOptions	-	(no match)
 capital.sendRepayment	-	(no match)
 capital.signTermsAndConditionsToReceiveFunds	-	(no match)
 capital.signTheTermsToReceiveYourFunds	-	(no match)
-capital.submitInformation	capital	capital.overview.grants.submitInformation.label
+capital.submitInformation	capital	capital.overview.grantItem.submitInformation.label
 capital.termEnds	-	(no match)
 capital.thereIsNoPrimaryAccountConfigured	capital	capital.offer.errors.noPrimaryAccount
 capital.thisOfferExpiresOn	-	(no match)
-capital.totalFees	capital	capital.common.fields.totalFees.label
-capital.totalRepaymentAmount	capital	capital.common.fields.totalRepaymentAmount.label
-capital.unsupportedRegionDescription	capital	capital.common.errors.unsupportedRegion.message
-capital.unsupportedRegionTitle	capital	capital.common.errors.unsupportedRegion.title
+capital.totalFees	capital	capital.common.fields.loan.totalFees.label
+capital.totalFees	capital	capital.common.fields.cashAdvance.totalFees.label
+capital.totalRepaymentAmount	capital	capital.common.fields.loan.totalRepaymentAmount.label
+capital.totalRepaymentAmount	capital	capital.common.fields.cashAdvance.totalRepaymentAmount.label
+capital.unsupportedRegionDescription	capital	capital.common.emptyStates.unsupportedRegion.message
+capital.unsupportedRegionTitle	capital	capital.common.emptyStates.unsupportedRegion.title
 capital.weCouldNotContinueWithTheOffer	capital	capital.offer.errors.cannotContinue
 capital.weCouldNotContinueWithTheOfferContactSupportForHelp	capital	capital.offer.errors.cannotContinueSupport
 capital.weCouldNotLoadFinancialOffers	capital	capital.offer.errors.unavailable
-capital.weCouldNotProcessThisRequestTryAgain	capital	capital.overview.grants.statuses.failed.description
-capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteTheseActions	capital	capital.overview.grants.alerts.actionNeededMany
-capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisAction	capital	capital.overview.grants.alerts.actionNeeded
-capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisActionBy	capital	capital.overview.grants.alerts.actionNeededBy
-capital.weReceivedYourRequestAndWeAreWorkingOnItNowCheckBackSoon	capital	capital.overview.grants.alerts.processingRequest
-capital.writtenOff	capital	capital.overview.grants.statuses.writtenOff.label
-capital.xDays	capital	capital.common.values.numberOfDays
-capital.xMonths	capital	capital.common.values.numberOfMonths
-capital.xPercent	capital	capital.common.values.percentage
-capital.youAcceptedButThenReturnedTheseFunds	capital	capital.overview.grants.statuses.revoked.description
-capital.youAcceptedTheseFundsButDidNotRepayThem	capital	capital.overview.grants.statuses.writtenOff.description
+capital.weCouldNotProcessThisRequestTryAgain	capital	capital.overview.grantStatuses.loan.failed.description
+capital.weCouldNotProcessThisRequestTryAgain	capital	capital.overview.grantStatuses.cashAdvance.failed.description
+capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteTheseActions	capital	capital.overview.grantAlerts.loan.actionsNeeded
+capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteTheseActions	capital	capital.overview.grantAlerts.cashAdvance.actionsNeeded
+capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisAction	capital	capital.overview.grantAlerts.loan.singleActionNeeded
+capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisAction	capital	capital.overview.grantAlerts.cashAdvance.singleActionNeeded
+capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisActionBy	capital	capital.overview.grantAlerts.loan.singleActionNeededWithDeadline
+capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisActionBy	capital	capital.overview.grantAlerts.cashAdvance.singleActionNeededWithDeadline
+capital.weReceivedYourRequestAndWeAreWorkingOnItNowCheckBackSoon	capital	capital.overview.grantAlerts.processingRequest
+capital.writtenOff	capital	capital.overview.grantStatuses.loan.writtenOff.label
+capital.writtenOff	capital	capital.overview.grantStatuses.cashAdvance.writtenOff.label
+capital.xDays	capital	capital.common.numberOfDays
+capital.xMonths	capital	capital.common.numberOfMonths
+capital.xPercent	capital	capital.common.percentage
+capital.youAcceptedButThenReturnedTheseFunds	capital	capital.overview.grantStatuses.loan.revoked.description
+capital.youAcceptedButThenReturnedTheseFunds	capital	capital.overview.grantStatuses.cashAdvance.revoked.description
+capital.youAcceptedTheseFundsButDidNotRepayThem	capital	capital.overview.grantStatuses.loan.writtenOff.description
+capital.youAcceptedTheseFundsButDidNotRepayThem	capital	capital.overview.grantStatuses.cashAdvance.writtenOff.description
 capital.youAreRequestingFundingOf	-	(no match)
 capital.youHaveBeenPrequalifiedForBusinessFinancingUpToX.part1	-	(no match)
 capital.youHaveBeenPrequalifiedForBusinessFinancingUpToX.part2	-	(no match)
-capital.youShouldGetTheFundsWithinOneBusinessDay	capital	capital.overview.grants.statuses.pending.description
+capital.youShouldGetTheFundsWithinOneBusinessDay	capital	capital.overview.grantStatuses.loan.pending.description
+capital.youShouldGetTheFundsWithinOneBusinessDay	capital	capital.overview.grantStatuses.cashAdvance.pending.description
 capital.youWillNeedToRepayAMinimumOfXEveryXDaysToPayOffTheFunds	-	(no match)
 capital.youWillSoonQualifyForAFinancialOffer	-	(no match)
 capital.yourRequestedFundsWere	-	(no match)

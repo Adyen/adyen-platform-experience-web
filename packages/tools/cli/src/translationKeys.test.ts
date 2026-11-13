@@ -58,8 +58,23 @@ describe('translation-keys.tsv', () => {
             { payByLink: 'payByLink.common.contactSupport.label', capital: 'capital.common.contactSupport.label' },
         ],
         ['common.actions.copy.labels.default', { transactions: 'transactions.common.copy.label' }],
-        ['capital.offer.common.noOfferTitle', { capital: 'capital.offer.noOffer.title' }],
+        ['capital.offer.common.noOfferTitle', { capital: 'capital.common.emptyStates.noOffer.title' }],
     ])('maps %s', (v1Key, expected) => {
         expect(lookUp(v1Key)).toMatchObject(expected);
+    });
+
+    test.each([
+        [
+            'capital.common.fields.dailyRepaymentRate',
+            ['capital.common.fields.cashAdvance.dailyRepaymentRate.label', 'capital.common.fields.loan.dailyRepaymentRate.label'],
+        ],
+        ['capital.howMuchMoneyDoYouNeed', ['capital.offer.selection.cashAdvance.amountTitle', 'capital.offer.selection.loan.amountTitle']],
+    ])('maps %s to both its loan and cash advance keys', (v1Key, expected) => {
+        expect(
+            rows
+                .filter(row => row.v1Key === v1Key)
+                .map(row => row.v2Key)
+                .sort()
+        ).toEqual(expected);
     });
 });
