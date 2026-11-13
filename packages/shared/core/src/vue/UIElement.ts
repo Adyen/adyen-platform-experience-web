@@ -227,6 +227,7 @@ export class UIElement<Props extends Record<string, any> & { appearance?: Global
                             componentAppearance: appearance,
                             globalAppearance: globalAppearance.value,
                             refreshComponent: refresh,
+                            refreshKey: refreshCount.value,
                         },
                         { default: () => h(component, { ...componentProps, key: refreshCount.value }) }
                     );

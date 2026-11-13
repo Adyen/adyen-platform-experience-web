@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { createApp, defineComponent, h, nextTick, reactive, type App } from 'vue';
+import { createApp, defineComponent, h, nextTick, reactive, ref, type App } from 'vue';
 import { useCoreContext } from './Context';
 import { useConfigContext } from './ConfigContext';
 import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
@@ -199,6 +199,45 @@ describe('UIElementProvider', () => {
 
         supportButton?.click();
         expect(onContactSupport).toHaveBeenCalledOnce();
+    });
+
+    test('re-translates the availability error when the component is refreshed after a locale change', async () => {
+        setContext({ componentUnavailable: true });
+        let locale = 'en-US';
+        i18n.get.mockImplementation((key: string) => `${locale}:${key}`);
+
+        core = createCoreStub();
+        const target = document.createElement('div');
+        // Mirrors UIElement: a locale change syncs translations and then refreshes through the refresh count.
+        const refreshCount = ref(0);
+        const app = createApp({
+            setup: () => () =>
+                h(
+                    UIElementProvider,
+                    {
+                        core,
+                        bentoOverrides: {},
+                        componentName: 'transactions',
+                        refreshComponent: vi.fn(),
+                        refreshKey: refreshCount.value,
+                    },
+                    { default: () => h('div', { key: refreshCount.value, 'data-testid': CONTENT_TEST_ID }) }
+                ),
+        });
+        app.provide(DOMAIN_TRANSLATION_BINDING_KEY, { i18n, translationDomain: 'transactions' } as unknown as DomainTranslationBinding);
+        app.mount(target);
+        mounted.push({ app, target });
+
+        expect(target.textContent).toContain('en-US:transactions.overview.errors.unavailable');
+
+        locale = 'de-DE';
+        refreshCount.value++;
+        await nextTick();
+
+        expect(target.textContent).toContain('de-DE:transactions.overview.errors.unavailable');
+        expect(target.textContent).not.toContain('en-US:');
+
+        i18n.get.mockImplementation((key: string) => key);
     });
 
     test('wires the Core error handler into the provider', () => {

@@ -41,7 +41,7 @@ const errorInfo = computed(() => {
         messages: content.message,
         refreshComponent: content.refreshComponent,
         requestId: content.requestId,
-        onContactSupport: error.value?.errorCode === '500' ? props.onContactSupport : undefined,
+        onContactSupport: content.refreshComponent ? undefined : props.onContactSupport,
     };
 });
 

@@ -213,6 +213,47 @@ export const paymentLinkCreationMockedResponses = {
             ),
         ],
     },
+    disallowedPrefilledOptions: {
+        handlers: [
+            http.get(
+                mockPayByLinkEndpoints.configuration,
+                withDelay(() => {
+                    return HttpResponse.json<IPaymentLinkConfiguration>({
+                        ...PAY_BY_LINK_CONFIGURATION.STORE_NY_001,
+                        currency: { required: true, options: ['USD', 'GBP'] },
+                        linkType: { required: true, options: ['singleUse'] },
+                        linkValidity: {
+                            required: true,
+                            options: [
+                                { quantity: 24, durationUnit: 'hour', type: 'fixed' },
+                                { quantity: 30, durationUnit: 'day', type: 'fixed' },
+                            ],
+                        },
+                        countryCode: { required: false, options: ['US', 'GB'] },
+                        shopperLocale: { required: false, options: ['es-ES', 'fr-FR'] },
+                    });
+                })
+            ),
+            http.get(
+                mockPayByLinkEndpoints.countries,
+                withDelay(() => {
+                    return HttpResponse.json({
+                        data: COUNTRIES.filter(({ countryCode }) => ['GB', 'MX', 'US'].includes(countryCode)),
+                    });
+                })
+            ),
+            http.get(
+                '/datasets/languages.json',
+                withDelay(() => {
+                    return HttpResponse.json([
+                        { text: 'English (US)', value: 'en-US' },
+                        { text: 'Español', value: 'es-ES' },
+                        { text: 'Français', value: 'fr-FR' },
+                    ]);
+                })
+            ),
+        ],
+    },
     submitNetworkError: {
         handlers: [
             http.post(
@@ -287,6 +328,39 @@ export const paymentLinkDetailsMockedResponses = {
                 mockPayByLinkEndpoints.details,
                 withDelay(() => {
                     return HttpResponse.error();
+                })
+            ),
+        ],
+    },
+    errorDetailsServerError: {
+        handlers: [
+            http.get(
+                mockPayByLinkEndpoints.details,
+                withDelay(() => {
+                    return HttpResponse.json(
+                        { title: 'Internal Server Error', requestId: '769ac4ce59f0f159ad672d38d3291e91', status: 500 },
+                        { status: 500 }
+                    );
+                })
+            ),
+        ],
+    },
+    errorDetailsUnprocessableEntity: {
+        handlers: [
+            http.get(
+                mockPayByLinkEndpoints.details,
+                withDelay(() => {
+                    return HttpResponse.json(
+                        {
+                            type: 'https://docs.adyen.com/errors/unprocessable-entity',
+                            errorCode: '30_102',
+                            title: 'Unprocessable Entity',
+                            detail: 'Payment link not found',
+                            requestId: '769ac4ce59f0f159ad672d38d3291e91',
+                            status: 422,
+                        },
+                        { status: 422 }
+                    );
                 })
             ),
         ],
@@ -384,9 +458,9 @@ export const payByLinkMocks = [
 
             const url = new URL(request.url);
             const cursor = url.searchParams.get('cursor');
-            const limit = url.searchParams.get('limit') ? parseInt(url.searchParams.get('limit')!, 10) : defaultPaginationLimit;
+            const limit = url.searchParams.get('limit') ? Number.parseInt(url.searchParams.get('limit')!, 10) : defaultPaginationLimit;
 
-            const startIndex = cursor ? parseInt(cursor, 10) : 0;
+            const startIndex = cursor ? Number.parseInt(cursor, 10) : 0;
             const endIndex = Math.min(startIndex + limit, STORES.length);
             const data = STORES.slice(startIndex, endIndex);
 

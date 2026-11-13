@@ -1,4 +1,5 @@
 import type { Meta } from '@storybook/vue3';
+import { action } from 'storybook/actions';
 import { paymentLinkDetailsMeta } from './meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { PaymentLinkDetailsExternalProps } from '../../src';
@@ -63,6 +64,34 @@ export const ErrorDetails: ElementStory<PaymentLinkDetailsExternalProps> = {
     parameters: {
         msw: {
             handlers: paymentLinkDetailsMockedResponses.errorDetails,
+        },
+    },
+};
+
+export const ErrorDetailsServerError: ElementStory<PaymentLinkDetailsExternalProps> = {
+    name: 'Error - Details (server error)',
+    args: {
+        id: 'PLTEST001',
+        mockedApi: true,
+        onContactSupport: action('onContactSupport'),
+    },
+    parameters: {
+        msw: {
+            handlers: paymentLinkDetailsMockedResponses.errorDetailsServerError,
+        },
+    },
+};
+
+export const ErrorDetailsUnprocessableEntity: ElementStory<PaymentLinkDetailsExternalProps> = {
+    name: 'Error - Details (unprocessable entity)',
+    args: {
+        id: 'PLTEST001',
+        mockedApi: true,
+        onContactSupport: action('onContactSupport'),
+    },
+    parameters: {
+        msw: {
+            handlers: paymentLinkDetailsMockedResponses.errorDetailsUnprocessableEntity,
         },
     },
 };
