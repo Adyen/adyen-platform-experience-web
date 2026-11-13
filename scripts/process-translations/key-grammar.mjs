@@ -129,8 +129,8 @@ const foldedGroupPattern = /^(?<base>.*[a-z0-9])(?<group>Errors)$/;
  * the ones that exist.
  */
 export const ENUM_MIRROR_PATHS = [
-    'capital.common.loanProviderInfo',
-    'capital.offer.legalNotice',
+    'capital.common.providerInfo',
+    'capital.offer.summary.legalNotice',
     'common.filters.formats',
     'disputes.common.reasonCategories',
     'disputes.common.statuses',

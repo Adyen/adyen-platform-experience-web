@@ -6,7 +6,7 @@ const { i18n } = useCoreContext();
 </script>
 
 <template>
-    <EmptyState :title="i18n.get('capital.common.errors.unsupportedRegion.title')" type="highlight">
-        {{ i18n.get('capital.common.errors.unsupportedRegion.message') }}
+    <EmptyState :title="i18n.get('capital.common.emptyStates.unsupportedRegion.title')" type="highlight">
+        {{ i18n.get('capital.common.emptyStates.unsupportedRegion.message') }}
     </EmptyState>
 </template>

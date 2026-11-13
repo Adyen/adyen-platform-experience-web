@@ -36,11 +36,11 @@ test.describe('Early renewal - Loan', () => {
 
     test('should render new loan alert in grants screen', async ({ page }) => {
         await Promise.all([
-            expect(page.getByText('Business financing', { exact: true })).toBeVisible(),
+            expect(page.getByText('Adyen Capital', { exact: true })).toBeVisible(),
             expect(page.getByText('You are now eligible to request a new loan up to €25,000')).toBeVisible(),
             expect(
                 page.getByText(
-                    "Part of this new loan amount will be used to repay your current loan's balance, and any outstanding fees on that loan will be waived."
+                    'If you accept, a portion of your new loan will automatically be deducted to repay your remaining current loan, and any remaining fee on it will be waived.'
                 )
             ).toBeVisible(),
             expect(getOfferButton(page)).toBeVisible(),
@@ -61,7 +61,7 @@ test.describe('Early renewal - Loan', () => {
 
     test('should go to grants screen and show a new grant when request submit button in offer summary screen is clicked', async ({ page }) => {
         await goToOfferSummary(page);
-        await getOfferModal(page).getByRole('button', { name: 'Submit request (€18,600)' }).click();
+        await getOfferModal(page).getByRole('button', { name: 'Submit €18,600 request' }).click();
 
         await expect(getOfferModal(page)).toBeHidden();
         await expect(page.getByText('Pending')).toBeVisible();

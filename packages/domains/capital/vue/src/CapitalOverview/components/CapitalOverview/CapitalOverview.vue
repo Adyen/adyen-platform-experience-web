@@ -74,9 +74,7 @@ const headerActions = computed<BentoButtonActionsList | undefined>(() => {
     if (error.value || !capitalState.value?.isRegionSupported || !capitalState.value.dynamicOfferConfig) return undefined;
     return [
         {
-            title: i18n.get(
-                capitalState.value.hasGrants ? 'capital.overview.grants.newGrant.requestNewLoan' : 'capital.overview.grants.newGrant.requestLoan'
-            ),
+            title: i18n.get(capitalState.value.hasGrants ? 'capital.overview.loan.requestNewGrant' : 'capital.overview.loan.requestFirstGrant'),
             event: openOfferModal,
         },
     ];

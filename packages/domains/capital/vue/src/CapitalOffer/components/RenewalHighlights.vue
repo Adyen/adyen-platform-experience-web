@@ -17,7 +17,7 @@ const items = computed(() => {
 
     return [
         {
-            label: i18n.get('capital.offer.selection.earlyRenewal.newGrantAmount'),
+            label: i18n.get('capital.offer.loan.newGrantAmount'),
             value: formatAmount(breakdown.newGrantAmountValue),
         },
         {
@@ -25,7 +25,7 @@ const items = computed(() => {
             value: '-',
         },
         {
-            label: i18n.get('capital.offer.selection.earlyRenewal.currentGrantAmount'),
+            label: i18n.get('capital.offer.loan.currentGrantAmount'),
             value: formatAmount(breakdown.remainingGrantAmountValue),
         },
         {
@@ -33,7 +33,7 @@ const items = computed(() => {
             value: '=',
         },
         {
-            label: i18n.get('capital.offer.selection.earlyRenewal.amountToReceive'),
+            label: i18n.get('capital.offer.amountToReceive'),
             value: formatAmount(breakdown.amountToReceive),
         },
     ];

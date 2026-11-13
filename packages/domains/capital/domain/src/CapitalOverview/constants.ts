@@ -3,14 +3,14 @@ import { ActionConfigs } from './types';
 
 export const GRANT_ACTION_CONFIGS: ActionConfigs = {
     signToS: {
-        buttonLabelKey: 'capital.overview.grants.viewTermsAndConditions.label',
+        buttonLabelKey: 'capital.overview.grantItem.signTOS.label',
         eventLabel: 'Open ToS',
-        successButtonLabelKey: 'capital.overview.grants.viewTermsAndConditions.success',
+        successButtonLabelKey: 'capital.overview.grantItem.signTOS.success',
     },
     AnaCredit: {
-        buttonLabelKey: 'capital.overview.grants.submitInformation.label',
+        buttonLabelKey: 'capital.overview.grantItem.submitInformation.label',
         eventLabel: 'Open AnaCredit information',
-        successButtonLabelKey: 'capital.overview.grants.submitInformation.success',
+        successButtonLabelKey: 'capital.overview.grantItem.submitInformation.success',
     },
 };
 

@@ -57,8 +57,8 @@ test.describe('First-time eligible - Loan', () => {
 
     test('should render offer alert', async ({ page }) => {
         await Promise.all([
-            expect(page.getByText('Business financing', { exact: true })).toBeVisible(),
-            expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible(),
+            expect(page.getByText('Adyen Capital', { exact: true })).toBeVisible(),
+            expect(page.getByText('Adyen Capital is provided by Adyen N.V.')).toBeVisible(),
             expect(page.getByText('You have been pre-qualified for business financing up to €25,000.')).toBeVisible(),
             expect(getOfferButton(page)).toBeVisible(),
         ]);
@@ -86,7 +86,7 @@ test.describe('First-time eligible - Loan', () => {
         analyticsEvents,
     }) => {
         await goToOfferSummaryAndExpectAnalytics(page, analyticsEvents);
-        await getOfferModal(page).getByRole('button', { name: 'Submit request (€13,000)' }).click();
+        await getOfferModal(page).getByRole('button', { name: 'Submit €13,000 request' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Submit request' }],
