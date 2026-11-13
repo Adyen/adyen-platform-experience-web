@@ -8,5 +8,5 @@ const errorInfo = {
 </script>
 
 <template>
-    <DataOverviewError :error-info="{ ...errorInfo }" type="highlight" />
+    <DataOverviewError :error-info="errorInfo" type="highlight" />
 </template>
