@@ -20,7 +20,7 @@ import {
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
-    useShouldHideIllustrations,
+    type ErrorMessageInfo,
     useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import { DATE_FORMAT_REPORTS, downloadBlob } from '@integration-components/utils';
@@ -75,7 +75,6 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const hideIllustrations = useShouldHideIllustrations();
 const isCondensed = useCondensedDataGrid();
 // Keep the reactive proxy here — destructuring `useConfigContext()` would unwrap
 // the `refreshing` primitive into a one-time snapshot and capture a stale
@@ -269,12 +268,13 @@ const paginationProps = computed(() => {
     };
 });
 
-const emptyStateProps = computed(() => ({
-    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
-    variant: 'embedded' as const,
-    title: i18n.get('reports.overview.errors.listEmpty'),
-    description: i18n.get('reports.common.errors.updateFilters'),
-}));
+const emptyStateProps = computed(
+    () =>
+        ({
+            title: 'reports.overview.errors.listEmpty',
+            messages: ['reports.common.errors.updateFilters'],
+        }) satisfies ErrorMessageInfo
+);
 
 function handleNavigate(page: number) {
     if (page > (props.currentPage ?? 1)) {
@@ -300,8 +300,8 @@ const errorInfo = computed(() =>
 
 <template>
     <div ref="tableRef" :class="styles.root">
-        <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" />
-
+        <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" type="error" />
+        <DataOverviewError v-else-if="gridData.length === 0" :error-info="emptyStateProps" type="no-results-found" />
         <BentoDataGrid
             v-else
             has-resizable-columns
@@ -310,7 +310,6 @@ const errorInfo = computed(() =>
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
-            :empty-state="emptyStateProps"
             :allow-column-drag-and-drop="false"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"

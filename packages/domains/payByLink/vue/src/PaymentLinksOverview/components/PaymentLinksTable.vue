@@ -6,11 +6,11 @@ import { useCoreContext } from '@integration-components/core/vue';
 import {
     containerQueries,
     DataOverviewError,
+    type ErrorMessageInfo,
     useCustomColumnWidths,
     useTableColumns,
     useCondensedDataGrid,
     useResponsiveContainer,
-    useShouldHideIllustrations,
     useTimezoneAwareDateFormatting,
 } from '@integration-components/composables-vue';
 import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
@@ -56,7 +56,6 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const { dateFormat } = useTimezoneAwareDateFormatting();
 const { getStatusLabel, getLinkTypeLabel } = usePaymentLinkLabels();
-const hideIllustrations = useShouldHideIllustrations();
 const isCondensed = useCondensedDataGrid();
 
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
@@ -158,12 +157,13 @@ const paginationProps = computed(() => {
     };
 });
 
-const emptyStateProps = computed(() => ({
-    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
-    variant: 'embedded' as const,
-    title: i18n.get('payByLink.overview.errors.listEmpty.title'),
-    description: i18n.get('payByLink.overview.errors.listEmpty.message'),
-}));
+const emptyStateProps = computed(
+    () =>
+        ({
+            title: 'payByLink.overview.errors.listEmpty.title',
+            messages: ['payByLink.overview.errors.listEmpty.message'],
+        }) satisfies ErrorMessageInfo
+);
 
 function handleNavigate(page: number) {
     if (props.loading) return;
@@ -201,8 +201,10 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             :variant="isMobile ? 'condensed' : 'embedded'"
             :on-refresh="props.onRefresh"
             :refresh-icon="RefreshIcon"
+            type="error"
         />
 
+        <DataOverviewError v-else-if="!gridData.length && !props.loading" :error-info="emptyStateProps" type="no-results-found" />
         <BentoDataGrid
             v-else
             allow-row-clicks
@@ -211,7 +213,6 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             :data="gridData"
             :loading="props.loading"
             :pagination="paginationProps"
-            :empty-state="emptyStateProps"
             :condensed="isCondensed"
             :allow-column-drag-and-drop="false"
             @row-click="handleRowClick"
