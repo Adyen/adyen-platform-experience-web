@@ -17,7 +17,7 @@ const errorConfig = computed(() => getCapitalErrorConfig(props.error as AdyenPla
 
 const errorInfo = computed(() => {
     const { title, messages, requestId } = errorConfig.value;
-    return { title: title, messages: messages, requestId };
+    return { title, messages, requestId };
 });
 
 const actions = computed<BentoButtonActionsList>(() => {
@@ -47,5 +47,5 @@ const actions = computed<BentoButtonActionsList>(() => {
 </script>
 
 <template>
-    <DataOverviewError type="error" :error-info="{ ...errorInfo }" :actions="actions" />
+    <DataOverviewError type="error" :error-info="errorInfo" :actions="actions" />
 </template>
