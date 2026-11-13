@@ -6,7 +6,22 @@
     "tags": ["type:publish"],
     "targets": {
         "build": {
-            "outputs": ["{workspaceRoot}/dist"]
+            "executor": "nx:noop",
+            "dependsOn": ["build:bundle", "build:types"],
+            "outputs": []
+        },
+        "build:clean": {
+            "cache": false
+        },
+        "build:bundle": {
+            "dependsOn": ["^build", "build:clean"],
+            "outputs": ["{workspaceRoot}/dist/es", "{workspaceRoot}/dist/cjs", "{workspaceRoot}/dist/*.{cjs,map,css}"],
+            "cache": true
+        },
+        "build:types": {
+            "dependsOn": ["^build", "build:clean"],
+            "outputs": ["{workspaceRoot}/dist/types"],
+            "cache": true
         },
         "types:check": {},
         "types:watch": {}

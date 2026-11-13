@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => {
     const externalDependencies = Object.keys(packageJson.dependencies);
     const isAnalyseMode = mode === 'analyse';
     const isUmdBuild = mode === 'umd';
+    const isTestMode = mode === 'test';
     const isUnitCoverage = process.env.UNIT_LOGIC_COVERAGE === 'true';
     const coverageExtensions = isUnitCoverage ? 'ts' : '{ts,vue}';
 
@@ -160,7 +161,7 @@ export default defineConfig(({ mode }) => {
                     },
                 },
             }),
-            rewriteBentoCssVariables(),
+            !isTestMode && rewriteBentoCssVariables(),
             isAnalyseMode &&
                 visualizer({
                     title: 'Adyen Platform bundle visualizer',
