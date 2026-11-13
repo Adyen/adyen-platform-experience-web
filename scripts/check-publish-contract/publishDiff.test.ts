@@ -3,7 +3,7 @@
  */
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { expect, test } from 'vitest';
 import {
     buildSnapshot,
@@ -13,6 +13,7 @@ import {
     extractExports,
     getMissingPackageEntrypoints,
     getPublicExportViolations,
+    getSideEffectViolations,
     type Snapshot,
 } from './lib';
 
@@ -163,4 +164,42 @@ test('diff ignores identical snapshots and reports package.json changes', () => 
     expect(
         diff(createSnapshot({}), createSnapshot({ packageJson: { main: './dist/index.cjs', module: null, types: null, style: null, exports: null } }))
     ).toEqual(['  package.json entrypoints changed']);
+});
+
+const HEX_MODULE = 'dist/es/external/chroma-js/src/io/hex/index.js';
+
+const ENTRIES = {
+    static: "import './external/chroma-js/src/io/hex/index.js';\nexport { plain } from './external/plain.js';\n",
+    lazy: "export const load = () => import('./external/chroma-js/src/io/hex/index.js');\n",
+    unreachable: "export { plain } from './external/plain.js';\n",
+};
+
+/** Builds a tiny published package whose hex module registers itself on import, and checks it against `sideEffects`. */
+const getViolations = (sideEffects: unknown, entry: keyof typeof ENTRIES = 'static') => {
+    const root = mkdtempSync(join(tmpdir(), 'publish-side-effects-'));
+    try {
+        mkdirSync(resolve(root, dirname(HEX_MODULE)), { recursive: true });
+        writeFileSync(resolve(root, HEX_MODULE), "import t from '../input.js';\nt.format.hex = () => {};\nt.autodetect.push({ p: 4 });\n");
+        writeFileSync(resolve(root, 'dist/es/external/plain.js'), 'export const plain = 1;\n');
+        writeFileSync(resolve(root, 'dist/es/index.js'), ENTRIES[entry]);
+        writeFileSync(resolve(root, 'package.json'), JSON.stringify({ module: './dist/es/index.js', sideEffects }));
+        return getSideEffectViolations(root);
+    } finally {
+        rmSync(root, { recursive: true, force: true });
+    }
+};
+
+test('getSideEffectViolations names a self-registering module that "sideEffects" does not cover', () => {
+    expect(getViolations(['**/*.css'])).toEqual([`  ${HEX_MODULE} registers itself on import but is not listed in "sideEffects"`]);
+});
+
+test.each([
+    ['is not covered by the "sideEffects" list', ['**/*.css'], 'static', 1],
+    ['is covered by a "sideEffects" glob', ['**/*.css', '**/external/chroma-js/**'], 'static', 0],
+    ['is in a package without a "sideEffects" field or with "true"', true, 'static', 0],
+    ['is in a package with "sideEffects": false', false, 'static', 1],
+    ['is only reached by a lazy import', ['**/*.css'], 'lazy', 1],
+    ['is never reached from the package entry', ['**/*.css'], 'unreachable', 0],
+] as const)('getSideEffectViolations: a self-registering module that %s gives %i violation(s)', (_, sideEffects, entry, expected) => {
+    expect(getViolations(sideEffects, entry)).toHaveLength(expected);
 });

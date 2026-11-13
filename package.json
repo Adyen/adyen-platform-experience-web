@@ -26,7 +26,11 @@
   ],
   "sideEffects": [
     "**/*.css",
-    "**/global.{js,ts}"
+    "**/global.{js,ts}",
+    "**/external/chroma-js/**",
+    "**/external/preact/compat/**",
+    "**/external/@preact/signals/**",
+    "**/external/@adyen/kyc-components/dist/StoreProvider-*.js"
   ],
   "main": "./dist/cjs/index.cjs",
   "module": "./dist/es/packages/sdk/src/index.js",
