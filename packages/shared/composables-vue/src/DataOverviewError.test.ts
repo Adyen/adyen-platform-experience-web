@@ -4,8 +4,13 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createApp } from 'vue';
 import type { VNode } from 'vue';
+import type { BentoButtonActionsList } from '@adyen/bento-vue3';
+import ErrorIcon from '@adyen/ui-assets-icons-24/vue/cross-circle';
+import HighlightIcon from '@adyen/ui-assets-icons-24/vue/info';
+import Search from '@adyen/ui-assets-icons-24/vue/search';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { DataOverviewError } from './DataOverviewError';
+import styles from './DataOverviewError.module.scss';
 import type { ErrorMessageInfo } from '@integration-components/core/vue';
 
 vi.mock('@integration-components/core/vue', async () => {
@@ -29,6 +34,7 @@ vi.mock('@adyen/bento-vue3', async () => {
     const { h } = await import('vue');
     return {
         BentoEmptyState: (props: { image?: string }) => h('div', { 'data-image': props.image }),
+        BentoButtonActions: (props: { actions?: unknown[] }) => h('div', { 'data-action-count': props.actions?.length }),
     };
 });
 
@@ -43,7 +49,7 @@ test('does not pass an image to data overview errors when illustrations are hidd
     const app = createApp(DataOverviewError, { errorInfo: { messages: [] } });
     app.mount(target);
 
-    expect(target.firstElementChild?.getAttribute('data-image')).toBeNull();
+    expect(target.querySelector('[data-image]')).toBeNull();
 
     app.unmount();
 });
@@ -68,7 +74,7 @@ describe('DataOverviewError', () => {
         const component = DataOverviewError as unknown as {
             setup: (props: Record<string, unknown>) => () => VNode;
         };
-        return component.setup({
+        const render = component.setup({
             error: undefined,
             errorInfo,
             errorMessage: undefined,
@@ -76,10 +82,73 @@ describe('DataOverviewError', () => {
             notFoundMessage: undefined,
             onContactSupport: undefined,
             refreshIcon: undefined,
-            variant: 'embedded',
+            actions: undefined,
+            type: 'error',
+            variant: 'basic',
             ...extraProps,
         });
+
+        return () => (render().children as VNode[])[1] as VNode;
     };
+
+    test.each([
+        { type: 'highlight', icon: HighlightIcon, iconClass: undefined },
+        { type: 'error', icon: ErrorIcon, iconClass: styles.iconCritical },
+        { type: 'no-results-found', icon: Search, iconClass: undefined },
+    ] as const)('renders the matching $type icon', ({ type, icon, iconClass }) => {
+        const component = DataOverviewError as unknown as {
+            setup: (props: Record<string, unknown>) => () => VNode;
+        };
+        const render = component.setup({
+            errorInfo: { messages: [] },
+            image: 'wrong-environment',
+            onRefresh: undefined,
+            refreshIcon: undefined,
+            type,
+            variant: 'basic',
+        });
+        const iconVNode = (render().children as VNode[])[0];
+
+        expect(iconVNode?.type).toBe(icon);
+        expect(iconVNode?.props).toMatchObject({ 'aria-hidden': 'true' });
+        expect(iconVNode?.props?.class).toBe(iconClass);
+    });
+
+    test('renders optional action buttons only when actions are provided', () => {
+        const component = DataOverviewError as unknown as {
+            setup: (props: Record<string, unknown>) => () => VNode;
+        };
+        const renderWithActions = (actions?: BentoButtonActionsList) =>
+            component.setup({
+                actions,
+                errorInfo: { messages: [], refreshComponent: true },
+                image: 'wrong-environment',
+                onRefresh: undefined,
+                refreshIcon: undefined,
+                type: 'error',
+                variant: 'basic',
+            })();
+
+        const view = renderWithActions([]);
+        const viewChildren = view.children as VNode[];
+        expect(viewChildren.length).toBe(2);
+        expect(viewChildren[1]?.props).not.toHaveProperty('action');
+        expect(viewChildren[1]?.props?.class).toBeUndefined();
+
+        expect((renderWithActions(undefined).children as VNode[])[1]?.props?.action).toMatchObject({
+            title: 'transactions.common.refresh.label',
+            variant: 'primary',
+        });
+
+        const actions: BentoButtonActionsList = [{ title: 'Retry', event: vi.fn(), variant: 'primary' }];
+        const withActionsChildren = renderWithActions(actions).children as VNode[];
+        const buttonActionsVNode = withActionsChildren[2];
+
+        expect(withActionsChildren[1]?.props).not.toHaveProperty('action');
+        expect(styles.hasCustomActions).toBeTruthy();
+        expect(withActionsChildren[1]?.props?.class).toBe(styles.hasCustomActions);
+        expect(buttonActionsVNode?.props).toMatchObject({ actions, class: styles.actions });
+    });
 
     test('translates the error and prioritizes its contact-support action', () => {
         const onContactSupport = vi.fn();

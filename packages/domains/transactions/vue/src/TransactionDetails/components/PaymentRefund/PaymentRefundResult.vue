@@ -3,8 +3,8 @@ import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { ResponsiveButtonActions } from '@integration-components/composables-vue';
 import { BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
-import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
-import CrossCircleFillIcon from '@adyen/ui-assets-icons-40/vue/cross-circle-filled';
+import CheckmarkIcon from '@adyen/ui-assets-icons-24/vue/checkmark-circle';
+import CrossIcon from '@adyen/ui-assets-icons-24/vue/cross-circle';
 import type { RefundResult } from '../../../../../domain/src';
 import styles from './PaymentRefund.module.scss';
 
@@ -36,8 +36,8 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
 
 <template>
     <div :class="styles.refundResponse">
-        <CrossCircleFillIcon v-if="isError" :class="styles.refundResponseIconError" />
-        <CheckmarkCircleFillIcon v-else :class="styles.refundResponseIconSuccess" />
+        <CrossIcon v-if="isError" :class="styles.refundResponseIconError" />
+        <CheckmarkIcon v-else :class="styles.refundResponseIconSuccess" />
         <BentoTypography variant="title" large>
             {{ i18n.get(titleKey) }}
         </BentoTypography>

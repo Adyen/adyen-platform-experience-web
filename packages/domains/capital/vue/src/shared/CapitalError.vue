@@ -4,7 +4,7 @@ import type { BentoButtonActionsList } from '@adyen/bento-vue3';
 import { AdyenPlatformExperienceError, AdyenErrorResponse } from '@integration-components/core';
 import { getCapitalErrorConfig } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
-import EmptyState from './EmptyState/EmptyState.vue';
+import { DataOverviewError } from '@integration-components/composables-vue';
 
 const props = defineProps<{
     error: AdyenErrorResponse | undefined;
@@ -14,12 +14,10 @@ const props = defineProps<{
 
 const { i18n, refreshComponent } = useCoreContext();
 const errorConfig = computed(() => getCapitalErrorConfig(props.error as AdyenPlatformExperienceError | undefined, props.onContactSupport));
-const title = computed(() => i18n.get(errorConfig.value.title));
 
-const messages = computed(() => {
-    const { messages, requestId } = errorConfig.value;
-    const options = requestId ? { values: { requestId } } : undefined;
-    return messages.map(key => ({ key, text: i18n.get(key, options) }));
+const errorInfo = computed(() => {
+    const { title, messages, requestId } = errorConfig.value;
+    return { title: title, messages: messages, requestId };
 });
 
 const actions = computed<BentoButtonActionsList>(() => {
@@ -49,10 +47,5 @@ const actions = computed<BentoButtonActionsList>(() => {
 </script>
 
 <template>
-    <EmptyState type="error" :title="title" :actions="actions">
-        <template v-for="(message, index) in messages" :key="message.key">
-            <br v-if="index > 0" />
-            {{ message.text }}
-        </template>
-    </EmptyState>
+    <DataOverviewError type="error" :error-info="{ ...errorInfo }" :actions="actions" />
 </template>
