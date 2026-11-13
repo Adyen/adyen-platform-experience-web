@@ -29,8 +29,8 @@ const hasGrantGroups = computed(() => !!grantGroups.value && getHasGrantGroups(g
 const selectedGrantGroup = ref<'active' | 'inactive'>('active');
 
 const grantGroupItems = computed<BentoSegmentedControlItem[]>(() => [
-    { label: i18n.get('capital.overview.grants.tabs.inProgress'), value: 'active' },
-    { label: i18n.get('capital.overview.grants.tabs.closed'), value: 'inactive' },
+    { label: i18n.get('capital.overview.inProgress'), value: 'active' },
+    { label: i18n.get('capital.overview.closed'), value: 'inactive' },
 ]);
 
 const displayedGrants = computed(() => {
@@ -52,7 +52,7 @@ const displayedGrants = computed(() => {
                 <BentoSegmentedControl
                     v-if="hasGrantGroups"
                     v-model="selectedGrantGroup"
-                    :aria-label="i18n.get('capital.overview.grants.tabs.a11yLabel')"
+                    :aria-label="i18n.get('capital.overview.grantList.a11yLabel')"
                     :items="grantGroupItems"
                 />
                 <ul :class="styles.list">

@@ -9,6 +9,6 @@ test.describe('Error (temporary) - Offer', () => {
     });
 
     test('should render offer selection screen', async ({ page }) => {
-        await expect(page.getByText('Select the amount for the loan')).toBeVisible();
+        await expect(page.getByText('Select loan amount')).toBeVisible();
     });
 });

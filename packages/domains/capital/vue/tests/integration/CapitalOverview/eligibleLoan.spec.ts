@@ -61,7 +61,7 @@ test.describe('Eligible - Loan', () => {
 
     test('should render new loan alert in grants screen', async ({ page }) => {
         await Promise.all([
-            expect(page.getByText('Business financing', { exact: true })).toBeVisible(),
+            expect(page.getByText('Adyen Capital', { exact: true })).toBeVisible(),
             expect(page.getByText('You are now eligible to request a new loan up to €25,000')).toBeVisible(),
             expect(getOfferButton(page)).toBeVisible(),
         ]);
@@ -92,7 +92,7 @@ test.describe('Eligible - Loan', () => {
         analyticsEvents,
     }) => {
         await goToOfferSummaryAndExpectAnalytics(page, analyticsEvents);
-        await getOfferModal(page).getByRole('button', { name: 'Submit request (€13,000)' }).click();
+        await getOfferModal(page).getByRole('button', { name: 'Submit €13,000 request' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Submit request' }],

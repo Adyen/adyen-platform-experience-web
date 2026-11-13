@@ -21,7 +21,7 @@ const submitBusinessFinancingInformation = async (page: Page) => {
 };
 
 const signTermsOfService = async (page: Page) => {
-    await page.getByRole('button', { name: 'Sign terms & conditions', exact: true }).click();
+    await page.getByRole('button', { name: 'Sign terms of service', exact: true }).click();
     await page.getByRole('combobox', { name: 'signer' }).click();
     await page.getByRole('option').first().click();
     await page
@@ -73,7 +73,7 @@ test.describe('Actions - Loan', () => {
                 )
             ).toBeVisible(),
             expect(page.getByRole('button', { name: 'Submit information' })).toBeVisible(),
-            expect(page.getByRole('button', { name: 'Sign terms & conditions' })).toBeVisible(),
+            expect(page.getByRole('button', { name: 'Sign terms of service' })).toBeVisible(),
         ]);
     });
 
@@ -101,16 +101,16 @@ test.describe('Actions - Loan', () => {
     });
 
     test('should render terms of service component when signing button is clicked', async ({ page, analyticsEvents }) => {
-        await page.getByRole('button', { name: 'Sign terms & conditions', exact: true }).click();
+        await page.getByRole('button', { name: 'Sign terms of service', exact: true }).click();
         await expect(page.getByRole('heading').getByText('Capital User Terms')).toBeVisible();
 
         await expectAnalyticsEvents(analyticsEvents, [clickedButtonEvents.signTermsClicked]);
     });
 
     test('should dismiss terms of service component when cancellation button is clicked', async ({ page, analyticsEvents }) => {
-        await page.getByRole('button', { name: 'Sign terms & conditions', exact: true }).click();
+        await page.getByRole('button', { name: 'Sign terms of service', exact: true }).click();
         await page.getByRole('button', { name: 'Cancel' }).click();
-        await expect(page.getByText('Sign terms & conditions')).toBeVisible();
+        await expect(page.getByText('Sign terms of service')).toBeVisible();
 
         await expectAnalyticsEvents(analyticsEvents, [clickedButtonEvents.signTermsClicked, clickedButtonEvents.dismissedTerms]);
     });

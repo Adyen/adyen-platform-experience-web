@@ -28,7 +28,7 @@ const items = computed(() => getItems(props.offer, itemKeys.value));
 
 <template>
     <BentoCard background="secondary">
-        {{ i18n.get('capital.common.terms.title') }}
+        {{ i18n.get('capital.offer.loan.termsTitle') }}
         <template #content>
             <FinancingDetailList :items="items" />
         </template>

@@ -19,8 +19,8 @@ test.describe('Grants - Loan', () => {
 
     test('should render grants screen with tabs', async ({ page }) => {
         await Promise.all([
-            expect(page.getByText('Business financing')).toBeVisible(),
-            expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible(),
+            expect(page.getByText('Adyen Capital', { exact: true })).toBeVisible(),
+            expect(page.getByText('Adyen Capital is provided by Adyen N.V.')).toBeVisible(),
             expect(page.getByRole('radio', { name: 'In progress' })).toBeVisible(),
             expect(page.getByRole('radio', { name: 'Closed' })).toBeVisible(),
             expect(page.getByRole('button', { name: 'Send repayment', exact: true }).first()).toHaveText('Send repayment'),
@@ -62,7 +62,7 @@ test.describe('Grants - Loan', () => {
             expect(page.getByText('€20,220.00', { exact: true })).toBeVisible(),
             expect(page.getByText('Total fees')).toBeVisible(),
             expect(page.getByText('€220.00', { exact: true })).toBeVisible(),
-            expect(page.getByText('Daily repayment rate')).toBeVisible(),
+            expect(page.getByText('Daily repayment')).toBeVisible(),
             expect(page.getByText('11%')).toBeVisible(),
             expect(page.getByText('30-day repayment minimum')).toBeVisible(),
             expect(page.getByText('€800.00')).toBeVisible(),
@@ -101,8 +101,8 @@ test.describe('Grants - Loan', () => {
         const copyIconButtons = repaymentModal.getByRole('button', { name: /^Copy (IBAN|account owner)$/ });
 
         await Promise.all([
-            expect(repaymentModal.getByText('Pay off your loan faster by making one-time payments.')).toBeVisible(),
-            expect(repaymentModal.getByText('Loan repayment bank account')).toBeVisible(),
+            expect(repaymentModal.getByText('Repay your loan early by transferring money to this bank account.')).toBeVisible(),
+            expect(repaymentModal.getByText('Adyen’s bank account details')).toBeVisible(),
             expect(copyIconButtons).toHaveCount(2),
             expect(repaymentModal.getByText('IBAN')).toBeVisible(),
             expect(repaymentModal.getByText('NL69 RABO 1319 7782 91')).toBeVisible(),
@@ -110,14 +110,14 @@ test.describe('Grants - Loan', () => {
             expect(repaymentModal.getByText('Adyen N.V.', { exact: true }).first()).toBeVisible(),
             expect(repaymentModal.getByText('Country/region')).toBeVisible(),
             expect(repaymentModal.getByText('NL', { exact: true })).toBeVisible(),
-            expect(repaymentModal.getByText('Your verified bank accounts')).toBeVisible(),
+            expect(repaymentModal.getByText('Your verified bank accounts', { exact: true })).toBeVisible(),
             expect(repaymentModal.getByText('NL**INGB******8101')).toBeVisible(),
             expect(repaymentModal.getByText('NL**INGB******4151')).toBeVisible(),
-            expect(repaymentModal.getByText('How to send a loan payment')).toBeVisible(),
+            expect(repaymentModal.getByText('How to send a manual repayment')).toBeVisible(),
             expect(repaymentModal.getByText('Add Adyen N.V. as a payee using your bank’s website or app.')).toBeVisible(),
             expect(repaymentModal.getByText('Send your payment.')).toBeVisible(),
-            expect(repaymentModal.getByText('Wait 1-3 business days for the payment to be applied to your loan.')).toBeVisible(),
-            expect(repaymentModal.getByText('Payments made from a verified account are usually applied faster.')).toBeVisible(),
+            expect(repaymentModal.getByText('Wait 1-3 business days for the payment to be applied.')).toBeVisible(),
+            expect(repaymentModal.getByText('Payments must be made from one of your verified bank accounts.')).toBeVisible(),
         ]);
     });
 
@@ -144,8 +144,8 @@ test.describe('Grants - Loan', () => {
             expect(page.getByText('Grant ID')).toHaveCount(4),
             expect(page.getByTestId('grant-id-copy-text')).toHaveCount(4),
             expect(page.getByText('Fully repaid')).toBeVisible(),
-            expect(page.getByText('Revoked')).toBeVisible(),
-            expect(page.getByText('Written off')).toBeVisible(),
+            expect(page.getByText('Cancelled')).toBeVisible(),
+            expect(page.getByText('Defaulted')).toBeVisible(),
             expect(page.getByText('Failed', { exact: true })).toBeVisible(),
             expect(page.getByRole('progressbar')).toBeHidden(),
             expect(page.getByRole('button', { name: 'Show grant details' })).toBeHidden(),
@@ -163,20 +163,20 @@ test.describe('Grants - Loan', () => {
         await page.getByRole('radio', { name: 'Closed' }).click();
         await page.getByLabel('Failed').hover();
 
-        await expect(page.getByText("We couldn't process this request. Try again with a new offer.")).toBeVisible();
+        await expect(page.getByText("This offer expired or we couldn't process the request. You can try again with a new offer.")).toBeVisible();
     });
 
     test('should render a tooltip when revoked status tag is hovered', async ({ page }) => {
         await page.getByRole('radio', { name: 'Closed' }).click();
-        await page.getByText('Revoked').hover();
+        await page.getByText('Cancelled').hover();
 
-        await expect(page.getByText('You accepted but then returned these funds')).toBeVisible();
+        await expect(page.getByText('You returned the loan amount, so this loan was cancelled.')).toBeVisible();
     });
 
     test('should render a tooltip when written-off status tag is hovered', async ({ page }) => {
         await page.getByRole('radio', { name: 'Closed' }).click();
-        await page.getByText('Written off').hover();
+        await page.getByText('Defaulted').hover();
 
-        await expect(page.getByText('You accepted these funds but did not repay them')).toBeVisible();
+        await expect(page.getByText('This loan was not repaid as agreed.')).toBeVisible();
     });
 });

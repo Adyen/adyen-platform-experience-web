@@ -34,8 +34,8 @@ test.describe('Eligible - Loan', () => {
 
     test('should render offer selection screen', async ({ page }) => {
         await expect(page.getByText('Business financing request')).toBeVisible();
-        await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
-        await expect(page.getByText('Select the amount for the loan')).toBeVisible();
+        await expect(page.getByText('Adyen Capital is provided by Adyen N.V.')).toBeVisible();
+        await expect(page.getByText('Select loan amount')).toBeVisible();
         await expect(page.getByText('€13,000')).toBeVisible();
         await expect(page.getByRole('slider')).toBeVisible();
         await expect(page.getByText('min', { exact: true })).toBeVisible();
@@ -44,18 +44,18 @@ test.describe('Eligible - Loan', () => {
         await expect(page.getByText('€25,000')).toBeVisible();
         await expect(page.getByText('Select a repayment plan')).toBeVisible();
         await expect(page.getByText('3 months')).toBeVisible();
-        await expect(page.getByText('8% daily rate')).toBeVisible();
+        await expect(page.getByText('8% of daily sales')).toBeVisible();
         await expect(page.getByText('6 months')).toBeVisible();
-        await expect(page.getByText('11% daily rate')).toBeVisible();
+        await expect(page.getByText('11% of daily sales').first()).toBeVisible();
         await expect(page.getByText('12 months')).toBeVisible();
-        await expect(page.getByText('15% daily rate')).toBeVisible();
+        await expect(page.getByText('15% of daily sales')).toBeVisible();
         await expect(page.getByText('Financing terms')).toBeVisible();
         await expect(page.getByText('Fees')).toBeVisible();
         await expect(page.getByText('€1,430.00')).toBeVisible();
         await expect(page.getByText('Total repayment amount')).toBeVisible();
         await expect(page.getByText('€14,430.00')).toBeVisible();
-        await expect(page.getByText('Daily repayment rate')).toBeVisible();
-        await expect(page.getByText('11%', { exact: true })).toBeVisible();
+        await expect(page.getByText('Daily repayment')).toBeVisible();
+        await expect(page.getByText('11% of daily sales', { exact: true }).last()).toBeVisible();
         await expect(page.getByText('Maximum repayment date')).toBeVisible();
         await expect(page.getByText('Sep 28, 2025')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();
@@ -119,7 +119,7 @@ test.describe('Eligible - Loan', () => {
         ]);
         await expect(page.getByText('€1,040.00')).toBeVisible();
         await expect(page.getByText('€14,040.00')).toBeVisible();
-        await expect(page.getByText('8%', { exact: true })).toBeVisible();
+        await expect(page.getByText('8% of daily sales', { exact: true }).last()).toBeVisible();
         await expect(page.getByText('Jun 30, 2025')).toBeVisible();
     });
 
@@ -145,7 +145,7 @@ test.describe('Eligible - Loan', () => {
         const offerSummary = page.getByTestId('capital-offer-summary');
 
         await expect(page.getByText('Business financing summary')).toBeVisible();
-        await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
+        await expect(page.getByText('Adyen Capital is provided by Adyen N.V.')).toBeVisible();
         await expect(offerSummary.getByText('Financing', { exact: true })).toBeVisible();
         await expect(offerSummary.getByText('€13,000', { exact: true })).toBeVisible();
         await expect(offerSummary.getByText('Fees')).toBeVisible();
@@ -153,8 +153,8 @@ test.describe('Eligible - Loan', () => {
         await expect(offerSummary.getByText('Total repayment amount')).toBeVisible();
         await expect(offerSummary.getByText('€14,430', { exact: true })).toBeVisible();
         await expect(offerSummary.getByText('Financing terms')).toBeVisible();
-        await expect(offerSummary.getByText('Daily repayment rate')).toBeVisible();
-        await expect(offerSummary.getByText('11%')).toBeVisible();
+        await expect(offerSummary.getByText('Daily repayment')).toBeVisible();
+        await expect(offerSummary.getByText('11% of daily sales')).toBeVisible();
         await expect(offerSummary.getByText('30-day repayment minimum')).toBeVisible();
         await expect(offerSummary.getByText('€2,405.00', { exact: true })).toBeVisible();
         await expect(offerSummary.getByText('Expected repayment period')).toBeVisible();
@@ -164,7 +164,7 @@ test.describe('Eligible - Loan', () => {
         await expect(offerSummary.getByText('Account', { exact: true })).toBeVisible();
         await expect(offerSummary.getByText('Primary account')).toBeVisible();
         await expect(offerSummary.getByRole('button', { name: 'Go back' })).toBeVisible();
-        await expect(offerSummary.getByRole('button', { name: 'Submit request (€13,000)' })).toBeVisible();
+        await expect(offerSummary.getByRole('button', { name: 'Submit €13,000 request' })).toBeVisible();
     });
 
     test('should show a tooltip when repayment period info icon is hovered', async ({ page, analyticsEvents }) => {
@@ -188,7 +188,7 @@ test.describe('Eligible - Loan', () => {
 
     test('should disable request submit button after funds request call succeeds', async ({ page, analyticsEvents }) => {
         await goToOfferSummary(page, analyticsEvents);
-        const requestFundsButton = page.getByTestId('capital-offer-summary').getByRole('button', { name: 'Submit request (€13,000)' });
+        const requestFundsButton = page.getByTestId('capital-offer-summary').getByRole('button', { name: 'Submit €13,000 request' });
 
         await requestFundsButton.click();
         await expectAnalyticsEvents(analyticsEvents, [

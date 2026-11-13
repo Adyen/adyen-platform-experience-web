@@ -18,7 +18,7 @@ test.describe('Pending - Loan', () => {
             expect(page.getByText('Grant ID')).toBeVisible(),
             expect(page.getByTestId('grant-id-copy-text')).toBeVisible(),
             expect(page.getByText('We received your request and we’re working on it now. Check back soon for the next steps.')).toBeVisible(),
-            expect(page.getByRole('progressbar', { name: 'Grant repayment' })).toBeHidden(),
+            expect(page.getByRole('progressbar')).toBeHidden(),
             expect(page.getByRole('button', { name: 'Show grant details' })).toBeHidden(),
         ]);
     });
@@ -26,7 +26,7 @@ test.describe('Pending - Loan', () => {
     test('should render a tooltip when status tag is hovered', async ({ page }) => {
         await page.getByText('Pending').hover();
 
-        await expect(page.getByRole('tooltip', { name: 'You should get the funds within one business day' })).toBeVisible();
+        await expect(page.getByRole('tooltip', { name: 'You should get your funds within one business day' })).toBeVisible();
     });
 
     test('should render a tooltip with the grant ID when "Grant ID" label is hovered', async ({ page }) => {
