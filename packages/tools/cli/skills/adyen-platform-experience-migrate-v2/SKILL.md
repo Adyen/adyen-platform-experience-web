@@ -47,7 +47,7 @@ v2 refreshes the components' look. Most of the API is unchanged, but some Core o
 6. Run the project's type-check and build, and fix what they report.
 7. Verify before reporting. A failed edit or command leaves no type error, so check the files themselves:
     - re-run the searches from steps 4 and 5: no `.adyen-pe-*` selector other than `.adyen-pe-component` may remain, no `--adyen-sdk-*` variable at document level, no `dataCustomization.list`, and no custom translation key that `references/translation-keys.tsv` lists as a v1 key;
-    - for every override you replaced with an option, search for that option and note the file and line where it is, e.g. `grep -rn "container: 'hidden'" src`, `grep -rn "FRAUD_ALERTS" src` or `grep -rn "visibility: 'hidden'" src`. If the search finds nothing, add the option now;
+    - for every override you replaced with an option, search for that option and note the file and line where it is, e.g. search the app for `container: 'hidden'`, `FRAUD_ALERTS` or `visibility: 'hidden'` with your search tool. If the search finds nothing, add the option now;
     - re-read every file you meant to change, and fix any change that didn't land.
 
     Report only changes you've confirmed this way.

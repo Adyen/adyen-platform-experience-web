@@ -48,6 +48,28 @@ describe('skills show', () => {
         expect(stderr).toContain(`${file} isn't a file of ${SKILL}`);
     });
 
+    test('looks up v1 translation keys exactly, without matching the v2 column', async () => {
+        const { code, stdout } = await runCli([
+            'skills',
+            'show',
+            'migrate-v2',
+            '--key',
+            'common.actions.copy.labels.done',
+            '--key',
+            'common.actions.contactSupport.labels.default',
+            '--key',
+            'custom.column.label',
+        ]);
+
+        expect(code).toBe(0);
+        expect(stdout.split('\n').filter(Boolean)).toEqual([
+            'common.actions.copy.labels.done\ttransactions\ttransactions.common.copy.done',
+            'common.actions.copy.labels.done\tpayouts\tpayouts.common.copy.done',
+            'common.actions.contactSupport.labels.default\t-\t(no match)',
+            "custom.column.label\t-\t(not in the map: unchanged in v2, or the app's own key)",
+        ]);
+    });
+
     test('refuses an unknown skill, listing the available ones', async () => {
         const { code, stdout, stderr } = await runCli(['skills', 'show', 'migrate-v9']);
 

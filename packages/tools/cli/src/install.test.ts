@@ -24,6 +24,7 @@ describe('skills add', () => {
             'references/exports-and-instances.md',
             'references/global.md',
             'references/transactions-overview.md',
+            'references/translation-keys.tsv',
         ]);
         expect(readFileSync(join(installed, 'SKILL.md'), 'utf8')).toContain("adyen-platform-experience-components: 'transactions-overview'");
         expect(existsSync(join(project, '.agents'))).toBe(false);
@@ -182,8 +183,8 @@ describe('skills list, with installed copies', () => {
         const text = await runCli(['skills', 'list'], upgraded);
         const json = await runCli(['skills', 'list', '--json'], upgraded);
 
-        expect(text.stdout).toContain('Installed in .claude/skills/ (2.0.0, older than 2.1.0: run skills sync)');
-        expect(text.stdout).toContain('Installed in .agents/skills/ (2.0.0, older than 2.1.0: run skills sync)');
+        expect(text.stdout).toContain('Installed in .claude/skills/ (2.0.0, differs from 2.1.0: run skills sync)');
+        expect(text.stdout).toContain('Installed in .agents/skills/ (2.0.0, differs from 2.1.0: run skills sync)');
         expect(text.stdout).toContain('cursor, devin read it from both .claude/skills/ and .agents/skills/');
         expect(JSON.parse(json.stdout)[0].installed).toEqual([
             { folder: '.claude/skills', version: '2.0.0', components: ['capital-offer'] },

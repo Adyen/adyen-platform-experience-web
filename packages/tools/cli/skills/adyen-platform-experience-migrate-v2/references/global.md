@@ -42,7 +42,7 @@ If the app embeds the library with `<script>` and `<link>` tags instead of npm, 
 
 ## Custom translations
 
-Most translation keys were renamed in v2, and a custom translation on an old key is silently ignored. Don't guess new keys from their names or text: look each one up in `references/translation-keys.tsv` (columns: v1 key, domain, v2 key). The file is large, so search it instead of reading it, matching the first column exactly, e.g. `npx @adyen/adyen-platform-experience-web skills show migrate-v2 translation-keys.tsv | grep -F 'common.actions.copy.labels.done'` (or open the installed copy).
+Most translation keys were renamed in v2, and a custom translation on an old key is silently ignored. Don't guess new keys from their names or text: look each one up in `references/translation-keys.tsv` (columns: v1 key, domain, v2 key). The file is large, so don't read it: look the keys up with the command you used to show this skill, adding `--key` for each v1 key, e.g. `npx @adyen/adyen-platform-experience-web skills show migrate-v2 --key common.actions.copy.labels.done --key common.errors.updateFilters`. It matches the first column exactly and prints the matching rows, `(no match)`, or that the key isn't in the map. Don't search the file with `grep`: it also matches the v2 column, and isn't available on every system.
 
 For each key in the app's `translations`, in every locale:
 

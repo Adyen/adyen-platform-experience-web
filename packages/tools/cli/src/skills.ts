@@ -28,6 +28,7 @@ export interface Flags {
     dir?: string;
     json?: boolean;
     help?: boolean;
+    key?: string[];
 }
 
 export const shortName = (skill: string) => (skill.startsWith(SKILL_PREFIX) ? skill.slice(SKILL_PREFIX.length) : skill);

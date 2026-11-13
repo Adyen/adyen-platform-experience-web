@@ -50,6 +50,17 @@ export const makeSkillsRoot = (version = VERSION) => {
     for (const file of ['global', 'css-overrides', 'exports-and-instances', ...COMPONENTS]) {
         writeFile(join(root, SKILL, 'references', `${file}.md`), `# ${file}\n`);
     }
+    writeFile(
+        join(root, SKILL, 'references', 'translation-keys.tsv'),
+        [
+            '# v1 key\tdomain\tv2 key',
+            'common.actions.copy.labels.done\ttransactions\ttransactions.common.copy.done',
+            'common.actions.copy.labels.done\tpayouts\tpayouts.common.copy.done',
+            'common.actions.copy.labels.default\ttransactions\tcommon.actions.copy.labels.done',
+            'common.actions.contactSupport.labels.default\t-\t(no match)',
+            '',
+        ].join('\n')
+    );
     return root;
 };
 

@@ -32,7 +32,23 @@ const header = (skill: string, version: string, files: string[], prefix: string)
     ].join('\n');
 };
 
-const show = (skillArg: string, fileArg: string | undefined, options: RunOptions) => {
+const KEY_MAP = 'references/translation-keys.tsv';
+
+// Exact lookup on the first column of the key map, so agents don't need grep (which also matches the v2 column).
+const lookUpKeys = (skillDir: string, keys: string[], options: RunOptions) => {
+    const rows = readFileSync(join(skillDir, KEY_MAP), 'utf8')
+        .split('\n')
+        .filter(line => line && !line.startsWith('#'))
+        .map(line => line.split('\t'));
+    for (const key of keys) {
+        const matches = rows.filter(([v1Key]) => v1Key === key);
+        if (!matches.length) options.stdout.write(`${key}\t-\t(not in the map: unchanged in v2, or the app's own key)\n`);
+        for (const row of matches) options.stdout.write(`${row.join('\t')}\n`);
+    }
+    return 0;
+};
+
+const show = (skillArg: string, fileArg: string | undefined, flags: Flags, options: RunOptions) => {
     const skill = `${SKILL_PREFIX}${shortName(skillArg)}`;
     const skills = listSkills(options.skillsRoot);
     if (!skills.includes(skill)) {
@@ -41,6 +57,14 @@ const show = (skillArg: string, fileArg: string | undefined, options: RunOptions
     }
     const skillDir = join(options.skillsRoot, skill);
     const files = listFiles(skillDir);
+
+    if (flags.key?.length) {
+        if (!files.includes(KEY_MAP)) {
+            options.stderr.write(`${skill} has no translation key map.\n`);
+            return 1;
+        }
+        return lookUpKeys(skillDir, flags.key, options);
+    }
 
     if (fileArg) {
         const file = [fileArg, `references/${fileArg}`].find(candidate => files.includes(candidate));
@@ -86,7 +110,7 @@ const list = (flags: Flags, { cwd, skillsRoot, version, stdout, userAgent }: Run
     const describe = (skill: (typeof skills)[number]) => {
         const copies = skill.installed.map(
             copy =>
-                `  Installed in ${display(copy.folder)} (${copy.version === version ? copy.version : `${copy.version}, older than ${version}: run skills sync`})`
+                `  Installed in ${display(copy.folder)} (${copy.version === version ? copy.version : `${copy.version}, differs from ${version}: run skills sync`})`
         );
         const readers = duplicateReaders(skill.installed.map(copy => copy.folder));
         const warning = readers.length
@@ -148,6 +172,7 @@ const usage = (prefix: string) => `Usage: ${prefix} <command>
 
 Commands:
   skills show <skill> [file]   Print a skill, or one of its files, without installing it
+      [--key <v1 key>…]        Look up v1 translation keys in the skill's key map
   skills list [--json]         List the skills shipped with this version and the installed copies
   skills add                   Install skills into your assistants' skill folders, to commit for the team
       [--components <a,b>] [--agent <claude-code,codex,cursor,devin,droid>] [--yes] [--dir <path>]
@@ -164,6 +189,7 @@ const OPTIONS = {
     yes: { type: 'boolean' },
     dir: { type: 'string' },
     json: { type: 'boolean' },
+    key: { type: 'string', multiple: true },
     help: { type: 'boolean', short: 'h' },
 } as const;
 
@@ -181,7 +207,7 @@ const parse = (argv: string[]) => {
 const resolveCommand = ([group, command, ...args]: string[], flags: Flags, options: RunOptions) => {
     if (group !== 'skills') return undefined;
     const [skill, file] = args;
-    if (command === 'show' && skill) return () => show(skill, file, options);
+    if (command === 'show' && skill) return () => show(skill, file, flags, options);
     if (command === 'list') return () => list(flags, options);
     if (command === 'add') return () => add(flags, options);
     if (command === 'sync') return () => sync(flags, options);
