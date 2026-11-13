@@ -6,7 +6,7 @@ packages:
 catalog:
   '@adyen/bento-design-tokens': 2.9.0
   '@adyen/bento-vue3': 2.11.0-rc.sha-b6ad54d
-  '@adyen/ui-assets-icons-16': 7.9.3
+  '@adyen/ui-assets-icons-16': 7.11.2
   '@adyen/ui-assets-icons-24': 6.9.4
   '@adyen/ui-assets-icons-40': 4.9.2
   "@playwright/test": ^1.61.0
