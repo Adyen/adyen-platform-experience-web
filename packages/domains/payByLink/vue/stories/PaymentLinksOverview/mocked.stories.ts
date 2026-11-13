@@ -73,6 +73,7 @@ export const EmptyList: ElementStory<PaymentLinksOverviewExternalProps> = {
     name: 'Empty List',
     args: {
         mockedApi: true,
+        onContactSupport: 'Enabled',
     },
     parameters: {
         msw: {

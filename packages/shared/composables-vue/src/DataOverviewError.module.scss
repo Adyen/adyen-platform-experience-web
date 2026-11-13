@@ -7,7 +7,9 @@
     gap: style.token(spacer-070);
     padding-bottom: style.token(spacer-070);
     padding-top: style.token(spacer-100);
+}
 
+.hasCustomActions {
     :global(.b-empty-state__details) {
         margin-bottom: 0;
     }

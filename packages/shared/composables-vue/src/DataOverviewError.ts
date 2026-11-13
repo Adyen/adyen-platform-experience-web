@@ -1,22 +1,29 @@
 import { computed, defineComponent, h, type Component, type PropType, type VNode } from 'vue';
-import { BentoEmptyState } from '@adyen/bento-vue3';
-import {
-    getSafeDomainTranslationKey,
-    useCoreContext,
-    useShouldHideIllustrations,
-    type ErrorMessageInfo,
-    useConfigContext,
-} from '@integration-components/core/vue';
+import { BentoButtonActions, BentoEmptyState, type BentoButtonActionsList } from '@adyen/bento-vue3';
+import ErrorIcon from '@adyen/ui-assets-icons-24/vue/cross-circle';
+import HighlightIcon from '@adyen/ui-assets-icons-24/vue/info';
+import Search from '@adyen/ui-assets-icons-24/vue/search';
+import { getSafeDomainTranslationKey, useCoreContext, type ErrorMessageInfo, useConfigContext } from '@integration-components/core/vue';
 import { useLiveAnnouncement } from './useLiveAnnouncement';
 import { LiveAnnouncement } from './LiveAnnouncement';
+import styles from './DataOverviewError.module.scss';
+
+type DataErrorType = 'highlight' | 'error' | 'no-results-found';
+
+const ICON_BY_TYPE: Record<DataErrorType, Component> = {
+    highlight: HighlightIcon,
+    error: ErrorIcon,
+    'no-results-found': Search,
+};
 
 export const DataOverviewError = defineComponent({
     name: 'DataOverviewError',
 
     props: {
+        actions: { type: Array as PropType<BentoButtonActionsList>, default: undefined },
         errorInfo: { type: Object as PropType<ErrorMessageInfo>, required: true },
-        variant: { type: String as PropType<'embedded' | 'condensed'>, default: 'embedded' },
-        image: { type: String as PropType<'wrong-environment' | 'no-results-found'>, default: 'wrong-environment' },
+        type: { type: String as PropType<DataErrorType>, default: 'error' },
+        variant: { type: String as PropType<'basic' | 'condensed' | 'embedded'>, default: 'basic' },
         refreshIcon: { type: [Object, Function] as PropType<Component>, default: undefined },
         /**
          * Re-fetches the data the error state belongs to. Falls back to remounting the component, which resets its filters.
@@ -29,8 +36,9 @@ export const DataOverviewError = defineComponent({
         const { i18n, refreshComponent: refreshCurrentComponent, translationDomain } = useCoreContext();
         const configContext = useConfigContext();
         const { announcement } = useLiveAnnouncement();
-        const hideIllustrations = useShouldHideIllustrations();
 
+        const iconComponent = computed(() => ICON_BY_TYPE[props.type]);
+        const iconClass = computed(() => (props.type === 'error' ? styles.iconCritical : undefined));
         const errorInfo = computed(() => props.errorInfo);
 
         const title = computed(() => (errorInfo.value.title ? i18n.get(errorInfo.value.title) : undefined));
@@ -81,17 +89,27 @@ export const DataOverviewError = defineComponent({
             return undefined;
         });
 
-        return () =>
-            h(
-                BentoEmptyState,
-                {
-                    image: hideIllustrations.value ? undefined : props.image,
-                    variant: props.variant,
-                    title: title.value,
-                    action: action.value,
-                },
-                { default: () => description.value }
-            );
+        return () => {
+            const children = [
+                h(iconComponent.value, { 'aria-hidden': 'true', class: iconClass.value }),
+                h(
+                    BentoEmptyState,
+                    {
+                        variant: props.variant,
+                        title: title.value,
+                        class: props.actions?.length ? styles.hasCustomActions : undefined,
+                        ...(!props.actions ? { action: action.value } : {}),
+                    },
+                    { default: () => description.value }
+                ),
+            ];
+
+            if (props.actions?.length) {
+                children.push(h(BentoButtonActions, { actions: props.actions, class: styles.actions }));
+            }
+
+            return h('div', { class: styles.root }, children);
+        };
     },
 });
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { BentoAlert, BentoButtonActions, BentoModal, type BentoButtonActionsList } from '@adyen/bento-vue3';
-import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-16/vue/checkmark-circle-fill';
+import CheckmarkIcon from '@adyen/ui-assets-icons-24/vue/checkmark-circle';
 import { getMissingActionsMetadata } from '@integration-components/capital/domain';
 import { useConfigContext, useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import type { IMissingAction, IMissingActionType } from '@integration-components/types';
@@ -47,7 +47,7 @@ const actions = computed<BentoButtonActionsList>(() =>
 
         return {
             event: () => handleActionButtonClick(action.type),
-            iconLeft: isCompleted ? CheckmarkCircleFillIcon : undefined,
+            iconLeft: isCompleted ? CheckmarkIcon : undefined,
             title: i18n.get(isCompleted ? actionConfig.successButtonLabelKey : actionConfig.buttonLabelKey),
             variant: missingActionsMetadata.value.primaryActionType === action.type ? 'primary' : 'secondary',
         };

@@ -13,6 +13,7 @@ export const UnsupportedRegion: ElementStory<CapitalOfferExternalProps> = {
     name: 'Unsupported region',
     args: {
         mockedApi: true,
+        onContactSupport: 'Enabled',
     },
     parameters: {
         msw: {
