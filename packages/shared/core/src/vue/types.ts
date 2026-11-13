@@ -1,28 +1,28 @@
 import type { AuthSession } from '../session/AuthSession';
 import type { AssetOptions } from '../Assets/Assets';
-import type { AnalyticsConfig, CoreOptions, CustomTheme, DevEnvironment, OnErrorHandler, ThemeMode, ThemeVariables } from '../types';
+import type { CoreOptions, CoreUpdateOptions } from '../types';
 import type { I18n } from './Context/types';
-import type { DataGridAppearance, DensityMode, GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
+import type { GlobalAppearance } from '@integration-components/types';
 import type Localization from '../Localization';
 
 export type {
     AnalyticsConfig,
     CoreOptions,
+    CoreUpdateOptions,
     CustomTheme,
-    DataGridAppearance,
-    DensityMode,
     DevEnvironment,
-    GlobalAppearance,
     OnErrorHandler,
     ThemeMode,
     ThemeVariables,
-    WithDataGridAppearance,
-};
+    UpdateTranslations,
+} from '../types';
+export type { DataGridAppearance, DensityMode, GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
 export type { SessionObject, SessionRequest } from '../ConfigContext.types';
 
 export interface UIElementProps<TComponentAppearance extends GlobalAppearance = GlobalAppearance> {
     core: CoreInstance;
     appearance?: TComponentAppearance;
+    onContactSupport?: () => void;
 }
 
 export interface CoreInstance {
@@ -36,7 +36,7 @@ export interface CoreInstance {
     getCdnConfig: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
     getCdnDataset: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
     getImageAsset: (props: AssetOptions) => string;
-    update: (options: Partial<CoreOptions>) => Promise<CoreInstance>;
+    update: (options: CoreUpdateOptions) => Promise<CoreInstance>;
     registerThemeRoot: (root: Element) => void;
     unregisterThemeRoot: (root: Element) => void;
 }

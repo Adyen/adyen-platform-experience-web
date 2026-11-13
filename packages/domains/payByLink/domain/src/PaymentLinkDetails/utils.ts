@@ -1,14 +1,10 @@
-import type { DomainTranslationKey } from '@integration-components/core/translations';
-import type {
-    IPaymentLinkActivity,
-    IPaymentLinkDetails,
-    IPaymentLinkShopperAddress,
-    IPaymentLinkStatus,
-    IPaymentLinkType,
-} from '@integration-components/types';
+import type Localization from '@integration-components/core/Localization';
+import type { IPaymentLinkActivity, IPaymentLinkDetails, IPaymentLinkShopperAddress, IPaymentLinkStatus } from '@integration-components/types';
 import { DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS } from '@integration-components/utils';
 import { BACKEND_REDACTED_DATA_MARKER } from '../constants';
+import type { PayByLinkTranslationKey } from '../shared/types';
 import { PAYMENT_LINK_STATUS_TAG_VARIANT } from './constants';
+import { getPaymentLinkType } from './translations';
 import type {
     ListItemData,
     PaymentLinkActivityStatus,
@@ -18,10 +14,9 @@ import type {
 } from './types';
 
 type ErrorLike = { errorCode?: string; requestId?: string } | undefined;
-type I18nLike = { has: (key: string) => boolean; get: (key: DomainTranslationKey) => string };
 type DateFormatFn = (date: string | Date, options?: Intl.DateTimeFormatOptions) => string;
 
-export const getActivityTitleKey = (activity: IPaymentLinkActivity): DomainTranslationKey | undefined => {
+export const getActivityTitleKey = (activity: IPaymentLinkActivity): PayByLinkTranslationKey | undefined => {
     switch (activity.type) {
         case 'createdAction':
             return 'payByLink.details.activity.created';
@@ -34,7 +29,7 @@ export const getActivityTitleKey = (activity: IPaymentLinkActivity): DomainTrans
     }
 };
 
-export const getActivityDescriptionKey = (activity: IPaymentLinkActivity): DomainTranslationKey | undefined => {
+export const getActivityDescriptionKey = (activity: IPaymentLinkActivity): PayByLinkTranslationKey | undefined => {
     switch (activity.expirationReason) {
         case 'maximumAttemptsReached':
             return 'payByLink.details.activity.expirationReason.maximumAttemptsReached';
@@ -61,28 +56,35 @@ export const getActivityStatus = (activity: IPaymentLinkActivity): PaymentLinkAc
 };
 
 export const isPaymentLinkAddressRedacted = (address: IPaymentLinkShopperAddress): boolean => {
-    return Object.values(address).some(value => value === BACKEND_REDACTED_DATA_MARKER);
+    return Object.values(address).includes(BACKEND_REDACTED_DATA_MARKER);
 };
 
 export const getPaymentLinkStatusTagVariant = (status: IPaymentLinkStatus | undefined): PaymentLinkStatusTagVariant => {
     return (status && PAYMENT_LINK_STATUS_TAG_VARIANT[status]) ?? 'neutral';
 };
 
-export const getPaymentLinkStatusLabel = (i18n: I18nLike, status: IPaymentLinkStatus | undefined): string | undefined => {
-    if (!status) return undefined;
-    return i18n.has(`payByLink.common.status.${status}`) ? i18n.get(`payByLink.common.status.${status}` as DomainTranslationKey) : status;
-};
-
-export const getPaymentLinkTypeLabel = (i18n: I18nLike, linkType: IPaymentLinkType | undefined): string | undefined => {
-    if (!linkType) return undefined;
-    return i18n.has(`payByLink.common.linkType.${linkType}`) ? i18n.get(`payByLink.common.linkType.${linkType}` as DomainTranslationKey) : linkType;
-};
-
 const filterEmptyListItems = (items: ListItemData[]): ListItemData[] => items.filter(item => item.value != null && item.value !== '');
+
+// Shipping and billing rows carry the same field names, so each address keeps
+// its own copy labels rather than sharing one built from the field name.
+const ADDRESS_COPY_LABEL_KEYS = {
+    shippingAddress: {
+        street: 'payByLink.details.copy.shippingAddressStreet',
+        houseNumberOrName: 'payByLink.details.copy.shippingAddressHouseNumberOrName',
+        city: 'payByLink.details.copy.shippingAddressCity',
+        postalCode: 'payByLink.details.copy.shippingAddressPostalCode',
+    },
+    billingAddress: {
+        street: 'payByLink.details.copy.billingAddressStreet',
+        houseNumberOrName: 'payByLink.details.copy.billingAddressHouseNumberOrName',
+        city: 'payByLink.details.copy.billingAddressCity',
+        postalCode: 'payByLink.details.copy.billingAddressPostalCode',
+    },
+} as const satisfies Record<'shippingAddress' | 'billingAddress', Record<string, PayByLinkTranslationKey>>;
 
 export const buildPaymentLinkListItems = (
     paymentLink: IPaymentLinkDetails,
-    { i18n, dateFormat }: { i18n: I18nLike; dateFormat: DateFormatFn }
+    { i18n, dateFormat }: { i18n: Localization['i18n']; dateFormat: DateFormatFn }
 ): PaymentLinkListItems => {
     const shippingAddress = paymentLink.shopperInformation?.shippingAddress;
     const billingAddress = paymentLink.shopperInformation?.billingAddress;
@@ -91,42 +93,54 @@ export const buildPaymentLinkListItems = (
 
     const linkInformation: ListItemData[] = filterEmptyListItems([
         {
-            key: 'payByLink.details.fields.paymentLinkId',
+            key: 'payByLink.details.paymentLinkId',
             value: paymentLink.linkInformation.paymentLinkId,
             isCopyable: true,
+            copyAriaLabelKey: 'payByLink.details.copy.paymentLinkId',
             linkUrl: paymentLink.linkInformation.paymentLink,
         },
-        { key: 'payByLink.details.fields.store', value: paymentLink.linkInformation.storeCode },
-        { key: 'payByLink.details.fields.merchantReference', value: paymentLink.linkInformation.merchantReference },
+        { key: 'payByLink.details.store', value: paymentLink.linkInformation.storeCode },
+        { key: 'payByLink.details.merchantReference', value: paymentLink.linkInformation.merchantReference },
         {
-            key: 'payByLink.details.fields.createdOn',
+            key: 'payByLink.details.createdOn',
             value: dateFormat(paymentLink.linkInformation.creationDate, DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS),
         },
         {
-            key: 'payByLink.details.fields.expiresOn',
+            key: 'payByLink.details.expiresOn',
             value: dateFormat(paymentLink.linkInformation.expirationDate, DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS),
         },
-        { key: 'payByLink.details.fields.linkType', value: getPaymentLinkTypeLabel(i18n, paymentLink.linkInformation.linkType) },
-        { key: 'payByLink.details.fields.description', value: paymentLink.linkInformation.description },
+        { key: 'payByLink.details.linkType', value: getPaymentLinkType(i18n, paymentLink.linkInformation.linkType) },
+        { key: 'payByLink.details.description', value: paymentLink.linkInformation.description },
     ]);
 
     const shopperInformation: ListItemData[] = filterEmptyListItems([
-        { key: 'payByLink.details.fields.shopper.reference', value: paymentLink.shopperInformation?.shopperReference },
+        { key: 'payByLink.details.shopper.reference', value: paymentLink.shopperInformation?.shopperReference },
         {
-            key: 'payByLink.details.fields.shopper.fullName',
+            key: 'payByLink.details.shopper.fullName',
             value: [paymentLink.shopperInformation?.shopperName?.firstName, paymentLink.shopperInformation?.shopperName?.lastName]
                 .filter(Boolean)
                 .join(' '),
             isCopyable: true,
+            copyAriaLabelKey: 'payByLink.details.copy.shopperFullName',
         },
-        { key: 'payByLink.details.fields.shopper.email', value: paymentLink.shopperInformation?.shopperEmail, isCopyable: true },
-        { key: 'payByLink.details.fields.shopper.phone', value: paymentLink.shopperInformation?.telephoneNumber, isCopyable: true },
-        { key: 'payByLink.details.fields.shopper.country', value: paymentLink.shopperInformation?.shopperCountry },
+        {
+            key: 'payByLink.details.shopper.email',
+            value: paymentLink.shopperInformation?.shopperEmail,
+            isCopyable: true,
+            copyAriaLabelKey: 'payByLink.details.copy.shopperEmail',
+        },
+        {
+            key: 'payByLink.details.shopper.phone',
+            value: paymentLink.shopperInformation?.telephoneNumber,
+            isCopyable: true,
+            copyAriaLabelKey: 'payByLink.details.copy.shopperPhone',
+        },
+        { key: 'payByLink.details.shopper.country', value: paymentLink.shopperInformation?.shopperCountry },
         ...(isShippingAddressRedacted
-            ? [{ key: 'payByLink.details.fields.shippingAddress.title' as DomainTranslationKey, value: BACKEND_REDACTED_DATA_MARKER }]
+            ? [{ key: 'payByLink.details.shippingAddress.title' as PayByLinkTranslationKey, value: BACKEND_REDACTED_DATA_MARKER }]
             : []),
         ...(isBillingAddressRedacted
-            ? [{ key: 'payByLink.details.fields.billingAddress.title' as DomainTranslationKey, value: BACKEND_REDACTED_DATA_MARKER }]
+            ? [{ key: 'payByLink.details.billingAddress.title' as PayByLinkTranslationKey, value: BACKEND_REDACTED_DATA_MARKER }]
             : []),
     ]);
 
@@ -134,15 +148,31 @@ export const buildPaymentLinkListItems = (
         !address
             ? []
             : filterEmptyListItems([
-                  { key: `payByLink.details.fields.${prefix}.street` as DomainTranslationKey, value: address.street, isCopyable: true },
                   {
-                      key: `payByLink.details.fields.${prefix}.houseNumberOrName` as DomainTranslationKey,
+                      key: `payByLink.details.${prefix}.street` as PayByLinkTranslationKey,
+                      value: address.street,
+                      isCopyable: true,
+                      copyAriaLabelKey: ADDRESS_COPY_LABEL_KEYS[prefix].street,
+                  },
+                  {
+                      key: `payByLink.details.${prefix}.houseNumberOrName` as PayByLinkTranslationKey,
                       value: address.houseNumberOrName,
                       isCopyable: true,
+                      copyAriaLabelKey: ADDRESS_COPY_LABEL_KEYS[prefix].houseNumberOrName,
                   },
-                  { key: `payByLink.details.fields.${prefix}.country` as DomainTranslationKey, value: address.country },
-                  { key: `payByLink.details.fields.${prefix}.city` as DomainTranslationKey, value: address.city, isCopyable: true },
-                  { key: `payByLink.details.fields.${prefix}.postalCode` as DomainTranslationKey, value: address.postalCode, isCopyable: true },
+                  { key: `payByLink.details.${prefix}.country` as PayByLinkTranslationKey, value: address.country },
+                  {
+                      key: `payByLink.details.${prefix}.city` as PayByLinkTranslationKey,
+                      value: address.city,
+                      isCopyable: true,
+                      copyAriaLabelKey: ADDRESS_COPY_LABEL_KEYS[prefix].city,
+                  },
+                  {
+                      key: `payByLink.details.${prefix}.postalCode` as PayByLinkTranslationKey,
+                      value: address.postalCode,
+                      isCopyable: true,
+                      copyAriaLabelKey: ADDRESS_COPY_LABEL_KEYS[prefix].postalCode,
+                  },
               ]);
 
     return {
@@ -155,7 +185,7 @@ export const buildPaymentLinkListItems = (
 
 export const getPaymentLinkErrorMessageContent = (
     error: ErrorLike,
-    errorMessage: DomainTranslationKey,
+    errorMessage: PayByLinkTranslationKey,
     hasContactSupport: boolean
 ): PaymentLinkErrorMessageContent => {
     if (!error) return { title: 'payByLink.common.errors.unexpected', message: ['payByLink.common.errors.contactSupport'] };

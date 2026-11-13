@@ -1,6 +1,5 @@
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
-
-type CashOutTranslationKey = `cashOut.${string}`;
+import type { CashOutTranslationKey } from '../types';
 
 export type CashOutErrorMessageInfo = {
     title: CashOutTranslationKey;

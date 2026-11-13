@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import type { ICashOutAmount, ICashOutEligibility, ICashOutFees, ICashOutRequest, ICashOutResponse } from '@integration-components/types';
 import { BALANCE_ACCOUNTS_SINGLE, setupBasicResponse } from '@integration-components/testing/fixtures';
-import { BALANCE_ACCOUNTS_ENDPOINT, delay, SETUP_ENDPOINT } from '@integration-components/testing/msw';
+import { BALANCE_ACCOUNTS_ENDPOINT, SETUP_ENDPOINT, withDelay } from '@integration-components/testing/msw';
 import { uuid } from '@integration-components/utils';
 import { ENDPOINTS } from '../endpoints';
 import { ELIGIBILITY_AVAILABLE, ELIGIBILITY_BY_BALANCE_ACCOUNT, ELIGIBILITY_UNAVAILABLE } from '../mock-data/cashOut';
@@ -89,186 +89,237 @@ const deductCashedOut = (accountKey: string, eligibility: ICashOutEligibility): 
 };
 
 export const cashOutMocks = [
-    http.get<{ accountKey: string }>(ENDPOINTS.eligibility, async ({ params }) => {
-        await delay();
-        return HttpResponse.json(
-            deductCashedOut(params.accountKey, ELIGIBILITY_BY_BALANCE_ACCOUNT[params.accountKey] ?? ELIGIBILITY_AVAILABLE.default)
-        );
-    }),
-    http.get(ENDPOINTS.fees, async ({ request }) => {
-        const { searchParams } = new URL(request.url);
-        const amountParam = searchParams.get('amount');
-        const amount = amountParam === null ? undefined : Number(amountParam);
-        const currency = searchParams.get('currency') ?? undefined;
-        const invalidFields = [...getAmountErrors(amount), ...getCurrencyErrors(currency)];
+    http.get<{ accountKey: string }>(
+        ENDPOINTS.eligibility,
+        withDelay(({ params }) => {
+            return HttpResponse.json(
+                deductCashedOut(params.accountKey, ELIGIBILITY_BY_BALANCE_ACCOUNT[params.accountKey] ?? ELIGIBILITY_AVAILABLE.default)
+            );
+        })
+    ),
+    http.get(
+        ENDPOINTS.fees,
+        withDelay(({ request }) => {
+            const { searchParams } = new URL(request.url);
+            const amountParam = searchParams.get('amount');
+            const amount = amountParam === null ? undefined : Number(amountParam);
+            const currency = searchParams.get('currency') ?? undefined;
+            const invalidFields = [...getAmountErrors(amount), ...getCurrencyErrors(currency)];
 
-        await delay(200);
+            if (amount === undefined || currency === undefined || invalidFields.length > 0) {
+                return getValidationErrorResponse(invalidFields);
+            }
 
-        if (amount === undefined || currency === undefined || invalidFields.length > 0) {
-            return getValidationErrorResponse(invalidFields);
-        }
+            return HttpResponse.json(calculateFees(amount, currency));
+        })
+    ),
+    http.post<{ accountKey: string }, Partial<ICashOutRequest>>(
+        ENDPOINTS.instruct,
+        withDelay(async ({ params, request }) => {
+            const { amount, counterparty, currency, description, referenceForBeneficiary } = await request.json();
+            const transferInstrumentId = counterparty?.transferInstrumentId;
+            const invalidFields = [
+                ...getAmountErrors(amount),
+                ...getCurrencyErrors(currency),
+                ...getTransferInstrumentIdErrors(transferInstrumentId),
+            ];
 
-        return HttpResponse.json(calculateFees(amount, currency));
-    }),
-    http.post<{ accountKey: string }, Partial<ICashOutRequest>>(ENDPOINTS.instruct, async ({ params, request }) => {
-        const { amount, counterparty, currency, description, referenceForBeneficiary } = await request.json();
-        const transferInstrumentId = counterparty?.transferInstrumentId;
-        const invalidFields = [...getAmountErrors(amount), ...getCurrencyErrors(currency), ...getTransferInstrumentIdErrors(transferInstrumentId)];
+            if (amount === undefined || currency === undefined || transferInstrumentId === undefined || invalidFields.length > 0) {
+                return getValidationErrorResponse(invalidFields);
+            }
 
-        await delay(800);
+            const response: ICashOutResponse = {
+                id: uuid(),
+                balanceAccount: params.accountKey,
+                amount: { currency, value: amount },
+                fee: calculateFees(amount, currency).fee,
+                counterparty: { transferInstrumentId },
+                ...(description === undefined ? {} : { description }),
+                ...(referenceForBeneficiary === undefined ? {} : { referenceForBeneficiary }),
+            };
 
-        if (amount === undefined || currency === undefined || transferInstrumentId === undefined || invalidFields.length > 0) {
-            return getValidationErrorResponse(invalidFields);
-        }
+            cashedOutByBalanceAccount.set(params.accountKey, (cashedOutByBalanceAccount.get(params.accountKey) ?? 0) + amount);
 
-        const response: ICashOutResponse = {
-            id: uuid(),
-            balanceAccount: params.accountKey,
-            amount: { currency, value: amount },
-            fee: calculateFees(amount, currency).fee,
-            counterparty: { transferInstrumentId },
-            ...(description === undefined ? {} : { description }),
-            ...(referenceForBeneficiary === undefined ? {} : { referenceForBeneficiary }),
-        };
-
-        cashedOutByBalanceAccount.set(params.accountKey, (cashedOutByBalanceAccount.get(params.accountKey) ?? 0) + amount);
-
-        return HttpResponse.json(response);
-    }),
+            return HttpResponse.json(response);
+        })
+    ),
 ];
 
 export const CASH_OUT_HANDLERS = {
     default: { handlers: cashOutMocks },
     singleBalanceAccount: {
         handlers: [
-            http.get(BALANCE_ACCOUNTS_ENDPOINT, async () => {
-                await delay(200);
-                return HttpResponse.json({ data: BALANCE_ACCOUNTS_SINGLE });
-            }),
+            http.get(
+                BALANCE_ACCOUNTS_ENDPOINT,
+                withDelay(() => {
+                    return HttpResponse.json({ data: BALANCE_ACCOUNTS_SINGLE });
+                })
+            ),
         ],
     },
     singleTransferInstrument: {
         handlers: [
-            http.get(ENDPOINTS.eligibility, async () => {
-                await delay();
-                return HttpResponse.json(ELIGIBILITY_AVAILABLE.singleTransferInstrument);
-            }),
+            http.get(
+                ENDPOINTS.eligibility,
+                withDelay(() => {
+                    return HttpResponse.json(ELIGIBILITY_AVAILABLE.singleTransferInstrument);
+                })
+            ),
         ],
     },
     singleEligibleTransferInstrument: {
         handlers: [
-            http.get(ENDPOINTS.eligibility, async () => {
-                await delay();
-                return HttpResponse.json(ELIGIBILITY_AVAILABLE.singleEligibleTransferInstrument);
-            }),
+            http.get(
+                ENDPOINTS.eligibility,
+                withDelay(() => {
+                    return HttpResponse.json(ELIGIBILITY_AVAILABLE.singleEligibleTransferInstrument);
+                })
+            ),
         ],
     },
     withIneligibleTransferInstruments: {
         handlers: [
             // Keeps the balances of each balance account, so multiple balance accounts still differ from each other.
-            http.get<{ accountKey: string }>(ENDPOINTS.eligibility, async ({ params }) => {
-                await delay();
-                return HttpResponse.json(
-                    deductCashedOut(params.accountKey, {
-                        ...(ELIGIBILITY_BY_BALANCE_ACCOUNT[params.accountKey] ?? ELIGIBILITY_AVAILABLE.default),
-                        transferInstruments: ELIGIBILITY_AVAILABLE.withIneligibleTransferInstruments.transferInstruments,
-                    })
-                );
-            }),
+            http.get<{ accountKey: string }>(
+                ENDPOINTS.eligibility,
+                withDelay(({ params }) => {
+                    return HttpResponse.json(
+                        deductCashedOut(params.accountKey, {
+                            ...(ELIGIBILITY_BY_BALANCE_ACCOUNT[params.accountKey] ?? ELIGIBILITY_AVAILABLE.default),
+                            transferInstruments: ELIGIBILITY_AVAILABLE.withIneligibleTransferInstruments.transferInstruments,
+                        })
+                    );
+                })
+            ),
         ],
     },
     zeroBalance: {
         handlers: [
-            http.get(ENDPOINTS.eligibility, async () => {
-                await delay();
-                return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.zeroBalance);
-            }),
+            http.get(
+                ENDPOINTS.eligibility,
+                withDelay(() => {
+                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.zeroBalance);
+                })
+            ),
         ],
     },
     noInstantReachableTransferInstruments: {
         handlers: [
-            http.get(ENDPOINTS.eligibility, async () => {
-                await delay();
-                return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.noInstantReachableTransferInstruments);
-            }),
+            http.get(
+                ENDPOINTS.eligibility,
+                withDelay(() => {
+                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.noInstantReachableTransferInstruments);
+                })
+            ),
         ],
     },
     cashOutInProgress: {
         handlers: [
-            http.get(ENDPOINTS.eligibility, async () => {
-                await delay();
-                return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.cashOutInProgress);
-            }),
+            http.get(
+                ENDPOINTS.eligibility,
+                withDelay(() => {
+                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.cashOutInProgress);
+                })
+            ),
         ],
     },
     dailyLimitReached: {
         handlers: [
-            http.get(ENDPOINTS.eligibility, async () => {
-                await delay();
-                return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.dailyLimitReached);
-            }),
+            http.get(
+                ENDPOINTS.eligibility,
+                withDelay(() => {
+                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.dailyLimitReached);
+                })
+            ),
         ],
     },
     sendToBalanceAccountNotAllowed: {
         handlers: [
-            http.get(ENDPOINTS.eligibility, async () => {
-                await delay();
-                return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.sendToBalanceAccountNotAllowed);
-            }),
+            http.get(
+                ENDPOINTS.eligibility,
+                withDelay(() => {
+                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.sendToBalanceAccountNotAllowed);
+                })
+            ),
         ],
     },
     receiveFromBalanceAccountNotAllowed: {
         handlers: [
-            http.get(ENDPOINTS.eligibility, async () => {
-                await delay();
-                return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.receiveFromBalanceAccountNotAllowed);
-            }),
+            http.get(
+                ENDPOINTS.eligibility,
+                withDelay(() => {
+                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.receiveFromBalanceAccountNotAllowed);
+                })
+            ),
         ],
     },
     riskRestricted: {
         handlers: [
-            http.get(ENDPOINTS.eligibility, async () => {
-                await delay();
-                return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.riskRestricted);
-            }),
+            http.get(
+                ENDPOINTS.eligibility,
+                withDelay(() => {
+                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.riskRestricted);
+                })
+            ),
         ],
     },
     cashOutNotConfigured: {
         handlers: [
-            http.get(ENDPOINTS.eligibility, async () => {
-                await delay();
-                return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.cashOutNotConfigured);
-            }),
+            http.get(
+                ENDPOINTS.eligibility,
+                withDelay(() => {
+                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.cashOutNotConfigured);
+                })
+            ),
         ],
     },
     // A session with the view role only, so it can't instruct a cashOut.
     freeFees: {
         handlers: [
-            http.get(ENDPOINTS.fees, async ({ request }) => {
-                const { searchParams } = new URL(request.url);
-                const value = Number(searchParams.get('amount'));
-                const currency = searchParams.get('currency') ?? '';
-                await delay(200);
-                return HttpResponse.json({
-                    amount: { currency, value },
-                    fee: { currency, value: 0 },
-                    payoutAmount: { currency, value },
-                } satisfies ICashOutFees);
-            }),
+            http.get(
+                ENDPOINTS.fees,
+                withDelay(({ request }) => {
+                    const { searchParams } = new URL(request.url);
+                    const value = Number(searchParams.get('amount'));
+                    const currency = searchParams.get('currency') ?? '';
+                    return HttpResponse.json({
+                        amount: { currency, value },
+                        fee: { currency, value: 0 },
+                        payoutAmount: { currency, value },
+                    } satisfies ICashOutFees);
+                })
+            ),
         ],
     },
     instructRoleNotAssigned: {
         handlers: [
-            http.post(SETUP_ENDPOINT, () => {
-                const { instructCashOut, ...endpoints } = setupBasicResponse.endpoints;
-                return HttpResponse.json({ endpoints });
-            }),
+            http.post(
+                SETUP_ENDPOINT,
+                withDelay(() => {
+                    const { instructCashOut, ...endpoints } = setupBasicResponse.endpoints;
+                    return HttpResponse.json({ endpoints });
+                })
+            ),
         ],
     },
-    balanceAccountsInternalServerError: { handlers: [http.get(BALANCE_ACCOUNTS_ENDPOINT, getInternalServerErrorResponse)] },
-    eligibilityInternalServerError: { handlers: [http.get(ENDPOINTS.eligibility, getInternalServerErrorResponse)] },
-    eligibilityNetworkError: { handlers: [http.get(ENDPOINTS.eligibility, () => HttpResponse.error())] },
-    feesInternalServerError: { handlers: [http.get(ENDPOINTS.fees, getInternalServerErrorResponse)] },
-    instructInternalServerError: { handlers: [http.post(ENDPOINTS.instruct, getInternalServerErrorResponse)] },
-    instructNetworkError: { handlers: [http.post(ENDPOINTS.instruct, () => HttpResponse.error())] },
+    balanceAccountsInternalServerError: { handlers: [http.get(BALANCE_ACCOUNTS_ENDPOINT, withDelay(getInternalServerErrorResponse))] },
+    eligibilityInternalServerError: { handlers: [http.get(ENDPOINTS.eligibility, withDelay(getInternalServerErrorResponse))] },
+    eligibilityNetworkError: {
+        handlers: [
+            http.get(
+                ENDPOINTS.eligibility,
+                withDelay(() => HttpResponse.error())
+            ),
+        ],
+    },
+    feesInternalServerError: { handlers: [http.get(ENDPOINTS.fees, withDelay(getInternalServerErrorResponse))] },
+    instructInternalServerError: { handlers: [http.post(ENDPOINTS.instruct, withDelay(getInternalServerErrorResponse))] },
+    instructNetworkError: {
+        handlers: [
+            http.post(
+                ENDPOINTS.instruct,
+                withDelay(() => HttpResponse.error())
+            ),
+        ],
+    },
 };

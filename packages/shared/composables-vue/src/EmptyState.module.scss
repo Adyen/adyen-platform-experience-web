@@ -1,0 +1,28 @@
+@use '@integration-components/style' as style;
+
+.root {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+    padding-bottom: style.token(spacer-070);
+    padding-top: style.token(spacer-100);
+
+    :global(.b-empty-state__details) {
+        margin-bottom: 0;
+    }
+}
+
+.iconCritical {
+    color: style.token(color-label-critical);
+}
+
+.iconSuccess {
+    color: style.token(color-label-success);
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}

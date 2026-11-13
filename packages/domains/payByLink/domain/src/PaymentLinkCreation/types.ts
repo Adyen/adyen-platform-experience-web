@@ -1,6 +1,6 @@
 import type { DeepPartial, IPaymentLinkCreateRequest } from '@integration-components/types';
 import type { SuccessResponse } from '@integration-components/types/api/endpoints';
-import type { StoreIds } from '../types';
+import type { StoreIds } from '../shared/types';
 
 export type LinkCreationFormStep = 'store' | 'payment' | 'customer' | 'summary';
 
@@ -60,10 +60,5 @@ export type PaymentLinkCreatedData = PaymentLinkCreationFormValues & { paymentLi
 export interface PaymentLinkCreationProps {
     fieldsConfig?: PaymentLinkCreationFieldsConfig;
     storeIds?: StoreIds;
-    onPaymentLinkCreated?: (paymentLink: PaymentLinkCreationFormValues) => void;
-    onDismiss?: () => void;
-    onContactSupport?: () => void;
-    onShowDetails?: (data: { id: string; url: string }) => void;
+    onCreate?: (paymentLink: PaymentLinkCreationFormValues) => void;
 }
-
-export type PaymentLinkCreationComponentProps = PaymentLinkCreationProps;

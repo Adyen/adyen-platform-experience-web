@@ -13,6 +13,10 @@
 .checkbox {
     display: flex;
     gap: style.token(spacer-060);
+
+    :global(.b-checkbox__label-requirement) {
+        display: none;
+    }
 }
 
 .checkboxContainer {
@@ -23,7 +27,7 @@
     margin-top: style.token(spacer-080);
 }
 
-.requirementsLink {
+.requirementsLink.requirementsLink {
     background: none;
     border: 0;
     color: style.token(color-label-highlight);
@@ -32,4 +36,8 @@
     font: inherit;
     padding: 0;
     text-decoration: underline;
+}
+
+.requirementsLinkWrapper {
+    white-space: nowrap;
 }

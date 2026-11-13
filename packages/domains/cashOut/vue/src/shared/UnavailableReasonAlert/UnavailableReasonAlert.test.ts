@@ -7,7 +7,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 import type { ICashOutEligibility, ICashOutUnavailableReason } from '@integration-components/types';
 import UnavailableReasonAlert from './UnavailableReasonAlert.vue';
 
-const REACH_OUT = 'cashOut.common.actions.contactSupport.labels.reachOut';
+const REACH_OUT = 'cashOut.common.contactSupport.label';
 const NOT_ALLOWED = 'cashOut.common.unavailableReasons.notAllowed';
 
 vi.mock('@adyen/bento-vue3', async () => {

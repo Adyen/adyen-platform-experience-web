@@ -5,10 +5,10 @@ import { useCoreContext, useModalContext } from '@integration-components/core/vu
 import { useShouldHideTitles } from '@integration-components/composables-vue';
 import { DisputeFlowState, useDisputeFlow } from '../composables/useDisputeFlow';
 import DisputeData from './DisputeData.vue';
-import type { DisputeManagementProps } from '../types';
+import type { DisputeManagementComponentProps } from '../types';
 import styles from './DisputeData.module.scss';
 
-const props = defineProps<DisputeManagementProps>();
+const props = defineProps<DisputeManagementComponentProps>();
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
 const { flowState, getDisputesConfig } = useDisputeFlow();
@@ -33,7 +33,7 @@ onMounted(() => getDisputesConfig());
 <template>
     <div v-if="!shouldHideTitle && flowState === DisputeFlowState.Details" :class="styles.title">
         <BentoTypography el="h1" variant="title" stronger>
-            {{ i18n.get('disputes.management.common.title') }}
+            {{ i18n.get('disputes.management.title') }}
         </BentoTypography>
     </div>
 
@@ -42,8 +42,7 @@ onMounted(() => getDisputesConfig());
         :dispute-id="props.id"
         :data-customization="props.dataCustomization"
         :on-contact-support="props.onContactSupport"
-        :on-dismiss="props.onDismiss"
     />
-    <AcceptDisputeFlow v-else-if="flowState === DisputeFlowState.Accept" :on-dispute-accept="props.onDisputeAccept" />
-    <DefendDisputeFlow v-else :on-dispute-defend="props.onDisputeDefend" />
+    <AcceptDisputeFlow v-else-if="flowState === DisputeFlowState.Accept" :on-accept="props.onAccept" />
+    <DefendDisputeFlow v-else :on-defend="props.onDefend" />
 </template>

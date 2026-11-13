@@ -8,14 +8,13 @@ export const payoutsOverviewMeta: Meta<ElementProps<PayoutsOverviewExternalProps
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
-        preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
-        allowLimitSelection: { control: 'boolean' },
+        pagination: { control: 'object' },
         dataGridDensity: dataGridDensityControl(),
         appearance: { table: { disable: true } },
     },
     args: {
         component: PayoutsOverviewElement,
-        allowLimitSelection: true,
+        pagination: { defaultLimit: 10, disableLimitSelection: false },
         dataGridDensity: 'default',
     },
     parameters: {

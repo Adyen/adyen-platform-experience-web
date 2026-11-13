@@ -4,6 +4,7 @@ import { BentoLoadingIndicator, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { useShouldHideTitles } from '@integration-components/composables-vue';
 import PaymentDetails from '../PaymentDetails/PaymentDetails.vue';
+import TransactionSkeleton from '../TransactionSkeleton/TransactionSkeleton.vue';
 import { ActiveView } from '../../../../../domain/src';
 import { EMPTY_ARRAY } from '@integration-components/utils';
 import type { TransactionDetails, TransactionDetailsCustomization } from '../../../../../domain/src';
@@ -18,7 +19,6 @@ const props = defineProps<{
     extraFields: Record<string, any> | undefined;
     dataCustomization?: { details?: TransactionDetailsCustomization };
     fetchingTransaction: boolean;
-    onDismiss?: () => void;
     refreshTransaction: () => void;
     transaction: TransactionDetails;
     transactionNavigator: TransactionNavigatorState;
@@ -60,8 +60,8 @@ watch(refundMeta.refundLocked, isLocked => {
         </BentoTypography>
     </div>
 
-    <div v-if="props.fetchingTransaction" :class="styles.loading">
-        <BentoLoadingIndicator />
+    <div v-if="props.fetchingTransaction" aria-busy="true">
+        <TransactionSkeleton :with-title="false" />
     </div>
 
     <PaymentRefund
@@ -95,6 +95,5 @@ watch(refundMeta.refundLocked, isLocked => {
         :set-active-view="setActiveView"
         :transaction="props.transaction"
         :transaction-navigator="props.transactionNavigator"
-        :on-dismiss="props.onDismiss"
     />
 </template>

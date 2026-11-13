@@ -1,6 +1,8 @@
-import { expect, test, type Page } from '@playwright/test';
-import { expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import type { Page } from '@playwright/test';
+import { expectAnalyticsEvents, expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
 import { testBalanceAccountFilter, testDateRangeFilter } from '../../../../fixtures/integration/filters';
+import { reportsOverviewAnalyticsEventProperties } from '../../../../fixtures/constants/analytics';
 
 const STORY_ID = 'mocked-reports-reports-overview--default';
 const REPORTS_PER_PAGE = 10;
@@ -11,9 +13,10 @@ const getReportRows = (page: Page) => getReportsDataGrid(page).getByRole('rowgro
 test.describe('Default', () => {
     const NOW = Date.now();
 
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await page.clock.setFixedTime(NOW);
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', reportsOverviewAnalyticsEventProperties]]);
     });
 
     test.describe('Render', () => {
@@ -26,6 +29,7 @@ test.describe('Default', () => {
 
             await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
             await expect(dataGrid.getByRole('columnheader', { name: 'Report', exact: true })).toBeVisible();
+            await expect(dataGrid.getByRole('columnheader', { name: 'File', exact: true })).toBeVisible();
             await expect(dataGrid.getByRole('columnheader')).toHaveCount(3);
         });
 
@@ -33,8 +37,23 @@ test.describe('Default', () => {
             await expect(getReportRows(page)).toHaveCount(REPORTS_PER_PAGE);
         });
 
-        test('should render download button per row', async ({ page }) => {
-            await expect(page.getByRole('button', { name: 'Download report', exact: true })).toHaveCount(REPORTS_PER_PAGE);
+        test('should render a secondary download button in the File column of each row', async ({ page }) => {
+            const rows = getReportRows(page);
+            const downloadButtons = rows.getByRole('gridcell').getByRole('button', { name: 'Download report', exact: true });
+            await expect(downloadButtons).toHaveCount(REPORTS_PER_PAGE);
+            await expect(rows.first().getByRole('gridcell').nth(2).getByRole('button', { name: 'Download report', exact: true })).toBeVisible();
+            await expect(downloadButtons.first()).toHaveClass(/b-button--secondary/);
+        });
+
+        test('should keep the File column and download buttons in small containers', async ({ page }) => {
+            await page.setViewportSize({ width: 479, height: 800 });
+
+            const dataGrid = getReportsDataGrid(page);
+            await expect(dataGrid.getByRole('columnheader', { name: 'File', exact: true })).toBeVisible();
+            await expect(dataGrid.getByRole('columnheader')).toHaveCount(2);
+            await expect(getReportRows(page).getByRole('gridcell').getByRole('button', { name: 'Download report', exact: true })).toHaveCount(
+                REPORTS_PER_PAGE
+            );
         });
 
         test('should render pagination controls', async ({ page }) => {
@@ -53,6 +72,13 @@ test.describe('Default', () => {
             await expect(page.getByRole('listbox').getByRole('option')).toHaveText([/^10(?!\d)/, /^20(?!\d)/, /^30(?!\d)/, /^40(?!\d)/, /^50(?!\d)/]);
         });
 
+        test('should apply the pagination config', async ({ page }) => {
+            await goToStory(page, { id: STORY_ID, args: { 'pagination.defaultLimit': '20', 'pagination.disableLimitSelection': '!true' } });
+
+            await expect(getReportRows(page)).toHaveCount(20);
+            await expect(page.getByRole('navigation', { name: /Pagination/i }).getByRole('combobox', { name: /Items/i })).toHaveCount(0);
+        });
+
         test('should disable downloading in desktop and small containers', async ({ page }) => {
             await goToStory(page, { id: STORY_ID, args: { enforceDownloadDelay: 'true' } });
 
@@ -63,13 +89,13 @@ test.describe('Default', () => {
             const downloadFirstReport = async () => {
                 await expect(downloadButtons).toHaveCount(REPORTS_PER_PAGE);
                 await expect(downloadButtonsDisabled).toHaveCount(0);
-                await expect(firstDownloadButton).toHaveText(/Download report/);
+                await expect(firstDownloadButton).toHaveAccessibleName('Download report');
                 await expect(firstDownloadButton).toBeEnabled();
 
                 await firstDownloadButton.click();
                 await expect(firstDownloadButton).toBeDisabled();
                 await expect(firstDownloadButton.getByTestId('loading-indicator')).toBeVisible();
-                await expect(firstDownloadButton).toHaveText(/Download report/);
+                await expect(firstDownloadButton).toHaveAccessibleName('Download report');
                 await expect(downloadButtonsDisabled).toHaveCount(REPORTS_PER_PAGE);
             };
 

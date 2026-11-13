@@ -2,22 +2,12 @@
 import { computed } from 'vue';
 import { ComponentShell, useBalanceAccounts, type ErrorMessageInfo } from '@integration-components/composables-vue';
 import TransactionsOverview from '../TransactionsOverview/TransactionsOverview.vue';
-import type { TransactionsOverviewExternalProps } from '../../types';
+import type { TransactionsOverviewComponentProps } from '../../types';
 
-const props = withDefaults(
-    defineProps<{
-        balanceAccountId?: string;
-        allowLimitSelection?: boolean;
-        preferredLimit?: TransactionsOverviewExternalProps['preferredLimit'];
-        onContactSupport?: () => void;
-        onRecordSelection?: TransactionsOverviewExternalProps['onRecordSelection'];
-        dataCustomization?: TransactionsOverviewExternalProps['dataCustomization'];
-    }>(),
-    {}
-);
+const props = defineProps<TransactionsOverviewComponentProps>();
 
-const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(() => props.balanceAccountId);
-const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
+const { balanceAccounts, isFetching, error } = useBalanceAccounts();
+const hasError = computed(() => !!error.value);
 
 const errorInfo = computed<ErrorMessageInfo>(() => ({
     title: 'transactions.common.errors.somethingWentWrong',
@@ -32,9 +22,7 @@ const errorInfo = computed<ErrorMessageInfo>(() => ({
 
         <TransactionsOverview
             v-else
-            :balance-account-id="props.balanceAccountId"
-            :allow-limit-selection="props.allowLimitSelection"
-            :preferred-limit="props.preferredLimit"
+            :pagination="props.pagination"
             :on-contact-support="props.onContactSupport"
             :on-record-selection="props.onRecordSelection"
             :data-customization="props.dataCustomization"

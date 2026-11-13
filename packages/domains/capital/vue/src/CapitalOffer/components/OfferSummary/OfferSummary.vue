@@ -5,12 +5,12 @@ import {
     getBalanceAccountErrorMessage,
     sharedCapitalOfferAnalyticsEventProperties,
     type EnhancedCapitalState,
-    type OnFundsRequestCallback,
+    type OnSubmitCallback,
 } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import type { IOffer } from '@integration-components/types';
 import { useRequestFunds } from '../../composables/useRequestFunds';
-import CapitalError from '../../../shared/CapitalError/CapitalError.vue';
+import CapitalError from '../../../shared/CapitalError.vue';
 import Highlights from '../Highlights/Highlights.vue';
 import LegalNotice from '../LegalNotice/LegalNotice.vue';
 import RenewalHighlights from '../RenewalHighlights.vue';
@@ -19,10 +19,10 @@ import styles from './OfferSummary.module.scss';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
-    offer: IGrantOfferResponseDTO;
+    offer: IOffer;
     onBack: () => void;
     onContactSupport?: () => void;
-    onFundsRequest: OnFundsRequestCallback;
+    onSubmit?: OnSubmitCallback;
 }>();
 
 const { i18n } = useCoreContext();
@@ -32,31 +32,45 @@ const isEarlyRenewal = computed(() => !!renewableGrant.value);
 const offerAmount = computed(() => i18n.amount(props.offer.grantAmount.value, props.offer.grantAmount.currency, { minimumFractionDigits: 0 }));
 const highlights = computed(() => [
     {
-        label: i18n.get('capital.common.fields.financing'),
+        label: i18n.get('capital.common.fields.loan.financing.label'),
         value: offerAmount.value,
     },
     {
-        label: i18n.get('capital.common.fields.fees'),
+        align: 'center' as const,
+        value: '+',
+    },
+    {
+        label: i18n.get('capital.common.fields.fees.label'),
         value: i18n.amount(props.offer.feesAmount.value, props.offer.feesAmount.currency, { minimumFractionDigits: 0 }),
     },
     {
-        label: i18n.get('capital.common.fields.totalRepaymentAmount'),
+        align: 'center' as const,
+        value: '=',
+    },
+    {
+        label: i18n.get('capital.common.fields.loan.totalRepaymentAmount.label'),
         value: i18n.amount(props.offer.totalAmount.value, props.offer.totalAmount.currency, { minimumFractionDigits: 0 }),
     },
 ]);
-const { data: requestedFunds, error: requestFundsError, isLoading: isRequestFundsLoading, requestFunds } = useRequestFunds();
+const {
+    data: requestedFunds,
+    error: requestFundsError,
+    isLoading: isRequestFundsLoading,
+    requestFunds,
+    reset: resetRequestedFunds,
+} = useRequestFunds();
 const balanceAccountError = computed(() => getBalanceAccountErrorMessage(requestFundsError.value));
 
 async function handleRequestFunds() {
     const grant = await requestFunds(props.offer.id, renewableGrant.value?.id);
     if (grant) {
-        props.onFundsRequest(grant, renewableGrant.value?.id);
+        props.onSubmit?.(grant, renewableGrant.value?.id);
     }
 
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing summary',
-        label: 'Request funds',
+        subCategory: 'Offer summary',
+        label: 'Submit request',
         isEarlyRenewal: isEarlyRenewal.value,
     });
 }
@@ -65,21 +79,21 @@ function handleBack() {
     props.onBack();
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing summary',
-        label: 'Back to slider view',
+        subCategory: 'Offer summary',
+        label: 'Go back',
         isEarlyRenewal: isEarlyRenewal.value,
     });
 }
 
 const actions = computed<BentoButtonActionsList>(() => [
     {
-        title: i18n.get('capital.offer.summary.actions.requestFundsWithAmount', { values: { amount: offerAmount.value } }),
+        title: i18n.get('capital.offer.summary.submit', { values: { amount: offerAmount.value } }),
         state: isRequestFundsLoading.value ? 'loading' : undefined,
-        disabled: isRequestFundsLoading.value || !!requestFundsError.value || !!requestedFunds.value,
+        disabled: !!requestFundsError.value || !!requestedFunds.value,
         event: handleRequestFunds,
     },
     {
-        title: i18n.get('capital.common.actions.goBack'),
+        title: i18n.get('capital.common.goBack.label'),
         event: handleBack,
     },
 ]);
@@ -90,7 +104,7 @@ const actions = computed<BentoButtonActionsList>(() => [
         <CapitalError
             v-if="requestFundsError && !balanceAccountError"
             :error="requestFundsError"
-            :on-back="handleBack"
+            :on-go-back="resetRequestedFunds"
             :on-contact-support="props.onContactSupport"
         />
         <template v-else>
@@ -112,16 +126,16 @@ const actions = computed<BentoButtonActionsList>(() => [
                 </template>
                 <template v-if="props.onContactSupport" #actions>
                     <BentoButton variant="tertiary" @click="props.onContactSupport">
-                        {{ i18n.get('capital.common.actions.contactSupport.labels.reachOut') }}
+                        {{ i18n.get('capital.common.contactSupport.label') }}
                     </BentoButton>
                 </template>
             </BentoAlert>
             <BentoAlert v-if="isEarlyRenewal">
                 <template #default>
-                    {{ i18n.get('capital.offer.summary.earlyRenewalNotice.title') }}
+                    {{ i18n.get('capital.offer.summary.renewalNotice.loan.title') }}
                 </template>
                 <template #description>
-                    {{ i18n.get('capital.offer.summary.earlyRenewalNotice.description') }}
+                    {{ i18n.get('capital.offer.summary.renewalNotice.loan.description') }}
                 </template>
             </BentoAlert>
             <LegalNotice :region="props.capitalState.region" />

@@ -1,20 +1,25 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoTab, BentoTabs, BentoTypography } from '@adyen/bento-vue3';
-import { getRenewableGrantDetails, type EnhancedCapitalState } from '@integration-components/capital/domain';
-import { useCoreContext } from '@integration-components/core/vue';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import {
+    getRenewableGrantDetails,
+    type EnhancedCapitalState,
+    sharedCapitalOfferAnalyticsEventProperties,
+} from '@integration-components/capital/domain';
+import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
+import type { IOffer } from '@integration-components/types';
 import { useFinancingDetailItems, type FinancingDetailItemKey } from '../../composables/useFinancingDetailItems';
 import FinancingDetailList from '../FinancingDetailList/FinancingDetailList.vue';
 import styles from './OfferSummaryDetails.module.scss';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
-    grantOffer: IGrantOfferResponseDTO;
+    grantOffer: IOffer;
     hasBalanceAccountError?: boolean;
 }>();
 
 const { i18n } = useCoreContext();
+const userEvents = useEventDispatcherContext();
 const { getItems } = useFinancingDetailItems();
 const renewableGrantDetails = computed(() => getRenewableGrantDetails(props.capitalState));
 const isEarlyRenewal = computed(() => !!renewableGrantDetails.value);
@@ -33,21 +38,29 @@ const itemKeys = computed(
 
 const offerItems = computed(() => getItems(props.grantOffer, itemKeys.value));
 const renewableGrantItems = computed(() => (renewableGrantDetails.value ? getItems(renewableGrantDetails.value, itemKeys.value) : []));
+
+const handleActiveTabIndexUpdate = (index: number) => {
+    userEvents.addEvent?.('Moved tabs', {
+        ...sharedCapitalOfferAnalyticsEventProperties,
+        subCategory: 'Offer summary',
+        selectedTab: index === 0 ? 'New loan' : 'Current loan',
+    });
+};
 </script>
 
 <template>
     <section>
-        <BentoTabs v-if="isEarlyRenewal">
-            <BentoTab :title="i18n.get('capital.offer.summary.earlyRenewal.tabs.newGrant')">
+        <BentoTabs v-if="isEarlyRenewal" @update:active-tab-index="handleActiveTabIndexUpdate($event)">
+            <BentoTab :title="i18n.get('capital.offer.summary.loan.newGrant')">
                 <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="offerItems" :class="styles.list" />
             </BentoTab>
-            <BentoTab :title="i18n.get('capital.offer.summary.earlyRenewal.tabs.currentGrant')">
+            <BentoTab :title="i18n.get('capital.offer.summary.loan.currentGrant')">
                 <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="renewableGrantItems" :class="styles.list" />
             </BentoTab>
         </BentoTabs>
         <template v-else>
             <BentoTypography variant="body" strongest>
-                {{ i18n.get('capital.common.termsTitle') }}
+                {{ i18n.get('capital.offer.loan.termsTitle') }}
             </BentoTypography>
             <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="offerItems" :class="styles.list" />
         </template>

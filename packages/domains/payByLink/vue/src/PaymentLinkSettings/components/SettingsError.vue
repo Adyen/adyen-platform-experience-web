@@ -2,12 +2,12 @@
 import { computed } from 'vue';
 import { ComponentShell } from '@integration-components/composables-vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
-import type { DomainTranslationKey } from '@integration-components/core/vue';
+import type { PayByLinkTranslationKey } from '@integration-components/payByLink/domain';
 import { getSettingsErrorMessage } from '../utils/getSettingsErrorMessage';
 
 const props = defineProps<{
     error: AdyenPlatformExperienceError | undefined;
-    errorMessage: DomainTranslationKey;
+    errorMessage: PayByLinkTranslationKey;
     onContactSupport?: () => void;
 }>();
 

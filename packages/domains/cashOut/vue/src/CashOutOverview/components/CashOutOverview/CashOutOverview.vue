@@ -4,7 +4,7 @@ import { BentoButton, BentoInfoIcon, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { ComponentShell, useShouldHideTitles } from '@integration-components/composables-vue';
 import type { ICashOutResponse } from '@integration-components/types';
-import { CashOutOverviewProps } from '../../types';
+import type { CashOutOverviewComponentProps } from '../../types';
 import { useCashOutState } from '../../../shared/composables/useCashOutState';
 import { useFormatAmount } from '../../../shared/composables/useFormatAmount';
 import CashOutHeader from '../../../shared/CashOutHeader/CashOutHeader.vue';
@@ -13,7 +13,7 @@ import CashOutOverviewSkeleton from '../CashOutOverviewSkeleton/CashOutOverviewS
 import CashOutRequestModal from '../CashOutRequestModal/CashOutRequestModal.vue';
 import styles from './CashOutOverview.module.scss';
 
-const props = defineProps<CashOutOverviewProps>();
+const props = defineProps<CashOutOverviewComponentProps>();
 
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();

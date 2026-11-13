@@ -16,8 +16,11 @@ import { useDownload, useUniqueId } from '@integration-components/composables-vu
 import { isFunction, downloadBlob, EMPTY_ARRAY } from '@integration-components/utils';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
 import { EXPORT_COLUMNS, DEFAULT_EXPORT_COLUMNS } from '../../constants';
-import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '@integration-components/transactions/domain';
-import type { TranslationKey } from '@integration-components/core';
+import {
+    TRANSACTION_ANALYTICS_CATEGORY,
+    TRANSACTION_ANALYTICS_SUBCATEGORY_LIST,
+    type TransactionsTranslationKey,
+} from '@integration-components/transactions/domain';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import styles from './TransactionsExport.module.scss';
 
@@ -43,15 +46,15 @@ const sharedAnalyticsProps = { category: TRANSACTION_ANALYTICS_CATEGORY, subCate
 
 const canDownloadTransactions = computed(() => isFunction(config.endpoints.downloadTransactions));
 
-const activeFilters = computed<readonly TranslationKey[]>(() => {
+const activeFilters = computed<readonly TransactionsTranslationKey[]>(() => {
     const { balanceAccountId, paymentPspReference, createdSince, createdUntil, categories, currencies } = filters.value;
     return [
-        ...(balanceAccountId ? (['transactions.overview.export.filters.types.account'] as const) : EMPTY_ARRAY),
-        ...(createdSince && createdUntil ? (['transactions.overview.export.filters.types.date'] as const) : EMPTY_ARRAY),
-        ...(categories.length ? (['transactions.overview.export.filters.types.category'] as const) : EMPTY_ARRAY),
-        ...(currencies.length ? (['transactions.overview.export.filters.types.currency'] as const) : EMPTY_ARRAY),
-        ...(paymentPspReference ? (['transactions.overview.export.filters.types.paymentPspReference'] as const) : EMPTY_ARRAY),
-    ] as readonly TranslationKey[];
+        ...(balanceAccountId ? (['transactions.overview.export.filters.account'] as const) : EMPTY_ARRAY),
+        ...(createdSince && createdUntil ? (['transactions.overview.export.filters.date'] as const) : EMPTY_ARRAY),
+        ...(categories.length ? (['transactions.overview.export.filters.category'] as const) : EMPTY_ARRAY),
+        ...(currencies.length ? (['transactions.overview.export.filters.currency'] as const) : EMPTY_ARRAY),
+        ...(paymentPspReference ? (['transactions.overview.export.filters.paymentPspReference'] as const) : EMPTY_ARRAY),
+    ] as readonly TransactionsTranslationKey[];
 });
 
 const exportParams = computed(() => ({
@@ -75,7 +78,7 @@ const { isFetching, error } = useDownload(
 
 watch(error, err => {
     if (err) {
-        activeExportErrorToast = addToast({ text: i18n.get('transactions.overview.export.actions.error') });
+        activeExportErrorToast = addToast({ text: i18n.get('transactions.overview.export.errors.download') });
     }
 });
 
@@ -130,10 +133,24 @@ useClickOutside(
 
 const masterSwitchChecked = computed(() => exportColumns.value.length === EXPORT_COLUMNS.length);
 
+// Export-column ids resolve to their own export key.
+const EXPORT_COLUMN_LABEL_KEYS = Object.freeze({
+    id: 'transactions.overview.export.columns.id',
+    balanceAccountId: 'transactions.overview.export.columns.balanceAccountId',
+    createdAt: 'transactions.overview.export.columns.createdAt',
+    status: 'transactions.overview.export.columns.status',
+    paymentMethod: 'transactions.overview.export.columns.paymentMethod',
+    category: 'transactions.overview.export.columns.category',
+    paymentPspReference: 'transactions.overview.export.columns.paymentPspReference',
+    currency: 'transactions.overview.export.columns.currency',
+    netAmount: 'transactions.overview.export.columns.netAmount',
+    amountBeforeDeductions: 'transactions.overview.export.columns.amountBeforeDeductions',
+} as const) satisfies Readonly<Record<(typeof EXPORT_COLUMNS)[number], TransactionsTranslationKey>>;
+
 const columnSwitches = computed(() =>
     EXPORT_COLUMNS.map(column => ({
         column,
-        label: i18n.get(`transactions.overview.export.columns.types.${column}` as TranslationKey),
+        label: i18n.get(EXPORT_COLUMN_LABEL_KEYS[column]),
         checked: exportColumns.value.includes(column),
     }))
 );
@@ -174,12 +191,12 @@ const popoverActions = computed(() => [
     {
         disabled: !exportColumns.value.length,
         event: startExport,
-        title: i18n.get('transactions.overview.export.actions.download'),
+        title: i18n.get('transactions.overview.export.download.label'),
         ...(isFetching.value ? ({ state: 'loading' } as const) : {}),
     },
     {
         event: dismissPopover,
-        title: i18n.get('transactions.overview.export.actions.cancel'),
+        title: i18n.get('transactions.overview.export.cancel'),
     },
 ]);
 </script>
@@ -228,7 +245,7 @@ const popoverActions = computed(() => [
                         {{ i18n.get('transactions.overview.export.columns.title') }}
                     </BentoTypography>
                     <BentoToggle label-position="after" :value="masterSwitchChecked" @input="onMasterSwitchChange">
-                        {{ i18n.get('transactions.overview.export.columns.types.all', { values: { count: EXPORT_COLUMNS.length } }) }}
+                        {{ i18n.get('transactions.overview.export.columns.all', { values: { count: EXPORT_COLUMNS.length } }) }}
                     </BentoToggle>
                     <BentoToggle
                         v-for="{ column, label, checked } in columnSwitches"
@@ -245,7 +262,7 @@ const popoverActions = computed(() => [
             <BentoAlert type="highlight" variant="tip">
                 <template #description>
                     <BentoTypography variant="body" el="span" strongest>
-                        {{ i18n.get('transactions.overview.export.actions.download.info') }}
+                        {{ i18n.get('transactions.overview.export.download.info') }}
                     </BentoTypography>
                 </template>
             </BentoAlert>

@@ -38,3 +38,37 @@ test('fetches the next page when paginating', async () => {
     await vi.waitFor(() => expect(getReports).toHaveBeenCalledTimes(2));
     scope.stop();
 });
+
+test('refreshes the list with the currently applied filters', async () => {
+    getReports.mockReset();
+    getReports.mockResolvedValue({
+        data: [],
+        _links: {},
+    });
+
+    const filters = {
+        balanceAccountId: 'balance-account-id',
+        createdSince: '2024-01-01T00:00:00.000Z',
+        createdUntil: '2024-01-31T23:59:59.999Z',
+    };
+    const scope = effectScope();
+    const reports = scope.run(() =>
+        useReportsList(() => ({
+            fetchEnabled: true,
+            ...filters,
+        }))
+    )!;
+
+    await vi.waitFor(() => expect(reports.hasFetchedOnce.value).toBe(true));
+
+    reports.refresh();
+
+    await vi.waitFor(() => expect(getReports).toHaveBeenCalledTimes(2));
+    for (const call of [1, 2]) {
+        expect(getReports).toHaveBeenNthCalledWith(call, expect.anything(), {
+            query: expect.objectContaining(filters),
+        });
+    }
+
+    scope.stop();
+});

@@ -57,9 +57,9 @@ echo "Preparing staging directory for archive"
 echo "Copying assets to staging area..."
 cp -r "$ASSETS_DIR" "$STAGING_DIR/assets"
 
-echo "Copying SDK translations to staging area..."
+echo "Building the CDN translations tree (keys, locale values, translator index) ..."
 rm -rf "$STAGING_DIR/assets/translations"
-cp -r "$SDK_TRANSLATIONS_DIR" "$STAGING_DIR/assets/translations"
+node "$SCRIPT_DIR/build-translations-tree.mjs" "$SDK_TRANSLATIONS_DIR" "$STAGING_DIR/assets/translations"
 
 # Conditionally copy the UMD file based on the environment
 if [[ "$DEPLOY_ENV" != "live" ]]; then

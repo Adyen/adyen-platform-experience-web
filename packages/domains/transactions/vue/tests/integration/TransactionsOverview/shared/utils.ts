@@ -1,6 +1,5 @@
 import type { Page } from '@playwright/test';
 import { ITransactionCategory } from '@integration-components/types';
-import { sleep } from '@integration-components/testing/fixtures/utils';
 import { expectAnalyticsEvents } from '@integration-components/testing/playwright/utils';
 import { expect, type PageAnalyticsEvent } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import {
@@ -80,10 +79,6 @@ export const resetPspReferenceFilter = async (page: Page, analyticsEvents: PageA
         ...sharedTransactionsListAnalyticsEventProperties,
         label: 'PSP reference filter',
     } as const;
-
-    // [NOTE]: Adding a tiny subsecond delay before clicking the "Reset" button to reduce flakiness
-    // [TODO]: Remove this temporary sleep when the root cause of flakiness has been addressed
-    await sleep(100);
 
     await filterDialog.getByRole('button', { name: 'Clear', exact: true, disabled: false }).click();
     await expect(filterButton).toHaveText('PSP reference');

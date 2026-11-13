@@ -1,5 +1,13 @@
+@use '@integration-components/style' as style;
+
 .root {
     display: flex;
     flex-direction: column;
     width: 100%;
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
 }

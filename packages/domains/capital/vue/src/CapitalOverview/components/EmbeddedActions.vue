@@ -10,7 +10,6 @@ import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } f
 import { useActionsAlertTitles } from '../composables/useActionsAlertTitles';
 
 const props = defineProps<{
-    className?: string;
     expirationDate?: string;
     legalEntityId: string;
     missingActions: IMissingAction[];
@@ -36,7 +35,7 @@ const areActionsCompleted = computed(() => missingActionsMetadata.value.areActio
 const alertTitles = useActionsAlertTitles(() => props.expirationDate);
 const alertTitle = computed(() => {
     if (areActionsCompleted.value) {
-        return i18n.get('capital.overview.grants.item.alerts.actionsCompleted');
+        return i18n.get('capital.overview.grantAlerts.actionsCompleted');
     }
 
     return props.missingActions.length > 1 ? alertTitles.value.multiple : alertTitles.value.single;
@@ -91,7 +90,7 @@ const handleActionButtonClick = async (actionType: IMissingActionType) => {
     activeAction.value = actionType;
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
-        subCategory: 'Missing action',
+        subCategory: 'Grant item',
         label: GRANT_ACTION_CONFIGS[actionType].eventLabel,
     });
 };
@@ -113,7 +112,6 @@ const handleClose = (actionType: IMissingActionType, analyticsProperties: { labe
             if (!completedActionsWithoutDelay.has(actionType)) {
                 userEvents.addEvent?.('Clicked button', {
                     ...sharedCapitalOverviewAnalyticsEventProperties,
-                    category: 'Missing action modal',
                     ...analyticsProperties,
                 });
                 close();
@@ -126,7 +124,10 @@ const handleClose = (actionType: IMissingActionType, analyticsProperties: { labe
 };
 
 const handleBusinessFinancingClose = () => {
-    handleClose('AnaCredit', { label: 'Dismissed AnaCredit information', subCategory: 'Information' });
+    handleClose('AnaCredit', {
+        subCategory: 'AnaCredit information',
+        label: 'Dismiss AnaCredit information',
+    });
 };
 
 const handleBusinessFinancingComplete = () => {
@@ -134,22 +135,23 @@ const handleBusinessFinancingComplete = () => {
     completeAction();
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
-        category: 'Missing action modal',
-        label: 'Submitted AnaCredit information',
-        subCategory: 'Information',
+        subCategory: 'AnaCredit information',
+        label: 'Finish AnaCredit information',
     });
 };
 
 const handleTermsOfServiceClose = () => {
-    handleClose('signToS', { label: 'Dismissed terms & conditions', subCategory: 'Terms & conditions' });
+    handleClose('signToS', {
+        subCategory: 'ToS',
+        label: 'Dismiss ToS',
+    });
 };
 
 const handleTermsOfServiceAccept = () => {
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
-        category: 'Missing action modal',
-        label: 'Signed terms & conditions',
-        subCategory: 'Terms & conditions',
+        subCategory: 'ToS',
+        label: 'Sign ToS',
     });
 };
 
@@ -158,9 +160,8 @@ const handleTermsOfServiceComplete = () => {
     completeAction();
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
-        category: 'Missing action modal',
-        label: 'Finished terms & conditions',
-        subCategory: 'Terms & conditions',
+        subCategory: 'ToS',
+        label: 'Finish ToS',
     });
 };
 
@@ -177,7 +178,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <BentoAlert :class="props.className" :type="areActionsCompleted ? 'highlight' : 'warning'">
+    <BentoAlert :type="areActionsCompleted ? 'highlight' : 'warning'">
         {{ alertTitle }}
     </BentoAlert>
     <BentoButtonActions :actions="actions" layout="fill-container" />

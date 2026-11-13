@@ -4,15 +4,14 @@ import { useCursorPaginatedRecords } from '@integration-components/composables-v
 import { usePageLimit } from '@integration-components/composables-vue/usePageLimit';
 import { DEFAULT_PAGE_LIMITS, isFunction } from '@integration-components/utils';
 import type { IPayout } from '@integration-components/types';
-import type { PayoutsOverviewExternalProps } from '../types';
+import type { PayoutsOverviewComponentProps } from '../types';
 
 interface UsePayoutsListProps {
     fetchEnabled: boolean;
     balanceAccountId: string | undefined;
     createdSince: string;
     createdUntil: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: PayoutsOverviewExternalProps['preferredLimit'];
+    pagination?: PayoutsOverviewComponentProps['pagination'];
 }
 
 export function usePayoutsList(props: () => UsePayoutsListProps) {
@@ -22,8 +21,7 @@ export function usePayoutsList(props: () => UsePayoutsListProps) {
 
     const pageLimit = usePageLimit({
         options: DEFAULT_PAGE_LIMITS,
-        preferredLimit: () => props().preferredLimit,
-        allowLimitSelection: () => props().allowLimitSelection,
+        pagination: () => props().pagination,
     });
 
     return useCursorPaginatedRecords<IPayout>({

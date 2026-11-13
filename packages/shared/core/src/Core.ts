@@ -3,12 +3,13 @@ import { AuthSession } from './session/AuthSession';
 import Localization from './Localization';
 import { Assets, AssetOptions } from './Assets/Assets';
 import { getCustomTranslationsAnalyticsPayload } from './EventDispatcher/eventDispatcher/customTranslations';
+import { getInitiatedCoreEventPayload, getUpdatedThemeEventPayload } from './EventDispatcher/eventDispatcher/core-events';
 import { SDK_BENTO_TRANSLATION_SOURCES, SDK_TRANSLATION_SOURCES } from '../../../sdk/src/translations';
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
 import { ThemeManager } from './theme/ThemeManager';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
-import type { CoreOptions, OnErrorHandler, ResolvedEnvironment } from './types';
-import type { I18n } from './vue/Context/types';
+import type { CoreOptions, CoreUpdateOptions, OnErrorHandler, ResolvedEnvironment } from './types';
+import type { I18n } from './Localization/types';
 
 /**
  * Minimal contract that UI element classes must satisfy so Core can manage them uniformly.
@@ -16,6 +17,8 @@ import type { I18n } from './vue/Context/types';
 export interface ManagedElement {
     readonly _id: string;
     readonly core: unknown;
+    /** Component type used to identify the element in analytics, when available. */
+    readonly type?: string;
     update(props: any): any;
     unmount(): any;
 }
@@ -48,6 +51,7 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
 
     private hasWarnedAboutServerSideInitialization = false;
     private readyCustomTranslationsAnalytics = false;
+    private coreInitiatedAnalyticsSent = false;
     private themeInitialized = false;
     private readonly themeManager = new ThemeManager();
 
@@ -84,7 +88,23 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
         const themeChanged = !this.themeInitialized || nextThemeMode !== this.options.themeMode || nextCustomTheme !== this.options.customTheme;
 
         if (themeChanged) {
+            const previousThemeMode = this.options.themeMode;
             this.themeManager.apply(nextThemeMode, nextCustomTheme);
+
+            // The first apply comes from construction and is covered by 'Initiated core';
+            // every later change is a runtime theme update via core.update().
+            if (this.themeInitialized && this.analyticsEnabled) {
+                const payload = getUpdatedThemeEventPayload({
+                    previousThemeMode,
+                    themeMode: nextThemeMode,
+                    components: this.components
+                        .filter(component => component.core === this && component.type !== undefined)
+                        .map(component => component.type as string),
+                    locale: this.options.locale,
+                });
+
+                if (payload) this.session.sendAnalyticsEvent(payload);
+            }
         }
 
         this.options = { ...this.options, ...options };
@@ -130,7 +150,8 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
     }
 
     /**
-     * Emit the SSR warning at most once, await translation readiness, and register
+     * Emit the SSR warning at most once, track the core configuration once per
+     * initialization (never on update()), await translation readiness, and register
      * the custom-translations analytics payload on the session.
      */
     public async initialize(): Promise<this> {
@@ -139,12 +160,22 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
             this.hasWarnedAboutServerSideInitialization = true;
         }
 
+        if (!this.coreInitiatedAnalyticsSent && this.analyticsEnabled) {
+            const payload = getInitiatedCoreEventPayload(this.options);
+            if (payload) {
+                this.session.sendAnalyticsEvent(payload);
+                this.coreInitiatedAnalyticsSent = true;
+            }
+        }
+
         await Promise.all([this.localization.ready, this.bentoLocalization.ready]);
 
         if (!this.readyCustomTranslationsAnalytics && this.analyticsEnabled) {
             const analyticsPayload = getCustomTranslationsAnalyticsPayload(this.localization.i18n.customTranslations);
             if (analyticsPayload.length > 0) {
-                this.session.analyticsPayload = analyticsPayload;
+                // Queued through the same channel as the other core events, so it neither
+                // replaces queued events nor waits for the next setup refresh.
+                analyticsPayload.forEach(payload => this.session.sendAnalyticsEvent(payload));
                 this.readyCustomTranslationsAnalytics = true;
             }
         }
@@ -156,8 +187,8 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
      * Apply a partial options patch, re-initialize, and propagate the update to
      * every registered component that belongs to this Core instance.
      */
-    public async update(options: Partial<CoreOptions<CustomTranslations>> = EMPTY_OBJECT as Partial<CoreOptions<CustomTranslations>>): Promise<this> {
-        this.setOptions(options);
+    public async update(options: CoreUpdateOptions<CustomTranslations> = EMPTY_OBJECT as CoreUpdateOptions<CustomTranslations>): Promise<this> {
+        this.setOptions(options as Partial<CoreOptions<CustomTranslations>>);
 
         const optionKeys = Object.keys(options);
         const hasOnlyThemeOptions = optionKeys.length > 0 && optionKeys.every(option => option === 'themeMode' || option === 'customTheme');

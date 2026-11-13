@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import { ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
-import type { CashOutRequestProps, CashOutResult } from '../../types';
+import type { CashOutRequestComponentProps, CashOutResult } from '../../types';
 import { getCashOutErrorInfo, useCashOutState } from '../../../shared/composables/useCashOutState';
 import CashOutHeader from '../../../shared/CashOutHeader/CashOutHeader.vue';
 import CashOutRequestForm from '../CashOutRequestForm/CashOutRequestForm.vue';
@@ -10,7 +10,7 @@ import CashOutRequestResult from '../CashOutRequestResult/CashOutRequestResult.v
 import CashOutRequestSkeleton from '../CashOutRequestSkeleton/CashOutRequestSkeleton.vue';
 import styles from './CashOutRequest.module.scss';
 
-const props = defineProps<CashOutRequestProps>();
+const props = defineProps<CashOutRequestComponentProps>();
 
 const cashOutState = useCashOutState({
     initialBalanceAccountId: () => props.initialBalanceAccountId,

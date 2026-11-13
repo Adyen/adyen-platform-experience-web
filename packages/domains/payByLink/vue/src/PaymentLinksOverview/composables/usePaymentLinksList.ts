@@ -5,7 +5,7 @@ import { usePageLimit } from '@integration-components/composables-vue/usePageLim
 import { DEFAULT_PAGE_LIMITS, isFunction, listFrom } from '@integration-components/utils';
 import type { IPaymentLinkItem, IPaymentLinkStatusGroup } from '@integration-components/types';
 import type { StoreIds } from '../../../../domain/src';
-import type { PaymentLinksOverviewExternalProps } from '../types';
+import type { PaymentLinksOverviewComponentProps } from '../types';
 import { getPaymentLinksErrorMetadata, toError } from '../utils/error';
 
 interface UsePaymentLinksListProps {
@@ -19,8 +19,7 @@ interface UsePaymentLinksListProps {
     paymentLinkId?: string;
     createdSince: string;
     createdUntil: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: PaymentLinksOverviewExternalProps['preferredLimit'];
+    pagination?: PaymentLinksOverviewComponentProps['pagination'];
     lastRefreshTimestamp: number;
 }
 
@@ -41,8 +40,7 @@ export function usePaymentLinksList(props: () => UsePaymentLinksListProps) {
 
     const pageLimit = usePageLimit({
         options: DEFAULT_PAGE_LIMITS,
-        preferredLimit: () => props().preferredLimit,
-        allowLimitSelection: () => props().allowLimitSelection,
+        pagination: () => props().pagination,
     });
 
     return useCursorPaginatedRecords<IPaymentLinkItem>({

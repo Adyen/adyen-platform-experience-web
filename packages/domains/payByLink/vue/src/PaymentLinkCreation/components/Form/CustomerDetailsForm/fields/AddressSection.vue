@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoFormLayoutGroup, BentoInputField, BentoTypography } from '@adyen/bento-vue3';
+import { useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
 import FieldWrapper from '../../../fields/FieldWrapper.vue';
 import CountryField from './CountryField.vue';
 import { useWizard } from '../../../../composables/wizardContext';
-import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../../../domain/src';
-import type { PaymentLinkFieldName } from '../../../../../../../domain/src';
-import type { TranslationKey } from '@integration-components/core';
+import { PAYMENT_LINK_CREATION_FIELD_LENGTHS, type PaymentLinkFieldName, type PayByLinkTranslationKey } from '../../../../../../../domain/src';
 import styles from './AddressSection.module.scss';
 
 type AddressPrefix = 'billingAddress' | 'deliveryAddress';
@@ -25,6 +24,10 @@ const wizard = useWizard();
 const { i18n } = wizard;
 
 const lengths = computed(() => PAYMENT_LINK_CREATION_FIELD_LENGTHS[props.prefix]);
+
+const isXsContainer = useResponsiveContainer(containerQueries.down.xs);
+const streetRowLayout = computed(() => (isXsContainer.value ? '100' : '66-33'));
+const cityRowLayout = computed(() => (isXsContainer.value ? '100' : '33-33-33'));
 
 const STREET_ROW_FIELDS = ['street', 'houseNumberOrName'] as const;
 const CITY_ROW_FIELDS = ['city', 'postalCode'] as const;
@@ -50,7 +53,7 @@ function getValue(field: string) {
 }
 
 function getLabel(field: string) {
-    return i18n.get(`payByLink.creation.fields.${props.prefix}.${field}.label` as TranslationKey);
+    return i18n.get(`payByLink.creation.${props.prefix}.${field}` as PayByLinkTranslationKey);
 }
 
 function getMaxLength(field: string) {
@@ -72,10 +75,10 @@ function onInput(field: string, value: string | number) {
             {{ props.title }}
         </BentoTypography>
         <BentoTypography v-if="props.isOptional" variant="body" :class="styles.optionalLabel">
-            {{ `(${i18n.get('payByLink.creation.fields.optional.label')})` }}
+            {{ `(${i18n.get('payByLink.creation.optional')})` }}
         </BentoTypography>
     </div>
-    <BentoFormLayoutGroup layout="66-33">
+    <BentoFormLayoutGroup :layout="streetRowLayout">
         <template v-for="field in STREET_ROW_FIELDS" :key="field">
             <FieldWrapper v-if="getConfig(field).visible" :name="fieldName(field)" :error="getError(field)">
                 <BentoInputField
@@ -90,7 +93,7 @@ function onInput(field: string, value: string | number) {
             </FieldWrapper>
         </template>
     </BentoFormLayoutGroup>
-    <BentoFormLayoutGroup layout="33-33-33">
+    <BentoFormLayoutGroup :layout="cityRowLayout">
         <CountryField
             :name="fieldName('country')"
             :label="getLabel('country')"

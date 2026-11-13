@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goToStory } from '@integration-components/testing/playwright/utils';
+import { goToStory, updateStoryArgs } from '@integration-components/testing/playwright/utils';
 
 const STORY_ID = 'mocked-disputes-disputes-overview--default';
 
@@ -25,23 +25,23 @@ test.describe('Disputes Overview - Status groups', () => {
         await expect(grid.getByRole('columnheader', { name: 'Status', exact: true })).toBeVisible();
     });
 
-    test('should only fetch the final status group after rapidly tabbing', async ({ page }) => {
-        const initialDisputesRequest = page.waitForResponse(response => new URL(response.url()).pathname.endsWith('/disputes'));
+    test('should switch to a visible status group when the active tab gets hidden', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
-        await initialDisputesRequest;
+        await expect(page.getByRole('tab', { name: 'Chargebacks' })).toHaveAttribute('aria-selected', 'true');
+        await page.waitForLoadState('networkidle');
 
         const statusGroupRequests: string[] = [];
 
         page.on('request', request => {
             const url = new URL(request.url());
-            if (request.method() === 'GET' && url.pathname.endsWith('/disputes')) {
-                const statusGroup = url.searchParams.get('statusGroup');
-                if (statusGroup) statusGroupRequests.push(statusGroup);
-            }
+            const statusGroup = url.searchParams.get('statusGroup');
+            if (request.method() === 'GET' && url.pathname.endsWith('/disputes') && statusGroup) statusGroupRequests.push(statusGroup);
         });
 
-        await page.getByRole('tab', { name: 'Fraud alerts' }).click();
-        await page.getByRole('tab', { name: 'Ongoing & closed' }).click();
-        await expect.poll(() => statusGroupRequests.filter(statusGroup => statusGroup !== 'CHARGEBACKS')).toEqual(['ONGOING_AND_CLOSED']);
+        await updateStoryArgs(page, STORY_ID, { tabs: { hidden: ['CHARGEBACKS'] } });
+
+        await expect(page.getByRole('tab', { name: 'Chargebacks' })).toHaveCount(0);
+        await expect(page.getByRole('tab', { name: 'Fraud alerts' })).toHaveAttribute('aria-selected', 'true');
+        await expect.poll(() => [...new Set(statusGroupRequests)]).toEqual(['FRAUD_ALERTS']);
     });
 });

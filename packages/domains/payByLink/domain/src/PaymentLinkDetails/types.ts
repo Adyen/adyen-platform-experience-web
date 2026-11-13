@@ -1,14 +1,8 @@
-import type { DomainTranslationKey } from '@integration-components/core/translations';
-import type { UIElementProps } from '@integration-components/types';
+import type { PayByLinkTranslationKey } from '../shared/types';
 
-export interface PaymentLinkDetailsProps extends UIElementProps {
+export interface PaymentLinkDetailsProps {
     id: string;
-    onContactSupport?: () => void;
-    onDismiss?: () => void;
-    onUpdate?: () => void;
 }
-
-export type PaymentLinkDetailsComponentProps = PaymentLinkDetailsProps;
 
 export type PaymentLinkDetailsScreen = 'details' | 'expirationConfirmation' | 'expirationSuccess';
 
@@ -21,17 +15,19 @@ export type PaymentLinkStatusTagVariant = 'info' | 'success' | 'neutral' | 'warn
 export type PaymentLinkActivityStatus = 'green' | 'red' | 'blue' | 'black';
 
 export type ListItemData = {
-    key: DomainTranslationKey;
+    key: PayByLinkTranslationKey;
     value?: string;
     isCopyable?: boolean;
+    /** Names the copy button after its own field, so the buttons in a list stay distinguishable. */
+    copyAriaLabelKey?: PayByLinkTranslationKey;
     linkUrl?: string;
 };
 
 export type PaymentLinkListItems = Record<'linkInformation' | 'shopperInformation' | 'shippingAddress' | 'billingAddress', ListItemData[]>;
 
 export type PaymentLinkErrorMessageContent = {
-    title: DomainTranslationKey;
-    message: DomainTranslationKey[];
+    title: PayByLinkTranslationKey;
+    message: PayByLinkTranslationKey[];
     refreshComponent?: boolean;
     requestId?: string;
 };

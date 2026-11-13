@@ -1,0 +1,42 @@
+@use '@integration-components/style';
+
+// "Period result", "Total incoming" and "Total outgoing"
+.label {
+    max-width: calc(#{style.token(spacer-120)} * 2);
+}
+
+// Amount and currency, e.g. "1,370.00 USD"
+.periodAmount {
+    max-width: calc(#{style.token(spacer-120)} * 3);
+}
+
+.amount {
+    max-width: calc(#{style.token(spacer-120)} * 2);
+}
+
+// Mirrors the bottom margin of the breakdown rich-text table.
+.rows {
+    margin-bottom: style.token(spacer-070);
+}
+
+// Mirrors the cell padding of the breakdown rich-text table.
+.row {
+    display: flex;
+    gap: style.token(spacer-070);
+    justify-content: space-between;
+    padding: style.token(text-rich-text-table-padding);
+}
+
+.rowLabel,
+.rowValue {
+    flex: 1;
+}
+
+// Transaction categories, e.g. "Payment"
+.rowLabel {
+    max-width: calc(#{style.token(spacer-120)} * 1.5);
+}
+
+.rowValue {
+    max-width: calc(#{style.token(spacer-120)} * 2);
+}

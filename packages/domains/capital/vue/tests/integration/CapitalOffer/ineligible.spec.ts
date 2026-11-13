@@ -7,6 +7,7 @@ test.describe('Ineligible', () => {
     test('should render an info message', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await expect(page.getByText('No offer available currently')).toBeVisible();
-        await expect(page.getByText('We update our financial offers regularly, so be sure to check back again in the future.')).toBeVisible();
+        await expect(page.getByText('We update our offers regularly, so be sure to check back again in the future.')).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();
     });
 });

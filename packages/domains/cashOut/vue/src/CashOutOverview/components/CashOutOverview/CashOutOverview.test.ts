@@ -10,7 +10,7 @@ import CashOutOverview from './CashOutOverview.vue';
 
 const LABEL = 'cashOut.common.availableForCashOut.label';
 const AMOUNT = '22000 USD';
-const REACH_OUT = 'cashOut.common.actions.contactSupport.labels.reachOut';
+const REACH_OUT = 'cashOut.common.contactSupport.label';
 const START = 'cashOut.overview.actions.start';
 
 const ELIGIBILITY = {

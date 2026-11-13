@@ -21,7 +21,7 @@ const showContactSupport = computed(() => Boolean(message.value?.offersContactSu
         <template #description>{{ i18n.get(message.key) }}</template>
         <template v-if="showContactSupport" #actions>
             <BentoButton variant="tertiary" @click="props.onContactSupport">
-                {{ i18n.get('cashOut.common.actions.contactSupport.labels.reachOut') }}
+                {{ i18n.get('cashOut.common.contactSupport.label') }}
             </BentoButton>
         </template>
     </BentoAlert>

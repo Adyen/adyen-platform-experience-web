@@ -1,205 +1,481 @@
 import {
-    GRANTS,
-    PENDING_GRANT,
-    PENDING_GRANT_WITH_SINGLE_ACTION,
-    REPAID_GRANT,
-    SIGN_TOS_ACTION_DETAILS,
     ANACREDIT_ACTION_DETAILS,
-    PENDING_GRANT_WITH_MULTIPLE_ACTIONS,
+    CAPITAL_STATE_ACTIONS_LOAN,
+    CAPITAL_STATE_ACTIVE,
+    CAPITAL_STATE_FIRST_TIME_ELIGIBLE_CASH_ADVANCE,
+    CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN,
+    CAPITAL_STATE_GRANTS_CASH_ADVANCE,
+    CAPITAL_STATE_GRANTS_LOAN,
+    CAPITAL_STATE_PENDING_CASH_ADVANCE,
+    CAPITAL_STATE_PENDING_LOAN,
+    CAPITAL_STATE_RENEWABLE_CASH_ADVANCE,
+    CAPITAL_STATE_RENEWABLE_LOAN,
+    CAPITAL_STATE_SINGLE_ACTION_CASH_ADVANCE,
+    CAPITAL_STATE_SINGLE_ACTION_LOAN,
+    GRANTS_CASH_ADVANCE,
+    GRANTS_LOAN,
+    ACTIONS_LOAN,
     ONBOARDING_CONFIGURATION,
-    CAPITAL_STATE_INELIGIBLE,
-    CAPITAL_STATE_FIRST_OFFER,
-    CAPITAL_STATE_GRANTS,
-    CAPITAL_STATE_PENDING_GRANT,
-    CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS,
-    CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION,
-    CAPITAL_STATE_ACTIVE_GRANT,
-    CAPITAL_STATE_CLOSED_GRANTS,
-    CAPITAL_STATE_RENEWABLE_GRANT,
-    RENEWABLE_GRANT,
-    ACTIVE_GRANT_WITHOUT_TRANSFER_INSTRUMENTS,
-    ACTIVE_GRANT_US,
-    ACTIVE_GRANT_GB,
-    ACTIVE_GRANT_NL,
-    CAPITAL_STATE_UNSUPPORTED_REGION,
-} from '../mock-data/capital';
+    REPAID_CASH_ADVANCE,
+    REPAID_LOAN,
+    SIGN_TOS_ACTION_DETAILS,
+    SINGLE_ACTION_CASH_ADVANCE,
+    SINGLE_ACTION_LOAN,
+    RENEWABLE_LOAN,
+    RENEWABLE_CASH_ADVANCE,
+    PENDING_LOAN,
+    PENDING_CASH_ADVANCE,
+    ACTIVE_REPAYMENT_US,
+    ACTIVE_WITHOUT_TRANSFER_INSTRUMENTS,
+    ACTIVE_WITHOUT_REPAYMENT_ACCOUNT,
+} from '../mock-data';
 import { http, HttpResponse } from 'msw';
 import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
 import { CAPITAL_ENDPOINTS } from '../endpoints';
-import { commonHandlers } from './commonHandlers';
-import { getAsyncCapitalStateResponse, getAsyncGrantsResponse, getErrorResponse } from './utils';
+import { defaultHandlersCashAdvance, commonHandlers, defaultHandlersLoan } from './commonHandlers';
+import {
+    getAsyncCapitalStateCashAdvanceResponse,
+    getAsyncCapitalStateLoanResponse,
+    getAsyncGrantsCashAdvanceResponse,
+    getAsyncGrantsLoanResponse,
+    getErrorResponse,
+} from './utils';
+import { withDelay } from '@integration-components/testing/msw';
 
 export const capitalOverviewHandlers = {
     ...commonHandlers,
-    unsupportedRegion: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_UNSUPPORTED_REGION);
-        }),
+    firstTimeEligibleLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [] });
+            })
+        ),
+        ...defaultHandlersLoan,
     ],
-    ineligible: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_INELIGIBLE);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [] });
-        }),
+    firstTimeEligibleCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_FIRST_TIME_ELIGIBLE_CASH_ADVANCE);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [] });
+            })
+        ),
+        ...defaultHandlersCashAdvance,
     ],
-    firstTimeEligible: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_FIRST_OFFER);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [] });
-        }),
+    earlyRenewalLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_RENEWABLE_LOAN);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [RENEWABLE_LOAN] });
+            })
+        ),
+        ...defaultHandlersLoan,
     ],
-    earlyRenewal: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_RENEWABLE_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [RENEWABLE_GRANT] });
-        }),
+    earlyRenewalCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_RENEWABLE_CASH_ADVANCE);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [RENEWABLE_CASH_ADVANCE] });
+            })
+        ),
+        ...defaultHandlersCashAdvance,
     ],
-    eligible: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_CLOSED_GRANTS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [REPAID_GRANT] });
-        }),
+    eligibleLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [REPAID_LOAN] });
+            })
+        ),
+        ...defaultHandlersLoan,
     ],
-    grants: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_GRANTS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: GRANTS });
-        }),
+    eligibleCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [REPAID_CASH_ADVANCE] });
+            })
+        ),
+        ...defaultHandlersCashAdvance,
     ],
-    pending: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [PENDING_GRANT] });
-        }),
+    grantsLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_GRANTS_LOAN);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: GRANTS_LOAN });
+            })
+        ),
     ],
-    multipleActions: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, ({ request }) => {
-            return getAsyncCapitalStateResponse(request.url);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, ({ request }) => {
-            return getAsyncGrantsResponse(request.url);
-        }),
-        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
-            return HttpResponse.json(ONBOARDING_CONFIGURATION);
-        }),
+    grantsCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_GRANTS_CASH_ADVANCE);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: GRANTS_CASH_ADVANCE });
+            })
+        ),
     ],
-    singleAction: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [PENDING_GRANT_WITH_SINGLE_ACTION] });
-        }),
-        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
-            return HttpResponse.json(ONBOARDING_CONFIGURATION);
-        }),
+    pendingLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_PENDING_LOAN);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [PENDING_LOAN] });
+            })
+        ),
     ],
-    multipleHostedActions: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, ({ request }) => {
-            return getAsyncCapitalStateResponse(request.url);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, ({ request }) => {
-            return getAsyncGrantsResponse(request.url);
-        }),
-        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
-            return HttpResponse.json(undefined, { status: 204 });
-        }),
-        http.get(CAPITAL_ENDPOINTS.signToS, () => {
-            return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.anaCredit, () => {
-            return HttpResponse.json(ANACREDIT_ACTION_DETAILS);
-        }),
+    pendingCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_PENDING_CASH_ADVANCE);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [PENDING_CASH_ADVANCE] });
+            })
+        ),
     ],
-    singleHostedAction: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_SINGLE_ACTION);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [PENDING_GRANT_WITH_SINGLE_ACTION] });
-        }),
-        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
-            return HttpResponse.json(undefined, { status: 204 });
-        }),
-        http.get(CAPITAL_ENDPOINTS.signToS, () => {
-            return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
-        }),
+    actionsLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(({ request }) => {
+                return getAsyncCapitalStateLoanResponse(request.url);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(({ request }) => {
+                return getAsyncGrantsLoanResponse(request.url);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return HttpResponse.json(ONBOARDING_CONFIGURATION);
+            })
+        ),
     ],
-    repaymentNL: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [ACTIVE_GRANT_NL] });
-        }),
+    actionsCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(({ request }) => {
+                return getAsyncCapitalStateCashAdvanceResponse(request.url);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(({ request }) => {
+                return getAsyncGrantsCashAdvanceResponse(request.url);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return HttpResponse.json(ONBOARDING_CONFIGURATION);
+            })
+        ),
     ],
-    repaymentGB: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [ACTIVE_GRANT_GB] });
-        }),
+    singleActionLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_SINGLE_ACTION_LOAN);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [SINGLE_ACTION_LOAN] });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return HttpResponse.json(ONBOARDING_CONFIGURATION);
+            })
+        ),
+    ],
+    singleActionCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_SINGLE_ACTION_CASH_ADVANCE);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [SINGLE_ACTION_CASH_ADVANCE] });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return HttpResponse.json(ONBOARDING_CONFIGURATION);
+            })
+        ),
+    ],
+    hostedActionsLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(({ request }) => {
+                return getAsyncCapitalStateLoanResponse(request.url);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(({ request }) => {
+                return getAsyncGrantsLoanResponse(request.url);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return new HttpResponse(null, { status: 204 });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.signToS,
+            withDelay(() => {
+                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.anaCredit,
+            withDelay(() => {
+                return HttpResponse.json(ANACREDIT_ACTION_DETAILS);
+            })
+        ),
+    ],
+    hostedActionsCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(({ request }) => {
+                return getAsyncCapitalStateCashAdvanceResponse(request.url);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(({ request }) => {
+                return getAsyncGrantsCashAdvanceResponse(request.url);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return new HttpResponse(null, { status: 204 });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.signToS,
+            withDelay(() => {
+                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.anaCredit,
+            withDelay(() => {
+                return HttpResponse.json(ANACREDIT_ACTION_DETAILS);
+            })
+        ),
+        ...defaultHandlersCashAdvance,
+    ],
+    singleHostedActionLoan: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_SINGLE_ACTION_LOAN);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [SINGLE_ACTION_LOAN] });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return new HttpResponse(null, { status: 204 });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.signToS,
+            withDelay(() => {
+                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
+            })
+        ),
+    ],
+    singleHostedActionCashAdvance: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_SINGLE_ACTION_CASH_ADVANCE);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [SINGLE_ACTION_CASH_ADVANCE] });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return new HttpResponse(null, { status: 204 });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.signToS,
+            withDelay(() => {
+                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
+            })
+        ),
+        ...defaultHandlersCashAdvance,
     ],
     repaymentUS: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [ACTIVE_GRANT_US] });
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ACTIVE);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [ACTIVE_REPAYMENT_US] });
+            })
+        ),
     ],
     repaymentWithoutTransferInstruments: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_ACTIVE_GRANT);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [ACTIVE_GRANT_WITHOUT_TRANSFER_INSTRUMENTS] });
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ACTIVE);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [ACTIVE_WITHOUT_TRANSFER_INSTRUMENTS] });
+            })
+        ),
+    ],
+    withoutRepayment: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ACTIVE);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [ACTIVE_WITHOUT_REPAYMENT_ACCOUNT] });
+            })
+        ),
     ],
     errorOnboardingConfig: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] });
-        }),
-        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
-            const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
-            return getErrorResponse(error, 500);
-        }),
-        http.get(CAPITAL_ENDPOINTS.signToS, () => {
-            return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.anaCredit, () => {
-            return HttpResponse.json(ANACREDIT_ACTION_DETAILS);
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ACTIONS_LOAN);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [ACTIONS_LOAN] });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
+                return getErrorResponse(error, 500);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.signToS,
+            withDelay(() => {
+                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.anaCredit,
+            withDelay(() => {
+                return HttpResponse.json(ANACREDIT_ACTION_DETAILS);
+            })
+        ),
     ],
     errorHostedAction: [
-        http.get(CAPITAL_ENDPOINTS.capitalState, () => {
-            return HttpResponse.json(CAPITAL_STATE_PENDING_GRANT_WITH_MULTIPLE_ACTIONS);
-        }),
-        http.get(CAPITAL_ENDPOINTS.grants, () => {
-            return HttpResponse.json({ data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] });
-        }),
-        http.get(CAPITAL_ENDPOINTS.onboardingConfiguration, () => {
-            return HttpResponse.json(undefined, { status: 204 });
-        }),
-        http.get(CAPITAL_ENDPOINTS.signToS, () => {
-            const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
-            return getErrorResponse(error, 500);
-        }),
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ACTIONS_LOAN);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [ACTIONS_LOAN] });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.onboardingConfiguration,
+            withDelay(() => {
+                return new HttpResponse(null, { status: 204 });
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.signToS,
+            withDelay(() => {
+                const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
+                return getErrorResponse(error, 500);
+            })
+        ),
     ],
 };

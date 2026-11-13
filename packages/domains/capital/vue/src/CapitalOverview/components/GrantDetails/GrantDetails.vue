@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoStructuredList, BentoStructuredListItem, BentoTypography } from '@adyen/bento-vue3';
-import { CAPITAL_REPAYMENT_FREQUENCY, calculatePercentageFromBasisPoints, getEnhancedGrant } from '@integration-components/capital/domain';
-import type { TranslationKey } from '@integration-components/core';
+import {
+    CAPITAL_REPAYMENT_FREQUENCY,
+    calculatePercentageFromBasisPoints,
+    getEnhancedGrant,
+    type CapitalTranslationKey,
+} from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IGrant } from '@integration-components/types';
 import styles from './GrantDetails.module.scss';
 
 type GrantDetailItem = {
-    key: TranslationKey;
+    key: CapitalTranslationKey;
     labelInfo?: string;
     value: string;
 };
@@ -21,7 +25,7 @@ const { i18n } = useCoreContext();
 
 const requestedFunds = computed(() => i18n.amount(props.grant.grantAmount.value, props.grant.grantAmount.currency));
 const requestedFundsText = computed(() =>
-    i18n.get('capital.overview.grants.item.details.requestedFunds', {
+    i18n.get('capital.overview.grantItem.loan.requestedFunds', {
         values: { amount: requestedFunds.value },
     })
 );
@@ -31,49 +35,49 @@ const structuredListItems = computed<GrantDetailItem[]>(() => {
     const formatAmount = (amount: { value: number; currency: string }) => i18n.amount(amount.value, amount.currency);
     const items: GrantDetailItem[] = [
         {
-            key: 'capital.common.fields.remainingAmount',
+            key: 'capital.common.fields.loan.remainingAmount.label',
             value: formatAmount(enhancedGrant.remainingGrantAmount),
         },
-        { key: 'capital.common.fields.remainingFees', value: formatAmount(enhancedGrant.remainingFeesAmount) },
-        { key: 'capital.common.fields.repaidAmount', value: formatAmount(enhancedGrant.repaidGrantAmount) },
-        { key: 'capital.common.fields.repaidFees', value: formatAmount(enhancedGrant.repaidFeesAmount) },
+        { key: 'capital.common.fields.loan.remainingFees.label', value: formatAmount(enhancedGrant.remainingFeesAmount) },
+        { key: 'capital.common.fields.loan.repaidAmount.label', value: formatAmount(enhancedGrant.repaidGrantAmount) },
+        { key: 'capital.common.fields.loan.repaidFees.label', value: formatAmount(enhancedGrant.repaidFeesAmount) },
+        { key: 'capital.common.fields.loan.totalRepaymentAmount.label', value: formatAmount(enhancedGrant.totalAmount) },
+        { key: 'capital.common.fields.loan.totalFees.label', value: formatAmount(enhancedGrant.feesAmount) },
         {
-            key: 'capital.common.fields.dailyRepaymentRate',
-            value: i18n.get('capital.common.values.percentage', {
+            key: 'capital.common.fields.loan.dailyRepaymentRate.label',
+            value: i18n.get('capital.common.percentageOfDailySales', {
                 values: { percentage: calculatePercentageFromBasisPoints(enhancedGrant.repaymentRate) },
             }),
+        },
+        {
+            key: 'capital.common.fields.loan.repaymentThreshold.label',
+            labelInfo: i18n.get('capital.common.fields.loan.repaymentThreshold.description', {
+                values: { days: CAPITAL_REPAYMENT_FREQUENCY },
+            }),
+            value: formatAmount(enhancedGrant.thresholdAmount),
         },
         ...(enhancedGrant.maximumRepaymentPeriodMonths
             ? ([
                   {
-                      key: 'capital.common.fields.maximumRepaymentPeriod',
-                      value: i18n.get('capital.common.values.numberOfMonths', {
+                      key: 'capital.common.fields.loan.maximumRepaymentPeriod.label',
+                      value: i18n.get('capital.common.numberOfMonths', {
                           values: { months: enhancedGrant.maximumRepaymentPeriodMonths },
                       }),
                   },
               ] satisfies GrantDetailItem[])
             : []),
         {
-            key: 'capital.common.fields.expectedRepaymentPeriod',
-            value: i18n.get('capital.common.values.daysWithDaysLeft', {
+            key: 'capital.common.fields.loan.expectedRepaymentPeriod.label',
+            value: i18n.get('capital.common.daysWithDaysLeft', {
                 values: {
                     days: enhancedGrant.expectedRepaymentPeriodDays,
                     daysLeft: enhancedGrant.repaymentPeriodLeft,
                 },
             }),
         },
-        { key: 'capital.common.fields.totalFees', value: formatAmount(enhancedGrant.feesAmount) },
-        { key: 'capital.common.fields.totalRepaymentAmount', value: formatAmount(enhancedGrant.totalAmount) },
-        {
-            key: 'capital.common.fields.repaymentThreshold',
-            labelInfo: i18n.get('capital.common.fields.repaymentThreshold.description', {
-                values: { days: CAPITAL_REPAYMENT_FREQUENCY },
-            }),
-            value: formatAmount(enhancedGrant.thresholdAmount),
-        },
-        { key: 'capital.common.fields.grantID', value: enhancedGrant.id },
-        { key: 'capital.common.fields.accountDescription', value: enhancedGrant.balanceAccountDescription ?? '' },
-        { key: 'capital.common.fields.accountID', value: enhancedGrant.balanceAccountCode ?? '' },
+        { key: 'capital.common.fields.loan.grantID.label', value: enhancedGrant.id },
+        { key: 'capital.common.fields.account.description', value: enhancedGrant.balanceAccountDescription ?? '' },
+        { key: 'capital.common.fields.accountID.label', value: enhancedGrant.balanceAccountCode ?? '' },
     ];
 
     return items;

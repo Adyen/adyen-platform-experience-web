@@ -1,35 +1,23 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import {
-    BentoAlert,
-    BentoButton,
-    BentoLink,
-    BentoStructuredList,
-    BentoStructuredListItem,
-    BentoTag,
-    BentoTooltipDirective as vBentoTooltip,
-    BentoTypography,
-} from '@adyen/bento-vue3';
+import { BentoAlert, BentoButton, BentoLink, BentoStructuredList, BentoStructuredListItem, BentoTag, BentoTypography } from '@adyen/bento-vue3';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
-import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
-import type { TranslationKey } from '@integration-components/core';
-import { useLiveAnnouncement } from '@integration-components/composables-vue';
+import { CopyText } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import {
     DISPUTE_DETAILS_FIELDS_REMAPS,
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
     getDefenseDocumentContent,
-    getDefenseReasonContent,
-    getDisputeReason,
-    isDisputeActionNeeded,
+    getDisputeDetailItems,
+    type DisputeDetailItem,
     type DisputeDetailsCustomization,
+    type DisputesTranslationKey,
     type TranslationConfigItem,
 } from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTE_DETAILS, isFunction, normalizeCustomFields } from '@integration-components/utils';
-import type { IDisputeDetail, IDisputeStatus } from '@integration-components/types/api/models/disputes';
+import type { IDisputeDetail } from '@integration-components/types/api/models/disputes';
 import { useDisputeFlow } from '../composables/useDisputeFlow';
-import accessibilityStyles from '@integration-components/style/accessibility.module.scss';
 import styles from './DisputeData.module.scss';
 
 type CustomDataValue = {
@@ -45,12 +33,13 @@ type CustomDataValue = {
     };
 };
 
-type DetailItem =
-    | { id: string; label: TranslationKey; kind: 'text'; value: string | undefined }
-    | { id: string; label: TranslationKey; kind: 'date'; value: string }
-    | { id: string; label: TranslationKey; kind: 'evidence'; value: string[] };
-
-const DISPUTE_STATUSES_WITH_ACCEPTED_DATE: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
+// These three references sit next to each other, so a shared "Copy" name would
+// leave the buttons indistinguishable to a screen reader.
+const COPYABLE_FIELD_LABELS = {
+    disputeId: 'disputes.management.details.copy.disputeReference',
+    paymentPspReference: 'disputes.management.details.copy.paymentReference',
+    paymentMerchantReference: 'disputes.management.details.copy.merchantReference',
+} as const satisfies Record<string, DisputesTranslationKey>;
 
 const props = defineProps<{
     dispute: IDisputeDetail;
@@ -63,9 +52,7 @@ const { i18n } = useCoreContext();
 const config = useConfigContext();
 const { defenseDocumentConfig } = useDisputeFlow();
 const { dateFormat } = useTimezoneAwareDateFormatting(() => props.dispute.payment.balanceAccount?.timeZone);
-const { announce, announcement } = useLiveAnnouncement();
 const downloadErrors = ref<Set<string>>(new Set());
-const copiedItemId = ref<string>();
 
 const hiddenFields = computed(
     () =>
@@ -88,111 +75,7 @@ function formatDate(date: string) {
     return dateFormat(date, DATE_FORMAT_DISPUTE_DETAILS);
 }
 
-const items = computed<DetailItem[]>(() => {
-    const { pspReference: disputeReference, reason: disputeReason, acceptedDate, createdAt, dueDate, status, type } = props.dispute.dispute;
-    const { pspReference: paymentReference, merchantReference, balanceAccount } = props.dispute.payment;
-    const { reason: defenseReason, defendedOn, suppliedDocuments } = props.dispute.defense || {};
-    const isFraudNotification = type === 'NOTIFICATION_OF_FRAUD';
-    const isExpiredDispute = status === 'EXPIRED' || (status === 'LOST' && !isFraudNotification && !defendedOn);
-    const isActionableDispute = isDisputeActionNeeded(props.dispute.dispute) && props.dispute.dispute.defensibility !== 'NOT_ACTIONABLE';
-
-    return [
-        {
-            id: 'disputeReason',
-            label: 'disputes.management.details.fields.disputeReason',
-            kind: 'text',
-            value: `${getDisputeReason(i18n, disputeReason.category)} - ${disputeReason.title}`,
-        },
-        !isFraudNotification
-            ? {
-                  id: 'reasonCode',
-                  label: 'disputes.management.details.fields.reasonCode',
-                  kind: 'text',
-                  value: disputeReason.code,
-              }
-            : undefined,
-        {
-            id: 'openedOn',
-            label: 'disputes.management.details.fields.openedOn',
-            kind: 'date',
-            value: createdAt,
-        },
-        dueDate && isActionableDispute
-            ? {
-                  id: 'respondBy',
-                  label: 'disputes.management.details.fields.respondBy',
-                  kind: 'date',
-                  value: dueDate,
-              }
-            : undefined,
-        {
-            id: 'disputeId',
-            label: 'disputes.management.details.fields.disputeReference',
-            kind: 'text',
-            value: disputeReference,
-        },
-        {
-            id: 'account',
-            label: 'disputes.management.details.fields.account',
-            kind: 'text',
-            value: balanceAccount?.description,
-        },
-        {
-            id: 'paymentPspReference',
-            label: 'disputes.management.details.fields.paymentReference',
-            kind: 'text',
-            value: paymentReference,
-        },
-        merchantReference
-            ? {
-                  id: 'paymentMerchantReference',
-                  label: 'disputes.management.details.fields.merchantReference',
-                  kind: 'text',
-                  value: merchantReference,
-              }
-            : undefined,
-        defenseReason
-            ? {
-                  id: 'defenseReason',
-                  label: 'disputes.management.details.fields.defenseReason',
-                  kind: 'text',
-                  value: getDefenseReasonContent(props.defenseReasonConfig, i18n, defenseReason)?.title ?? defenseReason,
-              }
-            : undefined,
-        defendedOn
-            ? {
-                  id: 'defendedOn',
-                  label: 'disputes.management.details.fields.defendedOn',
-                  kind: 'date',
-                  value: defendedOn,
-              }
-            : undefined,
-        suppliedDocuments?.length
-            ? {
-                  id: 'disputeEvidence',
-                  label: 'disputes.management.details.fields.evidence',
-                  kind: 'evidence',
-                  value: suppliedDocuments,
-              }
-            : undefined,
-        acceptedDate && DISPUTE_STATUSES_WITH_ACCEPTED_DATE.includes(status)
-            ? {
-                  id: 'acceptedOn',
-                  label: 'disputes.management.details.fields.acceptedOn',
-                  kind: 'date',
-                  value: acceptedDate,
-              }
-            : undefined,
-        dueDate && isExpiredDispute
-            ? {
-                  id: 'expiredOn',
-                  label: 'disputes.management.details.fields.expiredOn',
-                  kind: 'date',
-                  value: dueDate,
-              }
-            : undefined,
-    ].filter((item): item is DetailItem => !!item && isVisible(item.id));
-});
+const items = computed(() => getDisputeDetailItems(i18n, props.dispute, props.defenseReasonConfig).filter(item => isVisible(item.id)));
 
 const extraDetails = computed(() =>
     Object.entries(props.extraFields ?? {})
@@ -213,23 +96,12 @@ function isHiddenCustomValue(value: unknown) {
     return isCustomDataObject(value) && value.visibility === 'hidden';
 }
 
-function getCopyValue(item: DetailItem) {
-    return ['disputeId', 'paymentPspReference', 'paymentMerchantReference'].includes(item.id) && item.kind === 'text' ? item.value : undefined;
+function getCopyValue(item: DisputeDetailItem) {
+    return item.id in COPYABLE_FIELD_LABELS && item.kind === 'text' ? item.value : undefined;
 }
 
-function onCopyText(text: string, itemId: string) {
-    navigator.clipboard?.writeText(text);
-    copiedItemId.value = itemId;
-    announce(() => i18n.get('disputes.common.actions.copy.labels.done'));
-}
-
-function getCopyTooltip(itemId: string) {
-    const key = copiedItemId.value === itemId ? 'disputes.common.actions.copy.labels.done' : 'disputes.common.actions.copy.labels.default';
-    return i18n.get(key);
-}
-
-function resetCopiedItem() {
-    copiedItemId.value = undefined;
+function getCopyAriaLabelKey(itemId: string) {
+    return COPYABLE_FIELD_LABELS[itemId as keyof typeof COPYABLE_FIELD_LABELS];
 }
 
 async function downloadEvidence(documentType: string) {
@@ -265,19 +137,16 @@ async function downloadEvidence(documentType: string) {
     <BentoStructuredList :class="styles.list">
         <BentoStructuredListItem v-for="item in items" :key="item.id" :label="i18n.get(item.label)">
             <div v-if="getCopyValue(item)" :class="styles.copyableValue">
-                <BentoTypography variant="body">
-                    {{ getCopyValue(item) }}
-                </BentoTypography>
-                <BentoButton
-                    v-bento-tooltip="getCopyTooltip(item.id)"
-                    variant="tertiary"
-                    :aria-label="i18n.get('disputes.common.actions.copy.labels.default')"
-                    @click="onCopyText(getCopyValue(item)!, item.id)"
-                    @blur="resetCopiedItem"
-                    @mouseleave="resetCopiedItem"
+                <CopyText
+                    :copy-button-aria-label-key="getCopyAriaLabelKey(item.id)"
+                    :show-copy-text-tooltip="false"
+                    :text-to-copy="getCopyValue(item)!"
+                    type="Default"
                 >
-                    <CopyIcon />
-                </BentoButton>
+                    <BentoTypography variant="body">
+                        {{ getCopyValue(item) }}
+                    </BentoTypography>
+                </CopyText>
             </div>
             <time v-else-if="item.kind === 'date'" :datetime="item.value">
                 <BentoTypography variant="body">{{ formatDate(item.value) }}</BentoTypography>
@@ -287,7 +156,7 @@ async function downloadEvidence(documentType: string) {
                     <BentoTag :label="getDefenseDocumentContent(defenseDocumentConfig, i18n, documentType)?.title ?? documentType" />
                     <BentoButton
                         variant="tertiary"
-                        :aria-label="i18n.get('disputes.management.details.actions.downloadEvidence')"
+                        :aria-label="i18n.get('disputes.management.details.downloadEvidence')"
                         @click="downloadEvidence(documentType)"
                     >
                         <DownloadIcon aria-hidden="true" />
@@ -326,5 +195,4 @@ async function downloadEvidence(documentType: string) {
             </BentoTypography>
         </BentoStructuredListItem>
     </BentoStructuredList>
-    <span :class="accessibilityStyles.visuallyHidden" aria-atomic="true" aria-live="polite">{{ announcement }}</span>
 </template>

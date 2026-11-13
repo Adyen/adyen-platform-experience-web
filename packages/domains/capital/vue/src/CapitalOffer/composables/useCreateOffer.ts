@@ -2,15 +2,15 @@ import { computed } from 'vue';
 import { getCreateGrantOfferBody } from '@integration-components/capital/domain';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useAsyncRequest } from '@integration-components/composables-vue';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import type { IOffer } from '@integration-components/types';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 
 export function useCreateOffer() {
     const config = useConfigContext();
-    const requestState = useAsyncRequest<IGrantOfferResponseDTO>();
+    const requestState = useAsyncRequest<IOffer>();
     const createGrantOffer = computed(() => config.endpoints.createGrantOffer);
 
-    const sendCreateGrantOfferRequest = (offer: IGrantOfferResponseDTO) => {
+    const sendCreateGrantOfferRequest = (offer: IOffer) => {
         const request = createGrantOffer.value;
         if (!request) return;
 

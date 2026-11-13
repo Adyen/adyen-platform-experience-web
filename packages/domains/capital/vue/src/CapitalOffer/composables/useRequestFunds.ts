@@ -30,5 +30,6 @@ export function useRequestFunds() {
         error: requestState.error,
         isLoading: requestState.isLoading,
         requestFunds: sendRequestFundsRequest,
+        reset: requestState.reset,
     } as const;
 }

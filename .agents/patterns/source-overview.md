@@ -20,6 +20,7 @@
 - Colocate unit tests as `.test.ts`.
 - Use the `adyen-pe-` CSS prefix and Bento design tokens.
 - Export public components through each domain's `publish` layer.
+- Define reusable domain prop fragments in `domain/src`; compose Vue `*ExternalProps` from `UIElementProps` and those fragments, then derive `*ComponentProps` for runtime Vue components.
 
 ## Pre-PR checks
 

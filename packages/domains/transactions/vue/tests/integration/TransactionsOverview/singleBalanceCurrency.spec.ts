@@ -27,12 +27,12 @@ test.describe('Single balance currency', () => {
             await expect(dataGrid.getByRole('columnheader', { name: 'Payment method', exact: true })).toBeVisible();
             await expect(dataGrid.getByRole('columnheader', { name: 'Transaction type', exact: true })).toBeVisible();
             await expect(dataGrid.getByRole('columnheader', { name: 'Currency', exact: true })).toBeHidden();
-            await expect(dataGrid.getByRole('columnheader', { name: 'Net amount ($)', exact: true })).toBeVisible();
-            await expect(dataGrid.getByRole('columnheader', { name: 'Gross amount ($)', exact: true })).toBeVisible();
+            await expect(dataGrid.getByRole('columnheader', { name: 'Net amount (USD)', exact: true })).toBeVisible();
+            await expect(dataGrid.getByRole('columnheader', { name: 'Gross amount (USD)', exact: true })).toBeVisible();
         });
 
         test('should render transaction totals and account balances in non-expandable card', async ({ page }) => {
-            // [TODO]: Fix accessible names for the totals and balances expandable cards
+            // [TODO]: Match exact names once BentoCard accepts an accessible name for expandable cards (the name is now the whole header text)
             await expect(page.getByRole('button', { name: /^Total/i, expanded: false })).toBeHidden();
             await expect(page.getByText('Total incoming', { exact: true })).toBeVisible();
             await expect(page.getByText('Total outgoing', { exact: true })).toBeVisible();
@@ -41,7 +41,7 @@ test.describe('Single balance currency', () => {
             await expect(page.getByText('Available balance', { exact: true })).toBeVisible();
             await expect(page.getByText('Reserved balance', { exact: true })).toBeVisible();
 
-            await expect(page.getByText(/USD/)).toHaveCount(4);
+            await expect(page.getByText(/USD/)).toHaveCount(6);
         });
     });
 

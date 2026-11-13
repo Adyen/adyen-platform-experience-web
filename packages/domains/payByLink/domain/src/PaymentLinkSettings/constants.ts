@@ -1,4 +1,4 @@
-import type { TranslationKey } from '@integration-components/core';
+import type { PayByLinkTranslationKey } from '../shared/types';
 import type { LogoType, PaymentLinkSettingsItem, PaymentLinkSettingsMenuItem } from './types';
 
 export const menuItem = {
@@ -24,9 +24,9 @@ export const logoOptions: Record<string, LogoType> = {
 export const logoOptionsList: LogoType[] = ['logo', 'fullWidthLogo'];
 
 export const logoLabel = {
-    logo: 'payByLink.settings.theme.logo.input.label',
-    fullWidthLogo: 'payByLink.settings.theme.wideLogo.input.label',
-} as Record<LogoType, TranslationKey>;
+    logo: 'payByLink.settings.theme.logo.label',
+    fullWidthLogo: 'payByLink.settings.theme.wideLogo',
+} as Record<LogoType, PayByLinkTranslationKey>;
 
 export const themeFormDataRequest = {
     BRAND: 'brandName',
@@ -39,9 +39,9 @@ export const LOGO_DIMENSIONS: Record<LogoType, { width: number; height: number }
     fullWidthLogo: { width: 300, height: 30 },
 };
 
-export const LOGO_DIMENSION_ERROR: Record<LogoType, TranslationKey> = {
-    logo: 'payByLink.settings.themes.inputs.file.errors.logo.invalidDimensions',
-    fullWidthLogo: 'payByLink.settings.themes.inputs.file.errors.fullWidthLogo.invalidDimensions',
+export const LOGO_DIMENSION_ERROR: Record<LogoType, PayByLinkTranslationKey> = {
+    logo: 'payByLink.settings.theme.logo.invalidDimensionsError',
+    fullWidthLogo: 'payByLink.settings.theme.fullWidthLogo.invalidDimensionsError',
 };
 
 export const ACCOUNT_MISCONFIGURATION = 'ACCOUNT_MISCONFIGURATION';

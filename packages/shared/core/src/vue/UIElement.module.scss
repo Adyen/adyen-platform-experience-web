@@ -11,3 +11,14 @@
         border-radius: style.token(spacer-040);
     }
 }
+
+.containerHidden {
+    background: none;
+    padding: 0;
+
+    // stylelint-disable-next-line media-query-no-invalid
+    @media (min-width: #{$adyen-pe-breakpoint-sm}) {
+        border: 0;
+        border-radius: 0;
+    }
+}

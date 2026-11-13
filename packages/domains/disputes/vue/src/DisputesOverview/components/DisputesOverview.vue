@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from 'vue';
-import { BentoCard, BentoTab, BentoTabs, BentoTypography } from '@adyen/bento-vue3';
+import { ref, computed, watch } from 'vue';
+import { BentoTab, BentoTabs, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
-import { useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
-import { DISPUTE_STATUS_GROUPS } from '@integration-components/disputes/domain';
+import { useLandedPageEvent, useResponsiveContainer, containerQueries, useShouldHideTitles } from '@integration-components/composables-vue';
+import { DISPUTE_STATUS_GROUPS, DISPUTES_ANALYTICS_CATEGORY, DISPUTES_ANALYTICS_SUBCATEGORY_OVERVIEW } from '@integration-components/disputes/domain';
 import type { IBalanceAccountBase } from '@integration-components/types';
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 import DisputesFilters from './DisputesFilters.vue';
@@ -11,11 +11,11 @@ import DisputesTable from './DisputesTable.vue';
 import DisputeManagementModal from './DisputeManagementModal.vue';
 import { useDisputesList } from '../composables/useDisputesList';
 import { DEFAULT_DISPUTE_STATUS_GROUP } from '../constants';
-import type { DisputesOverviewProps } from '../types';
+import type { DisputesOverviewComponentProps } from '../types';
 import styles from './DisputesOverview.module.scss';
 
 const props = defineProps<
-    DisputesOverviewProps & {
+    DisputesOverviewComponentProps & {
         balanceAccounts: IBalanceAccountBase[] | undefined;
         isLoadingBalanceAccount: boolean;
     }
@@ -25,13 +25,23 @@ const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
-const DISPUTE_STATUS_GROUP_VALUES = Object.keys(DISPUTE_STATUS_GROUPS) as IDisputeStatusGroup[];
+const ALL_DISPUTE_STATUS_GROUPS = Object.keys(DISPUTE_STATUS_GROUPS) as IDisputeStatusGroup[];
+const analyticsProps = { category: DISPUTES_ANALYTICS_CATEGORY, subCategory: DISPUTES_ANALYTICS_SUBCATEGORY_OVERVIEW } as const;
 
-const statusGroup = ref<IDisputeStatusGroup>(DEFAULT_DISPUTE_STATUS_GROUP);
-const fetchStatusGroup = ref<IDisputeStatusGroup>(statusGroup.value);
-const statusGroupFetchPending = ref(false);
+useLandedPageEvent(analyticsProps);
 
-let statusGroupDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+const visibleStatusGroups = computed(() => {
+    const hidden = props.tabs?.hidden;
+    const visible = hidden?.length ? ALL_DISPUTE_STATUS_GROUPS.filter(group => !hidden.includes(group)) : ALL_DISPUTE_STATUS_GROUPS;
+    return visible.length ? visible : ALL_DISPUTE_STATUS_GROUPS;
+});
+
+const getFallbackStatusGroup = () =>
+    visibleStatusGroups.value.includes(DEFAULT_DISPUTE_STATUS_GROUP)
+        ? DEFAULT_DISPUTE_STATUS_GROUP
+        : (visibleStatusGroups.value[0] ?? DEFAULT_DISPUTE_STATUS_GROUP);
+
+const statusGroup = ref<IDisputeStatusGroup>(getFallbackStatusGroup());
 
 const refreshToken = ref(0);
 const selectedDisputeId = ref<string | undefined>(undefined);
@@ -62,30 +72,17 @@ function onFiltersChange(params: {
     filtersInitialized.value = true;
 }
 
-const statusGroupItems = computed(() =>
-    Object.entries(DISPUTE_STATUS_GROUPS).map(([value, labelKey]) => ({ label: i18n.get(labelKey), value: value as IDisputeStatusGroup }))
-);
-const activeStatusGroupIndex = computed(() => DISPUTE_STATUS_GROUP_VALUES.indexOf(statusGroup.value));
-const statusGroupAriaLabel = computed(() => i18n.get('disputes.overview.common.filters.types.statusGroup'));
-
-function updateStatusGroup(statusGroupToFetch: IDisputeStatusGroup) {
-    if (statusGroupDebounceTimer) {
-        clearTimeout(statusGroupDebounceTimer);
-    }
-
-    statusGroup.value = statusGroupToFetch;
-    statusGroupFetchPending.value = true;
-
-    statusGroupDebounceTimer = setTimeout(() => {
-        fetchStatusGroup.value = statusGroupToFetch;
-        statusGroupFetchPending.value = false;
-        statusGroupDebounceTimer = undefined;
-    }, 500);
-}
+const statusGroupItems = computed(() => visibleStatusGroups.value.map(value => ({ label: i18n.get(DISPUTE_STATUS_GROUPS[value]), value })));
+const activeStatusGroupIndex = computed(() => visibleStatusGroups.value.indexOf(statusGroup.value));
+const statusGroupAriaLabel = computed(() => i18n.get('disputes.overview.filters.statusGroup'));
 
 function onStatusGroupChange(index: number) {
-    updateStatusGroup(DISPUTE_STATUS_GROUP_VALUES[index] ?? DEFAULT_DISPUTE_STATUS_GROUP);
+    statusGroup.value = visibleStatusGroups.value[index] ?? getFallbackStatusGroup();
 }
+
+watch(visibleStatusGroups, groups => {
+    if (!groups.includes(statusGroup.value)) statusGroup.value = getFallbackStatusGroup();
+});
 
 const activeBalanceAccount = computed(() => {
     const id = filterParams.value.balanceAccountId;
@@ -93,25 +90,19 @@ const activeBalanceAccount = computed(() => {
 });
 
 const disputesListResult = useDisputesList(() => ({
-    fetchEnabled: filtersInitialized.value && !statusGroupFetchPending.value,
+    fetchEnabled: filtersInitialized.value,
     balanceAccountId: filterParams.value.balanceAccountId,
-    statusGroup: fetchStatusGroup.value,
+    statusGroup: statusGroup.value,
     schemeCodes: filterParams.value.schemeCodes,
     reasonCategories: filterParams.value.reasonCategories,
     createdSince: filterParams.value.createdSince,
     createdUntil: filterParams.value.createdUntil,
-    allowLimitSelection: props.allowLimitSelection,
-    preferredLimit: props.preferredLimit,
+    pagination: props.pagination,
     refreshToken: refreshToken.value,
 }));
 
 const isLoading = computed(
-    () =>
-        statusGroupFetchPending.value ||
-        disputesListResult.fetching.value ||
-        props.isLoadingBalanceAccount ||
-        !props.balanceAccounts ||
-        !filtersInitialized.value
+    () => disputesListResult.fetching.value || props.isLoadingBalanceAccount || !props.balanceAccounts || !filtersInitialized.value
 );
 
 const disputesError = computed(() => disputesListResult.error.value as Error | undefined);
@@ -132,8 +123,8 @@ function onRowClick(dispute: IDisputeListItem) {
 }
 
 function refreshDisputesList(gotoStatusGroup?: IDisputeStatusGroup) {
-    if (gotoStatusGroup && DISPUTE_STATUS_GROUP_VALUES.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup.value) {
-        updateStatusGroup(gotoStatusGroup);
+    if (gotoStatusGroup && visibleStatusGroups.value.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup.value) {
+        statusGroup.value = gotoStatusGroup;
     } else {
         refreshToken.value = performance.now();
     }
@@ -142,19 +133,13 @@ function refreshDisputesList(gotoStatusGroup?: IDisputeStatusGroup) {
 function closeModal() {
     selectedDisputeId.value = undefined;
 }
-
-onUnmounted(() => {
-    if (statusGroupDebounceTimer) {
-        clearTimeout(statusGroupDebounceTimer);
-    }
-});
 </script>
 
 <template>
     <div :class="[styles.root, isMobile ? styles.rootXs : '']">
         <div :class="styles.header">
             <BentoTypography v-if="!hideTitles" el="h2" variant="title" stronger>
-                {{ i18n.get('disputes.overview.common.title') }}
+                {{ i18n.get('disputes.overview.title') }}
             </BentoTypography>
         </div>
 
@@ -164,41 +149,38 @@ onUnmounted(() => {
             </BentoTabs>
         </div>
 
-        <BentoCard :class="styles.card">
-            <template #content>
-                <div :class="styles.content">
-                    <div role="toolbar" :class="[styles.toolbar, isMobile ? styles.toolbarCompact : '']">
-                        <DisputesFilters
-                            :compact="isMobile"
-                            :balance-accounts="props.balanceAccounts"
-                            :status-group="statusGroup"
-                            :on-change="onFiltersChange"
-                        />
-                    </div>
+        <div :class="styles.content">
+            <div role="toolbar" :class="[styles.toolbar, isMobile ? styles.toolbarCompact : '']">
+                <DisputesFilters
+                    :compact="isMobile"
+                    :balance-accounts="props.balanceAccounts"
+                    :status-group="statusGroup"
+                    :on-change="onFiltersChange"
+                />
+            </div>
 
-                    <DisputesTable
-                        :status-group="statusGroup"
-                        :active-balance-account="activeBalanceAccount"
-                        :loading="isLoading"
-                        :data="disputesListResult.records.value"
-                        :show-pagination="true"
-                        :error="disputesError"
-                        :on-row-click="onRowClick"
-                        :on-contact-support="props.onContactSupport"
-                        :custom-columns="props.dataCustomization?.list?.fields"
-                        :on-data-retrieve="props.dataCustomization?.list?.onDataRetrieve"
-                        :has-next="disputesListResult.hasNext.value"
-                        :has-previous="disputesListResult.hasPrevious.value"
-                        :go-to-next-page="disputesListResult.goToNextPage"
-                        :go-to-previous-page="disputesListResult.goToPreviousPage"
-                        :limit="disputesListResult.limit.value"
-                        :limit-options="disputesListResult.limitOptions.value"
-                        :update-limit="disputesListResult.updateLimit"
-                        :current-page="disputesListResult.page.value + 1"
-                    />
-                </div>
-            </template>
-        </BentoCard>
+            <DisputesTable
+                :status-group="statusGroup"
+                :active-balance-account="activeBalanceAccount"
+                :loading="isLoading"
+                :data="disputesListResult.records.value"
+                :show-pagination="true"
+                :error="disputesError"
+                :on-refresh="disputesListResult.refresh"
+                :on-row-click="onRowClick"
+                :on-contact-support="props.onContactSupport"
+                :custom-columns="props.dataCustomization?.dataGrid?.fields"
+                :on-data-retrieve="props.dataCustomization?.dataGrid?.onDataRetrieve"
+                :has-next="disputesListResult.hasNext.value"
+                :has-previous="disputesListResult.hasPrevious.value"
+                :go-to-next-page="disputesListResult.goToNextPage"
+                :go-to-previous-page="disputesListResult.goToPreviousPage"
+                :limit="disputesListResult.limit.value"
+                :limit-options="disputesListResult.limitOptions.value"
+                :update-limit="disputesListResult.updateLimit"
+                :current-page="disputesListResult.page.value + 1"
+            />
+        </div>
 
         <DisputeManagementModal
             v-if="selectedDisputeId"
