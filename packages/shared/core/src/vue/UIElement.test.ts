@@ -129,6 +129,7 @@ describe('UIElement', () => {
         const updatedComponent = getComponentSubtree(view);
 
         expect(view.key).toBe(initialProviderKey);
+        expect(view.props?.refreshKey).toBe(initialComponentKey);
         expect(updatedComponent.key).toBe(initialComponentKey);
         expect(updatedComponent.props?.id).toBe('ID_NEW');
 
@@ -136,6 +137,7 @@ describe('UIElement', () => {
         view = renderElement();
 
         expect(view.key).toBe(initialProviderKey);
+        expect(view.props?.refreshKey).not.toBe(initialComponentKey);
         expect(getComponentSubtree(view).key).not.toBe(initialComponentKey);
     });
 
