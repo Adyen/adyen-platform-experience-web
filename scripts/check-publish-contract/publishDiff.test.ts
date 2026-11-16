@@ -100,12 +100,14 @@ test('getMissingPackageEntrypoints reports missing declared entrypoints', () => 
                     exports: {
                         './styles': './dist/styles.css',
                     },
+                    bin: { cli: './dist/cli/index.js' },
                 },
                 tempRoot
             )
         ).toEqual([
             { field: 'style', path: './dist/style.css' },
             { field: 'exports["./styles"]', path: './dist/styles.css' },
+            { field: 'bin.cli', path: './dist/cli/index.js' },
         ]);
     } finally {
         rmSync(tempRoot, { recursive: true, force: true });
@@ -135,7 +137,7 @@ const createSnapshot = (overrides: Partial<Snapshot>): Snapshot => ({
     cjsExports: [],
     declarationExports: [],
     missingPackageEntrypoints: [],
-    packageJson: { main: null, module: null, types: null, style: null, exports: null },
+    packageJson: { main: null, module: null, types: null, style: null, exports: null, bin: null },
     ...overrides,
 });
 
@@ -162,7 +164,10 @@ test('getPublicExportViolations rejects unaliased external prop types', () => {
 test('diff ignores identical snapshots and reports package.json changes', () => {
     expect(diff(createSnapshot({}), createSnapshot({}))).toEqual([]);
     expect(
-        diff(createSnapshot({}), createSnapshot({ packageJson: { main: './dist/index.cjs', module: null, types: null, style: null, exports: null } }))
+        diff(
+            createSnapshot({}),
+            createSnapshot({ packageJson: { main: './dist/index.cjs', module: null, types: null, style: null, exports: null, bin: null } })
+        )
     ).toEqual(['  package.json entrypoints changed']);
 });
 

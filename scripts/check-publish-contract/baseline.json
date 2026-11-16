@@ -103,6 +103,9 @@
                 }
             },
             "./adyen-platform-experience-web.css": "./dist/adyen-platform-experience-web.css"
+        },
+        "bin": {
+            "adyen-platform-experience-web": "./dist/cli/index.js"
         }
     }
 }
