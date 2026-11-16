@@ -61,6 +61,21 @@ export const Prefilled: ElementStory<PaymentLinkCreationExternalProps> = {
     },
 };
 
+export const DisallowedPrefilledOptions: ElementStory<PaymentLinkCreationExternalProps> = {
+    name: 'Disallowed prefilled options',
+    args: {
+        ...defaultArgs,
+        fieldsConfig: {
+            data: PAYMENT_LINKS_FIELDS_CONFIG.data,
+            visibility: { deliveryAddress: 'hidden' },
+        },
+        storeIds: ['STORE_NY_001'],
+    },
+    parameters: {
+        msw: { ...paymentLinkCreationMockedResponses.disallowedPrefilledOptions },
+    },
+};
+
 export const Loading: ElementStory<PaymentLinkCreationExternalProps> = {
     name: 'Loading',
     args: Prefilled.args,

@@ -5,16 +5,16 @@ import { components as capitalStateComponents } from '../resources/CapitalStateR
 import { components as onboardingConfigurationComponents } from '../resources/OnboardingConfigurationResourceV1';
 
 export type ICapitalState = Schema<capitalStateComponents, 'CapitalStateDTO'>;
+export type ICreateOfferRequest = Schema<capitalGrantOffersComponents, 'CreateGrantOfferRequestV2DTO'>;
+export type IContractType = Schema<capitalGrantsComponents, 'GrantOfferContractType'>;
 export type IDynamicOffersConfig = Schema<capitalStateComponents, 'DynamicOffersResponseV2DTO'>;
-export type IGrantsResponseDTO = Schema<capitalGrantsComponents, 'GrantsResponseDTO'>;
+export type IOffer = Schema<capitalGrantOffersComponents, 'GrantOfferResponseDTO'>;
+export type IOffersResponse = Schema<capitalGrantOffersComponents, 'GrantOffersResponseDTO'>;
 export type IGrant = Schema<capitalGrantsComponents, 'GrantResponseDTO'>;
-export type INLCapitalFundsCollection = Schema<capitalGrantsComponents, 'NLCapitalFundsCollection'>;
-export type IUSCapitalFundsCollection = Schema<capitalGrantsComponents, 'USCapitalFundsCollection'>;
-export type IGBCapitalFundsCollection = Schema<capitalGrantsComponents, 'GBCapitalFundsCollection'>;
-export type ICreateGrantOfferRequest = Schema<capitalGrantOffersComponents, 'CreateGrantOfferRequestV2DTO'>;
-export type IGrantOfferResponseDTO = Schema<capitalGrantOffersComponents, 'GrantOfferResponseDTO'>;
-export type IGrantOffersResponseDTO = Schema<capitalGrantOffersComponents, 'GrantOffersResponseDTO'>;
-export type IGrantStatus = Schema<capitalGrantsComponents, 'GrantStatus'>;
+export type IGrantsResponse = Schema<capitalGrantsComponents, 'GrantsResponseDTO'>;
 export type IMissingAction = Schema<capitalGrantsComponents, 'MissingActionDTO'>;
 export type IMissingActionType = Schema<capitalGrantsComponents, 'MissingActionType'>;
 export type IOnboardingConfiguration = Schema<onboardingConfigurationComponents, 'OnboardingConfigurationResponseDTO'>;
+export type INLCapitalFundsCollection = Schema<capitalGrantsComponents, 'NLCapitalFundsCollection'>;
+export type IUSCapitalFundsCollection = Schema<capitalGrantsComponents, 'USCapitalFundsCollection'>;
+export type IGBCapitalFundsCollection = Schema<capitalGrantsComponents, 'GBCapitalFundsCollection'>;

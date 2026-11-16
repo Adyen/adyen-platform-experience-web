@@ -10,7 +10,7 @@ const STORYBOOK_GLOBAL_APPEARANCE = ['container', 'illustrations', 'titles'];
 const scenarios = [
     {
         componentName: 'capitalOverview',
-        storyId: 'mocked-capital-capital-overview--eligible',
+        storyId: 'mocked-capital-capital-overview--eligible-loan',
         styleProperties: { appearance: STORYBOOK_GLOBAL_APPEARANCE },
         dataProperties: { hasOnContactSupport: false },
         landedProperties: {

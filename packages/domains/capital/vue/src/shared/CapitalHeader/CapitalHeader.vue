@@ -17,7 +17,7 @@ const { withinModal } = useModalContext();
 const hideTitles = useShouldHideTitles();
 const title = computed(() => (hideTitles.value || withinModal ? undefined : i18n.get(props.titleKey)));
 const subtitle = computed(() => {
-    const key = `capital.common.loanProviderInfo.${props.region}`;
+    const key = `capital.common.providerInfo.${props.region}`;
     return !props.hideSubtitle && i18n.has(key) ? i18n.get(key) : undefined;
 });
 </script>

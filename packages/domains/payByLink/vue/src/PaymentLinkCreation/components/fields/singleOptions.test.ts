@@ -104,7 +104,7 @@ describe.each([
         expect(wizard.getValue(name)).toBe('single');
     });
 
-    test('preserves an existing value when visibility and loading change', async () => {
+    test('replaces an existing value that is not the single option when visibility and loading change', async () => {
         const { visible, props, wizard } = mountField(component, name, {
             visible: false,
             value: 'existing',
@@ -115,7 +115,7 @@ describe.each([
         props.value.loading = false;
         await nextTick();
 
-        expect(wizard.getValue(name)).toBe('existing');
+        expect(wizard.getValue(name)).toBe('single');
     });
 
     test.each([{ items: [] }, { items: [...items, { id: 'another', name: 'Another option' }] }])(

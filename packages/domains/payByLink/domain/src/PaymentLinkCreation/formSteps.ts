@@ -124,6 +124,7 @@ export const getFormSteps = ({ getFieldConfig, visibilityConfig }: GetFormStepsP
                     required: !!getFieldConfig('linkType')?.required,
                     ...getFieldVisibility('linkType', !!getFieldConfig('linkType')),
                     label: 'payByLink.creation.summary.linkType',
+                    options: getFieldConfig('linkType')?.options,
                 },
                 {
                     fieldName: 'description',

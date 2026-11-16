@@ -1,16 +1,17 @@
 import { describe, expect, test } from 'vitest';
 import localSupportedRegions from '../../config/supportedRegions.json';
 import {
-    ACTIVE_GRANT,
-    CAPITAL_STATE_ACTIVE_GRANT,
-    CAPITAL_STATE_CLOSED_GRANTS,
-    CAPITAL_STATE_FIRST_OFFER,
-    CAPITAL_STATE_GRANTS,
+    ACTIVE_LOAN,
+    CAPITAL_STATE_ACTIVE,
+    CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN,
+    CAPITAL_STATE_ELIGIBLE_LOAN,
+    CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN,
+    CAPITAL_STATE_GRANTS_LOAN,
     CAPITAL_STATE_INELIGIBLE,
-    CAPITAL_STATE_RENEWABLE_GRANT,
+    CAPITAL_STATE_PENDING_LOAN,
+    CAPITAL_STATE_RENEWABLE_LOAN,
     CAPITAL_STATE_UNSUPPORTED_REGION,
-    CAPITAL_STATE_PENDING_GRANT,
-} from '../../../../mocks/mock-data/capital';
+} from '../../../../mocks/mock-data';
 import { getEnhancedCapitalState, shouldGetGrants, getRenewableGrantDetails } from './state';
 
 describe('getEnhancedCapitalState', () => {
@@ -20,54 +21,55 @@ describe('getEnhancedCapitalState', () => {
 
     test('returns dynamic offer when there are no ongoing grants or there is a valid renewal', () => {
         expect(getEnhancedCapitalState(CAPITAL_STATE_INELIGIBLE, localSupportedRegions)).toMatchObject({ dynamicOfferConfig: undefined });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_FIRST_OFFER, localSupportedRegions)).toMatchObject({
-            dynamicOfferConfig: CAPITAL_STATE_FIRST_OFFER.dynamicOffer,
+        expect(getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN, localSupportedRegions)).toMatchObject({
+            dynamicOfferConfig: undefined,
         });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_PENDING_GRANT, localSupportedRegions)).toMatchObject({ dynamicOfferConfig: undefined });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_ACTIVE_GRANT, localSupportedRegions)).toMatchObject({ dynamicOfferConfig: undefined });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_RENEWABLE_GRANT, localSupportedRegions)).toMatchObject({
-            dynamicOfferConfig: CAPITAL_STATE_RENEWABLE_GRANT.dynamicOffer,
+        expect(getEnhancedCapitalState(CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN, localSupportedRegions)).toMatchObject({
+            dynamicOfferConfig: CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN.dynamicOffer,
         });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_CLOSED_GRANTS, localSupportedRegions)).toMatchObject({
-            dynamicOfferConfig: CAPITAL_STATE_CLOSED_GRANTS.dynamicOffer,
+        expect(getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_LOAN, localSupportedRegions)).toMatchObject({
+            dynamicOfferConfig: CAPITAL_STATE_ELIGIBLE_LOAN.dynamicOffer,
+        });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_RENEWABLE_LOAN, localSupportedRegions)).toMatchObject({
+            dynamicOfferConfig: CAPITAL_STATE_RENEWABLE_LOAN.dynamicOffer,
         });
     });
 
     test('identifies ongoing and closed grants', () => {
-        expect(getEnhancedCapitalState(CAPITAL_STATE_FIRST_OFFER, localSupportedRegions)).toMatchObject({ hasGrants: false });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_PENDING_GRANT, localSupportedRegions)).toMatchObject({ hasGrants: true });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_ACTIVE_GRANT, localSupportedRegions)).toMatchObject({ hasGrants: true });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_CLOSED_GRANTS, localSupportedRegions)).toMatchObject({ hasGrants: true });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_GRANTS, localSupportedRegions)).toMatchObject({ hasGrants: true });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN, localSupportedRegions)).toMatchObject({ hasGrants: false });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_PENDING_LOAN, localSupportedRegions)).toMatchObject({ hasGrants: true });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_ACTIVE, localSupportedRegions)).toMatchObject({ hasGrants: true });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_LOAN, localSupportedRegions)).toMatchObject({ hasGrants: true });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_GRANTS_LOAN, localSupportedRegions)).toMatchObject({ hasGrants: true });
     });
 
     test('identifies whether the legal entity region is supported', () => {
         expect(getEnhancedCapitalState(CAPITAL_STATE_UNSUPPORTED_REGION, localSupportedRegions)).toMatchObject({ isRegionSupported: false });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_GRANTS, localSupportedRegions)).toMatchObject({ isRegionSupported: true });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_GRANTS_LOAN, localSupportedRegions)).toMatchObject({ isRegionSupported: true });
     });
 
     test('returns the legal entity region', () => {
         expect(getEnhancedCapitalState(CAPITAL_STATE_UNSUPPORTED_REGION, localSupportedRegions)).toMatchObject({
             region: CAPITAL_STATE_UNSUPPORTED_REGION.legalEntity?.region,
         });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_GRANTS, localSupportedRegions)).toMatchObject({
-            region: CAPITAL_STATE_GRANTS.legalEntity?.region,
+        expect(getEnhancedCapitalState(CAPITAL_STATE_GRANTS_LOAN, localSupportedRegions)).toMatchObject({
+            region: CAPITAL_STATE_GRANTS_LOAN.legalEntity?.region,
         });
     });
 
     test('marks grant as renewable when minimum renewal amount is less than offer minimum', () => {
-        expect(getEnhancedCapitalState(CAPITAL_STATE_RENEWABLE_GRANT, localSupportedRegions)).toMatchObject({
-            renewableGrants: [CAPITAL_STATE_RENEWABLE_GRANT.activeOrPendingGrants[0]],
+        expect(getEnhancedCapitalState(CAPITAL_STATE_RENEWABLE_LOAN, localSupportedRegions)).toMatchObject({
+            renewableGrants: [CAPITAL_STATE_RENEWABLE_LOAN.activeOrPendingGrants[0]],
         });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_ACTIVE_GRANT, localSupportedRegions)).toMatchObject({ renewableGrants: [] });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_ACTIVE, localSupportedRegions)).toMatchObject({ renewableGrants: [] });
     });
 
     test('marks grant as renewable when minimum renewal amount equals the offer maximum', () => {
         const state = {
-            ...CAPITAL_STATE_RENEWABLE_GRANT,
+            ...CAPITAL_STATE_RENEWABLE_LOAN,
             activeOrPendingGrants: [
                 {
-                    ...CAPITAL_STATE_RENEWABLE_GRANT.activeOrPendingGrants[0]!,
+                    ...CAPITAL_STATE_RENEWABLE_LOAN.activeOrPendingGrants[0]!,
                     renewal: {
                         eligible: true,
                         minimumRenewalAmount: { value: 2500000, currency: 'EUR' },
@@ -77,17 +79,17 @@ describe('getEnhancedCapitalState', () => {
         };
 
         expect(getEnhancedCapitalState(state, localSupportedRegions)).toMatchObject({
-            dynamicOfferConfig: CAPITAL_STATE_RENEWABLE_GRANT.dynamicOffer,
+            dynamicOfferConfig: CAPITAL_STATE_RENEWABLE_LOAN.dynamicOffer,
             renewableGrants: state.activeOrPendingGrants,
         });
     });
 
     test('marks grant as nonrenewable when minimum renewal amount exceeds the offer maximum', () => {
         const state = {
-            ...CAPITAL_STATE_RENEWABLE_GRANT,
+            ...CAPITAL_STATE_RENEWABLE_LOAN,
             activeOrPendingGrants: [
                 {
-                    ...CAPITAL_STATE_RENEWABLE_GRANT.activeOrPendingGrants[0]!,
+                    ...CAPITAL_STATE_RENEWABLE_LOAN.activeOrPendingGrants[0]!,
                     renewal: {
                         eligible: true,
                         minimumRenewalAmount: { value: 2500001, currency: 'EUR' },
@@ -103,38 +105,38 @@ describe('getEnhancedCapitalState', () => {
     });
 
     test('identifies grants that are already being renewed', () => {
-        expect(getEnhancedCapitalState(CAPITAL_STATE_GRANTS, localSupportedRegions)).toMatchObject({
-            renewsGrantIds: new Set([CAPITAL_STATE_GRANTS.activeOrPendingGrants[0]!.renewsGrantId]),
+        expect(getEnhancedCapitalState(CAPITAL_STATE_GRANTS_LOAN, localSupportedRegions)).toMatchObject({
+            renewsGrantIds: new Set([CAPITAL_STATE_GRANTS_LOAN.activeOrPendingGrants[0]!.renewsGrantId]),
         });
-        expect(getEnhancedCapitalState(CAPITAL_STATE_ACTIVE_GRANT, localSupportedRegions)).toMatchObject({ renewsGrantIds: new Set() });
+        expect(getEnhancedCapitalState(CAPITAL_STATE_ACTIVE, localSupportedRegions)).toMatchObject({ renewsGrantIds: new Set() });
     });
 });
 
 describe('shouldGetGrants', () => {
     test('permits grants retrieval only when there are grants on server and region is supported', () => {
-        expect(shouldGetGrants(CAPITAL_STATE_ACTIVE_GRANT, true)).toBe(true);
-        expect(shouldGetGrants(CAPITAL_STATE_CLOSED_GRANTS, true)).toBe(true);
-        expect(shouldGetGrants(CAPITAL_STATE_FIRST_OFFER, true)).toBe(false);
-        expect(shouldGetGrants(CAPITAL_STATE_ACTIVE_GRANT, false)).toBe(false);
+        expect(shouldGetGrants(CAPITAL_STATE_ACTIVE, true)).toBe(true);
+        expect(shouldGetGrants(CAPITAL_STATE_ELIGIBLE_LOAN, true)).toBe(true);
+        expect(shouldGetGrants(CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN, true)).toBe(false);
+        expect(shouldGetGrants(CAPITAL_STATE_ACTIVE, false)).toBe(false);
         expect(shouldGetGrants(undefined, true)).toBe(false);
     });
 });
 
 describe('getRenewableGrantDetails', () => {
     test('returns a renewable grant with reduced fields', () => {
-        const state = getEnhancedCapitalState(CAPITAL_STATE_RENEWABLE_GRANT, localSupportedRegions)!;
+        const state = getEnhancedCapitalState(CAPITAL_STATE_RENEWABLE_LOAN, localSupportedRegions)!;
         expect(getRenewableGrantDetails(state)).toEqual({
             expectedRepaymentPeriodDays: 360,
-            feesAmount: ACTIVE_GRANT.feesAmount,
-            grantAmount: ACTIVE_GRANT.grantAmount,
+            feesAmount: ACTIVE_LOAN.feesAmount,
+            grantAmount: ACTIVE_LOAN.grantAmount,
             maximumRepaymentPeriodDays: 450,
             repaymentRate: 1500,
-            thresholdAmount: ACTIVE_GRANT.thresholdAmount,
-            totalAmount: ACTIVE_GRANT.totalAmount,
+            thresholdAmount: ACTIVE_LOAN.thresholdAmount,
+            totalAmount: ACTIVE_LOAN.totalAmount,
         });
     });
 
     test('returns undefined when there is no renewable grant', () => {
-        expect(getRenewableGrantDetails(getEnhancedCapitalState(CAPITAL_STATE_FIRST_OFFER, localSupportedRegions)!)).toBeUndefined();
+        expect(getRenewableGrantDetails(getEnhancedCapitalState(CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN, localSupportedRegions)!)).toBeUndefined();
     });
 });

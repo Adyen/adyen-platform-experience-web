@@ -12,7 +12,7 @@ test.describe('Error - Onboarding config', () => {
 
     test('should render pending grant with actions', async ({ page }) => {
         const informationSubmitButton = page.getByRole('button', { name: 'Submit information' });
-        const signingButton = page.getByRole('button', { name: 'Sign terms & conditions' });
+        const signingButton = page.getByRole('button', { name: 'Sign terms of service' });
 
         await Promise.all([
             expect(page.getByText('Requested funds')).toBeVisible(),
