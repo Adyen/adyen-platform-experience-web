@@ -18,6 +18,7 @@ vi.mock('@adyen/bento-vue3', () => ({
         },
     }),
     BentoTypography: { name: 'BentoTypography' },
+    BentoEmptyState: { name: 'BentoEmptyState' },
 }));
 
 vi.mock('@integration-components/core/vue', async () => {
@@ -26,7 +27,6 @@ vi.mock('@integration-components/core/vue', async () => {
     return {
         useCoreContext,
         useConfigContext: vi.fn(),
-        useShouldHideIllustrations: () => computed(() => useCoreContext().appearance?.illustrations === 'hidden'),
         useShouldHideTitles: () => computed(() => useCoreContext().appearance?.titles === 'hidden'),
         useCondensedDataGrid: () => computed(() => useCoreContext().appearance?.dataGrid?.density === 'condensed'),
     };
@@ -56,7 +56,15 @@ describe('PayoutsTable', () => {
             balanceAccountId: 'BA123',
             loading: false,
             showPagination: false,
-            data: [],
+            data: [
+                {
+                    adjustmentAmount: { value: 0, currency: 'EUR' },
+                    createdAt: '2024-05-01T00:00:00Z',
+                    fundsCapturedAmount: { value: 0, currency: 'EUR' },
+                    payoutAmount: { value: 1000, currency: 'EUR' },
+                    unpaidAmount: { value: 0, currency: 'EUR' },
+                },
+            ],
         };
         const app = createApp(PayoutsTable, rootProps);
         app.mount(target);

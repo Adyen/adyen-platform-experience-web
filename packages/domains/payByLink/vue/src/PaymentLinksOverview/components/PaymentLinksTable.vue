@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { BentoDataGrid, BentoTag, BentoTypography, BentoTooltipDirective as vBentoTooltip } from '@adyen/bento-vue3';
+import { BentoDataGrid, BentoTag, BentoTypography, BentoTooltipDirective as vBentoTooltip, BentoLoadingIndicator } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem, BentoTagVariant } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import {
@@ -205,6 +205,9 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
         />
 
         <DataOverviewError v-else-if="!gridData.length && !props.loading" :error-info="emptyStateProps" type="no-results-found" />
+        <div v-else-if="props.loading" :class="styles.loading" aria-busy="true">
+            <BentoLoadingIndicator />
+        </div>
         <BentoDataGrid
             v-else
             allow-row-clicks

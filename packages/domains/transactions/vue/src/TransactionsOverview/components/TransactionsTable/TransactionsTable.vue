@@ -20,6 +20,7 @@ import {
     BentoPaymentMethod,
     BentoColumnOverflow,
     BentoTooltipDirective as vBentoTooltip,
+    BentoLoadingIndicator,
 } from '@adyen/bento-vue3';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
@@ -205,6 +206,9 @@ const errorInfo = computed(() =>
     <div ref="tableRef">
         <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" type="error" />
         <DataOverviewError v-else-if="!gridData.length && !isLoading" :error-info="emptyStateProps" type="no-results-found" variant="basic" />
+        <div v-else-if="isLoading" :class="styles.loading" aria-busy="true">
+            <BentoLoadingIndicator />
+        </div>
         <BentoDataGrid
             v-else
             :condensed="isCondensed"

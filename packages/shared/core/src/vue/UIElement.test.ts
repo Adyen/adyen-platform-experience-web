@@ -237,10 +237,10 @@ describe('UIElement', () => {
         const renderElement = rootComponent.setup();
         expect(renderElement().props?.globalAppearance).toBeUndefined();
 
-        await core.update({ appearance: { illustrations: 'hidden' } });
+        await core.update({ appearance: { titles: 'hidden' } });
 
         const view = renderElement();
-        expect(view.props?.globalAppearance).toEqual({ illustrations: 'hidden' });
+        expect(view.props?.globalAppearance).toEqual({ titles: 'hidden' });
         expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
     });
 
@@ -254,17 +254,17 @@ describe('UIElement', () => {
         const renderElement = rootComponent.setup();
         expect(getComponentSubtree(renderElement()).props?.locale).toBe('en-US');
 
-        await core.update({ locale: 'de-DE', appearance: { illustrations: 'hidden' } });
+        await core.update({ locale: 'de-DE', appearance: { titles: 'hidden' } });
 
         const view = renderElement();
         expect(getComponentSubtree(view).props?.locale).toBe('de-DE');
         expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
-        expect(view.props?.globalAppearance).toEqual({ illustrations: 'hidden' });
+        expect(view.props?.globalAppearance).toEqual({ titles: 'hidden' });
     });
 
     test('preserves component appearance when global appearance updates', async () => {
         const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
-        const appearance = { illustrations: 'hidden' as const };
+        const appearance = { container: 'hidden' as const };
         const component = { render: () => null } as Component;
         const element = new UIElement(component, { core, appearance }, 'transactions');
 
@@ -273,17 +273,17 @@ describe('UIElement', () => {
         const renderElement = rootComponent.setup();
         expect(renderElement().props?.componentAppearance).toEqual(appearance);
 
-        await core.update({ appearance: { illustrations: 'visible' } });
+        await core.update({ appearance: { container: 'visible' } });
 
         const view = renderElement();
         expect(view.props?.componentAppearance).toEqual(appearance);
-        expect(view.props?.globalAppearance).toEqual({ illustrations: 'visible' });
+        expect(view.props?.globalAppearance).toEqual({ container: 'visible' });
         expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
     });
 
     test('applies a direct appearance update to the component appearance, never to the global', () => {
         const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
-        const appearance: GlobalAppearance = { illustrations: 'visible' };
+        const appearance: GlobalAppearance = { titles: 'visible' };
         const component = { render: () => null } as Component;
         const element = new UIElement(component, { core, appearance }, 'transactions');
 
@@ -292,16 +292,16 @@ describe('UIElement', () => {
         const renderElement = rootComponent.setup();
         expect(renderElement().props?.componentAppearance).toEqual(appearance);
 
-        element.update({ appearance: { illustrations: 'hidden' } });
+        element.update({ appearance: { titles: 'hidden' } });
 
         const view = renderElement();
-        expect(view.props?.componentAppearance).toEqual({ illustrations: 'hidden' }); // The component appearance updates.
+        expect(view.props?.componentAppearance).toEqual({ titles: 'hidden' }); // The component appearance updates.
         expect(view.props?.globalAppearance).toBeUndefined(); // The global appearance stays with Core.
         expect(getComponentSubtree(view).props?.appearance).toBeUndefined();
     });
 
     test('clears the component appearance when a direct update provides an explicit undefined appearance', () => {
-        const core = new Core({ locale: 'en-US', appearance: { illustrations: 'hidden' }, onSessionCreate: vi.fn() });
+        const core = new Core({ locale: 'en-US', appearance: { container: 'hidden' }, onSessionCreate: vi.fn() });
         const componentAppearance: GlobalAppearance = { titles: 'hidden' };
         const component = { render: () => null } as Component;
         const element = new UIElement(component, { core, appearance: componentAppearance }, 'transactions');
@@ -315,7 +315,7 @@ describe('UIElement', () => {
 
         const view = renderElement();
         expect(view.props?.componentAppearance).toBeUndefined(); // An explicit undefined clears the component appearance.
-        expect(view.props?.globalAppearance).toEqual({ illustrations: 'hidden' }); // The global appearance stays with Core.
+        expect(view.props?.globalAppearance).toEqual({ container: 'hidden' }); // The global appearance stays with Core.
     });
 
     test('registers and unregisters its mount target as a theme root', () => {
@@ -536,7 +536,6 @@ describe('UIElement', () => {
             expect(dataEvent.properties).not.toHaveProperty('allowLimitSelection');
             expect(dataEvent.properties).not.toHaveProperty('appearance');
             expect(dataEvent.properties).not.toHaveProperty('appearanceTitles');
-            expect(dataEvent.properties).not.toHaveProperty('appearanceIllustrations');
             expect(dataEvent.properties).not.toHaveProperty('hasOnDismiss');
             expect(dataEvent.properties).not.toHaveProperty('hasOnCreate');
 
@@ -553,15 +552,14 @@ describe('UIElement', () => {
             const core = new Core({ locale: 'en-US', appearance: { titles: 'hidden' }, onSessionCreate: vi.fn() });
             const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
             const component = { render: () => null } as Component;
-            const element = new UIElement(component, { core, appearance: { titles: 'visible', illustrations: 'hidden' } }, 'transactions');
+            const element = new UIElement(component, { core, appearance: { titles: 'visible', container: 'hidden' } }, 'transactions');
 
             element.mount(document.createElement('div'));
 
             const styleEvent = sendAnalyticsEvent.mock.calls.map(([payload]) => decodeEvent(payload))[0]!;
             expect(styleEvent.properties).toMatchObject({
-                appearance: ['illustrations', 'titles'],
+                appearance: ['container', 'titles'],
                 appearanceTitles: 'visible',
-                appearanceIllustrations: 'hidden',
             });
         });
 
