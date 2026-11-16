@@ -1,6 +1,6 @@
 import { computed, toValue, type MaybeRefOrGetter } from 'vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
-import { getCashOutErrorMessage, withoutUnreachableCashOut } from '@integration-components/cashOut/domain';
+import { getCashOutErrorMessage, withoutUnreachableCashOut, type CashOutBalanceAccount } from '@integration-components/cashOut/domain';
 import type { ComponentShellState, ErrorMessageInfo } from '@integration-components/composables-vue';
 import { useBalanceAccountFilterState } from '@integration-components/composables-vue/useBalanceAccountFilterState';
 import { useBalanceAccounts } from '@integration-components/composables-vue/useBalanceAccounts';
@@ -25,14 +25,20 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
         initialValue: toValue(initialBalanceAccountId),
     });
 
+    // The cashOut endpoints take the account key the balance accounts endpoint returns for the selected balance account.
+    const selectedAccountKey = computed(
+        () => (balanceAccounts.value as CashOutBalanceAccount[] | undefined)?.find(({ id }) => id === selectedBalanceAccountId.value)?.accountKey
+    );
+
     const usesGivenEligibility = computed(() => !!toValue(givenEligibility) && selectedBalanceAccountId.value === toValue(initialBalanceAccountId));
 
     const {
         eligibility: fetchedEligibility,
         eligibilityError,
         isFetchingEligibility,
+        lastUpdated,
         refreshEligibility,
-    } = useCashOutEligibility(() => (usesGivenEligibility.value ? undefined : selectedBalanceAccountId.value));
+    } = useCashOutEligibility(() => (usesGivenEligibility.value ? undefined : selectedAccountKey.value));
 
     const eligibility = computed(() => withoutUnreachableCashOut(usesGivenEligibility.value ? toValue(givenEligibility) : fetchedEligibility.value));
 
@@ -51,5 +57,15 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
         return 'ready';
     });
 
-    return { balanceAccountOptions, eligibility, errorInfo, refreshEligibility, selectedBalanceAccountId, shellState } as const;
+    return {
+        balanceAccountOptions,
+        eligibility,
+        errorInfo,
+        isFetchingEligibility,
+        lastUpdated,
+        refreshEligibility,
+        selectedAccountKey,
+        selectedBalanceAccountId,
+        shellState,
+    } as const;
 };

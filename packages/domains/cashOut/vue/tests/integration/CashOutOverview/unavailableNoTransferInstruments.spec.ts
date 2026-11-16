@@ -12,7 +12,7 @@ test.describe('CashOut Overview - Unavailable - No transfer instruments', () => 
         await expectUnavailable(root, {
             amount: '€1,000.00',
             message:
-                "Instant CashOut isn't available because you don't have a bank account that can receive instant payouts. Please onboard an additional bank account.",
+                "Instant CashOut isn't available because you don't have a bank account that can receive instant payouts. Please add an additional bank account.",
         });
     });
 

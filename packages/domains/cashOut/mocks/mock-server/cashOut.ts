@@ -4,7 +4,12 @@ import { BALANCE_ACCOUNTS_SINGLE, setupBasicResponse } from '@integration-compon
 import { BALANCE_ACCOUNTS_ENDPOINT, SETUP_ENDPOINT, withDelay } from '@integration-components/testing/msw';
 import { uuid } from '@integration-components/utils';
 import { ENDPOINTS } from '../endpoints';
-import { ELIGIBILITY_AVAILABLE, ELIGIBILITY_BY_BALANCE_ACCOUNT, ELIGIBILITY_UNAVAILABLE } from '../mock-data/cashOut';
+import {
+    ELIGIBILITY_AVAILABLE,
+    ELIGIBILITY_BY_BALANCE_ACCOUNT,
+    ELIGIBILITY_UNAVAILABLE,
+    ELIGIBILITY_UNAVAILABLE_WITH_SINGLE_ELIGIBLE_TRANSFER_INSTRUMENT,
+} from '../mock-data/cashOut';
 
 const REQUEST_ID = '769ac4ce59f0f159ad672d38d3291e93';
 const CURRENCY_CODE_PATTERN = /^[A-Z]{3}$/;
@@ -61,6 +66,24 @@ const getValidationErrorResponse = (invalidFields: InvalidField[]) =>
         { status: 422 }
     );
 
+// The account key of a balance account, as the balance accounts endpoint returns it.
+const BALANCE_ACCOUNT_KEY_PREFIX = 'BalanceAccount.';
+const getBalanceAccountId = (accountKey: string) =>
+    accountKey.startsWith(BALANCE_ACCOUNT_KEY_PREFIX) ? accountKey.slice(BALANCE_ACCOUNT_KEY_PREFIX.length) : undefined;
+
+// Like the API, which only takes a balance account key in the path.
+const getInvalidAccountKeyResponse = () =>
+    HttpResponse.json(
+        {
+            type: 'https://docs.adyen.com/errors/validation',
+            errorCode: '00_400',
+            title: 'Not a valid requested resource',
+            status: 400,
+            requestId: REQUEST_ID,
+        },
+        { status: 400 }
+    );
+
 const getInternalServerErrorResponse = () =>
     HttpResponse.json(
         {
@@ -82,18 +105,18 @@ const deductCashedOut = (accountKey: string, eligibility: ICashOutEligibility): 
 
     const deduct = ({ currency, value }: ICashOutAmount): ICashOutAmount => ({ currency, value: Math.max(0, value - cashedOut) });
     const availableForCashOutBalance = deduct(eligibility.availableForCashOutBalance);
-    const balances = { availableBalance: deduct(eligibility.availableBalance), availableForCashOutBalance };
-
-    if (availableForCashOutBalance.value > 0) return { ...eligibility, ...balances };
-    return { ...eligibility, ...balances, isCashoutAvailable: false, transferInstruments: [], unavailableReasons: ['zeroBalance'] };
+    if (availableForCashOutBalance.value > 0) return { ...eligibility, availableForCashOutBalance };
+    return { ...eligibility, availableForCashOutBalance, isCashoutAvailable: false, transferInstruments: [], unavailableReasons: ['zeroBalance'] };
 };
 
 export const cashOutMocks = [
     http.get<{ accountKey: string }>(
         ENDPOINTS.eligibility,
         withDelay(({ params }) => {
+            const balanceAccountId = getBalanceAccountId(params.accountKey);
+            if (!balanceAccountId) return getInvalidAccountKeyResponse();
             return HttpResponse.json(
-                deductCashedOut(params.accountKey, ELIGIBILITY_BY_BALANCE_ACCOUNT[params.accountKey] ?? ELIGIBILITY_AVAILABLE.default)
+                deductCashedOut(balanceAccountId, ELIGIBILITY_BY_BALANCE_ACCOUNT[balanceAccountId] ?? ELIGIBILITY_AVAILABLE.default)
             );
         })
     ),
@@ -116,6 +139,8 @@ export const cashOutMocks = [
     http.post<{ accountKey: string }, Partial<ICashOutRequest>>(
         ENDPOINTS.instruct,
         withDelay(async ({ params, request }) => {
+            const balanceAccountId = getBalanceAccountId(params.accountKey);
+            if (!balanceAccountId) return getInvalidAccountKeyResponse();
             const { amount, counterparty, currency, description, referenceForBeneficiary } = await request.json();
             const transferInstrumentId = counterparty?.transferInstrumentId;
             const invalidFields = [
@@ -130,7 +155,7 @@ export const cashOutMocks = [
 
             const response: ICashOutResponse = {
                 id: uuid(),
-                balanceAccount: params.accountKey,
+                balanceAccount: balanceAccountId,
                 amount: { currency, value: amount },
                 fee: calculateFees(amount, currency).fee,
                 counterparty: { transferInstrumentId },
@@ -138,7 +163,7 @@ export const cashOutMocks = [
                 ...(referenceForBeneficiary === undefined ? {} : { referenceForBeneficiary }),
             };
 
-            cashedOutByBalanceAccount.set(params.accountKey, (cashedOutByBalanceAccount.get(params.accountKey) ?? 0) + amount);
+            cashedOutByBalanceAccount.set(balanceAccountId, (cashedOutByBalanceAccount.get(balanceAccountId) ?? 0) + amount);
 
             return HttpResponse.json(response);
         })
@@ -152,7 +177,9 @@ export const CASH_OUT_HANDLERS = {
             http.get(
                 BALANCE_ACCOUNTS_ENDPOINT,
                 withDelay(() => {
-                    return HttpResponse.json({ data: BALANCE_ACCOUNTS_SINGLE });
+                    return HttpResponse.json({
+                        data: BALANCE_ACCOUNTS_SINGLE.map(account => ({ ...account, accountKey: `${BALANCE_ACCOUNT_KEY_PREFIX}${account.id}` })),
+                    });
                 })
             ),
         ],
@@ -183,9 +210,11 @@ export const CASH_OUT_HANDLERS = {
             http.get<{ accountKey: string }>(
                 ENDPOINTS.eligibility,
                 withDelay(({ params }) => {
+                    const balanceAccountId = getBalanceAccountId(params.accountKey);
+                    if (!balanceAccountId) return getInvalidAccountKeyResponse();
                     return HttpResponse.json(
-                        deductCashedOut(params.accountKey, {
-                            ...(ELIGIBILITY_BY_BALANCE_ACCOUNT[params.accountKey] ?? ELIGIBILITY_AVAILABLE.default),
+                        deductCashedOut(balanceAccountId, {
+                            ...(ELIGIBILITY_BY_BALANCE_ACCOUNT[balanceAccountId] ?? ELIGIBILITY_AVAILABLE.default),
                             transferInstruments: ELIGIBILITY_AVAILABLE.withIneligibleTransferInstruments.transferInstruments,
                         })
                     );
@@ -199,6 +228,16 @@ export const CASH_OUT_HANDLERS = {
                 ENDPOINTS.eligibility,
                 withDelay(() => {
                     return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.zeroBalance);
+                })
+            ),
+        ],
+    },
+    unavailableSingleEligibleTransferInstrument: {
+        handlers: [
+            http.get(
+                ENDPOINTS.eligibility,
+                withDelay(() => {
+                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE_WITH_SINGLE_ELIGIBLE_TRANSFER_INSTRUMENT);
                 })
             ),
         ],
@@ -253,6 +292,16 @@ export const CASH_OUT_HANDLERS = {
             ),
         ],
     },
+    sendToTransferInstrumentNotAllowed: {
+        handlers: [
+            http.get(
+                ENDPOINTS.eligibility,
+                withDelay(() => {
+                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.sendToTransferInstrumentNotAllowed);
+                })
+            ),
+        ],
+    },
     riskRestricted: {
         handlers: [
             http.get(
@@ -273,9 +322,19 @@ export const CASH_OUT_HANDLERS = {
             ),
         ],
     },
-    // A session with the view role only, so it can't instruct a cashOut.
     freeFees: {
         handlers: [
+            // A fee structure without a fixed amount nor a percentage, like the free fees below.
+            http.get<{ accountKey: string }>(
+                ENDPOINTS.eligibility,
+                withDelay(({ params }) => {
+                    const balanceAccountId = getBalanceAccountId(params.accountKey);
+                    if (!balanceAccountId) return getInvalidAccountKeyResponse();
+                    const eligibility = ELIGIBILITY_BY_BALANCE_ACCOUNT[balanceAccountId] ?? ELIGIBILITY_AVAILABLE.default;
+                    const { currency } = eligibility.availableForCashOutBalance;
+                    return HttpResponse.json({ ...eligibility, feeStructure: { fixedAmount: { currency, value: 0 }, variableBasisPoints: 0 } });
+                })
+            ),
             http.get(
                 ENDPOINTS.fees,
                 withDelay(({ request }) => {
@@ -291,6 +350,7 @@ export const CASH_OUT_HANDLERS = {
             ),
         ],
     },
+    // A session with the view role only, so it can't instruct a cashOut.
     instructRoleNotAssigned: {
         handlers: [
             http.post(

@@ -5,7 +5,8 @@ import type { ICashOutAmount, ICashOutResponse } from '@integration-components/t
 import { useReportErrors } from '../../shared/composables/useReportErrors';
 
 type InstructCashOutParams = {
-    balanceAccountId: string;
+    /** The account key of the balance account, as the balance accounts endpoint returns it. */
+    accountKey: string;
     amount: ICashOutAmount;
     transferInstrumentId: string;
     referenceForBeneficiary?: string;
@@ -21,7 +22,7 @@ export const useInstructCashOut = () => {
 
     /** Resolves with the instructed cashOut, or with `undefined` when it fails. */
     const instructCashOut = async ({
-        balanceAccountId,
+        accountKey,
         amount,
         transferInstrumentId,
         referenceForBeneficiary,
@@ -29,8 +30,6 @@ export const useInstructCashOut = () => {
     }: InstructCashOutParams) => {
         const endpoint = instructCashOutEndpoint.value;
         if (!endpoint) return undefined;
-
-        // The cashOut endpoints take the balance account id as their account key.
         return request.execute(signal =>
             endpoint(
                 {
@@ -45,7 +44,7 @@ export const useInstructCashOut = () => {
                     contentType: 'application/json',
                     signal,
                 },
-                { path: { accountKey: balanceAccountId } }
+                { path: { accountKey } }
             )
         );
     };

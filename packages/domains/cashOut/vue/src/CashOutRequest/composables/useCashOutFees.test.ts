@@ -21,12 +21,12 @@ const feesOf = ({ value, currency }: ICashOutAmount): ICashOutFees => ({
     payoutAmount: { value: value - 10, currency },
 });
 
-const renderCashOutFees = (balanceAccountId: string | undefined, amount: ICashOutAmount | undefined) => {
-    const balanceAccountIdRef = ref(balanceAccountId);
+const renderCashOutFees = (accountKey: string | undefined, amount: ICashOutAmount | undefined) => {
+    const accountKeyRef = ref(accountKey);
     const amountRef = ref(amount);
     const scope = effectScope();
-    const state = scope.run(() => useCashOutFees({ balanceAccountId: balanceAccountIdRef, amount: amountRef }))!;
-    return { amount: amountRef, balanceAccountId: balanceAccountIdRef, state, stop: () => scope.stop() };
+    const state = scope.run(() => useCashOutFees({ accountKey: accountKeyRef, amount: amountRef }))!;
+    return { amount: amountRef, accountKey: accountKeyRef, state, stop: () => scope.stop() };
 };
 
 const requestedFees = () =>
@@ -47,10 +47,10 @@ describe('useCashOutFees', () => {
     });
 
     test('should fetch the fees of the initial amount right away', async () => {
-        const { state, stop } = renderCashOutFees('BA1', { value: 1000, currency: 'USD' });
+        const { state, stop } = renderCashOutFees('BalanceAccount.BA1', { value: 1000, currency: 'USD' });
 
         expect(state.isFetchingFees.value).toBe(true);
-        expect(requestedFees()).toEqual([{ accountKey: 'BA1', amount: 1000, currency: 'USD' }]);
+        expect(requestedFees()).toEqual([{ accountKey: 'BalanceAccount.BA1', amount: 1000, currency: 'USD' }]);
 
         await vi.waitFor(() => expect(state.isFetchingFees.value).toBe(false));
         expect(state.fees.value).toEqual(feesOf({ value: 1000, currency: 'USD' }));
@@ -59,7 +59,7 @@ describe('useCashOutFees', () => {
     });
 
     test('should fetch the fees once the amount stops changing', async () => {
-        const { amount, state, stop } = renderCashOutFees('BA1', { value: 1000, currency: 'USD' });
+        const { amount, state, stop } = renderCashOutFees('BalanceAccount.BA1', { value: 1000, currency: 'USD' });
         await vi.waitFor(() => expect(state.isFetchingFees.value).toBe(false));
 
         amount.value = { value: 2000, currency: 'USD' };
@@ -75,8 +75,8 @@ describe('useCashOutFees', () => {
         await vi.advanceTimersByTimeAsync(CASH_OUT_FEES_DEBOUNCE_MS);
 
         expect(requestedFees()).toEqual([
-            { accountKey: 'BA1', amount: 1000, currency: 'USD' },
-            { accountKey: 'BA1', amount: 3000, currency: 'USD' },
+            { accountKey: 'BalanceAccount.BA1', amount: 1000, currency: 'USD' },
+            { accountKey: 'BalanceAccount.BA1', amount: 3000, currency: 'USD' },
         ]);
         await vi.waitFor(() => expect(state.fees.value).toEqual(feesOf({ value: 3000, currency: 'USD' })));
         expect(state.isFetchingFees.value).toBe(false);
@@ -85,41 +85,41 @@ describe('useCashOutFees', () => {
     });
 
     test('should fetch the fees right away when another balance account is selected', async () => {
-        const { amount, balanceAccountId, state, stop } = renderCashOutFees('BA1', { value: 1000, currency: 'USD' });
+        const { amount, accountKey, state, stop } = renderCashOutFees('BalanceAccount.BA1', { value: 1000, currency: 'USD' });
         await vi.waitFor(() => expect(state.isFetchingFees.value).toBe(false));
 
-        balanceAccountId.value = 'BA2';
+        accountKey.value = 'BalanceAccount.BA2';
         amount.value = { value: 500, currency: 'EUR' };
         await nextTick();
 
         expect(requestedFees()).toEqual([
-            { accountKey: 'BA1', amount: 1000, currency: 'USD' },
-            { accountKey: 'BA2', amount: 500, currency: 'EUR' },
+            { accountKey: 'BalanceAccount.BA1', amount: 1000, currency: 'USD' },
+            { accountKey: 'BalanceAccount.BA2', amount: 500, currency: 'EUR' },
         ]);
 
         stop();
     });
 
     test('should fetch the fees right away when the first amount of another balance account arrives after the balance account', async () => {
-        const { amount, balanceAccountId, state, stop } = renderCashOutFees('BA1', { value: 1000, currency: 'USD' });
+        const { amount, accountKey, state, stop } = renderCashOutFees('BalanceAccount.BA1', { value: 1000, currency: 'USD' });
         await vi.waitFor(() => expect(state.isFetchingFees.value).toBe(false));
 
-        balanceAccountId.value = 'BA2';
+        accountKey.value = 'BalanceAccount.BA2';
         amount.value = undefined;
         await nextTick();
         amount.value = { value: 500, currency: 'EUR' };
         await nextTick();
 
         expect(requestedFees()).toEqual([
-            { accountKey: 'BA1', amount: 1000, currency: 'USD' },
-            { accountKey: 'BA2', amount: 500, currency: 'EUR' },
+            { accountKey: 'BalanceAccount.BA1', amount: 1000, currency: 'USD' },
+            { accountKey: 'BalanceAccount.BA2', amount: 500, currency: 'EUR' },
         ]);
 
         stop();
     });
 
     test('should not fetch the fees without an amount', async () => {
-        const { amount, state, stop } = renderCashOutFees('BA1', { value: 1000, currency: 'USD' });
+        const { amount, state, stop } = renderCashOutFees('BalanceAccount.BA1', { value: 1000, currency: 'USD' });
         await vi.waitFor(() => expect(state.isFetchingFees.value).toBe(false));
 
         amount.value = undefined;
@@ -145,7 +145,7 @@ describe('useCashOutFees', () => {
     test('should expose the error when the fees fail to load', async () => {
         const error = new Error('error');
         endpoints.getCashOutFees!.mockRejectedValue(error);
-        const { state, stop } = renderCashOutFees('BA1', { value: 1000, currency: 'USD' });
+        const { state, stop } = renderCashOutFees('BalanceAccount.BA1', { value: 1000, currency: 'USD' });
 
         await vi.waitFor(() => expect(state.feesError.value).toBe(error));
         expect(state.isFetchingFees.value).toBe(false);
@@ -155,7 +155,7 @@ describe('useCashOutFees', () => {
     });
 
     test('should not fetch the fees after it is disposed', async () => {
-        const { amount, stop } = renderCashOutFees('BA1', { value: 1000, currency: 'USD' });
+        const { amount, stop } = renderCashOutFees('BalanceAccount.BA1', { value: 1000, currency: 'USD' });
 
         amount.value = { value: 2000, currency: 'USD' };
         await nextTick();

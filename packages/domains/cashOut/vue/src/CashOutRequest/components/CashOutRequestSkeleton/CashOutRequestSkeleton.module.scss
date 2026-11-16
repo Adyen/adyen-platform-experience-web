@@ -1,10 +1,14 @@
 @use '@integration-components/style';
 
-// Mirrors the designed CashOutRequest form: amount, available and fee details, bank account, summary and actions.
+// Mirrors the designed CashOutRequest form: what is available, amount and fee details, bank account, summary and action.
 .root {
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-090);
+}
+
+.availableForCashOut {
+    max-width: calc(#{style.token(spacer-120)} * 5);
 }
 
 .amount {
@@ -53,10 +57,6 @@
     display: flex;
     gap: style.token(spacer-040);
     justify-content: flex-end;
-}
-
-.cancelButton {
-    width: calc(#{style.token(spacer-140)} + #{style.token(spacer-070)});
 }
 
 .submitButton {

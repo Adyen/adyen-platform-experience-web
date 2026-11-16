@@ -30,17 +30,26 @@ const renderCashOutState = (...args: Parameters<typeof useCashOutState>) => {
     return { state, stop: () => scope.stop() };
 };
 
+// The account keys come from the balance accounts endpoint; they deliberately don't follow from the ids.
+const ACCOUNT_KEYS: Record<string, string> = { BA1: 'BalanceAccount.KEY1', BA2: 'BalanceAccount.KEY2' };
+const balanceAccountIdOf = (accountKey: string) => Object.keys(ACCOUNT_KEYS).find(id => ACCOUNT_KEYS[id] === accountKey)!;
+
 const requestedBalanceAccountIds = () =>
-    endpoints.getCashOutEligibility!.mock.calls.map(([, params]) => (params as { path: { accountKey: string } }).path.accountKey);
+    endpoints.getCashOutEligibility!.mock.calls.map(([, params]) => balanceAccountIdOf((params as { path: { accountKey: string } }).path.accountKey));
 
 describe('useCashOutState', () => {
     beforeEach(() => {
         core.externalErrorHandler = vi.fn();
         ELIGIBILITY_BY_BALANCE_ACCOUNT = { BA1: eligibilityOf(100), BA2: eligibilityOf(200) };
         // A new endpoint for every test, because the balance accounts are cached per endpoint.
-        endpoints.getBalanceAccounts = vi.fn().mockResolvedValue({ data: [{ id: 'BA1' }, { id: 'BA2' }] });
+        endpoints.getBalanceAccounts = vi.fn().mockResolvedValue({
+            data: [
+                { id: 'BA1', accountKey: ACCOUNT_KEYS.BA1 },
+                { id: 'BA2', accountKey: ACCOUNT_KEYS.BA2 },
+            ],
+        });
         endpoints.getCashOutEligibility = vi.fn(async (_: unknown, { path }: { path: { accountKey: string } }) => {
-            return ELIGIBILITY_BY_BALANCE_ACCOUNT[path.accountKey];
+            return ELIGIBILITY_BY_BALANCE_ACCOUNT[balanceAccountIdOf(path.accountKey)];
         });
     });
 
@@ -60,8 +69,9 @@ describe('useCashOutState', () => {
 
         await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
         expect(state.selectedBalanceAccountId.value).toBe('BA1');
+        expect(state.selectedAccountKey.value).toBe('BalanceAccount.KEY1');
         expect(state.eligibility.value).toEqual(ELIGIBILITY_BY_BALANCE_ACCOUNT.BA1);
-        expect(requestedBalanceAccountIds()).toEqual(['BA1']);
+        expect(endpoints.getCashOutEligibility).toHaveBeenCalledWith(expect.anything(), { path: { accountKey: 'BalanceAccount.KEY1' } });
 
         stop();
     });
@@ -86,7 +96,8 @@ describe('useCashOutState', () => {
 
         await vi.waitFor(() => expect(state.eligibility.value).toEqual(ELIGIBILITY_BY_BALANCE_ACCOUNT.BA1));
         expect(state.shellState.value).toBe('ready');
-        expect(requestedBalanceAccountIds()).toEqual(['BA1']);
+        expect(state.selectedAccountKey.value).toBe('BalanceAccount.KEY1');
+        expect(endpoints.getCashOutEligibility).toHaveBeenCalledWith(expect.anything(), { path: { accountKey: 'BalanceAccount.KEY1' } });
 
         stop();
     });

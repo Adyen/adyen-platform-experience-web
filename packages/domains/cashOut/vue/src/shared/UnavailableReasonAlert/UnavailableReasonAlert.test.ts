@@ -15,8 +15,11 @@ vi.mock('@adyen/bento-vue3', async () => {
     type Slots = { slots: Record<string, (() => unknown) | undefined> };
 
     return {
-        BentoAlert: (_: unknown, { slots }: Slots) =>
-            h('div', { 'data-testid': 'alert' }, [h('p', { 'data-testid': 'message' }, slots.description?.() as never), slots.actions?.() as never]),
+        BentoAlert: (props: { type?: string; variant?: string }, { slots }: Slots) =>
+            h('div', { 'data-testid': 'alert', 'data-type': props.type, 'data-variant': props.variant }, [
+                h('p', { 'data-testid': 'message' }, slots.description?.() as never),
+                slots.actions?.() as never,
+            ]),
         BentoButton: (props: { onClick?: () => void }, { slots }: Slots) => h('button', { onClick: props.onClick }, slots.default?.() as never),
     };
 });
@@ -34,9 +37,10 @@ const renderAlert = (eligibility: ICashOutEligibility, onContactSupport?: () => 
     app.mount(target);
 
     const message = () => target.querySelector('[data-testid="message"]')?.textContent;
+    const alert = () => target.querySelector('[data-testid="alert"]');
     const reachOutButton = () => [...target.querySelectorAll('button')].find(button => button.textContent === REACH_OUT);
 
-    return { message, reachOutButton, target, unmount: () => app.unmount() };
+    return { alert, message, reachOutButton, target, unmount: () => app.unmount() };
 };
 
 describe('UnavailableReasonAlert', () => {
@@ -53,6 +57,20 @@ describe('UnavailableReasonAlert', () => {
 
         expect(message()).toBe(expectedMessage);
         expect(!!reachOutButton()).toBe(offersContactSupport);
+
+        unmount();
+    });
+
+    test.each<[ICashOutUnavailableReason, string]>([
+        ['dailyLimitReached', 'highlight'],
+        ['cashOutInProgress', 'highlight'],
+        ['riskRestricted', 'warning'],
+        ['cashOutNotConfigured', 'warning'],
+    ])('should show %s as a compact %s alert', (reason, type) => {
+        const { alert, unmount } = renderAlert(eligibilityOf(false, [reason]));
+
+        expect(alert()?.getAttribute('data-type')).toBe(type);
+        expect(alert()?.getAttribute('data-variant')).toBe('tip');
 
         unmount();
     });

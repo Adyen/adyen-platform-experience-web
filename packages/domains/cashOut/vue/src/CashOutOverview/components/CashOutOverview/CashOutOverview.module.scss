@@ -6,6 +6,12 @@
     gap: style.token(spacer-070);
 }
 
+.balance {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-040);
+}
+
 .availableForCashOut {
     display: flex;
     flex-direction: column;
@@ -25,5 +31,5 @@
 }
 
 .startButton {
-    width: 100%;
+    align-self: flex-start;
 }

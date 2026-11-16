@@ -50,7 +50,7 @@ describe('CashOutRequestResult', () => {
         const { emptyStateType, target, unmount } = renderResult({ status: 'error' });
 
         expect(emptyStateType()).toBe('error');
-        expect(target.querySelector('[role="alert"]')?.textContent).toBe('cashOut.common.errors.somethingWentWrongcashOut.request.errors.tryAgain');
+        expect(target.querySelector('[role="alert"]')?.textContent).toBe('cashOut.request.errors.titlecashOut.request.errors.tryAgain');
 
         unmount();
     });

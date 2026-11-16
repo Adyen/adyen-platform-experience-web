@@ -16,9 +16,20 @@ const cashOutState = useCashOutState({
     initialBalanceAccountId: () => props.initialBalanceAccountId,
     eligibility: () => props.eligibility,
 });
-const { balanceAccountOptions, eligibility, selectedBalanceAccountId } = cashOutState;
+const { balanceAccountOptions, eligibility, isFetchingEligibility, lastUpdated, refreshEligibility, selectedAccountKey, selectedBalanceAccountId } =
+    cashOutState;
 
 const feesError = ref<AdyenPlatformExperienceError>();
+
+// While the cashOut is sent, the refresh does nothing: loading another eligibility would replace the form before the cashOut is done.
+const isInstructing = ref(false);
+const handleInstructingChange = (value: boolean) => {
+    isInstructing.value = value;
+};
+
+const refresh = () => {
+    if (!isInstructing.value) refreshEligibility();
+};
 
 const errorInfo = computed(() => (feesError.value ? getCashOutErrorInfo(feesError.value) : cashOutState.errorInfo.value));
 const shellState = computed<ComponentShellState>(() => (feesError.value ? 'error' : cashOutState.shellState.value));
@@ -42,13 +53,16 @@ const handleResult = (cashOutResult: CashOutResult) => {
 </script>
 
 <template>
-    <CashOutRequestResult v-if="result" :status="result.status" />
+    <CashOutRequestResult v-if="result" :status="result.status" :in-modal="props.inModal" />
     <div v-else :class="styles.root">
         <CashOutHeader
             v-model:selected-balance-account-id="selectedBalanceAccountId"
             :balance-account-options="balanceAccountOptions"
             :hide-title="props.hideTitle"
             title-key="cashOut.request.title"
+            :last-updated="lastUpdated"
+            :is-refreshing="isFetchingEligibility"
+            :on-refresh="shellState === 'error' ? undefined : refresh"
         />
         <ComponentShell :state="shellState" :error-info="errorInfo">
             <template #loading>
@@ -56,13 +70,14 @@ const handleResult = (cashOutResult: CashOutResult) => {
             </template>
             <!-- Keyed by balance account, so switching accounts starts a new request from that account's eligibility. -->
             <CashOutRequestForm
-                v-if="eligibility && selectedBalanceAccountId"
+                v-if="eligibility && selectedAccountKey"
                 :key="selectedBalanceAccountId"
-                :balance-account-id="selectedBalanceAccountId"
+                :account-key="selectedAccountKey"
                 :eligibility="eligibility"
                 :on-result="handleResult"
                 :on-contact-support="props.onContactSupport"
                 :on-fees-error="handleFeesError"
+                :on-instructing-change="handleInstructingChange"
                 :reference-for-beneficiary="props.referenceForBeneficiary"
                 :transfer-description="props.transferDescription"
             />

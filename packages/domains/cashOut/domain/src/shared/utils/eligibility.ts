@@ -11,6 +11,7 @@ const UNAVAILABLE_REASON_MESSAGES = {
     dailyLimitReached: 'cashOut.common.unavailableReasons.dailyLimitReached',
     sendToBalanceAccountNotAllowed: NOT_ALLOWED,
     receiveFromBalanceAccountNotAllowed: NOT_ALLOWED,
+    sendToTransferInstrumentNotAllowed: NOT_ALLOWED,
     riskRestricted: 'cashOut.common.unavailableReasons.riskRestricted',
     cashOutNotConfigured: NOT_ALLOWED,
 } as const satisfies Record<ICashOutUnavailableReason, TranslationKey | undefined>;
@@ -20,9 +21,17 @@ type UnavailableReasonMessageKey = NonNullable<(typeof UNAVAILABLE_REASON_MESSAG
 // Messages that ask the user to contact support, so the contact support action is offered with them.
 const SUPPORT_REASON_MESSAGES = new Set<UnavailableReasonMessageKey>([NOT_ALLOWED]);
 
+// A cashOut in progress and the daily limit pass with time, so they inform; the others need the user or support to act, so they warn.
+const INFORMING_REASON_MESSAGES = new Set<UnavailableReasonMessageKey>([
+    'cashOut.common.unavailableReasons.cashOutInProgress',
+    'cashOut.common.unavailableReasons.dailyLimitReached',
+]);
+
 export type CashOutUnavailableReasonMessage = {
     key: UnavailableReasonMessageKey;
     offersContactSupport: boolean;
+    /** The alert type the message is shown in. */
+    type: 'highlight' | 'warning';
 };
 
 /** Why the balance account can't cash out, or `undefined` when there is nothing to explain. */
@@ -32,7 +41,7 @@ export const getUnavailableReasonMessage = (eligibility: ICashOutEligibility): C
     if (reason === 'zeroBalance') return undefined;
     // The general message covers a missing reason, and one added to the API that the component doesn't know yet.
     const key = (reason && UNAVAILABLE_REASON_MESSAGES[reason]) || NOT_ALLOWED;
-    return { key, offersContactSupport: SUPPORT_REASON_MESSAGES.has(key) };
+    return { key, offersContactSupport: SUPPORT_REASON_MESSAGES.has(key), type: INFORMING_REASON_MESSAGES.has(key) ? 'highlight' : 'warning' };
 };
 
 // The API reports a cashOut without an account to receive it as unavailable; should it not, the components still don't offer it.

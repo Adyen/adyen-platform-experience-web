@@ -19,7 +19,7 @@ const CASH_OUT: ICashOutResponse = {
     counterparty: { transferInstrumentId: 'TI1' },
 };
 
-const PARAMS = { balanceAccountId: 'BA1', amount: { value: 1000, currency: 'EUR' }, transferInstrumentId: 'TI1' };
+const PARAMS = { accountKey: 'BalanceAccount.BA1', amount: { value: 1000, currency: 'EUR' }, transferInstrumentId: 'TI1' };
 
 const renderInstructCashOut = () => {
     const scope = effectScope();
@@ -47,7 +47,7 @@ describe('useInstructCashOut', () => {
                 contentType: 'application/json',
                 signal: expect.any(AbortSignal),
             },
-            { path: { accountKey: 'BA1' } }
+            { path: { accountKey: 'BalanceAccount.BA1' } }
         );
 
         stop();
@@ -68,7 +68,7 @@ describe('useInstructCashOut', () => {
                     referenceForBeneficiary: 'REF123',
                 },
             }),
-            { path: { accountKey: 'BA1' } }
+            { path: { accountKey: 'BalanceAccount.BA1' } }
         );
 
         stop();

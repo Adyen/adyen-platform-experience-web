@@ -32,6 +32,7 @@ export const getMySessionToken = async (session?: SessionOptions): Promise<Sessi
                 ],
                 roles: [
                     'Capital Component: Manage',
+                    'CashOut Component: Manage',
                     'Disputes Component: Manage',
                     'Payouts Overview Component: View',
                     'Reports Overview Component: View',

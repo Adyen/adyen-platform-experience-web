@@ -6,6 +6,8 @@ export const getBaseEnvDefines = (mode: string) => {
     const { session } = api;
 
     const isDevelopment = mode === 'development';
+    // The local-env mode runs against a local backend, so it needs the configured loading context too.
+    const usesLoadingContext = isDevelopment || mode === 'local-env';
     const isTestEnv = process.env.TEST_ENV === '1';
     const localAssets = app.useCdn === 'true' ? null : isDevelopment || isTestEnv;
     const testCdnAssets = isDevelopment || app.useTestCdn === 'true' ? true : null;
@@ -18,7 +20,7 @@ export const getBaseEnvDefines = (mode: string) => {
         'process.env.SESSION_PERMISSIONS': JSON.stringify(session.permissions || null),
         'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
         'process.env.USE_CDN': JSON.stringify(app.useCdn ?? null),
-        'process.env.VITE_APP_LOADING_CONTEXT': JSON.stringify(isDevelopment ? app.loadingContext || null : null),
+        'process.env.VITE_APP_LOADING_CONTEXT': JSON.stringify(usesLoadingContext ? app.loadingContext || null : null),
         'process.env.VITE_APP_PORT': JSON.stringify(app.port || null),
         'process.env.VITE_APP_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL?.replace('main--', '') || app.url || null),
         'process.env.VITE_LOCAL_ASSETS': JSON.stringify(localAssets),

@@ -17,7 +17,7 @@ const showContactSupport = computed(() => Boolean(message.value?.offersContactSu
 </script>
 
 <template>
-    <BentoAlert v-if="message" type="warning" role="status">
+    <BentoAlert v-if="message" :type="message.type" variant="tip" role="status">
         <template #description>{{ i18n.get(message.key) }}</template>
         <template v-if="showContactSupport" #actions>
             <BentoButton variant="tertiary" @click="props.onContactSupport">

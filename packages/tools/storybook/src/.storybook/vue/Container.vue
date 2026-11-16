@@ -10,7 +10,7 @@ import {
     type ThemeVariables,
     UIElement,
 } from '@integration-components/core/vue';
-import { Core } from '@integration-components/core';
+import { API_ENVIRONMENTS, Core } from '@integration-components/core';
 import { getMySessionToken } from '@integration-components/testing/storybook-helpers';
 import '../../shared/styles.scss';
 
@@ -26,6 +26,7 @@ const props = defineProps<{
     themeDark?: boolean;
     themeVariables?: ThemeVariables;
     session?: { roles: string[]; accountHolderId?: string };
+    mockedApi?: boolean;
     compact?: boolean;
 }>();
 
@@ -91,6 +92,8 @@ async function initializeCore() {
 
         const instance = new Core({
             environment: 'test',
+            // The mocks answer the test environment, so mocked stories call it whatever LOADING_CONTEXT points to
+            ...(props.mockedApi && { loadingContext: API_ENVIRONMENTS.test }),
             locale: props.locale || 'en-US',
             onSessionCreate: (_signal: AbortSignal) => getMySessionToken(props.session),
             ...storyCoreOptions.value,

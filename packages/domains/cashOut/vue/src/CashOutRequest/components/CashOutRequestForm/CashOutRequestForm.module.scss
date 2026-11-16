@@ -6,6 +6,12 @@
     gap: style.token(spacer-090);
 }
 
+.availableForCashOut {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-020);
+}
+
 .amount {
     display: flex;
     flex-direction: column;

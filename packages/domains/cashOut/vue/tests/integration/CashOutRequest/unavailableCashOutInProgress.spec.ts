@@ -14,7 +14,7 @@ test.describe('CashOut Request - Unavailable - CashOut in progress', () => {
 
         await expectUnavailable(root, {
             amount: '€1,000.00',
-            message: "Instant CashOut isn't available because a previous CashOut is still being processed. Try again once it's complete.",
+            message: "A previous CashOut is still being processed. Try again once it's complete.",
         });
     });
 });

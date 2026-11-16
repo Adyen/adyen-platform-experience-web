@@ -13,7 +13,6 @@ const transferInstrumentOf = (id: string) =>
         eligible: true,
         ineligibilityReasons: [],
         transferInstrumentId: id,
-        type: 'bank',
     }) as ICashOutTransferInstrument;
 
 const TRANSFER_INSTRUMENTS = [transferInstrumentOf('TI1'), transferInstrumentOf('TI2')];

@@ -79,6 +79,14 @@ export const ReceiveFromBalanceAccountNotAllowed: ElementStory = {
     },
 };
 
+export const SendToTransferInstrumentNotAllowed: ElementStory = {
+    name: 'Unavailable - Send to transfer instrument not allowed',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.sendToTransferInstrumentNotAllowed },
+    },
+};
+
 export const RiskRestriction: ElementStory = {
     name: 'Unavailable - Risk restriction',
     args: { mockedApi: true },

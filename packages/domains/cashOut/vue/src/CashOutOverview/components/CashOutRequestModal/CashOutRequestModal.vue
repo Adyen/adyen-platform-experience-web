@@ -48,6 +48,7 @@ watch(
                 :transfer-description="props.transferDescription"
                 :eligibility="props.eligibility"
                 hide-title
+                in-modal
                 :on-submit="props.onSubmit"
                 :on-result-shown="() => (isShowingResult = true)"
                 :on-contact-support="props.onContactSupport"

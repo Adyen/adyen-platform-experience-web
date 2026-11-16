@@ -14,6 +14,8 @@ export type CashOutRequestComponentProps = Omit<CashOutRequestExternalProps, 'co
     /** The eligibility of `initialBalanceAccountId`, already loaded by the component that opens this one. */
     eligibility?: ICashOutEligibility;
     hideTitle?: boolean;
+    /** Set by the CashOut Overview when it shows this component in its modal, whose header already leaves space above the content. */
+    inModal?: boolean;
     /** Called when the success or error screen replaces the form, so a modal can hide its own title. */
     onResultShown?: () => void;
     /** Passed on by the CashOut Overview when it opens this component in its modal. */

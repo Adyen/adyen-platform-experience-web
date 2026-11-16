@@ -12,16 +12,18 @@ const eligibilityOf = (isCashoutAvailable: boolean, unavailableReasons: string[]
     }) as unknown as ICashOutEligibility;
 
 describe('getUnavailableReasonMessage', () => {
-    test.each<[ICashOutUnavailableReason, string, boolean]>([
-        ['noInstantReachableTransferInstruments', 'cashOut.common.unavailableReasons.noInstantReachableTransferInstruments', false],
-        ['cashOutInProgress', 'cashOut.common.unavailableReasons.cashOutInProgress', false],
-        ['dailyLimitReached', 'cashOut.common.unavailableReasons.dailyLimitReached', false],
-        ['sendToBalanceAccountNotAllowed', NOT_ALLOWED, true],
-        ['receiveFromBalanceAccountNotAllowed', NOT_ALLOWED, true],
-        ['riskRestricted', 'cashOut.common.unavailableReasons.riskRestricted', false],
-        ['cashOutNotConfigured', NOT_ALLOWED, true],
-    ])('should explain %s, offering contact support only when support can help', (reason, key, offersContactSupport) => {
-        expect(getUnavailableReasonMessage(eligibilityOf(false, [reason]))).toEqual({ key, offersContactSupport });
+    // A cashOut in progress and the daily limit pass with time, so they inform; the others need the user or support to act, so they warn.
+    test.each<[ICashOutUnavailableReason, string, boolean, 'highlight' | 'warning']>([
+        ['noInstantReachableTransferInstruments', 'cashOut.common.unavailableReasons.noInstantReachableTransferInstruments', false, 'warning'],
+        ['cashOutInProgress', 'cashOut.common.unavailableReasons.cashOutInProgress', false, 'highlight'],
+        ['dailyLimitReached', 'cashOut.common.unavailableReasons.dailyLimitReached', false, 'highlight'],
+        ['sendToBalanceAccountNotAllowed', NOT_ALLOWED, true, 'warning'],
+        ['receiveFromBalanceAccountNotAllowed', NOT_ALLOWED, true, 'warning'],
+        ['sendToTransferInstrumentNotAllowed', NOT_ALLOWED, true, 'warning'],
+        ['riskRestricted', 'cashOut.common.unavailableReasons.riskRestricted', false, 'warning'],
+        ['cashOutNotConfigured', NOT_ALLOWED, true, 'warning'],
+    ])('should explain %s, offering contact support only when support can help', (reason, key, offersContactSupport, type) => {
+        expect(getUnavailableReasonMessage(eligibilityOf(false, [reason]))).toEqual({ key, offersContactSupport, type });
     });
 
     test('should give no message for a zero balance, which already shows as an amount of 0', () => {
@@ -33,8 +35,12 @@ describe('getUnavailableReasonMessage', () => {
     });
 
     test('should fall back to the general message without a reason, or for one it does not know', () => {
-        expect(getUnavailableReasonMessage(eligibilityOf(false))).toEqual({ key: NOT_ALLOWED, offersContactSupport: true });
-        expect(getUnavailableReasonMessage(eligibilityOf(false, ['someNewReason']))).toEqual({ key: NOT_ALLOWED, offersContactSupport: true });
+        expect(getUnavailableReasonMessage(eligibilityOf(false))).toEqual({ key: NOT_ALLOWED, offersContactSupport: true, type: 'warning' });
+        expect(getUnavailableReasonMessage(eligibilityOf(false, ['someNewReason']))).toEqual({
+            key: NOT_ALLOWED,
+            offersContactSupport: true,
+            type: 'warning',
+        });
     });
 });
 
