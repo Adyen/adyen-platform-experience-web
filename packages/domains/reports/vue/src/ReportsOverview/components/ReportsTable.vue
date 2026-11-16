@@ -8,7 +8,6 @@ import {
     BentoTypography,
     BentoTooltipDirective as vBentoTooltip,
     useBentoToastController,
-    BentoLoadingIndicator,
 } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
@@ -21,6 +20,7 @@ import {
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
+    DataOverviewLoading,
     type ErrorMessageInfo,
     useCondensedDataGrid,
 } from '@integration-components/composables-vue';
@@ -303,9 +303,7 @@ const errorInfo = computed(() =>
     <div ref="tableRef" :class="styles.root">
         <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" type="error" />
         <DataOverviewError v-else-if="gridData.length === 0 && !isLoading" :error-info="emptyStateProps" type="no-results-found" />
-        <div v-else-if="isLoading" :class="styles.loading" aria-busy="true">
-            <BentoLoadingIndicator />
-        </div>
+        <DataOverviewLoading v-else-if="isLoading" />
         <BentoDataGrid
             v-else
             has-resizable-columns

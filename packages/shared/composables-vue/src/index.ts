@@ -26,6 +26,7 @@ export {
     type ErrorWithCode,
 } from '@integration-components/core/vue';
 export { DataOverviewError } from './DataOverviewError';
+export { DataOverviewLoading } from './DataOverviewLoading';
 export { ErrorMessageDisplay } from '@integration-components/core/vue';
 export { ComponentShell } from '@integration-components/core/vue';
 export type { ComponentShellState } from '@integration-components/core/vue';

@@ -12,6 +12,7 @@ import {
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
+    DataOverviewLoading,
     useTableColumns,
     useCondensedDataGrid,
 } from '@integration-components/composables-vue';
@@ -236,10 +237,8 @@ const errorInfo = computed(() =>
         />
 
         <DataOverviewError v-else-if="!customRecords.length && !isLoading" type="no-results-found" :error-info="emptyStateProps" />
+        <DataOverviewLoading v-else-if="isLoading" />
 
-        <div v-else-if="isLoading" :class="styles.loading" aria-busy="true">
-            <BentoLoadingIndicator />
-        </div>
         <BentoDataGrid
             v-else
             :condensed="isCondensed"
