@@ -20,6 +20,19 @@ import type { EndpointName, SetupEndpoint } from '@integration-components/types/
 import type { HttpMethod, HttpOptions } from '../Http/types';
 import { encodeAnalyticsEvent } from '../EventDispatcher/eventDispatcher/utils';
 
+const BASE_URL_VERSION_PLACEHOLDER = '{version}';
+
+/**
+ * Standalone webapps advertise `baseUrl` with a `{version}` placeholder so the SDK keeps choosing the API version.
+ * Splitting at the placeholder lets `http()` insert that version, with anything after it prefixed to the path.
+ */
+const resolveEndpointBaseUrl = (baseUrl: string, path: string) => {
+    const index = baseUrl.indexOf(BASE_URL_VERSION_PLACEHOLDER);
+    if (index < 0) return { loadingContext: baseUrl, path };
+    const pathPrefix = baseUrl.slice(index + BASE_URL_VERSION_PLACEHOLDER.length);
+    return { loadingContext: baseUrl.slice(0, index), path: `${pathPrefix}/${path}` };
+};
+
 // Declaration merging is used here to type runtime-defined class members
 // without emitting class field initializers (which would conflict with
 // constructor-time assignments). This pattern is also compatible with
@@ -172,7 +185,7 @@ export class SetupContext {
                     const overrideHttpOptions: Partial<HttpOptions> = apiVersion ? { apiVersion } : EMPTY_OBJECT;
 
                     sessionAwareEndpoints[endpoint] ??= (() => {
-                        const { method = 'GET', url } = endpoints[endpoint];
+                        const { baseUrl, method = 'GET', url } = endpoints[endpoint];
                         if (isUndefined(url || undefined)) return;
 
                         return ((...args: Parameters<EndpointHttpCallables>) => {
@@ -180,6 +193,7 @@ export class SetupContext {
                                 ...this._getHttpOptions(method as HttpMethod, url!, ...args),
                                 ...overrideHttpOptions,
                             };
+                            if (baseUrl) Object.assign(httpOptions, resolveEndpointBaseUrl(baseUrl, httpOptions.path));
                             return this._session.http(this._beforeHttp, httpOptions) as Promise<EndpointSuccessResponse<Endpoint>>;
                         }) as EndpointHttpCallables<Endpoint>;
                     })()!;
