@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { ALLOWED_DECLARATION_EXPORTS, ALLOWED_RUNTIME_EXPORTS } from './allowed-exports.js';
 import ts from 'typescript';
 
-const PACKAGE_JSON_ENTRYPOINT_FIELDS = ['main', 'module', 'types', 'style', 'exports'] as const;
+const PACKAGE_JSON_ENTRYPOINT_FIELDS = ['main', 'module', 'types', 'style', 'exports', 'bin'] as const;
 
 interface PackageJsonFields {
     main: string | null;
@@ -11,6 +11,7 @@ interface PackageJsonFields {
     types: string | null;
     style: string | null;
     exports: Record<string, unknown> | null;
+    bin: string | Record<string, string> | null;
 }
 
 interface MissingEntrypoint {
@@ -195,6 +196,7 @@ export function getPackageJsonFields(root: string): PackageJsonFields {
         types: pkg.types ?? null,
         style: pkg.style ?? null,
         exports: pkg.exports ?? null,
+        bin: pkg.bin ?? null,
     };
 }
 
