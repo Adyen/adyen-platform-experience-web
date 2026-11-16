@@ -51,7 +51,7 @@ describe('ErrorMessageDisplay', () => {
             outlined: true,
             withBackground: true,
             withHeaderOffset: false,
-            withImage: false,
+            withErrorIcon: false,
             ...extraProps,
         });
     };
@@ -73,8 +73,8 @@ describe('ErrorMessageDisplay', () => {
         );
     });
 
-    test('renders the critical error icon when withImage is set', () => {
-        const view = renderWithInfo({ messages: [] }, { withImage: true });
+    test('renders the critical error icon when withErrorIcon is set', () => {
+        const view = renderWithInfo({ messages: [] }, { withErrorIcon: true });
         const icon = (view().children as VNode[])[0]!;
 
         expect(icon.type).toBe(ErrorIcon);

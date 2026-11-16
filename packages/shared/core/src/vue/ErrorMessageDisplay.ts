@@ -12,7 +12,7 @@ export const ErrorMessageDisplay = defineComponent({
     props: {
         errorInfo: { type: Object as PropType<ErrorMessageInfo>, required: true },
         onRefresh: { type: Function as PropType<() => void>, default: undefined },
-        withImage: { type: Boolean, default: false },
+        withErrorIcon: { type: Boolean, default: false },
         outlined: { type: Boolean, default: true },
         absolutePosition: { type: Boolean, default: true },
         withBackground: { type: Boolean, default: true },
@@ -75,7 +75,7 @@ export const ErrorMessageDisplay = defineComponent({
             const buttons = renderButtons();
 
             return h('div', { class: rootClass.value, 'data-testid': 'error-message-display' }, [
-                props.withImage ? h(ErrorIcon, { 'aria-hidden': 'true', class: styles.iconCritical }) : null,
+                props.withErrorIcon ? h(ErrorIcon, { 'aria-hidden': 'true', class: styles.iconCritical }) : null,
                 title ? h(BentoTypography, { el: 'div', variant: 'title' }, () => i18n.get(title)) : null,
                 messages.length ? h(BentoTypography, { variant: 'body' }, () => messages) : null,
                 buttons.length ? h('div', { class: styles.button }, buttons) : null,

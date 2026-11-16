@@ -56,15 +56,7 @@ describe('PayoutsTable', () => {
             balanceAccountId: 'BA123',
             loading: false,
             showPagination: false,
-            data: [
-                {
-                    adjustmentAmount: { value: 0, currency: 'EUR' },
-                    createdAt: '2024-05-01T00:00:00Z',
-                    fundsCapturedAmount: { value: 0, currency: 'EUR' },
-                    payoutAmount: { value: 1000, currency: 'EUR' },
-                    unpaidAmount: { value: 0, currency: 'EUR' },
-                },
-            ],
+            data: [],
         };
         const app = createApp(PayoutsTable, rootProps);
         app.mount(target);
