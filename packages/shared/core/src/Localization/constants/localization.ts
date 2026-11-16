@@ -1,9 +1,10 @@
-import { defaultTranslations, type Locale, type Translations } from '../../translations';
+import type { Locale, Translations } from '../../translations';
+import { translationsDevDefaults } from '../../translations/local';
 
 export const FALLBACK_LOCALE = 'en-US' as const;
-export const DEFAULT_TRANSLATIONS: Translations = defaultTranslations;
+export const DEFAULT_TRANSLATIONS: Translations = translationsDevDefaults;
 export const DEFAULT_DATETIME_FORMAT = { year: 'numeric', month: '2-digit', day: '2-digit' } as Intl.DateTimeFormatOptions;
-export const EXCLUDE_PROPS = ['constructor', 'i18n', 'watch'] as const;
+export const EXCLUDE_PROPS = ['constructor', 'i18n', 'loadDomainTranslations', 'watch'] as const;
 
 export const SUPPORTED_LOCALES = [
     'da-DK',

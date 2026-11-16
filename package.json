@@ -48,8 +48,8 @@
   },
   "scripts": {
     "build": "nx run @integration-components/sdk:build",
-    "build:umd": "nx run @adyen/adyen-platform-experience-web:build:umd",
-    "build:umd:test": "nx run @adyen/adyen-platform-experience-web:build:umd:test",
+    "build:cdn": "nx run @integration-components/sdk:build:cdn",
+    "build:cdn:test": "nx run @integration-components/sdk:build:cdn:test",
     "build:analyse": "nx run @adyen/adyen-platform-experience-web:build:analyse",
     "build:publish": "pnpm run build && pnpm pack",
     "changeset": "changeset",

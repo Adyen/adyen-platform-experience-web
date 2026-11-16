@@ -1,4 +1,4 @@
-import { EMPTY_OBJECT, hasOwnProperty } from '@integration-components/utils';
+import { ALREADY_RESOLVED_PROMISE, EMPTY_OBJECT, hasOwnProperty, noop } from '@integration-components/utils';
 import { AuthSession } from './session/AuthSession';
 import Localization from './Localization';
 import { Assets, AssetOptions } from './Assets/Assets';
@@ -53,6 +53,7 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
     private readyCustomTranslationsAnalytics = false;
     private coreInitiatedAnalyticsSent = false;
     private themeInitialized = false;
+    private themeReady: Promise<void> = ALREADY_RESOLVED_PROMISE;
     private readonly themeManager = new ThemeManager();
 
     constructor(options: CoreOptions<CustomTranslations>) {
@@ -65,6 +66,8 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
         this.localization = new Localization(this.options.locale, cdnTranslationsUrl, SDK_TRANSLATION_SOURCES);
         this.bentoLocalization = new Localization(this.options.locale, `${cdnTranslationsUrl}/bento`, SDK_BENTO_TRANSLATION_SOURCES);
 
+        this.themeReady = this.applyTheme(this.options) ?? ALREADY_RESOLVED_PROMISE;
+        this.themeReady.catch(noop);
         this.setOptions(this.options);
     }
 
@@ -83,32 +86,8 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
         const environmentChanged = options.environment !== undefined && options.environment !== this.options.environment;
         const loadingContextChanged = options.loadingContext !== undefined && options.loadingContext !== this.options.loadingContext;
         const analyticsChanged = options.analytics !== undefined && options.analytics !== this.options.analytics;
-        const nextThemeMode = hasOwnProperty(options, 'themeMode') ? options.themeMode : this.options.themeMode;
-        const nextCustomTheme = hasOwnProperty(options, 'customTheme') ? options.customTheme : this.options.customTheme;
-        const themeChanged = !this.themeInitialized || nextThemeMode !== this.options.themeMode || nextCustomTheme !== this.options.customTheme;
-
-        if (themeChanged) {
-            const previousThemeMode = this.options.themeMode;
-            this.themeManager.apply(nextThemeMode, nextCustomTheme);
-
-            // The first apply comes from construction and is covered by 'Initiated core';
-            // every later change is a runtime theme update via core.update().
-            if (this.themeInitialized && this.analyticsEnabled) {
-                const payload = getUpdatedThemeEventPayload({
-                    previousThemeMode,
-                    themeMode: nextThemeMode,
-                    components: this.components
-                        .filter(component => component.core === this && component.type !== undefined)
-                        .map(component => component.type as string),
-                    locale: this.options.locale,
-                });
-
-                if (payload) this.session.sendAnalyticsEvent(payload);
-            }
-        }
 
         this.options = { ...this.options, ...options };
-        this.themeInitialized = true;
 
         this.localization.locale = this.options.locale;
         this.localization.customTranslations = this.options.translations;
@@ -129,6 +108,35 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
         this.session.onSessionCreate = this.options.onSessionCreate;
 
         return this;
+    }
+
+    private applyTheme(options: Partial<CoreOptions<CustomTranslations>>): Promise<void> | undefined {
+        const nextThemeMode = hasOwnProperty(options, 'themeMode') ? options.themeMode : this.options.themeMode;
+        const nextCustomTheme = hasOwnProperty(options, 'customTheme') ? options.customTheme : this.options.customTheme;
+        const themeChanged = !this.themeInitialized || nextThemeMode !== this.options.themeMode || nextCustomTheme !== this.options.customTheme;
+
+        if (!themeChanged) return;
+
+        // The first apply comes from construction and is covered by 'Initiated core';
+        // every later change is a runtime theme update via core.update().
+        const isRuntimeUpdate = this.themeInitialized;
+        const previousThemeMode = this.options.themeMode;
+        this.themeInitialized = true;
+
+        return this.themeManager.apply(nextThemeMode, nextCustomTheme).then(() => {
+            if (!isRuntimeUpdate || !this.analyticsEnabled) return;
+
+            const payload = getUpdatedThemeEventPayload({
+                previousThemeMode,
+                themeMode: nextThemeMode,
+                components: this.components
+                    .filter(component => component.core === this && component.type !== undefined)
+                    .map(component => component.type as string),
+                locale: this.options.locale,
+            });
+
+            if (payload) this.session.sendAnalyticsEvent(payload);
+        });
     }
 
     private applyEnvironmentAssets(): void {
@@ -160,6 +168,8 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
             this.hasWarnedAboutServerSideInitialization = true;
         }
 
+        await this.themeReady;
+
         if (!this.coreInitiatedAnalyticsSent && this.analyticsEnabled) {
             const payload = getInitiatedCoreEventPayload(this.options);
             if (payload) {
@@ -171,8 +181,8 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
         await Promise.all([this.localization.ready, this.bentoLocalization.ready]);
 
         if (!this.readyCustomTranslationsAnalytics && this.analyticsEnabled) {
-            const analyticsPayload = getCustomTranslationsAnalyticsPayload(this.localization.i18n.customTranslations);
-            if (analyticsPayload.length > 0) {
+            const analyticsPayload = await getCustomTranslationsAnalyticsPayload(this.localization.i18n.customTranslations).catch(() => []);
+            if (analyticsPayload.length > 0 && !this.readyCustomTranslationsAnalytics) {
                 // Queued through the same channel as the other core events, so it neither
                 // replaces queued events nor waits for the next setup refresh.
                 analyticsPayload.forEach(payload => this.session.sendAnalyticsEvent(payload));
@@ -188,6 +198,13 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
      * every registered component that belongs to this Core instance.
      */
     public async update(options: CoreUpdateOptions<CustomTranslations> = EMPTY_OBJECT as CoreUpdateOptions<CustomTranslations>): Promise<this> {
+        const themeUpdate = this.applyTheme(options as Partial<CoreOptions<CustomTranslations>>);
+
+        if (themeUpdate) {
+            await themeUpdate;
+            this.themeReady = ALREADY_RESOLVED_PROMISE;
+        }
+
         this.setOptions(options as Partial<CoreOptions<CustomTranslations>>);
 
         const optionKeys = Object.keys(options);

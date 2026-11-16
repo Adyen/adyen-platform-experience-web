@@ -1,6 +1,14 @@
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_TRANSLATIONS, EXCLUDE_PROPS, FALLBACK_LOCALE, SUPPORTED_LOCALES } from './constants/localization';
 import { getCachedTranslations } from './translationCache';
-import type { AddressableTranslationKey, CustomTranslations, Locale, TranslationKey, TranslationOptions, Translations } from '../translations';
+import type {
+    AddressableTranslationKey,
+    CustomTranslations,
+    Locale,
+    TranslationDomain,
+    TranslationKey,
+    TranslationOptions,
+    Translations,
+} from '../translations';
 import { getLocalisedAmount } from './amount/amount-util';
 import restamper from '@integration-components/utils/datetime/restamper';
 import type { RestamperWithTimezone } from '@integration-components/utils/datetime/restamper';
@@ -22,6 +30,7 @@ import { translationsDevAssets } from '../translations/local';
 
 export type LocalizationSources = Readonly<{
     defaultTranslations: Record<string, string>;
+    domainDefaultTranslations?: Readonly<Partial<Record<TranslationDomain, () => Promise<Record<string, string>>>>>;
     localeTranslations: Readonly<Record<string, Promise<Record<string, string>> | (() => Promise<Record<string, string>>)>>;
 }>;
 
@@ -49,6 +58,9 @@ export default class Localization {
     // the en-US defaults. Before the first refresh resolves, only the defaults serve.
     #activeTranslations: Record<string, string> | null = null;
     #defaultTranslations: Record<string, string>;
+    readonly #domainDefaultTranslationSources: LocalizationSources['domainDefaultTranslations'];
+    readonly #domainDefaultTranslations = new Map<TranslationDomain, Promise<void>>();
+    #domainDefaultTranslationsReady: Promise<void> = ALREADY_RESOLVED_PROMISE;
     #translationFamilyExactCounts: Map<AddressableTranslationKey, readonly number[]> | null = null;
     #translationsLoader = createTranslationsLoader.call(this);
     readonly #fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>;
@@ -65,6 +77,7 @@ export default class Localization {
     constructor(locale: string = FALLBACK_LOCALE, cdnTranslationsUrl = '', sources?: LocalizationSources) {
         this.watch(noop);
         this.#defaultTranslations = sources?.defaultTranslations ?? (DEFAULT_TRANSLATIONS as Record<string, string>);
+        this.#domainDefaultTranslationSources = sources?.domainDefaultTranslations;
 
         const getBundledTranslations = (locale: string) => {
             const source = sources?.localeTranslations[locale];
@@ -153,7 +166,8 @@ export default class Localization {
     }
 
     get ready(): Promise<void> {
-        return this.#ready;
+        if (this.#domainDefaultTranslations.size === 0) return this.#ready;
+        return Promise.all([this.#ready, this.#domainDefaultTranslationsReady]).then(noop);
     }
 
     get supportedLocales(): Readonly<Locale[]> {
@@ -200,6 +214,26 @@ export default class Localization {
             // throw reason;
             console.error(reason);
         });
+    }
+
+    loadDomainTranslations(domain: TranslationDomain): Promise<void> {
+        const requestedTranslations = this.#domainDefaultTranslations.get(domain);
+        if (requestedTranslations) return requestedTranslations;
+
+        const loadDomainDefaults = this.#domainDefaultTranslationSources?.[domain];
+        if (!loadDomainDefaults) return ALREADY_RESOLVED_PROMISE;
+
+        const domainTranslations = loadDomainDefaults().then(translations => {
+            this.#defaultTranslations = { ...this.#defaultTranslations, ...translations };
+            this.#translationFamilyExactCounts = null;
+            this.#refreshWatchlist.requestNotification();
+        });
+
+        this.#domainDefaultTranslations.set(domain, domainTranslations);
+        this.#domainDefaultTranslationsReady = Promise.all([this.#domainDefaultTranslationsReady, domainTranslations.catch(noop)]).then(noop);
+        domainTranslations.catch(() => this.#domainDefaultTranslations.delete(domain));
+
+        return domainTranslations;
     }
 
     // Exact counts above one are only meaningful to the Bento bridge, which is the sole caller of

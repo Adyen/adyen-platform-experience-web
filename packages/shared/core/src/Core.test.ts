@@ -31,9 +31,23 @@ describe('Core', () => {
         });
 
         await core.initialize();
+        await core.localization.loadDomainTranslations('transactions');
 
         expect(core.i18n.get('transactions.common.errors.updateFilters')).toBe('Try a different search or reset your filters, and we’ll try again.');
         expect(core.bentoLocalization.getTemplate('bento.alert.close')).toBe('Close');
+    });
+
+    it('serves the English defaults of a domain only once that domain is loaded', async () => {
+        const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn() });
+
+        await core.initialize();
+
+        expect(core.i18n.get('transactions.common.errors.updateFilters')).toBe('transactions.common.errors.updateFilters');
+
+        await core.localization.loadDomainTranslations('transactions');
+
+        expect(core.i18n.get('transactions.common.errors.updateFilters')).toBe('Try a different search or reset your filters, and we’ll try again.');
+        expect(core.i18n.get('payouts.common.copy.label')).toBe('payouts.common.copy.label');
     });
 
     it('should warn once when initialized server-side in development mode', async () => {
@@ -95,7 +109,7 @@ describe('Core', () => {
         expect(document.documentElement.hasAttribute('data-adyen-pe-theme')).toBe(false);
     });
 
-    it('keeps custom themes isolated between Core instances', () => {
+    it('keeps custom themes isolated between Core instances', async () => {
         const firstCore = new Core({
             locale: 'en-US',
             onSessionCreate: vi.fn(),
@@ -108,6 +122,7 @@ describe('Core', () => {
             themeMode: 'dark',
             customTheme: { dark: { primary: '#84adff' } },
         });
+        await Promise.all([firstCore.initialize(), secondCore.initialize()]);
         const firstRoot = document.createElement('div');
         const secondRoot = document.createElement('div');
         document.body.append(firstRoot, secondRoot);
@@ -121,7 +136,7 @@ describe('Core', () => {
         expect(secondRoot.getAttribute('data-adyen-pe-theme')).toBe('dark');
     });
 
-    it('rejects a theme root already owned by another Core instance', () => {
+    it('rejects a theme root already owned by another Core instance', async () => {
         const firstCore = new Core({
             locale: 'en-US',
             onSessionCreate: vi.fn(),
@@ -133,6 +148,7 @@ describe('Core', () => {
             themeMode: 'dark',
             customTheme: { dark: { primary: '#84adff' } },
         });
+        await Promise.all([firstCore.initialize(), secondCore.initialize()]);
         const root = document.createElement('div');
         document.body.append(root);
 
@@ -196,6 +212,7 @@ describe('Core', () => {
             themeMode: 'dark',
             customTheme,
         });
+        await core.initialize();
         const root = document.createElement('div');
         document.body.append(root);
         core.registerThemeRoot(root);
@@ -208,15 +225,44 @@ describe('Core', () => {
         expect(getComputedStyle(root).getPropertyValue('--adyen-sdk-color-primary')).toBe('#84adff');
     });
 
-    it('rejects invalid custom theme colors during construction', () => {
-        expect(
-            () =>
-                new Core({
-                    locale: 'en-US',
-                    onSessionCreate: vi.fn(),
-                    customTheme: { light: { primary: 'invalid' } },
-                })
-        ).toThrow('Invalid hex color');
+    it('rejects invalid custom theme colors on initialize, before sending core events', async () => {
+        const core = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            customTheme: { light: { primary: 'invalid' } },
+        });
+        const sendAnalyticsEvent = vi.spyOn(core.session, 'sendAnalyticsEvent');
+
+        await expect(core.initialize()).rejects.toThrow('Invalid hex color');
+        expect(sendAnalyticsEvent).not.toHaveBeenCalled();
+    });
+
+    it('recovers from an invalid construction theme once a valid theme is applied', async () => {
+        const core = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            customTheme: { light: { primary: 'invalid' } },
+        });
+
+        await expect(core.initialize()).rejects.toThrow('Invalid hex color');
+        await core.update({ customTheme: { light: { primary: '#0050b3' } } });
+        await expect(core.initialize()).resolves.toBe(core);
+    });
+
+    it('waits for a custom theme before initialize resolves', async () => {
+        const core = new Core({
+            locale: 'en-US',
+            onSessionCreate: vi.fn(),
+            customTheme: { light: { primary: '#0050b3' } },
+        });
+
+        await core.initialize();
+
+        const root = document.createElement('div');
+        document.body.append(root);
+        core.registerThemeRoot(root);
+
+        expect(getComputedStyle(root).getPropertyValue('--adyen-sdk-color-primary')).toBe('#0050b3');
     });
 
     // Each catalog is served as one self-describing file per locale, under `locales/`.

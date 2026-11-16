@@ -1,4 +1,7 @@
 import type { Translations } from './index';
+import EN_US from '../../../../sdk/translations/en-US.json';
+
+export const translationsDevDefaults: Translations = EN_US;
 
 const _getTranslations = (translationsPromise: Promise<{ default: Translations }>) =>
     translationsPromise.then(({ default: translations }) => translations);
