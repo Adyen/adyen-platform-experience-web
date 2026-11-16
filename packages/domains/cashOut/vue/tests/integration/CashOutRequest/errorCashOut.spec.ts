@@ -17,8 +17,8 @@ test.describe('CashOut Request - Error - Cash out', () => {
         const root = getComponentRoot(page);
 
         await Promise.all([
-            expect(root.getByRole('alert')).toContainText('Something went wrong.'),
-            expect(root.getByRole('alert')).toContainText('Please try again.'),
+            expect(root.getByRole('alert').getByText('Something went wrong', { exact: true })).toBeVisible(),
+            expect(root.getByRole('alert').getByText('Please try again', { exact: true })).toBeVisible(),
             expect(root.getByRole('spinbutton', { name: 'Amount to cash out' })).toHaveCount(0),
             expect(root.getByText('CashOut successful')).toHaveCount(0),
         ]);

@@ -15,7 +15,7 @@ export interface paths {
         put?: never;
         /**
          * Instruct CashOut
-         * @description Instructs a cashOut to a transfer instrument
+         * @description Instructs a cashout to a transfer instrument
          */
         post: operations['instructCashOut'];
         delete?: never;
@@ -78,24 +78,27 @@ export interface components {
             value: number;
         };
         CashOutEligibilityResponseDTO: {
-            /** @description The balance of the balance account, in minor units. */
-            availableBalance: components['schemas']['Amount'];
-            /** @description The highest amount that can be cashed out, in minor units. Any cashOut fee is taken out of this amount instead of being charged on top of it. This amount is returned even when **isCashoutAvailable** is **false**, and an amount above zero does not mean that a cashOut is possible. */
+            /** @description The highest amount that can be cashed out, in minor units. Any cashout fee is taken out of this amount instead of being charged on top of it. This amount is returned even when **isCashoutAvailable** is **false**, and an amount above zero does not mean that a cashout is possible. */
             availableForCashOutBalance: components['schemas']['Amount'];
-            /** @description Whether the balance account can cash out. A cashOut also requires a transfer instrument to pay out to. */
+            /** @description The most the balance account can cash out in any rolling 24-hour period, in minor units. Left out when no limit is configured for the currency, in which case **unavailableReasons** contains **cashOutNotConfigured**. */
+            dailyLimit?: components['schemas']['Amount'];
+            /** @description How the fee of a cashout from this balance account is calculated: **fixedAmount** plus **variableBasisPoints** of the amount cashed out. The fee is taken out of that amount instead of being charged on top of it. */
+            feeStructure: components['schemas']['FeeStructureDTO'];
+            /** @description Whether the balance account can cash out. A cashout also requires a transfer instrument to pay out to. */
             isCashoutAvailable: boolean;
-            /** @description The transfer instruments of the balance account, each with whether the cashOut can be paid out to it. Empty when **isCashoutAvailable** is **false**. */
+            /** @description The transfer instruments of the balance account, each with whether the cashout can be paid out to it. Empty when **isCashoutAvailable** is **false**. */
             transferInstruments: components['schemas']['TransferInstrumentDTO'][];
             /**
              * @description Why the balance account cannot cash out. Empty when **isCashoutAvailable** is **true**.
              *
              *     Possible values:
              *     - **zeroBalance**: The balance account has no funds to cash out.
-             *     - **noInstantReachableTransferInstruments**: None of the transfer instruments can receive an instant cashOut.
+             *     - **noInstantReachableTransferInstruments**: None of the transfer instruments can receive an instant cashout.
              *     - **cashOutInProgress**: A CashOut for this balance account is still being processed.
              *     - **dailyLimitReached**: The CashOut limit for this currency is used up for today.
              *     - **sendToBalanceAccountNotAllowed**: Account holder has no sendToBalanceAccount capability.
              *     - **receiveFromBalanceAccountNotAllowed**: Account holder has no receiveFromBalanceAccount capability.
+             *     - **sendToTransferInstrumentNotAllowed**: Account holder has no sendToTransferInstrument capability, so it cannot pay out to any transfer instrument.
              *     - **riskRestricted**: The account holder is restricted from CashOut due to Managed Risk.
              *     - **cashOutNotConfigured**: Balance Platform has no CashOut configuration for this currency.
              */
@@ -112,40 +115,40 @@ export interface components {
         CashOutRequestDTO: {
             /**
              * Format: int64
-             * @description The amount to cash out, in minor units. The cashOut fee is taken out of this amount, so the transfer instrument receives less than this.
+             * @description The amount to cash out, in minor units. The cashout fee is taken out of this amount, so the transfer instrument receives less than this.
              */
             amount: number;
-            /** @description Where the cashOut is paid out to. */
+            /** @description Where the cashout is paid out to. */
             counterparty: components['schemas']['CounterpartyDTO'];
             /** @description The three-character ISO currency code of the amount to cash out. */
             currency: string;
             /**
-             * @description Your description of the cashOut transfer, which most banks use as the transfer description. Longer than 140 characters may be truncated by the bank. Supported characters: **[a-z] [A-Z] [0-9] / - ? : ( ) . , ' + Space**.
+             * @description Your description of the cashout transfer, which most banks use as the transfer description. Longer than 140 characters may be truncated by the bank. Supported characters: **[a-z] [A-Z] [0-9] / - ? : ( ) . , ' + Space**.
              *
              *     When you leave this out, Adyen generates a description, which is not returned in the response.
              */
             description?: string;
             /**
-             * @description The reference sent to the recipient of the cashOut, and in every webhook about it, so you can track the transfer by it. Supported characters: **a-z**, **A-Z**, **0-9**.
+             * @description The reference sent to the recipient of the cashout, and in every webhook about it, so you can track the transfer by it. Supported characters: **a-z**, **A-Z**, **0-9**.
              *
              *     When you leave this out, Adyen generates a reference, which is not returned in the response.
              */
             referenceForBeneficiary?: string;
         };
         CashOutResponseDTO: {
-            /** @description The amount the cashOut was instructed for, in minor units. */
+            /** @description The amount the cashout was instructed for, in minor units. */
             amount: components['schemas']['Amount'];
-            /** @description The unique identifier of the balance account the cashOut is instructed from. */
+            /** @description The unique identifier of the balance account the cashout is instructed from. */
             balanceAccount: string;
-            /** @description Where the cashOut is paid out to. */
+            /** @description Where the cashout is paid out to. */
             counterparty: components['schemas']['CounterpartyDTO'];
-            /** @description Your description of the cashOut transfer. Returned only when you provided one. */
+            /** @description Your description of the cashout transfer. Returned only when you provided one. */
             description?: string;
-            /** @description The fee taken out of the cashOut amount, in minor units. */
+            /** @description The fee taken out of the cashout amount, in minor units. */
             fee: components['schemas']['Amount'];
-            /** @description The unique identifier of the cashOut. */
+            /** @description The unique identifier of the cashout. */
             id: string;
-            /** @description The reference sent to the recipient of the cashOut. Returned only when you provided one. */
+            /** @description The reference sent to the recipient of the cashout. Returned only when you provided one. */
             referenceForBeneficiary?: string;
         };
         /** @enum {string} */
@@ -156,35 +159,40 @@ export interface components {
             | 'dailyLimitReached'
             | 'sendToBalanceAccountNotAllowed'
             | 'receiveFromBalanceAccountNotAllowed'
+            | 'sendToTransferInstrumentNotAllowed'
             | 'riskRestricted'
             | 'cashOutNotConfigured';
         CounterpartyDTO: {
-            /** @description The unique identifier of the transfer instrument to pay the cashOut out to. */
+            /** @description The unique identifier of the transfer instrument to pay the cashout out to. */
             transferInstrumentId: string;
+        };
+        FeeStructureDTO: {
+            /** @description The fixed part of the fee, in minor units. Zero when there is no fixed fee. */
+            fixedAmount: components['schemas']['Amount'];
+            /**
+             * Format: int64
+             * @description The variable part of the fee as a percentage of the amount cashed out, in basis points, so 150 is 1.5%. Zero when there is no variable fee.
+             */
+            variableBasisPoints: number;
         };
         TransferInstrumentDTO: {
             /** @description A masked, human-readable label for the transfer instrument, for example the last four digits of a card or a partially masked IBAN. */
             description: string;
-            /** @description Whether the cashOut can be paid out to this transfer instrument. */
+            /** @description Whether the cashout can be paid out to this transfer instrument. */
             eligible: boolean;
             /**
-             * @description Why the cashOut cannot be paid out to this transfer instrument. Empty when **eligible** is **true**.
+             * @description Why the cashout cannot be paid out to this transfer instrument. Empty when **eligible** is **true**.
              *
              *     Possible values:
-             *     - **sendToTransferInstrumentNotAllowed**: The account holder has no sendToTransferInstrument capability.
              *     - **noInstantTransferRoute**: The transfer instrument cannot receive an instant transfer.
-             *     - **transferInstrumentCurrencyMismatch**: The currency of the transfer instrument does not match the currency of the cashOut.
+             *     - **transferInstrumentCurrencyMismatch**: The currency of the transfer instrument does not match the currency of the cashout.
              */
             ineligibilityReasons: components['schemas']['TransferInstrumentIneligibilityReason'][];
             /** @description The unique identifier of the transfer instrument. */
             transferInstrumentId: string;
-            /** @description The kind of transfer instrument the cashOut is paid out to. */
-            type: components['schemas']['TransferInstrumentType'];
         };
         /** @enum {string} */
-        TransferInstrumentIneligibilityReason: 'sendToTransferInstrumentNotAllowed' | 'noInstantTransferRoute' | 'transferInstrumentCurrencyMismatch';
-        /** @enum {string} */
-        TransferInstrumentType: 'visa' | 'mc' | 'bank';
+        TransferInstrumentIneligibilityReason: 'noInstantTransferRoute' | 'transferInstrumentCurrencyMismatch';
     };
     responses: never;
     parameters: never;

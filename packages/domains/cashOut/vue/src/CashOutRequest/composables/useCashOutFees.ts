@@ -7,18 +7,19 @@ import type { ICashOutAmount, ICashOutFees } from '@integration-components/types
 import { useReportErrors } from '../../shared/composables/useReportErrors';
 
 type CashOutFeesOptions = {
-    balanceAccountId: MaybeRefOrGetter<string | undefined>;
+    /** The account key of the balance account, as the balance accounts endpoint returns it. */
+    accountKey: MaybeRefOrGetter<string | undefined>;
     /** The amount to cash out, or `undefined` while there is no valid amount to get the fees of. */
     amount: MaybeRefOrGetter<ICashOutAmount | undefined>;
 };
 
 /** The fees of cashing out `amount`, fetched once the amount stops changing. */
-export const useCashOutFees = ({ balanceAccountId, amount }: CashOutFeesOptions) => {
+export const useCashOutFees = ({ accountKey, amount }: CashOutFeesOptions) => {
     const config = useConfigContext();
     const request = useAsyncRequest<ICashOutFees>();
     const getCashOutFees = computed(() => config.endpoints.getCashOutFees);
     let debounceTimeout: ReturnType<typeof setTimeout> | undefined;
-    let requestedBalanceAccountId: string | undefined;
+    let requestedAccountKey: string | undefined;
 
     const cancel = () => {
         clearTimeout(debounceTimeout);
@@ -26,29 +27,28 @@ export const useCashOutFees = ({ balanceAccountId, amount }: CashOutFeesOptions)
         request.abort();
     };
 
-    const fetchFees = (id: string, { value, currency }: ICashOutAmount) => {
+    const fetchFees = (key: string, { value, currency }: ICashOutAmount) => {
         const endpoint = getCashOutFees.value;
         if (!endpoint) return;
 
-        requestedBalanceAccountId = id;
-        // The cashOut endpoints take the balance account id as their account key.
-        void request.execute(signal => endpoint({ signal }, { path: { accountKey: id }, query: { amount: value, currency } }));
+        requestedAccountKey = key;
+        void request.execute(signal => endpoint({ signal }, { path: { accountKey: key }, query: { amount: value, currency } }));
     };
 
     watch(
-        [() => toValue(balanceAccountId), () => toValue(amount)],
-        ([id, nextAmount]) => {
+        [() => toValue(accountKey), () => toValue(amount)],
+        ([key, nextAmount]) => {
             cancel();
             // Fees of a previous amount must not show while the next ones load.
             request.data.value = undefined;
             request.error.value = undefined;
 
-            if (!id || !nextAmount) return;
+            if (!key || !nextAmount) return;
 
             // The first amount of a balance account is set by the component rather than typed, so there is nothing to wait for.
-            if (id !== requestedBalanceAccountId) return fetchFees(id, nextAmount);
+            if (key !== requestedAccountKey) return fetchFees(key, nextAmount);
 
-            debounceTimeout = setTimeout(() => fetchFees(id, nextAmount), CASH_OUT_FEES_DEBOUNCE_MS);
+            debounceTimeout = setTimeout(() => fetchFees(key, nextAmount), CASH_OUT_FEES_DEBOUNCE_MS);
         },
         { immediate: true }
     );

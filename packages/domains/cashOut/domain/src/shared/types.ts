@@ -1,7 +1,15 @@
 import type { DomainTranslationKey } from '@integration-components/core';
-import type { ICashOutResponse } from '@integration-components/types';
+import type { IBalanceAccountBase, ICashOutResponse } from '@integration-components/types';
 
 export type CashOutTranslationKey = DomainTranslationKey<'cashOut'>;
+
+/**
+ * A balance account as the balance accounts endpoint returns it, with the account key the cashOut endpoints take in their path.
+ * The generated balance account types don't have `accountKey` yet; drop this once they are regenerated.
+ */
+
+//TODO: remove after library migrated to new resource with accountKey in the response
+export type CashOutBalanceAccount = IBalanceAccountBase & { accountKey: string };
 
 /**
  * What the integration can set on the cashOut of the CashOut Overview. The balance accounts come from the session instead: an

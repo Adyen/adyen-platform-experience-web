@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
-import { waitForCashOutRequest } from '../shared/utils';
+import { expectSelectorBesideTitle, refreshFromHeader, waitForCashOutRequest } from '../shared/utils';
 import { openRequestModal } from './shared/utils';
 
 const STORY_ID = 'mocked-cashout-cashout-overview--default';
@@ -10,7 +10,8 @@ test.describe('CashOut Overview - Default', () => {
         await goToStory(page, { id: STORY_ID });
     });
 
-    const AVAILABLE_TO_CASH_OUT_TOOLTIP = 'You can cash out up to your pending balance, subject to a cap per rolling 24-hour period.';
+    const AVAILABLE_TO_CASH_OUT_TOOLTIP =
+        'You can cash out up to your pending balance, subject to a $25,000.00 cap per rolling 24-hour period. Only the amount you receive counts toward this cap.';
 
     test.describe('Render', () => {
         test('should show what the selected balance account can cash out', async ({ page }) => {
@@ -24,6 +25,33 @@ test.describe('CashOut Overview - Default', () => {
                 expect(root.getByText('$220.00', { exact: true })).toBeVisible(),
                 expect(root.getByRole('button', { name: 'Start instant CashOut' })).toBeEnabled(),
             ]);
+        });
+
+        test('should show the balance account selector on the same line as the title, to its right', async ({ page }) => {
+            await expectSelectorBesideTitle(getComponentRoot(page), 'Instant CashOut');
+        });
+
+        test('should load what is available again when refreshed, keeping the selected balance account', async ({ page }) => {
+            const root = getComponentRoot(page);
+
+            expect(new URL((await refreshFromHeader(page)).url()).pathname).toContain('/cashout/eligibility');
+            await Promise.all([
+                expect(root.getByRole('combobox', { name: 'Balance account' })).toHaveText('S. Hopper - Main Account'),
+                expect(root.getByText('$220.00', { exact: true })).toBeVisible(),
+            ]);
+        });
+
+        test('should size the start button to its label, at the start of the component', async ({ page }) => {
+            const root = getComponentRoot(page);
+            const content = root.getByText('Available to cash out');
+            const startButton = root.getByRole('button', { name: 'Start instant CashOut' });
+            await startButton.waitFor();
+
+            const [contentBox, buttonBox] = await Promise.all([content.boundingBox(), startButton.boundingBox()]);
+            const rootWidth = await root.evaluate(element => element.getBoundingClientRect().width);
+
+            expect(buttonBox!.width).toBeLessThan(rootWidth / 2);
+            expect(buttonBox!.x).toBeCloseTo(contentBox!.x, 0);
         });
 
         test('should explain what is available to cash out when its info icon is hovered', async ({ page }) => {
@@ -56,13 +84,17 @@ test.describe('CashOut Overview - Default', () => {
                 expect(modal.getByRole('combobox', { name: 'Balance account' })).toHaveText('S. Hopper - Main Account'),
                 expect(modal.getByRole('spinbutton', { name: 'Amount to cash out' })).toHaveValue('220.00'),
                 // Each value with its label, in the order they are shown.
-                expect(modal.getByRole('term')).toHaveCount(2),
-                expect(modal.getByRole('term')).toContainText(['Available to cash out', 'Fees']),
+                expect(modal.getByText('You have $220.00 available to cash out')).toBeVisible(),
+                // The request in the modal has no header, so it has no refresh: only the standalone one has.
+                expect(modal.getByText('Last updated', { exact: false })).toHaveCount(0),
+                expect(modal.getByRole('button', { name: 'Refresh' })).toHaveCount(0),
+                expect(modal.getByRole('term')).toHaveCount(1),
+                expect(modal.getByRole('term')).toContainText(['Fees']),
                 expect(modal.getByLabel(AVAILABLE_TO_CASH_OUT_TOOLTIP)).toBeVisible(),
-                expect(modal.getByLabel('The fee is taken out of the amount you cash out.')).toBeVisible(),
-                expect(modal.getByRole('definition')).toHaveText(['$220.00', '$3.80']),
+                expect(modal.getByLabel('The fee is $0.50 plus 1.5% of the amount you cash out.')).toBeVisible(),
+                expect(modal.getByRole('definition')).toHaveText(['$3.80']),
                 expect(modal.getByRole('status')).toContainText('You will receive $216.20'),
-                expect(modal.getByRole('status')).toContainText('The money will be in your account within 30 minutes.'),
+                expect(modal.getByRole('status')).toContainText('Your money usually arrives within 30 minutes. Some transfers may take longer.'),
                 expect(modal.getByRole('button', { name: 'Cash out now' })).toBeDisabled(),
             ]);
         });
@@ -79,9 +111,9 @@ test.describe('CashOut Overview - Default', () => {
                 expect(options.nth(1)).toHaveAccessibleName('GB**NWBK**********1234'),
                 expect(options.nth(2)).toHaveAccessibleName('********5678'),
                 expect(options.nth(2)).toBeEnabled(),
-                expect(options.nth(3)).toHaveAccessibleName("GB**BARC**********5432 This account can't receive instant payouts."),
+                expect(options.nth(3)).toHaveAccessibleName("GB**BARC**********5432 This account can't receive instant payouts"),
                 expect(options.nth(3)).toBeDisabled(),
-                expect(options.nth(4)).toHaveAccessibleName("********9012 This account can't receive payouts in USD."),
+                expect(options.nth(4)).toHaveAccessibleName("********9012 This account can't receive payouts in USD"),
                 expect(options.nth(4)).toBeDisabled(),
             ]);
         });
@@ -127,7 +159,9 @@ test.describe('CashOut Overview - Default', () => {
             });
             await Promise.all([
                 expect(modal.getByText('CashOut successful')).toBeVisible(),
-                expect(modal.getByText('You can expect your money to be in your account within 30 minutes.')).toBeVisible(),
+                expect(
+                    modal.getByText('You can expect your money to be in your account within 30 minutes. Some transfers may take longer.')
+                ).toBeVisible(),
                 expect(modal.getByRole('button', { name: 'Cash out now' })).toBeHidden(),
                 // Only the close button of the modal: the request in the modal has no close button of its own.
                 expect(modal.getByRole('button', { name: 'Close' })).toHaveCount(1),
@@ -137,6 +171,21 @@ test.describe('CashOut Overview - Default', () => {
 
             await expect(modal).toBeHidden();
             await expect(getComponentRoot(page).getByText('$120.00', { exact: true })).toBeVisible();
+        });
+
+        test('should show the result right under the header of the modal', async ({ page }) => {
+            const modal = await openRequestModal(page);
+
+            await modal.getByRole('combobox', { name: 'Account to deposit into' }).click();
+            await modal.getByRole('option', { name: 'NL**ABNA******4300' }).click();
+            await modal.getByRole('button', { name: 'Cash out now' }).click();
+
+            const title = modal.getByText('CashOut successful');
+            await title.waitFor();
+            const [closeBox, titleBox] = await Promise.all([modal.getByRole('button', { name: 'Close' }).boundingBox(), title.boundingBox()]);
+
+            // Under the header there is only the icon (24px) and the gap to the title (16px), plus the space the modal leaves under its header.
+            expect(titleBox!.y - (closeBox!.y + closeBox!.height)).toBeLessThanOrEqual(64);
         });
     });
 });

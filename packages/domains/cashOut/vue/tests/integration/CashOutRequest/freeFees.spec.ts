@@ -12,7 +12,9 @@ test.describe('CashOut Request - Free fees', () => {
         const root = getComponentRoot(page);
 
         await Promise.all([
-            expect(root.getByRole('definition')).toHaveText(['$220.00', 'Free']),
+            expect(root.getByText('You have $220.00 available to cash out')).toBeVisible(),
+            expect(root.getByRole('definition')).toHaveText(['Free']),
+            expect(root.getByLabel('There is no fee for instant CashOuts.')).toBeVisible(),
             expect(root.getByRole('status')).toContainText('You will receive $220.00'),
         ]);
     });

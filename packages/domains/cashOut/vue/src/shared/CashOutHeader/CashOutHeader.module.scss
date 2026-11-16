@@ -1,8 +1,21 @@
 @use '@integration-components/style';
 
-// The balance account selector goes under the title, so in a modal, without the title, it isn't next to the close button.
+// The balance account selector goes to the right of the title, on its line, also when the title has the last update under it.
+// In a modal, without the title, it goes on its own line.
 .root {
+    align-items: flex-start;
     display: flex;
-    flex-direction: column;
-    gap: style.token(spacer-060);
+    gap: style.token(spacer-070);
+    // With the gap of the component under it, the content starts 24px under the header, as designed.
+    margin-bottom: style.token(spacer-040);
+}
+
+.title {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.selector {
+    flex: 0 1 auto;
+    max-width: 50%;
 }

@@ -15,7 +15,7 @@ test.describe('CashOut Request - Ineligible transfer instruments', () => {
         await Promise.all([
             expect(root.getByRole('combobox', { name: 'Account to deposit into' })).toHaveText('Select a bank account'),
             expect(root.getByRole('status')).toContainText('You will receive $216.20'),
-            expect(root.getByRole('status')).toContainText('The money will be in your account within 30 minutes.'),
+            expect(root.getByRole('status')).toContainText('Your money usually arrives within 30 minutes. Some transfers may take longer.'),
             expect(root.getByRole('button', { name: 'Cash out now' })).toBeDisabled(),
         ]);
     });
@@ -32,9 +32,9 @@ test.describe('CashOut Request - Ineligible transfer instruments', () => {
             expect(options.nth(1)).toHaveAccessibleName('GB**NWBK**********1234'),
             expect(options.nth(2)).toHaveAccessibleName('********5678'),
             expect(options.nth(2)).toBeEnabled(),
-            expect(options.nth(3)).toHaveAccessibleName("GB**BARC**********5432 This account can't receive instant payouts."),
+            expect(options.nth(3)).toHaveAccessibleName("GB**BARC**********5432 This account can't receive instant payouts"),
             expect(options.nth(3)).toBeDisabled(),
-            expect(options.nth(4)).toHaveAccessibleName("********9012 This account can't receive payouts in USD."),
+            expect(options.nth(4)).toHaveAccessibleName("********9012 This account can't receive payouts in USD"),
             expect(options.nth(4)).toBeDisabled(),
         ]);
     });
@@ -49,7 +49,8 @@ test.describe('CashOut Request - Ineligible transfer instruments', () => {
 
         await Promise.all([
             expect(root.getByRole('spinbutton', { name: 'Amount to cash out' })).toHaveValue('1000.00'),
-            expect(root.getByRole('definition')).toHaveText(['€1,000.00', '€15.50']),
+            expect(root.getByText('You have €1,000.00 available to cash out')).toBeVisible(),
+            expect(root.getByRole('definition')).toHaveText(['€15.50']),
             expect(root.getByRole('status')).toContainText('You will receive €984.50'),
             // The bank account selected for the previous balance account doesn't carry over.
             expect(root.getByRole('combobox', { name: 'Account to deposit into' })).toHaveText('Select a bank account'),

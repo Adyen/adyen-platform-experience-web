@@ -6,6 +6,9 @@ import { withDelay } from '@integration-components/testing/msw';
 const mockEndpoints = endpoints();
 const networkError = false;
 
+// Like the API, which returns the account key of every balance account.
+const withAccountKey = <T extends { id: string }>(balanceAccount: T) => ({ ...balanceAccount, accountKey: `BalanceAccount.${balanceAccount.id}` });
+
 export const balanceAccountMock = [
     http.get(
         mockEndpoints.balanceAccounts,
@@ -14,7 +17,7 @@ export const balanceAccountMock = [
                 return HttpResponse.error();
             }
             return HttpResponse.json({
-                data: BALANCE_ACCOUNTS,
+                data: BALANCE_ACCOUNTS.map(withAccountKey),
             });
         })
     ),

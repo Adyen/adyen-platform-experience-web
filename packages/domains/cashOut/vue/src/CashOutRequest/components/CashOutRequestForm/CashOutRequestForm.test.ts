@@ -11,6 +11,8 @@ import CashOutRequestForm from './CashOutRequestForm.vue';
 
 const CASH_OUT = 'cashOut.request.actions.cashOut.labels.default';
 const SUMMARY_TITLE = 'cashOut.request.summary.title';
+const AVAILABLE_FOR_CASH_OUT = 'cashOut.request.availableForCashOut';
+const AMOUNT_BELOW_FEE = 'cashOut.request.errors.amountBelowFee';
 
 const transferInstrumentOf = (id: string, ineligibilityReason?: string) =>
     ({
@@ -18,13 +20,12 @@ const transferInstrumentOf = (id: string, ineligibilityReason?: string) =>
         eligible: !ineligibilityReason,
         ineligibilityReasons: ineligibilityReason ? [ineligibilityReason] : [],
         transferInstrumentId: id,
-        type: 'bank',
     }) as ICashOutTransferInstrument;
 
 const eligibilityOf = (transferInstruments: ICashOutTransferInstrument[], unavailableReason?: string) =>
     ({
-        availableBalance: { value: 30000, currency: 'USD' },
         availableForCashOutBalance: { value: 22000, currency: 'USD' },
+        feeStructure: { fixedAmount: { value: 50, currency: 'USD' }, variableBasisPoints: 150 },
         isCashoutAvailable: !unavailableReason,
         transferInstruments,
         unavailableReasons: unavailableReason ? [unavailableReason] : [],
@@ -51,7 +52,7 @@ const feesOf = (fee: number): ICashOutFees => ({
 
 type DropdownItem = { label: string; value: string; description?: string };
 
-const amountField: { setAmount?: (value: number | undefined) => void; disabled?: boolean } = {};
+const amountField: { setAmount?: (value: number | undefined) => void; disabled?: boolean; value?: number } = {};
 
 vi.mock('@adyen/bento-vue3', async () => {
     const { defineComponent, h } = await import('vue');
@@ -88,7 +89,10 @@ vi.mock('@adyen/bento-vue3', async () => {
                 return () => h('div', { 'data-testid': 'dropdown', 'data-disabled': String(props.disabled) }, props.items.map(renderOption));
             },
         }),
-        BentoInfoIcon: () => h('span'),
+        BentoInfoIcon: defineComponent({
+            props: { tooltipText: { type: String, required: true } },
+            setup: props => () => h('span', { 'data-tooltip': props.tooltipText }),
+        }),
         BentoLoadingSkeleton: stub,
         BentoLoadingSkeletonTypography: defineComponent({
             props: { textStyle: { type: String, default: 'body' } },
@@ -115,12 +119,13 @@ vi.mock('../CashOutAmountField/CashOutAmountField.vue', async () => {
 
     return {
         default: defineComponent({
-            props: { disabled: Boolean },
+            props: { disabled: Boolean, modelValue: { type: Number, default: undefined } },
             emits: ['update:modelValue'],
             setup(props, { emit }) {
                 amountField.setAmount = value => emit('update:modelValue', value);
                 return () => {
                     amountField.disabled = props.disabled;
+                    amountField.value = props.modelValue;
                     return h('div', 'amount field');
                 };
             },
@@ -159,18 +164,24 @@ type FormProps = {
     onResult?: (result: unknown) => void;
     onContactSupport?: () => void;
     onFeesError?: (error: Error) => void;
+    onInstructingChange?: (isInstructing: boolean) => void;
 };
 
 const renderForm = ({ onResult = vi.fn(), onFeesError = vi.fn(), ...props }: FormProps) => {
     const target = document.createElement('div');
-    const app = createApp(CashOutRequestForm, { balanceAccountId: 'BA1', onResult, onFeesError, ...props });
+    const app = createApp(CashOutRequestForm, { accountKey: 'BalanceAccount.BA1', onResult, onFeesError, ...props });
     app.mount(target);
 
     const findButton = (title: string) => [...target.querySelectorAll('button')].find(button => button.textContent === title);
-    const findDetail = (label: string) =>
-        [...target.querySelectorAll('dt')].find(term => term.textContent === label)?.nextElementSibling?.textContent ?? undefined;
+    const findTerm = (label: string) => [...target.querySelectorAll('dt')].find(term => term.textContent === label);
+    const findDetail = (label: string) => findTerm(label)?.nextElementSibling?.textContent ?? undefined;
+    const findTooltip = (label: string) => findTerm(label)?.querySelector('[data-tooltip]')?.getAttribute('data-tooltip') ?? undefined;
+    const findAvailableForCashOut = () =>
+        [...target.querySelectorAll('*')].find(element => !element.children.length && element.textContent?.startsWith(AVAILABLE_FOR_CASH_OUT));
+    const findAvailableForCashOutTooltip = () =>
+        findAvailableForCashOut()?.parentElement?.querySelector('[data-tooltip]')?.getAttribute('data-tooltip') ?? undefined;
 
-    return { findButton, findDetail, target, unmount: () => app.unmount() };
+    return { findAvailableForCashOut, findAvailableForCashOutTooltip, findButton, findDetail, findTooltip, target, unmount: () => app.unmount() };
 };
 
 const requestedFeesAmount = () => toValue(vi.mocked(useCashOutFees).mock.calls[0]![0].amount);
@@ -182,6 +193,7 @@ describe('CashOutRequestForm', () => {
         vi.mocked(useCoreContext).mockReturnValue({
             i18n: {
                 amount: (value: number, currency: string) => `${value} ${currency}`,
+                locale: 'en-US',
                 get: (key: string, options?: { values?: Record<string, string> }) =>
                     options?.values ? `${key} ${Object.values(options.values).join(' ')}` : key,
             },
@@ -191,10 +203,12 @@ describe('CashOutRequestForm', () => {
     describe('Amount and fees', () => {
         test('should start from the amount available to cash out and request its fees', () => {
             mockFees();
-            const { findDetail, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT });
+            const { findAvailableForCashOut, findDetail, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT });
 
-            expect(findDetail('cashOut.common.availableForCashOut.label')).toBe('22000 USD');
-            expect(toValue(vi.mocked(useCashOutFees).mock.calls[0]![0].balanceAccountId)).toBe('BA1');
+            expect(findAvailableForCashOut()?.textContent).toBe(`${AVAILABLE_FOR_CASH_OUT} 22000 USD`);
+            expect(findDetail('cashOut.common.availableForCashOut.label')).toBeUndefined();
+            expect(amountField.value).toBe(22000);
+            expect(toValue(vi.mocked(useCashOutFees).mock.calls[0]![0].accountKey)).toBe('BalanceAccount.BA1');
             expect(requestedFeesAmount()).toEqual({ value: 22000, currency: 'USD' });
 
             unmount();
@@ -244,6 +258,23 @@ describe('CashOutRequestForm', () => {
             unmount();
         });
 
+        test('should not allow cashing out an amount the fee takes all of', async () => {
+            const fees = mockFees();
+            fees.fees.value = feesOf(1101);
+            const { findButton, target, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT });
+
+            expect(findButton(CASH_OUT)?.disabled).toBe(false);
+
+            fees.fees.value = feesOf(22000);
+            await nextTick();
+
+            expect(target.textContent).toContain(AMOUNT_BELOW_FEE);
+            expect(target.textContent).not.toContain(SUMMARY_TITLE);
+            expect(findButton(CASH_OUT)?.disabled).toBe(true);
+
+            unmount();
+        });
+
         test('should request the fees of the entered amount', async () => {
             mockFees();
             const { unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT });
@@ -266,7 +297,7 @@ describe('CashOutRequestForm', () => {
             await nextTick();
 
             expect(requestedFeesAmount()).toBeUndefined();
-            expect(findDetail('cashOut.request.fields.fees.label')).toContain('-');
+            expect(findDetail('cashOut.request.fields.fees.label')).toBe('--');
             expect(target.textContent).not.toContain(SUMMARY_TITLE);
             expect(findButton(CASH_OUT)?.disabled).toBe(true);
 
@@ -288,7 +319,67 @@ describe('CashOutRequestForm', () => {
         });
     });
 
+    describe('Tooltips', () => {
+        const FEES = 'cashOut.request.fields.fees.label';
+        const withFeeStructure = (fixedAmount: number, variableBasisPoints: number) =>
+            ({
+                ...SINGLE_TRANSFER_INSTRUMENT,
+                feeStructure: { fixedAmount: { value: fixedAmount, currency: 'USD' }, variableBasisPoints },
+            }) as ICashOutEligibility;
+
+        test.each([
+            ['a fixed amount plus a percentage', withFeeStructure(50, 150), 'cashOut.request.fields.fees.tooltips.fixedAndVariable 50 USD 1.5%'],
+            ['only a percentage', withFeeStructure(0, 150), 'cashOut.request.fields.fees.tooltips.variable 1.5%'],
+            ['only a fixed amount', withFeeStructure(50, 0), 'cashOut.request.fields.fees.tooltips.fixed 50 USD'],
+            ['no fee', withFeeStructure(0, 0), 'cashOut.request.fields.fees.tooltips.free'],
+        ])('should explain a fee of %s', (_, eligibility, tooltip) => {
+            mockFees();
+            const { findTooltip, unmount } = renderForm({ eligibility });
+
+            expect(findTooltip(FEES)).toBe(tooltip);
+
+            unmount();
+        });
+
+        test('should mention the daily limit of the balance account in what is available to cash out', () => {
+            mockFees();
+            const eligibility = { ...SINGLE_TRANSFER_INSTRUMENT, dailyLimit: { value: 2_500_000, currency: 'USD' } } as ICashOutEligibility;
+            const { findAvailableForCashOutTooltip, unmount } = renderForm({ eligibility });
+
+            expect(findAvailableForCashOutTooltip()).toBe('cashOut.common.availableForCashOut.tooltips.withDailyLimit 2500000 USD');
+
+            unmount();
+        });
+
+        test('should explain what is available to cash out without a limit when the balance account has none', () => {
+            mockFees();
+            const { findAvailableForCashOutTooltip, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT });
+
+            expect(findAvailableForCashOutTooltip()).toBe('cashOut.common.availableForCashOut.tooltips.default');
+
+            unmount();
+        });
+    });
+
     describe('Cash out', () => {
+        // So the component it is in can keep the user from loading another eligibility while the cashOut is sent.
+        test('should tell when the cashOut starts and stops being sent', async () => {
+            mockFees().fees.value = feesOf(1101);
+            const instruct = mockInstructCashOut();
+            const onInstructingChange = vi.fn();
+            const { unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT, onInstructingChange });
+
+            instruct.isInstructing.value = true;
+            await nextTick();
+            expect(onInstructingChange).toHaveBeenLastCalledWith(true);
+
+            instruct.isInstructing.value = false;
+            await nextTick();
+            expect(onInstructingChange).toHaveBeenLastCalledWith(false);
+
+            unmount();
+        });
+
         test('should instruct the cashOut of the amount to the selected account and report the cashOut', async () => {
             const fees = mockFees();
             fees.fees.value = feesOf(1101);
@@ -300,7 +391,7 @@ describe('CashOutRequestForm', () => {
             await vi.waitFor(() => expect(onResult).toHaveBeenCalled());
 
             expect(instruct.instructCashOut).toHaveBeenCalledWith({
-                balanceAccountId: 'BA1',
+                accountKey: 'BalanceAccount.BA1',
                 amount: { value: 22000, currency: 'USD' },
                 transferInstrumentId: 'TI1',
             });
@@ -380,7 +471,7 @@ describe('CashOutRequestForm', () => {
             fees.fees.value = feesOf(1101);
             const { findButton, findDetail, target, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT });
 
-            expect(findDetail('cashOut.request.fields.account.label')).toContain('Account TI1');
+            expect(findDetail('cashOut.request.fields.transferInstrument.label')).toContain('Account TI1');
             expect(target.querySelector('[data-testid="dropdown"]')).toBeNull();
             expect(findButton(CASH_OUT)?.disabled).toBe(false);
 
@@ -394,7 +485,7 @@ describe('CashOutRequestForm', () => {
 
             const options = [...target.querySelectorAll<HTMLButtonElement>('[data-testid="option"]')];
 
-            expect(findDetail('cashOut.request.fields.account.label')).toBeUndefined();
+            expect(findDetail('cashOut.request.fields.transferInstrument.label')).toBeUndefined();
             expect(options.map(option => [option.textContent, option.disabled])).toEqual([
                 ['Account TI1', false],
                 ['Account TI2 cashOut.request.fields.transferInstrument.ineligibilityReasons.noInstantTransferRoute', true],
@@ -410,7 +501,7 @@ describe('CashOutRequestForm', () => {
             fees.fees.value = feesOf(1101);
             const { findButton, findDetail, target, unmount } = renderForm({ eligibility: MULTIPLE_TRANSFER_INSTRUMENTS });
 
-            expect(findDetail('cashOut.request.fields.account.label')).toBeUndefined();
+            expect(findDetail('cashOut.request.fields.transferInstrument.label')).toBeUndefined();
             expect(findButton(CASH_OUT)?.disabled).toBe(true);
 
             target.querySelector<HTMLButtonElement>('[data-testid="option"]')?.click();
@@ -455,27 +546,6 @@ describe('CashOutRequestForm', () => {
             unmount();
         });
 
-        test('should show no reason for an account the account holder is not allowed to send cashOuts to', () => {
-            mockFees();
-            const { target, unmount } = renderForm({
-                eligibility: eligibilityOf([
-                    transferInstrumentOf('TI1'),
-                    transferInstrumentOf('TI2'),
-                    transferInstrumentOf('TI3', 'sendToTransferInstrumentNotAllowed'),
-                ]),
-            });
-
-            const options = [...target.querySelectorAll<HTMLButtonElement>('[data-testid="option"]')];
-
-            expect(options.map(option => [option.textContent, option.disabled])).toEqual([
-                ['Account TI1', false],
-                ['Account TI2', false],
-                ['Account TI3', true],
-            ]);
-
-            unmount();
-        });
-
         test('should list eligible accounts first, keeping the order of the API within each group', () => {
             mockFees();
             const { target, unmount } = renderForm({
@@ -507,11 +577,48 @@ describe('CashOutRequestForm', () => {
 
             expect(target.textContent).toContain('cashOut.common.unavailableReasons.dailyLimitReached');
             expect(target.textContent).not.toContain(SUMMARY_TITLE);
+            // What is available stays in the field, disabled, but its fees aren't requested.
+            expect(amountField.value).toBe(22000);
             expect(amountField.disabled).toBe(true);
             expect(target.querySelector('[data-testid="dropdown"]')?.getAttribute('data-disabled')).toBe('true');
-            expect(findDetail('cashOut.request.fields.fees.label')).toContain('-');
+            expect(findDetail('cashOut.request.fields.fees.label')).toBe('--');
             expect(requestedFeesAmount()).toBeUndefined();
             expect(findButton(CASH_OUT)?.disabled).toBe(true);
+
+            unmount();
+        });
+    });
+
+    describe('Unavailable with a single eligible bank account', () => {
+        test.each([
+            ['the only bank account', [transferInstrumentOf('TI1')]],
+            [
+                'the only eligible one of several bank accounts',
+                [
+                    transferInstrumentOf('TI2', 'noInstantTransferRoute'),
+                    transferInstrumentOf('TI1'),
+                    transferInstrumentOf('TI3', 'transferInstrumentCurrencyMismatch'),
+                ],
+            ],
+        ])('should show %s as a detail instead of the dropdown', (_, transferInstruments) => {
+            mockFees();
+            const { findDetail, target, unmount } = renderForm({ eligibility: eligibilityOf(transferInstruments, 'zeroBalance') });
+
+            expect(findDetail('cashOut.request.fields.transferInstrument.label')).toBe('Account TI1');
+            expect(target.querySelector('[data-testid="dropdown"]')).toBeNull();
+
+            unmount();
+        });
+
+        test.each([
+            ['a single ineligible bank account', [transferInstrumentOf('TI1', 'noInstantTransferRoute')]],
+            ['several eligible bank accounts', [transferInstrumentOf('TI1'), transferInstrumentOf('TI2')]],
+        ])('should keep the disabled dropdown for %s', (_, transferInstruments) => {
+            mockFees();
+            const { findDetail, target, unmount } = renderForm({ eligibility: eligibilityOf(transferInstruments, 'zeroBalance') });
+
+            expect(findDetail('cashOut.request.fields.transferInstrument.label')).toBeUndefined();
+            expect(target.querySelector('[data-testid="dropdown"]')?.getAttribute('data-disabled')).toBe('true');
 
             unmount();
         });

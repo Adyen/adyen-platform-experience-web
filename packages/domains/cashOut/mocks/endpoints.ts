@@ -1,6 +1,6 @@
 import { MSW_BASE_URL } from '@integration-components/testing/msw';
 
-// `:accountKey` is the id of the balance account the cashOut is for.
+// `:accountKey` is the account key of the balance account the cashOut is for, `BalanceAccount.<id>`.
 const BASE_URL = `${MSW_BASE_URL}/:accountKey/cashout`;
 
 export const ENDPOINTS = {

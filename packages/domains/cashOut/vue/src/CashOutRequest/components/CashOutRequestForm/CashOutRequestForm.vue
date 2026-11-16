@@ -15,6 +15,7 @@ import type { ICashOutEligibility } from '@integration-components/types';
 import type { CashOutResult } from '../../types';
 import { useCashOutFees } from '../../composables/useCashOutFees';
 import { useFormatAmount } from '../../../shared/composables/useFormatAmount';
+import { useCashOutTooltips } from '../../../shared/composables/useCashOutTooltips';
 import { useInstructCashOut } from '../../composables/useInstructCashOut';
 import UnavailableReasonAlert from '../../../shared/UnavailableReasonAlert/UnavailableReasonAlert.vue';
 import CashOutAmountField from '../CashOutAmountField/CashOutAmountField.vue';
@@ -22,20 +23,23 @@ import TransferInstrumentSelector from '../TransferInstrumentSelector/TransferIn
 import styles from './CashOutRequestForm.module.scss';
 
 type DetailItem = {
-    key: 'availableForCashOut' | 'fees' | 'account';
+    key: 'fees' | 'account';
     label: string;
     info?: string;
     value?: string;
 };
 
 const props = defineProps<{
-    balanceAccountId: string;
+    /** The account key of the selected balance account, as the balance accounts endpoint returns it. */
+    accountKey: string;
     eligibility: ICashOutEligibility;
     referenceForBeneficiary?: string;
     transferDescription?: string;
     onResult: (result: CashOutResult) => void;
     onContactSupport?: () => void;
     onFeesError: (error: AdyenPlatformExperienceError) => void;
+    /** Called when the cashOut starts and stops being sent, so the component this form is in can hold off what would replace it. */
+    onInstructingChange?: (isInstructing: boolean) => void;
 }>();
 
 const { i18n } = useCoreContext();
@@ -44,13 +48,16 @@ const formatAmount = useFormatAmount();
 const isCashOutAvailable = computed(() => props.eligibility.isCashoutAvailable);
 const availableForCashOut = computed(() => props.eligibility.availableForCashOutBalance);
 
-const amountValue = ref<number | undefined>(isCashOutAvailable.value ? availableForCashOut.value.value : undefined);
+// What is available stays in the field when the cashOut is unavailable, disabled, but it isn't an amount to request fees for or cash out.
+const amountValue = ref<number | undefined>(availableForCashOut.value.value);
 const amount = computed(() =>
-    amountValue.value === undefined ? undefined : { value: amountValue.value, currency: availableForCashOut.value.currency }
+    !isCashOutAvailable.value || amountValue.value === undefined
+        ? undefined
+        : { value: amountValue.value, currency: availableForCashOut.value.currency }
 );
 
 const { fees, feesError, isFetchingFees } = useCashOutFees({
-    balanceAccountId: () => props.balanceAccountId,
+    accountKey: () => props.accountKey,
     amount: () => amount.value,
 });
 
@@ -60,52 +67,66 @@ watch(feesError, error => {
 
 const transferInstruments = computed(() => props.eligibility.transferInstruments);
 const eligibleTransferInstruments = computed(() => transferInstruments.value.filter(({ eligible }) => eligible));
-// The only account of the balance account is shown as a detail instead of a dropdown. Ineligible accounts stay in the dropdown,
-// so the user sees why they can't be chosen.
-const singleTransferInstrument = computed(() =>
-    transferInstruments.value.length === 1 && transferInstruments.value[0]?.eligible ? transferInstruments.value[0] : undefined
-);
+// One account is shown as a detail instead of a dropdown: the only account of the balance account when the cashOut is available, the
+// ineligible ones staying in the dropdown so the user sees why they can't be chosen; and when it is unavailable, as nothing can be
+// chosen anyway, the only eligible account, whatever ineligible ones there are.
+const singleTransferInstrument = computed(() => {
+    if (!isCashOutAvailable.value) return eligibleTransferInstruments.value.length === 1 ? eligibleTransferInstruments.value[0] : undefined;
+    return transferInstruments.value.length === 1 && transferInstruments.value[0]?.eligible ? transferInstruments.value[0] : undefined;
+});
 // The only account that can be chosen is selected right away.
 const transferInstrumentId = ref<string | undefined>(
     eligibleTransferInstruments.value.length === 1 ? eligibleTransferInstruments.value[0]?.transferInstrumentId : undefined
 );
 
+// Shown when there is no fee to show: no amount to cash out, or the cashOut is unavailable.
+const NO_FEE = '--';
+
 const feesValue = computed(() => {
-    if (!amount.value) return '-';
+    if (!amount.value) return NO_FEE;
     if (!fees.value) return undefined;
     return fees.value.fee.value === 0 ? i18n.get('cashOut.request.fields.fees.free') : formatAmount(fees.value.fee);
 });
 
+const { availableForCashOutTooltip, feeTooltip } = useCashOutTooltips();
+
 const detailItems = computed<DetailItem[]>(() => [
-    {
-        key: 'availableForCashOut',
-        label: i18n.get('cashOut.common.availableForCashOut.label'),
-        info: i18n.get('cashOut.common.availableForCashOut.tooltip'),
-        value: formatAmount(availableForCashOut.value),
-    },
     {
         key: 'fees',
         label: i18n.get('cashOut.request.fields.fees.label'),
-        info: i18n.get('cashOut.request.fields.fees.tooltip'),
+        info: feeTooltip(props.eligibility.feeStructure),
         value: feesValue.value,
     },
     ...(singleTransferInstrument.value
-        ? [{ key: 'account' as const, label: i18n.get('cashOut.request.fields.account.label'), value: singleTransferInstrument.value.description }]
+        ? [
+              {
+                  key: 'account' as const,
+                  label: i18n.get('cashOut.request.fields.transferInstrument.label'),
+                  value: singleTransferInstrument.value.description,
+              },
+          ]
         : []),
 ]);
 
+// The fee never exceeds the amount, so a fee that reaches it takes all of it and leaves nothing to receive.
+const isAmountBelowFee = computed(() => fees.value?.payoutAmount.value === 0);
+
 const { canInstructCashOut, instructCashOut, isInstructing } = useInstructCashOut();
+
+watch(isInstructing, value => props.onInstructingChange?.(value));
 
 // Locked while the cashOut is sent, so the result matches what the user sent.
 const isFormDisabled = computed(() => !isCashOutAvailable.value || isInstructing.value);
 
-const isCashOutDisabled = computed(() => isFormDisabled.value || !amount.value || !transferInstrumentId.value || !fees.value || isFetchingFees.value);
+const isCashOutDisabled = computed(
+    () => isFormDisabled.value || !amount.value || !transferInstrumentId.value || !fees.value || isFetchingFees.value || isAmountBelowFee.value
+);
 
 const cashOut = async () => {
     if (isCashOutDisabled.value || !amount.value || !transferInstrumentId.value) return;
 
     const instructedCashOut = await instructCashOut({
-        balanceAccountId: props.balanceAccountId,
+        accountKey: props.accountKey,
         amount: amount.value,
         transferInstrumentId: transferInstrumentId.value,
         referenceForBeneficiary: props.referenceForBeneficiary,
@@ -131,6 +152,12 @@ const actions = computed<BentoButtonActionsList>(() => [
 
 <template>
     <div :class="styles.root">
+        <div :class="styles.availableForCashOut">
+            <BentoTypography el="span" variant="body">
+                {{ i18n.get('cashOut.request.availableForCashOut', { values: { amount: formatAmount(availableForCashOut) } }) }}
+            </BentoTypography>
+            <BentoInfoIcon :tooltip-text="availableForCashOutTooltip(props.eligibility.dailyLimit)" />
+        </div>
         <div :class="styles.amount">
             <CashOutAmountField v-model="amountValue" :disabled="isFormDisabled" :max-amount="availableForCashOut" />
             <!-- Not a BentoStructuredList: it stacks label and value below a 500px viewport, and these rows must stay side by side. -->
@@ -157,6 +184,9 @@ const actions = computed<BentoButtonActionsList>(() => [
             :transfer-instruments="transferInstruments"
         />
         <UnavailableReasonAlert v-if="!isCashOutAvailable" :eligibility="props.eligibility" :on-contact-support="props.onContactSupport" />
+        <BentoAlert v-else-if="amount && isAmountBelowFee" type="warning" role="status">
+            <template #description>{{ i18n.get('cashOut.request.errors.amountBelowFee') }}</template>
+        </BentoAlert>
         <BentoAlert v-else-if="amount" type="highlight" role="status">
             <template #default>
                 <template v-if="fees">
@@ -167,6 +197,7 @@ const actions = computed<BentoButtonActionsList>(() => [
                     <BentoLoadingSkeletonTypography :class="styles.loadingSummary" :lines="1" :last-line-width="100" text-style="body-wide" />
                 </BentoLoadingSkeleton>
             </template>
+            <!-- TODO: the arrival time differs per currency; take this text from the CDN values per currency once they are available. -->
             <template #description>{{ i18n.get('cashOut.request.summary.description') }}</template>
         </BentoAlert>
         <BentoButtonActions :class="styles.actions" :actions="actions" />

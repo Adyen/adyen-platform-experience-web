@@ -7,6 +7,7 @@ import type { ICashOutResponse } from '@integration-components/types';
 import type { CashOutOverviewComponentProps } from '../../types';
 import { useCashOutState } from '../../../shared/composables/useCashOutState';
 import { useFormatAmount } from '../../../shared/composables/useFormatAmount';
+import { useCashOutTooltips } from '../../../shared/composables/useCashOutTooltips';
 import CashOutHeader from '../../../shared/CashOutHeader/CashOutHeader.vue';
 import UnavailableReasonAlert from '../../../shared/UnavailableReasonAlert/UnavailableReasonAlert.vue';
 import CashOutOverviewSkeleton from '../CashOutOverviewSkeleton/CashOutOverviewSkeleton.vue';
@@ -18,8 +19,18 @@ const props = defineProps<CashOutOverviewComponentProps>();
 const { i18n } = useCoreContext();
 const hideTitles = useShouldHideTitles();
 const formatAmount = useFormatAmount();
+const { availableForCashOutTooltip } = useCashOutTooltips();
 
-const { balanceAccountOptions, eligibility, errorInfo, refreshEligibility, selectedBalanceAccountId, shellState } = useCashOutState();
+const {
+    balanceAccountOptions,
+    eligibility,
+    errorInfo,
+    isFetchingEligibility,
+    lastUpdated,
+    refreshEligibility,
+    selectedBalanceAccountId,
+    shellState,
+} = useCashOutState();
 
 const isRequestModalOpen = ref(false);
 let hasInstructedCashOut = false;
@@ -49,22 +60,28 @@ const closeRequestModal = () => {
             :balance-account-options="balanceAccountOptions"
             :hide-title="hideTitles"
             title-key="cashOut.overview.title"
+            :last-updated="lastUpdated"
+            :is-refreshing="isFetchingEligibility"
+            :on-refresh="shellState === 'error' ? undefined : refreshEligibility"
         />
         <ComponentShell :state="shellState" :error-info="errorInfo">
             <template #loading>
                 <CashOutOverviewSkeleton />
             </template>
             <div v-if="eligibility" :class="styles.content">
-                <div :class="styles.availableForCashOut">
-                    <div :class="styles.availableForCashOutLabel">
-                        <BentoTypography variant="body">{{ i18n.get('cashOut.common.availableForCashOut.label') }}</BentoTypography>
-                        <BentoInfoIcon :tooltip-text="i18n.get('cashOut.common.availableForCashOut.tooltip')" />
+                <!-- What is available, with why it can't be cashed out right under it. -->
+                <div :class="styles.balance">
+                    <div :class="styles.availableForCashOut">
+                        <div :class="styles.availableForCashOutLabel">
+                            <BentoTypography variant="body">{{ i18n.get('cashOut.common.availableForCashOut.label') }}</BentoTypography>
+                            <BentoInfoIcon :tooltip-text="availableForCashOutTooltip(eligibility.dailyLimit)" />
+                        </div>
+                        <BentoTypography variant="title" large>
+                            {{ formatAmount(eligibility.availableForCashOutBalance) }}
+                        </BentoTypography>
                     </div>
-                    <BentoTypography variant="title" large>
-                        {{ formatAmount(eligibility.availableForCashOutBalance) }}
-                    </BentoTypography>
+                    <UnavailableReasonAlert :eligibility="eligibility" :on-contact-support="props.onContactSupport" />
                 </div>
-                <UnavailableReasonAlert :eligibility="eligibility" :on-contact-support="props.onContactSupport" />
                 <BentoButton :class="styles.startButton" :disabled="!eligibility.isCashoutAvailable" @click="openRequestModal">
                     {{ i18n.get('cashOut.overview.actions.start') }}
                 </BentoButton>

@@ -16,7 +16,7 @@ test.describe('CashOut Request - Single eligible transfer instrument', () => {
             // With other bank accounts that can't receive it, they are listed in a dropdown instead of shown as a detail.
             expect(root.getByRole('combobox', { name: 'Account to deposit into' })).toHaveText('NL**ABNA******4300'),
             expect(root.getByRole('status')).toContainText('You will receive €984.50'),
-            expect(root.getByRole('status')).toContainText('The money will be in your account within 30 minutes.'),
+            expect(root.getByRole('status')).toContainText('Your money usually arrives within 30 minutes. Some transfers may take longer.'),
             expect(root.getByRole('button', { name: 'Cash out now' })).toBeEnabled(),
         ]);
     });
@@ -32,9 +32,9 @@ test.describe('CashOut Request - Single eligible transfer instrument', () => {
             expect(options.nth(0)).toContainText('NL**ABNA******4300'),
             expect(options.nth(0)).toHaveAttribute('aria-selected', 'true'),
             expect(options.nth(0)).toBeEnabled(),
-            expect(options.nth(1)).toHaveAccessibleName("GB**BARC**********5432 This account can't receive instant payouts."),
+            expect(options.nth(1)).toHaveAccessibleName("GB**BARC**********5432 This account can't receive instant payouts"),
             expect(options.nth(1)).toBeDisabled(),
-            expect(options.nth(2)).toHaveAccessibleName("********9012 This account can't receive payouts in EUR."),
+            expect(options.nth(2)).toHaveAccessibleName("********9012 This account can't receive payouts in EUR"),
             expect(options.nth(2)).toBeDisabled(),
         ]);
     });

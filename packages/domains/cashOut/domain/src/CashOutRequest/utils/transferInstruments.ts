@@ -3,10 +3,8 @@ import type { ICashOutTransferInstrument, ICashOutTransferInstrumentIneligibilit
 
 const INELIGIBILITY_REASON_MESSAGES = {
     noInstantTransferRoute: 'cashOut.request.fields.transferInstrument.ineligibilityReasons.noInstantTransferRoute',
-    // Without the capability the account holder can't cash out at all, so the component never lists accounts for this reason.
-    sendToTransferInstrumentNotAllowed: undefined,
     transferInstrumentCurrencyMismatch: 'cashOut.request.fields.transferInstrument.ineligibilityReasons.transferInstrumentCurrencyMismatch',
-} as const satisfies Record<ICashOutTransferInstrumentIneligibilityReason, TranslationKey | undefined>;
+} as const satisfies Record<ICashOutTransferInstrumentIneligibilityReason, TranslationKey>;
 
 export type CashOutTransferInstrumentOption = {
     transferInstrumentId: string;

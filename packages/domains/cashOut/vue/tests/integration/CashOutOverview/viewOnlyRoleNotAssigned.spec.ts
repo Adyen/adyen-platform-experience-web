@@ -24,7 +24,7 @@ test.describe('CashOut Overview - View only - Role not assigned', () => {
         await Promise.all([
             expect(modal.getByRole('spinbutton', { name: 'Amount to cash out' })).toHaveValue('220.00'),
             expect(modal.getByRole('status')).toContainText('You will receive $216.20'),
-            expect(modal.getByRole('status')).toContainText('The money will be in your account within 30 minutes.'),
+            expect(modal.getByRole('status')).toContainText('Your money usually arrives within 30 minutes. Some transfers may take longer.'),
             expect(modal.getByRole('button', { name: 'Cash out now' })).toHaveCount(0),
         ]);
     });

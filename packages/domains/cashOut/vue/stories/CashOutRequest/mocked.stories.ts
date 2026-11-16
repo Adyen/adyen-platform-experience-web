@@ -51,6 +51,14 @@ export const ZeroBalance: ElementStory = {
     },
 };
 
+export const UnavailableSingleEligibleTransferInstrument: ElementStory = {
+    name: 'Unavailable - Single eligible transfer instrument',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.unavailableSingleEligibleTransferInstrument },
+    },
+};
+
 export const NoTransferInstruments: ElementStory = {
     name: 'Unavailable - No transfer instruments',
     args: { mockedApi: true },
@@ -88,6 +96,14 @@ export const ReceiveFromBalanceAccountNotAllowed: ElementStory = {
     args: { mockedApi: true },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.receiveFromBalanceAccountNotAllowed },
+    },
+};
+
+export const SendToTransferInstrumentNotAllowed: ElementStory = {
+    name: 'Unavailable - Send to transfer instrument not allowed',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.sendToTransferInstrumentNotAllowed },
     },
 };
 

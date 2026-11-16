@@ -11,7 +11,7 @@ test.describe('CashOut Overview - Unavailable - Daily limit reached', () => {
 
         await expectUnavailable(root, {
             amount: '€0.00',
-            message: "You've reached the instant CashOut limit for the last 24 hours. Try again later.",
+            message: "You've reached the instant CashOut limit over a 24 hour period. Try again later.",
         });
     });
 

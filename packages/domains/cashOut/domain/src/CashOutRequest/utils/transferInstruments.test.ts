@@ -54,12 +54,6 @@ describe('getTransferInstrumentOptions', () => {
         });
     });
 
-    test('should give no reason for an account the account holder cannot send cashOuts to', () => {
-        const [option] = getTransferInstrumentOptions([transferInstrumentOf('TI1', 'sendToTransferInstrumentNotAllowed')], 'EUR');
-
-        expect(option).toMatchObject({ eligible: false, ineligibilityReason: undefined });
-    });
-
     test('should not change the transfer instruments it is given', () => {
         const transferInstruments = [transferInstrumentOf('TI1', 'noInstantTransferRoute'), transferInstrumentOf('TI2')];
 

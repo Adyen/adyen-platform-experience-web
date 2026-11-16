@@ -1,0 +1,8 @@
+@use '@integration-components/style';
+
+// The modal header already leaves space above its content, so the result starts right under it, and keeps more space below.
+// :first-child makes it more specific than the root class of EmptyState, whatever the order the styles load in.
+.inModal > :first-child {
+    padding-bottom: style.token(spacer-100);
+    padding-top: 0;
+}

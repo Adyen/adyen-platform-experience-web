@@ -8,6 +8,5 @@ export type ICashOutFees = Schema<cashOutComponents, 'CashOutFeesResponseDTO'>;
 export type ICashOutRequest = Schema<cashOutComponents, 'CashOutRequestDTO'>;
 export type ICashOutResponse = Schema<cashOutComponents, 'CashOutResponseDTO'>;
 export type ICashOutTransferInstrument = Schema<cashOutComponents, 'TransferInstrumentDTO'>;
-export type ICashOutTransferInstrumentType = Schema<cashOutComponents, 'TransferInstrumentType'>;
 export type ICashOutTransferInstrumentIneligibilityReason = Schema<cashOutComponents, 'TransferInstrumentIneligibilityReason'>;
 export type ICashOutUnavailableReason = Schema<cashOutComponents, 'CashOutUnavailableReason'>;
