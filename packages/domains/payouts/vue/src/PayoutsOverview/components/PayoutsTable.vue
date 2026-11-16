@@ -186,10 +186,9 @@ const errorInfo = computed(() =>
 
 <template>
     <div ref="tableRef" :class="styles.root">
-        <!-- Error state -->
         <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" type="error" />
-        <DataOverviewError v-else-if="!gridData.length && !isLoading" :error-info="emptyStateProps" type="no-results-found" />
-        <DataOverviewLoading v-else-if="isLoading" />
+        <DataOverviewLoading v-else-if="isLoading && !gridData.length" />
+        <DataOverviewError v-else-if="!gridData.length" :error-info="emptyStateProps" type="no-results-found" />
         <BentoDataGrid
             v-else
             allow-row-clicks
@@ -197,6 +196,7 @@ const errorInfo = computed(() =>
             :condensed="isCondensed"
             :columns="columns"
             :data="gridData"
+            :loading="isLoading"
             :pagination="paginationProps"
             :allow-column-drag-and-drop="false"
             @row-click="handleRowClick"

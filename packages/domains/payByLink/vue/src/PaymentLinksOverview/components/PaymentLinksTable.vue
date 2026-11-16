@@ -204,9 +204,8 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
             :refresh-icon="RefreshIcon"
             type="error"
         />
-
-        <DataOverviewError v-else-if="!gridData.length && !props.loading" :error-info="emptyStateProps" type="no-results-found" />
-        <DataOverviewLoading v-else-if="props.loading" />
+        <DataOverviewLoading v-else-if="props.loading && !gridData.length" />
+        <DataOverviewError v-else-if="!gridData.length" :error-info="emptyStateProps" type="no-results-found" />
         <BentoDataGrid
             v-else
             allow-row-clicks

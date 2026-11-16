@@ -8,13 +8,10 @@ test.describe('Empty list', () => {
         await goToStory(page, { id: STORY_ID });
     });
 
-    test('should show empty state and table headers', async ({ page }) => {
+    test('should show the empty state instead of the table', async ({ page }) => {
         await expect(page.getByText('No reports found', { exact: true })).toBeVisible();
         await expect(page.getByText('Try a different search or reset your filters, and we’ll try again.', { exact: true })).toBeVisible();
 
-        const dataGrid = page.getByRole('grid');
-
-        await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
-        await expect(dataGrid.getByRole('columnheader', { name: 'Report', exact: true })).toBeVisible();
+        await expect(page.getByRole('grid')).toHaveCount(0);
     });
 });

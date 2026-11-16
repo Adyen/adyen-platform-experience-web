@@ -205,8 +205,8 @@ const errorInfo = computed(() =>
 <template>
     <div ref="tableRef">
         <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" type="error" />
-        <DataOverviewError v-else-if="!gridData.length && !isLoading" :error-info="emptyStateProps" type="no-results-found" variant="basic" />
-        <DataOverviewLoading v-else-if="isLoading" />
+        <DataOverviewLoading v-else-if="isLoading && !gridData.length" />
+        <DataOverviewError v-else-if="!gridData.length" :error-info="emptyStateProps" type="no-results-found" variant="basic" />
         <BentoDataGrid
             v-else
             :condensed="isCondensed"

@@ -15,19 +15,13 @@ test.describe('Empty list', () => {
         await expect(page.getByText('Try a different search or reset your filters, and we’ll try again.', { exact: true })).toBeVisible();
     });
 
-    test('should render data grid columns', async ({ page }) => {
-        const dataGrid = page.getByRole('grid');
-        await expect(dataGrid.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
-        await expect(dataGrid.getByRole('columnheader', { name: 'Payment method', exact: true })).toBeVisible();
-        await expect(dataGrid.getByRole('columnheader', { name: 'Transaction type', exact: true })).toBeVisible();
-        await expect(dataGrid.getByRole('columnheader', { name: 'Currency', exact: true })).toBeVisible();
-        await expect(dataGrid.getByRole('columnheader', { name: 'Net amount', exact: true })).toBeVisible();
-        await expect(dataGrid.getByRole('columnheader', { name: 'Gross amount', exact: true })).toBeVisible();
+    test('should not render the data grid', async ({ page }) => {
+        await expect(page.getByRole('grid')).toHaveCount(0);
     });
 
-    test('should render disabled pagination buttons', async ({ page }) => {
-        await expect(page.getByRole('button', { name: /Previous page/i, disabled: true })).toBeVisible();
-        await expect(page.getByRole('button', { name: /Next page/i, disabled: true })).toBeVisible();
+    test('should not render pagination buttons', async ({ page }) => {
+        await expect(page.getByRole('button', { name: /Previous page/i })).toHaveCount(0);
+        await expect(page.getByRole('button', { name: /Next page/i })).toHaveCount(0);
     });
 
     test('should render disabled "Export" button', async ({ page }) => {

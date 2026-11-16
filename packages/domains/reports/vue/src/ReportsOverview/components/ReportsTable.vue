@@ -302,8 +302,8 @@ const errorInfo = computed(() =>
 <template>
     <div ref="tableRef" :class="styles.root">
         <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" type="error" />
-        <DataOverviewError v-else-if="gridData.length === 0 && !isLoading" :error-info="emptyStateProps" type="no-results-found" />
-        <DataOverviewLoading v-else-if="isLoading" />
+        <DataOverviewLoading v-else-if="isLoading && !gridData.length" />
+        <DataOverviewError v-else-if="gridData.length === 0" :error-info="emptyStateProps" type="no-results-found" />
         <BentoDataGrid
             v-else
             has-resizable-columns
