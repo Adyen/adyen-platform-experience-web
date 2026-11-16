@@ -189,11 +189,12 @@ export class SetupContext {
                         if (isUndefined(url || undefined)) return;
 
                         return ((...args: Parameters<EndpointHttpCallables>) => {
+                            const baseHttpOptions = this._getHttpOptions(method as HttpMethod, url!, ...args);
                             const httpOptions = {
-                                ...this._getHttpOptions(method as HttpMethod, url!, ...args),
+                                ...baseHttpOptions,
                                 ...overrideHttpOptions,
+                                ...(baseUrl && resolveEndpointBaseUrl(baseUrl, baseHttpOptions.path)),
                             };
-                            if (baseUrl) Object.assign(httpOptions, resolveEndpointBaseUrl(baseUrl, httpOptions.path));
                             return this._session.http(this._beforeHttp, httpOptions) as Promise<EndpointSuccessResponse<Endpoint>>;
                         }) as EndpointHttpCallables<Endpoint>;
                     })()!;
