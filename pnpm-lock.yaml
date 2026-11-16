@@ -690,8 +690,8 @@ importers:
   packages/shared/core:
     dependencies:
       '@adyen/adyen-shared-web':
-        specifier: 0.4.0
-        version: 0.4.0
+        specifier: 0.5.0
+        version: 0.5.0
       '@adyen/bento-design-tokens':
         specifier: 2.9.0
         version: 2.9.0
@@ -842,7 +842,7 @@ packages:
   '@adyen/adyen-document-viewer@1.4.2':
     resolution: {}
 
-  '@adyen/adyen-shared-web@0.4.0':
+  '@adyen/adyen-shared-web@0.5.0':
     resolution: {}
     engines: {node: '>=20', pnpm: '>=10.16.0'}
 
@@ -6251,7 +6251,7 @@ snapshots:
     optionalDependencies:
       '@rollup/rollup-darwin-x64': 4.59.0
 
-  '@adyen/adyen-shared-web@0.4.0':
+  '@adyen/adyen-shared-web@0.5.0':
     dependencies:
       '@adyen/bento-design-tokens': 2.9.0
       chroma-js: 3.2.0
