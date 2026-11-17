@@ -181,8 +181,8 @@ function formatAmount(dispute: IDisputeListItem): string {
     return i18n.amount(dispute.amount.value, dispute.amount.currency, { hideCurrency: false });
 }
 
-function getMobileDate(dispute: IDisputeListItem): string {
-    return props.statusGroup === 'CHARGEBACKS' && dispute.dueDate ? dispute.dueDate : dispute.createdAt;
+function getMobileDate(dispute: IDisputeListItem): string | undefined {
+    return props.statusGroup === 'CHARGEBACKS' ? dispute.dueDate : dispute.createdAt;
 }
 
 function isMobileDateUrgent(dispute: IDisputeListItem): boolean {
