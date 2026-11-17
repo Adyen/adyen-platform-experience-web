@@ -31,7 +31,7 @@ export function useFinancingDetailItems() {
             case 'financing':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.financing.label'),
+                    label: i18n.get('capital.common.fields.loan.financing.label'),
                     value: i18n.amount(financingDetails.grantAmount.value, financingDetails.grantAmount.currency),
                 };
             case 'fees':
@@ -43,14 +43,14 @@ export function useFinancingDetailItems() {
             case 'totalRepaymentAmount':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.totalRepaymentAmount.label'),
+                    label: i18n.get('capital.common.fields.loan.totalRepaymentAmount.label'),
                     value: i18n.amount(financingDetails.totalAmount.value, financingDetails.totalAmount.currency),
                 };
             case 'dailyRepaymentRate':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.dailyRepaymentRate.label'),
-                    value: i18n.get('capital.common.values.percentage', {
+                    label: i18n.get('capital.common.fields.loan.dailyRepaymentRate.label'),
+                    value: i18n.get('capital.common.percentageOfDailySales', {
                         values: { percentage: calculatePercentageFromBasisPoints(financingDetails.repaymentRate) },
                     }),
                 };
@@ -58,33 +58,33 @@ export function useFinancingDetailItems() {
                 return financingDetails.aprBasisPoints !== undefined
                     ? {
                           key: key,
-                          label: i18n.get('capital.common.fields.annualPercentageRate.label'),
-                          value: i18n.get('capital.common.values.percentage', {
+                          label: i18n.get('capital.common.fields.loan.annualPercentageRate.label'),
+                          value: i18n.get('capital.common.percentage', {
                               values: { percentage: calculatePercentageFromBasisPoints(financingDetails.aprBasisPoints) },
                           }),
-                          info: i18n.get('capital.common.fields.annualPercentageRate.description'),
+                          info: i18n.get('capital.common.fields.loan.annualPercentageRate.description'),
                       }
                     : undefined;
             case 'repaymentThreshold':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.repaymentThreshold.label'),
+                    label: i18n.get('capital.common.fields.loan.repaymentThreshold.label'),
                     value: i18n.amount(financingDetails.thresholdAmount.value, financingDetails.thresholdAmount.currency),
-                    info: i18n.get('capital.common.fields.repaymentThreshold.description', {
+                    info: i18n.get('capital.common.fields.loan.repaymentThreshold.description', {
                         values: { days: CAPITAL_REPAYMENT_FREQUENCY },
                     }),
                 };
             case 'expectedRepaymentPeriod':
                 return {
                     key: key,
-                    label: i18n.get('capital.common.fields.expectedRepaymentPeriod.label'),
+                    label: i18n.get('capital.common.fields.loan.expectedRepaymentPeriod.label'),
                     value: formatTermLabel(financingDetails.expectedRepaymentPeriodDays),
                 };
             case 'maximumRepaymentDate':
                 return financingDetails.maximumRepaymentPeriodDays
                     ? {
                           key: key,
-                          label: i18n.get('capital.common.fields.maximumRepaymentDate.label'),
+                          label: i18n.get('capital.common.fields.loan.maximumRepaymentDate.label'),
                           value: formatMaxRepaymentDate(financingDetails.maximumRepaymentPeriodDays),
                       }
                     : undefined;

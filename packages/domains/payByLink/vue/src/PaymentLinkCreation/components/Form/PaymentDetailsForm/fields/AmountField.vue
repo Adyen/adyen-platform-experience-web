@@ -42,9 +42,9 @@ const dropdownProps = computed<BentoInputDropdownProps>(() => ({
 watch(
     () => props.currencyOptions,
     options => {
-        if (options?.length === 1 && options[0] && !currencyValue.value) {
-            wizard.setValue('amount.currency', options[0], options[0]);
-        }
+        if (!options?.length || options.includes(currencyValue.value)) return;
+        if (options.length === 1 && options[0]) wizard.setValue('amount.currency', options[0], options[0]);
+        else if (currencyValue.value) wizard.setValue('amount.currency', '');
     },
     { immediate: true }
 );

@@ -76,9 +76,12 @@ export interface components {
              */
             region: 'GB';
         };
+        /** @enum {string} */
+        GrantOfferContractType: 'CashAdvance' | 'Loan';
         GrantResponseDTO: {
             balanceAccountCode: string;
             balanceAccountDescription?: string;
+            contractType?: components['schemas']['GrantOfferContractType'];
             /** Format: int32 */
             expectedRepaymentPeriodDays: number;
             feesAmount: components['schemas']['Amount'];

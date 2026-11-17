@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import type { IOffer } from '@integration-components/types';
 import { getDynamicOfferConfig, sharedCapitalOfferAnalyticsEventProperties } from '@integration-components/capital/domain';
 import { ComponentShell, ComponentShellState, useLandedPageEvent } from '@integration-components/composables-vue';
 import OfferSelection from '../OfferSelection/OfferSelection.vue';
@@ -24,8 +24,8 @@ const {
 const capitalState = computed(() => props.capitalState ?? backendCapitalState.value);
 const dynamicOfferConfig = computed(() => capitalState.value && getDynamicOfferConfig(capitalState.value));
 const activeStep = ref<'selection' | 'summary'>('selection');
-const titleKey = computed(() => (activeStep.value === 'summary' ? 'capital.offer.summary.title' : 'capital.offer.selection.title'));
-const createdOffer = ref<IGrantOfferResponseDTO>();
+const titleKey = computed(() => (activeStep.value === 'summary' ? 'capital.offer.summary.loan.title' : 'capital.offer.selection.loan.title'));
+const createdOffer = ref<IOffer>();
 const shellState = computed<ComponentShellState>(() => (isCapitalStateLoading.value ? 'loading' : 'ready'));
 
 useLandedPageEvent(
@@ -39,7 +39,7 @@ useLandedPageEvent(
 
 watch(titleKey, title => props.onTitleChange?.(title), { immediate: true });
 
-const handleOfferSelect = (offer: IGrantOfferResponseDTO) => {
+const handleOfferSelect = (offer: IOffer) => {
     createdOffer.value = offer;
     activeStep.value = 'summary';
 };

@@ -15,11 +15,14 @@ const { i18n } = useCoreContext();
 const title = computed(() => {
     const maxAmount = props.dynamicOfferConfig.maxAmount;
     const options = { values: { amount: i18n.amount(maxAmount.value, maxAmount.currency, { minimumFractionDigits: 0 }) } };
-    return i18n.get(props.hasGrants ? 'capital.overview.grants.newGrant.title' : 'capital.overview.prequalified.alreadyQualifyInfo', options);
+    return i18n.get(
+        props.hasGrants ? 'capital.overview.offerAlert.loan.newGrant.title' : 'capital.overview.offerAlert.loan.firstGrant.title',
+        options
+    );
 });
 
 const description = computed(() => {
-    return props.isEarlyRenewal ? i18n.get('capital.overview.grants.newGrant.earlyRenewalNotice') : undefined;
+    return props.isEarlyRenewal ? i18n.get('capital.overview.offerAlert.loan.renewal.description') : undefined;
 });
 </script>
 

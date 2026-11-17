@@ -75,7 +75,7 @@ test.describe('Default', () => {
 
         await page.getByRole('button', { name: 'all requirements.' }).click();
         await expect(page.getByText('Terms and conditions requirements for Pay by Link')).toBeVisible();
-        await page.getByRole('button', { name: 'Go back' }).click();
+        await page.getByRole('button', { name: 'Dismiss' }).click();
 
         await page.getByText('I confirm that these Terms').click();
 
