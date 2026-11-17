@@ -54,7 +54,7 @@ export const DATE_FORMAT_PAYMENT_LINK_DETAILS_SUMMARY: Intl.DateTimeFormatOption
 
 // Payouts
 export const DATE_FORMAT_PAYOUTS: Intl.DateTimeFormatOptions = BASE_DATE_FORMAT;
-export const DATE_FORMAT_PAYOUTS_MOBILE: Intl.DateTimeFormatOptions = BASE_DATE_TIME_MOBILE_FORMAT;
+export const DATE_FORMAT_PAYOUTS_MOBILE: Intl.DateTimeFormatOptions = BASE_DATE_FORMAT;
 export const DATE_FORMAT_PAYOUT_DETAILS: Intl.DateTimeFormatOptions = { ...BASE_DATE_FORMAT, weekday: LONG };
 
 // Reports
