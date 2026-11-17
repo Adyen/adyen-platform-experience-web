@@ -25,4 +25,8 @@ describe('componentAvailabilityRegistry', () => {
         expect(check(createContextWith({ [endpoint]: vi.fn() }))).toBe(true);
         expect(check(createContextWith({}))).toBe(false);
     });
+
+    test('always reports the placeholder piet component as available', () => {
+        expect(componentAvailabilityRegistry.piet(createContextWith({}))).toBe(true);
+    });
 });

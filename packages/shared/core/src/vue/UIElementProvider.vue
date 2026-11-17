@@ -8,6 +8,7 @@ import ConfigProvider from './ConfigContext/ConfigProvider.vue';
 import EventDispatcherProvider from './Context/eventDispatcher/EventDispatcherProvider.vue';
 import type { ExternalComponentType } from '@integration-components/types';
 import { COMPONENT_REF_KEY, DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
+import { isAnalyticsSupported } from '../EventDispatcher/eventDispatcher/core-events';
 import ComponentAvailabilityGate from './componentAvailability/ComponentAvailabilityGate';
 import styles from './UIElement.module.scss';
 import './UIElement.scss';
@@ -57,7 +58,10 @@ useBentoTranslationOverrides(props.bentoOverrides);
         :refresh-component="props.refreshComponent"
     >
         <ConfigProvider :session="props.core.session" :type="props.componentName">
-            <EventDispatcherProvider :component-name="props.componentName" :analytics-enabled="props.core.analyticsEnabled ?? true">
+            <EventDispatcherProvider
+                :component-name="props.componentName"
+                :analytics-enabled="isAnalyticsSupported(props.componentName) && (props.core.analyticsEnabled ?? true)"
+            >
                 <section ref="componentRef" class="adyen-pe-component" data-testid="component-root">
                     <div
                         data-testid="component-container"

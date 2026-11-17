@@ -1,0 +1,45 @@
+// The artwork has its own palette: the design tokens contain no green hues, and the colors stay the same in every theme.
+$adyen-pe-piet-art-paper: #f4f2e9;
+$adyen-pe-piet-art-mist: #e4f1e9;
+$adyen-pe-piet-art-sage: #cfe4d6;
+$adyen-pe-piet-art-light: #a9d7bc;
+$adyen-pe-piet-art-medium: #4aaa7b;
+$adyen-pe-piet-art-deep: #0d6a4a;
+$adyen-pe-piet-art-line: #1d2b25;
+
+.root {
+    height: 100%;
+    inset: 0;
+    opacity: 0.5;
+    position: absolute;
+    width: 100%;
+    z-index: -1;
+}
+
+.paper {
+    fill: $adyen-pe-piet-art-paper;
+}
+
+.mist {
+    fill: $adyen-pe-piet-art-mist;
+}
+
+.sage {
+    fill: $adyen-pe-piet-art-sage;
+}
+
+.light {
+    fill: $adyen-pe-piet-art-light;
+}
+
+.medium {
+    fill: $adyen-pe-piet-art-medium;
+}
+
+.deep {
+    fill: $adyen-pe-piet-art-deep;
+}
+
+.lines {
+    fill: $adyen-pe-piet-art-line;
+}

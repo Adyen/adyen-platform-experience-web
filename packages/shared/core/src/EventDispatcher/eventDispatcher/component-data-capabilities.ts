@@ -40,6 +40,9 @@ export const COMPONENT_DATA_EVENT_CAPABILITIES = {
         dataCustomization: ['dataGrid', 'details'],
         pagination: true,
     },
+    piet: {
+        callbackProps: ['onContactSupport'],
+    },
     reports: {
         callbackProps: ['onContactSupport'],
         dataCustomization: ['dataGrid'],

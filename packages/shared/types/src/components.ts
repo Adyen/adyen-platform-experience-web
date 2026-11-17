@@ -11,6 +11,7 @@ export type ExternalComponentType =
     | 'paymentLinkSettings'
     | 'payouts'
     | 'payoutDetails'
+    | 'piet'
     | 'reports'
     | 'transactions'
     | 'transactionDetails';

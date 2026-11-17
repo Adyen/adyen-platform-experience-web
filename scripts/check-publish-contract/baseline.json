@@ -12,6 +12,7 @@
         "PaymentLinksOverview",
         "PayoutDetails",
         "PayoutsOverview",
+        "Piet",
         "ReportsOverview",
         "TransactionDetails",
         "TransactionsOverview"
@@ -29,6 +30,7 @@
         "PaymentLinksOverview",
         "PayoutDetails",
         "PayoutsOverview",
+        "Piet",
         "ReportsOverview",
         "TransactionDetails",
         "TransactionsOverview"
@@ -68,6 +70,8 @@
         "PayoutsDataGridCustomization",
         "PayoutsOverview",
         "PayoutsOverviewProps",
+        "Piet",
+        "PietProps",
         "ReportsDataGridCustomization",
         "ReportsOverview",
         "ReportsOverviewProps",

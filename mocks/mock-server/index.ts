@@ -6,6 +6,7 @@ import { disputesMocks } from '../../packages/domains/disputes/mocks/mock-server
 import { onboardingMocks } from './onboarding';
 import { payByLinkMocks } from '../../packages/domains/payByLink/mocks/mock-server/payByLink';
 import { payoutsMocks } from '../../packages/domains/payouts/mocks/mock-server/payouts';
+import { pietMocks } from '../../packages/domains/piet/mocks/mock-server/piet';
 import { reportsMock } from '../../packages/domains/reports/mocks/mock-server/reports';
 import { sessionsMock } from './sessions';
 import { setupMock } from './setup';
@@ -18,6 +19,7 @@ export const mocks = [
     onboardingMocks,
     payByLinkMocks,
     payoutsMocks,
+    pietMocks,
     reportsMock,
     sessionsMock,
     setupMock,

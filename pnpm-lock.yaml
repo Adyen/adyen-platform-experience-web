@@ -130,6 +130,9 @@ importers:
       '@integration-components/payouts':
         specifier: workspace:*
         version: link:packages/domains/payouts
+      '@integration-components/piet':
+        specifier: workspace:*
+        version: link:packages/domains/piet
       '@integration-components/reports':
         specifier: workspace:*
         version: link:packages/domains/reports
@@ -533,6 +536,43 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.1.12(@types/node@24.10.13)(@vitest/coverage-v8@4.1.12)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@6.0.3))(vite@7.3.7(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
+
+  packages/domains/piet:
+    dependencies:
+      '@adyen/bento-vue3':
+        specifier: 'catalog:'
+        version: 2.12.0(@vue/compiler-sfc@3.5.43)(vue-i18n@11.4.16(vue@3.5.43(typescript@6.0.3)))(vue@3.5.43(typescript@6.0.3))(zod@4.6.6)
+      '@integration-components/core':
+        specifier: workspace:*
+        version: link:../../shared/core
+      '@integration-components/style':
+        specifier: workspace:*
+        version: link:../../shared/style
+      '@integration-components/testing':
+        specifier: workspace:*
+        version: link:../../shared/testing
+      '@integration-components/types':
+        specifier: workspace:*
+        version: link:../../shared/types
+      '@integration-components/utils':
+        specifier: workspace:*
+        version: link:../../shared/utils
+      markdown-it:
+        specifier: 15.0.1
+        version: 15.0.1
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.43(typescript@6.0.3)
+    devDependencies:
+      '@storybook/vue3':
+        specifier: 'catalog:'
+        version: 10.6.2(storybook@10.6.2(prettier@3.6.2)(react@19.2.0))(typescript@6.0.3)(vue@3.5.43(typescript@6.0.3))
+      '@types/markdown-it':
+        specifier: 14.1.2
+        version: 14.1.2
+      msw:
+        specifier: 'catalog:'
+        version: 2.7.3(@types/node@24.10.13)(typescript@6.0.3)
 
   packages/domains/reports:
     dependencies:
@@ -2685,7 +2725,16 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {}
 
+  '@types/linkify-it@5.0.0':
+    resolution: {}
+
+  '@types/markdown-it@14.1.2':
+    resolution: {}
+
   '@types/mdast@3.0.15':
+    resolution: {}
+
+  '@types/mdurl@2.0.0':
     resolution: {}
 
   '@types/ms@2.1.0':
@@ -3198,6 +3247,9 @@ packages:
     engines: {node: '>= 8'}
 
   argparse@2.0.1:
+    resolution: {}
+
+  argparse@3.0.3:
     resolution: {}
 
   aria-query@5.3.0:
@@ -3734,6 +3786,10 @@ packages:
   entities@7.0.1:
     resolution: {}
     engines: {node: '>=0.12'}
+
+  entities@8.1.0:
+    resolution: {}
+    engines: {node: '>=20.19.0'}
 
   env-paths@2.2.1:
     resolution: {}
@@ -4506,6 +4562,9 @@ packages:
     resolution: {}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
+  linkify-it@6.1.0:
+    resolution: {}
+
   lint-staged@13.0.1:
     resolution: {}
     engines: {node: ^14.13.1 || >=16.0.0}
@@ -4593,6 +4652,10 @@ packages:
     resolution: {}
     engines: {node: '>=10'}
 
+  markdown-it@15.0.1:
+    resolution: {}
+    hasBin: true
+
   markdown-table@3.0.4:
     resolution: {}
 
@@ -4637,6 +4700,9 @@ packages:
     resolution: {}
 
   mdn-data@2.27.1:
+    resolution: {}
+
+  mdurl@2.1.0:
     resolution: {}
 
   meow@14.1.0:
@@ -5189,6 +5255,10 @@ packages:
 
   pug@3.0.4:
     resolution: {}
+
+  punycode.js@2.3.1:
+    resolution: {}
+    engines: {node: '>=6'}
 
   punycode@2.3.1:
     resolution: {}
@@ -5812,6 +5882,9 @@ packages:
     resolution: {}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  uc.micro@3.0.0:
+    resolution: {}
 
   ufo@1.6.3:
     resolution: {}
@@ -8247,9 +8320,18 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
+  '@types/linkify-it@5.0.0': {}
+
+  '@types/markdown-it@14.1.2':
+    dependencies:
+      '@types/linkify-it': 5.0.0
+      '@types/mdurl': 2.0.0
+
   '@types/mdast@3.0.15':
     dependencies:
       '@types/unist': 2.0.11
+
+  '@types/mdurl@2.0.0': {}
 
   '@types/ms@2.1.0': {}
 
@@ -8847,6 +8929,8 @@ snapshots:
 
   argparse@2.0.1: {}
 
+  argparse@3.0.3: {}
+
   aria-query@5.3.0:
     dependencies:
       dequal: 2.0.3
@@ -9369,6 +9453,8 @@ snapshots:
   entities@4.5.0: {}
 
   entities@7.0.1: {}
+
+  entities@8.1.0: {}
 
   env-paths@2.2.1: {}
 
@@ -10156,6 +10242,10 @@ snapshots:
 
   lines-and-columns@2.0.3: {}
 
+  linkify-it@6.1.0:
+    dependencies:
+      uc.micro: 3.0.0
+
   lint-staged@13.0.1(enquirer@2.3.6):
     dependencies:
       cli-truncate: 3.1.0
@@ -10264,6 +10354,15 @@ snapshots:
     dependencies:
       semver: 7.8.5
 
+  markdown-it@15.0.1:
+    dependencies:
+      argparse: 3.0.3
+      entities: 8.1.0
+      linkify-it: 6.1.0
+      mdurl: 2.1.0
+      punycode.js: 2.3.1
+      uc.micro: 3.0.0
+
   markdown-table@3.0.4: {}
 
   math-intrinsics@1.1.0: {}
@@ -10359,6 +10458,8 @@ snapshots:
       '@types/mdast': 3.0.15
 
   mdn-data@2.27.1: {}
+
+  mdurl@2.1.0: {}
 
   meow@14.1.0: {}
 
@@ -11166,6 +11267,8 @@ snapshots:
       pug-runtime: 3.0.1
       pug-strip-comments: 2.0.0
 
+  punycode.js@2.3.1: {}
+
   punycode@2.3.1: {}
 
   qified@0.9.0:
@@ -11790,6 +11893,8 @@ snapshots:
       tagged-tag: 1.0.0
 
   typescript@6.0.3: {}
+
+  uc.micro@3.0.0: {}
 
   ufo@1.6.3:
     optional: true

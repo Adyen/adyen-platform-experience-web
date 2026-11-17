@@ -27,6 +27,7 @@ it('matches the tracked props declared by each component external props type', (
             dataCustomization: ['dataGrid', 'details'],
             pagination: true,
         },
+        piet: { callbackProps: ['onContactSupport'] },
         reports: { callbackProps: ['onContactSupport'], dataCustomization: ['dataGrid'], pagination: true },
         transactionDetails: { callbackProps: ['onContactSupport'], dataCustomization: ['details'] },
         transactions: {
@@ -35,4 +36,11 @@ it('matches the tracked props declared by each component external props type', (
             pagination: true,
         },
     });
+});
+
+it('keeps analytics off for piet only', async () => {
+    const { isAnalyticsSupported } = await import('./core-events');
+
+    expect(isAnalyticsSupported('piet')).toBe(false);
+    expect(isAnalyticsSupported('transactions')).toBe(true);
 });

@@ -1,0 +1,35 @@
+@use '@integration-components/style' as style;
+
+.root {
+    align-items: stretch;
+    display: flex;
+    gap: style.token(spacer-040);
+}
+
+.field {
+    flex: 1;
+
+    // Bento reserves a margin below the textarea box, which pushed the button below the box's bottom edge.
+    :global(.b-textarea__input-box) {
+        background-color: style.token(color-background-primary);
+        margin-bottom: 0;
+    }
+}
+
+// The actions column stretches to the height of the text field (including when the field grows), and the button fills it.
+// `flex-grow` is used because Bento gives its buttons an explicit `height: fit-content`, which `align-self: stretch` cannot override.
+.actions {
+    display: flex;
+    flex-direction: column;
+}
+
+.button {
+    flex: 1;
+}
+
+// Bento's disabled colors are translucent, so the artwork behind the component would shine through the disabled button.
+// The disabled color is painted on top of a solid background instead.
+.actions .button:global(.b-button--primary.b-button--disabled) {
+    background-color: style.token(color-background-primary);
+    background-image: linear-gradient(style.token(color-background-disabled), style.token(color-background-disabled));
+}

@@ -111,6 +111,7 @@
     "@integration-components/disputes": "workspace:*",
     "@integration-components/payByLink": "workspace:*",
     "@integration-components/payouts": "workspace:*",
+    "@integration-components/piet": "workspace:*",
     "@integration-components/reports": "workspace:*",
     "@integration-components/style": "workspace:*",
     "@integration-components/testing": "workspace:*",

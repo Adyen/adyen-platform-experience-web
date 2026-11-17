@@ -19,6 +19,11 @@ export const CORE_EVENT_NAMES = {
 
 export type CoreEventName = (typeof CORE_EVENT_NAMES)[keyof typeof CORE_EVENT_NAMES];
 
+/** Components that do not report analytics (UXDS tracking, Engage events) yet. */
+const COMPONENTS_WITHOUT_ANALYTICS: ReadonlySet<ExternalComponentType> = new Set(['piet']);
+
+export const isAnalyticsSupported = (componentName: ExternalComponentType) => !COMPONENTS_WITHOUT_ANALYTICS.has(componentName);
+
 export type ComponentEventSubCategory = 'Overview' | 'Details' | 'Offer';
 
 const COMPONENT_EVENT_SUB_CATEGORIES: Record<ExternalComponentType, ComponentEventSubCategory> = {
@@ -32,6 +37,7 @@ const COMPONENT_EVENT_SUB_CATEGORIES: Record<ExternalComponentType, ComponentEve
     paymentLinkSettings: 'Details',
     payouts: 'Overview',
     payoutDetails: 'Details',
+    piet: 'Overview',
     reports: 'Overview',
     transactions: 'Overview',
     transactionDetails: 'Details',

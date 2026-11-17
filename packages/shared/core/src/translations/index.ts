@@ -22,7 +22,7 @@ export type TranslationOptions = {
     count?: number;
 };
 
-export type TranslationDomain = 'capital' | 'disputes' | 'payByLink' | 'payouts' | 'reports' | 'transactions';
+export type TranslationDomain = 'capital' | 'disputes' | 'payByLink' | 'payouts' | 'piet' | 'reports' | 'transactions';
 
 export type DomainTranslationKey<D extends TranslationDomain = TranslationDomain> = Extract<TranslationKey, `${D}.${string}`>;
 export type DomainCustomTranslations = Record<string, { [key in DomainTranslationKey]?: string }>;

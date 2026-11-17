@@ -364,6 +364,14 @@ module.exports = [
         },
     },
 
+    // Exception: this story hosts the other domains' components through the SDK when Piet opens a suggested action.
+    {
+        files: ['packages/domains/piet/vue/stories/Piet/api.stories.ts'],
+        rules: {
+            '@nx/enforce-module-boundaries': 'off',
+        },
+    },
+
     // Decision-heavy code belongs in composables or domain/src, where unit coverage measures it, not in components.
     {
         files: ['packages/domains/*/vue/src/**/*.vue'],

@@ -1,0 +1,19 @@
+@use '@integration-components/style' as style;
+
+// The artwork (PietBackground) is positioned against this box and stays behind its content.
+.root {
+    border-radius: style.token(border-radius-m);
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+    isolation: isolate;
+    overflow: hidden;
+    padding: style.token(spacer-080);
+    position: relative;
+}
+
+.image {
+    display: block;
+    height: auto;
+    max-width: 100%;
+}

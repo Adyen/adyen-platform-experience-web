@@ -42,6 +42,12 @@ export {
 
 // prettier-ignore
 export {
+    Piet,
+    type PietProps,
+} from '../../domains/piet/publish/src';
+
+// prettier-ignore
+export {
     ReportsOverview,
     type ReportsOverviewProps,
     type ReportsDataGridCustomization,

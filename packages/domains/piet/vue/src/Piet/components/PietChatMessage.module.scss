@@ -1,0 +1,146 @@
+@use '@integration-components/style' as style;
+
+.root {
+    border-radius: style.token(border-radius-m);
+    max-width: 80%;
+    padding: style.token(spacer-040) style.token(spacer-060);
+}
+
+.user {
+    align-self: flex-end;
+    background-color: style.token(color-background-inverse-primary);
+    color: style.token(color-label-inverse-primary);
+}
+
+.assistant {
+    align-self: flex-start;
+    background-color: style.token(color-background-tertiary);
+    color: style.token(color-label-primary);
+}
+
+.content {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+// Rendered markdown, styled with Bento's "rich text" design tokens, so it looks like the rest of the Bento content.
+.markdown {
+    overflow-wrap: anywhere;
+
+    > :first-child {
+        margin-top: 0;
+    }
+
+    > :last-child {
+        margin-bottom: 0;
+    }
+
+    :global(p) {
+        margin: style.token(text-rich-text-paragraph-margin);
+    }
+
+    :global(strong) {
+        font-weight: style.token(text-body-strongest-font-weight);
+    }
+
+    :global(ul),
+    :global(ol) {
+        margin: style.token(text-rich-text-list-margin);
+        padding-inline-start: style.token(text-rich-text-list-padding-left);
+    }
+
+    :global(li) {
+        margin-bottom: style.token(spacer-020);
+    }
+
+    // The heading margins of rich text are made for full pages: too airy inside a chat bubble.
+    :global(h1),
+    :global(h2),
+    :global(h3),
+    :global(h4),
+    :global(h5),
+    :global(h6) {
+        font-size: inherit;
+        font-weight: style.token(text-rich-text-heading-font-weight);
+        margin: style.token(spacer-060) 0 style.token(spacer-020);
+    }
+
+    :global(a) {
+        color: inherit;
+        text-decoration: underline;
+    }
+
+    :global(hr) {
+        border: 0;
+        border-top: style.token(text-rich-text-table-border);
+        margin: style.token(spacer-060) 0;
+    }
+
+    :global(code) {
+        background-color: style.token(text-rich-text-code-background-color);
+        border-radius: style.token(border-radius-s);
+        font-family: style.token(text-rich-text-code-font-family);
+        font-weight: style.token(text-rich-text-code-font-weight);
+        padding: 0 style.token(spacer-020);
+    }
+
+    :global(pre) {
+        background-color: style.token(text-rich-text-code-background-color);
+        border-radius: style.token(border-radius-s);
+        line-height: style.token(text-rich-text-pre-line-height);
+        margin: style.token(text-rich-text-pre-margin);
+        overflow-x: auto;
+        padding: style.token(text-rich-text-pre-padding);
+
+        :global(code) {
+            background: none;
+            padding: 0;
+        }
+    }
+
+    :global(blockquote) {
+        border-inline-start: 2px solid style.token(color-outline-primary);
+        font-weight: style.token(text-rich-text-blockquote-font-weight);
+        margin: style.token(text-rich-text-blockquote-margin);
+        padding-inline-start: style.token(spacer-040);
+    }
+
+    // Tables: horizontal dividers only, a bold header and a highlighted row under the cursor, like Bento's own tables.
+    // A wide table scrolls inside the message instead of stretching it.
+    :global(table) {
+        background-color: style.token(color-background-primary);
+        border-collapse: collapse;
+        display: block;
+        line-height: style.token(text-rich-text-table-line-height);
+        margin: style.token(text-rich-text-table-margin);
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    :global(th),
+    :global(td) {
+        border-bottom: style.token(text-rich-text-table-border);
+        padding: style.token(text-rich-text-table-padding);
+        text-align: start;
+        white-space: nowrap;
+    }
+
+    :global(th) {
+        font-weight: style.token(text-rich-text-table-header-font-weight);
+    }
+
+    :global(td) {
+        font-variant-numeric: tabular-nums;
+    }
+
+    :global(tbody tr:hover) {
+        background-color: style.token(text-rich-text-table-hover-background-color);
+    }
+}
+
+.options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: style.token(spacer-030);
+    margin-top: style.token(spacer-040);
+}

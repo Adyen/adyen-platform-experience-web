@@ -23,6 +23,7 @@ Business domains:
 - `@integration-components/disputes`
 - `@integration-components/payByLink`
 - `@integration-components/payouts`
+- `@integration-components/piet`
 - `@integration-components/reports`
 - `@integration-components/transactions`
 

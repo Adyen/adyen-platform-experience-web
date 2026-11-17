@@ -1,0 +1,53 @@
+@use '@integration-components/style' as style;
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+}
+
+.messages {
+    background-color: style.token(color-background-primary);
+    border: style.token(border-width-s) solid style.token(color-outline-primary);
+    border-radius: style.token(border-radius-m);
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-050);
+    // 150px taller than the base size, to make room for longer conversations.
+    max-height: calc(#{style.token(spacer-120)} * 6 + 150px);
+    min-height: calc(#{style.token(spacer-120)} * 3 + 150px);
+    overflow-y: auto;
+    padding: style.token(spacer-060);
+}
+
+.empty {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+    justify-content: center;
+    margin: auto;
+    text-align: center;
+}
+
+.emptyText {
+    color: style.token(color-label-secondary);
+}
+
+.image {
+    display: block;
+    height: auto;
+    max-width: 50%;
+}
+
+.activity {
+    align-self: flex-start;
+    color: style.token(color-label-secondary);
+}
+
+.starters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: style.token(spacer-030);
+    justify-content: center;
+}

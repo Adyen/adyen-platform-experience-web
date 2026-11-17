@@ -15,6 +15,7 @@ import type {
     PaymentLinksOverviewProps,
     PayoutDetailsProps,
     PayoutsOverviewProps,
+    PietProps,
     ReportsOverviewProps,
     TransactionDetailsProps,
     TransactionsOverviewProps,
@@ -39,6 +40,7 @@ type PropsAliases = {
     PaymentLinksOverview: PaymentLinksOverviewProps;
     PayoutDetails: PayoutDetailsProps;
     PayoutsOverview: PayoutsOverviewProps;
+    Piet: PietProps;
     ReportsOverview: ReportsOverviewProps;
     TransactionDetails: TransactionDetailsProps;
     TransactionsOverview: TransactionsOverviewProps;
@@ -125,16 +127,15 @@ type PublishedPropsByComponentType = {
 };
 
 type PublicDataEventProps<TProps> = TProps extends unknown
-    ?
-          | {
-                [K in keyof TProps & string]-?: K extends `on${string}`
-                    ? NonNullable<TProps[K]> extends (...args: never[]) => unknown
-                        ? K
-                        : never
-                    : never;
-            }[keyof TProps & string]
-          | (TProps extends { dataCustomization?: infer TCustomization } ? `dataCustomization.${keyof NonNullable<TCustomization> & string}` : never)
-          | Extract<keyof TProps, 'pagination' | 'fieldsConfig'>
+    ? | {
+            [K in keyof TProps & string]-?: K extends `on${string}`
+                ? NonNullable<TProps[K]> extends (...args: never[]) => unknown
+                    ? K
+                    : never
+                : never;
+        }[keyof TProps & string]
+      | (TProps extends { dataCustomization?: infer TCustomization } ? `dataCustomization.${keyof NonNullable<TCustomization> & string}` : never)
+      | Extract<keyof TProps, 'pagination' | 'fieldsConfig'>
     : never;
 
 type TrackedDataEventProps<TCapabilities> =

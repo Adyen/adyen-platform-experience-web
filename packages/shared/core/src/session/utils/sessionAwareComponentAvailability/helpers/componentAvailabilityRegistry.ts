@@ -11,6 +11,8 @@ const componentAvailabilityRegistry: ExternalComponentAvailabilityRegistry = {
     transactionDetails: context => getComponentAvailabilityFromEndpoint(context, 'getTransaction'),
     payouts: context => getComponentAvailabilityFromEndpoint(context, 'getPayouts'),
     payoutDetails: context => getComponentAvailabilityFromEndpoint(context, 'getPayout'),
+    // Piet is a placeholder component without backing endpoints, so it is always available.
+    piet: () => true,
     reports: context => getComponentAvailabilityFromEndpoint(context, 'getReports'),
     capitalOverview: context => getComponentAvailabilityFromEndpoint(context, 'getGrants'),
     capitalOffer: context => getComponentAvailabilityFromEndpoint(context, 'getDynamicGrantOffer'),

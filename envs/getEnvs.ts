@@ -17,6 +17,11 @@ const parseEnv = (env: Record<string, string | undefined>) => ({
             reauthThrottleMs: env.SESSION_REAUTH_THROTTLE_MS,
             url: env.SESSION_API_URL ?? '',
         },
+        pietChat: {
+            apiKey: env.PIET_CHAT_API_KEY,
+            model: env.PIET_CHAT_MODEL,
+            url: env.PIET_CHAT_API_URL,
+        },
     },
     app: {
         host: env.PLAYGROUND_HOST ?? '',

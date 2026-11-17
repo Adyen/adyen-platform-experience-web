@@ -30,7 +30,10 @@ const config: StorybookConfig = {
         const { api } = getEnvironment(mode);
 
         return mergeConfig(config, {
-            define: getBaseEnvDefines(mode),
+            define: {
+                ...getBaseEnvDefines(mode),
+                'process.env.PIET_CHAT_MODEL': JSON.stringify(api.pietChat.model || null),
+            },
             // Force @vitejs/plugin-vue into the `pre` phase so SFCs are
             // compiled to JS before Storybook's vue-component-meta docgen
             // plugin runs. The docgen plugin appends metadata to whatever it

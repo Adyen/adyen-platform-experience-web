@@ -7,7 +7,7 @@ import type { DomainTranslationBinding } from './Context/types';
 import { applyBentoDomainOverrides, getBentoLocaleMessages } from './bentoTranslations';
 import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
 import { resolveAppearance } from './customization';
-import { getCustomizedComponentEventPayloads } from '../EventDispatcher/eventDispatcher/core-events';
+import { getCustomizedComponentEventPayloads, isAnalyticsSupported } from '../EventDispatcher/eventDispatcher/core-events';
 import type { CustomTranslations, TranslationDomain } from '../translations';
 
 const getTranslationDomain = (componentName: ExternalComponentType): TranslationDomain => {
@@ -26,6 +26,8 @@ const getTranslationDomain = (componentName: ExternalComponentType): Translation
         case 'payouts':
         case 'payoutDetails':
             return 'payouts';
+        case 'piet':
+            return 'piet';
         case 'reports':
             return 'reports';
         case 'transactions':
@@ -269,7 +271,7 @@ export class UIElement<Props extends Record<string, any> & { appearance?: Global
      */
     #trackComponentConfiguration(): void {
         const core = this.core;
-        if (!core?.analyticsEnabled || typeof core.session?.sendAnalyticsEvent !== 'function') return;
+        if (!isAnalyticsSupported(this._componentName) || !core?.analyticsEnabled || typeof core.session?.sendAnalyticsEvent !== 'function') return;
 
         const payloads = getCustomizedComponentEventPayloads({
             componentName: this._componentName,
