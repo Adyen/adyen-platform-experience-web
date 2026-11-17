@@ -745,8 +745,8 @@ importers:
   packages/shared/core:
     dependencies:
       '@adyen/adyen-shared-web':
-        specifier: 0.4.0
-        version: 0.4.0
+        specifier: 0.5.0
+        version: 0.5.0
       '@adyen/bento-design-tokens':
         specifier: 2.9.0
         version: 2.9.0
@@ -822,6 +822,15 @@ importers:
         specifier: workspace:*
         version: link:../types
 
+  packages/tools/cli:
+    devDependencies:
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+      vite:
+        specifier: 'catalog:'
+        version: 7.3.7(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0)
+
   packages/tools/storybook:
     dependencies:
       '@integration-components/core':
@@ -888,7 +897,7 @@ packages:
   '@adyen/adyen-document-viewer@1.4.2':
     resolution: {}
 
-  '@adyen/adyen-shared-web@0.4.0':
+  '@adyen/adyen-shared-web@0.5.0':
     resolution: {}
     engines: {node: '>=20', pnpm: '>=10.16.0'}
 
@@ -6297,7 +6306,7 @@ snapshots:
     optionalDependencies:
       '@rollup/rollup-darwin-x64': 4.59.0
 
-  '@adyen/adyen-shared-web@0.4.0':
+  '@adyen/adyen-shared-web@0.5.0':
     dependencies:
       '@adyen/bento-design-tokens': 2.9.0
       chroma-js: 3.2.0
