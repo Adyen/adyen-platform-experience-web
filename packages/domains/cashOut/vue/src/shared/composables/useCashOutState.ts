@@ -1,11 +1,21 @@
-import { computed, toValue, type MaybeRefOrGetter } from 'vue';
+import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
-import { getCashOutErrorMessage, withoutUnreachableCashOut, type CashOutBalanceAccount } from '@integration-components/cashOut/domain';
+import {
+    getAvailableAfterCashOut,
+    getCashOutErrorMessage,
+    withExpectedAmount,
+    withExpectedAvailableForCashOut,
+    withoutUnreachableCashOut,
+    type CashOutBalanceAccount,
+} from '@integration-components/cashOut/domain';
 import type { ComponentShellState, ErrorMessageInfo } from '@integration-components/composables-vue';
 import { useBalanceAccountFilterState } from '@integration-components/composables-vue/useBalanceAccountFilterState';
 import { useBalanceAccounts } from '@integration-components/composables-vue/useBalanceAccounts';
-import type { ICashOutEligibility } from '@integration-components/types';
+import { useCoreContext } from '@integration-components/core/vue';
+import type { ICashOutAmount, ICashOutEligibility, ICashOutResponse } from '@integration-components/types';
+import { useCashOutAvailableAmounts } from './useCashOutAvailableAmounts';
 import { useCashOutEligibility } from './useCashOutEligibility';
+import { useFormatAmount } from './useFormatAmount';
 import { useReportErrors } from './useReportErrors';
 
 type CashOutStateOptions = {
@@ -19,8 +29,11 @@ export const getCashOutErrorInfo = (error: AdyenPlatformExperienceError | undefi
 
 /** The balance accounts, the selected one and its eligibility, with the component shell state they result in. */
 export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEligibility }: CashOutStateOptions = {}) => {
+    const { i18n } = useCoreContext();
+    const formatAmount = useFormatAmount();
     const { balanceAccounts, error: balanceAccountsError, isFetching: isFetchingBalanceAccounts } = useBalanceAccounts();
-    const { balanceAccountOptions, selectedBalanceAccountId } = useBalanceAccountFilterState({
+    const { availableAmounts, hasAvailableAmounts, refreshAvailableAmounts } = useCashOutAvailableAmounts();
+    const { balanceAccountOptions: filterOptions, selectedBalanceAccountId } = useBalanceAccountFilterState({
         balanceAccounts: () => balanceAccounts.value,
         initialValue: toValue(initialBalanceAccountId),
     });
@@ -40,7 +53,59 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
         refreshEligibility,
     } = useCashOutEligibility(() => (usesGivenEligibility.value ? undefined : selectedAccountKey.value));
 
-    const eligibility = computed(() => withoutUnreachableCashOut(usesGivenEligibility.value ? toValue(givenEligibility) : fetchedEligibility.value));
+    // What each balance account is expected to have available after its cashOuts, until it is refreshed: right after a cashOut the
+    // API still shows what was available before it.
+    const expectedAvailableForCashOut = ref<Record<string, ICashOutAmount>>({});
+    const expectedOf = (balanceAccountId: string | undefined) => (balanceAccountId ? expectedAvailableForCashOut.value[balanceAccountId] : undefined);
+
+    const eligibility = computed(() =>
+        withExpectedAvailableForCashOut(
+            withoutUnreachableCashOut(usesGivenEligibility.value ? toValue(givenEligibility) : fetchedEligibility.value),
+            expectedOf(selectedBalanceAccountId.value)
+        )
+    );
+
+    /** Remembers what the selected balance account is expected to have left after the cashOut. */
+    const recordCashOut = (cashOut: ICashOutResponse) => {
+        const balanceAccountId = selectedBalanceAccountId.value;
+        if (!balanceAccountId || !eligibility.value) return;
+        expectedAvailableForCashOut.value[balanceAccountId] = getAvailableAfterCashOut(eligibility.value.availableForCashOutBalance, cashOut.amount);
+    };
+
+    /**
+     * Loads what the API shows for the selected balance account again. The amounts of all of them are loaded again with
+     * `refreshAvailableAmounts` instead, once the list of balance accounts closes, so an open list keeps what it opened with.
+     */
+    const refresh = () => {
+        if (selectedBalanceAccountId.value) delete expectedAvailableForCashOut.value[selectedBalanceAccountId.value];
+        refreshEligibility();
+    };
+
+    // Shown only once the amounts arrived, so the selected balance account never has one while the others have none. The selected one
+    // then shows what its eligibility shows, so the dropdown and the component agree.
+    const availableAmountOf = (balanceAccountId: string) => {
+        if (!hasAvailableAmounts.value) return undefined;
+        return balanceAccountId === selectedBalanceAccountId.value && eligibility.value
+            ? eligibility.value.availableForCashOutBalance
+            : withExpectedAmount(availableAmounts.value.get(balanceAccountId), expectedOf(balanceAccountId));
+    };
+
+    // A named balance account has its id under its name, so the amount goes after the id.
+    const balanceAccountOptions = computed(() =>
+        filterOptions.value.map(option => {
+            const amount = availableAmountOf(option.value);
+            if (!amount) return option;
+            const values = { amount: formatAmount(amount) };
+            return {
+                ...option,
+                description: option.description
+                    ? i18n.get('cashOut.common.balanceAccount.availableForCashOutWithId', {
+                          values: { balanceAccountId: option.description, ...values },
+                      })
+                    : i18n.get('cashOut.common.balanceAccount.availableForCashOut', { values }),
+            };
+        })
+    );
 
     // The HTTP layer throws AdyenPlatformExperienceError at runtime, whatever type the request composables declare.
     const error = computed(() => (balanceAccountsError.value ?? eligibilityError.value) as AdyenPlatformExperienceError | undefined);
@@ -63,6 +128,9 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
         errorInfo,
         isFetchingEligibility,
         lastUpdated,
+        recordCashOut,
+        refresh,
+        refreshAvailableAmounts,
         refreshEligibility,
         selectedAccountKey,
         selectedBalanceAccountId,

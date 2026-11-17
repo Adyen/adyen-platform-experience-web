@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
 import { expectSelectorBesideTitle, refreshFromHeader, waitForCashOutRequest } from '../shared/utils';
 import { openRequestModal } from './shared/utils';
@@ -76,6 +76,85 @@ test.describe('CashOut Overview - Default', () => {
         });
     });
 
+    test.describe('Balance account selector', () => {
+        // Asked for the account of the session, so it doesn't wait for the balance accounts to arrive first.
+        const countAvailableAmountsRequests = (page: Page) => {
+            const requests: string[] = [];
+            page.on('request', request => {
+                if (request.url().includes('/cashout/availableAmounts')) requests.push(request.url());
+            });
+            return requests;
+        };
+
+        test('should request what the balance accounts can cash out once, when the component loads', async ({ page }) => {
+            const requests = countAvailableAmountsRequests(page);
+
+            await goToStory(page, { id: STORY_ID });
+            await expect(getComponentRoot(page).getByText('$220.00', { exact: true })).toBeVisible();
+
+            expect(requests).toHaveLength(1);
+        });
+
+        // The request in the modal shares what the Overview loaded.
+        test('should not request what the balance accounts can cash out again when the request opens', async ({ page }) => {
+            const requests = countAvailableAmountsRequests(page);
+            await goToStory(page, { id: STORY_ID });
+            await expect(getComponentRoot(page).getByText('$220.00', { exact: true })).toBeVisible();
+            await expect.poll(() => requests.length).toBe(1);
+
+            await openRequestModal(page);
+
+            await expect(
+                page.getByRole('dialog', { name: 'Instant CashOut request' }).getByText('You have $220.00 available to cash out')
+            ).toBeVisible();
+            expect(requests).toHaveLength(1);
+        });
+
+        // So the next time the list opens it shows what they can cash out by then, while an open list keeps what it opened with.
+        test('should request what the balance accounts can cash out again once the list closes', async ({ page }) => {
+            const requests = countAvailableAmountsRequests(page);
+            await goToStory(page, { id: STORY_ID });
+            const root = getComponentRoot(page);
+            const selector = root.getByRole('combobox', { name: 'Balance account' });
+
+            await selector.click();
+            await expect(root.getByRole('option', { name: 'S. Hopper - Main Account' })).toContainText('$220.00 to cash out');
+            expect(requests).toHaveLength(1);
+
+            await page.keyboard.press('Escape');
+            await expect(selector).toHaveAttribute('aria-expanded', 'false');
+
+            await expect.poll(() => requests.length).toBe(2);
+        });
+
+        // Refresh is about the selected balance account only.
+        test('should not request what the balance accounts can cash out again when refreshed', async ({ page }) => {
+            const requests = countAvailableAmountsRequests(page);
+            await goToStory(page, { id: STORY_ID });
+            await expect(getComponentRoot(page).getByText('$220.00', { exact: true })).toBeVisible();
+
+            await refreshFromHeader(page);
+            await expect(getComponentRoot(page).getByText('$220.00', { exact: true })).toBeVisible();
+
+            expect(requests).toHaveLength(1);
+        });
+
+        test('should show what each balance account can cash out, after its id when it is named', async ({ page }) => {
+            const root = getComponentRoot(page);
+            await root.getByRole('combobox', { name: 'Balance account' }).click();
+
+            await Promise.all([
+                expect(root.getByRole('option', { name: 'S. Hopper - Main Account' })).toContainText(
+                    'BA32272223222B5CTDQPM6W2H · $220.00 to cash out'
+                ),
+                expect(root.getByRole('option', { name: 'S. Hopper - Secondary Account' })).toContainText(
+                    'BA32272223222B5CTDQPM6W2G · €1,000.00 to cash out'
+                ),
+                expect(root.getByRole('option', { name: 'BA32272223222B5CTDQPM6W2K' })).toContainText('$52.50 to cash out'),
+            ]);
+        });
+    });
+
     test.describe('Request', () => {
         test('should open the request for the selected balance account, with all it can cash out', async ({ page }) => {
             const modal = await openRequestModal(page);
@@ -134,8 +213,7 @@ test.describe('CashOut Overview - Default', () => {
 
             await modal.getByRole('button', { name: 'Close' }).click();
 
-            await expect(modal).toBeHidden();
-            await expect(getComponentRoot(page).getByText('$220.00', { exact: true })).toBeVisible();
+            await Promise.all([expect(modal).toBeHidden(), expect(getComponentRoot(page).getByText('$220.00', { exact: true })).toBeVisible()]);
         });
     });
 
@@ -169,8 +247,7 @@ test.describe('CashOut Overview - Default', () => {
 
             await modal.getByRole('button', { name: 'Close' }).click();
 
-            await expect(modal).toBeHidden();
-            await expect(getComponentRoot(page).getByText('$120.00', { exact: true })).toBeVisible();
+            await Promise.all([expect(modal).toBeHidden(), expect(getComponentRoot(page).getByText('$120.00', { exact: true })).toBeVisible()]);
         });
 
         test('should show the result right under the header of the modal', async ({ page }) => {

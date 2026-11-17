@@ -24,6 +24,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    '/v1/{accountKey}/cashout/availableAmounts': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get CashOut available amounts
+         * @description Provides what each balance account of the account holder can cash out, to show next to the balance accounts in the CashOut component
+         */
+        get: operations['getCashOutAvailableAmounts'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     '/v1/{accountKey}/cashout/eligibility': {
         parameters: {
             query?: never;
@@ -77,6 +97,16 @@ export interface components {
              */
             value: number;
         };
+        BalanceAccountAvailableAmountDTO: {
+            /** @description The highest amount the balance account can cash out, in its default currency and in minor units, as its eligibility reports it. An amount above zero does not mean it can cash out right now. */
+            availableForCashOut: components['schemas']['Amount'];
+            /** @description The unique identifier of the balance account. */
+            balanceAccountId: string;
+        };
+        CashOutAvailableAmountsResponseDTO: {
+            /** @description What each balance account of the account holder can cash out, up to the first 100 of them. A balance account whose amount cannot be told is left out. */
+            balanceAccounts: components['schemas']['BalanceAccountAvailableAmountDTO'][];
+        };
         CashOutEligibilityResponseDTO: {
             /** @description The highest amount that can be cashed out, in minor units. Any cashout fee is taken out of this amount instead of being charged on top of it. This amount is returned even when **isCashoutAvailable** is **false**, and an amount above zero does not mean that a cashout is possible. */
             availableForCashOutBalance: components['schemas']['Amount'];
@@ -123,13 +153,13 @@ export interface components {
             /** @description The three-character ISO currency code of the amount to cash out. */
             currency: string;
             /**
-             * @description Your description of the cashout transfer, which most banks use as the transfer description. Longer than 140 characters may be truncated by the bank. Supported characters: **[a-z] [A-Z] [0-9] / - ? : ( ) . , ' + Space**.
+             * @description Your description of the cashout transfer, which most banks use as the transfer description. Maximum 140 characters, without emoji.
              *
              *     When you leave this out, Adyen generates a description, which is not returned in the response.
              */
             description?: string;
             /**
-             * @description The reference sent to the recipient of the cashout, and in every webhook about it, so you can track the transfer by it. Supported characters: **a-z**, **A-Z**, **0-9**.
+             * @description The reference sent to the recipient of the cashout, and in every webhook about it, so you can track the transfer by it. Maximum 80 characters. Supported characters: **a-z**, **A-Z**, **0-9**, hyphens and underscores.
              *
              *     When you leave this out, Adyen generates a reference, which is not returned in the response.
              */
@@ -224,6 +254,28 @@ export interface operations {
                 };
                 content: {
                     'application/json': components['schemas']['CashOutResponseDTO'];
+                };
+            };
+        };
+    };
+    getCashOutAvailableAmounts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                accountKey: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['CashOutAvailableAmountsResponseDTO'];
                 };
             };
         };

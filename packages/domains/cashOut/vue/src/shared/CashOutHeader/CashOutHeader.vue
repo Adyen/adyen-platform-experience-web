@@ -14,6 +14,8 @@ const props = defineProps<{
     lastUpdated?: number | undefined;
     isRefreshing?: boolean;
     onRefresh?: () => void;
+    /** When the list of balance accounts closes, so what they can cash out is loaded again for the next time it opens. */
+    onBalanceAccountSelectorClose?: () => void;
 }>();
 
 const selectedBalanceAccountId = defineModel<string | undefined>('selectedBalanceAccountId', { required: true });
@@ -37,9 +39,18 @@ const reloadButton = computed<BentoHeaderReloadButton | undefined>(() =>
             :reload-button="reloadButton"
         />
         <div :class="styles.selector">
-            <BalanceAccountSelector v-model="selectedBalanceAccountId" :options="props.balanceAccountOptions" />
+            <BalanceAccountSelector
+                v-model="selectedBalanceAccountId"
+                :options="props.balanceAccountOptions"
+                @close="props.onBalanceAccountSelectorClose?.()"
+            />
         </div>
     </div>
     <!-- Outside the component shell so another balance account can still be selected when one fails to load. -->
-    <BalanceAccountSelector v-else v-model="selectedBalanceAccountId" :options="props.balanceAccountOptions" />
+    <BalanceAccountSelector
+        v-else
+        v-model="selectedBalanceAccountId"
+        :options="props.balanceAccountOptions"
+        @close="props.onBalanceAccountSelectorClose?.()"
+    />
 </template>

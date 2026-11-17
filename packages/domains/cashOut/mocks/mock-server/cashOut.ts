@@ -1,6 +1,14 @@
 import { http, HttpResponse } from 'msw';
-import type { ICashOutAmount, ICashOutEligibility, ICashOutFees, ICashOutRequest, ICashOutResponse } from '@integration-components/types';
-import { BALANCE_ACCOUNTS_SINGLE, setupBasicResponse } from '@integration-components/testing/fixtures';
+import type {
+    ICashOutAmount,
+    ICashOutAvailableAmounts,
+    ICashOutEligibility,
+    ICashOutFees,
+    ICashOutRequest,
+    ICashOutResponse,
+    ISessionAccount,
+} from '@integration-components/types';
+import { BALANCE_ACCOUNTS, BALANCE_ACCOUNTS_SINGLE, setupBasicResponse } from '@integration-components/testing/fixtures';
 import { BALANCE_ACCOUNTS_ENDPOINT, SETUP_ENDPOINT, withDelay } from '@integration-components/testing/msw';
 import { uuid } from '@integration-components/utils';
 import { ENDPOINTS } from '../endpoints';
@@ -109,7 +117,27 @@ const deductCashedOut = (accountKey: string, eligibility: ICashOutEligibility): 
     return { ...eligibility, availableForCashOutBalance, isCashoutAvailable: false, transferInstruments: [], unavailableReasons: ['zeroBalance'] };
 };
 
+// Like a session for an account holder, whose balance accounts can be picked from.
+const SESSION_ACCOUNT_HOLDER: ISessionAccount = { accountKey: 'BalanceAccountHolder.AH32272223222B5CTDQPM6W2H', accountType: 'BalanceAccountHolder' };
+
 export const cashOutMocks = [
+    http.get(
+        ENDPOINTS.accounts,
+        withDelay(() => HttpResponse.json({ data: [SESSION_ACCOUNT_HOLDER] }))
+    ),
+    // What each balance account of the account holder can cash out, as its eligibility tells it.
+    http.get(
+        ENDPOINTS.availableAmounts,
+        withDelay(() =>
+            HttpResponse.json({
+                balanceAccounts: BALANCE_ACCOUNTS.map(({ id }) => ({
+                    balanceAccountId: id,
+                    availableForCashOut: deductCashedOut(id, ELIGIBILITY_BY_BALANCE_ACCOUNT[id] ?? ELIGIBILITY_AVAILABLE.default)
+                        .availableForCashOutBalance,
+                })),
+            } satisfies ICashOutAvailableAmounts)
+        )
+    ),
     http.get<{ accountKey: string }>(
         ENDPOINTS.eligibility,
         withDelay(({ params }) => {
@@ -172,8 +200,58 @@ export const cashOutMocks = [
 
 export const CASH_OUT_HANDLERS = {
     default: { handlers: cashOutMocks },
+    // The API has an amount for the first balance account only: none for the second, and the third is left out.
+    someAvailableAmountsMissing: {
+        handlers: [
+            http.get(
+                ENDPOINTS.availableAmounts,
+                withDelay(() =>
+                    HttpResponse.json({
+                        balanceAccounts: [
+                            {
+                                balanceAccountId: BALANCE_ACCOUNTS[0].id,
+                                availableForCashOut: ELIGIBILITY_BY_BALANCE_ACCOUNT[BALANCE_ACCOUNTS[0].id]!.availableForCashOutBalance,
+                            },
+                            // Not as the type allows, but as the component has to handle anyway.
+                            { balanceAccountId: BALANCE_ACCOUNTS[1].id, availableForCashOut: null },
+                        ],
+                    })
+                )
+            ),
+        ],
+    },
+    // Like the API right after a cashOut: still processing it, with what is available to cash out not lowered yet.
+    cashOutStillProcessing: {
+        handlers: [
+            http.get<{ accountKey: string }>(
+                ENDPOINTS.eligibility,
+                withDelay(({ params }) => {
+                    const balanceAccountId = getBalanceAccountId(params.accountKey);
+                    if (!balanceAccountId) return getInvalidAccountKeyResponse();
+                    const eligibility = ELIGIBILITY_BY_BALANCE_ACCOUNT[balanceAccountId] ?? ELIGIBILITY_AVAILABLE.default;
+                    if (!cashedOutByBalanceAccount.has(balanceAccountId)) return HttpResponse.json(eligibility);
+                    return HttpResponse.json({
+                        ...eligibility,
+                        isCashoutAvailable: false,
+                        transferInstruments: [],
+                        unavailableReasons: ['cashOutInProgress'],
+                    } satisfies ICashOutEligibility);
+                })
+            ),
+            ...cashOutMocks,
+        ],
+    },
+    // Like a session for a single balance account, which has nothing to pick from.
     singleBalanceAccount: {
         handlers: [
+            http.get(
+                ENDPOINTS.accounts,
+                withDelay(() =>
+                    HttpResponse.json({
+                        data: [{ accountKey: `${BALANCE_ACCOUNT_KEY_PREFIX}${BALANCE_ACCOUNTS_SINGLE[0]!.id}`, accountType: 'BalanceAccount' }],
+                    })
+                )
+            ),
             http.get(
                 BALANCE_ACCOUNTS_ENDPOINT,
                 withDelay(() => {

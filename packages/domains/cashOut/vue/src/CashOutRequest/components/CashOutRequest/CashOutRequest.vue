@@ -16,8 +16,16 @@ const cashOutState = useCashOutState({
     initialBalanceAccountId: () => props.initialBalanceAccountId,
     eligibility: () => props.eligibility,
 });
-const { balanceAccountOptions, eligibility, isFetchingEligibility, lastUpdated, refreshEligibility, selectedAccountKey, selectedBalanceAccountId } =
-    cashOutState;
+const {
+    balanceAccountOptions,
+    eligibility,
+    isFetchingEligibility,
+    lastUpdated,
+    refresh,
+    refreshAvailableAmounts,
+    selectedAccountKey,
+    selectedBalanceAccountId,
+} = cashOutState;
 
 const feesError = ref<AdyenPlatformExperienceError>();
 
@@ -27,8 +35,8 @@ const handleInstructingChange = (value: boolean) => {
     isInstructing.value = value;
 };
 
-const refresh = () => {
-    if (!isInstructing.value) refreshEligibility();
+const refreshUnlessInstructing = () => {
+    if (!isInstructing.value) refresh();
 };
 
 const errorInfo = computed(() => (feesError.value ? getCashOutErrorInfo(feesError.value) : cashOutState.errorInfo.value));
@@ -62,7 +70,8 @@ const handleResult = (cashOutResult: CashOutResult) => {
             title-key="cashOut.request.title"
             :last-updated="lastUpdated"
             :is-refreshing="isFetchingEligibility"
-            :on-refresh="shellState === 'error' ? undefined : refresh"
+            :on-refresh="shellState === 'error' ? undefined : refreshUnlessInstructing"
+            :on-balance-account-selector-close="refreshAvailableAmounts"
         />
         <ComponentShell :state="shellState" :error-info="errorInfo">
             <template #loading>

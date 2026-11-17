@@ -113,7 +113,8 @@ const mockCashOutState = (shellState: ComponentShellState) => {
         shellState: ref(shellState),
         isFetchingEligibility: ref(false),
         lastUpdated: ref(Date.now()),
-        refreshEligibility: vi.fn(),
+        refresh: vi.fn(),
+        refreshAvailableAmounts: vi.fn(),
     };
     vi.mocked(useCashOutState).mockReturnValue(state as unknown as ReturnType<typeof useCashOutState>);
     return state;
@@ -146,13 +147,13 @@ describe('CashOutRequest', () => {
             setInstructing(true);
             await nextTick();
             headerProps.reloadButton?.event?.();
-            expect(state.refreshEligibility).not.toHaveBeenCalled();
+            expect(state.refresh).not.toHaveBeenCalled();
             expect(headerProps.reloadButton?.state).toBe('start');
 
             setInstructing(false);
             await nextTick();
             headerProps.reloadButton?.event?.();
-            expect(state.refreshEligibility).toHaveBeenCalledOnce();
+            expect(state.refresh).toHaveBeenCalledOnce();
 
             unmount();
         });

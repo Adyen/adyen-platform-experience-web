@@ -19,7 +19,7 @@ const ELIGIBILITY = {
     unavailableReasons: [],
 };
 
-const CASH_OUT = { id: 'CO1' };
+const CASH_OUT = { id: 'CO1', amount: { value: 10000, currency: 'USD' } };
 
 const unavailableEligibility = (reason: string) => ({ ...ELIGIBILITY, isCashoutAvailable: false, unavailableReasons: [reason] });
 
@@ -94,7 +94,13 @@ vi.mock('../CashOutRequestModal/CashOutRequestModal.vue', async () => {
 });
 
 const mockCashOutState = ({ eligibility, shellState = 'ready' }: { eligibility?: unknown; shellState?: ComponentShellState }) => {
-    const state = { eligibility: ref(eligibility), refreshEligibility: vi.fn(), shellState: ref(shellState) };
+    const state = {
+        eligibility: ref(eligibility),
+        recordCashOut: vi.fn(),
+        refresh: vi.fn(),
+        refreshEligibility: vi.fn(),
+        shellState: ref(shellState),
+    };
     vi.mocked(useCashOutState).mockReturnValue({
         ...state,
         balanceAccountOptions: ref([]),
@@ -278,6 +284,20 @@ describe('CashOutOverview', () => {
 
             expect(findModal(target)).toBeNull();
             expect(state.refreshEligibility).not.toHaveBeenCalled();
+
+            unmount();
+        });
+
+        // The state shows what is expected to be left until it is refreshed, as the API still shows what was available before.
+        test('should record the instructed cashOut', async () => {
+            const state = mockCashOutState({ eligibility: ELIGIBILITY });
+            const { target, unmount } = renderCashOutOverview({});
+
+            findStartButton(target)?.click();
+            await nextTick();
+            target.querySelector<HTMLElement>('[data-testid="cash-out"]')?.click();
+
+            expect(state.recordCashOut).toHaveBeenCalledExactlyOnceWith(CASH_OUT);
 
             unmount();
         });

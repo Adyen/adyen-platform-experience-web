@@ -100,6 +100,16 @@ export const cashOutComponentView = {
         url: 'balanceAccounts',
         versions: [1],
     },
+    getAccounts: {
+        method: 'GET' as HttpMethod,
+        url: 'accounts',
+        versions: [1],
+    },
+    getCashOutAvailableAmounts: {
+        method: 'GET' as HttpMethod,
+        url: '{accountKey}/cashout/availableAmounts',
+        versions: [1],
+    },
     getCashOutEligibility: {
         method: 'GET' as HttpMethod,
         url: '{accountKey}/cashout/eligibility',

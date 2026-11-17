@@ -31,6 +31,22 @@ export const SingleBalanceAccount: ElementStory = {
     },
 };
 
+export const SomeAvailableAmountsMissing: ElementStory = {
+    name: 'Some available amounts missing',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.someAvailableAmountsMissing },
+    },
+};
+
+export const CashOutStillProcessing: ElementStory = {
+    name: 'CashOut still processing',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.cashOutStillProcessing },
+    },
+};
+
 export const ZeroBalance: ElementStory = {
     name: 'Unavailable - Zero balance',
     args: { mockedApi: true },
