@@ -31,6 +31,7 @@ export interface components {
         /** @enum {string} */
         EndpointName:
             | 'acceptDispute'
+            | 'addMandate'
             | 'anaCreditActionDetails'
             | 'countries'
             | 'createGrantOffer'
@@ -45,14 +46,19 @@ export interface components {
             | 'getBalances'
             | 'getDisputeDetail'
             | 'getDisputeList'
+            | 'getDirectDebitMandateCreationData'
             | 'getDynamicGrantOffer'
             | 'getDynamicGrantOffersConfiguration'
             | 'getGrants'
             | 'getCapitalState'
             | 'getCashOutEligibility'
             | 'getCashOutFees'
+            | 'getTermsOfService'
             | 'getOnboardingConfiguration'
             | 'getNetworkTokenActivationData'
+            | 'getPublicKey'
+            | 'revealPin'
+            | 'changePin'
             | 'getPaymentLinks'
             | 'getPayout'
             | 'getPayouts'
@@ -76,7 +82,10 @@ export interface components {
             | 'createPBLPaymentLink'
             | 'getPayByLinkConfiguration'
             | 'getPayByLinkPaymentLinkById'
-            | 'downloadTransactions';
+            | 'downloadTransactions'
+            | 'revealPaymentInstrument'
+            | 'standaloneComponentHello'
+            | 'standaloneComponentHelloPff';
         LegalEntitySetupResponseDTO: {
             countryCode: string;
             regions: components['schemas']['RegionDTO'][];
@@ -88,6 +97,7 @@ export interface components {
         /** @enum {string} */
         RegionType: 'capital';
         SetupEndpointResponse: {
+            baseUrl?: string;
             method?: string;
             url?: string;
             versions?: number[];

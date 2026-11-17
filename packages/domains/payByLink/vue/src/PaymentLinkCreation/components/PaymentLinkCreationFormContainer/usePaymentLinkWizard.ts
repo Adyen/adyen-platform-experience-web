@@ -11,13 +11,16 @@ import {
 } from '../../../../../domain/src';
 import { type FieldRuntimeConfig } from '../../composables/wizardContext';
 
+type AllowedFieldOptions = Partial<Record<PaymentLinkFieldName, ReadonlyArray<string> | undefined>>;
+
 interface UsePaymentLinkWizardParams {
     i18n: I18n;
     steps: ComputedRef<ReadonlyArray<FormStepConfig>>;
     defaults?: () => DeepPartial<PaymentLinkCreationFormValues> | undefined;
+    allowedOptions?: () => AllowedFieldOptions;
 }
 
-export function usePaymentLinkWizard({ i18n, steps, defaults }: UsePaymentLinkWizardParams) {
+export function usePaymentLinkWizard({ i18n, steps, defaults, allowedOptions }: UsePaymentLinkWizardParams) {
     const values = ref<Record<string, unknown>>({});
     const errors = ref<Record<string, string>>({});
     const displayValues = ref<Record<string, string>>({});
@@ -80,6 +83,26 @@ export function usePaymentLinkWizard({ i18n, steps, defaults }: UsePaymentLinkWi
         config => {
             Object.keys(config).forEach(name => {
                 if (values.value[name] === undefined) values.value[name] = '';
+            });
+        },
+        { immediate: true }
+    );
+
+    const allowedValues = computed<AllowedFieldOptions>(() => {
+        const configOptions: AllowedFieldOptions = {};
+        Object.entries(fieldConfig.value).forEach(([name, { options }]) => {
+            const list: ReadonlyArray<unknown> = options ?? [];
+            if (list.length && list.every(option => typeof option === 'string')) configOptions[name as PaymentLinkFieldName] = list as string[];
+        });
+        return { ...allowedOptions?.(), ...configOptions };
+    });
+
+    watch(
+        allowedValues,
+        allowed => {
+            Object.entries(allowed).forEach(([name, options]) => {
+                const value = values.value[name];
+                if (options?.length && value && !options.includes(value as string)) setValue(name as PaymentLinkFieldName, '');
             });
         },
         { immediate: true }

@@ -24,6 +24,9 @@
   "files": [
     "dist/**"
   ],
+  "bin": {
+    "adyen-platform-experience-web": "./dist/cli/index.js"
+  },
   "sideEffects": [
     "**/*.css",
     "**/global.{js,ts}"
@@ -47,7 +50,7 @@
     "./adyen-platform-experience-web.css": "./dist/adyen-platform-experience-web.css"
   },
   "scripts": {
-    "build": "nx run @integration-components/sdk:build",
+    "build": "nx run @integration-components/tools-cli:build",
     "build:umd": "nx run @adyen/adyen-platform-experience-web:build:umd",
     "build:umd:test": "nx run @adyen/adyen-platform-experience-web:build:umd:test",
     "build:analyse": "nx run @adyen/adyen-platform-experience-web:build:analyse",

@@ -2,25 +2,30 @@
 @use '@integration-components/style/breakpoints' as breakpoints;
 
 .root {
+    align-items: center;
     border-radius: style.token(border-radius-m);
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-060);
+    justify-content: center;
     left: style.token(spacer-050);
     margin: 0 auto;
     max-width: 450px;
     min-width: 310px;
-    padding: style.token(spacer-090);
     text-align: center;
     top: style.token(spacer-050);
 
     @include breakpoints.adyen-pe-screen-sm-and-up {
         min-width: 400px;
-        padding: style.token(spacer-120);
+    }
+}
 
-        .condensed {
-            padding: style.token(spacer-040);
-        }
+.outlined,
+.withBackground {
+    padding: style.token(spacer-090);
+
+    @include breakpoints.adyen-pe-screen-sm-and-up {
+        padding: style.token(spacer-120);
     }
 }
 
