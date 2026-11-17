@@ -95,7 +95,7 @@ export default defineConfig(({ mode }) => ({
         },
         // Output to root dist/ so the root package.json entry points and CI workflows remain intact.
         outDir: resolve(rootDir, 'dist'),
-        emptyOutDir: true,
+        emptyOutDir: false,
     },
     css: {
         preprocessorOptions: {

@@ -64,21 +64,73 @@ describe('rewriteBentoCssVariables', () => {
         });
     });
 
-    test('does not transform non-style modules while serving', async () => {
-        await expect(runTransform('const variable = "--b-color";', 'library.ts')).resolves.toBeNull();
+    test('does not transform modules that are neither styles nor scripts', async () => {
+        await expect(runTransform('{"variable":"--b-color"}', 'data.json')).resolves.toBeNull();
     });
 
-    test('rewrites every Bento variable declaration and reference in emitted CSS assets', () => {
-        const bundle = bundleWithAsset(
-            'assets/library.css',
-            ':root{--b-color:red;--b-spacing:8px}.button{color:var(--b-color);margin:var(--b-spacing) var(--other)}/* --b-comment */'
-        );
+    test.each([
+        '/node_modules/some-library/dist/index.js',
+        '/node_modules/.vite/deps/some-library.js?v=1a2b3c4d',
+        'library.ts',
+        'library.mjs',
+        'Component.vue',
+        'Component.vue?vue&type=script&setup=true&lang.ts',
+    ])('rewrites Bento variable names in string literals of %s', async id => {
+        const code = [
+            'floating.style.setProperty("--b-dropdown-available-height", height);',
+            "getComputedStyle(floating).getPropertyValue('--b-spacer-040');",
+            'const color = `var(--b-color)`;',
+            'const style = "border: 1px solid var(--b-color-outline-primary)";',
+        ].join('');
+
+        await expect(runTransform(code, id)).resolves.toEqual({
+            code: [
+                'floating.style.setProperty("--adyen-sdk-dropdown-available-height", height);',
+                "getComputedStyle(floating).getPropertyValue('--adyen-sdk-spacer-040');",
+                'const color = `var(--adyen-sdk-color)`;',
+                'const style = "border: 1px solid var(--adyen-sdk-color-outline-primary)";',
+            ].join(''),
+            map: null,
+        });
+    });
+
+    test('only rewrites Bento variable names in scripts, not theme class names or selectors', async () => {
+        await expect(runTransform('const theme = "b-dark-theme";const root = ":root";const variable = "--b-color";', 'library.js')).resolves.toEqual({
+            code: 'const theme = "b-dark-theme";const root = ":root";const variable = "--adyen-sdk-color";',
+            map: null,
+        });
+    });
+
+    test('does not transform scripts without Bento variable names in string literals', async () => {
+        await expect(
+            runTransform('let b = 2, c = 1, x = --b-c;const theme = "b-dark-theme";const other = "--my--b-color";', 'library.js')
+        ).resolves.toBeNull();
+    });
+
+    test.each([
+        {
+            scenario: 'every Bento variable declaration and reference',
+            source: ':root{--b-color:red;--b-spacing:8px}.button{color:var(--b-color);margin:var(--b-spacing) var(--other)}/* --b-comment */',
+            expected:
+                ':root,[data-adyen-pe-theme-root]{--adyen-sdk-color:red;--adyen-sdk-spacing:8px}.button{color:var(--adyen-sdk-color);margin:var(--adyen-sdk-spacing) var(--other)}/* --adyen-sdk-comment */',
+        },
+        {
+            scenario: 'the .b-dark-theme selector',
+            source: '.b-dark-theme{color:red}.b-dark-theme .item{background:blue}',
+            expected: "[data-adyen-pe-theme='dark']{color:red}[data-adyen-pe-theme='dark'] .item{background:blue}",
+        },
+        {
+            scenario: 'only exact names when substrings appear inside other names',
+            source: ':root{--my--b-color:blue;--b-color:red}.b-dark-theme-container{color:green}.b-dark-theme{color:black}',
+            expected:
+                ":root,[data-adyen-pe-theme-root]{--my--b-color:blue;--adyen-sdk-color:red}.b-dark-theme-container{color:green}[data-adyen-pe-theme='dark']{color:black}",
+        },
+    ])('rewrites $scenario in emitted CSS assets', ({ source, expected }) => {
+        const bundle = bundleWithAsset('assets/library.css', source);
 
         runGenerateBundle(bundle);
 
-        expect(getAsset(bundle, 'assets/library.css').source).toBe(
-            ':root,[data-adyen-pe-theme-root]{--adyen-sdk-color:red;--adyen-sdk-spacing:8px}.button{color:var(--adyen-sdk-color);margin:var(--adyen-sdk-spacing) var(--other)}/* --adyen-sdk-comment */'
-        );
+        expect(getAsset(bundle, 'assets/library.css').source).toBe(expected);
     });
 
     test('rewrites Uint8Array CSS sources while retaining their source type', () => {
@@ -126,28 +178,5 @@ describe('rewriteBentoCssVariables', () => {
         expect(image.source).toBe(source);
         expect(bundle['index.js']).toBe(chunk);
         expect(chunk.code).toBe('const variable = "--b-color";');
-    });
-
-    test('rewrites .b-dark-theme selector in CSS assets', () => {
-        const bundle = bundleWithAsset('assets/library.css', '.b-dark-theme{color:red}.b-dark-theme .item{background:blue}');
-
-        runGenerateBundle(bundle);
-
-        expect(getAsset(bundle, 'assets/library.css').source).toBe(
-            "[data-adyen-pe-theme='dark']{color:red}[data-adyen-pe-theme='dark'] .item{background:blue}"
-        );
-    });
-
-    test('avoids accidental replacements when substrings appear inside other names', () => {
-        const bundle = bundleWithAsset(
-            'assets/library.css',
-            ':root{--my--b-color:blue;--b-color:red}.b-dark-theme-container{color:green}.b-dark-theme{color:black}'
-        );
-
-        runGenerateBundle(bundle);
-
-        expect(getAsset(bundle, 'assets/library.css').source).toBe(
-            ":root,[data-adyen-pe-theme-root]{--my--b-color:blue;--adyen-sdk-color:red}.b-dark-theme-container{color:green}[data-adyen-pe-theme='dark']{color:black}"
-        );
     });
 });
