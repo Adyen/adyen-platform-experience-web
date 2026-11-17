@@ -11,6 +11,7 @@ const props = defineProps<{
     transaction: TransactionDetails;
 }>();
 
+const INVALID_DATE = new Date('');
 const { i18n } = useCoreContext();
 const { dateFormat } = useTimezoneAwareDateFormatting(() => props.transaction.balanceAccount?.timeZone);
 
@@ -38,7 +39,20 @@ function formatTimestamp(date: string): string {
             :key="`${event.createdAt}-${event.status}-${index}`"
             :title="getFixedType(event.status, getTransactionTimelineTxType(i18n, event.type) as string)"
             :timestamp="{
-                date: new Date(event.createdAt),
+                /**
+                 * Bento's timeline item formats `timestamp.date` itself, in the browser timezone (it has no timezone option),
+                 * and renders `timestamp.value` next to it. Passing an invalid date makes Bento render an empty date, so the
+                 * balance account timezone date passed as `value` is the only date shown. Bento also sorts entries by date;
+                 * invalid dates compare as equal, so the events keep their original order.
+                 *
+                 * The workaround breaks if Bento starts validating `timestamp.date` or if `timegapLimit` is enabled on the timeline.
+                 *
+                 * [TODO]: Follow up with Bento and drop this workaround once the timeline can show a timezone-aware date, e.g. via:
+                 * - a `timeZone` option on `BentoDate` and the timeline `timestamp`
+                 * - raw `Intl.DateTimeFormat` options for the timeline `timestamp`
+                 * - a timestamp slot, or rendering only `timestamp.value`
+                 */
+                date: INVALID_DATE,
                 format: BentoDateFormat.FULL_DATE_TIME_WITHOUT_PERIOD,
                 value: formatTimestamp(event.createdAt),
             }"
