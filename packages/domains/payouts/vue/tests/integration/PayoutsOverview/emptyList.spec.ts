@@ -9,8 +9,10 @@ test.describe('Empty list', () => {
     });
 
     test('should render "No payouts found" message', async ({ page }) => {
-        await expect(page.getByText('No payouts found', { exact: true })).toBeVisible();
-        await expect(page.getByText('Try a different search or reset your filters, and we’ll try again.', { exact: true })).toBeVisible();
+        await Promise.all([
+            expect(page.getByText('No payouts found', { exact: true })).toBeVisible(),
+            expect(page.getByText('Try a different search or reset your filters, and we’ll try again.', { exact: true })).toBeVisible(),
+        ]);
     });
 
     test('should not render the data grid', async ({ page }) => {
@@ -18,7 +20,9 @@ test.describe('Empty list', () => {
     });
 
     test('should not render pagination buttons', async ({ page }) => {
-        await expect(page.getByRole('button', { name: /Previous page/i })).toHaveCount(0);
-        await expect(page.getByRole('button', { name: /Next page/i })).toHaveCount(0);
+        await Promise.all([
+            expect(page.getByRole('button', { name: /Previous page/i })).toHaveCount(0),
+            expect(page.getByRole('button', { name: /Next page/i })).toHaveCount(0),
+        ]);
     });
 });

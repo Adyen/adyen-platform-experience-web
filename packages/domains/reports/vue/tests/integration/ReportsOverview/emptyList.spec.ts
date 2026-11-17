@@ -9,9 +9,10 @@ test.describe('Empty list', () => {
     });
 
     test('should show the empty state instead of the table', async ({ page }) => {
-        await expect(page.getByText('No reports found', { exact: true })).toBeVisible();
-        await expect(page.getByText('Try a different search or reset your filters, and we’ll try again.', { exact: true })).toBeVisible();
-
-        await expect(page.getByRole('grid')).toHaveCount(0);
+        await Promise.all([
+            expect(page.getByText('No reports found', { exact: true })).toBeVisible(),
+            expect(page.getByText('Try a different search or reset your filters, and we’ll try again.', { exact: true })).toBeVisible(),
+            expect(page.getByRole('grid')).toHaveCount(0),
+        ]);
     });
 });
