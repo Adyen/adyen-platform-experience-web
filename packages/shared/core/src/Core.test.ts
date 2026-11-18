@@ -315,6 +315,7 @@ describe('Core', () => {
                 subCategory: 'Core',
                 label: 'core',
                 locale: 'en-US',
+                buildType: 'test',
                 hasCustomTheme: false,
             });
             expect(properties).not.toHaveProperty('themeMode');

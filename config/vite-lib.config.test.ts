@@ -4,9 +4,11 @@
 import { expect, test } from 'vitest';
 import { getViteLibConfig } from './vite-lib.config';
 import sdkConfig from '../packages/sdk/vite.config';
+import rootConfig from '../vite.config';
 import rootPkgJson from '../package.json';
 
 const expectedBuildEnvDefineKeys = [
+    'process.env.BUNDLE_TYPE',
     'process.env.SESSION_ACCOUNT_HOLDER',
     'process.env.SESSION_AUTO_REFRESH',
     'process.env.SESSION_MAX_AGE_MS',
@@ -41,6 +43,18 @@ test('getViteLibConfig injects build environment defines', async () => {
         : configExport);
 
     expect(Object.keys(config.define ?? {}).sort()).toEqual(expectedBuildEnvDefineKeys);
+});
+
+test.each([
+    { name: 'npm build', configExport: sdkConfig, mode: 'production', expected: 'npm' },
+    { name: 'UMD build', configExport: rootConfig, mode: 'umd', expected: 'js-script' },
+    { name: 'development', configExport: rootConfig, mode: 'development', expected: 'development' },
+])('$name injects its bundle type', async ({ configExport, mode, expected }) => {
+    const config = await (typeof configExport === 'function'
+        ? configExport({ command: 'build', mode, isPreview: false, isSsrBuild: false })
+        : configExport);
+
+    expect(config.define?.['process.env.BUNDLE_TYPE']).toBe(JSON.stringify(expected));
 });
 
 test('SDK build filenames normalize Windows separators', async () => {
