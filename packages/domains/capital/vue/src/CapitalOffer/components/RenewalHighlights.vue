@@ -25,7 +25,7 @@ const items = computed(() => {
             value: '-',
         },
         {
-            label: i18n.get('capital.offer.loan.currentGrantAmount'),
+            label: i18n.get('capital.offer.loan.currentRemainingGrantAmount'),
             value: formatAmount(breakdown.remainingGrantAmountValue),
         },
         {

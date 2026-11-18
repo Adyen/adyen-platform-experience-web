@@ -33,7 +33,11 @@ test.describe('Repayment US', () => {
 
             await Promise.all([
                 expect(getRepaymentModal(page).getByText('Manual bank transfer')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Repay your loan early by transferring money to this bank account.')).toBeVisible(),
+                expect(
+                    getRepaymentModal(page).getByText(
+                        'Repay your loan early by transferring money to this bank account. Payments must be made from one of your verified bank accounts.'
+                    )
+                ).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('Adyen’s bank account details')).toBeVisible(),
                 expect(copyIconButtons).toHaveCount(3),
                 expect(getRepaymentModal(page).getByText('Account number')).toBeVisible(),
@@ -53,7 +57,6 @@ test.describe('Repayment US', () => {
                 ).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('Send your payment.')).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('Wait 1-3 business days for the payment to be applied.')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Payments must be made from one of your verified bank accounts.')).toBeVisible(),
             ]);
         });
 
