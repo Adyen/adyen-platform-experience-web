@@ -35,6 +35,11 @@ describe('rewriteBentoCssVariables', () => {
         ['rewrites nested references', '.a{border:var( --b-y, var(--b-z))}', `.a{border:${read('y', `, ${read('z')}`)}}`],
         ['rewrites references inside the defaults', ':root{--b-a:var(--b-b)}', `${ROOT}{--adyen-pe-bento-a:${read('b')}}`],
         ['keeps component-level overrides public', '.tabs{--b-link:red}', '.tabs{--adyen-sdk-link:red}'],
+        [
+            'leaves --b- outside variables alone',
+            ".a{--b-x:1px;background:url('/img/--b-image.png');content:'--b-label'}/* --b-note */",
+            ".a{--adyen-sdk-x:1px;background:url('/img/--b-image.png');content:'--b-label'}/* --b-note */",
+        ],
         ['rewrites the dark theme selector in other rules', '.b-dark-theme .item{color:red}', `${DARK} .item{color:red}`],
         [
             'ignores look-alike names',

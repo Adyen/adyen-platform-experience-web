@@ -6,7 +6,6 @@ const SDK_VARIABLE_PREFIX = '--adyen-sdk-';
 const DEFAULT_VARIABLE_PREFIX = '--adyen-pe-bento-';
 const SDK_DARK_THEME_SELECTOR = `[${THEME_MODE_ATTRIBUTE}='dark']`;
 const SDK_THEME_ROOT_SELECTOR = `[${THEME_ROOT_ATTRIBUTE}]`;
-const BENTO_VARIABLE_REGEX = /(^|[^\w-])--b-/g;
 const BENTO_DARK_THEME_REGEX = /(^|[^\w-])\.b-dark-theme(?![\w-])/g;
 /** Bento's light defaults (`:root { … }`) and dark defaults (`.b-dark-theme { … }`). */
 const BENTO_DEFAULTS_BLOCK_REGEX = /(?<=^|[^\w-])(:root|\.b-dark-theme)(\s*\{)([^{}]*)\}/g;
@@ -76,7 +75,7 @@ const rewriteReferences = (source: string): string => {
 
 const rewriteString = (source: string): string =>
     rewriteReferences(rewriteDefaultBlocks(source))
-        .replace(BENTO_VARIABLE_REGEX, `$1${SDK_VARIABLE_PREFIX}`)
+        .replace(BENTO_DECLARATION_REGEX, `$1${SDK_VARIABLE_PREFIX}$2$3`)
         .replace(BENTO_DARK_THEME_REGEX, `$1${SDK_DARK_THEME_SELECTOR}`);
 
 const rewriteSource = (source: string | Uint8Array): string | Uint8Array => {
