@@ -50,7 +50,7 @@
     "payouts.overview.filters.date.thisMonth": "Deze maand",
     "payouts.overview.filters.date.thisWeek": "Deze week",
     "payouts.overview.filters.date.yearToDate": "Jaar tot heden",
-    "payouts.overview.generateInfo": "Uitbetalingsinformatie wordt elke dag om middernacht, UTC-tijd, gegenereerd.",
+    "payouts.overview.generateInfo": "De informatie over de uitbetaling is beschikbaar nadat de uitbetaling volledig is verwerkt.",
     "payouts.overview.list.adjustmentAmount": "Aanpassingen",
     "payouts.overview.list.createdAt": "Datum",
     "payouts.overview.list.fundsCapturedAmount": "Vastgehouden bedrag",

@@ -85,7 +85,7 @@
     "transactions.details.summary.adjustments.other.label": "Sonstiges",
     "transactions.details.summary.adjustments.split.label": "Ratenzahlung",
     "transactions.details.summary.adjustments.surcharge.info": "Zuschlag wurde einem anderen Konto gutgeschrieben.",
-    "transactions.details.summary.adjustments.surcharge.label": "Zuschlagsbetrag",
+    "transactions.details.summary.adjustments.surcharge.label": "Aufschlag Betrag",
     "transactions.details.summary.adjustments.tip.info": "Trinkgeld wurde einem anderen Konto gutgeschrieben.",
     "transactions.details.summary.adjustments.tip.label": "Trinkgeldbetrag",
     "transactions.details.summary.grossAmount": "Bruttobetrag",

@@ -50,7 +50,7 @@
     "payouts.overview.filters.date.thisMonth": "Tämä kuukausi",
     "payouts.overview.filters.date.thisWeek": "Tämä viikko",
     "payouts.overview.filters.date.yearToDate": "Vuoden alusta",
-    "payouts.overview.generateInfo": "Maksutiedot luodaan joka päivä keskiyöllä (UTC-aikaa).",
+    "payouts.overview.generateInfo": "Tilityksen tiedot ovat saatavilla vasta, kun tilitys on käsitelty kokonaan.",
     "payouts.overview.list.adjustmentAmount": "Korjaukset",
     "payouts.overview.list.createdAt": "Päivämäärä",
     "payouts.overview.list.fundsCapturedAmount": "Kirjatut varat",

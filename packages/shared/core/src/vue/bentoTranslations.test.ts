@@ -403,7 +403,7 @@ describe('applyBentoDomainOverrides', () => {
     });
 
     test('uses the SDK English fallback for missing active-locale Bento translations', async () => {
-        const localization = new Localization('da-DK', '', SDK_BENTO_TRANSLATION_SOURCES);
+        const localization = new Localization('da-DK', '', { ...SDK_BENTO_TRANSLATION_SOURCES, localeTranslations: { 'da-DK': async () => ({}) } });
         await localization.ready;
 
         expect(localization.has('bento.alert.close')).toBe(true);
