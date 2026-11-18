@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { getBuildEnvDefines } from '../../config/defines/build-env';
+import { cdnModuleIntegrity } from '../../config/vite/cdnModuleIntegrity';
 import { lazyElementComponents } from '../../config/vite/lazyElementComponents';
 import { rewriteBentoCssVariables } from '../../config/vite/rewriteBentoCssVariables';
 import rootPkgJson from '../../package.json';
@@ -88,10 +89,14 @@ export default defineConfig(({ mode }) => {
             },
             rollupOptions: isCdnBuild
                 ? {
+                      // Lets the entry hold the shared runtime instead of becoming a facade that statically imports a
+                      // chunk, which would load without integrity since integrators only pin the entry.
+                      preserveEntrySignatures: 'allow-extension' as const,
                       output: [
                           {
                               format: 'es',
-                              chunkFileNames: 'chunks/[name]-[hash].js',
+                              // Hash-only names keep the integrity manifest embedded in the CDN entry small.
+                              chunkFileNames: 'chunks/[hash].js',
                               indent: false,
                           },
                       ],
@@ -144,6 +149,7 @@ export default defineConfig(({ mode }) => {
                 },
             },
             isCdnBuild && lazyElementComponents(),
+            isCdnBuild && cdnModuleIntegrity({ entryFileName: CDN_ENTRY_FILE_NAME }),
             vue({
                 template: {
                     compilerOptions: {

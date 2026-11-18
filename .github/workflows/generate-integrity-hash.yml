@@ -27,6 +27,8 @@ jobs:
     steps:
       - name: Generate SRI Hashes
         run: |
+          set -o pipefail
+
           if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Error: Invalid version format '$VERSION'. Expected semver like v1.9.0"
             exit 1
@@ -35,11 +37,12 @@ jobs:
           JS_URL="${BASE_URL}/${VERSION}/adyen-platform-experience-web.js"
           CSS_URL="${BASE_URL}/${VERSION}/adyen-platform-experience-web.css"
 
+          # The entry embeds the SRI hash of every lazily loaded chunk, so it is the only JS file integrators pin.
           echo "Fetching JavaScript file..."
-          JS_HASH=$(curl -s "$JS_URL" | openssl dgst -sha384 -binary | openssl base64 -A)
+          JS_HASH=$(curl -sf "$JS_URL" | openssl dgst -sha384 -binary | openssl base64 -A)
 
           echo "Fetching CSS file..."
-          CSS_HASH=$(curl -s "$CSS_URL" | openssl dgst -sha384 -binary | openssl base64 -A)
+          CSS_HASH=$(curl -sf "$CSS_URL" | openssl dgst -sha384 -binary | openssl base64 -A)
 
           # Print to logs
           echo "================================"
@@ -57,8 +60,13 @@ jobs:
 
           **Integrity Hash:** \`sha384-${JS_HASH}\`
 
+          The entry embeds the integrity hashes of every lazily loaded chunk and verifies each chunk before importing it.
+          Pin it with a module script placed before any script that imports the SDK, so later imports of the same URL
+          reuse the verified module.
+
           \`\`\`html
-          <script src="${JS_URL}"
+          <script type="module"
+                  src="${JS_URL}"
                   integrity="sha384-${JS_HASH}"
                   crossorigin="anonymous"></script>
           \`\`\`
@@ -85,9 +93,14 @@ jobs:
                 integrity="sha384-${CSS_HASH}"
                 crossorigin="anonymous">
 
-          <script src="${JS_URL}"
+          <script type="module"
+                  src="${JS_URL}"
                   integrity="sha384-${JS_HASH}"
                   crossorigin="anonymous"></script>
+
+          <script type="module">
+            import { AdyenPlatformExperience } from '${JS_URL}';
+          </script>
           \`\`\`
           EOF
 

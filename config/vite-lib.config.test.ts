@@ -72,10 +72,11 @@ test('SDK build filenames normalize Windows separators', async () => {
     expect(`./dist/${fileName('es', 'packages/sdk/src/index')}`).toBe(rootPkgJson.exports['.'].import.default);
 });
 
-test('SDK npm build does not lazy-load element components', async () => {
+test('SDK npm build does not use CDN-only plugins', async () => {
     const config = await getSdkConfig('production');
 
     expect(getPluginNames(config.plugins)).not.toContain('lazy-element-components');
+    expect(getPluginNames(config.plugins)).not.toContain('cdn-module-integrity');
 });
 
 test('SDK CDN build emits a single code-split ES module entry', async () => {
@@ -88,10 +89,12 @@ test('SDK CDN build emits a single code-split ES module entry', async () => {
     }
 
     expect(fileName('es', 'packages/sdk/src/index')).toBe(CDN_ENTRY_FILE_NAME);
-    expect(output).toEqual([expect.objectContaining({ format: 'es', chunkFileNames: 'chunks/[name]-[hash].js' })]);
+    expect(output).toEqual([expect.objectContaining({ format: 'es', chunkFileNames: 'chunks/[hash].js' })]);
     expect(Array.isArray(output) && output[0]?.preserveModules).toBeFalsy();
+    expect(config.build?.rollupOptions?.preserveEntrySignatures).toBe('allow-extension');
     expect(config.build?.rollupOptions?.external).toBeUndefined();
     expect(config.build?.outDir).toBe(CDN_OUT_DIR);
     expect(config.define?.['process.env.NODE_ENV']).toBe(JSON.stringify('production'));
     expect(getPluginNames(config.plugins)).toContain('lazy-element-components');
+    expect(getPluginNames(config.plugins)).toContain('cdn-module-integrity');
 });
