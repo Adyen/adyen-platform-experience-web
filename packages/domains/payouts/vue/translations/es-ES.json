@@ -50,7 +50,7 @@
     "payouts.overview.filters.date.thisMonth": "Este mes",
     "payouts.overview.filters.date.thisWeek": "Esta semana",
     "payouts.overview.filters.date.yearToDate": "Este año hasta la fecha",
-    "payouts.overview.generateInfo": "La información de pago se genera todos los días a medianoche, hora UTC.",
+    "payouts.overview.generateInfo": "La información del pago estará disponible una vez que se haya procesado por completo.",
     "payouts.overview.list.adjustmentAmount": "Ajustes",
     "payouts.overview.list.createdAt": "Fecha",
     "payouts.overview.list.fundsCapturedAmount": "Fondos capturados",
