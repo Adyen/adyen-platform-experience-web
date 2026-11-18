@@ -33,7 +33,7 @@
     "**/external/chroma-js/**",
     "**/external/preact/compat/**",
     "**/external/@preact/signals/**",
-    "**/external/@adyen/kyc-components/dist/StoreProvider-*.js"
+    "**/external/@adyen/kyc-components/**"
   ],
   "main": "./dist/cjs/index.cjs",
   "module": "./dist/es/packages/sdk/src/index.js",
