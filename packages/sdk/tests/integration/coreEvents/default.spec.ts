@@ -5,7 +5,7 @@ import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../domai
 import { sharedTransactionsListAnalyticsEventProperties } from '../../../../domains/transactions/fixtures/constants/TransactionsOverview';
 
 // The Storybook container always initializes Core in light mode with every global appearance toggle set.
-const STORYBOOK_GLOBAL_APPEARANCE = ['container', 'illustrations', 'titles'];
+const STORYBOOK_GLOBAL_APPEARANCE = ['container', 'titles'];
 
 const scenarios = [
     {

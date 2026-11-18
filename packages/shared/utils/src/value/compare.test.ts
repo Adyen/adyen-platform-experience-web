@@ -62,15 +62,15 @@ describe('sameValue', () => {
 
 describe('isShallowEqual', () => {
     test('returns true for the same object or two objects with equal primitive properties', () => {
-        const value = { illustrations: 'hidden' as const, titles: 'visible' as const };
+        const value = { container: 'hidden' as const, titles: 'visible' as const };
 
         expect(isShallowEqual(value, value)).toBe(true);
-        expect(isShallowEqual(value, { illustrations: 'hidden', titles: 'visible' })).toBe(true);
+        expect(isShallowEqual(value, { container: 'hidden', titles: 'visible' })).toBe(true);
     });
 
     test('returns false when a property value or property name differs', () => {
-        expect(isShallowEqual({ illustrations: 'hidden' }, { illustrations: 'visible' })).toBe(false);
-        expect(isShallowEqual({ illustrations: undefined }, { titles: undefined })).toBe(false);
+        expect(isShallowEqual({ container: 'hidden' }, { container: 'visible' })).toBe(false);
+        expect(isShallowEqual({ container: undefined }, { titles: undefined })).toBe(false);
     });
 
     test('compares nested objects by reference', () => {

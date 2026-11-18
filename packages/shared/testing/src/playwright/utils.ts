@@ -1,5 +1,5 @@
 import type { PageAnalyticsEvent } from '../fixtures/eventDispatcher/events';
-import type { Locator, Page, Request } from '@playwright/test';
+import type { Locator, Page, Request, Response } from '@playwright/test';
 import { expect } from '@playwright/test';
 import { CORE_EVENT_NAMES } from '@integration-components/core/EventDispatcher/eventDispatcher/core-events';
 import { BalanceAccountFilter } from './utils/filters';
@@ -125,23 +125,46 @@ export const expectPaginationReset = async <FilterValue>({
     await expect(previousPageButton).toBeEnabled();
 
     const filterRequests: Request[] = [];
+    const filterResponses: Response[] = [];
+    const isEndpointUrl = (url: string) => new URL(url).pathname.endsWith(endpointPath);
     const collectFilterRequests = (request: Request) => {
-        if (new URL(request.url()).pathname.endsWith(endpointPath)) filterRequests.push(request);
+        if (isEndpointUrl(request.url())) filterRequests.push(request);
+    };
+    const collectFilterResponses = (response: Response) => {
+        if (isEndpointUrl(response.url())) filterResponses.push(response);
     };
     page.on('request', collectFilterRequests);
+    page.on('response', collectFilterResponses);
 
     let filterValue!: FilterValue;
     try {
         filterValue = await triggerFilterChange();
-        await expect.poll(() => filterRequests.some(request => isFilterRequest(request, filterValue))).toBe(true);
+        await expect.poll(() => filterResponses.some(response => isFilterRequest(response.request(), filterValue))).toBe(true);
     } finally {
         page.off('request', collectFilterRequests);
+        page.off('response', collectFilterResponses);
     }
 
     const matchingRequests = filterRequests.filter(request => isFilterRequest(request, filterValue));
     expect(matchingRequests.length).toBeGreaterThan(0);
     matchingRequests.forEach(request => expect(new URL(request.url()).searchParams.get('cursor')).toBeNull());
-    await expect(previousPageButton).toBeDisabled();
+
+    const matchingResponses = filterResponses.filter(response => isFilterRequest(response.request(), filterValue));
+    expect(matchingResponses.length).toBeGreaterThan(0);
+    const filteredResponse = matchingResponses[matchingResponses.length - 1];
+    if (!filteredResponse) throw new Error(`Expected a matching ${endpointPath} response after filtering`);
+
+    const responseBody: unknown = await filteredResponse.json();
+    if (typeof responseBody !== 'object' || responseBody === null || !('data' in responseBody) || !Array.isArray(responseBody.data)) {
+        throw new Error(`Expected the ${endpointPath} response to contain a data array`);
+    }
+
+    if (responseBody.data.length > 0) {
+        await expect(previousPageButton).toBeDisabled();
+    } else {
+        await expect(previousPageButton).toHaveCount(0);
+        await expect(nextPageButton).toHaveCount(0);
+    }
 };
 
 export const expectBalanceAccountPaginationReset = async ({

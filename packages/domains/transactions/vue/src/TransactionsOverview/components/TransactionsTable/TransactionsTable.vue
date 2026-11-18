@@ -8,8 +8,9 @@ import {
     CustomDataCell,
     useCustomColumnWidths,
     DataOverviewError,
+    DataOverviewLoading,
+    type ErrorMessageInfo,
     useTableColumns,
-    useShouldHideIllustrations,
     useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
@@ -56,7 +57,6 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const hideIllustrations = useShouldHideIllustrations();
 const isCondensed = useCondensedDataGrid();
 const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceAccount?.timeZone);
 
@@ -159,12 +159,13 @@ const paginationProps = computed(() => ({
     hideFirstLastPageButtons: true,
 }));
 
-const emptyStateProps = computed(() => ({
-    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
-    variant: 'embedded' as const,
-    title: i18n.get('transactions.overview.errors.listEmpty'),
-    description: i18n.get('transactions.common.errors.updateFilters'),
-}));
+const emptyStateProps = computed(
+    () =>
+        ({
+            title: 'transactions.overview.errors.listEmpty',
+            messages: ['transactions.common.errors.updateFilters'],
+        }) satisfies ErrorMessageInfo
+);
 
 function handleNavigate(page: number) {
     if (isLoading.value) return;
@@ -203,8 +204,9 @@ const errorInfo = computed(() =>
 
 <template>
     <div ref="tableRef">
-        <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" />
-
+        <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" type="error" />
+        <DataOverviewLoading v-else-if="isLoading && !gridData.length" />
+        <DataOverviewError v-else-if="!gridData.length" :error-info="emptyStateProps" type="no-results-found" variant="basic" />
         <BentoDataGrid
             v-else
             :condensed="isCondensed"
@@ -214,7 +216,6 @@ const errorInfo = computed(() =>
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
-            :empty-state="emptyStateProps"
             :allow-column-drag-and-drop="false"
             @row-click="handleRowClick"
             @navigate="handleNavigate"

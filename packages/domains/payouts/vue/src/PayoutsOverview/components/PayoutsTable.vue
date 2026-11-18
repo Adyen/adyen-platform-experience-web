@@ -17,8 +17,9 @@ import {
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
+    DataOverviewLoading,
+    type ErrorMessageInfo,
     useTableColumns,
-    useShouldHideIllustrations,
     useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
@@ -50,7 +51,6 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const hideIllustrations = useShouldHideIllustrations();
 const isCondensed = useCondensedDataGrid();
 // Reactive proxy — destructuring would unwrap `refreshing` into a stale snapshot.
 const config = useConfigContext();
@@ -150,12 +150,13 @@ const paginationProps = computed(() => {
     };
 });
 
-const emptyStateProps = computed(() => ({
-    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
-    variant: 'embedded' as const,
-    title: i18n.get('payouts.overview.errors.listEmpty'),
-    description: i18n.get('payouts.common.errors.updateFilters'),
-}));
+const emptyStateProps = computed(
+    () =>
+        ({
+            title: 'payouts.overview.errors.listEmpty',
+            messages: ['payouts.common.errors.updateFilters'],
+        }) satisfies ErrorMessageInfo
+);
 
 function handleNavigate(page: number) {
     if (isLoading.value) return;
@@ -185,9 +186,9 @@ const errorInfo = computed(() =>
 
 <template>
     <div ref="tableRef" :class="styles.root">
-        <!-- Error state -->
-        <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" />
-
+        <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" type="error" />
+        <DataOverviewLoading v-else-if="isLoading && !gridData.length" />
+        <DataOverviewError v-else-if="!gridData.length" :error-info="emptyStateProps" type="no-results-found" />
         <BentoDataGrid
             v-else
             allow-row-clicks
@@ -197,7 +198,6 @@ const errorInfo = computed(() =>
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
-            :empty-state="emptyStateProps"
             :allow-column-drag-and-drop="false"
             @row-click="handleRowClick"
             @navigate="handleNavigate"

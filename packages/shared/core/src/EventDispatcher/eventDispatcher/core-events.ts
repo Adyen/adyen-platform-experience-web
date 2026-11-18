@@ -48,17 +48,15 @@ const asRecord = (value: unknown): Record<string, unknown> => (isPlainObject(val
 
 /**
  * Appearance properties shared by every appearance-carrying core event:
- * configured keys and explicitly configured title/illustration visibility.
+ * configured keys and explicitly configured title visibility.
  */
 const getAppearanceEventProperties = (appearance: GlobalAppearance | undefined): Record<string, MixpanelProperty> => {
     const properties: Record<string, MixpanelProperty> = {};
     const appearanceKeys = appearance ? Object.keys(appearance) : [];
     const titles = toAppearanceOption(appearance?.titles);
-    const illustrations = toAppearanceOption(appearance?.illustrations);
 
     if (appearanceKeys.length > 0) properties.appearance = appearanceKeys;
     if (titles !== 'default') properties.appearanceTitles = titles;
-    if (illustrations !== 'default') properties.appearanceIllustrations = illustrations;
 
     return properties;
 };
