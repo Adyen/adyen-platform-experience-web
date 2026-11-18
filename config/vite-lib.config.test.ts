@@ -47,7 +47,7 @@ test('getViteLibConfig injects build environment defines', async () => {
 
 test.each([
     { name: 'npm build', configExport: sdkConfig, mode: 'production', expected: 'npm' },
-    { name: 'UMD build', configExport: rootConfig, mode: 'umd', expected: 'js-script' },
+    { name: 'UMD build', configExport: rootConfig, mode: 'umd', expected: 'script-tag' },
     { name: 'development', configExport: rootConfig, mode: 'development', expected: 'development' },
 ])('$name injects its bundle type', async ({ configExport, mode, expected }) => {
     const config = await (typeof configExport === 'function'
