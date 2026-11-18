@@ -50,7 +50,7 @@
     "payouts.overview.filters.date.thisMonth": "Den här månaden",
     "payouts.overview.filters.date.thisWeek": "Denna vecka",
     "payouts.overview.filters.date.yearToDate": "Hittills i år",
-    "payouts.overview.generateInfo": "Utbetalningsinformation genereras varje dag vid midnatt, UTC-tid.",
+    "payouts.overview.generateInfo": "Utbetalningsinformationen blir tillgänglig när utbetalningen är färdigbehandlad.",
     "payouts.overview.list.adjustmentAmount": "Justeringar",
     "payouts.overview.list.createdAt": "Datum",
     "payouts.overview.list.fundsCapturedAmount": "Insamlade medel",

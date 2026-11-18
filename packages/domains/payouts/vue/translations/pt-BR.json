@@ -50,7 +50,7 @@
     "payouts.overview.filters.date.thisMonth": "Este mês",
     "payouts.overview.filters.date.thisWeek": "Esta semana",
     "payouts.overview.filters.date.yearToDate": "Ano até o momento",
-    "payouts.overview.generateInfo": "As informações de repasse do pagamento são geradas todos os dias à meia-noite, horário UTC.",
+    "payouts.overview.generateInfo": "As informações do repasse de pagamento ficam disponíveis depois que o repasse for totalmente processado.",
     "payouts.overview.list.adjustmentAmount": "Ajustes",
     "payouts.overview.list.createdAt": "Data",
     "payouts.overview.list.fundsCapturedAmount": "Fundos capturados",

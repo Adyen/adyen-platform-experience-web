@@ -50,7 +50,7 @@
     "payouts.overview.filters.date.thisMonth": "Diesen Monat",
     "payouts.overview.filters.date.thisWeek": "Diese Woche",
     "payouts.overview.filters.date.yearToDate": "Laufendes Jahr",
-    "payouts.overview.generateInfo": "Auszahlungsinformationen werden täglich um Mitternacht (UTC-Zeit) generiert.",
+    "payouts.overview.generateInfo": "Die Auszahlungsinformationen sind verfügbar, nachdem die Auszahlung vollständig verarbeitet wurde.",
     "payouts.overview.list.adjustmentAmount": "Anpassungen",
     "payouts.overview.list.createdAt": "Datum",
     "payouts.overview.list.fundsCapturedAmount": "Erfasste Geldmittel",
