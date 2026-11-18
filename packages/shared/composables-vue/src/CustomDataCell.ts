@@ -37,6 +37,7 @@ export const CustomDataCell = defineComponent({
                     {
                         ...fieldAttrs,
                         variant: 'secondary',
+                        condensed: true,
                         class: [styles.button, data.config.className],
                         onClick: (e: Event) => {
                             e.stopPropagation();
