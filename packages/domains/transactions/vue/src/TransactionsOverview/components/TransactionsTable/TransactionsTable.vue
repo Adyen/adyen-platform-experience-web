@@ -203,7 +203,7 @@ const errorInfo = computed(() =>
 </script>
 
 <template>
-    <div ref="tableRef">
+    <div ref="tableRef" :class="styles.root">
         <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" type="error" />
         <DataOverviewLoading v-else-if="isLoading && !gridData.length" />
         <DataOverviewError v-else-if="!gridData.length" :error-info="emptyStateProps" type="no-results-found" variant="basic" />

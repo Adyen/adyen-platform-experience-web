@@ -1,0 +1,14 @@
+// Bento data grid cells are block containers by default, so their content sticks to the top of rows made taller by
+// multi-line or custom (icon, button) content. Turning each cell into a flex container centers the content vertically
+// while keeping its full width, so text alignment, numeric alignment and ellipsis overflow behave as before.
+@mixin adyen-pe-data-grid-centered-rows {
+    :global(.b-data-grid-cell) {
+        align-items: center;
+        display: flex;
+    }
+
+    :global(.b-data-grid-cell__cell-content) {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+}

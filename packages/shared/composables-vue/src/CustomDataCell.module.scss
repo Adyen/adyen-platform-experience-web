@@ -17,8 +17,9 @@
 
 .root {
     align-items: center;
-    display: inline-flex;
+    display: flex;
     gap: style.token(spacer-030);
+    width: fit-content;
 
     img {
         flex-shrink: 0;

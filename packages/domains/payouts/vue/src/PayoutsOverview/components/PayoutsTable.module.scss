@@ -1,4 +1,7 @@
+@use '@integration-components/style/data-grid';
+
 .root {
+    @include data-grid.adyen-pe-data-grid-centered-rows;
     container-type: inline-size;
     position: relative;
 }
