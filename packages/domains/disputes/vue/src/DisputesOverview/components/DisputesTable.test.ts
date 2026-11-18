@@ -71,7 +71,6 @@ vi.mock('@integration-components/core/vue', async () => {
     return {
         useCoreContext: vi.fn(),
         useConfigContext: vi.fn(),
-        useShouldHideIllustrations: () => computed(() => false),
         useShouldHideTitles: () => computed(() => false),
         useCondensedDataGrid: () => computed(() => false),
     };

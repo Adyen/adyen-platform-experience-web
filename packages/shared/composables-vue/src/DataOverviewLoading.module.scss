@@ -1,0 +1,8 @@
+@use '@integration-components/style' as style;
+
+.loading {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-height: calc(#{style.token(spacer-140)} * 3);
+}

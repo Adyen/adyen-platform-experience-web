@@ -17,7 +17,6 @@ Move them with the same values, without asking: they already applied to every co
 | ----------------------------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------- |
 | Removed the card look (background, padding, border, radius) | `.adyen-pe-component__container`                        | `appearance: { container: 'hidden' }` on the component, or on Core   |
 | Hid titles                                                  | `.adyen-pe-header__title`, `.adyen-pe-header`           | `appearance: { titles: 'hidden' }`                                   |
-| Hid empty-state or error illustrations                      | `.adyen-pe-error-message-display__illustration`         | `appearance: { illustrations: 'hidden' }`                            |
 | Denser data-grid rows                                       | `.adyen-pe-data-grid__cell`, `.adyen-pe-data-grid__row` | `appearance: { dataGrid: { density: 'condensed' } }`                 |
 | Hid a data-grid column                                      | `.adyen-pe-data-grid__cell:nth-child(n)`                | `dataCustomization.dataGrid.fields: [{ key, visibility: 'hidden' }]` |
 | Hid Disputes tabs                                           | `.adyen-pe-tabs__tab` in Disputes Overview              | `tabs: { hidden: [...] }` on `DisputesOverview`                      |

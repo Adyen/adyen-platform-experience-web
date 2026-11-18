@@ -12,8 +12,8 @@ import {
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
+    DataOverviewLoading,
     useTableColumns,
-    useShouldHideIllustrations,
     useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
@@ -56,7 +56,6 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const hideIllustrations = useShouldHideIllustrations();
 const isCondensed = useCondensedDataGrid();
 const config = useConfigContext();
 
@@ -170,10 +169,8 @@ const paginationProps = computed(() => {
 });
 
 const emptyStateProps = computed(() => ({
-    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
-    variant: isMobile.value ? ('condensed' as const) : ('embedded' as const),
-    title: i18n.get(EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].title),
-    description: i18n.get(EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].message),
+    title: EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].title,
+    messages: [EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].message],
 }));
 
 function getDispute(item: BentoDatagridDataItem): IDisputeListItem {
@@ -236,7 +233,11 @@ const errorInfo = computed(() =>
             :on-refresh="props.onRefresh"
             :variant="isMobile ? 'condensed' : 'embedded'"
             :refresh-icon="RefreshIcon"
+            type="error"
         />
+
+        <DataOverviewLoading v-else-if="isLoading && !customRecords.length" />
+        <DataOverviewError v-else-if="!customRecords.length" type="no-results-found" :error-info="emptyStateProps" />
 
         <BentoDataGrid
             v-else
@@ -247,7 +248,6 @@ const errorInfo = computed(() =>
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
-            :empty-state="emptyStateProps"
             :allow-column-drag-and-drop="false"
             @row-click="handleRowClick"
             @navigate="handleNavigate"

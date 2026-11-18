@@ -1,11 +1,12 @@
 /**
  * @vitest-environment jsdom
  */
-import { createApp } from 'vue';
 import type { VNode } from 'vue';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import ErrorIcon from '@adyen/ui-assets-icons-24/vue/cross-circle';
 import { useCoreContext } from './Context';
 import { ErrorMessageDisplay } from './ErrorMessageDisplay';
+import styles from './ErrorMessageDisplay.module.scss';
 import type { ErrorMessageInfo } from '../errors/domainErrorResolver';
 
 vi.mock('@adyen/bento-vue3', () => ({
@@ -16,26 +17,6 @@ vi.mock('./Context', () => ({
     useCoreContext: vi.fn(),
 }));
 
-test('does not render illustrations when they are hidden globally', () => {
-    const getImageAsset = vi.fn(() => 'default-image.svg');
-    vi.mocked(useCoreContext).mockReturnValue({
-        i18n: { get: vi.fn() } as unknown as ReturnType<typeof useCoreContext>['i18n'],
-        appearance: { illustrations: 'hidden' },
-        getImageAsset,
-        translationDomain: 'transactions',
-    });
-
-    const target = document.createElement('div');
-    const app = createApp(ErrorMessageDisplay, { errorInfo: { messages: [] }, withImage: true });
-    app.mount(target);
-
-    expect(target.querySelector('picture')).toBeNull();
-    expect(target.querySelector('img')).toBeNull();
-    expect(getImageAsset).not.toHaveBeenCalled();
-
-    app.unmount();
-});
-
 describe('ErrorMessageDisplay', () => {
     const i18n = {
         get: vi.fn((key: string, options?: { values?: { requestId?: string } }) =>
@@ -43,14 +24,12 @@ describe('ErrorMessageDisplay', () => {
         ),
     };
     const refreshComponent = vi.fn();
-    const getImageAsset = vi.fn(({ subFolder }: { subFolder?: string }) => (subFolder ? 'small-default.svg' : 'default.svg'));
 
     beforeEach(() => {
         vi.clearAllMocks();
         vi.mocked(useCoreContext).mockReturnValue({
             i18n,
             refreshComponent,
-            getImageAsset,
             translationDomain: 'transactions',
         } as unknown as ReturnType<typeof useCoreContext>);
     });
@@ -66,15 +45,13 @@ describe('ErrorMessageDisplay', () => {
             error: undefined,
             errorInfo,
             errorMessage: undefined,
-            imageDesktop: undefined,
-            imageMobile: undefined,
             notFoundMessage: undefined,
             onContactSupport: undefined,
             onRefresh: undefined,
             outlined: true,
             withBackground: true,
             withHeaderOffset: false,
-            withImage: false,
+            withErrorIcon: false,
             ...extraProps,
         });
     };
@@ -96,23 +73,18 @@ describe('ErrorMessageDisplay', () => {
         );
     });
 
-    test('uses explicit responsive images and falls back to SDK assets', () => {
-        const view = renderWithInfo(
-            { messages: [] },
-            {
-                imageDesktop: 'desktop.svg',
-                withImage: true,
-            }
-        );
+    test('renders the critical error icon when withErrorIcon is set', () => {
+        const view = renderWithInfo({ messages: [] }, { withErrorIcon: true });
+        const icon = (view().children as VNode[])[0]!;
 
-        const illustration = (view().children as VNode[])[0]!;
-        const picture = (illustration.children as VNode[])[0]!;
-        const [desktopSource, mobileSource, image] = picture.children as VNode[];
+        expect(icon.type).toBe(ErrorIcon);
+        expect(icon.props).toMatchObject({ 'aria-hidden': 'true', class: styles.iconCritical });
+    });
 
-        expect(desktopSource!.props?.srcset).toBe('desktop.svg');
-        expect(mobileSource!.props?.srcset).toBe('small-default.svg');
-        expect(image!.props).toMatchObject({ src: 'desktop.svg', alt: '' });
-        expect(getImageAsset).toHaveBeenCalledWith({ name: 'wrong-environment', subFolder: 'images/small' });
+    test('does not render the error icon by default', () => {
+        const view = renderWithInfo({ messages: [] });
+
+        expect((view().children as VNode[])[0]).toBeNull();
     });
 
     test('renders only the support action when support takes precedence over refresh', () => {

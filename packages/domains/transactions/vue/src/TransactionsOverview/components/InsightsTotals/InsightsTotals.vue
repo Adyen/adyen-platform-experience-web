@@ -61,7 +61,7 @@ const expensesBreakdown = computed(() => {
                     refreshComponent: true,
                 }"
                 :on-refresh="props.transactionsTotalsResult.refresh"
-                with-image
+                with-error-icon
                 :outlined="false"
                 :absolute-position="false"
                 :with-background="false"

@@ -122,9 +122,9 @@ describe('getGrantConfig', () => {
             isPendingAlertVisible: false,
             isProgressBarVisible: false,
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
-            statusKey: 'capital.overview.grantStatuses.loan.failed.label',
+            statusKey: 'capital.overview.grantStatuses.failed.label',
             statusTagVariant: 'Error',
-            statusTooltipKey: 'capital.overview.grantStatuses.loan.failed.description',
+            statusTooltipKey: 'capital.overview.grantStatuses.failed.description',
         });
     });
 

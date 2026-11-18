@@ -1,12 +1,10 @@
 import { defineComponent, computed, h, type PropType, type VNode } from 'vue';
 import { BentoButton, BentoTypography } from '@adyen/bento-vue3';
+import ErrorIcon from '@adyen/ui-assets-icons-24/vue/cross-circle';
 import { useCoreContext } from './Context';
 import { getSafeDomainTranslationKey } from '../translations';
 import type { ErrorMessageInfo } from '../errors/domainErrorResolver';
-import { useShouldHideIllustrations } from './customization';
 import styles from './ErrorMessageDisplay.module.scss';
-
-const IMAGE_BREAKPOINT_MEDIUM_PX = 680;
 
 export const ErrorMessageDisplay = defineComponent({
     name: 'ErrorMessageDisplay',
@@ -14,20 +12,17 @@ export const ErrorMessageDisplay = defineComponent({
     props: {
         errorInfo: { type: Object as PropType<ErrorMessageInfo>, required: true },
         onRefresh: { type: Function as PropType<() => void>, default: undefined },
-        withImage: { type: Boolean, default: false },
+        withErrorIcon: { type: Boolean, default: false },
         outlined: { type: Boolean, default: true },
         absolutePosition: { type: Boolean, default: true },
         withBackground: { type: Boolean, default: true },
         centered: { type: Boolean, default: false },
         condensed: { type: Boolean, default: false },
         withHeaderOffset: { type: Boolean, default: false },
-        imageDesktop: { type: String, default: undefined },
-        imageMobile: { type: String, default: undefined },
     },
 
     setup(props) {
-        const { i18n, refreshComponent: refreshCurrentComponent, getImageAsset, translationDomain } = useCoreContext();
-        const hideIllustrations = useShouldHideIllustrations();
+        const { i18n, refreshComponent: refreshCurrentComponent, translationDomain } = useCoreContext();
 
         const errorInfo = computed(() => props.errorInfo);
 
@@ -40,23 +35,6 @@ export const ErrorMessageDisplay = defineComponent({
             props.withHeaderOffset ? styles.withHeaderOffset : '',
             props.condensed ? styles.condensed : '',
         ]);
-
-        const renderIllustration = () =>
-            h('div', { class: styles.illustration }, [
-                h('picture', {}, [
-                    h('source', {
-                        type: 'image/svg+xml',
-                        media: `(min-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`,
-                        srcset: props.imageDesktop ?? getImageAsset?.({ name: 'wrong-environment' }),
-                    }),
-                    h('source', {
-                        type: 'image/svg+xml',
-                        media: `(max-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`,
-                        srcset: props.imageMobile ?? getImageAsset?.({ name: 'wrong-environment', subFolder: 'images/small' }),
-                    }),
-                    h('img', { src: props.imageDesktop ?? getImageAsset?.({ name: 'wrong-environment' }), alt: '' }),
-                ]),
-            ]);
 
         const renderMessages = () => {
             const { messages, requestId } = errorInfo.value;
@@ -97,7 +75,7 @@ export const ErrorMessageDisplay = defineComponent({
             const buttons = renderButtons();
 
             return h('div', { class: rootClass.value, 'data-testid': 'error-message-display' }, [
-                !hideIllustrations.value && (props.withImage || props.imageDesktop || props.imageMobile) ? renderIllustration() : null,
+                props.withErrorIcon ? h(ErrorIcon, { 'aria-hidden': 'true', class: styles.iconCritical }) : null,
                 title ? h(BentoTypography, { el: 'div', variant: 'title' }, () => i18n.get(title)) : null,
                 messages.length ? h(BentoTypography, { variant: 'body' }, () => messages) : null,
                 buttons.length ? h('div', { class: styles.button }, buttons) : null,
