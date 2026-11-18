@@ -20,6 +20,7 @@ describe('getInitiatedCoreEventProperties', () => {
     it('reports the defaults of an unconfigured core', () => {
         expect(getInitiatedCoreEventProperties({ onSessionCreate: vi.fn() })).toEqual({
             label: 'core',
+            buildType: 'test',
             hasCustomTheme: false,
         });
     });
@@ -37,6 +38,7 @@ describe('getInitiatedCoreEventProperties', () => {
             })
         ).toEqual({
             label: 'core',
+            buildType: 'test',
             themeMode: 'dark',
             hasCustomTheme: true,
             // Token names only — brand values must never reach analytics.
@@ -282,6 +284,7 @@ describe('core event payloads', () => {
             category: 'PIE',
             subCategory: 'Core',
             locale: 'nl-NL',
+            buildType: 'test',
         });
         expect(typeof properties.time).toBe('number');
     });

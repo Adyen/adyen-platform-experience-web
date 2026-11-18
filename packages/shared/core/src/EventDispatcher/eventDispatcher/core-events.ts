@@ -82,6 +82,7 @@ export const getInitiatedCoreEventProperties = (options: CoreOptions<any>): Reco
 
     return {
         label: 'core',
+        buildType: process.env.BUNDLE_TYPE,
         ...(options.themeMode !== undefined ? { themeMode: options.themeMode } : {}),
         hasCustomTheme: customThemeVariables.length > 0,
         ...(customThemeVariables.length > 0 ? { customThemeVariables } : {}),
