@@ -20,7 +20,6 @@ const props = defineProps<{
     locale?: SupportedLocales;
     fontFamily?: string;
     container?: GlobalAppearance['container'];
-    illustrations?: GlobalAppearance['illustrations'];
     titles?: GlobalAppearance['titles'];
     theme?: ThemeMode | 'story';
     themeDark?: boolean;
@@ -48,7 +47,6 @@ const configuredThemeMode = computed<ThemeMode>(() => {
 const configuredAppearance = computed<GlobalAppearance>(() => ({
     ...storyCoreOptions.value.appearance,
     ...(props.container && { container: props.container }),
-    ...(props.illustrations && { illustrations: props.illustrations }),
     ...(props.titles && { titles: props.titles }),
 }));
 

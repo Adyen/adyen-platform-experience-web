@@ -48,7 +48,7 @@ export const ComponentShell = defineComponent({
                     return h(ErrorMessageDisplay, {
                         errorInfo: props.errorInfo,
                         onRefresh: props.onRefresh,
-                        withImage: true,
+                        withErrorIcon: true,
                         absolutePosition: false,
                         outlined: false,
                         withBackground: false,

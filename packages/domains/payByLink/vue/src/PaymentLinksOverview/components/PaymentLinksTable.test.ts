@@ -1,17 +1,18 @@
 /**
  * @vitest-environment jsdom
  */
-import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { createApp, defineComponent, h } from 'vue';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { createApp, defineComponent, h, type App } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
+import type { IPaymentLinkItem } from '@integration-components/types';
 import PaymentLinksTable from './PaymentLinksTable.vue';
 
-let lastDataGridProps: Record<string, any> = {};
+let lastDataGridProps: { condensed?: boolean; loading?: boolean } = {};
 
 vi.mock('@adyen/bento-vue3', () => ({
     BentoDataGrid: defineComponent({
         name: 'BentoDataGrid',
-        props: { emptyState: { type: Object, default: undefined } },
+        props: { condensed: Boolean, loading: Boolean },
         setup(props) {
             lastDataGridProps = props;
             return () => h('div', { 'data-testid': 'bento-datagrid' });
@@ -20,6 +21,14 @@ vi.mock('@adyen/bento-vue3', () => ({
     BentoTag: { name: 'BentoTag' },
     BentoTypography: { name: 'BentoTypography' },
     BentoTooltipDirective: {},
+    BentoEmptyState: defineComponent({
+        props: { title: { type: String, default: undefined } },
+        setup:
+            (props, { slots }) =>
+            () =>
+                h('div', [h('h2', props.title), slots.default?.()]),
+    }),
+    BentoLoadingIndicator: () => h('div', { role: 'progressbar' }),
 }));
 
 vi.mock('@integration-components/core/vue', async () => {
@@ -28,24 +37,28 @@ vi.mock('@integration-components/core/vue', async () => {
     return {
         useCoreContext,
         useConfigContext: vi.fn(() => ({})),
-        useShouldHideIllustrations: () => computed(() => useCoreContext().appearance?.illustrations === 'hidden'),
         useShouldHideTitles: () => computed(() => useCoreContext().appearance?.titles === 'hidden'),
         useCondensedDataGrid: () => computed(() => useCoreContext().appearance?.dataGrid?.density === 'condensed'),
     };
 });
 
 describe('PaymentLinksTable', () => {
+    let app: App | undefined;
+    let target: HTMLDivElement;
+
     const i18n = {
         get: vi.fn((key: string) => key),
         amount: vi.fn((val: number, cur: string) => `${val} ${cur}`),
         date: vi.fn((d: string) => d),
     };
 
-    const mountTable = (appearance?: Record<string, unknown>) => {
+    const paymentLink = { paymentLinkId: 'PAYMENT_LINK_ID', amount: { value: 1000, currency: 'EUR' } } as IPaymentLinkItem;
+
+    const mountTable = (props: Partial<InstanceType<typeof PaymentLinksTable>['$props']> = {}, appearance?: Record<string, unknown>) => {
         vi.mocked(useCoreContext).mockReturnValue({ i18n, appearance } as unknown as ReturnType<typeof useCoreContext>);
-        const app = createApp(PaymentLinksTable, { loading: false, showPagination: false, paymentLinks: [] });
-        app.mount(document.createElement('div'));
-        return app;
+        app = createApp(PaymentLinksTable, { loading: false, showPagination: false, paymentLinks: [], ...props });
+        target = document.createElement('div');
+        app.mount(target);
     };
 
     beforeEach(() => {
@@ -53,19 +66,38 @@ describe('PaymentLinksTable', () => {
         lastDataGridProps = {};
     });
 
-    test('shows the empty state illustration by default', () => {
-        const app = mountTable();
-
-        expect(lastDataGridProps.emptyState.image).toBe('no-results-found');
-
-        app.unmount();
+    afterEach(() => {
+        app?.unmount();
     });
 
-    test('hides the empty state illustration when illustrations are hidden', () => {
-        const app = mountTable({ illustrations: 'hidden' });
+    test('renders the translated no-results state instead of the grid when there are no payment links', () => {
+        mountTable();
 
-        expect(lastDataGridProps.emptyState.image).toBeUndefined();
+        expect(target.textContent).toContain('payByLink.overview.errors.listEmpty.title');
+        expect(target.textContent).toContain('payByLink.overview.errors.listEmpty.message');
+        expect(target.querySelector('[data-testid="bento-datagrid"]')).toBeNull();
+    });
 
-        app.unmount();
+    test('renders the standalone loading state instead of the grid during the initial load', () => {
+        mountTable({ loading: true });
+
+        expect(target.querySelector('[aria-busy="true"]')).not.toBeNull();
+        expect(target.querySelector('[data-testid="bento-datagrid"]')).toBeNull();
+        expect(target.textContent).not.toContain('payByLink.overview.errors.listEmpty.title');
+    });
+
+    test('keeps the grid mounted with a loading state while refetching existing payment links', () => {
+        mountTable({ loading: true, paymentLinks: [paymentLink] });
+
+        expect(target.querySelector('[data-testid="bento-datagrid"]')).not.toBeNull();
+        expect(target.querySelector('[aria-busy="true"]')).toBeNull();
+        expect(lastDataGridProps.loading).toBe(true);
+    });
+
+    test('passes the condensed appearance to the grid when payment links are available', () => {
+        mountTable({ paymentLinks: [paymentLink] }, { dataGrid: { density: 'condensed' } });
+
+        expect(lastDataGridProps.condensed).toBe(true);
+        expect(lastDataGridProps.loading).toBe(false);
     });
 });

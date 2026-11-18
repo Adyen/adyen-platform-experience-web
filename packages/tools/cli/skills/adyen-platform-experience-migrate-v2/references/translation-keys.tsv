@@ -58,8 +58,7 @@ capital.dailyRepaymentRate	capital	capital.common.fields.cashAdvance.dailyRepaym
 capital.daysAndDaysLeft	capital	capital.common.daysWithDaysLeft
 capital.expectedRepaymentPeriod	capital	capital.common.fields.loan.expectedRepaymentPeriod.label
 capital.expectedRepaymentPeriod	capital	capital.common.fields.cashAdvance.expectedRepaymentPeriod.label
-capital.failed	capital	capital.overview.grantStatuses.loan.failed.label
-capital.failed	capital	capital.overview.grantStatuses.cashAdvance.failed.label
+capital.failed	capital	capital.overview.grantStatuses.failed.label
 capital.fees	capital	capital.common.fields.fees.label
 capital.fullyRepaid	capital	capital.overview.grantStatuses.loan.repaid.label
 capital.fullyRepaid	capital	capital.overview.grantStatuses.cashAdvance.repaid.label
@@ -105,10 +104,8 @@ capital.offerLegalNoticeTitleUS	capital	capital.offer.summary.legalNotice.US.tit
 capital.oneMonth	capital	capital.common.oneMonth
 capital.overview.common.titles.qualificationIntro	-	(no match)
 capital.overview.grants.common.statuses.actionNeeded	capital	capital.overview.grantStatuses.actionNeeded.label
-capital.overview.grants.common.statuses.failed	capital	capital.overview.grantStatuses.loan.failed.label
-capital.overview.grants.common.statuses.failed	capital	capital.overview.grantStatuses.cashAdvance.failed.label
-capital.overview.grants.common.statuses.failed.description	capital	capital.overview.grantStatuses.loan.failed.description
-capital.overview.grants.common.statuses.failed.description	capital	capital.overview.grantStatuses.cashAdvance.failed.description
+capital.overview.grants.common.statuses.failed	capital	capital.overview.grantStatuses.failed.label
+capital.overview.grants.common.statuses.failed.description	capital	capital.overview.grantStatuses.failed.description
 capital.overview.grants.common.statuses.fullyRepaid	capital	capital.overview.grantStatuses.loan.repaid.label
 capital.overview.grants.common.statuses.fullyRepaid	capital	capital.overview.grantStatuses.cashAdvance.repaid.label
 capital.overview.grants.common.statuses.pending	capital	capital.overview.grantStatuses.pending.label
@@ -205,8 +202,7 @@ capital.unsupportedRegionTitle	capital	capital.common.emptyStates.unsupportedReg
 capital.weCouldNotContinueWithTheOffer	capital	capital.offer.errors.cannotContinue
 capital.weCouldNotContinueWithTheOfferContactSupportForHelp	capital	capital.offer.errors.cannotContinueSupport
 capital.weCouldNotLoadFinancialOffers	capital	capital.offer.errors.unavailable
-capital.weCouldNotProcessThisRequestTryAgain	capital	capital.overview.grantStatuses.loan.failed.description
-capital.weCouldNotProcessThisRequestTryAgain	capital	capital.overview.grantStatuses.cashAdvance.failed.description
+capital.weCouldNotProcessThisRequestTryAgain	capital	capital.overview.grantStatuses.failed.description
 capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteTheseActions	capital	capital.overview.grantAlerts.loan.actionsNeeded
 capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteTheseActions	capital	capital.overview.grantAlerts.cashAdvance.actionsNeeded
 capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisAction	capital	capital.overview.grantAlerts.loan.singleActionNeeded

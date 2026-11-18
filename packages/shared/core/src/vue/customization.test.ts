@@ -9,8 +9,6 @@ import { hasDataGridAppearance, resolveAppearance, useCondensedDataGrid } from '
 type DataGridComponentAppearance = GlobalAppearance & WithDataGridAppearance;
 
 test.each([
-    [{ illustrations: 'hidden' }, undefined, { illustrations: 'hidden' }],
-    [undefined, { illustrations: 'hidden' }, { illustrations: 'hidden' }],
     [{ titles: 'hidden' }, undefined, { titles: 'hidden' }],
     [undefined, { titles: 'hidden' }, { titles: 'hidden' }],
     [{ container: 'hidden' }, undefined, { container: 'hidden' }],
@@ -20,22 +18,22 @@ test.each([
 });
 
 test('combines global and component appearance', () => {
-    expect(resolveAppearance({ illustrations: 'hidden' }, { titles: 'hidden' })).toEqual({
-        illustrations: 'hidden',
+    expect(resolveAppearance({ container: 'hidden' }, { titles: 'hidden' })).toEqual({
+        container: 'hidden',
         titles: 'hidden',
     });
 });
 
 test('component appearance overrides global appearance', () => {
-    expect(resolveAppearance({ illustrations: 'hidden', titles: 'visible' }, { illustrations: 'visible', titles: 'hidden' })).toEqual({
-        illustrations: 'visible',
+    expect(resolveAppearance({ container: 'hidden', titles: 'visible' }, { container: 'visible', titles: 'hidden' })).toEqual({
+        container: 'visible',
         titles: 'hidden',
     });
 });
 
 test('resolves component data grid appearance', () => {
-    expect(resolveAppearance<DataGridComponentAppearance>({ illustrations: 'hidden' }, { dataGrid: { density: 'condensed' } })).toEqual({
-        illustrations: 'hidden',
+    expect(resolveAppearance<DataGridComponentAppearance>({ titles: 'hidden' }, { dataGrid: { density: 'condensed' } })).toEqual({
+        titles: 'hidden',
         dataGrid: { density: 'condensed' },
     });
 });
@@ -69,9 +67,9 @@ test('never copies extensions from the global appearance', () => {
 });
 
 test('falls back to global appearance when a component field is explicitly undefined', () => {
-    expect(resolveAppearance({ titles: 'hidden', illustrations: 'hidden' }, { titles: undefined, illustrations: 'visible' })).toEqual({
+    expect(resolveAppearance({ titles: 'hidden', container: 'hidden' }, { titles: undefined, container: 'visible' })).toEqual({
         titles: 'hidden',
-        illustrations: 'visible',
+        container: 'visible',
     });
 });
 
@@ -82,21 +80,21 @@ test('returns no appearance without global or component options', () => {
 test('exposes reactive appearance through the core context value', () => {
     const props = shallowReactive<CoreProviderProps>({ translationDomain: 'transactions' });
     const coreContext = createCoreContextValue(props);
-    const illustrationsHidden = computed(() => coreContext.appearance?.illustrations === 'hidden');
+    const containerHidden = computed(() => coreContext.appearance?.container === 'hidden');
     const titlesHidden = computed(() => coreContext.appearance?.titles === 'hidden');
 
-    expect(illustrationsHidden.value).toBe(false);
+    expect(containerHidden.value).toBe(false);
     expect(titlesHidden.value).toBe(false);
 
-    props.appearance = { illustrations: 'hidden', titles: 'hidden' };
+    props.appearance = { container: 'hidden', titles: 'hidden' };
 
-    expect(illustrationsHidden.value).toBe(true);
+    expect(containerHidden.value).toBe(true);
     expect(titlesHidden.value).toBe(true);
 });
 
 test.each<[DataGridComponentAppearance | undefined, boolean]>([
     [undefined, false],
-    [{ illustrations: 'hidden' }, false],
+    [{ titles: 'hidden' }, false],
     [{ dataGrid: undefined }, false],
     [Object.create({ dataGrid: { density: 'condensed' } }), false],
     [{ dataGrid: {} }, true],
@@ -122,7 +120,7 @@ test('useCondensedDataGrid reflects the data grid density', () => {
     props.appearance = defaultAppearance;
     expect(condensed.value).toBe(false);
 
-    props.appearance = { illustrations: 'hidden' };
+    props.appearance = { titles: 'hidden' };
     expect(condensed.value).toBe(false);
 
     const undefinedDataGridAppearance: DataGridComponentAppearance = { dataGrid: undefined };

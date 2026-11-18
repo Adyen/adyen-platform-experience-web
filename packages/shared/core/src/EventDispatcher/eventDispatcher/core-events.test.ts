@@ -20,6 +20,7 @@ describe('getInitiatedCoreEventProperties', () => {
     it('reports the defaults of an unconfigured core', () => {
         expect(getInitiatedCoreEventProperties({ onSessionCreate: vi.fn() })).toEqual({
             label: 'core',
+            buildType: 'test',
             hasCustomTheme: false,
         });
     });
@@ -33,17 +34,17 @@ describe('getInitiatedCoreEventProperties', () => {
                     light: { primary: '#0050b3' },
                     dark: { primary: '#84adff', roundness: 'medium' },
                 },
-                appearance: { titles: 'hidden', illustrations: 'visible' },
+                appearance: { titles: 'hidden' },
             })
         ).toEqual({
             label: 'core',
+            buildType: 'test',
             themeMode: 'dark',
             hasCustomTheme: true,
             // Token names only — brand values must never reach analytics.
             customThemeVariables: ['primary', 'roundness'],
-            appearance: ['titles', 'illustrations'],
+            appearance: ['titles'],
             appearanceTitles: 'hidden',
-            appearanceIllustrations: 'visible',
         });
     });
 
@@ -129,7 +130,6 @@ describe('getCustomizedComponentDataEventProperties', () => {
         });
         expect(properties).not.toHaveProperty('appearance');
         expect(properties).not.toHaveProperty('appearanceTitles');
-        expect(properties).not.toHaveProperty('appearanceIllustrations');
         expect(properties).not.toHaveProperty('hasOnDismiss');
         expect(properties).not.toHaveProperty('hasOnCreate');
         expect(properties).not.toHaveProperty('dataCustomColumns');
@@ -284,6 +284,7 @@ describe('core event payloads', () => {
             category: 'PIE',
             subCategory: 'Core',
             locale: 'nl-NL',
+            buildType: 'test',
         });
         expect(typeof properties.time).toBe('number');
     });
@@ -292,7 +293,7 @@ describe('core event payloads', () => {
         const payloads = getCustomizedComponentEventPayloads({
             componentName: 'transactionDetails',
             locale: 'en-US',
-            appearance: { illustrations: 'hidden' },
+            appearance: { titles: 'hidden' },
             componentProps: {},
         });
 
@@ -305,7 +306,7 @@ describe('core event payloads', () => {
             subCategory: 'Details',
             label: 'transactionDetails',
             locale: 'en-US',
-            appearanceIllustrations: 'hidden',
+            appearanceTitles: 'hidden',
         });
 
         const dataEvent = decodePayload(payloads[1]!);

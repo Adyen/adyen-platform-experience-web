@@ -101,7 +101,12 @@ test.describe('Grants - Loan', () => {
         const copyIconButtons = repaymentModal.getByRole('button', { name: /^Copy (IBAN|account owner)$/ });
 
         await Promise.all([
-            expect(repaymentModal.getByText('Repay your loan early by transferring money to this bank account.')).toBeVisible(),
+            expect(repaymentModal.getByText('Manual bank transfer')).toBeVisible(),
+            expect(
+                repaymentModal.getByText(
+                    'Repay your loan early by transferring money to this bank account. Payments must be made from one of your verified bank accounts.'
+                )
+            ).toBeVisible(),
             expect(repaymentModal.getByText('Adyen’s bank account details')).toBeVisible(),
             expect(copyIconButtons).toHaveCount(2),
             expect(repaymentModal.getByText('IBAN')).toBeVisible(),
@@ -117,7 +122,6 @@ test.describe('Grants - Loan', () => {
             expect(repaymentModal.getByText('Add Adyen N.V. as a payee using your bank’s website or app.')).toBeVisible(),
             expect(repaymentModal.getByText('Send your payment.')).toBeVisible(),
             expect(repaymentModal.getByText('Wait 1-3 business days for the payment to be applied.')).toBeVisible(),
-            expect(repaymentModal.getByText('Payments must be made from one of your verified bank accounts.')).toBeVisible(),
         ]);
     });
 
@@ -144,7 +148,7 @@ test.describe('Grants - Loan', () => {
             expect(page.getByText('Grant ID')).toHaveCount(4),
             expect(page.getByTestId('grant-id-copy-text')).toHaveCount(4),
             expect(page.getByText('Fully repaid')).toBeVisible(),
-            expect(page.getByText('Cancelled')).toBeVisible(),
+            expect(page.getByText('Canceled')).toBeVisible(),
             expect(page.getByText('Defaulted')).toBeVisible(),
             expect(page.getByText('Failed', { exact: true })).toBeVisible(),
             expect(page.getByRole('progressbar')).toBeHidden(),
@@ -168,9 +172,9 @@ test.describe('Grants - Loan', () => {
 
     test('should render a tooltip when revoked status tag is hovered', async ({ page }) => {
         await page.getByRole('radio', { name: 'Closed' }).click();
-        await page.getByText('Cancelled').hover();
+        await page.getByText('Canceled').hover();
 
-        await expect(page.getByText('You returned the loan amount, so this loan was cancelled.')).toBeVisible();
+        await expect(page.getByText('You returned the loan amount, so this loan was canceled.')).toBeVisible();
     });
 
     test('should render a tooltip when written-off status tag is hovered', async ({ page }) => {

@@ -1,6 +1,16 @@
 import { getEnvironment } from '../../envs/getEnvs.ts';
 import { SDK_VERSION } from '../version.ts';
 
+/**
+ * How integrators load the SDK, reported in analytics. Describes the delivery channel rather than
+ * the bundle format, so the value stays stable if the script build moves away from UMD.
+ */
+export const getBundleType = (mode: string) => {
+    if (mode === 'umd') return 'script-tag';
+    if (mode === 'production') return 'npm';
+    return mode;
+};
+
 export const getBaseEnvDefines = (mode: string) => {
     const { api, app } = getEnvironment(mode);
     const { session } = api;
@@ -11,6 +21,7 @@ export const getBaseEnvDefines = (mode: string) => {
     const testCdnAssets = isDevelopment || app.useTestCdn === 'true' ? true : null;
 
     return {
+        'process.env.BUNDLE_TYPE': JSON.stringify(getBundleType(mode)),
         'process.env.SDK_VERSION': JSON.stringify(SDK_VERSION),
         'process.env.SESSION_ACCOUNT_HOLDER': JSON.stringify(session.accountHolder || null),
         'process.env.SESSION_AUTO_REFRESH': JSON.stringify(isDevelopment ? session.autoRefresh === 'true' || null : undefined),

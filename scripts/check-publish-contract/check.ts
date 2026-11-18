@@ -10,7 +10,7 @@
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { buildSnapshot, diff, getPublicExportViolations, type Snapshot } from './lib.js';
+import { buildSnapshot, diff, getPublicExportViolations, getSideEffectViolations, type Snapshot } from './lib.js';
 
 const ROOT = resolve(import.meta.dirname!, '../..');
 const BASELINE_PATH = resolve(import.meta.dirname!, 'baseline.json');
@@ -23,6 +23,16 @@ export function run() {
     if (exportViolations.length > 0) {
         console.error('Public SDK export contract violated:');
         for (const entry of exportViolations) {
+            console.error(entry);
+        }
+        process.exit(1);
+    }
+
+    const sideEffectViolations = getSideEffectViolations(ROOT);
+
+    if (sideEffectViolations.length > 0) {
+        console.error('Package "sideEffects" contract violated (bundlers may drop these modules):');
+        for (const entry of sideEffectViolations) {
             console.error(entry);
         }
         process.exit(1);

@@ -41,9 +41,7 @@ interface _CoreOptions<CustomTranslations extends Translations = Record<never, n
 
     /**
      * Theme mode for this Core instance. The mode is applied to each component mount target.
-     *
-     * Bento content teleported outside a mount target uses the document-level default theme
-     * because Bento does not currently expose a per-Core teleport target.
+     * Bento popovers render in place (native popover API), so they follow the mode of their mount target.
      */
     themeMode?: ThemeMode;
 
