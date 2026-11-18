@@ -8,7 +8,7 @@ const SDK_DARK_THEME_SELECTOR = `[${THEME_MODE_ATTRIBUTE}='dark']`;
 const SDK_THEME_ROOT_SELECTOR = `[${THEME_ROOT_ATTRIBUTE}]`;
 const BENTO_DARK_THEME_REGEX = /(^|[^\w-])\.b-dark-theme(?![\w-])/g;
 /** Bento's light defaults (`:root { … }`) and dark defaults (`.b-dark-theme { … }`). */
-const BENTO_DEFAULTS_BLOCK_REGEX = /(?<=^|[^\w-])(:root|\.b-dark-theme)(\s*\{)([^{}]*)\}/g;
+const BENTO_DEFAULTS_BLOCK_REGEX = /(^|[^\w-])(:root|\.b-dark-theme)(\s*\{)([^{}]*)(?=\})/g;
 const BENTO_DECLARATION_REGEX = /(^|[^\w-])--b-([\w-]+)(\s*:)/g;
 const BENTO_DECLARATION_TEST_REGEX = /(^|[^\w-])--b-[\w-]+\s*:/;
 const BENTO_REFERENCE_REGEX = /var\(\s*--b-([\w-]+)/g;
@@ -39,10 +39,10 @@ const hasBentoStyles = (source: string): boolean => BENTO_VARIABLE_TEST_REGEX.te
  * set there would reach the other Adyen SDKs on the page, which read the same `--adyen-sdk-*` names.
  */
 const rewriteDefaultBlocks = (source: string): string =>
-    source.replace(BENTO_DEFAULTS_BLOCK_REGEX, (block, selector: string, open: string, body: string) => {
+    source.replace(BENTO_DEFAULTS_BLOCK_REGEX, (block, prefix: string, selector: string, open: string, body: string) => {
         if (!BENTO_DECLARATION_TEST_REGEX.test(body)) return block;
         const themeSelector = selector === ':root' ? SDK_THEME_ROOT_SELECTOR : SDK_DARK_THEME_SELECTOR;
-        return `${themeSelector}${open}${body.replace(BENTO_DECLARATION_REGEX, `$1${DEFAULT_VARIABLE_PREFIX}$2$3`)}}`;
+        return `${prefix}${themeSelector}${open}${body.replace(BENTO_DECLARATION_REGEX, `$1${DEFAULT_VARIABLE_PREFIX}$2$3`)}`;
     });
 
 /** Index of the parenthesis that closes the one opened just before `start`. */
