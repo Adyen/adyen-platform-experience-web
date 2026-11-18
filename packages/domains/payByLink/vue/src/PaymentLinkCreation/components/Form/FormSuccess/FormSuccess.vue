@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { LiveAnnouncement, ResponsiveButtonActions, useCopyText, useLiveAnnouncement } from '@integration-components/composables-vue';
 import { BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
-import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
+import CheckmarkIcon from '@adyen/ui-assets-icons-24/vue/checkmark-circle';
 import styles from './FormSuccess.module.scss';
 
 const COPIED_LABEL_DURATION = 3000;
@@ -51,7 +51,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
 <template>
     <section :class="styles.root">
         <div :class="styles.content">
-            <CheckmarkCircleFillIcon :class="styles.icon" />
+            <CheckmarkIcon :class="styles.icon" />
             <BentoTypography variant="title" medium :class="styles.title">
                 {{ i18n.get('payByLink.creation.success.title') }}
             </BentoTypography>

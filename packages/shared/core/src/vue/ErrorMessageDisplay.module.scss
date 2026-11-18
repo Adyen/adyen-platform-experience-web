@@ -57,6 +57,11 @@
     padding: style.token(spacer-040);
 }
 
+.iconCritical {
+    align-self: center;
+    color: style.token(color-label-critical);
+}
+
 .button {
     align-items: center;
     display: flex;

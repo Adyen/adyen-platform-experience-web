@@ -34,7 +34,7 @@ const instructionItems = computed(() => [
         <template #content>
             <div v-if="bankAccount" :class="styles.root">
                 <BentoTypography>
-                    {{ i18n.get('capital.overview.repayment.loan.subtitle') }}
+                    {{ i18n.get('capital.overview.repayment.loan.repaymentIntro') }}
                 </BentoTypography>
                 <BentoCard>
                     {{ i18n.get('capital.overview.repayment.accountTitle') }}
@@ -75,10 +75,6 @@ const instructionItems = computed(() => [
                             </li>
                         </ul>
                     </div>
-
-                    <BentoTypography el="span" variant="caption" :class="styles.verifiedBankAccountNotice">
-                        {{ i18n.get('capital.overview.repayment.verifiedAccountNote') }}
-                    </BentoTypography>
                 </div>
             </div>
         </template>

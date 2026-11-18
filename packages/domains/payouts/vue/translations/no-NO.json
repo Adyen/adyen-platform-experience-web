@@ -50,7 +50,7 @@
     "payouts.overview.filters.date.thisMonth": "Denne måneden",
     "payouts.overview.filters.date.thisWeek": "Denne uken",
     "payouts.overview.filters.date.yearToDate": "Hittil i år",
-    "payouts.overview.generateInfo": "Utbetalingsinformasjon genereres hver dag ved midnatt, UTC-tid.",
+    "payouts.overview.generateInfo": "Informasjon om utbetalingen blir tilgjengelig når utbetalingen er ferdig behandlet.",
     "payouts.overview.list.adjustmentAmount": "Justeringer",
     "payouts.overview.list.createdAt": "Dato",
     "payouts.overview.list.fundsCapturedAmount": "Midler registrert",

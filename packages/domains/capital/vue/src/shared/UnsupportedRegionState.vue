@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import EmptyState from './EmptyState/EmptyState.vue';
-import { useCoreContext } from '@integration-components/core/vue';
+import { DataOverviewError, type ErrorMessageInfo } from '@integration-components/composables-vue';
 
-const { i18n } = useCoreContext();
+const errorInfo = {
+    title: 'capital.common.emptyStates.unsupportedRegion.title',
+    messages: ['capital.common.emptyStates.unsupportedRegion.message'],
+} satisfies ErrorMessageInfo;
 </script>
 
 <template>
-    <EmptyState :title="i18n.get('capital.common.emptyStates.unsupportedRegion.title')" type="highlight">
-        {{ i18n.get('capital.common.emptyStates.unsupportedRegion.message') }}
-    </EmptyState>
+    <DataOverviewError :error-info="errorInfo" type="highlight" />
 </template>

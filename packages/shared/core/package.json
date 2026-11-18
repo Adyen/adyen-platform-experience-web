@@ -28,6 +28,7 @@
     "dependencies": {
         "@adyen/adyen-shared-web": "0.5.0",
         "@adyen/bento-design-tokens": "catalog:",
+        "@adyen/ui-assets-icons-24": "catalog:",
         "@integration-components/assets": "workspace:*",
         "@integration-components/style": "workspace:*",
         "@integration-components/types": "workspace:*",

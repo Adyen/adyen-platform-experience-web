@@ -50,7 +50,7 @@
     "payouts.overview.filters.date.thisMonth": "Ce mois-ci",
     "payouts.overview.filters.date.thisWeek": "Cette semaine",
     "payouts.overview.filters.date.yearToDate": "Depuis le début de l'année",
-    "payouts.overview.generateInfo": "Les informations sur les reversements sont générées tous les jours à minuit, heure UTC.",
+    "payouts.overview.generateInfo": "Les informations sur le reversement sont disponibles une fois celui-ci entièrement traité.",
     "payouts.overview.list.adjustmentAmount": "Ajustements",
     "payouts.overview.list.createdAt": "Date",
     "payouts.overview.list.fundsCapturedAmount": "Fonds capturés",
