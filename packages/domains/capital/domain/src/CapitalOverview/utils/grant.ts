@@ -34,7 +34,7 @@ const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
 const getStatusKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): CapitalTranslationKey | undefined => {
     switch (status) {
         case 'Failed':
-            return 'capital.overview.grantStatuses.loan.failed.label';
+            return 'capital.overview.grantStatuses.failed.label';
         case 'Pending':
             return !areActionsLocallyCompleted && missingActions?.length
                 ? 'capital.overview.grantStatuses.actionNeeded.label'
@@ -71,7 +71,7 @@ const getStatusTooltipKey = ({ status, missingActions }: IGrant, areActionsLocal
         case 'Pending':
             return !areActionsLocallyCompleted && missingActions?.length ? undefined : 'capital.overview.grantStatuses.loan.pending.description';
         case 'Failed':
-            return 'capital.overview.grantStatuses.loan.failed.description';
+            return 'capital.overview.grantStatuses.failed.description';
         case 'WrittenOff':
             return 'capital.overview.grantStatuses.loan.writtenOff.description';
         case 'Revoked':
