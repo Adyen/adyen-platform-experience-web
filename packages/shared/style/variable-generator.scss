@@ -21,7 +21,8 @@ $adyen-token-maps: (
 @function token($token) {
     @each $token-map in $adyen-token-maps {
         @if map.has-key($token-map, $token) {
-            @return var(--adyen-sdk-#{$token});
+            // The public variable first, then Bento's default, kept under a private name by rewriteBentoCssVariables.
+            @return var(--adyen-sdk-#{$token}, var(--adyen-pe-bento-#{$token}));
         }
     }
 
