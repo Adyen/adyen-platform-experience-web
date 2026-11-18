@@ -13,6 +13,10 @@
     }
 }
 
+.summaryList :global(.b-structured-list-item__value) {
+    margin-inline-start: auto;
+}
+
 .copyableValue {
     align-items: center;
     display: flex;
