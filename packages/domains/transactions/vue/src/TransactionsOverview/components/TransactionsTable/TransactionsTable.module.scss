@@ -3,6 +3,7 @@
 
 .root {
     @include data-grid.adyen-pe-data-grid-centered-rows;
+    @include data-grid.adyen-pe-data-grid-payment-method-icons;
 }
 
 .paymentMethod {

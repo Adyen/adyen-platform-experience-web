@@ -1,3 +1,5 @@
+@use '@integration-components/style' as style;
+
 // Bento data grid cells are block containers by default, so their content sticks to the top of rows made taller by
 // multi-line or custom (icon, button) content. Turning each cell into a flex container centers the content vertically
 // while keeping its full width, so text alignment, numeric alignment and ellipsis overflow behave as before.
@@ -10,5 +12,14 @@
     :global(.b-data-grid-cell__cell-content) {
         flex: 1 1 auto;
         min-width: 0;
+    }
+}
+
+// Payment method logos only fill part of their image box, which makes Bento's small icon look tiny next to the grid's
+// text. The `img` selector outweighs Bento's scoped icon rules; the auto width keeps each logo's aspect ratio.
+@mixin adyen-pe-data-grid-payment-method-icons {
+    :global(img.b-payment-method__icon--small) {
+        height: style.token(spacer-080);
+        width: auto;
     }
 }

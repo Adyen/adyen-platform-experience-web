@@ -225,7 +225,7 @@ const errorInfo = computed(() =>
                 <div :class="styles.dateAndPaymentMethod">
                     <div :class="styles.paymentMethod">
                         <template v-if="item.paymentMethod || item.bankAccount">
-                            <BentoPaymentMethod :type="item.paymentMethod ? item.paymentMethod?.type : 'bankTransfer'" />
+                            <BentoPaymentMethod :type="item.paymentMethod ? item.paymentMethod?.type : 'bankTransfer'" :small="isCondensed" />
                             <BentoTypography variant="body">
                                 {{ item.paymentMethod ? parsePaymentMethodType(item.paymentMethod) : item.bankAccount?.accountNumberLastFourDigits }}
                             </BentoTypography>
@@ -247,7 +247,7 @@ const errorInfo = computed(() =>
             <template #item-paymentMethod="{ item }">
                 <div :class="styles.paymentMethod">
                     <template v-if="item.paymentMethod || item.bankAccount">
-                        <BentoPaymentMethod :type="item.paymentMethod ? item.paymentMethod?.type : 'bankTransfer'" />
+                        <BentoPaymentMethod :type="item.paymentMethod ? item.paymentMethod?.type : 'bankTransfer'" :small="isCondensed" />
                         <BentoTypography variant="body">
                             {{ item.paymentMethod ? parsePaymentMethodType(item.paymentMethod) : item.bankAccount?.accountNumberLastFourDigits }}
                         </BentoTypography>

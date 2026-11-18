@@ -1,5 +1,6 @@
 import { defineComponent, h, type PropType } from 'vue';
 import { BentoButton, BentoLink } from '@adyen/bento-vue3';
+import { useCondensedDataGrid } from '@integration-components/core/vue';
 import { isCustomDataObject } from './useCustomDataCells';
 import { CUSTOM_FIELD_ATTRIBUTE } from './useCustomColumnWidths';
 import styles from './CustomDataCell.module.scss';
@@ -13,6 +14,8 @@ export const CustomDataCell = defineComponent({
     },
 
     setup(props) {
+        const isCondensed = useCondensedDataGrid();
+
         return () => {
             const data: unknown = props.value;
             const fieldAttrs = props.field ? { [CUSTOM_FIELD_ATTRIBUTE]: props.field } : {};
@@ -23,7 +26,7 @@ export const CustomDataCell = defineComponent({
 
             if (data.type === 'icon' && data.config?.src) {
                 const alt = data.config.alt != null ? data.config.alt : data.value;
-                return h('div', { ...fieldAttrs, class: [styles.root, data.config.className] }, [
+                return h('div', { ...fieldAttrs, class: [styles.root, isCondensed.value && styles.condensed, data.config.className] }, [
                     h('img', { src: data.config.src, alt }),
                     data.value != null && String(data.value).trim() ? h('span', { class: styles.iconLabel }, String(data.value)) : null,
                 ]);
