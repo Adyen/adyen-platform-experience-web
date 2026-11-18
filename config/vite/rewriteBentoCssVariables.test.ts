@@ -5,149 +5,77 @@ import type { Rollup } from 'vite';
 import { describe, expect, test } from 'vitest';
 import { rewriteBentoCssVariables } from './rewriteBentoCssVariables';
 
-const runGenerateBundle = (bundle: Rollup.OutputBundle) => {
-    const generateBundle = rewriteBentoCssVariables().generateBundle;
+const ROOT = '[data-adyen-pe-theme-root]';
+const DARK = "[data-adyen-pe-theme='dark']";
+/** A Bento variable reference after the rewrite: the public variable first, then the Bento default. */
+const read = (name: string, fallback = '') => `var(--adyen-sdk-${name}, var(--adyen-pe-bento-${name}${fallback}))`;
 
-    if (typeof generateBundle !== 'function') {
-        throw new TypeError('Expected rewriteBentoCssVariables to provide a generateBundle hook');
-    }
+const plugin = rewriteBentoCssVariables();
+const transform = plugin.transform as (code: string, id: string) => { code: string; map: null } | null;
+const generateBundle = plugin.generateBundle as (options: unknown, bundle: Rollup.OutputBundle) => void;
 
-    return generateBundle.call({} as never, {} as never, bundle, false);
-};
-
-const runTransform = async (code: string, id: string) => {
-    const transform = rewriteBentoCssVariables().transform;
-
-    if (typeof transform !== 'function') {
-        throw new TypeError('Expected rewriteBentoCssVariables to provide a transform hook');
-    }
-
-    return await transform.call({} as never, code, id);
-};
-
-const bundleWithAsset = (fileName: string, source: string | Uint8Array) =>
-    ({
-        [fileName]: {
-            type: 'asset',
-            fileName,
-            source,
-        },
-    }) as unknown as Rollup.OutputBundle;
-
-const getAsset = (bundle: Rollup.OutputBundle, fileName: string): Rollup.OutputAsset => {
-    const output = bundle[fileName];
-
-    if (output?.type !== 'asset') {
-        throw new TypeError(`Expected "${fileName}" to be an asset`);
-    }
-
-    return output;
+/** Runs the bundle hook on one CSS asset and returns its source. */
+const rewriteAsset = (source: string | Uint8Array, fileName = 'assets/library.css') => {
+    const bundle = { [fileName]: { type: 'asset', fileName, source } } as unknown as Rollup.OutputBundle;
+    generateBundle.call({}, {}, bundle);
+    return (bundle[fileName] as Rollup.OutputAsset).source;
 };
 
 describe('rewriteBentoCssVariables', () => {
+    test.each([
+        ['moves the light defaults to theme roots under private names', ':root{--b-a:#fff}', `${ROOT}{--adyen-pe-bento-a:#fff}`],
+        ['moves the dark defaults to dark theme roots', '.b-dark-theme{--b-a:#181818}', `${DARK}{--adyen-pe-bento-a:#181818}`],
+        [
+            'moves both default blocks when a bundle puts them next to each other',
+            ':root{--b-a:1px}.b-dark-theme{--b-a:2px}',
+            `${ROOT}{--adyen-pe-bento-a:1px}${DARK}{--adyen-pe-bento-a:2px}`,
+        ],
+        ['reads references from the public name first', '.a{color:var(--b-x)}', `.a{color:${read('x')}}`],
+        ['keeps fallbacks', '.a{margin:var(--b-s, 4px) var(--other)}', `.a{margin:${read('s', ', 4px')} var(--other)}`],
+        ['rewrites nested references', '.a{border:var( --b-y, var(--b-z))}', `.a{border:${read('y', `, ${read('z')}`)}}`],
+        ['rewrites references inside the defaults', ':root{--b-a:var(--b-b)}', `${ROOT}{--adyen-pe-bento-a:${read('b')}}`],
+        ['keeps component-level overrides public', '.tabs{--b-link:red}', '.tabs{--adyen-sdk-link:red}'],
+        ['rewrites the dark theme selector in other rules', '.b-dark-theme .item{color:red}', `${DARK} .item{color:red}`],
+        [
+            'ignores look-alike names',
+            ':root{--my--b-a:blue;--b-a:red}.b-dark-theme-container{color:green}',
+            `${ROOT}{--my--b-a:blue;--adyen-pe-bento-a:red}.b-dark-theme-container{color:green}`,
+        ],
+        ['leaves CSS without Bento variables alone', ':root{--adyen-sdk-a:#000}', ':root{--adyen-sdk-a:#000}'],
+    ])('%s', (_name, source, expected) => {
+        expect(rewriteAsset(source)).toBe(expected);
+    });
+
     test.each(['library.css', 'library.scss', 'Component.vue?vue&type=style&index=0&lang.css', 'Component.vue?type=style&vue&index=0'])(
-        'rewrites Bento variables while serving %s',
-        async id => {
-            await expect(runTransform(':root{--b-color:red;color:var(--b-color)}', id)).resolves.toEqual({
-                code: ':root,[data-adyen-pe-theme-root]{--adyen-sdk-color:red;color:var(--adyen-sdk-color)}',
-                map: null,
-            });
+        'rewrites the style module %s while serving',
+        id => {
+            expect(transform.call({}, ':root{--b-a:red}', id)).toEqual({ code: `${ROOT}{--adyen-pe-bento-a:red}`, map: null });
         }
     );
 
-    test('redeclares Bento light defaults on every registered theme root', async () => {
-        await expect(
-            runTransform(':root{--b-color-background-primary:#fff}', '/node_modules/@adyen/bento-design-tokens/dist/css/bento/variables.css')
-        ).resolves.toEqual({
-            code: ':root,[data-adyen-pe-theme-root]{--adyen-sdk-color-background-primary:#fff}',
-            map: null,
-        });
+    test('does not transform non-style modules while serving', () => {
+        expect(transform.call({}, 'const variable = "--b-a";', 'library.ts')).toBeNull();
     });
 
-    test('does not transform non-style modules while serving', async () => {
-        await expect(runTransform('const variable = "--b-color";', 'library.ts')).resolves.toBeNull();
+    test('leaves CSS it has already rewritten unchanged, so serving and bundling can both run', () => {
+        const once = transform.call({}, ':root{--b-a:red}.b-dark-theme{--b-a:blue}.x{color:var(--b-a)}', 'library.css')!.code;
+        expect(rewriteAsset(once)).toBe(once);
     });
 
-    test('rewrites every Bento variable declaration and reference in emitted CSS assets', () => {
-        const bundle = bundleWithAsset(
-            'assets/library.css',
-            ':root{--b-color:red;--b-spacing:8px}.button{color:var(--b-color);margin:var(--b-spacing) var(--other)}/* --b-comment */'
-        );
+    test('keeps the source type of Uint8Array assets, and returns untouched sources as they are', () => {
+        const rewritten = rewriteAsset(new TextEncoder().encode(':root{--b-a:red}'), 'assets/library.CSS');
+        expect(new TextDecoder().decode(rewritten as Uint8Array)).toBe(`${ROOT}{--adyen-pe-bento-a:red}`);
 
-        runGenerateBundle(bundle);
-
-        expect(getAsset(bundle, 'assets/library.css').source).toBe(
-            ':root,[data-adyen-pe-theme-root]{--adyen-sdk-color:red;--adyen-sdk-spacing:8px}.button{color:var(--adyen-sdk-color);margin:var(--adyen-sdk-spacing) var(--other)}/* --adyen-sdk-comment */'
-        );
-    });
-
-    test('rewrites Uint8Array CSS sources while retaining their source type', () => {
-        const encoder = new TextEncoder();
-        const bundle = bundleWithAsset('assets/library.CSS', encoder.encode(':root{--b-color:red;color:var(--b-color)}'));
-
-        runGenerateBundle(bundle);
-
-        const source = getAsset(bundle, 'assets/library.CSS').source;
-        expect(source).toBeInstanceOf(Uint8Array);
-        expect(new TextDecoder().decode(source as Uint8Array)).toBe(
-            ':root,[data-adyen-pe-theme-root]{--adyen-sdk-color:red;color:var(--adyen-sdk-color)}'
-        );
-    });
-
-    test('retains CSS sources that do not reference Bento variables', () => {
-        const source = new TextEncoder().encode(':root{--other-color:red}');
-        const bundle = bundleWithAsset('assets/library.css', source);
-
-        runGenerateBundle(bundle);
-
-        expect(getAsset(bundle, 'assets/library.css').source).toBe(source);
+        const untouched = new TextEncoder().encode(':root{--other:red}');
+        expect(rewriteAsset(untouched)).toBe(untouched);
     });
 
     test('does not modify non-CSS assets or chunks', () => {
-        const source = new Uint8Array([0, 1, 2, 3]);
-        const image = {
-            type: 'asset',
-            fileName: 'assets/image.bin',
-            source,
-        };
-        const chunk = {
-            type: 'chunk',
-            fileName: 'index.js',
-            code: 'const variable = "--b-color";',
-        };
-        const bundle = {
-            'assets/image.bin': image,
-            'index.js': chunk,
-        } as unknown as Rollup.OutputBundle;
+        const image = { type: 'asset', fileName: 'assets/image.bin', source: new Uint8Array([0, 1]) };
+        const chunk = { type: 'chunk', fileName: 'index.js', code: 'const variable = "--b-a";' };
+        generateBundle.call({}, {}, { [image.fileName]: image, [chunk.fileName]: chunk } as unknown as Rollup.OutputBundle);
 
-        runGenerateBundle(bundle);
-
-        expect(bundle['assets/image.bin']).toBe(image);
-        expect(image.source).toBe(source);
-        expect(bundle['index.js']).toBe(chunk);
-        expect(chunk.code).toBe('const variable = "--b-color";');
-    });
-
-    test('rewrites .b-dark-theme selector in CSS assets', () => {
-        const bundle = bundleWithAsset('assets/library.css', '.b-dark-theme{color:red}.b-dark-theme .item{background:blue}');
-
-        runGenerateBundle(bundle);
-
-        expect(getAsset(bundle, 'assets/library.css').source).toBe(
-            "[data-adyen-pe-theme='dark']{color:red}[data-adyen-pe-theme='dark'] .item{background:blue}"
-        );
-    });
-
-    test('avoids accidental replacements when substrings appear inside other names', () => {
-        const bundle = bundleWithAsset(
-            'assets/library.css',
-            ':root{--my--b-color:blue;--b-color:red}.b-dark-theme-container{color:green}.b-dark-theme{color:black}'
-        );
-
-        runGenerateBundle(bundle);
-
-        expect(getAsset(bundle, 'assets/library.css').source).toBe(
-            ":root,[data-adyen-pe-theme-root]{--my--b-color:blue;--adyen-sdk-color:red}.b-dark-theme-container{color:green}[data-adyen-pe-theme='dark']{color:black}"
-        );
+        expect(image.source).toEqual(new Uint8Array([0, 1]));
+        expect(chunk.code).toBe('const variable = "--b-a";');
     });
 });
