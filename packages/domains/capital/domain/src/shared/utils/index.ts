@@ -1,3 +1,4 @@
+export * from './contractType';
 export * from './errors';
 export * from './externalState';
 export * from './generic';

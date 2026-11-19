@@ -8,6 +8,7 @@ import {
     CAPITAL_STATE_ELIGIBLE_LOAN,
     CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN,
     CAPITAL_STATE_ELIGIBLE_AND_ONGOING_CASH_ADVANCE,
+    CAPITAL_STATE_ELIGIBLE_UNSUPPORTED_CONTRACT,
 } from '../mock-data';
 import { http, HttpResponse } from 'msw';
 import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
@@ -36,6 +37,14 @@ export const capitalOfferHandlers = {
     ],
     eligibleLoan: defaultHandlersLoan,
     eligibleCashAdvance: defaultHandlersCashAdvance,
+    eligibleUnsupportedContract: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_UNSUPPORTED_CONTRACT);
+            })
+        ),
+    ],
     singleTermLoan: [
         http.get(
             CAPITAL_ENDPOINTS.capitalState,

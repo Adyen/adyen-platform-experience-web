@@ -4,6 +4,7 @@ import { adjustSelectedTerm, getAvailableTerms, getCreateGrantOfferBody, getDefa
 
 const OFFER_90_DAYS = {
     aprBasisPoints: 1200,
+    contractType: 'Loan',
     expectedRepaymentPeriodDays: 90,
     feesAmount: { value: 1000, currency: 'EUR' },
     grantAmount: { value: 100000, currency: 'EUR' },

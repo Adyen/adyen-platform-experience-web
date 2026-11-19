@@ -65,7 +65,7 @@
     "capital.offer.amountToReceive": "Amount you'll receive",
     "capital.offer.cashAdvance.currentRemainingGrantAmount": "Current fulfillment remaining",
     "capital.offer.cashAdvance.newGrantAmount": "New advance",
-    "capital.offer.cashAdvance.regulatoryNotice": "This merchant cash advance is a purchase of your future receivables, not a loan or credit facility. It is not regulated by the Financial Conduct Authority and does not carry the protections of the Financial Services and Markets Act 2000 or the Consumer Credit Act 1974.",
+    "capital.offer.cashAdvance.regulatoryNotice.GB": "This merchant cash advance is a purchase of your future receivables, not a loan or credit facility. It is not regulated by the Financial Conduct Authority and does not carry the protections of the Financial Services and Markets Act 2000 or the Consumer Credit Act 1974.",
     "capital.offer.cashAdvance.termsTitle": "Advance terms",
     "capital.offer.errors.accountInactive": "Your account is inactive",
     "capital.offer.errors.cannotContinue": "We couldn't continue with the Adyen Capital offer.",

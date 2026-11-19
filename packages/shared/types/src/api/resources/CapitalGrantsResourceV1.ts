@@ -81,7 +81,7 @@ export interface components {
         GrantResponseDTO: {
             balanceAccountCode: string;
             balanceAccountDescription?: string;
-            contractType?: components['schemas']['GrantOfferContractType'];
+            contractType: components['schemas']['GrantOfferContractType'];
             /** Format: int32 */
             expectedRepaymentPeriodDays: number;
             feesAmount: components['schemas']['Amount'];

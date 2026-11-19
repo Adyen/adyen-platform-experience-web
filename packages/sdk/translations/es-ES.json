@@ -65,7 +65,7 @@
     "capital.offer.amountToReceive": "Importe que recibirás",
     "capital.offer.cashAdvance.currentRemainingGrantAmount": "Cumplimiento actual restante",
     "capital.offer.cashAdvance.newGrantAmount": "Nuevo anticipo",
-    "capital.offer.cashAdvance.regulatoryNotice": "Este anticipo en efectivo para merchants consiste en la compra de tus futuras cuentas por cobrar, no en un préstamo ni en una línea de crédito. No está regulado por la Autoridad de Conducta Financiera y no ofrece las protecciones de la Ley de Servicios y Mercados Financieros de 2000 ni del Contrato de crédito al consumo de 1974.",
+    "capital.offer.cashAdvance.regulatoryNotice.GB": "Este anticipo en efectivo para merchants consiste en la compra de tus futuras cuentas por cobrar, no en un préstamo ni en una línea de crédito. No está regulado por la Autoridad de Conducta Financiera y no ofrece las protecciones de la Ley de Servicios y Mercados Financieros de 2000 ni del Contrato de crédito al consumo de 1974.",
     "capital.offer.cashAdvance.termsTitle": "Condiciones del anticipo",
     "capital.offer.errors.accountInactive": "Tu cuenta está inactiva",
     "capital.offer.errors.cannotContinue": "No hemos podido continuar con la oferta de Adyen Capital.",
