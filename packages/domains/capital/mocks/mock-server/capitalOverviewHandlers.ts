@@ -28,6 +28,9 @@ import {
     ACTIVE_REPAYMENT_US,
     ACTIVE_WITHOUT_TRANSFER_INSTRUMENTS,
     ACTIVE_WITHOUT_REPAYMENT_ACCOUNT,
+    CAPITAL_STATE_FIRST_TIME_ELIGIBLE_UNSUPPORTED_CONTRACT,
+    CAPITAL_STATE_RENEWABLE_UNSUPPORTED_CONTRACT,
+    RENEWABLE_UNSUPPORTED_CONTRACT,
 } from '../mock-data';
 import { http, HttpResponse } from 'msw';
 import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
@@ -74,6 +77,20 @@ export const capitalOverviewHandlers = {
         ),
         ...defaultHandlersCashAdvance,
     ],
+    firstTimeEligibleUnsupportedContract: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_FIRST_TIME_ELIGIBLE_UNSUPPORTED_CONTRACT);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [] });
+            })
+        ),
+    ],
     earlyRenewalLoan: [
         http.get(
             CAPITAL_ENDPOINTS.capitalState,
@@ -103,6 +120,20 @@ export const capitalOverviewHandlers = {
             })
         ),
         ...defaultHandlersCashAdvance,
+    ],
+    earlyRenewalUnsupportedContract: [
+        http.get(
+            CAPITAL_ENDPOINTS.capitalState,
+            withDelay(() => {
+                return HttpResponse.json(CAPITAL_STATE_RENEWABLE_UNSUPPORTED_CONTRACT);
+            })
+        ),
+        http.get(
+            CAPITAL_ENDPOINTS.grants,
+            withDelay(() => {
+                return HttpResponse.json({ data: [RENEWABLE_UNSUPPORTED_CONTRACT] });
+            })
+        ),
     ],
     eligibleLoan: [
         http.get(

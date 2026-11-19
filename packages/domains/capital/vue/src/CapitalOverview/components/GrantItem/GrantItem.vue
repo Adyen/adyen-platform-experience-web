@@ -12,14 +12,16 @@ import {
 } from '@adyen/bento-vue3';
 import ChevronDownIcon from '@adyen/ui-assets-icons-16/vue/chevron-down';
 import ChevronUpIcon from '@adyen/ui-assets-icons-16/vue/chevron-up';
-import { getGrantConfig, type GrantStatusVariant } from '@integration-components/capital/domain';
+import { getGrantConfig, SHARED_CONTRACT_KEYS, type GrantStatusVariant } from '@integration-components/capital/domain';
 import { CopyText, useTimezoneAwareDateFormatting } from '@integration-components/composables-vue';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '@integration-components/utils';
 import type { IAmount, IGrant } from '@integration-components/types';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
+import { useContractCopy } from '../../../shared/composables/useContractCopy';
 import Actions from '../Actions/Actions.vue';
 import GrantDetails from '../GrantDetails/GrantDetails.vue';
+import { CONTRACT_KEYS } from './contractKeys';
 import styles from './GrantItem.module.scss';
 import RepaymentModal from '../RepaymentDetails/RepaymentModal.vue';
 
@@ -28,6 +30,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { getContractCopy } = useContractCopy(() => props.grant.contractType);
 const userEvents = useEventDispatcherContext();
 const { dateFormat } = useTimezoneAwareDateFormatting();
 
@@ -35,7 +38,7 @@ const areActionsLocallyCompleted = ref(false);
 const isGrantDetailsOpen = ref(false);
 const grantConfig = computed(() => getGrantConfig(props.grant, areActionsLocallyCompleted.value));
 const termEndLabel = computed(() =>
-    i18n.get('capital.overview.grantItem.loan.termEnds', {
+    getContractCopy(CONTRACT_KEYS.termEnds, {
         values: { date: dateFormat(grantConfig.value.repaymentPeriodEndDate, DATE_FORMAT_CAPITAL_OVERVIEW) },
     })
 );
@@ -47,11 +50,10 @@ const repaymentPercentage = computed(() => {
 
 const repaymentRatioParts = computed(() => {
     const repaidAmountPlaceholder = '__REPAID_AMOUNT_PLACEHOLDER__';
-    return i18n
-        .get('capital.overview.grantItem.loan.repaymentRatio', {
-            values: { repaidAmount: repaidAmountPlaceholder, totalAmount: formatAmount(props.grant.totalAmount) },
-        })
-        .split(repaidAmountPlaceholder);
+    const repaymentRatio = getContractCopy(CONTRACT_KEYS.repaymentRatio, {
+        values: { repaidAmount: repaidAmountPlaceholder, totalAmount: formatAmount(props.grant.totalAmount) },
+    });
+    return repaymentRatio.split(repaidAmountPlaceholder);
 });
 
 const formatAmount = (amount: IAmount) => {
@@ -124,7 +126,7 @@ const closeRepaymentModal = () => {
                                     {{ formatAmount(grantConfig.amount) }}
                                 </BentoTypography>
                             </div>
-                            <BentoTypography v-if="props.grant.status === 'Active'" variant="caption">
+                            <BentoTypography v-if="props.grant.status === 'Active' && termEndLabel" variant="caption">
                                 <time :datetime="grantConfig.repaymentPeriodEndDate.toISOString()">
                                     {{ termEndLabel }}
                                 </time>
@@ -157,7 +159,7 @@ const closeRepaymentModal = () => {
                                 is-underline-visible
                                 :text-to-copy="props.grant.id"
                                 type="Text"
-                                :visible-text="i18n.get('capital.common.fields.loan.grantID.label')"
+                                :visible-text="getContractCopy(SHARED_CONTRACT_KEYS.grantId)"
                                 @click.stop
                             />
                         </div>
@@ -168,11 +170,12 @@ const closeRepaymentModal = () => {
                         variant="secondary"
                         @click.stop="openRepaymentDetails"
                     >
-                        {{ i18n.get('capital.overview.grantItem.loan.sendRepayment') }}
+                        {{ getContractCopy(CONTRACT_KEYS.sendRepayment) }}
                     </BentoButton>
                     <Actions
                         v-if="grantConfig.areActionsVisible && props.grant.missingActions"
                         :class-name="styles.alert"
+                        :contract-type="props.grant.contractType"
                         :grant-id="props.grant.id"
                         :missing-actions="props.grant.missingActions"
                         :offer-expires-at="props.grant.offerExpiresAt"

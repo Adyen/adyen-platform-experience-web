@@ -65,7 +65,7 @@
     "capital.offer.amountToReceive": "Valor que você receberá",
     "capital.offer.cashAdvance.currentRemainingGrantAmount": "Valor restante da quitação atual",
     "capital.offer.cashAdvance.newGrantAmount": "Novo adiantamento",
-    "capital.offer.cashAdvance.regulatoryNotice": "Este adiantamento em dinheiro para comerciantes é uma compra dos seus recebíveis futuros, não um empréstimo nem uma linha de crédito. Não é regulamentado pela Financial Conduct Authority e não conta com as proteções da Financial Services and Markets Act de 2000 ou da Consumer Credit Act de 1974.",
+    "capital.offer.cashAdvance.regulatoryNotice.GB": "Este adiantamento em dinheiro para comerciantes é uma compra dos seus recebíveis futuros, não um empréstimo nem uma linha de crédito. Não é regulamentado pela Financial Conduct Authority e não conta com as proteções da Financial Services and Markets Act de 2000 ou da Consumer Credit Act de 1974.",
     "capital.offer.cashAdvance.termsTitle": "Termos do adiantamento",
     "capital.offer.errors.accountInactive": "Sua conta está inativa",
     "capital.offer.errors.cannotContinue": "Não foi possível continuar com a oferta do Adyen Capital.",

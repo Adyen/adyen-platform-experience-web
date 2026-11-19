@@ -5,6 +5,7 @@ import {
     getOfferForTerm,
     getOffersByTerm,
     sharedCapitalOfferAnalyticsEventProperties,
+    SHARED_CONTRACT_KEYS,
     type EnhancedCapitalState,
     getDefaultAmountValue,
     getDefaultTerm,
@@ -15,12 +16,15 @@ import { useCoreContext, useEventDispatcherContext } from '@integration-componen
 import { useOffers } from '../../composables/useOffers';
 import { useCreateOffer } from '../../composables/useCreateOffer';
 import type { IDynamicOffersConfig, IOffer } from '@integration-components/types';
-import { BentoButtonActions, type BentoButtonActionsList, BentoLoadingSkeletonShape } from '@adyen/bento-vue3';
+import { BentoButtonActions, type BentoButtonActionsList, BentoLoadingSkeletonShape, BentoTypography } from '@adyen/bento-vue3';
+import { useContractCopy } from '../../../shared/composables/useContractCopy';
 import AmountSelector from '../AmountSelector/AmountSelector.vue';
 import CapitalError from '../../../shared/CapitalError.vue';
 import OfferSelectionDetails from '../OfferSelectionDetails.vue';
-import RenewalHighlights from '../RenewalHighlights.vue';
-import TermSelector from '../TermSelector.vue';
+import RegulatoryNotice from '../RegulatoryNotice/RegulatoryNotice.vue';
+import RenewalHighlights from '../RenewalHighlights/RenewalHighlights.vue';
+import TermSelector from '../TermSelector/TermSelector.vue';
+import { CONTRACT_KEYS } from './contractKeys';
 import styles from './OfferSelection.module.scss';
 import EmptyOfferState from '../../../shared/EmptyOfferState.vue';
 
@@ -34,6 +38,8 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const userEvents = useEventDispatcherContext();
+const contractType = computed(() => props.dynamicOfferConfig.contractType);
+const { getContractCopy } = useContractCopy(contractType);
 const renewableGrant = computed(() => props.capitalState.renewableGrants?.[0]);
 const isEarlyRenewal = computed(() => !!renewableGrant.value);
 const estimatedTerms = computed(() => getEstimatedTerms(props.dynamicOfferConfig));
@@ -60,6 +66,8 @@ const availableTerms = computed(() => getAvailableTerms(offersByTerm.value));
 const term = ref<number | undefined>(props.createdOffer?.expectedRepaymentPeriodDays);
 const selectedOffer = computed(() => (term.value === undefined ? undefined : getOfferForTerm(offersByTerm.value, term.value)));
 const { error: createOfferError, isLoading: isCreateOfferLoading, createOffer } = useCreateOffer();
+const contractTypeNotice = computed(() => getContractCopy(CONTRACT_KEYS.contractTypeNotice));
+const expectedRepaymentPeriodDescription = computed(() => getContractCopy(SHARED_CONTRACT_KEYS.expectedRepaymentPeriodDescription));
 
 // Initializes the selected term and adjusts it when it becomes unavailable
 watch(
@@ -128,6 +136,9 @@ const actions = computed<BentoButtonActionsList>(() => {
         <CapitalError v-if="offersError || createOfferError" :error="createOfferError ?? offersError" :on-contact-support="props.onContactSupport" />
         <EmptyOfferState v-else-if="hasNoOffers" />
         <template v-else-if="amountValue">
+            <BentoTypography v-if="contractTypeNotice" variant="body">
+                {{ contractTypeNotice }}
+            </BentoTypography>
             <AmountSelector
                 :amount-value="amountValue"
                 :dynamic-offer-config="dynamicOfferConfig"
@@ -137,12 +148,14 @@ const actions = computed<BentoButtonActionsList>(() => {
             />
             <RenewalHighlights
                 v-if="renewableGrant"
+                :contract-type="contractType"
                 :new-grant-amount-value="amountValue"
                 :remaining-grant-amount="renewableGrant.remainingGrantAmount"
             />
             <TermSelector
                 v-if="estimatedTerms.length > 1"
                 :are-available-terms-loading="areAmountAndOffersUpdating"
+                :contract-type="contractType"
                 :estimated-terms="estimatedTerms"
                 :is-early-renewal="isEarlyRenewal"
                 :offers-by-term="offersByTerm"
@@ -150,7 +163,16 @@ const actions = computed<BentoButtonActionsList>(() => {
                 @term-change="value => (term = value)"
             />
             <BentoLoadingSkeletonShape v-if="areDetailsLoading" variant="rectangle" height="208px" width="100%" />
-            <OfferSelectionDetails v-else-if="selectedOffer" :has-expected-repayment-period="hasSingleTerm" :offer="selectedOffer" />
+            <OfferSelectionDetails
+                v-else-if="selectedOffer"
+                :contract-type="contractType"
+                :has-expected-repayment-period="hasSingleTerm"
+                :offer="selectedOffer"
+            />
+            <BentoTypography v-if="expectedRepaymentPeriodDescription" variant="caption">
+                {{ expectedRepaymentPeriodDescription }}
+            </BentoTypography>
+            <RegulatoryNotice :contract-type="contractType" :region="props.capitalState.region" />
             <BentoButtonActions :actions="actions" />
         </template>
     </div>

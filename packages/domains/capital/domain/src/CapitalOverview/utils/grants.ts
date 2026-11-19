@@ -1,10 +1,7 @@
 import type { IGrant } from '@integration-components/types';
-import type { EnhancedCapitalState } from '../../shared';
+import { getIsContractTypeSupported, type EnhancedCapitalState } from '../../shared';
 
-type GroupedGrants = {
-    ongoing: IGrant[];
-    closed: IGrant[];
-};
+type GroupedGrants = Record<'ongoing' | 'closed', IGrant[]>;
 
 export const getAdjustedGrants = (
     state: EnhancedCapitalState | undefined,
@@ -12,7 +9,9 @@ export const getAdjustedGrants = (
     requestedGrant: IGrant | undefined
 ): IGrant[] | undefined => {
     const adjustedGrants = requestedGrant && !grants?.some(grant => grant.id === requestedGrant.id) ? [requestedGrant, ...(grants ?? [])] : grants;
-    return adjustedGrants?.filter(grant => !(grant.status === 'Active' && state?.renewsGrantIds.has(grant.id)));
+    return adjustedGrants?.filter(
+        grant => getIsContractTypeSupported(grant.contractType, state?.region) && !(grant.status === 'Active' && state?.renewsGrantIds.has(grant.id))
+    );
 };
 
 export const getGroupedGrants = (grants: readonly IGrant[]): GroupedGrants => {
