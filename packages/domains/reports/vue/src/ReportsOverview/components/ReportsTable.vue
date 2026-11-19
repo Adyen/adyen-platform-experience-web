@@ -331,7 +331,6 @@ const errorInfo = computed(() =>
                 <BentoButton
                     condensed
                     variant="secondary"
-                    :class="isMobile ? styles.downloadButtonMobile : undefined"
                     :aria-label="i18n.get('reports.overview.list.downloadReport')"
                     :disabled="frozen || isDownloadingReport(getReportKey(item._raw))"
                     @click.stop="handleDownload(item._raw)"

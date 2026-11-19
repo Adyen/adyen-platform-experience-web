@@ -194,7 +194,7 @@ function shopperEmailDisplay(email: string | undefined): string | undefined {
 </script>
 
 <template>
-    <div ref="tableRef">
+    <div ref="tableRef" :class="styles.root">
         <DataOverviewError
             v-if="errorInfo"
             :error-info="errorInfo"
