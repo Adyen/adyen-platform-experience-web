@@ -17,6 +17,15 @@
     margin-inline-start: auto;
 }
 
+/**
+ * Bento's timeline item formats `timestamp.date` itself in the system timezone and renders `timestamp.value` next to it.
+ * Hiding Bento's date leaves the balance account timezone date passed as `value` as the only date shown.
+ * [TODO]: Drop this workaround once the Bento timeline can show a timezone-aware date.
+ */
+.timeline :global(.b-timeline-item__timestamp .b-date) {
+    display: none;
+}
+
 .copyableValue {
     align-items: center;
     display: flex;
