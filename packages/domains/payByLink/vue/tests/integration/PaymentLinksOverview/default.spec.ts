@@ -74,6 +74,7 @@ test.describe('Payment Links Overview', () => {
                 const filterDialog = page.getByRole('dialog');
                 await filterDialog.getByRole('checkbox', { name: option, exact: true }).click();
                 await filterDialog.getByRole('button', { name: 'Apply', exact: true }).click();
+                await expect(filterDialog).toHaveCount(0);
 
                 await expect(clearAll).toBeVisible();
                 await clearAll.click();
