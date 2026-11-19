@@ -138,13 +138,12 @@ test.describe('Default', () => {
             const refundReasons = ['Requested by customer', 'Issue with item sold', 'Fraudulent', 'Duplicate', 'Other'] as const;
             const refundReasonsCount = refundReasons.length;
 
-            for (let i = refundReasonsCount - 1; i >= 0; i--) {
+            for (const chosenRefundReason of [...refundReasons].reverse()) {
                 await expect(reasonSelectCollapsed).toBeVisible();
                 await expect(reasonSelectExpanded).toBeHidden();
 
                 await reasonSelectCollapsed.click();
 
-                const chosenRefundReason = refundReasons[i];
                 const dropdownList = page.getByRole('listbox');
 
                 await expect(dropdownList).toBeVisible();
@@ -157,10 +156,10 @@ test.describe('Default', () => {
                 await dropdownList.getByRole('option', { name: chosenRefundReason, disabled: false }).click();
                 await expect(dropdownList).toBeHidden();
 
+                await expect(reasonSelectCollapsed).toHaveText(chosenRefundReason);
+
                 for (const refundReason of refundReasons) {
-                    if (refundReason === chosenRefundReason) {
-                        await expect(page.getByText(refundReason, { exact: true })).toBeVisible();
-                    } else {
+                    if (refundReason !== chosenRefundReason) {
                         await expect(page.getByText(refundReason, { exact: true })).toBeHidden();
                     }
                 }
