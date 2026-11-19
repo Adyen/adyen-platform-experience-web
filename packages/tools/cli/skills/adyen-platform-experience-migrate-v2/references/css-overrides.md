@@ -23,7 +23,7 @@ Move them with the same values, without asking: they already applied to every co
 
 Delete the override once replaced. Overrides on `.adyen-pe-component` itself (e.g. `box-sizing`) stay.
 
-**No longer needed:** overrides that hid empty-state or error illustrations (e.g. `.adyen-pe-error-message-display__illustration`). v2 has no illustrations, only a small icon, and no option for them. Delete the override and report it as no longer needed, not as a lost customization.
+- **No longer needed:** overrides that hid empty-state or error illustrations (e.g. `.adyen-pe-error-message-display__illustration`). v2 has no illustrations, only a small icon, and no option for them. Delete the override and report it as no longer needed, not as a lost customization.
 
 ## 3. Colours, dark mode and corner radius: the theme
 
