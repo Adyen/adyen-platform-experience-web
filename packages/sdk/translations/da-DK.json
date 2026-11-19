@@ -65,7 +65,7 @@
     "capital.offer.amountToReceive": "Beløbet, du modtager",
     "capital.offer.cashAdvance.currentRemainingGrantAmount": "Resterende beløb til indfrielse af det nuværende forskud",
     "capital.offer.cashAdvance.newGrantAmount": "Nyt forskud",
-    "capital.offer.cashAdvance.regulatoryNotice": "Dette kontante forskud til forhandlere indebærer køb af dine fremtidige tilgodehavender og er ikke et lån eller en kreditfacilitet. Forskuddet er ikke reguleret af Financial Conduct Authority og er ikke omfattet af beskyttelsesbestemmelserne i Financial Services and Markets Act 2000 eller Consumer Credit Act 1974.",
+    "capital.offer.cashAdvance.regulatoryNotice.GB": "Dette kontante forskud til forhandlere indebærer køb af dine fremtidige tilgodehavender og er ikke et lån eller en kreditfacilitet. Forskuddet er ikke reguleret af Financial Conduct Authority og er ikke omfattet af beskyttelsesbestemmelserne i Financial Services and Markets Act 2000 eller Consumer Credit Act 1974.",
     "capital.offer.cashAdvance.termsTitle": "Vilkår for forskud",
     "capital.offer.errors.accountInactive": "Din konto er inaktiv",
     "capital.offer.errors.cannotContinue": "Vi kunne ikke fortsætte med Adyen Capital-tilbuddet.",

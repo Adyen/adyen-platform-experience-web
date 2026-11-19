@@ -1,5 +1,5 @@
 import type { IGrant } from '@integration-components/types';
-import type { CapitalTranslationKey } from '../../shared';
+import type { CapitalTranslationKey, ContractTypeKeyMap } from '../../shared';
 
 export type GrantStatusVariant = 'Default' | 'Warning' | 'Error' | 'Light';
 
@@ -25,13 +25,44 @@ export type EnhancedGrant = Omit<IGrant, 'maximumRepaymentPeriodDays'> & {
     maximumRepaymentPeriodMonths: number | undefined;
 };
 
+const CONTRACT_KEYS = {
+    amount: {
+        CashAdvance: 'capital.overview.grantItem.cashAdvance.grantAmount',
+        Loan: 'capital.overview.grantItem.loan.grantAmount',
+    },
+    pendingTooltip: {
+        CashAdvance: 'capital.overview.grantStatuses.cashAdvance.pending.description',
+        Loan: 'capital.overview.grantStatuses.loan.pending.description',
+    },
+    repaidStatus: {
+        CashAdvance: 'capital.overview.grantStatuses.cashAdvance.repaid.label',
+        Loan: 'capital.overview.grantStatuses.loan.repaid.label',
+    },
+    repaidTooltip: {
+        CashAdvance: 'capital.overview.grantStatuses.cashAdvance.repaid.description',
+        Loan: undefined,
+    },
+    revokedTooltip: {
+        CashAdvance: 'capital.overview.grantStatuses.cashAdvance.revoked.description',
+        Loan: 'capital.overview.grantStatuses.loan.revoked.description',
+    },
+    writtenOffStatus: {
+        CashAdvance: 'capital.overview.grantStatuses.cashAdvance.writtenOff.label',
+        Loan: 'capital.overview.grantStatuses.loan.writtenOff.label',
+    },
+    writtenOffTooltip: {
+        CashAdvance: 'capital.overview.grantStatuses.cashAdvance.writtenOff.description',
+        Loan: 'capital.overview.grantStatuses.loan.writtenOff.description',
+    },
+} satisfies ContractTypeKeyMap;
+
 const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + repaymentPeriodLeft);
     return endDate;
 };
 
-const getStatusKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): CapitalTranslationKey | undefined => {
+const getStatusKey = ({ contractType, status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): CapitalTranslationKey | undefined => {
     switch (status) {
         case 'Failed':
             return 'capital.overview.grantStatuses.failed.label';
@@ -40,11 +71,11 @@ const getStatusKey = ({ status, missingActions }: IGrant, areActionsLocallyCompl
                 ? 'capital.overview.grantStatuses.actionNeeded.label'
                 : 'capital.overview.grantStatuses.pending.label';
         case 'Repaid':
-            return 'capital.overview.grantStatuses.loan.repaid.label';
+            return CONTRACT_KEYS.repaidStatus[contractType];
         case 'Revoked':
             return 'capital.overview.grantStatuses.revoked.label';
         case 'WrittenOff':
-            return 'capital.overview.grantStatuses.loan.writtenOff.label';
+            return CONTRACT_KEYS.writtenOffStatus[contractType];
         default:
             return undefined;
     }
@@ -66,16 +97,21 @@ const getStatusTagVariant = ({ status, missingActions }: IGrant, areActionsLocal
     }
 };
 
-const getStatusTooltipKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): CapitalTranslationKey | undefined => {
+const getStatusTooltipKey = (
+    { contractType, status, missingActions }: IGrant,
+    areActionsLocallyCompleted?: boolean
+): CapitalTranslationKey | undefined => {
     switch (status) {
         case 'Pending':
-            return !areActionsLocallyCompleted && missingActions?.length ? undefined : 'capital.overview.grantStatuses.loan.pending.description';
+            return !areActionsLocallyCompleted && missingActions?.length ? undefined : CONTRACT_KEYS.pendingTooltip[contractType];
         case 'Failed':
             return 'capital.overview.grantStatuses.failed.description';
+        case 'Repaid':
+            return CONTRACT_KEYS.repaidTooltip[contractType];
         case 'WrittenOff':
-            return 'capital.overview.grantStatuses.loan.writtenOff.description';
+            return CONTRACT_KEYS.writtenOffTooltip[contractType];
         case 'Revoked':
-            return 'capital.overview.grantStatuses.loan.revoked.description';
+            return CONTRACT_KEYS.revokedTooltip[contractType];
         default:
             return undefined;
     }
@@ -87,7 +123,7 @@ export const getGrantConfig = (grant: IGrant, areActionsLocallyCompleted?: boole
 
     return {
         amount: isGrantActive ? grant.remainingTotalAmount : grant.grantAmount,
-        amountLabelKey: isGrantActive ? 'capital.overview.grantItem.remainingGrantAmount' : 'capital.overview.grantItem.loan.grantAmount',
+        amountLabelKey: isGrantActive ? 'capital.overview.grantItem.remainingGrantAmount' : CONTRACT_KEYS.amount[grant.contractType],
         areActionsVisible: hasActions,
         areDetailsVisible: isGrantActive,
         areRepaymentDetailsVisible: isGrantActive && !!grant.unscheduledRepaymentAccounts?.length,

@@ -17,7 +17,7 @@ type GuardedCapitalState = 'isInUnsupportedRegion' | 'isUnqualified';
 const isGuardedCapitalState = (capitalState: ExternalCapitalState, guardedState: GuardedCapitalState): boolean => {
     if (!capitalState.isAvailable) return false;
     if (guardedState === 'isInUnsupportedRegion') return !capitalState.isRegionSupported;
-    return capitalState.isRegionSupported && !capitalState.hasGrants && !capitalState.dynamicOfferConfig;
+    return capitalState.isRegionSupported && !capitalState.hasCapital && !capitalState.dynamicOfferConfig;
 };
 
 const meta: Meta<ElementProps<typeof CapitalOverviewElement>> = {
@@ -128,6 +128,18 @@ export const FirstTimeEligibleCashAdvance: ElementStory<typeof CapitalOverviewEl
     },
 };
 
+export const FirstTimeEligibleUnsupportedContract: ElementStory<typeof CapitalOverviewElement> = {
+    name: 'First-time eligible - Unsupported contract',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOverviewHandlers.firstTimeEligibleUnsupportedContract,
+        },
+    },
+};
+
 export const EarlyRenewalLoan: ElementStory<typeof CapitalOverviewElement> = {
     name: 'Early renewal - Loan',
     args: {
@@ -148,6 +160,18 @@ export const EarlyRenewalCashAdvance: ElementStory<typeof CapitalOverviewElement
     parameters: {
         msw: {
             handlers: capitalOverviewHandlers.earlyRenewalCashAdvance,
+        },
+    },
+};
+
+export const EarlyRenewalUnsupportedContract: ElementStory<typeof CapitalOverviewElement> = {
+    name: 'Early renewal - Unsupported contract',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOverviewHandlers.earlyRenewalUnsupportedContract,
         },
     },
 };

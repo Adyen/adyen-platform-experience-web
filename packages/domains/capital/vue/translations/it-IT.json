@@ -65,7 +65,7 @@
     "capital.offer.amountToReceive": "Importo che riceverai",
     "capital.offer.cashAdvance.currentRemainingGrantAmount": "Importo ancora da saldare sull’anticipo attuale",
     "capital.offer.cashAdvance.newGrantAmount": "Nuovo anticipo",
-    "capital.offer.cashAdvance.regulatoryNotice": "Questo anticipo di cassa per esercenti consiste nell’acquisto dei tuoi crediti futuri, non in un prestito o in una linea di credito. Non è soggetto alla regolamentazione della Financial Conduct Authority e non offre le tutele previste dal Financial Services and Markets Act 2000 o dal Consumer Credit Act 1974.",
+    "capital.offer.cashAdvance.regulatoryNotice.GB": "Questo anticipo di cassa per esercenti consiste nell’acquisto dei tuoi crediti futuri, non in un prestito o in una linea di credito. Non è soggetto alla regolamentazione della Financial Conduct Authority e non offre le tutele previste dal Financial Services and Markets Act 2000 o dal Consumer Credit Act 1974.",
     "capital.offer.cashAdvance.termsTitle": "Termini dell’anticipo",
     "capital.offer.errors.accountInactive": "Il tuo conto è inattivo",
     "capital.offer.errors.cannotContinue": "Non siamo riusciti a continuare con l’offerta di Adyen Capital.",

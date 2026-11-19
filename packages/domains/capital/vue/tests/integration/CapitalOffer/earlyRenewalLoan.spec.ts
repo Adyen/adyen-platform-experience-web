@@ -61,43 +61,49 @@ test.describe('Early renewal - Loan', () => {
         const newLoanField = offerSummary.getByText('New loan').first().locator('..');
         const currentLoanBalanceField = offerSummary.getByText('Current loan balance').locator('..');
         const amountToReceiveField = offerSummary.getByText("Amount you'll receive").locator('..');
+        const newLoanDetails = offerSummary.getByText('New loan details');
 
         await Promise.all([
+            expect(offerSummary.getByText('Loan you’ll receive')).toBeVisible(),
             expect(newLoanField).toBeVisible(),
             expect(newLoanField.getByText('€18,600')).toBeVisible(),
             expect(currentLoanBalanceField).toBeVisible(),
             expect(currentLoanBalanceField.getByText('€8,130')).toBeVisible(),
             expect(amountToReceiveField).toBeVisible(),
             expect(amountToReceiveField.getByText('€10,470')).toBeVisible(),
+            expect(newLoanDetails).toBeVisible(),
+            expect(newLoanDetails.locator('..').getByText('New loan', { exact: true })).toBeVisible(),
+            expect(offerSummary.getByText('€18,600', { exact: true })).toHaveCount(2),
+            expect(offerSummary.getByText('Fees', { exact: true })).toHaveCount(2),
+            expect(offerSummary.getByText('€2,046.00')).toBeVisible(),
+            expect(offerSummary.getByText('Total repayment amount')).toHaveCount(2),
+            expect(offerSummary.getByText('€20,646.00')).toBeVisible(),
+            expect(offerSummary.getByText('Compare your loans')).toBeVisible(),
+            expect(offerSummary.getByRole('tab', { name: 'New loan' })).toBeVisible(),
+            expect(offerSummary.getByRole('tab', { name: 'Current loan' })).toBeVisible(),
+            expect(offerSummary.getByText('Financing', { exact: true })).toBeVisible(),
+            expect(offerSummary.getByText('€18,600.00')).toBeVisible(),
+            expect(offerSummary.getByText('Daily repayment')).toBeVisible(),
+            expect(offerSummary.getByText('11% of daily sales')).toBeVisible(),
+            expect(offerSummary.getByText('30-day repayment minimum')).toBeVisible(),
+            expect(offerSummary.getByText('€3,441.00')).toBeVisible(),
+            expect(offerSummary.getByText('Expected repayment period')).toBeVisible(),
+            expect(offerSummary.getByText('6 months')).toBeVisible(),
+            expect(offerSummary.getByText('Maximum repayment date')).toBeVisible(),
+            expect(offerSummary.getByText('Sep 28, 2025')).toBeVisible(),
+            expect(offerSummary.getByText('Account', { exact: true })).toBeVisible(),
+            expect(offerSummary.getByText('Primary account')).toBeVisible(),
+            expect(
+                offerSummary.getByText(
+                    'The terms of service of a new loan are separate from those of your existing loan, including, but not limited to, the repayment schedule, fees, and other material provisions. Carefully review all documentation associated with this new loan before accepting it.'
+                )
+            ).toBeVisible(),
+            expect(
+                offerSummary.getByText(
+                    'You may choose to retain your existing loan under its current terms. If you accept the new loan, a portion of the new amount will be applied to payoff your current loan. Your existing loan will be Repaid in accordance with its terms.'
+                )
+            ).toBeVisible(),
         ]);
-        await expect(offerSummary.getByRole('tab', { name: 'New loan' })).toBeVisible();
-        await expect(offerSummary.getByRole('tab', { name: 'Current loan' })).toBeVisible();
-        await expect(offerSummary.getByText('Financing', { exact: true })).toHaveCount(2);
-        await expect(offerSummary.getByText('€18,600.00')).toBeVisible();
-        await expect(offerSummary.getByText('Fees', { exact: true })).toHaveCount(2);
-        await expect(offerSummary.getByText('€2,046.00')).toBeVisible();
-        await expect(offerSummary.getByText('Total repayment amount')).toHaveCount(2);
-        await expect(offerSummary.getByText('€20,646.00')).toBeVisible();
-        await expect(offerSummary.getByText('Daily repayment')).toBeVisible();
-        await expect(offerSummary.getByText('11% of daily sales')).toBeVisible();
-        await expect(offerSummary.getByText('30-day repayment minimum')).toBeVisible();
-        await expect(offerSummary.getByText('€3,441.00')).toBeVisible();
-        await expect(offerSummary.getByText('Expected repayment period')).toBeVisible();
-        await expect(offerSummary.getByText('6 months')).toBeVisible();
-        await expect(offerSummary.getByText('Maximum repayment date')).toBeVisible();
-        await expect(offerSummary.getByText('Sep 28, 2025')).toBeVisible();
-        await expect(offerSummary.getByText('Account', { exact: true })).toBeVisible();
-        await expect(offerSummary.getByText('Primary account')).toBeVisible();
-        await expect(
-            offerSummary.getByText(
-                'The terms of service of a new loan are separate from those of your existing loan, including, but not limited to, the repayment schedule, fees, and other material provisions. Carefully review all documentation associated with this new loan before accepting it.'
-            )
-        ).toBeVisible();
-        await expect(
-            offerSummary.getByText(
-                'You may choose to retain your existing loan under its current terms. If you accept the new loan, a portion of the new amount will be applied to payoff your current loan. Your existing loan will be Repaid in accordance with its terms.'
-            )
-        ).toBeVisible();
     });
 
     test('should switch to new loan tab when the latter is clicked', async ({ page, analyticsEvents }) => {
@@ -110,7 +116,7 @@ test.describe('Early renewal - Loan', () => {
             ['Moved tabs', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, selectedTab: 'Current loan' }],
             ['Moved tabs', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, selectedTab: 'New loan' }],
         ]);
-        await expect(offerSummary.getByText('Financing', { exact: true })).toHaveCount(2);
+        await expect(offerSummary.getByText('Financing', { exact: true })).toHaveCount(1);
         await expect(offerSummary.getByText('€18,600.00')).toBeVisible();
     });
 
@@ -122,7 +128,7 @@ test.describe('Early renewal - Loan', () => {
         await expectAnalyticsEvents(analyticsEvents, [
             ['Moved tabs', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, selectedTab: 'Current loan' }],
         ]);
-        await expect(offerSummary.getByText('Financing', { exact: true })).toHaveCount(2);
+        await expect(offerSummary.getByText('Financing', { exact: true })).toHaveCount(1);
         await expect(offerSummary.getByText('€20,000.00')).toBeVisible();
         await expect(offerSummary.getByText('Fees', { exact: true })).toHaveCount(2);
         await expect(offerSummary.getByText('€220.00')).toBeVisible();

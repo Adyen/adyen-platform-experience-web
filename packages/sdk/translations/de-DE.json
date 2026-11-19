@@ -65,7 +65,7 @@
     "capital.offer.amountToReceive": "Betrag, den Sie erhalten",
     "capital.offer.cashAdvance.currentRemainingGrantAmount": "Verbleibender Erfüllungsbetrag",
     "capital.offer.cashAdvance.newGrantAmount": "Neuer Vorschuss",
-    "capital.offer.cashAdvance.regulatoryNotice": "Bei diesem Händler-Barvorschuss handelt es sich um einen Ankauf Ihrer künftigen Forderungen, nicht um ein Darlehen oder eine Kreditfazilität. Er unterliegt nicht der Aufsicht der Financial Conduct Authority und bietet keinen Schutz im Sinne des Financial Services and Markets Act 2000 oder des Consumer Credit Act 1974.",
+    "capital.offer.cashAdvance.regulatoryNotice.GB": "Bei diesem Händler-Barvorschuss handelt es sich um einen Ankauf Ihrer künftigen Forderungen, nicht um ein Darlehen oder eine Kreditfazilität. Er unterliegt nicht der Aufsicht der Financial Conduct Authority und bietet keinen Schutz im Sinne des Financial Services and Markets Act 2000 oder des Consumer Credit Act 1974.",
     "capital.offer.cashAdvance.termsTitle": "Vorschussbedingungen",
     "capital.offer.errors.accountInactive": "Ihr Konto ist inaktiv",
     "capital.offer.errors.cannotContinue": "Wir konnten das Angebot von Adyen Capital nicht fortsetzen.",

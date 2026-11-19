@@ -83,7 +83,7 @@ export interface components {
             currency: string;
         };
         DynamicOffersResponseDTO: {
-            contractType?: components['schemas']['GrantOfferContractType'];
+            contractType: components['schemas']['GrantOfferContractType'];
             maxAmount: components['schemas']['Amount'];
             minAmount: components['schemas']['Amount'];
             /** Format: int32 */
@@ -94,7 +94,7 @@ export interface components {
         GrantOfferResponseDTO: {
             /** Format: int32 */
             aprBasisPoints?: number;
-            contractType?: components['schemas']['GrantOfferContractType'];
+            contractType: components['schemas']['GrantOfferContractType'];
             /** Format: int32 */
             expectedRepaymentPeriodDays: number;
             feesAmount: components['schemas']['Amount'];

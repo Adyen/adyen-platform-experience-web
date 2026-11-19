@@ -65,7 +65,7 @@
     "capital.offer.amountToReceive": "Belopp du kommer att få",
     "capital.offer.cashAdvance.currentRemainingGrantAmount": "Återstående återbetalningsbelopp för nuvarande förskott",
     "capital.offer.cashAdvance.newGrantAmount": "Nytt förskott",
-    "capital.offer.cashAdvance.regulatoryNotice": "Detta kontantförskott för kunder är ett köp av dina framtida fordringar, inte ett lån eller en kredit. Det regleras inte av Financial Conduct Authority och omfattas inte av skyddet enligt Financial Services and Markets Act 2000 eller Consumer Credit Act 1974.",
+    "capital.offer.cashAdvance.regulatoryNotice.GB": "Detta kontantförskott för kunder är ett köp av dina framtida fordringar, inte ett lån eller en kredit. Det regleras inte av Financial Conduct Authority och omfattas inte av skyddet enligt Financial Services and Markets Act 2000 eller Consumer Credit Act 1974.",
     "capital.offer.cashAdvance.termsTitle": "Villkor för förskott",
     "capital.offer.errors.accountInactive": "Ditt konto är inaktivt",
     "capital.offer.errors.cannotContinue": "Det gick inte att gå vidare med Adyen Capital-erbjudandet.",

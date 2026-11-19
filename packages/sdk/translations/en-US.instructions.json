@@ -65,7 +65,7 @@
     "capital.offer.amountToReceive": "Label for the net amount the user will receive after applying the existing loan deduction to the new loan",
     "capital.offer.cashAdvance.currentRemainingGrantAmount": "Label for the remaining amount to fulfill on the current advance, shown during renewal offer selection.",
     "capital.offer.cashAdvance.newGrantAmount": "Label for the total amount of the new advance being requested during renewal.",
-    "capital.offer.cashAdvance.regulatoryNotice": "Regulatory notice explaining that a merchant cash advance is a purchase of future receivables and not a regulated loan or credit facility. Legal text: keep the meaning exactly.",
+    "capital.offer.cashAdvance.regulatoryNotice.GB": "Regulatory notice explaining that a merchant cash advance is a purchase of future receivables and not a regulated loan or credit facility. Legal text: keep the meaning exactly.",
     "capital.offer.cashAdvance.termsTitle": "Title of a section displaying the terms of a cash advance.",
     "capital.offer.errors.accountInactive": "Label indicating that an account holder is inactive",
     "capital.offer.errors.cannotContinue": "Error message shown when the offer cannot be continued.",

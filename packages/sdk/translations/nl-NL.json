@@ -65,7 +65,7 @@
     "capital.offer.amountToReceive": "Bedrag dat je ontvangt",
     "capital.offer.cashAdvance.currentRemainingGrantAmount": "Resterende aflossing",
     "capital.offer.cashAdvance.newGrantAmount": "Nieuw voorschot",
-    "capital.offer.cashAdvance.regulatoryNotice": "Dit voorschot op toekomstige omzet betreft een aankoop van je toekomstige vorderingen, en is geen lening of kredietfaciliteit. Het wordt niet gereguleerd door de Financial Conduct Authority en biedt niet de bescherming van de Financial Services and Markets Act 2000 of de Consumer Credit Act 1974.",
+    "capital.offer.cashAdvance.regulatoryNotice.GB": "Dit voorschot op toekomstige omzet betreft een aankoop van je toekomstige vorderingen, en is geen lening of kredietfaciliteit. Het wordt niet gereguleerd door de Financial Conduct Authority en biedt niet de bescherming van de Financial Services and Markets Act 2000 of de Consumer Credit Act 1974.",
     "capital.offer.cashAdvance.termsTitle": "Voorwaarden van het voorschot",
     "capital.offer.errors.accountInactive": "Je account is inactief",
     "capital.offer.errors.cannotContinue": "We konden niet doorgaan met het aanbod van Adyen Capital.",

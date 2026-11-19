@@ -65,7 +65,7 @@
     "capital.offer.amountToReceive": "Montant que vous recevrez",
     "capital.offer.cashAdvance.currentRemainingGrantAmount": "Montant restant à rembourser sur l’avance en cours",
     "capital.offer.cashAdvance.newGrantAmount": "Nouvelle avance",
-    "capital.offer.cashAdvance.regulatoryNotice": "Cette avance de trésorerie pour marchands est un achat de vos créances futures, et non un prêt ou une facilité de crédit. Elle n’est pas réglementée par la Financial Conduct Authority et ne bénéficie pas des protections prévues par le Financial Services and Markets Act 2000 ni par le Consumer Credit Act 1974.",
+    "capital.offer.cashAdvance.regulatoryNotice.GB": "Cette avance de trésorerie pour marchands est un achat de vos créances futures, et non un prêt ou une facilité de crédit. Elle n’est pas réglementée par la Financial Conduct Authority et ne bénéficie pas des protections prévues par le Financial Services and Markets Act 2000 ni par le Consumer Credit Act 1974.",
     "capital.offer.cashAdvance.termsTitle": "Conditions de l’avance",
     "capital.offer.errors.accountInactive": "Votre compte est inactif",
     "capital.offer.errors.cannotContinue": "Nous n’avons pas pu continuer avec l’offre Adyen Capital.",
