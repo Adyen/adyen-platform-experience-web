@@ -5,6 +5,7 @@ import {
     ACTIVE_LOAN,
     CAPITAL_STATE_ACTIVE,
     CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN,
+    CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE,
     CAPITAL_STATE_ELIGIBLE_LOAN,
     CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN,
     CAPITAL_STATE_GRANTS_LOAN,
@@ -51,6 +52,17 @@ describe('getEnhancedCapitalState', () => {
         expect(getEnhancedCapitalState(state, localSupportedRegions)).toMatchObject({
             dynamicOfferConfig: undefined,
             renewableGrants: [],
+        });
+    });
+
+    test('returns a cash advance offer only in cash advance regions', () => {
+        expect(getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE, localSupportedRegions)).toMatchObject({
+            dynamicOfferConfig: CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE.dynamicOffer,
+        });
+
+        const usState = { ...CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE, legalEntity: { region: 'US' } };
+        expect(getEnhancedCapitalState(usState, localSupportedRegions)).toMatchObject({
+            dynamicOfferConfig: undefined,
         });
     });
 

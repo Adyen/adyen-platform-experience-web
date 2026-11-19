@@ -1,5 +1,5 @@
 import type { IGrant } from '@integration-components/types';
-import { isSupportedContractType, type EnhancedCapitalState } from '../../shared';
+import { getIsContractTypeSupported, type EnhancedCapitalState } from '../../shared';
 
 type GroupedGrants = Record<'ongoing' | 'closed', IGrant[]>;
 
@@ -10,7 +10,7 @@ export const getAdjustedGrants = (
 ): IGrant[] | undefined => {
     const adjustedGrants = requestedGrant && !grants?.some(grant => grant.id === requestedGrant.id) ? [requestedGrant, ...(grants ?? [])] : grants;
     return adjustedGrants?.filter(
-        grant => isSupportedContractType(grant.contractType) && !(grant.status === 'Active' && state?.renewsGrantIds.has(grant.id))
+        grant => getIsContractTypeSupported(grant.contractType, state?.region) && !(grant.status === 'Active' && state?.renewsGrantIds.has(grant.id))
     );
 };
 

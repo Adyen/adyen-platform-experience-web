@@ -2,10 +2,12 @@ import { describe, expect, test } from 'vitest';
 import type { IGrant } from '@integration-components/types';
 import {
     ACTIVE_LOAN,
+    CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE,
     CAPITAL_STATE_ELIGIBLE_LOAN,
     CAPITAL_STATE_GRANTS_LOAN,
     PENDING_LOAN,
     RENEWING_ACTIVE_LOAN,
+    REPAID_CASH_ADVANCE,
     REPAID_LOAN,
 } from '../../../../mocks/mock-data';
 import { getAdjustedGrants, getGroupedGrants, getHasGrantGroups } from './grants';
@@ -49,6 +51,19 @@ describe('getAdjustedGrants', () => {
         const requestedGrant = { ...PENDING_LOAN, contractType: undefined } as unknown as IGrant;
 
         expect(getAdjustedGrants(state, [REPAID_LOAN], requestedGrant)).toEqual([REPAID_LOAN]);
+    });
+
+    test('removes cash advance grants outside cash advance regions', () => {
+        const gbState = getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE, localSupportedRegions);
+        const euState = getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_LOAN, localSupportedRegions);
+
+        expect(getAdjustedGrants(gbState, [REPAID_CASH_ADVANCE], undefined)).toEqual([REPAID_CASH_ADVANCE]);
+        expect(getAdjustedGrants(euState, [PENDING_LOAN, REPAID_CASH_ADVANCE], undefined)).toEqual([PENDING_LOAN]);
+    });
+
+    test('does not prepend a requested cash advance grant outside cash advance regions', () => {
+        const euState = getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_LOAN, localSupportedRegions);
+        expect(getAdjustedGrants(euState, [REPAID_LOAN], REPAID_CASH_ADVANCE)).toEqual([REPAID_LOAN]);
     });
 });
 
