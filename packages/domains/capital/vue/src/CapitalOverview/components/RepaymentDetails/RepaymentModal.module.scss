@@ -3,27 +3,25 @@
 .root {
     display: flex;
     flex-direction: column;
-    gap: style.token(spacer-090);
+    gap: style.token(spacer-070);
 }
 
-.notice {
+.titledContainer {
     display: flex;
     flex-direction: column;
-    gap: style.token(spacer-060);
-    padding-bottom: style.token(spacer-070);
+    gap: style.token(spacer-030);
 }
 
 .transferInstrumentList {
-    padding-left: style.token(spacer-060);
+    padding-left: 0;
 }
 
 .transferInstrumentListItem {
     list-style: none;
-    padding: style.token(spacer-030) 0;
 }
 
 .instructionList {
-    padding-left: style.token(spacer-090);
+    padding-left: style.token(spacer-080);
 }
 
 .instructionListItem {
