@@ -3,6 +3,7 @@
   "tag": "beta",
   "changesets": [
     "bright-vue-future",
-    "calm-alpha-refresh"
+    "calm-alpha-refresh",
+    "quiet-skills-cli"
   ]
 }
