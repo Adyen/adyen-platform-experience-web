@@ -182,10 +182,8 @@
     "capital.overview.repayment.loan.repaymentIntro": "Quite seu empréstimo antecipadamente transferindo dinheiro para esta conta bancária. Os pagamentos devem ser feitos a partir de uma das suas contas bancárias verificadas.",
     "capital.overview.repayment.steps.addBeneficiary": "Adicione %{beneficiaryName} como beneficiário pelo site ou aplicativo do seu banco.",
     "capital.overview.repayment.steps.cashAdvance.title": "Como fazer uma quitação manual",
-    "capital.overview.repayment.steps.cashAdvance.transfer": "Transfira exatamente %{amount} para a conta bancária informada abaixo.",
     "capital.overview.repayment.steps.loan.title": "Como enviar um pagamento manual",
-    "capital.overview.repayment.steps.loan.transfer": "Informe seu método de pagamento.",
-    "capital.overview.repayment.steps.wait": "Aguarde de 1 a 3 dias úteis para que o pagamento seja aplicado.",
+    "capital.overview.repayment.steps.loan.wait": "Aguarde de 1 a 3 dias úteis para que o pagamento seja aplicado.",
     "capital.overview.repayment.title": "Transferência bancária manual",
     "capital.overview.repayment.transferInstrumentsTitle": "Suas contas bancárias verificadas"
 }

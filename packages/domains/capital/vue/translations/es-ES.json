@@ -182,10 +182,8 @@
     "capital.overview.repayment.loan.repaymentIntro": "Reembolsa tu préstamo anticipadamente transfiriendo dinero a esta cuenta bancaria. Los pagos deben realizarse desde una de tus cuentas bancarias verificadas.",
     "capital.overview.repayment.steps.addBeneficiary": "Añade a %{beneficiaryName} como beneficiario desde el sitio web o la aplicación de tu banco.",
     "capital.overview.repayment.steps.cashAdvance.title": "Cómo realizar una liquidación manual",
-    "capital.overview.repayment.steps.cashAdvance.transfer": "Transfiere exactamente %{amount} a la cuenta bancaria indicada a continuación.",
     "capital.overview.repayment.steps.loan.title": "Cómo enviar un reembolso manual",
-    "capital.overview.repayment.steps.loan.transfer": "Envía tu pago.",
-    "capital.overview.repayment.steps.wait": "Espera de uno a tres días laborables a que el pago se aplique.",
+    "capital.overview.repayment.steps.loan.wait": "Espera de uno a tres días laborables a que el pago se aplique.",
     "capital.overview.repayment.title": "Transferencia bancaria manual",
     "capital.overview.repayment.transferInstrumentsTitle": "Tus cuentas bancarias verificadas"
 }
