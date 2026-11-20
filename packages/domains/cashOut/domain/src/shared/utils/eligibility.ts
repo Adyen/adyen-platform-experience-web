@@ -18,8 +18,11 @@ const UNAVAILABLE_REASON_MESSAGES = {
 
 type UnavailableReasonMessageKey = NonNullable<(typeof UNAVAILABLE_REASON_MESSAGES)[ICashOutUnavailableReason]>;
 
-// Messages that ask the user to contact support, so the contact support action is offered with them.
-const SUPPORT_REASON_MESSAGES = new Set<UnavailableReasonMessageKey>([NOT_ALLOWED]);
+// Messages that ask the user to contact support, so the contact support action is offered with them. Next to that action, they
+// are shown without asking it again.
+const SUPPORT_REASON_MESSAGES = {
+    [NOT_ALLOWED]: 'cashOut.common.unavailableReasons.notAllowedWithContactSupport',
+} as const satisfies Partial<Record<UnavailableReasonMessageKey, TranslationKey>>;
 
 // A cashOut in progress and the daily limit pass with time, so they inform; the others need the user or support to act, so they warn.
 const INFORMING_REASON_MESSAGES = new Set<UnavailableReasonMessageKey>([
@@ -29,6 +32,8 @@ const INFORMING_REASON_MESSAGES = new Set<UnavailableReasonMessageKey>([
 
 export type CashOutUnavailableReasonMessage = {
     key: UnavailableReasonMessageKey;
+    /** The message to show instead when the contact support action is offered with it. */
+    keyWithContactSupport?: TranslationKey;
     offersContactSupport: boolean;
     /** The alert type the message is shown in. */
     type: 'highlight' | 'warning';
@@ -41,7 +46,10 @@ export const getUnavailableReasonMessage = (eligibility: ICashOutEligibility): C
     if (reason === 'zeroBalance') return undefined;
     // The general message covers a missing reason, and one added to the API that the component doesn't know yet.
     const key = (reason && UNAVAILABLE_REASON_MESSAGES[reason]) || NOT_ALLOWED;
-    return { key, offersContactSupport: SUPPORT_REASON_MESSAGES.has(key), type: INFORMING_REASON_MESSAGES.has(key) ? 'highlight' : 'warning' };
+    const keyWithContactSupport: TranslationKey | undefined =
+        key in SUPPORT_REASON_MESSAGES ? SUPPORT_REASON_MESSAGES[key as keyof typeof SUPPORT_REASON_MESSAGES] : undefined;
+    const type = INFORMING_REASON_MESSAGES.has(key) ? 'highlight' : 'warning';
+    return keyWithContactSupport ? { key, keyWithContactSupport, offersContactSupport: true, type } : { key, offersContactSupport: false, type };
 };
 
 // The API reports a cashOut without an account to receive it as unavailable; should it not, the components still don't offer it.

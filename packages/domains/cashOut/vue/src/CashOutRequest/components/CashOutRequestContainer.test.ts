@@ -66,8 +66,17 @@ describe('CashOutRequestContainer', () => {
         unmount();
     });
 
-    test('should not offer contact support, even when an integration passes onContactSupport', () => {
-        const { unmount } = renderContainer({ onContactSupport: vi.fn() });
+    test('should offer contact support when the integration passes onContactSupport', () => {
+        const onContactSupport = vi.fn();
+        const { unmount } = renderContainer({ onContactSupport });
+
+        expect(requestProps.current?.onContactSupport).toBe(onContactSupport);
+
+        unmount();
+    });
+
+    test('should not offer contact support without onContactSupport', () => {
+        const { unmount } = renderContainer({});
 
         expect(requestProps.current?.onContactSupport).toBeUndefined();
 

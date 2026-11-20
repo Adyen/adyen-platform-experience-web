@@ -14,6 +14,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 import type { ICashOutEligibility } from '@integration-components/types';
 import type { CashOutResult } from '../../types';
 import { useCashOutFees } from '../../composables/useCashOutFees';
+import { useArrivalTime } from '../../../shared/composables/useArrivalTime';
 import { useFormatAmount } from '../../../shared/composables/useFormatAmount';
 import { useCashOutTooltips } from '../../../shared/composables/useCashOutTooltips';
 import { useInstructCashOut } from '../../composables/useInstructCashOut';
@@ -47,6 +48,7 @@ const formatAmount = useFormatAmount();
 
 const isCashOutAvailable = computed(() => props.eligibility.isCashoutAvailable);
 const availableForCashOut = computed(() => props.eligibility.availableForCashOutBalance);
+const arrivalTime = useArrivalTime(() => availableForCashOut.value.currency);
 
 // What is available stays in the field when the cashOut is unavailable, disabled, but it isn't an amount to request fees for or cash out.
 const amountValue = ref<number | undefined>(availableForCashOut.value.value);
@@ -197,8 +199,9 @@ const actions = computed<BentoButtonActionsList>(() => [
                     <BentoLoadingSkeletonTypography :class="styles.loadingSummary" :lines="1" :last-line-width="100" text-style="body-wide" />
                 </BentoLoadingSkeleton>
             </template>
-            <!-- TODO: the arrival time differs per currency; take this text from the CDN values per currency once they are available. -->
-            <template #description>{{ i18n.get('cashOut.request.summary.description') }}</template>
+            <template #description>
+                {{ i18n.get('cashOut.request.summary.description', { values: { arrivalTime } }) }}
+            </template>
         </BentoAlert>
         <BentoButtonActions :class="styles.actions" :actions="actions" />
     </div>

@@ -2,8 +2,8 @@ import type { UIElementProps } from '@integration-components/core/vue';
 import type { CashOutRequestProps } from '@integration-components/cashOut/domain';
 import type { ICashOutEligibility, ICashOutResponse } from '@integration-components/types';
 
-// The standalone component doesn't offer contact support. Errors go to the onError set on Core.
-export type CashOutRequestExternalProps = Omit<UIElementProps, 'onContactSupport'> & CashOutRequestProps;
+// Errors go to the onError set on Core.
+export type CashOutRequestExternalProps = UIElementProps & CashOutRequestProps;
 
 /** How instructing the cashOut ended: the cashOut itself, or an error. */
 export type CashOutResult = { status: 'success'; cashOut: ICashOutResponse } | { status: 'error' };
@@ -20,6 +20,4 @@ export type CashOutRequestComponentProps = Omit<CashOutRequestExternalProps, 'co
     onResultShown?: () => void;
     /** Called when the cashOut starts and stops being sent, so a modal can't be closed meanwhile. */
     onInstructingChange?: (isInstructing: boolean) => void;
-    /** Passed on by the CashOut Overview when it opens this component in its modal. */
-    onContactSupport?: () => void;
 };

@@ -168,7 +168,9 @@ describe('CashOutOverview', () => {
     });
 
     describe('Unavailable reason contact support', () => {
-        const findReachOutButton = (target: HTMLElement) => [...target.querySelectorAll('div')].find(element => element.textContent === REACH_OUT);
+        // The innermost element with the label is the button, the others wrap it
+        const findReachOutButton = (target: HTMLElement) =>
+            [...target.querySelectorAll('div')].filter(element => element.textContent === REACH_OUT).at(-1);
 
         test('should call onContactSupport when the reach out button is clicked for a reason support can resolve', () => {
             const onContactSupport = vi.fn();
