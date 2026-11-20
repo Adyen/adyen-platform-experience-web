@@ -44,11 +44,11 @@ function formatTimestamp(date: string): string {
             }"
             :data-list="[
                 {
-                    label: i18n.get('transactions.details.timeline.fields.amount'),
+                    label: i18n.get('transactions.details.timeline.amount'),
                     value: formatAmount(event.amount.value, event.amount.currency),
                 },
                 {
-                    label: i18n.get('transactions.details.timeline.fields.status'),
+                    label: i18n.get('transactions.details.timeline.status'),
                     value: getTransactionTimelineTxStatus(i18n, event.status) as string,
                 },
             ]"

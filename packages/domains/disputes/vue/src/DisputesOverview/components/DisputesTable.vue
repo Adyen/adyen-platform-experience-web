@@ -1,20 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import {
-    BentoCurrency,
-    BentoDataGrid,
-    BentoEmptyState,
-    BentoList,
-    BentoListItem,
-    BentoLoadingIndicator,
-    BentoPagination,
-    BentoTag,
-    BentoTooltipDirective as vBentoTooltip,
-    BentoTypography,
-} from '@adyen/bento-vue3';
+import { BentoDataGrid, BentoTag, BentoTooltipDirective as vBentoTooltip, BentoTypography } from '@adyen/bento-vue3';
 import WarningFilledIcon from '@adyen/ui-assets-icons-16/vue/warning-filled';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import type { BentoCurrencyISOCode, BentoDatagridDataItem } from '@adyen/bento-vue3';
+import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import {
     useCustomColumnsData,
@@ -23,13 +12,18 @@ import {
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
+    DataOverviewLoading,
     useTableColumns,
-    useShouldHideIllustrations,
     useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
-import { getDisputeDeadlineTimeRemaining, getDisputeReason, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
+import {
+    getDisputeDeadlineTimeRemaining,
+    getDisputeReason,
+    isDisputeActionNeededUrgently,
+    getDisputesErrorConfig,
+} from '@integration-components/disputes/domain';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE, mergeRecords } from '@integration-components/utils';
 import type { CustomColumn, CustomDataRetrieved, IBalanceAccountBase, OnDataRetrievedCallback } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
@@ -47,6 +41,7 @@ const props = defineProps<{
     activeBalanceAccount?: IBalanceAccountBase;
     showPagination: boolean;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     onRowClick?: (dispute: IDisputeListItem) => void;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<DisputesTableFields>>[];
     onDataRetrieve?: OnDataRetrievedCallback<IDisputeListItem[], CustomDataRetrieved[]>;
@@ -61,7 +56,6 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const hideIllustrations = useShouldHideIllustrations();
 const isCondensed = useCondensedDataGrid();
 const config = useConfigContext();
 
@@ -69,7 +63,11 @@ const { dateFormat } = useTimezoneAwareDateFormatting(() => props.activeBalanceA
 const isMobile = useResponsiveContainer(containerQueries.down.xs);
 const hasMultipleCurrencies = ref(true);
 
-const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
+const {
+    columns: desktopColumns,
+    customFieldKeys,
+    hasCustomColumn,
+} = useTableColumns({
     fields: DISPUTES_TABLE_FIELDS,
     customColumns: () => props.customColumns,
     fieldsKeys: FIELD_KEYS,
@@ -89,9 +87,23 @@ const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
             totalPaymentAmount: { visible: statusGroup === 'FRAUD_ALERTS', flex: 1, numeric: true },
         };
     },
-    resolveStandardColumnLabel: (field, defaultLabel) =>
-        field === 'disputeReason' ? i18n.get('disputes.overview.common.fields.disputeReasonLabel') : defaultLabel,
     resolveCustomColumnLabel: key => (i18n.has(key) ? i18n.get(key) : key),
+});
+
+const columns = computed<BentoColumn[]>(() => {
+    if (!isMobile.value) return desktopColumns.value;
+
+    const amountField = props.statusGroup === 'FRAUD_ALERTS' ? 'totalPaymentAmount' : 'disputedAmount';
+
+    return [
+        {
+            field: 'dateAndPaymentMethod',
+            label: i18n.get(props.statusGroup === 'CHARGEBACKS' ? FIELD_KEYS.respondBy : FIELD_KEYS.createdAt),
+            flex: 2,
+            minWidth: customColumnWidths.value.dateAndPaymentMethod,
+        },
+        { field: amountField, label: i18n.get(FIELD_KEYS[amountField]), flex: 1, minWidth: customColumnWidths.value[amountField], numeric: true },
+    ];
 });
 
 const { customRecords, loadingCustomRecords } = useCustomColumnsData<IDisputeListItem>({
@@ -119,7 +131,6 @@ watch(
 );
 
 const isLoading = computed(() => props.loading || config.refreshing || loadingCustomRecords.value);
-const showMobilePagination = computed(() => props.showPagination && (props.hasNext || props.hasPrevious));
 
 const gridData = computed<BentoDatagridDataItem[]>(() => {
     const source = customRecords.value as Array<IDisputeListItem & Record<string, any>>;
@@ -158,10 +169,8 @@ const paginationProps = computed(() => {
 });
 
 const emptyStateProps = computed(() => ({
-    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
-    variant: 'embedded' as const,
-    title: i18n.get(EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].title),
-    description: i18n.get(EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].message),
+    title: EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].title,
+    messages: [EMPTY_TABLE_MESSAGE_KEYS[props.statusGroup].message],
 }));
 
 function getDispute(item: BentoDatagridDataItem): IDisputeListItem {
@@ -172,8 +181,8 @@ function formatAmount(dispute: IDisputeListItem): string {
     return i18n.amount(dispute.amount.value, dispute.amount.currency, { hideCurrency: false });
 }
 
-function getMobileDate(dispute: IDisputeListItem): string {
-    return props.statusGroup === 'CHARGEBACKS' && dispute.dueDate ? dispute.dueDate : dispute.createdAt;
+function getMobileDate(dispute: IDisputeListItem): string | undefined {
+    return props.statusGroup === 'CHARGEBACKS' ? dispute.dueDate : dispute.createdAt;
 }
 
 function isMobileDateUrgent(dispute: IDisputeListItem): boolean {
@@ -190,8 +199,8 @@ function getTimeToDeadline(dueDate: string): string {
     if (timeRemaining.expired) return formattedDate;
 
     return timeRemaining.days <= 1
-        ? i18n.get('disputes.overview.common.actionNeeded.respondToday', { values: { date: formattedDate } })
-        : i18n.get('disputes.overview.common.actionNeeded.respondDays', { values: { days: timeRemaining.days, date: formattedDate } });
+        ? i18n.get('disputes.overview.actionNeeded.respondToday', { values: { date: formattedDate } })
+        : i18n.get('disputes.overview.actionNeeded.respondDays', { values: { days: timeRemaining.days, date: formattedDate } });
 }
 
 function handleNavigate(page: number) {
@@ -211,78 +220,24 @@ function handleRowClick(item: BentoDatagridDataItem) {
     props.onRowClick?.(getDispute(item));
 }
 
-function handleListItemClick(dispute: IDisputeListItem) {
-    props.onRowClick?.(dispute);
-}
+const errorInfo = computed(() =>
+    getDisputesErrorConfig(props.error, { errorMessage: 'disputes.overview.errors.listUnavailable', onContactSupport: props.onContactSupport })
+);
 </script>
 
 <template>
     <div ref="tableRef" :class="styles.root">
         <DataOverviewError
             v-if="props.error"
-            :error="props.error"
-            :error-message="'disputes.overview.common.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
+            :error-info="errorInfo"
+            :on-refresh="props.onRefresh"
             :variant="isMobile ? 'condensed' : 'embedded'"
             :refresh-icon="RefreshIcon"
+            type="error"
         />
 
-        <template v-else-if="isMobile">
-            <div v-if="isLoading" :class="styles.loading" aria-busy="true">
-                <BentoLoadingIndicator />
-            </div>
-
-            <BentoEmptyState
-                v-else-if="!customRecords.length"
-                variant="condensed"
-                :image="emptyStateProps.image"
-                :title="emptyStateProps.title"
-                :description="emptyStateProps.description"
-            />
-
-            <template v-else>
-                <BentoList>
-                    <BentoListItem
-                        v-for="dispute in customRecords"
-                        :key="dispute.disputePspReference"
-                        with-chevron
-                        show-bottom-divider
-                        @click="handleListItemClick(dispute)"
-                    >
-                        <template #content>
-                            <div :class="styles.mobileRow">
-                                <div :class="styles.mobileDetails">
-                                    <div :class="[styles.mobileDate, isMobileDateUrgent(dispute) ? styles.mobileDateUrgent : '']">
-                                        <time :datetime="getMobileDate(dispute)">
-                                            {{ dateFormat(getMobileDate(dispute), DATE_FORMAT_DISPUTES) }}
-                                        </time>
-                                        <WarningFilledIcon v-if="isMobileDateUrgent(dispute)" />
-                                    </div>
-                                    <DisputePaymentMethod :payment-method="dispute.paymentMethod" />
-                                </div>
-                                <BentoTypography :class="styles.mobileAmount" variant="body" stronger>
-                                    <BentoCurrency
-                                        :currency="dispute.amount.currency as BentoCurrencyISOCode"
-                                        :value="dispute.amount.value"
-                                        :disable-typography="true"
-                                    />
-                                </BentoTypography>
-                            </div>
-                        </template>
-                    </BentoListItem>
-                </BentoList>
-
-                <BentoPagination
-                    v-if="showMobilePagination"
-                    hide-first-last-page-buttons
-                    :page="props.currentPage"
-                    :size="props.limit"
-                    :has-next="props.hasNext"
-                    hide-page-size
-                    @navigate="handleNavigate"
-                />
-            </template>
-        </template>
+        <DataOverviewLoading v-else-if="isLoading && !customRecords.length" />
+        <DataOverviewError v-else-if="!customRecords.length" type="no-results-found" :error-info="emptyStateProps" />
 
         <BentoDataGrid
             v-else
@@ -293,12 +248,26 @@ function handleListItemClick(dispute: IDisputeListItem) {
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
-            :empty-state="emptyStateProps"
             :allow-column-drag-and-drop="false"
             @row-click="handleRowClick"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"
         >
+            <template #item-dateAndPaymentMethod="{ item }">
+                <div :class="styles.mobileDetails">
+                    <div
+                        v-if="getMobileDate(getDispute(item))"
+                        :class="[styles.mobileDate, isMobileDateUrgent(getDispute(item)) ? styles.mobileDateUrgent : '']"
+                    >
+                        <time :datetime="getMobileDate(getDispute(item))">
+                            {{ dateFormat(getMobileDate(getDispute(item))!, DATE_FORMAT_DISPUTES) }}
+                        </time>
+                        <WarningFilledIcon v-if="isMobileDateUrgent(getDispute(item))" />
+                    </div>
+                    <DisputePaymentMethod :payment-method="getDispute(item).paymentMethod" />
+                </div>
+            </template>
+
             <template #item-status="{ item }">
                 <div :class="styles.cellContent">
                     <DisputeStatusTag :dispute="getDispute(item)" />

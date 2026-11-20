@@ -1,10 +1,9 @@
-import { createHash } from 'node:crypto';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, matchesGlob, relative, resolve } from 'node:path';
 import { ALLOWED_DECLARATION_EXPORTS, ALLOWED_RUNTIME_EXPORTS } from './allowed-exports.js';
 import ts from 'typescript';
 
-const PACKAGE_JSON_ENTRYPOINT_FIELDS = ['main', 'module', 'types', 'style', 'exports'] as const;
+const PACKAGE_JSON_ENTRYPOINT_FIELDS = ['main', 'module', 'types', 'style', 'exports', 'bin'] as const;
 
 interface PackageJsonFields {
     main: string | null;
@@ -12,6 +11,7 @@ interface PackageJsonFields {
     types: string | null;
     style: string | null;
     exports: Record<string, unknown> | null;
+    bin: string | Record<string, string> | null;
 }
 
 interface MissingEntrypoint {
@@ -23,29 +23,8 @@ export interface Snapshot {
     jsExports: string[];
     cjsExports: string[];
     declarationExports: string[];
-    typeFiles: string[];
-    typeTreeHash: string | null;
     missingPackageEntrypoints: MissingEntrypoint[];
     packageJson: PackageJsonFields;
-}
-
-export function sha256(filePath: string): string {
-    const content = readFileSync(filePath);
-    return createHash('sha256').update(content).digest('hex');
-}
-
-export function walkDir(dir: string, base: string = dir): string[] {
-    const results: string[] = [];
-    if (!existsSync(dir)) return results;
-    for (const entry of readdirSync(dir)) {
-        const full = join(dir, entry);
-        if (statSync(full).isDirectory()) {
-            results.push(...walkDir(full, base));
-        } else {
-            results.push(relative(base, full));
-        }
-    }
-    return results.sort();
 }
 
 // ESM interop marker emitted by bundlers; not part of the public surface.
@@ -217,6 +196,7 @@ export function getPackageJsonFields(root: string): PackageJsonFields {
         types: pkg.types ?? null,
         style: pkg.style ?? null,
         exports: pkg.exports ?? null,
+        bin: pkg.bin ?? null,
     };
 }
 
@@ -245,31 +225,17 @@ export function getMissingPackageEntrypoints(packageJson: PackageJsonFields, roo
     return entrypoints.filter(({ path }) => !existsSync(resolve(root, path)));
 }
 
-function getTypeTreeHash(typesDir: string, typeFiles: string[]): string | null {
-    if (typeFiles.length === 0) {
-        return null;
-    }
-
-    const manifest = typeFiles.map(filePath => `${filePath}:${sha256(resolve(typesDir, filePath))}`);
-
-    return createHash('sha256').update(manifest.join('\n')).digest('hex');
-}
-
 export function buildSnapshot(root: string): Snapshot {
     const dist = resolve(root, 'dist');
-    const typesDir = resolve(dist, 'types');
     const packageJson = getPackageJsonFields(root);
     const esIndex = packageJson.module ? resolve(root, packageJson.module) : resolve(dist, 'es/index.js');
     const cjsIndex = packageJson.main ? resolve(root, packageJson.main) : resolve(dist, 'cjs/index.js');
     const declarationIndex = packageJson.types ? resolve(root, packageJson.types) : resolve(dist, 'types/index.d.ts');
-    const typeFiles = walkDir(typesDir).filter(filePath => filePath.endsWith('.d.ts'));
 
     return {
         jsExports: existsSync(esIndex) ? extractExports(esIndex) : [],
         cjsExports: existsSync(cjsIndex) ? extractCjsExports(cjsIndex) : [],
         declarationExports: existsSync(declarationIndex) ? extractDeclarationExports(declarationIndex) : [],
-        typeFiles,
-        typeTreeHash: getTypeTreeHash(typesDir, typeFiles),
         missingPackageEntrypoints: getMissingPackageEntrypoints(packageJson, root),
         packageJson,
     };
@@ -320,23 +286,6 @@ export function diff(baseline: Snapshot, current: Snapshot): string[] {
     if (addedDeclarationExports.length) diffs.push(`  Declaration exports added: ${addedDeclarationExports.join(', ')}`);
     if (removedDeclarationExports.length) diffs.push(`  Declaration exports removed: ${removedDeclarationExports.join(', ')}`);
 
-    const addedTypes = current.typeFiles.filter(filePath => !baseline.typeFiles.includes(filePath));
-    const removedTypes = baseline.typeFiles.filter(filePath => !current.typeFiles.includes(filePath));
-
-    if (addedTypes.length) {
-        diffs.push(`  Type files added (${addedTypes.length}): ${addedTypes.slice(0, 5).join(', ')}${addedTypes.length > 5 ? '...' : ''}`);
-    }
-
-    if (removedTypes.length) {
-        diffs.push(`  Type files removed (${removedTypes.length}): ${removedTypes.slice(0, 5).join(', ')}${removedTypes.length > 5 ? '...' : ''}`);
-    }
-
-    if (addedTypes.length === 0 && removedTypes.length === 0 && baseline.typeTreeHash !== current.typeTreeHash) {
-        diffs.push(
-            `  Type declarations changed within existing files: ${baseline.typeTreeHash?.slice(0, 12)}... -> ${current.typeTreeHash?.slice(0, 12)}...`
-        );
-    }
-
     if (current.missingPackageEntrypoints.length) {
         const missingEntrypoints = current.missingPackageEntrypoints.map(({ field, path }) => `${field} -> ${path}`);
         diffs.push(`  package.json entrypoints missing: ${missingEntrypoints.join(', ')}`);
@@ -350,4 +299,117 @@ export function diff(baseline: Snapshot, current: Snapshot): string[] {
     }
 
     return diffs;
+}
+
+function getImportSpecifiers(sourceFile: ts.SourceFile): string[] {
+    const specifiers: string[] = [];
+
+    const visit = (node: ts.Node) => {
+        const isStaticImport = (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) && node.moduleSpecifier;
+        const isLazyImport = ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword;
+        const specifier = isStaticImport ? (node as ts.ImportDeclaration).moduleSpecifier : isLazyImport ? node.arguments[0] : undefined;
+        if (specifier && ts.isStringLiteralLike(specifier) && specifier.text.startsWith('.')) specifiers.push(specifier.text);
+        ts.forEachChild(node, visit);
+    };
+
+    visit(sourceFile);
+    return specifiers;
+}
+
+/** Every module the package entry can load, following static and lazy relative imports. */
+function collectReachableModules(entry: string): string[] {
+    const reached = new Set<string>();
+    const pending = [entry];
+
+    while (pending.length) {
+        const file = pending.pop()!;
+        if (reached.has(file) || !existsSync(file)) continue;
+
+        reached.add(file);
+        const sourceFile = ts.createSourceFile(file, readFileSync(file, 'utf-8'), ts.ScriptTarget.Latest, false, ts.ScriptKind.JS);
+        getImportSpecifiers(sourceFile).forEach(specifier => pending.push(resolve(dirname(file), specifier)));
+    }
+
+    return [...reached];
+}
+
+function getRootIdentifier(expression: ts.Expression): string | undefined {
+    let current = expression;
+
+    while (ts.isPropertyAccessExpression(current) || ts.isElementAccessExpression(current) || ts.isCallExpression(current)) {
+        current = current.expression;
+    }
+
+    return ts.isIdentifier(current) ? current.text : undefined;
+}
+
+function getImportedNames(sourceFile: ts.SourceFile): Set<string> {
+    const names = new Set<string>();
+
+    for (const statement of sourceFile.statements) {
+        const clause = ts.isImportDeclaration(statement) ? statement.importClause : undefined;
+        if (!clause) continue;
+        if (clause.name) names.add(clause.name.text);
+        if (clause.namedBindings && ts.isNamespaceImport(clause.namedBindings)) names.add(clause.namedBindings.name.text);
+        if (clause.namedBindings && ts.isNamedImports(clause.namedBindings))
+            clause.namedBindings.elements.forEach(({ name }) => names.add(name.text));
+    }
+
+    return names;
+}
+
+function flattenExpressions(expression: ts.Expression): ts.Expression[] {
+    if (ts.isParenthesizedExpression(expression)) return flattenExpressions(expression.expression);
+    if (ts.isBinaryExpression(expression) && expression.operatorToken.kind === ts.SyntaxKind.CommaToken) {
+        return [...flattenExpressions(expression.left), ...flattenExpressions(expression.right)];
+    }
+    return [expression];
+}
+
+/**
+ * A module registers itself on import when its top level changes something it imported
+ * (e.g. `format.hex = parse` or `autodetect.push(...)`). Dropping such a module breaks its importers.
+ */
+export function registersItselfOnImport(code: string): boolean {
+    const sourceFile = ts.createSourceFile('module.js', code, ts.ScriptTarget.Latest, false, ts.ScriptKind.JS);
+    const importedNames = getImportedNames(sourceFile);
+    if (importedNames.size === 0) return false;
+
+    return sourceFile.statements.some(
+        statement =>
+            ts.isExpressionStatement(statement) &&
+            flattenExpressions(statement.expression).some(expression => {
+                const isAssignment = ts.isBinaryExpression(expression) && expression.operatorToken.kind === ts.SyntaxKind.EqualsToken;
+                const target = isAssignment ? expression.left : ts.isCallExpression(expression) ? expression.expression : undefined;
+                const root = target && getRootIdentifier(target);
+                const isMutation = isAssignment || (target && ts.isPropertyAccessExpression(target));
+                return !!root && importedNames.has(root) && !!isMutation;
+            })
+    );
+}
+
+function isCoveredBySideEffects(sideEffects: unknown, file: string): boolean {
+    if (sideEffects === undefined || sideEffects === true) return true;
+    if (!Array.isArray(sideEffects)) return false;
+
+    return sideEffects.some(pattern => {
+        const normalized = String(pattern).replace(/^\.\//, '');
+        return matchesGlob(file, normalized.includes('/') ? normalized : `**/${normalized}`);
+    });
+}
+
+/**
+ * Bundlers may drop any published module that "sideEffects" does not list, so every module that registers itself
+ * on import must be covered.
+ */
+export function getSideEffectViolations(root: string): string[] {
+    const { module: entry, sideEffects } = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf-8'));
+    if (!entry || !existsSync(resolve(root, entry))) return [];
+
+    return collectReachableModules(resolve(root, entry))
+        .map(path => relative(root, path))
+        .filter(file => !isCoveredBySideEffects(sideEffects, file))
+        .filter(file => registersItselfOnImport(readFileSync(resolve(root, file), 'utf-8')))
+        .sort()
+        .map(file => `  ${file} registers itself on import but is not listed in "sideEffects"`);
 }

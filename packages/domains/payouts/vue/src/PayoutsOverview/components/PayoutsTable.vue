@@ -4,7 +4,12 @@ import { BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
-import { PAYOUT_TABLE_FIELDS, type PayoutsTableFields, type PayoutsTranslationKey } from '@integration-components/payouts/domain';
+import {
+    PAYOUT_TABLE_FIELDS,
+    type PayoutsTableFields,
+    type PayoutsTranslationKey,
+    getPayoutsErrorConfig,
+} from '@integration-components/payouts/domain';
 import {
     useCustomColumnsData,
     CustomDataCell,
@@ -12,8 +17,9 @@ import {
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
+    DataOverviewLoading,
+    type ErrorMessageInfo,
     useTableColumns,
-    useShouldHideIllustrations,
     useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
@@ -28,6 +34,7 @@ const props = defineProps<{
     loading: boolean;
     error?: Error;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     onRowClick?: (payout: IPayout) => void;
     showPagination: boolean;
     data: IPayout[] | undefined;
@@ -44,7 +51,6 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const hideIllustrations = useShouldHideIllustrations();
 const isCondensed = useCondensedDataGrid();
 // Reactive proxy — destructuring would unwrap `refreshing` into a stale snapshot.
 const config = useConfigContext();
@@ -67,10 +73,10 @@ const {
     fields: PAYOUT_TABLE_FIELDS,
     customColumns: () => props.customColumns,
     fieldsKeys: {
-        createdAt: 'payouts.overview.list.fields.createdAt',
-        fundsCapturedAmount: 'payouts.overview.list.fields.fundsCapturedAmount',
-        adjustmentAmount: 'payouts.overview.list.fields.adjustmentAmount',
-        payoutAmount: 'payouts.overview.list.fields.payoutAmount',
+        createdAt: 'payouts.overview.list.createdAt',
+        fundsCapturedAmount: 'payouts.overview.list.fundsCapturedAmount',
+        adjustmentAmount: 'payouts.overview.list.adjustmentAmount',
+        payoutAmount: 'payouts.overview.list.payoutAmount',
     } satisfies Record<string, PayoutsTranslationKey>,
     columnConfig: () => ({
         createdAt: { flex: 1 },
@@ -81,7 +87,7 @@ const {
     customColumnDefaults: () => ({ flex: 1 }),
     customColumnWidths: () => customColumnWidths.value,
     resolveCustomColumnLabel: key => {
-        const labelKey = `payouts.overview.list.fields.${key}`;
+        const labelKey = `payouts.overview.list.${key}`;
         return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
     },
 });
@@ -144,12 +150,13 @@ const paginationProps = computed(() => {
     };
 });
 
-const emptyStateProps = computed(() => ({
-    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
-    variant: 'embedded' as const,
-    title: i18n.get('payouts.overview.errors.listEmpty'),
-    description: i18n.get('payouts.common.errors.updateFilters'),
-}));
+const emptyStateProps = computed(
+    () =>
+        ({
+            title: 'payouts.overview.errors.listEmpty',
+            messages: ['payouts.common.errors.updateFilters'],
+        }) satisfies ErrorMessageInfo
+);
 
 function handleNavigate(page: number) {
     if (isLoading.value) return;
@@ -172,19 +179,16 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
     if (!value) return '';
     return i18n.amount(value.value, value.currency, { hideCurrency: false });
 }
+const errorInfo = computed(() =>
+    getPayoutsErrorConfig(props.error, { errorMessage: 'payouts.overview.errors.listUnavailable', onContactSupport: props.onContactSupport })
+);
 </script>
 
 <template>
     <div ref="tableRef" :class="styles.root">
-        <!-- Error state -->
-        <DataOverviewError
-            v-if="props.error"
-            :error="props.error"
-            :error-message="'payouts.overview.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
-            :refresh-icon="RefreshIcon"
-        />
-
+        <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" type="error" />
+        <DataOverviewLoading v-else-if="isLoading && !gridData.length" />
+        <DataOverviewError v-else-if="!gridData.length" :error-info="emptyStateProps" type="no-results-found" />
         <BentoDataGrid
             v-else
             allow-row-clicks
@@ -194,7 +198,6 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
-            :empty-state="emptyStateProps"
             :allow-column-drag-and-drop="false"
             @row-click="handleRowClick"
             @navigate="handleNavigate"

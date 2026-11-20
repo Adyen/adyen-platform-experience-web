@@ -13,7 +13,7 @@ const isMobile = useResponsiveContainer(containerQueries.down.xs);
 <template>
     <BentoButtonActions
         :actions="props.actions"
-        :layout="isMobile ? 'stacked-buttons' : 'space-between'"
+        :layout="isMobile ? 'vertical-stack' : 'space-between'"
         :class="[styles.actions, isMobile ? styles.actionsStacked : undefined]"
     />
 </template>

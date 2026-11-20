@@ -18,7 +18,7 @@ const toggleLabel = computed(() =>
 
 <template>
     <BentoAlert :class="styles.issuerCommentsAlert" role="alert" type="highlight">
-        {{ i18n.get('disputes.management.details.issuerComment') }}
+        {{ i18n.get('disputes.management.details.issuerComment.title') }}
         <template #description>
             <ul :class="styles.issuerCommentsGroup">
                 <li v-for="comment in visibleComments" :key="comment">

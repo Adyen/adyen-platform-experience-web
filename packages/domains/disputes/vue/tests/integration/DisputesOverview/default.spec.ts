@@ -1,9 +1,16 @@
-import { test, expect } from '@playwright/test';
-import { expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, expectBalanceAccountPaginationReset, goToStory } from '@integration-components/testing/playwright/utils';
+import { disputesOverviewAnalyticsEventProperties } from '../../../../fixtures/constants/analytics';
 
 const STORY_ID = 'mocked-disputes-disputes-overview--default';
 
 test.describe('Disputes Overview - Default', () => {
+    test('should track landing on the disputes overview page', async ({ page, analyticsEvents }) => {
+        await goToStory(page, { id: STORY_ID });
+
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', disputesOverviewAnalyticsEventProperties]]);
+    });
+
     test('should render the title and status group tabs', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getReportsErrorConfig } from '@integration-components/reports/domain';
 import { computed, onUnmounted, ref } from 'vue';
 import {
     BentoButton,
@@ -19,7 +20,8 @@ import {
     useResponsiveContainer,
     containerQueries,
     DataOverviewError,
-    useShouldHideIllustrations,
+    DataOverviewLoading,
+    type ErrorMessageInfo,
     useCondensedDataGrid,
 } from '@integration-components/composables-vue';
 import { DATE_FORMAT_REPORTS, downloadBlob } from '@integration-components/utils';
@@ -58,6 +60,7 @@ const props = defineProps<{
     loading: boolean;
     error?: Error;
     onContactSupport?: () => void;
+    onRefresh?: () => void;
     showPagination: boolean;
     data: IReport[] | undefined;
     customColumns?: CustomColumn<ReportsTableFields>[];
@@ -73,7 +76,6 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const hideIllustrations = useShouldHideIllustrations();
 const isCondensed = useCondensedDataGrid();
 // Keep the reactive proxy here — destructuring `useConfigContext()` would unwrap
 // the `refreshing` primitive into a one-time snapshot and capture a stale
@@ -176,15 +178,15 @@ const {
     fields: REPORTS_TABLE_FIELDS,
     customColumns: () => props.customColumns,
     fieldsKeys: {
-        createdAt: 'reports.overview.list.fields.createdAt',
-        reportType: 'reports.overview.list.fields.reportType',
-        reportFile: 'reports.overview.list.fields.reportFile',
+        createdAt: 'reports.overview.list.createdAt',
+        reportType: 'reports.overview.list.reportType',
+        reportFile: 'reports.overview.list.reportFile',
     } satisfies Record<string, ReportsTranslationKey>,
     columnConfig: () => ({ createdAt: { flex: 1 }, reportType: { flex: 1 }, reportFile: { flex: 1, numeric: isMobile.value } }),
     customColumnDefaults: () => ({ flex: 1 }),
     customColumnWidths: () => customColumnWidths.value,
     resolveCustomColumnLabel: key => {
-        const labelKey = `reports.overview.list.fields.${key}`;
+        const labelKey = `reports.overview.list.${key}`;
         return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
     },
 });
@@ -209,7 +211,7 @@ const columns = computed(() => {
         return [
             {
                 field: 'dateAndReportType',
-                label: i18n.get('reports.overview.list.fields.reportType'),
+                label: i18n.get('reports.overview.list.reportType'),
                 flex: 1,
                 minWidth: customColumnWidths.value.dateAndReportType,
             },
@@ -267,12 +269,13 @@ const paginationProps = computed(() => {
     };
 });
 
-const emptyStateProps = computed(() => ({
-    image: hideIllustrations.value ? undefined : ('no-results-found' as const),
-    variant: 'embedded' as const,
-    title: i18n.get('reports.overview.errors.listEmpty'),
-    description: i18n.get('reports.common.errors.updateFilters'),
-}));
+const emptyStateProps = computed(
+    () =>
+        ({
+            title: 'reports.overview.errors.listEmpty',
+            messages: ['reports.common.errors.updateFilters'],
+        }) satisfies ErrorMessageInfo
+);
 
 function handleNavigate(page: number) {
     if (page > (props.currentPage ?? 1)) {
@@ -291,18 +294,16 @@ const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
 function formatDate(dateStr: string): string {
     return dateFormat(dateStr, DATE_FORMAT_REPORTS);
 }
+const errorInfo = computed(() =>
+    getReportsErrorConfig(props.error, { errorMessage: 'reports.overview.errors.listUnavailable', onContactSupport: props.onContactSupport })
+);
 </script>
 
 <template>
     <div ref="tableRef" :class="styles.root">
-        <DataOverviewError
-            v-if="props.error"
-            :error="props.error"
-            :error-message="'reports.overview.errors.listUnavailable'"
-            :on-contact-support="props.onContactSupport"
-            :refresh-icon="RefreshIcon"
-        />
-
+        <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" type="error" />
+        <DataOverviewLoading v-else-if="isLoading && !gridData.length" />
+        <DataOverviewError v-else-if="gridData.length === 0" :error-info="emptyStateProps" type="no-results-found" />
         <BentoDataGrid
             v-else
             has-resizable-columns
@@ -311,7 +312,6 @@ function formatDate(dateStr: string): string {
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
-            :empty-state="emptyStateProps"
             :allow-column-drag-and-drop="false"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"
@@ -336,17 +336,17 @@ function formatDate(dateStr: string): string {
             </template>
             <template #item-reportFile="{ item }">
                 <BentoButton
-                    v-bento-tooltip="i18n.get('reports.overview.list.controls.downloadReport.label')"
+                    v-bento-tooltip="i18n.get('reports.overview.list.downloadReport')"
                     condensed
                     variant="secondary"
-                    :aria-label="i18n.get('reports.overview.list.controls.downloadReport.label')"
+                    :aria-label="i18n.get('reports.overview.list.downloadReport')"
                     :disabled="frozen || isDownloadingReport(getReportKey(item._raw))"
                     @click.stop="handleDownload(item._raw)"
                 >
                     <template #iconLeft>
                         <component :is="getDownloadIcon(item._raw)" />
                     </template>
-                    <template v-if="!isMobile" #default>{{ i18n.get('reports.overview.list.controls.downloadReport.label') }}</template>
+                    <template v-if="!isMobile" #default>{{ i18n.get('reports.overview.list.downloadReport') }}</template>
                 </BentoButton>
             </template>
             <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">

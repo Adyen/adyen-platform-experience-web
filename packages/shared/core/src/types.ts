@@ -1,5 +1,5 @@
 import type { SessionRequest } from './ConfigContext.types';
-import type { CustomTranslations as Translations } from './translations';
+import type { CustomTranslations as Translations, Translations as LocaleTranslations } from './translations';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '@integration-components/utils/types';
 import { SupportedLocales } from './Localization/types';
 import type { ThemeProps } from '@adyen/adyen-shared-web';
@@ -11,12 +11,6 @@ type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<
 >;
 
 interface _CoreOptions<CustomTranslations extends Translations = Record<never, never>> {
-    /**
-     * Core-level balance account config
-     */
-    // [TODO]: Expose when expected behavior has been decided
-    // balanceAccountId?: string;
-
     /**
      * Use test. When you're ready to accept live payments, change the value to one of our {@link https://docs.adyen.com/checkout/drop-in-web#testing-your-integration | live environments}.
      */
@@ -47,9 +41,7 @@ interface _CoreOptions<CustomTranslations extends Translations = Record<never, n
 
     /**
      * Theme mode for this Core instance. The mode is applied to each component mount target.
-     *
-     * Bento content teleported outside a mount target uses the document-level default theme
-     * because Bento does not currently expose a per-Core teleport target.
+     * Bento popovers render in place (native popover API), so they follow the mode of their mount target.
      */
     themeMode?: ThemeMode;
 
@@ -67,6 +59,12 @@ interface _CoreOptions<CustomTranslations extends Translations = Record<never, n
 
 export type CoreOptions<CustomTranslations extends object = Record<never, never>> = _CoreOptions<
     CustomTranslations extends Translations ? CustomTranslations : Record<never, never>
+>;
+
+export type UpdateTranslations = Record<string, LocaleTranslations & Record<string, string>>;
+
+export type CoreUpdateOptions<CustomTranslations extends object = Record<never, never>> = Partial<
+    Omit<CoreOptions<CustomTranslations>, 'translations'> & { translations: UpdateTranslations }
 >;
 
 export type DevEnvironment = 'test' | 'live' | 'beta';

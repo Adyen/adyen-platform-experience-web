@@ -29,7 +29,7 @@ const quickSelectRanges = createQuickSelectRanges(
         lastMonth: quickSelectDateRanges.lastMonth,
         yearToDate: quickSelectDateRanges.yearToDate,
     },
-    'payouts.overview.common.filters.types.date.rangeSelect.options.',
+    'payouts.overview.filters.date.',
     key => i18n.get(key)
 );
 
@@ -51,7 +51,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
     if (hasMultipleBalanceAccounts.value) {
         filters.push({
             field: 'balanceAccountId',
-            label: i18n.get('payouts.overview.common.filters.types.account.label'),
+            label: i18n.get('payouts.overview.filters.account'),
             type: BentoFilterItemType.SELECT,
             defaultValue: balanceAccountOptions.value[0]?.value,
             visible: !props.compact,
@@ -63,7 +63,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
     filters.push({
         field: 'dateRange',
-        label: i18n.get('payouts.overview.common.filters.types.date.label'),
+        label: i18n.get('payouts.overview.filters.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         defaultValue: defaultDateRange,
         visible: !props.compact,

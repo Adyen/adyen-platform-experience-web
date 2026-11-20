@@ -1,21 +1,30 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoTab, BentoTabs, BentoTypography } from '@adyen/bento-vue3';
-import { getRenewableGrantDetails, type EnhancedCapitalState } from '@integration-components/capital/domain';
-import { useCoreContext } from '@integration-components/core/vue';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import {
+    getRenewableGrantDetails,
+    type EnhancedCapitalState,
+    sharedCapitalOfferAnalyticsEventProperties,
+    SHARED_CONTRACT_KEYS,
+} from '@integration-components/capital/domain';
+import { useEventDispatcherContext } from '@integration-components/core/vue';
+import type { IContractType, IOffer } from '@integration-components/types';
+import { useContractCopy } from '../../../shared/composables/useContractCopy';
 import { useFinancingDetailItems, type FinancingDetailItemKey } from '../../composables/useFinancingDetailItems';
 import FinancingDetailList from '../FinancingDetailList/FinancingDetailList.vue';
+import { CONTRACT_KEYS } from './contractKeys';
 import styles from './OfferSummaryDetails.module.scss';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
-    grantOffer: IGrantOfferResponseDTO;
+    contractType: IContractType;
+    grantOffer: IOffer;
     hasBalanceAccountError?: boolean;
 }>();
 
-const { i18n } = useCoreContext();
-const { getItems } = useFinancingDetailItems();
+const { getContractCopy } = useContractCopy(() => props.contractType);
+const userEvents = useEventDispatcherContext();
+const { getItems } = useFinancingDetailItems(() => props.contractType);
 const renewableGrantDetails = computed(() => getRenewableGrantDetails(props.capitalState));
 const isEarlyRenewal = computed(() => !!renewableGrantDetails.value);
 const itemKeys = computed(
@@ -33,21 +42,29 @@ const itemKeys = computed(
 
 const offerItems = computed(() => getItems(props.grantOffer, itemKeys.value));
 const renewableGrantItems = computed(() => (renewableGrantDetails.value ? getItems(renewableGrantDetails.value, itemKeys.value) : []));
+
+const handleActiveTabIndexUpdate = (index: number) => {
+    userEvents.addEvent?.('Moved tabs', {
+        ...sharedCapitalOfferAnalyticsEventProperties,
+        subCategory: 'Offer summary',
+        selectedTab: index === 0 ? 'New loan' : 'Current loan',
+    });
+};
 </script>
 
 <template>
     <section>
-        <BentoTabs v-if="isEarlyRenewal">
-            <BentoTab :title="i18n.get('capital.offer.summary.earlyRenewal.tabs.newGrant')">
+        <BentoTabs v-if="isEarlyRenewal" @update:active-tab-index="handleActiveTabIndexUpdate($event)">
+            <BentoTab :title="getContractCopy(CONTRACT_KEYS.newGrantTab)">
                 <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="offerItems" :class="styles.list" />
             </BentoTab>
-            <BentoTab :title="i18n.get('capital.offer.summary.earlyRenewal.tabs.currentGrant')">
+            <BentoTab :title="getContractCopy(CONTRACT_KEYS.currentGrantTab)">
                 <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="renewableGrantItems" :class="styles.list" />
             </BentoTab>
         </BentoTabs>
         <template v-else>
             <BentoTypography variant="body" strongest>
-                {{ i18n.get('capital.common.termsTitle') }}
+                {{ getContractCopy(SHARED_CONTRACT_KEYS.termsTitle) }}
             </BentoTypography>
             <FinancingDetailList :has-balance-account-error="props.hasBalanceAccountError" :items="offerItems" :class="styles.list" />
         </template>

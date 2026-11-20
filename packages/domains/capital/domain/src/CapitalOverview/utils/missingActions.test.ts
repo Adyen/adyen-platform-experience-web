@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import type { IGrantsResponseDTO } from '@integration-components/types';
-import { PENDING_GRANT_WITH_MULTIPLE_ACTIONS, PENDING_GRANT_WITH_SINGLE_ACTION } from '../../../../mocks/mock-data/capital';
+import type { IGrantsResponse } from '@integration-components/types';
+import { ACTIONS_LOAN, SINGLE_ACTION_LOAN } from '../../../../mocks/mock-data';
 import { getMissingActions, getMissingActionsMetadata, getNextPollingInterval, shouldPollMissingActions } from './missingActions';
 
 const pollingConfig = {
@@ -10,16 +10,16 @@ const pollingConfig = {
 };
 
 describe('getMissingActions', () => {
-    const initialActions = PENDING_GRANT_WITH_SINGLE_ACTION.missingActions!;
+    const initialActions = SINGLE_ACTION_LOAN.missingActions!;
 
     test('returns missing actions for the provided grant id', () => {
-        const response: IGrantsResponseDTO = { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] };
-        const id = PENDING_GRANT_WITH_MULTIPLE_ACTIONS.id;
-        expect(getMissingActions(response, id, initialActions)).toEqual(PENDING_GRANT_WITH_MULTIPLE_ACTIONS.missingActions);
+        const response: IGrantsResponse = { data: [ACTIONS_LOAN] };
+        const id = ACTIONS_LOAN.id;
+        expect(getMissingActions(response, id, initialActions)).toEqual(ACTIONS_LOAN.missingActions);
     });
 
     test('returns initial missing actions when there is no grant that matches the provided id', () => {
-        const response: IGrantsResponseDTO = { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] };
+        const response: IGrantsResponse = { data: [ACTIONS_LOAN] };
         const id = 'id';
         expect(getMissingActions(undefined, id, initialActions)).toEqual(initialActions);
         expect(getMissingActions(response, id, initialActions)).toEqual(initialActions);
@@ -27,7 +27,7 @@ describe('getMissingActions', () => {
 });
 
 describe('getMissingActionsMetadata', () => {
-    const actions = PENDING_GRANT_WITH_MULTIPLE_ACTIONS.missingActions!;
+    const actions = ACTIONS_LOAN.missingActions!;
 
     test('marks the first incomplete action as primary action', () => {
         expect(getMissingActionsMetadata(actions, [])).toEqual({ areActionsCompleted: false, primaryActionType: 'AnaCredit' });
@@ -45,14 +45,14 @@ describe('getMissingActionsMetadata', () => {
 describe('shouldPollMissingActions', () => {
     test('enables polling only when there is zero or one missing action', () => {
         expect(shouldPollMissingActions([])).toBe(true);
-        expect(shouldPollMissingActions(PENDING_GRANT_WITH_SINGLE_ACTION.missingActions!)).toBe(true);
-        expect(shouldPollMissingActions(PENDING_GRANT_WITH_MULTIPLE_ACTIONS.missingActions!)).toBe(false);
+        expect(shouldPollMissingActions(SINGLE_ACTION_LOAN.missingActions!)).toBe(true);
+        expect(shouldPollMissingActions(ACTIONS_LOAN.missingActions!)).toBe(false);
     });
 });
 
 describe('getNextPollingInterval', () => {
-    const singleAction = PENDING_GRANT_WITH_SINGLE_ACTION.missingActions!;
-    const multipleActions = PENDING_GRANT_WITH_MULTIPLE_ACTIONS.missingActions!;
+    const singleAction = SINGLE_ACTION_LOAN.missingActions!;
+    const multipleActions = ACTIONS_LOAN.missingActions!;
 
     test('return polling interval by applying exponential backoff', () => {
         expect(getNextPollingInterval(singleAction, -1, 0, pollingConfig)).toBe(100);

@@ -125,7 +125,7 @@ function acceptRequirements() {
 }
 
 const checkboxLabelPrefix = computed(() =>
-    i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.part1', { values: { requirements: '' } })
+    i18n.get('payByLink.settings.termsAndConditions.requirements.checkbox.part1', { values: { requirements: '' } })
 );
 
 const hasValidationError = computed(() => showInvalidURL.value || showNotCheckedRequirementsError.value);
@@ -136,17 +136,17 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
         <template v-if="!isShowingRequirements">
             <BentoAlert v-if="hasValidationError" type="critical" :dismissible="false">
                 <template #description>
-                    {{ i18n.get('payByLink.settings.common.alerts.validationError') }}
+                    {{ i18n.get('payByLink.settings.alerts.validation.error') }}
                 </template>
             </BentoAlert>
             <BentoAlert v-else-if="isSaveSuccess && !navigateBack" type="success" variant="tip" :dismissible="false">
                 <template #description>
-                    {{ i18n.get('payByLink.settings.common.alerts.saveSuccess') }}
+                    {{ i18n.get('payByLink.settings.alerts.save.success') }}
                 </template>
             </BentoAlert>
             <BentoAlert v-else-if="isSaveError" type="critical" variant="tip" :dismissible="false">
                 <template #description>
-                    {{ i18n.get('payByLink.settings.common.alerts.saveError') }}
+                    {{ i18n.get('payByLink.settings.alerts.save.error') }}
                 </template>
             </BentoAlert>
             <div :class="layoutStyles.contentHeader">
@@ -163,16 +163,16 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
                         :disabled="!!isSaving"
                         :readonly="!!isSaving"
                         :lang="i18n.locale"
-                        :label="i18n.get('payByLink.settings.termsAndConditions.urlInput.label')"
+                        :label="i18n.get('payByLink.settings.termsAndConditions.urlInput')"
                         :model-value="termsAndConditionsURL"
                         :max-length="2000"
-                        :error-message="showInvalidURL ? i18n.get('payByLink.settings.termsAndConditions.error.urlValidation') : undefined"
+                        :error-message="showInvalidURL ? i18n.get('payByLink.settings.termsAndConditions.errors.urlValidation') : undefined"
                         @update:model-value="onTermsAndConditionsURLInput"
                     />
                 </div>
                 <BentoAlert v-if="isTermsAndConditionsChanged" type="warning" variant="tip" role="alert" :class="styles.alert">
                     <template #description>
-                        {{ i18n.get('payByLink.settings.termsAndConditions.alert.urlChange') }}
+                        {{ i18n.get('payByLink.settings.termsAndConditions.alerts.urlChange') }}
                     </template>
                 </BentoAlert>
                 <div :class="styles.checkboxContainer">
@@ -182,7 +182,7 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
                         :disabled="disabled || !!isSaving"
                         :error-message="
                             showNotCheckedRequirementsError
-                                ? i18n.get('payByLink.settings.termsAndConditions.error.requirementsNotChecked')
+                                ? i18n.get('payByLink.settings.termsAndConditions.errors.requirementsNotChecked')
                                 : undefined
                         "
                         :class="styles.checkbox"
@@ -191,7 +191,7 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
                         {{ checkboxLabelPrefix }}
                         <span :class="styles.requirementsLinkWrapper">
                             <button type="button" :class="styles.requirementsLink" @click.stop="openRequirements">
-                                {{ i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.part2') }}
+                                {{ i18n.get('payByLink.settings.termsAndConditions.requirements.checkbox.part2') }}
                             </button>
                             <span aria-hidden="true">*</span>
                         </span>

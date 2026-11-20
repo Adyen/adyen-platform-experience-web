@@ -19,6 +19,21 @@ describe('buildPaymentLinkListItems', () => {
         expect(dateFormat).toHaveBeenNthCalledWith(1, paymentLink.linkInformation.creationDate, DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS);
         expect(dateFormat).toHaveBeenNthCalledWith(2, paymentLink.linkInformation.expirationDate, DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS);
     });
+
+    test('names every copy button after its own field, including across the two addresses', () => {
+        const paymentLink = PAYMENT_LINKS[0];
+        if (!paymentLink) throw new Error('Missing payment link fixture');
+
+        const items = buildPaymentLinkListItems(paymentLink, { i18n: new Localization().i18n, dateFormat: () => 'formatted date' });
+        const copyableItems = Object.values(items)
+            .flat()
+            .filter(item => item.isCopyable);
+        const labelKeys = copyableItems.map(item => item.copyAriaLabelKey);
+
+        expect(copyableItems.length).toBeGreaterThan(1);
+        expect(labelKeys.filter(Boolean)).toHaveLength(copyableItems.length);
+        expect(new Set(labelKeys).size).toBe(copyableItems.length);
+    });
 });
 
 describe('getPaymentLinkErrorMessageContent', () => {

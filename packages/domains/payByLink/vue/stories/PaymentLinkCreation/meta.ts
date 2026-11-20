@@ -8,7 +8,6 @@ export const paymentLinkCreationMeta: Meta<ElementProps<PaymentLinkCreationExter
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         onCreate: enabledDisabledCallbackRadioControls('onCreate'),
-        onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
     },
     args: {
         component: PaymentLinkCreationElement,

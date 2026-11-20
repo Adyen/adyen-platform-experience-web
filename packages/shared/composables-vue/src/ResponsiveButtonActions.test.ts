@@ -80,7 +80,7 @@ describe('ResponsiveButtonActions', () => {
         isMobile.value = true;
         await nextTick();
 
-        expect(buttonActionsProps()?.layout).toBe('stacked-buttons');
+        expect(buttonActionsProps()?.layout).toBe('vertical-stack');
         expect(buttonActionsProps()?.class).toContain(styles.actions);
         expect(buttonActionsProps()?.class).toContain(styles.actionsStacked);
 

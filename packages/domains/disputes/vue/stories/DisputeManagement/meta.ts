@@ -8,7 +8,6 @@ export const disputeManagementMeta: Meta<ElementProps<DisputeManagementExternalP
     argTypes: {
         id: { type: 'string' },
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
     },
     args: {
         component: DisputeManagementElement,

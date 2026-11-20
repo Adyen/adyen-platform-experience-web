@@ -10,7 +10,7 @@
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { buildSnapshot, diff, getPublicExportViolations, type Snapshot } from './lib.js';
+import { buildSnapshot, diff, getPublicExportViolations, getSideEffectViolations, type Snapshot } from './lib.js';
 
 const ROOT = resolve(import.meta.dirname!, '../..');
 const BASELINE_PATH = resolve(import.meta.dirname!, 'baseline.json');
@@ -28,13 +28,22 @@ export function run() {
         process.exit(1);
     }
 
+    const sideEffectViolations = getSideEffectViolations(ROOT);
+
+    if (sideEffectViolations.length > 0) {
+        console.error('Package "sideEffects" contract violated (bundlers may drop these modules):');
+        for (const entry of sideEffectViolations) {
+            console.error(entry);
+        }
+        process.exit(1);
+    }
+
     if (UPDATE_MODE) {
         writeFileSync(BASELINE_PATH, JSON.stringify(snapshot, null, 4) + '\n');
         console.log(`Baseline updated (${BASELINE_PATH})`);
         console.log(`  JS exports: ${snapshot.jsExports.length}`);
         console.log(`  CommonJS exports: ${snapshot.cjsExports.length}`);
         console.log(`  Declaration exports: ${snapshot.declarationExports.length}`);
-        console.log(`  Type files: ${snapshot.typeFiles.length}`);
         process.exit(0);
     }
 

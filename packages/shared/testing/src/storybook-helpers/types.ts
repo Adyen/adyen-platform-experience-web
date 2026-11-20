@@ -4,7 +4,6 @@ import type { DensityMode, GlobalAppearance } from '@integration-components/type
 
 type GlobalStoriesProps = {
     mockedApi?: boolean;
-    balanceAccountId?: string;
     compact?: boolean;
     component: any;
     coreOptions?: Partial<CoreOptions>;

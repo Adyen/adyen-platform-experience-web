@@ -8,16 +8,20 @@ export const sharedCapitalOverviewAnalyticsEventProperties = {
     componentName: 'capitalOverview',
     category: 'Capital overview component',
     subCategory: 'Grants overview',
-    label: 'Capital overview',
 } as const;
 
-export const sharedActionAnalyticsEventProps = {
+export const sharedGrantItemAnalyticsEventProperties = {
     ...sharedCapitalOverviewAnalyticsEventProperties,
-    category: 'Missing action modal',
-};
+    subCategory: 'Grant item',
+} as const;
 
-export const sharedSendRepaymentButtonAnalyticsEventProperties = {
+export const openRepaymentButtonAnalyticsEventProperties = {
+    ...sharedGrantItemAnalyticsEventProperties,
+    label: 'Open repayment',
+} as const;
+
+export const dismissRepaymentAnalyticsEventProperties = {
     ...sharedCapitalOverviewAnalyticsEventProperties,
-    subCategory: 'Grant active',
-    label: 'Send repayment',
+    subCategory: 'Repayment',
+    label: 'Dismiss repayment',
 } as const;

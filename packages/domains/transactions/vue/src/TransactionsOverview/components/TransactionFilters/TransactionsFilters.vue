@@ -122,7 +122,7 @@ const quickSelectRanges = createQuickSelectRanges(
         lastMonth: quickSelectDateRanges.lastMonth,
         yearToDate: quickSelectDateRanges.yearToDate,
     },
-    'transactions.overview.common.filters.types.date.rangeSelect.options.',
+    'transactions.overview.filters.date.',
     key => i18n.get(key)
 );
 
@@ -132,7 +132,7 @@ const sharedFilterItems = computed<BentoFilterBarModel>(() => {
     if (hasMultipleBalanceAccounts.value) {
         items.push({
             field: 'balanceAccountId',
-            label: i18n.get('transactions.overview.common.filters.types.account.label'),
+            label: i18n.get('transactions.overview.filters.account'),
             type: BentoFilterItemType.SELECT,
             defaultValue: balanceAccountOptions.value[0]?.value,
             visible: !props.compact,
@@ -144,7 +144,7 @@ const sharedFilterItems = computed<BentoFilterBarModel>(() => {
 
     items.push({
         field: 'dateRange',
-        label: i18n.get('transactions.overview.common.filters.types.date.label'),
+        label: i18n.get('transactions.overview.filters.date.label'),
         type: BentoFilterItemType.DATE_RANGE,
         defaultValue: dateRangeDefaultValue,
         visible: !props.compact,
@@ -173,7 +173,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
     if (isTransactionsView.value) {
         config.push({
             field: 'categories',
-            label: i18n.get('transactions.overview.filters.types.category.label'),
+            label: i18n.get('transactions.overview.filters.category'),
             type: BentoFilterItemType.CHECKBOX_GROUP,
             visible: !props.compact,
             options: {
@@ -184,7 +184,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
         if (availableCurrencies.value.length > 1) {
             config.push({
                 field: 'currencies',
-                label: i18n.get('transactions.overview.filters.types.currency.label'),
+                label: i18n.get('transactions.overview.filters.currency'),
                 type: BentoFilterItemType.SELECT_CURRENCY,
                 visible: !props.compact,
                 options: {
@@ -196,11 +196,11 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
 
         config.push({
             field: 'paymentPspReference',
-            label: i18n.get('transactions.overview.filters.types.paymentPspReference.label'),
+            label: i18n.get('transactions.overview.filters.paymentPspReference.label'),
             type: TransactionPspReferenceFilter,
             visible: !props.compact,
             options: {
-                placeholder: i18n.get('transactions.overview.filters.types.paymentPspReference.placeholder'),
+                placeholder: i18n.get('transactions.overview.filters.paymentPspReference.placeholder'),
             },
         });
     }
@@ -424,7 +424,7 @@ const insightsFilterConfig = computed<BentoFilterBarModel>(() => {
     if (availableCurrencies.value.length > 1) {
         config.push({
             field: 'insightsCurrency',
-            label: i18n.get('transactions.overview.filters.types.currency.label'),
+            label: i18n.get('transactions.overview.filters.currency'),
             type: BentoFilterItemType.SELECT_CURRENCY,
             defaultValue: insightsCurrency.value,
             visible: !props.compact,

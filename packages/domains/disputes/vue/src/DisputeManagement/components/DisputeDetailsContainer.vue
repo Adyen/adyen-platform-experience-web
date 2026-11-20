@@ -28,7 +28,6 @@ watch(
             :on-contact-support="props.onContactSupport"
             :on-accept="props.onAccept"
             :on-defend="props.onDefend"
-            :on-dismiss="props.onDismiss"
         />
     </div>
 </template>

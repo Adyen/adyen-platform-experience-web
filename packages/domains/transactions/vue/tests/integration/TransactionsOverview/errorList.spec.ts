@@ -37,8 +37,10 @@ test.describe('Error - list', () => {
         await expect(totalsCard.getByText('Total incoming', { exact: true })).toBeVisible();
         await expect(totalsCard.getByText('Total outgoing', { exact: true })).toBeVisible();
         await expect(totalsCard.getByText('0.00 USD', { exact: true })).toHaveCount(2);
-        // [TODO]: Define proper accessibility hierarchy for expandable card
-        await expect(page.getByRole('listitem').getByText('0.00 EUR', { exact: true })).toHaveCount(2);
+        // The header values belong to the toggle button. Only the other currencies are list items.
+        await expect(totalsCard.getByRole('listitem')).toHaveCount(0);
+        await expect(totalsCard.locator('..').getByRole('list').getByRole('listitem')).toHaveCount(1);
+        await expect(totalsCard.locator('..').getByRole('list').getByRole('listitem').getByText('0.00 EUR', { exact: true })).toHaveCount(2);
     });
 });
 

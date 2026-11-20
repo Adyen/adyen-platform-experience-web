@@ -144,7 +144,7 @@ describe('ComponentAvailabilityGate', () => {
         const target = mountWithSlot(ComponentAvailabilityGate, { type: 'transactions', onContactSupport }, slotContent);
         const supportButton = target.querySelector<HTMLButtonElement>('button');
 
-        expect(supportButton?.textContent).toBe('transactions.common.actions.contactSupport.labels.reachOut');
+        expect(supportButton?.textContent).toBe('transactions.common.contactSupport.label');
 
         supportButton?.click();
         expect(onContactSupport).toHaveBeenCalledOnce();

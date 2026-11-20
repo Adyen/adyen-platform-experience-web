@@ -92,38 +92,33 @@ function onCheckboxUpdate(value: boolean | string | string[]) {
 <template>
     <TextField
         name="shopperReference"
-        :label="i18n.get('payByLink.creation.fields.shopperReference.label')"
+        :label="i18n.get('payByLink.creation.shopperReference')"
         :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperReference.max"
     />
     <BentoFormLayoutGroup v-if="isNameVisible" :layout="nameRowLayout">
         <TextField
             name="shopperName.firstName"
-            :label="i18n.get('payByLink.creation.fields.shopperName.label')"
+            :label="i18n.get('payByLink.creation.shopperName')"
             :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperName.firstName.max"
         />
         <TextField
             name="shopperName.lastName"
-            :label="i18n.get('payByLink.creation.fields.shopperLastName.label')"
+            :label="i18n.get('payByLink.creation.shopperLastName')"
             :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperName.lastName.max"
         />
     </BentoFormLayoutGroup>
     <TextField
         name="shopperEmail"
-        :label="i18n.get('payByLink.creation.fields.shopperEmail.label')"
+        :label="i18n.get('payByLink.creation.shopperEmail.label')"
         :maxlength="PAYMENT_LINK_CREATION_FIELD_LENGTHS.shopperEmail.max"
     />
     <ShopperPhoneField />
-    <CountryField
-        name="countryCode"
-        :label="i18n.get('payByLink.creation.fields.country.label')"
-        :items="shopperCountryItems"
-        :loading="countriesLoading"
-    />
+    <CountryField name="countryCode" :label="i18n.get('payByLink.creation.country')" :items="shopperCountryItems" :loading="countriesLoading" />
 
     <template v-if="showDeliveryDefault">
         <AddressSection
             prefix="deliveryAddress"
-            :title="i18n.get('payByLink.creation.sections.deliveryAddress.label')"
+            :title="i18n.get('payByLink.creation.sections.deliveryAddress')"
             :is-optional="isDeliveryOptional"
             :country-items="addressCountryItems"
             :countries-loading="countriesLoading"
@@ -132,7 +127,7 @@ function onCheckboxUpdate(value: boolean | string | string[]) {
         />
         <div v-if="isSameAddressCopyEnabled">
             <BentoCheckbox :class="styles.sameAddressCheckbox" :model-value="props.isSameAddress" @update:model-value="onCheckboxUpdate">
-                {{ i18n.get('payByLink.creation.fields.shippingAndBillingSameAddress.label') }}
+                {{ i18n.get('payByLink.creation.shippingAndBillingSameAddress') }}
             </BentoCheckbox>
         </div>
     </template>
@@ -140,7 +135,7 @@ function onCheckboxUpdate(value: boolean | string | string[]) {
     <AddressSection
         v-if="showBillingDefault"
         prefix="billingAddress"
-        :title="i18n.get('payByLink.creation.fields.billingAddress.label')"
+        :title="i18n.get('payByLink.creation.billingAddress.label')"
         :is-optional="isBillingOptional"
         :country-items="addressCountryItems"
         :countries-loading="countriesLoading"
@@ -149,7 +144,7 @@ function onCheckboxUpdate(value: boolean | string | string[]) {
     <template v-if="showBillingFirst">
         <AddressSection
             prefix="billingAddress"
-            :title="i18n.get('payByLink.creation.fields.billingAddress.label')"
+            :title="i18n.get('payByLink.creation.billingAddress.label')"
             :country-items="addressCountryItems"
             :countries-loading="countriesLoading"
             :copy-enabled="isSameAddressCopyEnabled && props.isSameAddress"
@@ -157,13 +152,13 @@ function onCheckboxUpdate(value: boolean | string | string[]) {
         />
         <div v-if="isSameAddressCopyEnabled">
             <BentoCheckbox :class="styles.sameAddressCheckbox" :model-value="props.isSameAddress" @update:model-value="onCheckboxUpdate">
-                {{ i18n.get('payByLink.creation.fields.shippingAndBillingSameAddress.label') }}
+                {{ i18n.get('payByLink.creation.shippingAndBillingSameAddress') }}
             </BentoCheckbox>
         </div>
         <AddressSection
             v-if="showDeliveryAfterBilling"
             prefix="deliveryAddress"
-            :title="i18n.get('payByLink.creation.sections.deliveryAddress.label')"
+            :title="i18n.get('payByLink.creation.sections.deliveryAddress')"
             :is-optional="true"
             :country-items="addressCountryItems"
             :countries-loading="countriesLoading"

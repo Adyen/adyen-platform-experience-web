@@ -21,10 +21,10 @@ export const PAYMENT_LINK_STATUS_GROUPS_FILTER_MAPPING = {
 } as const satisfies Record<IPaymentLinkStatusGroup, keyof IPaymentLinkFilterStatusGroup>;
 
 export const PAYMENT_LINK_STATUSES = {
-    active: 'payByLink.common.status.active',
-    expired: 'payByLink.common.status.expired',
-    completed: 'payByLink.common.status.completed',
-    paymentPending: 'payByLink.common.status.paymentPending',
+    active: 'payByLink.common.statuses.active',
+    expired: 'payByLink.common.statuses.expired',
+    completed: 'payByLink.common.statuses.completed',
+    paymentPending: 'payByLink.common.statuses.paymentPending',
 } as const satisfies Record<IPaymentLinkStatus, PayByLinkTranslationKey>;
 
 export const PAYMENT_LINK_TYPES = {

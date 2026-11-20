@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { type CapitalTranslationKey, OnFundsRequestCallback } from '@integration-components/capital/domain';
-import { ModalContextProvider, useCoreContext } from '@integration-components/core/vue';
+import { ref } from 'vue';
+import { OnSubmitCallback } from '@integration-components/capital/domain';
+import { ModalContextProvider } from '@integration-components/core/vue';
 import { BentoModal } from '@adyen/bento-vue3';
 import { IGrant } from '@integration-components/types';
 import { useEnhancedCapitalState } from '../../shared/composables/useEnhancedCapitalState';
@@ -10,17 +10,15 @@ const props = defineProps<{
     isOpen: boolean;
     onClose: () => void;
     onContactSupport?: () => void;
-    onFundsRequest: OnFundsRequestCallback;
+    onSubmit: OnSubmitCallback;
 }>();
 
-const { i18n } = useCoreContext();
 const requestedGrant = ref<IGrant>();
 const { capitalState } = useEnhancedCapitalState(() => true, requestedGrant);
-const offerTitleKey = ref<CapitalTranslationKey>('capital.offer.selection.title');
-const offerTitle = computed(() => i18n.get(offerTitleKey.value));
+const offerTitle = ref<string>();
 
-const handleOfferTitleChange = (title: CapitalTranslationKey) => {
-    offerTitleKey.value = title;
+const handleOfferTitleChange = (title: string) => {
+    offerTitle.value = title;
 };
 </script>
 
@@ -33,7 +31,7 @@ const handleOfferTitleChange = (title: CapitalTranslationKey) => {
                     :capital-state="capitalState"
                     hide-subtitle
                     :on-contact-support="props.onContactSupport"
-                    :on-funds-request="props.onFundsRequest"
+                    :on-submit="props.onSubmit"
                     :on-title-change="handleOfferTitleChange"
                 />
             </ModalContextProvider>

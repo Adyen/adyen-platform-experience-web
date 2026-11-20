@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { BentoAlert, BentoButtonActions, BentoModal, type BentoButtonActionsList } from '@adyen/bento-vue3';
-import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-16/vue/checkmark-circle-fill';
+import CheckmarkIcon from '@adyen/ui-assets-icons-24/vue/checkmark-circle';
 import { getMissingActionsMetadata } from '@integration-components/capital/domain';
 import { useConfigContext, useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import type { IMissingAction, IMissingActionType } from '@integration-components/types';
+import type { IContractType, IMissingAction, IMissingActionType } from '@integration-components/types';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../../../domain/src/CapitalOverview/constants';
 import { useActionsAlertTitles } from '../composables/useActionsAlertTitles';
 
 const props = defineProps<{
+    contractType: IContractType;
     expirationDate?: string;
     legalEntityId: string;
     missingActions: IMissingAction[];
@@ -32,10 +33,13 @@ const closeTimeouts = new Map<IMissingActionType, ReturnType<typeof setTimeout>>
 
 const missingActionsMetadata = computed(() => getMissingActionsMetadata(props.missingActions, completedActions.value));
 const areActionsCompleted = computed(() => missingActionsMetadata.value.areActionsCompleted);
-const alertTitles = useActionsAlertTitles(() => props.expirationDate);
+const alertTitles = useActionsAlertTitles(
+    () => props.expirationDate,
+    () => props.contractType
+);
 const alertTitle = computed(() => {
     if (areActionsCompleted.value) {
-        return i18n.get('capital.overview.grants.item.alerts.actionsCompleted');
+        return i18n.get('capital.overview.grantAlerts.actionsCompleted');
     }
 
     return props.missingActions.length > 1 ? alertTitles.value.multiple : alertTitles.value.single;
@@ -47,7 +51,7 @@ const actions = computed<BentoButtonActionsList>(() =>
 
         return {
             event: () => handleActionButtonClick(action.type),
-            iconLeft: isCompleted ? CheckmarkCircleFillIcon : undefined,
+            iconLeft: isCompleted ? CheckmarkIcon : undefined,
             title: i18n.get(isCompleted ? actionConfig.successButtonLabelKey : actionConfig.buttonLabelKey),
             variant: missingActionsMetadata.value.primaryActionType === action.type ? 'primary' : 'secondary',
         };
@@ -90,7 +94,7 @@ const handleActionButtonClick = async (actionType: IMissingActionType) => {
     activeAction.value = actionType;
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
-        subCategory: 'Missing action',
+        subCategory: 'Grant item',
         label: GRANT_ACTION_CONFIGS[actionType].eventLabel,
     });
 };
@@ -112,7 +116,6 @@ const handleClose = (actionType: IMissingActionType, analyticsProperties: { labe
             if (!completedActionsWithoutDelay.has(actionType)) {
                 userEvents.addEvent?.('Clicked button', {
                     ...sharedCapitalOverviewAnalyticsEventProperties,
-                    category: 'Missing action modal',
                     ...analyticsProperties,
                 });
                 close();
@@ -125,7 +128,10 @@ const handleClose = (actionType: IMissingActionType, analyticsProperties: { labe
 };
 
 const handleBusinessFinancingClose = () => {
-    handleClose('AnaCredit', { label: 'Dismissed AnaCredit information', subCategory: 'Information' });
+    handleClose('AnaCredit', {
+        subCategory: 'AnaCredit information',
+        label: 'Dismiss AnaCredit information',
+    });
 };
 
 const handleBusinessFinancingComplete = () => {
@@ -133,22 +139,23 @@ const handleBusinessFinancingComplete = () => {
     completeAction();
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
-        category: 'Missing action modal',
-        label: 'Submitted AnaCredit information',
-        subCategory: 'Information',
+        subCategory: 'AnaCredit information',
+        label: 'Finish AnaCredit information',
     });
 };
 
 const handleTermsOfServiceClose = () => {
-    handleClose('signToS', { label: 'Dismissed terms & conditions', subCategory: 'Terms & conditions' });
+    handleClose('signToS', {
+        subCategory: 'ToS',
+        label: 'Dismiss ToS',
+    });
 };
 
 const handleTermsOfServiceAccept = () => {
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
-        category: 'Missing action modal',
-        label: 'Signed terms & conditions',
-        subCategory: 'Terms & conditions',
+        subCategory: 'ToS',
+        label: 'Sign ToS',
     });
 };
 
@@ -157,9 +164,8 @@ const handleTermsOfServiceComplete = () => {
     completeAction();
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
-        category: 'Missing action modal',
-        label: 'Finished terms & conditions',
-        subCategory: 'Terms & conditions',
+        subCategory: 'ToS',
+        label: 'Finish ToS',
     });
 };
 

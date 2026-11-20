@@ -4,7 +4,9 @@ import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { useUniqueId } from '@integration-components/composables-vue';
 import type { IDynamicOffersConfig } from '@integration-components/types';
+import { useContractCopy } from '../../../shared/composables/useContractCopy';
 import Slider from '../Slider/Slider.vue';
+import { CONTRACT_KEYS } from './contractKeys';
 import styles from './AmountSelector.module.scss';
 import {
     getDefaultAmountValue,
@@ -22,6 +24,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { getContractCopy } = useContractCopy(() => props.dynamicOfferConfig.contractType);
 const userEvents = useEventDispatcherContext();
 const hasEmittedInitialChangeEvent = ref(false);
 const elementBaseId = useUniqueId();
@@ -35,17 +38,16 @@ const getValue = (event: Event) => Number((event.target as HTMLInputElement).val
 const emitChangeEvent = (amountValue: number) => {
     const config = props.dynamicOfferConfig;
 
-    userEvents.addEvent?.('Changed capital offer slider', {
+    userEvents.addEvent?.('Changed offer amount', {
         ...sharedCapitalOfferAnalyticsEventProperties,
-        subCategory: 'Business financing offer',
-        label: 'Slider changed',
+        subCategory: 'Offer selection',
         currency: config.minAmount.currency,
+        isEarlyRenewal: props.isEarlyRenewal,
+        max: config.maxAmount.value,
+        min: config.minAmount.value,
+        relativeToDefault: getRelativeToDefault(amountValue, getDefaultAmountValue(config)),
         value: amountValue,
         valuePercentage: getPercentageOfRange(amountValue, config.minAmount.value, config.maxAmount.value),
-        min: config.minAmount.value,
-        max: config.maxAmount.value,
-        relativeToDefault: getRelativeToDefault(amountValue, getDefaultAmountValue(config)),
-        isEarlyRenewal: props.isEarlyRenewal,
     });
 };
 
@@ -76,7 +78,7 @@ const handleInput = (event: Event) => {
     <div :class="styles.root">
         <label :id="labelId" :for="sliderId" :class="styles.label">
             <BentoTypography variant="body" stronger>
-                {{ i18n.get('capital.offer.selection.slider.a11y.label') }}
+                {{ getContractCopy(CONTRACT_KEYS.amountTitle) }}
             </BentoTypography>
         </label>
         <output :aria-labelledby="labelId" :for="sliderId" aria-live="polite">
@@ -97,7 +99,7 @@ const handleInput = (event: Event) => {
         <div :class="styles.rangeLabels" aria-hidden="true">
             <div :class="styles.rangeLabel">
                 <BentoTypography variant="caption">
-                    {{ i18n.get('capital.offer.selection.slider.markers.min') }}
+                    {{ i18n.get('capital.offer.selection.min') }}
                 </BentoTypography>
                 <BentoTypography variant="body">
                     {{ i18n.amount(props.dynamicOfferConfig.minAmount.value, currency, { maximumFractionDigits: 0 }) }}
@@ -105,7 +107,7 @@ const handleInput = (event: Event) => {
             </div>
             <div :class="styles.rangeLabel">
                 <BentoTypography variant="caption">
-                    {{ i18n.get('capital.offer.selection.slider.markers.max') }}
+                    {{ i18n.get('capital.offer.selection.max') }}
                 </BentoTypography>
                 <BentoTypography variant="body">
                     {{ i18n.amount(props.dynamicOfferConfig.maxAmount.value, currency, { maximumFractionDigits: 0 }) }}

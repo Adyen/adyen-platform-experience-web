@@ -5,6 +5,7 @@ import {
     getOfferForTerm,
     getOffersByTerm,
     sharedCapitalOfferAnalyticsEventProperties,
+    SHARED_CONTRACT_KEYS,
     type EnhancedCapitalState,
     getDefaultAmountValue,
     getDefaultTerm,
@@ -14,27 +15,31 @@ import {
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { useOffers } from '../../composables/useOffers';
 import { useCreateOffer } from '../../composables/useCreateOffer';
-import type { IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
-import { BentoButtonActions, type BentoButtonActionsList } from '@adyen/bento-vue3';
+import type { IDynamicOffersConfig, IOffer } from '@integration-components/types';
+import { BentoButtonActions, type BentoButtonActionsList, BentoLoadingSkeletonShape, BentoTypography } from '@adyen/bento-vue3';
+import { useContractCopy } from '../../../shared/composables/useContractCopy';
 import AmountSelector from '../AmountSelector/AmountSelector.vue';
 import CapitalError from '../../../shared/CapitalError.vue';
 import OfferSelectionDetails from '../OfferSelectionDetails.vue';
-import RenewalHighlights from '../RenewalHighlights.vue';
-import TermSelector from '../TermSelector.vue';
+import RegulatoryNotice from '../RegulatoryNotice/RegulatoryNotice.vue';
+import RenewalHighlights from '../RenewalHighlights/RenewalHighlights.vue';
+import TermSelector from '../TermSelector/TermSelector.vue';
+import { CONTRACT_KEYS } from './contractKeys';
 import styles from './OfferSelection.module.scss';
 import EmptyOfferState from '../../../shared/EmptyOfferState.vue';
 
 const props = defineProps<{
     capitalState: EnhancedCapitalState;
     dynamicOfferConfig: IDynamicOffersConfig;
-    createdOffer: IGrantOfferResponseDTO | undefined;
+    createdOffer: IOffer | undefined;
     onContactSupport?: () => void;
-    onDismiss?: () => void;
-    onOfferCreate: (offer: IGrantOfferResponseDTO) => void;
+    onOfferCreate: (offer: IOffer) => void;
 }>();
 
 const { i18n } = useCoreContext();
 const userEvents = useEventDispatcherContext();
+const contractType = computed(() => props.dynamicOfferConfig.contractType);
+const { getContractCopy } = useContractCopy(contractType);
 const renewableGrant = computed(() => props.capitalState.renewableGrants?.[0]);
 const isEarlyRenewal = computed(() => !!renewableGrant.value);
 const estimatedTerms = computed(() => getEstimatedTerms(props.dynamicOfferConfig));
@@ -54,13 +59,15 @@ const {
     () => amountValue.value
 );
 const areAmountAndOffersUpdating = computed(() => isAmountChanging.value || areOffersLoading.value || isOffersRequestPending.value);
+const areDetailsLoading = computed(() => !selectedOffer.value || areAmountAndOffersUpdating.value);
 const hasNoOffers = computed(() => offers.value?.offers.length === 0);
 const offersByTerm = computed(() => getOffersByTerm(offers.value?.offers ?? []));
 const availableTerms = computed(() => getAvailableTerms(offersByTerm.value));
 const term = ref<number | undefined>(props.createdOffer?.expectedRepaymentPeriodDays);
 const selectedOffer = computed(() => (term.value === undefined ? undefined : getOfferForTerm(offersByTerm.value, term.value)));
 const { error: createOfferError, isLoading: isCreateOfferLoading, createOffer } = useCreateOffer();
-const isReviewDisabled = computed(() => !selectedOffer.value || areAmountAndOffersUpdating.value || isCreateOfferLoading.value);
+const contractTypeNotice = computed(() => getContractCopy(CONTRACT_KEYS.contractTypeNotice));
+const expectedRepaymentPeriodDescription = computed(() => getContractCopy(SHARED_CONTRACT_KEYS.expectedRepaymentPeriodDescription));
 
 // Initializes the selected term and adjusts it when it becomes unavailable
 watch(
@@ -105,8 +112,8 @@ const handleReview = async () => {
     } finally {
         userEvents.addEvent?.('Clicked button', {
             ...sharedCapitalOfferAnalyticsEventProperties,
-            subCategory: 'Business financing offer',
-            label: 'Review offer',
+            subCategory: 'Offer selection',
+            label: 'Review request',
             isEarlyRenewal: isEarlyRenewal.value,
         });
     }
@@ -115,33 +122,23 @@ const handleReview = async () => {
 const actions = computed<BentoButtonActionsList>(() => {
     return [
         {
-            title: i18n.get('capital.offer.selection.actions.reviewOffer'),
-            disabled: isReviewDisabled.value,
+            title: i18n.get('capital.offer.selection.review'),
+            disabled: areDetailsLoading.value,
             state: isCreateOfferLoading.value ? 'loading' : 'start',
             event: handleReview,
         },
-        ...(props.onDismiss
-            ? [
-                  {
-                      title: i18n.get('capital.offer.selection.actions.goBack'),
-                      event: props.onDismiss,
-                  },
-              ]
-            : []),
     ];
 });
 </script>
 
 <template>
-    <div :class="styles.root" data-testid="capital-offer-selection">
-        <CapitalError
-            v-if="offersError || createOfferError"
-            :error="createOfferError ?? offersError"
-            :on-dismiss="props.onDismiss"
-            :on-contact-support="props.onContactSupport"
-        />
-        <EmptyOfferState v-else-if="hasNoOffers" :on-dismiss="props.onDismiss" />
+    <div :class="styles.root" :aria-busy="areDetailsLoading" data-testid="capital-offer-selection">
+        <CapitalError v-if="offersError || createOfferError" :error="createOfferError ?? offersError" :on-contact-support="props.onContactSupport" />
+        <EmptyOfferState v-else-if="hasNoOffers" />
         <template v-else-if="amountValue">
+            <BentoTypography v-if="contractTypeNotice" variant="body">
+                {{ contractTypeNotice }}
+            </BentoTypography>
             <AmountSelector
                 :amount-value="amountValue"
                 :dynamic-offer-config="dynamicOfferConfig"
@@ -151,23 +148,31 @@ const actions = computed<BentoButtonActionsList>(() => {
             />
             <RenewalHighlights
                 v-if="renewableGrant"
+                :contract-type="contractType"
                 :new-grant-amount-value="amountValue"
                 :remaining-grant-amount="renewableGrant.remainingGrantAmount"
             />
             <TermSelector
                 v-if="estimatedTerms.length > 1"
                 :are-available-terms-loading="areAmountAndOffersUpdating"
+                :contract-type="contractType"
                 :estimated-terms="estimatedTerms"
                 :is-early-renewal="isEarlyRenewal"
                 :offers-by-term="offersByTerm"
                 :term="term"
                 @term-change="value => (term = value)"
             />
+            <BentoLoadingSkeletonShape v-if="areDetailsLoading" variant="rectangle" height="208px" width="100%" />
             <OfferSelectionDetails
-                v-if="selectedOffer && !areAmountAndOffersUpdating"
+                v-else-if="selectedOffer"
+                :contract-type="contractType"
                 :has-expected-repayment-period="hasSingleTerm"
                 :offer="selectedOffer"
             />
+            <BentoTypography v-if="expectedRepaymentPeriodDescription" variant="caption">
+                {{ expectedRepaymentPeriodDescription }}
+            </BentoTypography>
+            <RegulatoryNotice :contract-type="contractType" :region="props.capitalState.region" />
             <BentoButtonActions :actions="actions" />
         </template>
     </div>

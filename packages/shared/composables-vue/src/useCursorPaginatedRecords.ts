@@ -131,6 +131,12 @@ export function useCursorPaginatedRecords<T>({
         limit.value = newLimit;
     };
 
+    const refresh = () => {
+        if (!requestKey.value || fetching.value) return;
+        resetPagination();
+        requestPage();
+    };
+
     watch(
         requestKey,
         (newKey, oldKey) => {
@@ -157,6 +163,7 @@ export function useCursorPaginatedRecords<T>({
         goToPreviousPage,
         updateLimit,
         resetPagination,
+        refresh,
     } as const;
 }
 

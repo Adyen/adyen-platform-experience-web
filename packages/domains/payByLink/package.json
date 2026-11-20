@@ -15,6 +15,7 @@
     "dependencies": {
         "@adyen/bento-vue3": "catalog:",
         "@adyen/ui-assets-icons-16": "catalog:",
+        "@adyen/ui-assets-icons-24": "catalog:",
         "@adyen/ui-assets-icons-40": "catalog:",
         "@integration-components/assets": "workspace:*",
         "@integration-components/composables-vue": "workspace:*",
@@ -23,7 +24,7 @@
         "@integration-components/testing": "workspace:*",
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*",
-        "zod": "4.2.1"
+        "zod": "4.6.6"
     },
     "peerDependencies": {
         "vue": "catalog:"

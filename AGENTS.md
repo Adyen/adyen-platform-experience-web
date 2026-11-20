@@ -37,7 +37,7 @@ pnpm run format             # Prettier format src/
 
 Keep prop composition consistent across domains:
 
-- Domain `*Props` types contain reusable, framework-neutral component prop fragments. Compose repeated fields with shared helpers such as `WithBalanceAccountId` and `WithDismissCallback` from `packages/shared/types/src/element.ts`; use `PaginationProps` from `@integration-components/utils`.
+- Domain `*Props` types contain reusable, framework-neutral component prop fragments. Compose repeated fields with shared helpers from `packages/shared/types/src/`; use `PaginationProps` from `@integration-components/utils`.
 - Vue `*ExternalProps` types are the public element constructor types. They must be composed as `UIElementProps<TAppearance> & DomainProps`, with `UIElementProps` providing `core`, `appearance`, and `onContactSupport`.
 - Vue `*ComponentProps` types are derived from the external type with `Omit<ExternalProps, 'core' | 'appearance'>`. Add Vue-only wiring fields only at this layer.
 - Use the derived `*ComponentProps` for containers and Vue components. Do not redeclare the external fields inline.
@@ -165,6 +165,7 @@ pnpm run test:integration
 - **Storybook**: `.storybook/main.ts` — Storybook config
 - **API endpoints**: `endpoints/endpoints.ts`
 - **Env defaults**: `envs/env.default`
+- **Skills CLI**: `packages/tools/cli` — the package's `bin` (`skills show`, `list`, `add`, `sync`, `remove`). `src/cli.ts` (commands, version check), `src/install.ts` (add, sync, remove), `src/prompts.ts` (readline prompts), `src/skills.ts` (shared helpers); tests in `src/*.test.ts` with helpers in `src/__testing__/`. Skill sources live in `packages/tools/cli/skills/`. `pnpm run build` builds the SDK, then the CLI into `dist/cli/` and copies `skills/` into `dist/skills/` with the package version stamped in each `SKILL.md`
 
 ### Quick Find Commands
 

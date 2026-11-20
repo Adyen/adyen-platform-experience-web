@@ -1,7 +1,6 @@
-import type { WithDismissCallback } from '@integration-components/types';
 import type { PayByLinkTranslationKey } from '../shared/types';
 
-export interface PaymentLinkDetailsProps extends WithDismissCallback {
+export interface PaymentLinkDetailsProps {
     id: string;
 }
 
@@ -19,6 +18,8 @@ export type ListItemData = {
     key: PayByLinkTranslationKey;
     value?: string;
     isCopyable?: boolean;
+    /** Names the copy button after its own field, so the buttons in a list stay distinguishable. */
+    copyAriaLabelKey?: PayByLinkTranslationKey;
     linkUrl?: string;
 };
 

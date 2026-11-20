@@ -7,9 +7,8 @@ const cache = new WeakMap<(...args: any[]) => any, IBalanceAccountBase[]>();
 const pendingRequests = new WeakMap<(...args: any[]) => any, Promise<IBalanceAccountBase[]>>();
 
 /**
- * Fetches the list of balance
- * accounts once per endpoint (cached by endpoint callable reference), optionally filtering by a
- * target balanceAccountId. Returns reactive refs for the request state.
+ * Fetches the list of balance accounts once per endpoint (cached by endpoint callable reference),
+ * optionally filtering by a target balanceAccountId. Returns reactive refs for the request state.
  */
 export function useBalanceAccounts(balanceAccountId?: () => string | undefined, enabled?: () => boolean | undefined) {
     const config = useConfigContext();
@@ -82,12 +81,7 @@ export function useBalanceAccounts(balanceAccountId?: () => string | undefined, 
         return allBalanceAccounts.value?.filter(account => !id || id === account.id);
     });
 
-    const isBalanceAccountIdWrong = computed(() => {
-        const id = balanceAccountId?.();
-        return !!id && !!allBalanceAccounts.value?.length && balanceAccounts.value?.length === 0;
-    });
-
-    return { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } as const;
+    return { balanceAccounts, isFetching, error } as const;
 }
 
 export default useBalanceAccounts;

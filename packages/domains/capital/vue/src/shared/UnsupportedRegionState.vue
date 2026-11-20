@@ -1,21 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import type { BentoButtonActionsList } from '@adyen/bento-vue3';
-import EmptyState from './EmptyState/EmptyState.vue';
-import { useCoreContext } from '@integration-components/core/vue';
+import { DataOverviewError, type ErrorMessageInfo } from '@integration-components/composables-vue';
 
-const props = defineProps<{
-    onDismiss?: () => void;
-}>();
-
-const { i18n } = useCoreContext();
-const actions = computed<BentoButtonActionsList | undefined>(() =>
-    props.onDismiss ? [{ title: i18n.get('capital.common.actions.goBack'), event: props.onDismiss }] : undefined
-);
+const errorInfo = {
+    title: 'capital.common.emptyStates.unsupportedRegion.title',
+    messages: ['capital.common.emptyStates.unsupportedRegion.message'],
+} satisfies ErrorMessageInfo;
 </script>
 
 <template>
-    <EmptyState :title="i18n.get('capital.common.errors.unsupportedRegion.title')" type="highlight" :actions="actions">
-        {{ i18n.get('capital.common.errors.unsupportedRegion') }}
-    </EmptyState>
+    <DataOverviewError :error-info="errorInfo" type="highlight" />
 </template>

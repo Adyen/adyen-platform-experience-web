@@ -93,13 +93,13 @@ function onDefenseReasonChange(reason: string) {
 
 const reasonActionButtons = computed(() => [
     {
-        title: i18n.get('disputes.management.defend.common.actions.continue'),
+        title: i18n.get('disputes.management.defend.continue'),
         disabled: isReasonSubmitting.value,
         event: () => void submitDefenseReason(),
         state: isReasonSubmitting.value ? 'loading' : 'start',
     },
     {
-        title: i18n.get('disputes.management.common.actions.goBack'),
+        title: i18n.get('disputes.common.goBack.label'),
         disabled: isReasonSubmitting.value,
         event: goBack,
         variant: 'secondary',
@@ -115,7 +115,7 @@ const reasonActionButtons = computed(() => [
         <SelectDropdown
             :items="defenseReasons"
             :model-value="selectedDefenseReason"
-            :placeholder="i18n.get('disputes.management.defend.common.inputs.reasonSelect.a11y.label')"
+            :placeholder="i18n.get('disputes.management.defend.reasonSelect.a11yLabel')"
             :disabled="isReasonSubmitting"
             @update:model-value="onDefenseReasonChange"
         />
@@ -142,7 +142,7 @@ const reasonActionButtons = computed(() => [
     </BentoAlert>
     <BentoAlert v-if="reasonError" type="critical" role="alert">
         <template #description>
-            {{ i18n.get('disputes.management.common.errors.unavailable') }}
+            {{ i18n.get('disputes.management.errors.unavailable') }}
         </template>
     </BentoAlert>
     <div :class="flowStyles.actions">

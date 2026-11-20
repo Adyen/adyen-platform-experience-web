@@ -96,9 +96,26 @@ test.describe('Core theme', () => {
             nestedRoot.setAttribute('data-adyen-pe-theme-root', 'nested-light-core');
             outerRoot.appendChild(nestedRoot);
 
-            return getComputedStyle(nestedRoot).getPropertyValue('--adyen-sdk-color-background-primary').trim();
+            return getComputedStyle(nestedRoot).getPropertyValue('--adyen-pe-bento-color-background-primary').trim();
         });
 
         expect(nestedBackground).toBe('#ffffff');
+    });
+
+    test('sets no public theme variables outside its theme roots, so other Adyen SDKs on the page keep their own', async ({ page }) => {
+        const pageVariables = await page.evaluate(() => {
+            const styles = getComputedStyle(document.documentElement);
+            return ['--adyen-sdk-color-background-primary', '--adyen-sdk-color-label-primary', '--adyen-sdk-color-outline-primary'].map(name =>
+                styles.getPropertyValue(name).trim()
+            );
+        });
+
+        expect(pageVariables).toEqual(['', '', '']);
+    });
+
+    test('applies public variables a merchant sets on the page', async ({ page }) => {
+        await page.evaluate(() => document.documentElement.style.setProperty('--adyen-sdk-color-background-primary', '#123456'));
+
+        await expect(page.getByRole('columnheader').first()).toHaveCSS('background-color', 'rgb(18, 52, 86)');
     });
 });

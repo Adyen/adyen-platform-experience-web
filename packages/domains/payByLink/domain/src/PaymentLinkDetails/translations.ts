@@ -9,7 +9,7 @@ import { PAYMENT_LINK_STATUSES, PAYMENT_LINK_TYPES } from '../PaymentLinksOvervi
 
 const originalValueFallback: TranslationFallbackFunction = (_, value) => value;
 
-const paymentLinkStatusKey = createKeyFactoryFromConfig({ prefix: 'payByLink.common.status.' });
+const paymentLinkStatusKey = createKeyFactoryFromConfig({ prefix: 'payByLink.common.statuses.' });
 
 const paymentLinkStatusKeyFactory: KeyFactoryFunction = status =>
     status && (PAYMENT_LINK_STATUSES[status as IPaymentLinkStatus] ?? paymentLinkStatusKey(status));

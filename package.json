@@ -1,6 +1,6 @@
 {
   "name": "@adyen/adyen-platform-experience-web",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-beta",
   "keywords": [
     "adyen",
     "adyen-pe",
@@ -24,9 +24,16 @@
   "files": [
     "dist/**"
   ],
+  "bin": {
+    "adyen-platform-experience-web": "./dist/cli/index.js"
+  },
   "sideEffects": [
     "**/*.css",
-    "**/global.{js,ts}"
+    "**/global.{js,ts}",
+    "**/external/chroma-js/**",
+    "**/external/preact/compat/**",
+    "**/external/@preact/signals/**",
+    "**/external/@adyen/kyc-components/**"
   ],
   "main": "./dist/cjs/index.cjs",
   "module": "./dist/es/packages/sdk/src/index.js",
@@ -47,7 +54,7 @@
     "./adyen-platform-experience-web.css": "./dist/adyen-platform-experience-web.css"
   },
   "scripts": {
-    "build": "nx run @integration-components/sdk:build",
+    "build": "nx run @integration-components/tools-cli:build",
     "build:umd": "nx run @adyen/adyen-platform-experience-web:build:umd",
     "build:umd:test": "nx run @adyen/adyen-platform-experience-web:build:umd:test",
     "build:analyse": "nx run @adyen/adyen-platform-experience-web:build:analyse",
@@ -79,6 +86,8 @@
     "test:integration:ui": "pnpm run test:integration --ui",
     "test:release": "node --test scripts/release-v1/*.test.mjs scripts/npm-publish/*.test.mjs",
     "translations:check": "node scripts/process-translations/sync-sdk-catalogs.mjs --check",
+    "translations:grammar": "node scripts/process-translations/lint-keyspace.mjs",
+    "translations:keys": "node scripts/process-translations/check-key-references.mjs",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
     "translations:split": "node scripts/process-translations/split-sdk-catalogs.mjs",
     "translations:split:check": "node scripts/process-translations/split-sdk-catalogs.mjs --check",

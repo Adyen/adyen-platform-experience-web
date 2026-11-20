@@ -18,7 +18,6 @@ const props = defineProps<{
     balanceAccountDescription?: string;
     extraFields?: Record<string, any> | undefined;
     dataCustomization?: { details?: PayoutDetailsCustomization };
-    onDismiss?: () => void;
 }>();
 
 const { i18n } = useCoreContext();
@@ -98,24 +97,13 @@ const extraDetails = computed<ExtraDetailItem[]>(() => {
 
 const buttonActions = computed(() => {
     const fields = props.extraFields;
-    const actions = Object.values(fields ?? {})
+    return Object.values(fields ?? {})
         .filter(field => field?.type === 'button')
         .map(field => ({
             title: field.value,
             event: field.config?.action,
             variant: 'secondary' as const,
         }));
-
-    // The dismiss action is hidden inside overview modals, which have their own close affordance.
-    if (props.onDismiss && !withinModal) {
-        actions.push({
-            title: i18n.get('payouts.details.common.actions.goBack'),
-            event: props.onDismiss,
-            variant: 'secondary' as const,
-        });
-    }
-
-    return actions;
 });
 
 const titleClass = computed(() => [styles.title, extraDetails.value.length ? styles.titleWithExtraDetails : '']);
@@ -203,7 +191,7 @@ const formatAmount = (amount: { value: number; currency: string }) => formatAmou
                         <template #header>
                             <div :class="styles.cardHeader">
                                 <BentoTypography variant="body" strongest>
-                                    {{ i18n.get('payouts.details.breakdown.fields.fundsCaptured') }}
+                                    {{ i18n.get('payouts.details.breakdown.fundsCaptured') }}
                                 </BentoTypography>
                                 <BentoTypography variant="body">
                                     {{ formatAmount(payoutInner.fundsCapturedAmount) }}
@@ -217,7 +205,7 @@ const formatAmount = (amount: { value: number; currency: string }) => formatAmou
                                         <table :class="styles.breakdownTable" data-testid="payout-funds-captured-breakdown">
                                             <caption :class="styles.visuallyHidden">
                                                 {{
-                                                    i18n.get('payouts.details.breakdown.fields.fundsCaptured')
+                                                    i18n.get('payouts.details.breakdown.fundsCaptured')
                                                 }}
                                             </caption>
                                             <tbody>
@@ -236,7 +224,7 @@ const formatAmount = (amount: { value: number; currency: string }) => formatAmou
                         <template #content>
                             <div :class="styles.cardHeader">
                                 <BentoTypography variant="body" strongest>
-                                    {{ i18n.get('payouts.details.breakdown.fields.fundsCaptured') }}
+                                    {{ i18n.get('payouts.details.breakdown.fundsCaptured') }}
                                 </BentoTypography>
                                 <BentoTypography variant="body">
                                     {{ formatAmount(payoutInner.fundsCapturedAmount) }}
@@ -253,7 +241,7 @@ const formatAmount = (amount: { value: number; currency: string }) => formatAmou
                     <template #header>
                         <div :class="styles.cardHeader">
                             <BentoTypography variant="body" strongest>
-                                {{ i18n.get('payouts.details.breakdown.fields.adjustments') }}
+                                {{ i18n.get('payouts.details.breakdown.adjustments') }}
                             </BentoTypography>
                             <BentoTypography v-if="payoutInner.adjustmentAmount" variant="body">
                                 {{ formatAmount(payoutInner.adjustmentAmount) }}
@@ -267,12 +255,12 @@ const formatAmount = (amount: { value: number; currency: string }) => formatAmou
                                     <table :class="styles.breakdownTable" data-testid="payout-adjustments-additions-breakdown">
                                         <caption :class="styles.visuallyHidden">
                                             {{
-                                                i18n.get('payouts.details.breakdown.fields.additions')
+                                                i18n.get('payouts.details.breakdown.additions')
                                             }}
                                         </caption>
                                         <thead>
                                             <tr>
-                                                <th scope="col" colspan="2">{{ i18n.get('payouts.details.breakdown.fields.additions') }}</th>
+                                                <th scope="col" colspan="2">{{ i18n.get('payouts.details.breakdown.additions') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -291,12 +279,12 @@ const formatAmount = (amount: { value: number; currency: string }) => formatAmou
                                     <table :class="styles.breakdownTable" data-testid="payout-adjustments-subtractions-breakdown">
                                         <caption :class="styles.visuallyHidden">
                                             {{
-                                                i18n.get('payouts.details.breakdown.fields.subtractions')
+                                                i18n.get('payouts.details.breakdown.subtractions')
                                             }}
                                         </caption>
                                         <thead>
                                             <tr>
-                                                <th scope="col" colspan="2">{{ i18n.get('payouts.details.breakdown.fields.subtractions') }}</th>
+                                                <th scope="col" colspan="2">{{ i18n.get('payouts.details.breakdown.subtractions') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -315,7 +303,7 @@ const formatAmount = (amount: { value: number; currency: string }) => formatAmou
                     <template #content>
                         <div :class="[styles.cardHeader, styles.cardHeaderSummary]">
                             <BentoTypography variant="body" strongest>
-                                {{ i18n.get('payouts.details.breakdown.fields.adjustments') }}
+                                {{ i18n.get('payouts.details.breakdown.adjustments') }}
                             </BentoTypography>
                             <BentoTypography v-if="payoutInner.adjustmentAmount" variant="body">
                                 {{ formatAmount(payoutInner.adjustmentAmount) }}
@@ -331,7 +319,7 @@ const formatAmount = (amount: { value: number; currency: string }) => formatAmou
                     <template #content>
                         <div :class="[styles.cardHeader, styles.cardHeaderSummary]">
                             <BentoTypography variant="body" strongest>
-                                {{ i18n.get('payouts.details.breakdown.fields.netPayout') }}
+                                {{ i18n.get('payouts.details.breakdown.netPayout') }}
                             </BentoTypography>
                             <BentoTypography v-if="payoutInner.payoutAmount" variant="body" strongest>
                                 {{ formatAmount(payoutInner.payoutAmount) }}
@@ -347,7 +335,7 @@ const formatAmount = (amount: { value: number; currency: string }) => formatAmou
             <template #content>
                 <div :class="[styles.cardHeader, styles.cardHeaderSummary]">
                     <BentoTypography variant="body">
-                        {{ i18n.get('payouts.details.breakdown.fields.remainingAmount') }}
+                        {{ i18n.get('payouts.details.breakdown.remainingAmount') }}
                     </BentoTypography>
                     <BentoTypography variant="body">
                         {{ formatAmount(payoutInner.unpaidAmount) }}

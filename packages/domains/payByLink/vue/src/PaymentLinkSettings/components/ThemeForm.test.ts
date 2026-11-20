@@ -164,7 +164,7 @@ describe('ThemeForm image submission', () => {
         await onSave();
 
         expect(updatePayByLinkTheme).not.toHaveBeenCalled();
-        expect(target.querySelector('[role="alert"]')).toHaveTextContent('payByLink.settings.common.alerts.validationError');
+        expect(target.querySelector('[role="alert"]')).toHaveTextContent('payByLink.settings.alerts.validation.error');
     });
 
     test('shows the validation alert as soon as a logo is rejected', async () => {
@@ -172,7 +172,7 @@ describe('ThemeForm image submission', () => {
         uploader('logo')['onError:upload'](true);
         await nextTick();
 
-        expect(target.querySelector('[role="alert"]')).toHaveTextContent('payByLink.settings.common.alerts.validationError');
+        expect(target.querySelector('[role="alert"]')).toHaveTextContent('payByLink.settings.alerts.validation.error');
     });
 
     test('changing the brand name does not bypass a logo validation error', async () => {
@@ -183,7 +183,7 @@ describe('ThemeForm image submission', () => {
         await onSave();
 
         expect(updatePayByLinkTheme).not.toHaveBeenCalled();
-        expect(target.querySelector('[role="alert"]')).toHaveTextContent('payByLink.settings.common.alerts.validationError');
+        expect(target.querySelector('[role="alert"]')).toHaveTextContent('payByLink.settings.alerts.validation.error');
     });
 
     test('removing an invalid logo clears its validation error and allows saving', async () => {
@@ -212,7 +212,7 @@ describe('ThemeForm image submission', () => {
         await onSave();
 
         expect(updatePayByLinkTheme).not.toHaveBeenCalled();
-        expect(target.querySelector('[role="alert"]')).toHaveTextContent('payByLink.settings.common.alerts.validationError');
+        expect(target.querySelector('[role="alert"]')).toHaveTextContent('payByLink.settings.alerts.validation.error');
     });
 
     test('submits a valid replacement after an upload error', async () => {

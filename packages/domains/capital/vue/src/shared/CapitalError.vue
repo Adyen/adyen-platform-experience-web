@@ -4,23 +4,20 @@ import type { BentoButtonActionsList } from '@adyen/bento-vue3';
 import { AdyenPlatformExperienceError, AdyenErrorResponse } from '@integration-components/core';
 import { getCapitalErrorConfig } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
-import EmptyState from './EmptyState/EmptyState.vue';
+import { DataOverviewError } from '@integration-components/composables-vue';
 
 const props = defineProps<{
     error: AdyenErrorResponse | undefined;
     onContactSupport?: () => void;
-    onDismiss?: () => void;
     onGoBack?: () => void;
 }>();
 
 const { i18n, refreshComponent } = useCoreContext();
 const errorConfig = computed(() => getCapitalErrorConfig(props.error as AdyenPlatformExperienceError | undefined, props.onContactSupport));
-const title = computed(() => i18n.get(errorConfig.value.title));
 
-const messages = computed(() => {
-    const { messages, requestId } = errorConfig.value;
-    const options = requestId ? { values: { requestId } } : undefined;
-    return messages.map(key => ({ key, text: i18n.get(key, options) }));
+const errorInfo = computed(() => {
+    const { title, messages, requestId } = errorConfig.value;
+    return { title, messages, requestId };
 });
 
 const actions = computed<BentoButtonActionsList>(() => {
@@ -29,24 +26,20 @@ const actions = computed<BentoButtonActionsList>(() => {
 
     if (onContactSupport) {
         actionsList.push({
-            title: i18n.get('capital.common.actions.contactSupport.labels.reachOut'),
+            title: i18n.get('capital.common.contactSupport.label'),
             event: onContactSupport,
             variant: 'primary',
         });
     } else if (shouldRefreshComponent) {
         actionsList.push({
-            title: i18n.get('capital.common.actions.refresh.labels.default'),
+            title: i18n.get('capital.common.refresh.label'),
             event: () => refreshComponent?.(),
             variant: 'primary',
         });
     }
 
-    if (props.onDismiss) {
-        actionsList.push({ title: i18n.get('capital.common.actions.goBack'), event: props.onDismiss, variant: 'secondary' });
-    }
-
     if (props.onGoBack) {
-        actionsList.push({ title: i18n.get('capital.common.actions.goBack'), event: props.onGoBack, variant: 'secondary' });
+        actionsList.push({ title: i18n.get('capital.common.goBack.label'), event: props.onGoBack, variant: 'secondary' });
     }
 
     return actionsList;
@@ -54,10 +47,5 @@ const actions = computed<BentoButtonActionsList>(() => {
 </script>
 
 <template>
-    <EmptyState type="error" :title="title" :actions="actions">
-        <template v-for="(message, index) in messages" :key="message.key">
-            <br v-if="index > 0" />
-            {{ message.text }}
-        </template>
-    </EmptyState>
+    <DataOverviewError type="error" :error-info="errorInfo" :actions="actions" />
 </template>

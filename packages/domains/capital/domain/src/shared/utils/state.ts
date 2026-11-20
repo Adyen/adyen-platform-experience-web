@@ -1,8 +1,9 @@
-import type { ICapitalState, IDynamicOffersConfig, IGrant, IGrantOfferResponseDTO } from '@integration-components/types';
+import type { ICapitalState, IDynamicOffersConfig, IGrant, IOffer } from '@integration-components/types';
+import { getIsContractTypeSupported } from './contractType';
 import { type SupportedRegions } from './regions';
 
 export type EnhancedCapitalState = {
-    dynamicOfferConfig: ICapitalState['dynamicOffer'];
+    dynamicOfferConfig: IDynamicOffersConfig | undefined;
     hasGrants: boolean;
     isRegionSupported: boolean;
     region?: string;
@@ -11,7 +12,7 @@ export type EnhancedCapitalState = {
 };
 
 export type FinancingDetails = Pick<
-    IGrantOfferResponseDTO,
+    IOffer,
     | 'aprBasisPoints'
     | 'expectedRepaymentPeriodDays'
     | 'feesAmount'
@@ -37,8 +38,8 @@ export const getEnhancedCapitalState = (
 
     const stateActiveOrPendingGrants = state?.activeOrPendingGrants ?? [];
     const activeOrPendingGrants = requestedGrant ? [requestedGrant, ...stateActiveOrPendingGrants] : stateActiveOrPendingGrants;
-    const dynamicOffer = state.dynamicOffer;
     const region = state.legalEntity?.region;
+    const dynamicOffer = state.dynamicOffer && getIsContractTypeSupported(state.dynamicOffer.contractType, region) ? state.dynamicOffer : undefined;
 
     const isRegionSupported = !!region && supportedRegions.includes(region);
     const hasGrants = !!(activeOrPendingGrants.length || state.hasClosedGrants);

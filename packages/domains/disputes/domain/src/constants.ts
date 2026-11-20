@@ -27,9 +27,9 @@ export const DISPUTE_REASON_CATEGORIES = {
 } satisfies Record<IDispute['reason']['category'], DisputesTranslationKey>;
 
 export const DISPUTE_STATUS_GROUPS = {
-    CHARGEBACKS: 'disputes.overview.common.statusGroups.chargebacks',
-    FRAUD_ALERTS: 'disputes.overview.common.statusGroups.fraudAlerts',
-    ONGOING_AND_CLOSED: 'disputes.overview.common.statusGroups.ongoingAndClosed',
+    CHARGEBACKS: 'disputes.overview.statusGroups.chargebacks',
+    FRAUD_ALERTS: 'disputes.overview.statusGroups.fraudAlerts',
+    ONGOING_AND_CLOSED: 'disputes.overview.statusGroups.ongoingAndClosed',
 } satisfies Record<IDisputeStatusGroup, DisputesTranslationKey>;
 
 export const DISPUTE_STATUSES = {

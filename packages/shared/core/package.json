@@ -26,8 +26,9 @@
         "./*": "./src/*.ts"
     },
     "dependencies": {
-        "@adyen/adyen-shared-web": "0.4.0",
+        "@adyen/adyen-shared-web": "0.5.0",
         "@adyen/bento-design-tokens": "catalog:",
+        "@adyen/ui-assets-icons-24": "catalog:",
         "@integration-components/assets": "workspace:*",
         "@integration-components/style": "workspace:*",
         "@integration-components/types": "workspace:*",
@@ -39,7 +40,7 @@
     "peerDependencies": {
         "@adyen/bento-vue3": "catalog:",
         "vue": "catalog:",
-        "vue-i18n": "^11"
+        "vue-i18n": "catalog:"
     },
     "peerDependenciesMeta": {
         "vue": {

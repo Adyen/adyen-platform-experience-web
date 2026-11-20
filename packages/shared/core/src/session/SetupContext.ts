@@ -20,6 +20,19 @@ import type { EndpointName, SetupEndpoint } from '@integration-components/types/
 import type { HttpMethod, HttpOptions } from '../Http/types';
 import { encodeAnalyticsEvent } from '../EventDispatcher/eventDispatcher/utils';
 
+const BASE_URL_VERSION_PLACEHOLDER = '{version}';
+
+/**
+ * Standalone webapps advertise `baseUrl` with a `{version}` placeholder so the SDK keeps choosing the API version.
+ * Splitting at the placeholder lets `http()` insert that version, with anything after it prefixed to the path.
+ */
+const resolveEndpointBaseUrl = (baseUrl: string, path: string) => {
+    const index = baseUrl.indexOf(BASE_URL_VERSION_PLACEHOLDER);
+    if (index < 0) return { loadingContext: baseUrl, path };
+    const pathPrefix = baseUrl.slice(index + BASE_URL_VERSION_PLACEHOLDER.length);
+    return { loadingContext: baseUrl.slice(0, index), path: `${pathPrefix}/${path}` };
+};
+
 // Declaration merging is used here to type runtime-defined class members
 // without emitting class field initializers (which would conflict with
 // constructor-time assignments). This pattern is also compatible with
@@ -30,6 +43,7 @@ export interface SetupContext {
     analyticsPayload?: Array<URLSearchParams> | undefined;
     analyticsEnabled?: boolean;
     refresh: (signal: AbortSignal) => Promise<void>;
+    sendAnalyticsEvent: (payload: URLSearchParams) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -63,10 +77,17 @@ export class SetupContext {
                     this._extraConfig = deepFreeze(rest);
                     if (this.analyticsEnabled) {
                         this._setAnalyticsUserProfile()?.then(() => {
-                            this.setCustomTranslationsAnalytics();
+                            this.flushAnalyticsPayloads();
                         });
                     }
                 }));
+        };
+
+        this.sendAnalyticsEvent = payload => {
+            if (!this.analyticsEnabled) return;
+
+            this.analyticsPayload = [...(this.analyticsPayload ?? []), payload];
+            void this.flushAnalyticsPayloads();
         };
     }
 
@@ -76,6 +97,45 @@ export class SetupContext {
 
     get extraConfig() {
         return this._extraConfig;
+    }
+
+    /**
+     * Sends every queued analytics payload through the `sendTrackEvent` endpoint.
+     * The queue is detached first, so concurrent flushes (e.g. a setup refresh
+     * completing while a runtime event is sent) cannot deliver a payload twice.
+     * Failed payloads are re-queued and retried on the next flush.
+     */
+    private async flushAnalyticsPayloads(): Promise<void> {
+        const payloads = this.analyticsPayload;
+        if (!payloads || payloads.length === 0) return;
+
+        this.analyticsPayload = undefined;
+
+        if (!this._endpoints?.sendTrackEvent) {
+            // The setup endpoint has not resolved yet; keep the payloads queued for the next refresh.
+            this.analyticsPayload = [...(this.analyticsPayload ?? []), ...payloads];
+            return;
+        }
+
+        const retryPayload: URLSearchParams[] = [];
+        await Promise.all(
+            payloads.map((payload: URLSearchParams) => {
+                return this._endpoints.sendTrackEvent!(
+                    {
+                        body: payload,
+                        contentType: 'application/x-www-form-urlencoded',
+                        keepalive: true,
+                    },
+                    EMPTY_OBJECT
+                ).catch(() => {
+                    retryPayload.push(payload);
+                });
+            })
+        );
+
+        if (retryPayload.length > 0) {
+            this.analyticsPayload = [...(this.analyticsPayload ?? []), ...retryPayload];
+        }
     }
 
     private _fetchSetupEndpoint(signal: AbortSignal) {
@@ -103,29 +163,6 @@ export class SetupContext {
         return;
     }
 
-    private async setCustomTranslationsAnalytics() {
-        if (this.analyticsPayload && this.analyticsPayload?.length > 0 && this._endpoints && this._endpoints.sendTrackEvent) {
-            const retryPayload: URLSearchParams[] = [];
-            Promise.all(
-                this.analyticsPayload.map((payload: URLSearchParams) => {
-                    return this._endpoints.sendTrackEvent!(
-                        {
-                            body: payload,
-                            contentType: 'application/x-www-form-urlencoded',
-                            keepalive: true,
-                        },
-                        EMPTY_OBJECT
-                    ).catch(() => {
-                        retryPayload.push(payload);
-                    });
-                })
-            ).finally(() => {
-                this.analyticsPayload = retryPayload.length > 0 ? retryPayload : undefined;
-            });
-        }
-        return;
-    }
-
     private _getEndpointsProxy(endpoints: SetupEndpoint) {
         const availableEndpoints: Set<EndpointName> = new Set(Object.keys(endpoints) as (keyof typeof endpoints)[]);
         const sessionAwareEndpoints: SetupContextObject['endpoints'] = struct();
@@ -148,13 +185,15 @@ export class SetupContext {
                     const overrideHttpOptions: Partial<HttpOptions> = apiVersion ? { apiVersion } : EMPTY_OBJECT;
 
                     sessionAwareEndpoints[endpoint] ??= (() => {
-                        const { method = 'GET', url } = endpoints[endpoint];
+                        const { baseUrl, method = 'GET', url } = endpoints[endpoint];
                         if (isUndefined(url || undefined)) return;
 
                         return ((...args: Parameters<EndpointHttpCallables>) => {
+                            const baseHttpOptions = this._getHttpOptions(method as HttpMethod, url!, ...args);
                             const httpOptions = {
-                                ...this._getHttpOptions(method as HttpMethod, url!, ...args),
+                                ...baseHttpOptions,
                                 ...overrideHttpOptions,
+                                ...(baseUrl && resolveEndpointBaseUrl(baseUrl, baseHttpOptions.path)),
                             };
                             return this._session.http(this._beforeHttp, httpOptions) as Promise<EndpointSuccessResponse<Endpoint>>;
                         }) as EndpointHttpCallables<Endpoint>;

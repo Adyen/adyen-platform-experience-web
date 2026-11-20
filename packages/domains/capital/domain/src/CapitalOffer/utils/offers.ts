@@ -1,11 +1,11 @@
-import type { ICreateGrantOfferRequest, IGrantOfferResponseDTO } from '@integration-components/types';
+import type { ICreateOfferRequest, IOffer } from '@integration-components/types';
 import { DEFAULT_TERM } from '../constants';
 
-export const getOffersByTerm = (offers: readonly IGrantOfferResponseDTO[]) => {
+export const getOffersByTerm = (offers: readonly IOffer[]) => {
     return Object.fromEntries(offers.map(offer => [offer.expectedRepaymentPeriodDays, offer]));
 };
 
-export const getAvailableTerms = (offersByTerm: Record<number, IGrantOfferResponseDTO>) => {
+export const getAvailableTerms = (offersByTerm: Record<number, IOffer>) => {
     return Object.keys(offersByTerm).map(Number);
 };
 
@@ -19,11 +19,11 @@ export const adjustSelectedTerm = (availableTerms: readonly number[], selectedTe
     return availableTerms.reduce((nearest, term) => (Math.abs(term - selectedTerm) < Math.abs(nearest - selectedTerm) ? term : nearest));
 };
 
-export const getOfferForTerm = (offersByTerm: Record<number, IGrantOfferResponseDTO>, term: number | undefined) => {
+export const getOfferForTerm = (offersByTerm: Record<number, IOffer>, term: number | undefined) => {
     return term === undefined ? undefined : offersByTerm[term];
 };
 
-export const getCreateGrantOfferBody = (offer: IGrantOfferResponseDTO): ICreateGrantOfferRequest => {
+export const getCreateGrantOfferBody = (offer: IOffer): ICreateOfferRequest => {
     return {
         amount: offer.grantAmount.value,
         currency: offer.grantAmount.currency,

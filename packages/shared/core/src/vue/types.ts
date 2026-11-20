@@ -1,11 +1,21 @@
 import type { AuthSession } from '../session/AuthSession';
 import type { AssetOptions } from '../Assets/Assets';
-import type { CoreOptions } from '../types';
+import type { CoreOptions, CoreUpdateOptions } from '../types';
 import type { I18n } from './Context/types';
 import type { GlobalAppearance } from '@integration-components/types';
 import type Localization from '../Localization';
 
-export type { AnalyticsConfig, CoreOptions, CustomTheme, DevEnvironment, OnErrorHandler, ThemeMode, ThemeVariables } from '../types';
+export type {
+    AnalyticsConfig,
+    CoreOptions,
+    CoreUpdateOptions,
+    CustomTheme,
+    DevEnvironment,
+    OnErrorHandler,
+    ThemeMode,
+    ThemeVariables,
+    UpdateTranslations,
+} from '../types';
 export type { DataGridAppearance, DensityMode, GlobalAppearance, WithDataGridAppearance } from '@integration-components/types';
 export type { SessionObject, SessionRequest } from '../ConfigContext.types';
 
@@ -26,7 +36,7 @@ export interface CoreInstance {
     getCdnConfig: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
     getCdnDataset: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
     getImageAsset: (props: AssetOptions) => string;
-    update: (options: Partial<CoreOptions>) => Promise<CoreInstance>;
+    update: (options: CoreUpdateOptions) => Promise<CoreInstance>;
     registerThemeRoot: (root: Element) => void;
     unregisterThemeRoot: (root: Element) => void;
 }

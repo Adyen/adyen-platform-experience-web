@@ -34,17 +34,17 @@ const dropdownProps = computed<BentoInputDropdownProps>(() => ({
     items: currencyItems.value,
     modelValue: currencyValue.value,
     readonly: currencyConfig.value.readOnly,
-    'aria-label': i18n.get('payByLink.creation.fields.amount.currency.ariaLabel'),
-    placeholder: i18n.get('payByLink.creation.inputs.select.placeholder'),
+    'aria-label': i18n.get('payByLink.creation.amount.currency.a11yLabel'),
+    placeholder: i18n.get('payByLink.creation.select'),
     class: styles.amountCurrency,
 }));
 
 watch(
     () => props.currencyOptions,
     options => {
-        if (options?.length === 1 && options[0] && !currencyValue.value) {
-            wizard.setValue('amount.currency', options[0], options[0]);
-        }
+        if (!options?.length || options.includes(currencyValue.value)) return;
+        if (options.length === 1 && options[0]) wizard.setValue('amount.currency', options[0], options[0]);
+        else if (currencyValue.value) wizard.setValue('amount.currency', '');
     },
     { immediate: true }
 );

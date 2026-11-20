@@ -53,7 +53,7 @@ export const WrongStoreIds: ElementStory<PaymentLinksOverviewExternalProps> = {
     },
 };
 
-type SubComponentConfigProps = Pick<PaymentLinksOverviewComponentProps, 'paymentLinkCreation' | 'paymentLinkSettings'>;
+type SubComponentConfigProps = Pick<PaymentLinksOverviewComponentProps, 'paymentLinkCreation'>;
 
 export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternalProps, SubComponentConfigProps> = {
     name: 'With props to sub-components',
@@ -66,9 +66,6 @@ export const WithPropsToSubComponents: ElementStory<PaymentLinksOverviewExternal
                 },
             },
         },
-        paymentLinkSettings: {
-            onDismiss: () => {},
-        },
     },
 };
 
@@ -76,6 +73,7 @@ export const EmptyList: ElementStory<PaymentLinksOverviewExternalProps> = {
     name: 'Empty List',
     args: {
         mockedApi: true,
+        onContactSupport: 'Enabled',
     },
     parameters: {
         msw: {

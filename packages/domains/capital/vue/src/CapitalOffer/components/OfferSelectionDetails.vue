@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import type { IGrantOfferResponseDTO } from '@integration-components/types';
+import type { IContractType, IOffer } from '@integration-components/types';
 import { useFinancingDetailItems, type FinancingDetailItemKey } from '../composables/useFinancingDetailItems';
 import FinancingDetailList from './FinancingDetailList/FinancingDetailList.vue';
 import { BentoCard } from '@adyen/bento-vue3';
-import { useCoreContext } from '@integration-components/core/vue';
+import { useContractCopy } from '../../shared/composables/useContractCopy';
+import { SHARED_CONTRACT_KEYS } from '@integration-components/capital/domain';
 
 const props = defineProps<{
+    contractType: IContractType;
     hasExpectedRepaymentPeriod: boolean;
-    offer: IGrantOfferResponseDTO;
+    offer: IOffer;
 }>();
 
-const { i18n } = useCoreContext();
-const { getItems } = useFinancingDetailItems();
+const { getContractCopy } = useContractCopy(() => props.contractType);
+const { getItems } = useFinancingDetailItems(() => props.contractType);
 const itemKeys = computed(
     () =>
         [
@@ -28,7 +30,7 @@ const items = computed(() => getItems(props.offer, itemKeys.value));
 
 <template>
     <BentoCard background="secondary">
-        {{ i18n.get('capital.common.termsTitle') }}
+        {{ getContractCopy(SHARED_CONTRACT_KEYS.termsTitle) }}
         <template #content>
             <FinancingDetailList :items="items" />
         </template>

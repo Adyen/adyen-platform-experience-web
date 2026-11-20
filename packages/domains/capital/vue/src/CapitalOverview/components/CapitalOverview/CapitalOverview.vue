@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import { OnFundsRequestCallback } from '@integration-components/capital/domain';
+import { OnSubmitCallback } from '@integration-components/capital/domain';
 import type { BentoButtonActionsList } from '@adyen/bento-vue3';
 import { IGrant } from '@integration-components/types';
 import { CapitalOverviewComponentProps } from '../../types';
@@ -9,12 +9,14 @@ import { useEnhancedCapitalState } from '../../../shared/composables/useEnhanced
 import CapitalHeader from '../../../shared/CapitalHeader/CapitalHeader.vue';
 import GrantList from '../GrantList/GrantList.vue';
 import CapitalError from '../../../shared/CapitalError.vue';
-import OfferAlert from '../OfferAlert.vue';
+import OfferAlert from '../OfferAlert/OfferAlert.vue';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../../../../domain/src/CapitalOverview/constants';
-import { ComponentShell, useLandedPageEvent, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
+import { ComponentShell, ComponentShellState, useLandedPageEvent } from '@integration-components/composables-vue';
+import { CONTRACT_KEYS } from './contractKeys';
 import styles from './CapitalOverview.module.scss';
 import OfferModal from '../OfferModal.vue';
 import UnsupportedRegionState from '../../../shared/UnsupportedRegionState.vue';
+import CapitalOverviewLoadingSkeleton from '../CapitalOverviewLoadingSkeleton/CapitalOverviewLoadingSkeleton.vue';
 
 const props = defineProps<CapitalOverviewComponentProps>();
 
@@ -25,18 +27,19 @@ const { capitalState, error, isLoading } = useEnhancedCapitalState(() => true, r
 const isEarlyRenewal = computed(() => !!capitalState.value?.renewableGrants.length);
 const isOfferModalOpen = ref(false);
 const shouldTrackOfferClose = ref(true);
-const hideTitles = useShouldHideTitles();
 const shellState = computed<ComponentShellState>(() => (isLoading.value ? 'loading' : 'ready'));
+const providerInfo = computed(() => {
+    const key = `capital.common.providerInfo.${capitalState.value?.region}`;
+    return i18n.has(key) ? i18n.get(key) : undefined;
+});
 
 useLandedPageEvent(
-    // TODO: Verify
     () => ({
         ...sharedCapitalOverviewAnalyticsEventProperties,
-        label: 'Capital overview',
         subCategory: 'Grants overview',
+        hasGrants: capitalState.value?.hasGrants,
         hasOffer: !!capitalState.value?.dynamicOfferConfig,
         isEarlyRenewal: isEarlyRenewal.value,
-        hasGrants: capitalState.value?.hasGrants,
     }),
     () => !error.value && !!capitalState.value?.isRegionSupported
 );
@@ -44,11 +47,13 @@ useLandedPageEvent(
 const openOfferModal = () => {
     isOfferModalOpen.value = true;
     shouldTrackOfferClose.value = true;
-    // TODO: Verify
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
-        label: 'Open offer',
         subCategory: 'Grants overview',
+        label: 'Open offer',
+        hasGrants: capitalState.value?.hasGrants,
+        hasOffer: !!capitalState.value?.dynamicOfferConfig,
+        isEarlyRenewal: isEarlyRenewal.value,
     });
 };
 
@@ -57,37 +62,34 @@ const closeOfferModal = () => {
 
     if (!shouldTrackOfferClose.value) return;
 
-    // TODO: Verify
     userEvents.addEvent?.('Clicked button', {
         ...sharedCapitalOverviewAnalyticsEventProperties,
+        subCategory: 'Offer',
         label: 'Dismiss offer',
-        subCategory: 'Grants overview',
     });
 };
 
-const handleFundsRequest: OnFundsRequestCallback = (data, renewsGrantId) => {
+const handleSubmit: OnSubmitCallback = (data, renewsGrantId) => {
     requestedGrant.value = { ...data, renewsGrantId };
     shouldTrackOfferClose.value = false;
     closeOfferModal();
 };
 
 const headerActions = computed<BentoButtonActionsList | undefined>(() => {
-    if (error.value || !capitalState.value?.isRegionSupported || !capitalState.value.dynamicOfferConfig) return undefined;
-    return [
-        {
-            title: i18n.get(
-                capitalState.value.hasGrants ? 'capital.overview.grants.newGrant.actions.newGrant' : 'capital.overview.grants.newGrant.actions.grant'
-            ),
-            event: openOfferModal,
-        },
-    ];
+    const dynamicOfferConfig = capitalState.value?.dynamicOfferConfig;
+    if (error.value || !capitalState.value?.isRegionSupported || !dynamicOfferConfig) return undefined;
+    const titleKeys = capitalState.value.hasGrants ? CONTRACT_KEYS.requestNewGrant : CONTRACT_KEYS.requestFirstGrant;
+    return [{ title: i18n.get(titleKeys[dynamicOfferConfig.contractType]), event: openOfferModal }];
 });
 </script>
 
 <template>
     <div :class="styles.root">
         <ComponentShell :state="shellState">
-            <CapitalHeader :actions="headerActions" :hide-title="hideTitles" :region="capitalState?.region" title-key="capital.common.title" />
+            <template #loading>
+                <CapitalOverviewLoadingSkeleton />
+            </template>
+            <CapitalHeader :actions="headerActions" :subtitle="providerInfo" :title="i18n.get('capital.common.title')" />
             <CapitalError v-if="error" :error="error" :on-contact-support="props.onContactSupport" />
             <template v-else-if="capitalState">
                 <UnsupportedRegionState v-if="!capitalState.isRegionSupported" />
@@ -103,10 +105,5 @@ const headerActions = computed<BentoButtonActionsList | undefined>(() => {
             </template>
         </ComponentShell>
     </div>
-    <OfferModal
-        :is-open="isOfferModalOpen"
-        :on-close="closeOfferModal"
-        :on-contact-support="props.onContactSupport"
-        :on-funds-request="handleFundsRequest"
-    />
+    <OfferModal :is-open="isOfferModalOpen" :on-close="closeOfferModal" :on-contact-support="props.onContactSupport" :on-submit="handleSubmit" />
 </template>
