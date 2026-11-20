@@ -130,6 +130,7 @@ const foldedGroupPattern = /^(?<base>.*[a-z0-9])(?<group>Errors)$/;
  */
 export const ENUM_MIRROR_PATHS = [
     'capital.common.providerInfo',
+    'capital.offer.cashAdvance.regulatoryNotice',
     'capital.offer.summary.legalNotice',
     'common.filters.formats',
     'disputes.common.reasonCategories',

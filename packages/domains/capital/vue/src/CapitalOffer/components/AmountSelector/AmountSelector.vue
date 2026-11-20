@@ -4,7 +4,9 @@ import { BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { useUniqueId } from '@integration-components/composables-vue';
 import type { IDynamicOffersConfig } from '@integration-components/types';
+import { useContractCopy } from '../../../shared/composables/useContractCopy';
 import Slider from '../Slider/Slider.vue';
+import { CONTRACT_KEYS } from './contractKeys';
 import styles from './AmountSelector.module.scss';
 import {
     getDefaultAmountValue,
@@ -22,6 +24,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { getContractCopy } = useContractCopy(() => props.dynamicOfferConfig.contractType);
 const userEvents = useEventDispatcherContext();
 const hasEmittedInitialChangeEvent = ref(false);
 const elementBaseId = useUniqueId();
@@ -75,7 +78,7 @@ const handleInput = (event: Event) => {
     <div :class="styles.root">
         <label :id="labelId" :for="sliderId" :class="styles.label">
             <BentoTypography variant="body" stronger>
-                {{ i18n.get('capital.offer.selection.loan.amountTitle') }}
+                {{ getContractCopy(CONTRACT_KEYS.amountTitle) }}
             </BentoTypography>
         </label>
         <output :aria-labelledby="labelId" :for="sliderId" aria-live="polite">

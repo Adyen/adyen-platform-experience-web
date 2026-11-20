@@ -74,19 +74,19 @@ describe('getExternalCapitalState', () => {
 
     test('indicates if there are grants', async () => {
         await expectCapitalState(CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN, {
-            hasGrants: false,
+            hasCapital: false,
         });
         await expectCapitalState(CAPITAL_STATE_ACTIVE, {
-            hasGrants: true,
+            hasCapital: true,
         });
     });
 
     test('indicates if early renewal is available', async () => {
         await expectCapitalState(CAPITAL_STATE_ACTIVE, {
-            hasRenewableGrants: false,
+            hasRenewableCapital: false,
         });
         await expectCapitalState(CAPITAL_STATE_RENEWABLE_LOAN, {
-            hasRenewableGrants: true,
+            hasRenewableCapital: true,
         });
     });
 });

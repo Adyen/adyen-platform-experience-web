@@ -68,8 +68,24 @@ jobs:
             git checkout -b "$PRERELEASE_BRANCH"
           fi
 
-          # Enter pre-release mode if not already active
-          if [ ! -f .changeset/pre.json ]; then
+          # Enter pre-release mode, or switch to $TAG if another tag is active
+          PRE_MODE=$(jq -r '.mode // empty' .changeset/pre.json 2>/dev/null || true)
+          PRE_TAG=$(jq -r '.tag // empty' .changeset/pre.json 2>/dev/null || true)
+          if [ "$PRE_MODE" != "pre" ] || [ "$PRE_TAG" != "$TAG" ]; then
+            if [ "$PRE_MODE" = "pre" ]; then
+              pnpm changeset pre exit
+            fi
+
+            # Changesets takes the next prerelease number from the current version, whatever its tag,
+            # so 2.0.0-alpha.1 would become 2.0.0-beta.2. Dropping the old tag and number
+            # (2.0.0-alpha.1 -> 2.0.0-beta) makes the first $TAG release .0.
+            CURRENT_VERSION=$(jq -r '.version' package.json)
+            if [[ "$CURRENT_VERSION" == *-* && "$CURRENT_VERSION" != *"-$TAG."* ]]; then
+              jq --arg v "${CURRENT_VERSION%%-*}-$TAG" '.version = $v' package.json > package.json.tmp
+              mv package.json.tmp package.json
+              git add package.json
+            fi
+
             pnpm changeset pre enter "$TAG"
             git add .changeset/pre.json
             git commit -m "chore(release): enter pre-release mode ($TAG)"

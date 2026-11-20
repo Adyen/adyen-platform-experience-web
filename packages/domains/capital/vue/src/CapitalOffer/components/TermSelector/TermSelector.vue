@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { BentoLoadingSkeletonTypography, BentoSelectionCardGroup } from '@adyen/bento-vue3';
+import { BentoSelectionCardGroup } from '@adyen/bento-vue3';
 import {
     calculatePercentageFromBasisPoints,
     getAvailableTerms,
@@ -8,16 +8,19 @@ import {
     sharedCapitalOfferAnalyticsEventProperties,
 } from '@integration-components/capital/domain';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import type { IOffer } from '@integration-components/types';
-import { useFormatTermLabel } from '../composables/useFormatTermLabel';
+import type { IContractType, IOffer } from '@integration-components/types';
+import { useContractCopy } from '../../../shared/composables/useContractCopy';
+import { useFormatTerm } from '../../composables/useFormatTerm';
 import useContainerQuery from '@integration-components/composables-vue/useContainerQuery';
 import { BREAKPOINTS } from '@integration-components/utils';
+import { CONTRACT_KEYS } from './contractKeys';
+import TermSelectorLoadingSkeleton from '../TermSelectorLoadingSkeleton/TermSelectorLoadingSkeleton.vue';
 
 const MAX_ITEMS_PER_ROW = 3;
-const CONTENT_LOADING_SKELETON_PLACEHOLDER = 'CONTENT_LOADING_SKELETON_PLACEHOLDER';
 
 const props = defineProps<{
     areAvailableTermsLoading: boolean;
+    contractType: IContractType;
     estimatedTerms: number[];
     isEarlyRenewal: boolean;
     offersByTerm: Record<number, IOffer>;
@@ -29,9 +32,10 @@ const emit = defineEmits<{
 }>();
 
 const { i18n } = useCoreContext();
+const { getContractCopy } = useContractCopy(() => props.contractType);
 const userEvents = useEventDispatcherContext();
 const hasEmittedInitialChangeEvent = ref(false);
-const formatTermLabel = useFormatTermLabel();
+const formatTermLabel = useFormatTerm(() => props.contractType, true);
 const availableTerms = computed(() => getAvailableTerms(props.offersByTerm));
 const isWideContainer = useContainerQuery(['up', BREAKPOINTS.sm]);
 
@@ -39,22 +43,19 @@ const items = computed(() =>
     props.estimatedTerms.map(term => {
         const offer = props.offersByTerm[term];
         const isAvailable = availableTerms.value.includes(term);
-        let content;
-
-        if (props.areAvailableTermsLoading) {
-            content = CONTENT_LOADING_SKELETON_PLACEHOLDER;
-        } else if (offer) {
-            content = i18n.get('capital.common.percentageOfDailySales', {
-                values: { percentage: calculatePercentageFromBasisPoints(offer.repaymentRate) },
-            });
-        }
+        const termLabel = formatTermLabel(term);
+        const rateLabel = offer
+            ? i18n.get('capital.common.percentageOfDailySales', {
+                  values: { percentage: calculatePercentageFromBasisPoints(offer.repaymentRate) },
+              })
+            : i18n.get('capital.offer.selection.unavailableRepaymentPlan');
 
         return {
+            content: props.contractType === 'CashAdvance' ? termLabel : rateLabel,
             disabled: props.areAvailableTermsLoading || !isAvailable,
-            content,
-            title: formatTermLabel(term),
-            value: term,
             fullyClickable: true,
+            title: props.contractType === 'CashAdvance' ? rateLabel : termLabel,
+            value: term,
         };
     })
 );
@@ -100,22 +101,22 @@ const handleChange = (term: number) => {
 </script>
 
 <template>
-    <BentoSelectionCardGroup
-        :aria-busy="props.areAvailableTermsLoading"
-        :hide-label="false"
-        :items="items"
-        :items-per-row="itemsPerRow"
-        :label="i18n.get('capital.offer.selection.loan.repaymentPlanTitle')"
-        :layout="isWideContainer ? 'horizontal' : 'vertical'"
-        :model-value="props.term"
-        variant="radio"
-        @update:model-value="handleChange"
-    >
-        <template #content="{ content }">
-            <BentoLoadingSkeletonTypography v-if="content === CONTENT_LOADING_SKELETON_PLACEHOLDER" :lines="1" :last-line-width="70" />
-            <template v-else>
+    <div :aria-busy="props.areAvailableTermsLoading">
+        <TermSelectorLoadingSkeleton v-if="props.areAvailableTermsLoading" />
+        <BentoSelectionCardGroup
+            v-else
+            :hide-label="false"
+            :items="items"
+            :items-per-row="itemsPerRow"
+            :label="getContractCopy(CONTRACT_KEYS.repaymentPlanTitle)"
+            :layout="isWideContainer ? 'horizontal' : 'vertical'"
+            :model-value="props.term"
+            variant="radio"
+            @update:model-value="handleChange"
+        >
+            <template #content="{ content }">
                 {{ content }}
             </template>
-        </template>
-    </BentoSelectionCardGroup>
+        </BentoSelectionCardGroup>
+    </div>
 </template>

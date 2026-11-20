@@ -82,6 +82,18 @@ export const EligibleCashAdvance: ElementStory<CapitalOfferExternalProps> = {
     },
 };
 
+export const EligibleUnsupportedContract: ElementStory<CapitalOfferExternalProps> = {
+    name: 'Eligible - Unsupported contract',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: capitalOfferHandlers.eligibleUnsupportedContract,
+        },
+    },
+};
+
 export const SingleTermLoan: ElementStory<CapitalOfferExternalProps> = {
     name: 'Single term - Loan',
     args: {

@@ -4,7 +4,9 @@ import { BentoCard, BentoDivider, BentoModal, BentoTypography } from '@adyen/ben
 import { getBankAccount, getTransferInstrumentIds } from '@integration-components/capital/domain';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IGrant } from '@integration-components/types';
+import { useContractCopy } from '../../../shared/composables/useContractCopy';
 import AccountDetails from '../AccountDetails/AccountDetails.vue';
+import { CONTRACT_KEYS } from './contractKeys';
 import styles from './RepaymentModal.module.scss';
 
 const props = defineProps<{
@@ -14,6 +16,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { getContractCopy } = useContractCopy(() => props.grant.contractType);
 const bankAccount = computed(() => getBankAccount(props.grant));
 const transferInstrumentItems = computed(() => getTransferInstrumentIds(props.grant));
 
@@ -23,7 +26,9 @@ const instructionItems = computed(() => [
               values: { beneficiaryName: bankAccount.value.beneficiaryName },
           })
         : undefined,
-    i18n.get('capital.overview.repayment.steps.loan.transfer'),
+    getContractCopy(CONTRACT_KEYS.transferStep, {
+        values: { amount: i18n.amount(props.grant.remainingTotalAmount.value, props.grant.remainingTotalAmount.currency) },
+    }),
     i18n.get('capital.overview.repayment.steps.wait'),
 ]);
 </script>
@@ -33,15 +38,9 @@ const instructionItems = computed(() => [
         {{ i18n.get('capital.overview.repayment.title') }}
         <template #content>
             <div v-if="bankAccount" :class="styles.root">
-                <BentoTypography>
-                    {{ i18n.get('capital.overview.repayment.loan.repaymentIntro') }}
+                <BentoTypography variant="body">
+                    {{ getContractCopy(CONTRACT_KEYS.repaymentIntro) }}
                 </BentoTypography>
-                <BentoCard>
-                    {{ i18n.get('capital.overview.repayment.accountTitle') }}
-                    <template #description>
-                        <AccountDetails :bank-account="bankAccount" />
-                    </template>
-                </BentoCard>
                 <div :class="styles.notice">
                     <template v-if="transferInstrumentItems.length">
                         <div>
@@ -62,10 +61,9 @@ const instructionItems = computed(() => [
                         </div>
                         <BentoDivider />
                     </template>
-
                     <div>
                         <BentoTypography el="span" variant="caption" stronger>
-                            {{ i18n.get('capital.overview.repayment.steps.loan.title') }}
+                            {{ getContractCopy(CONTRACT_KEYS.stepsTitle) }}
                         </BentoTypography>
                         <ul :class="styles.list">
                             <li v-for="item in instructionItems" :key="item" :class="styles.instructionListItem">
@@ -76,6 +74,12 @@ const instructionItems = computed(() => [
                         </ul>
                     </div>
                 </div>
+                <BentoCard>
+                    {{ i18n.get('capital.overview.repayment.accountTitle') }}
+                    <template #description>
+                        <AccountDetails :bank-account="bankAccount" />
+                    </template>
+                </BentoCard>
             </div>
         </template>
     </BentoModal>

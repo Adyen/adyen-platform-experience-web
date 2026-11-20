@@ -44,7 +44,7 @@ export interface components {
             legalEntity?: components['schemas']['LegalEntityDTO'];
         };
         DynamicOffersResponseV2DTO: {
-            contractType?: components['schemas']['GrantOfferContractType'];
+            contractType: components['schemas']['GrantOfferContractType'];
             estimatedRepaymentTermsInDays: number[];
             maxAmount: components['schemas']['Amount'];
             minAmount: components['schemas']['Amount'];
@@ -75,7 +75,7 @@ export interface components {
         GrantResponseDTO: {
             balanceAccountCode: string;
             balanceAccountDescription?: string;
-            contractType?: components['schemas']['GrantOfferContractType'];
+            contractType: components['schemas']['GrantOfferContractType'];
             /** Format: int32 */
             expectedRepaymentPeriodDays: number;
             feesAmount: components['schemas']['Amount'];
