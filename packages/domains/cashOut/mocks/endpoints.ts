@@ -1,8 +1,9 @@
-import { MSW_BASE_URL } from '@integration-components/testing/msw';
+import { MSW_BASE_URL, MSW_CASH_OUT_UI_BASE_URL } from '@integration-components/testing/msw';
 
 // `:accountKey` is the account key of the balance account the cashOut is for, `BalanceAccount.<id>`, or for the available amounts the
 // one of the account holder, `BalanceAccountHolder.<id>`.
-const BASE_URL = `${MSW_BASE_URL}/:accountKey/cashout`;
+// Served by cashout-ui, as /setup advertises.
+const BASE_URL = `${MSW_CASH_OUT_UI_BASE_URL}/:accountKey/cashout`;
 
 export const ENDPOINTS = {
     // The account of the session, which the available amounts are asked for when it's an account holder.

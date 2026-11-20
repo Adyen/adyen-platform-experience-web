@@ -29,13 +29,21 @@ vi.mock('@adyen/bento-vue3', async () => {
                 modal.emitClose = () => emit('close-modal');
                 return () =>
                     props.isOpen
-                        ? h('div', [
-                              h('div', { 'data-testid': 'header' }, [
-                                  slots.default?.(),
-                                  props.hideCloseButton ? null : h('button', { 'data-testid': 'close', onClick: () => emit('close-modal') }),
-                              ]),
-                              slots.content?.(),
-                          ])
+                        ? h(
+                              'div',
+                              {
+                                  'data-testid': 'modal',
+                                  'data-dismissible': String(props.isDismissible),
+                                  'data-hide-close-button': String(props.hideCloseButton),
+                              },
+                              [
+                                  h('div', { 'data-testid': 'header' }, [
+                                      slots.default?.(),
+                                      props.hideCloseButton ? null : h('button', { 'data-testid': 'close', onClick: () => emit('close-modal') }),
+                                  ]),
+                                  slots.content?.(),
+                              ]
+                          )
                         : null;
             },
         }),
@@ -195,12 +203,18 @@ describe('CashOutRequestModal', () => {
             await nextTick();
         };
 
-        test('should not offer to close the modal', async () => {
+        // Bento's modal also hides its close button when it isn't dismissible; each covers for the other.
+        test('should not offer to close the modal, neither with its close button nor by dismissing it', async () => {
             const { target, unmount } = renderModal();
+            const modalElement = () => target.querySelector('[data-testid="modal"]');
+            expect(modalElement()?.getAttribute('data-dismissible')).toBe('true');
+            expect(modalElement()?.getAttribute('data-hide-close-button')).toBe('false');
 
             await setInstructing(true);
 
             expect(target.querySelector('[data-testid="close"]')).toBeNull();
+            expect(modalElement()?.getAttribute('data-dismissible')).toBe('false');
+            expect(modalElement()?.getAttribute('data-hide-close-button')).toBe('true');
 
             unmount();
         });

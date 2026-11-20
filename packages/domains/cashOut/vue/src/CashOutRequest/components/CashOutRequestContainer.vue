@@ -3,7 +3,7 @@ import { useShouldHideTitles } from '@integration-components/composables-vue';
 import type { CashOutRequestExternalProps } from '../types';
 import CashOutRequest from './CashOutRequest/CashOutRequest.vue';
 
-// Undeclared props, like an `onContactSupport` from an untyped integration, must not fall through to CashOutRequest.
+// Undeclared props from an untyped integration must not fall through to CashOutRequest.
 defineOptions({ inheritAttrs: false });
 
 const props = defineProps<Omit<CashOutRequestExternalProps, 'core' | 'appearance'>>();

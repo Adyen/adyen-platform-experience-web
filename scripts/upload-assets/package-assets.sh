@@ -25,6 +25,7 @@ SDK_TRANSLATIONS_DIR="./packages/sdk/translations"
 DISPUTES_CONFIG_DIR="./packages/domains/disputes/domain/src/config"
 PAY_BY_LINK_CONFIG_DIR="./packages/domains/payByLink/domain/src/config"
 CAPITAL_CONFIG_DIR="./packages/domains/capital/domain/src/config"
+CASH_OUT_CONFIG_DIR="./packages/domains/cashOut/domain/src/config"
 UMD_FILE="./dist/umd/index.js"
 CSS_FILE="./dist/adyen-platform-experience-web.css"
 STAGING_DIR=$(mktemp -d)
@@ -78,6 +79,10 @@ fi
 echo "Copying capital domain config to staging area..."
 mkdir -p "$STAGING_DIR/config/capital"
 cp "$CAPITAL_CONFIG_DIR"/*.json "$STAGING_DIR/config/capital/"
+
+echo "Copying cashOut domain config to staging area..."
+mkdir -p "$STAGING_DIR/config/cashOut"
+cp "$CASH_OUT_CONFIG_DIR"/*.json "$STAGING_DIR/config/cashOut/"
 
 echo "Copying disputes domain config to staging area..."
 mkdir -p "$STAGING_DIR/config/disputes"

@@ -194,8 +194,9 @@ describe('CashOutRequestForm', () => {
             i18n: {
                 amount: (value: number, currency: string) => `${value} ${currency}`,
                 locale: 'en-US',
-                get: (key: string, options?: { values?: Record<string, string> }) =>
-                    options?.values ? `${key} ${Object.values(options.values).join(' ')}` : key,
+                // The count, which picks the plural form, shows only when it's given.
+                get: (key: string, options?: { values?: Record<string, string>; count?: number }) =>
+                    [key, ...Object.values(options?.values ?? {}), ...(options?.count === undefined ? [] : [`count=${options.count}`])].join(' '),
             },
         } as unknown as ReturnType<typeof useCoreContext>);
     });
@@ -229,6 +230,24 @@ describe('CashOutRequestForm', () => {
             expect(findDetail('cashOut.request.fields.fees.label')).toBe('1101 USD');
             expect(target.textContent).toContain(`${SUMMARY_TITLE} 20899 USD`);
             expect(target.textContent).not.toContain('USD USD');
+
+            unmount();
+        });
+
+        // Per currency, from the arrival times of the CDN; the bundled ones give USD 5 minutes, and a currency without its own 30.
+        test.each([
+            ['USD', 5],
+            ['SEK', 30],
+        ])('should tell when money in %s usually arrives', async (currency, minutes) => {
+            const fees = mockFees();
+            fees.fees.value = feesOf(1101);
+            const eligibility = { ...SINGLE_TRANSFER_INSTRUMENT, availableForCashOutBalance: { value: 22000, currency } } as ICashOutEligibility;
+            const { target, unmount } = renderForm({ eligibility });
+            await nextTick();
+
+            expect(target.textContent).toContain(
+                `cashOut.request.summary.description cashOut.common.arrivalTime.withinMinutes ${minutes} count=${minutes}`
+            );
 
             unmount();
         });

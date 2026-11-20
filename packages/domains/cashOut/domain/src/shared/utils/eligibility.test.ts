@@ -10,6 +10,7 @@ import {
 } from './eligibility';
 
 const NOT_ALLOWED = 'cashOut.common.unavailableReasons.notAllowed';
+const NOT_ALLOWED_WITH_CONTACT_SUPPORT = 'cashOut.common.unavailableReasons.notAllowedWithContactSupport';
 
 const eligibilityOf = (isCashoutAvailable: boolean, unavailableReasons: string[] = [], eligibleTransferInstruments: boolean[] = [true]) =>
     ({
@@ -30,8 +31,25 @@ describe('getUnavailableReasonMessage', () => {
         ['riskRestricted', 'cashOut.common.unavailableReasons.riskRestricted', false, 'warning'],
         ['cashOutNotConfigured', NOT_ALLOWED, true, 'warning'],
     ])('should explain %s, offering contact support only when support can help', (reason, key, offersContactSupport, type) => {
-        expect(getUnavailableReasonMessage(eligibilityOf(false, [reason]))).toEqual({ key, offersContactSupport, type });
+        expect(getUnavailableReasonMessage(eligibilityOf(false, [reason]))).toMatchObject({ key, offersContactSupport, type });
     });
+
+    // Next to the contact support action, the message doesn't also ask to contact support
+    test.each<ICashOutUnavailableReason>([
+        'sendToBalanceAccountNotAllowed',
+        'receiveFromBalanceAccountNotAllowed',
+        'sendToTransferInstrumentNotAllowed',
+        'cashOutNotConfigured',
+    ])('should give %s a message for when contact support is offered with it', reason => {
+        expect(getUnavailableReasonMessage(eligibilityOf(false, [reason]))?.keyWithContactSupport).toBe(NOT_ALLOWED_WITH_CONTACT_SUPPORT);
+    });
+
+    test.each<ICashOutUnavailableReason>(['noInstantReachableTransferInstruments', 'cashOutInProgress', 'dailyLimitReached', 'riskRestricted'])(
+        'should give %s no message for contact support, which it does not offer',
+        reason => {
+            expect(getUnavailableReasonMessage(eligibilityOf(false, [reason]))?.keyWithContactSupport).toBeUndefined();
+        }
+    );
 
     test('should give no message for a zero balance, which already shows as an amount of 0', () => {
         expect(getUnavailableReasonMessage(eligibilityOf(false, ['zeroBalance']))).toBeUndefined();
@@ -42,9 +60,15 @@ describe('getUnavailableReasonMessage', () => {
     });
 
     test('should fall back to the general message without a reason, or for one it does not know', () => {
-        expect(getUnavailableReasonMessage(eligibilityOf(false))).toEqual({ key: NOT_ALLOWED, offersContactSupport: true, type: 'warning' });
+        expect(getUnavailableReasonMessage(eligibilityOf(false))).toEqual({
+            key: NOT_ALLOWED,
+            keyWithContactSupport: NOT_ALLOWED_WITH_CONTACT_SUPPORT,
+            offersContactSupport: true,
+            type: 'warning',
+        });
         expect(getUnavailableReasonMessage(eligibilityOf(false, ['someNewReason']))).toEqual({
             key: NOT_ALLOWED,
+            keyWithContactSupport: NOT_ALLOWED_WITH_CONTACT_SUPPORT,
             offersContactSupport: true,
             type: 'warning',
         });

@@ -1,4 +1,5 @@
 import { HttpMethod } from '@integration-components/core';
+import { CASH_OUT_UI_BASE_URL } from './endpoints';
 
 export const analyticsEndpoints = {
     sendEngageEvent: {
@@ -109,16 +110,19 @@ export const cashOutComponentView = {
         method: 'GET' as HttpMethod,
         url: '{accountKey}/cashout/availableAmounts',
         versions: [1],
+        baseUrl: CASH_OUT_UI_BASE_URL,
     },
     getCashOutEligibility: {
         method: 'GET' as HttpMethod,
         url: '{accountKey}/cashout/eligibility',
         versions: [1],
+        baseUrl: CASH_OUT_UI_BASE_URL,
     },
     getCashOutFees: {
         method: 'GET' as HttpMethod,
         url: '{accountKey}/cashout/fees',
         versions: [1],
+        baseUrl: CASH_OUT_UI_BASE_URL,
     },
     ...analyticsEndpoints,
 };
@@ -129,6 +133,7 @@ export const cashOutComponentManage = {
         method: 'POST' as HttpMethod,
         url: '{accountKey}/cashout',
         versions: [1],
+        baseUrl: CASH_OUT_UI_BASE_URL,
     },
 };
 

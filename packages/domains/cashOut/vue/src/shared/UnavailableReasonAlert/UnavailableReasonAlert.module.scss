@@ -1,0 +1,13 @@
+@use '@integration-components/style';
+
+// The alert's own actions would go beside the message, so the reach out button goes below it.
+.actions {
+    display: flex;
+    margin-top: style.token(spacer-040);
+
+    // Bento's buttons have a single text size, larger than the compact alert's, so the button takes the message's.
+    :global(.b-button__label) {
+        font-size: style.token(text-caption-font-size);
+        line-height: style.token(text-caption-line-height);
+    }
+}

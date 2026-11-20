@@ -7,6 +7,7 @@ export const cashOutRequestMeta: Meta<ElementProps<typeof CashOutRequestElement>
         referenceForBeneficiary: { control: 'text' },
         transferDescription: { control: 'text' },
         onSubmit: enabledDisabledCallbackRadioControls('onSubmit'),
+        onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
     },
     args: {
         component: CashOutRequestElement,
