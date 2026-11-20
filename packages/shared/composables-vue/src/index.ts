@@ -17,6 +17,7 @@ export * from './useCustomDataCells';
 export { default as useCustomDataCells } from './useCustomDataCells';
 
 export { CustomDataCell } from './CustomDataCell';
+export { default as CustomDetailValue } from './CustomDetailValue.vue';
 
 export {
     createDomainErrorResolver,

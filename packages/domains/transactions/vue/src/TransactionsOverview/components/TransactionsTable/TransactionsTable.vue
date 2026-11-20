@@ -203,7 +203,7 @@ const errorInfo = computed(() =>
 </script>
 
 <template>
-    <div ref="tableRef">
+    <div ref="tableRef" :class="styles.root">
         <DataOverviewError v-if="props.error" :error-info="errorInfo" :on-refresh="props.onRefresh" :refresh-icon="RefreshIcon" type="error" />
         <DataOverviewLoading v-else-if="isLoading && !gridData.length" />
         <DataOverviewError v-else-if="!gridData.length" :error-info="emptyStateProps" type="no-results-found" variant="basic" />
@@ -225,7 +225,7 @@ const errorInfo = computed(() =>
                 <div :class="styles.dateAndPaymentMethod">
                     <div :class="styles.paymentMethod">
                         <template v-if="item.paymentMethod || item.bankAccount">
-                            <BentoPaymentMethod :type="item.paymentMethod ? item.paymentMethod?.type : 'bankTransfer'" />
+                            <BentoPaymentMethod :type="item.paymentMethod ? item.paymentMethod?.type : 'bankTransfer'" :small="isCondensed" />
                             <BentoTypography variant="body">
                                 {{ item.paymentMethod ? parsePaymentMethodType(item.paymentMethod) : item.bankAccount?.accountNumberLastFourDigits }}
                             </BentoTypography>
@@ -247,7 +247,7 @@ const errorInfo = computed(() =>
             <template #item-paymentMethod="{ item }">
                 <div :class="styles.paymentMethod">
                     <template v-if="item.paymentMethod || item.bankAccount">
-                        <BentoPaymentMethod :type="item.paymentMethod ? item.paymentMethod?.type : 'bankTransfer'" />
+                        <BentoPaymentMethod :type="item.paymentMethod ? item.paymentMethod?.type : 'bankTransfer'" :small="isCondensed" />
                         <BentoTypography variant="body">
                             {{ item.paymentMethod ? parsePaymentMethodType(item.paymentMethod) : item.bankAccount?.accountNumberLastFourDigits }}
                         </BentoTypography>

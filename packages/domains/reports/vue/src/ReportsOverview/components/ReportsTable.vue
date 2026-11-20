@@ -1,14 +1,7 @@
 <script setup lang="ts">
 import { getReportsErrorConfig } from '@integration-components/reports/domain';
 import { computed, onUnmounted, ref } from 'vue';
-import {
-    BentoButton,
-    BentoDataGrid,
-    BentoToast,
-    BentoTypography,
-    BentoTooltipDirective as vBentoTooltip,
-    useBentoToastController,
-} from '@adyen/bento-vue3';
+import { BentoButton, BentoDataGrid, BentoToast, BentoTypography, useBentoToastController } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
@@ -336,7 +329,6 @@ const errorInfo = computed(() =>
             </template>
             <template #item-reportFile="{ item }">
                 <BentoButton
-                    v-bento-tooltip="i18n.get('reports.overview.list.downloadReport')"
                     condensed
                     variant="secondary"
                     :aria-label="i18n.get('reports.overview.list.downloadReport')"
