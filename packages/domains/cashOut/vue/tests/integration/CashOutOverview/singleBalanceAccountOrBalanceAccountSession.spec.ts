@@ -20,6 +20,20 @@ test.describe('CashOut Overview - Single balance account (or balance account ses
         ]);
     });
 
+    // They're only shown in the list of balance accounts to pick from, which a single balance account doesn't have.
+    test('should not request what the balance accounts can cash out', async ({ page }) => {
+        const requests: string[] = [];
+        page.on('request', request => {
+            if (request.url().includes('/cashout/availableAmounts')) requests.push(request.url());
+        });
+
+        await goToStory(page, { id: STORY_ID });
+        await expect(getComponentRoot(page).getByText('$220.00', { exact: true })).toBeVisible();
+        await openRequestModal(page);
+
+        expect(requests).toHaveLength(0);
+    });
+
     test('should open the request without a balance account selector either', async ({ page }) => {
         const modal = await openRequestModal(page);
 

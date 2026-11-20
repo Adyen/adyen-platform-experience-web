@@ -1,6 +1,13 @@
 import { describe, expect, test } from 'vitest';
 import type { ICashOutEligibility, ICashOutUnavailableReason } from '@integration-components/types';
-import { getUnavailableReasonMessage, withoutUnreachableCashOut } from './eligibility';
+import {
+    getAvailableAfterCashOut,
+    getUnavailableReasonMessage,
+    hasCaughtUpWithExpectedAmount,
+    withExpectedAmount,
+    withExpectedAvailableForCashOut,
+    withoutUnreachableCashOut,
+} from './eligibility';
 
 const NOT_ALLOWED = 'cashOut.common.unavailableReasons.notAllowed';
 
@@ -69,5 +76,91 @@ describe('withoutUnreachableCashOut', () => {
 
     test('should pass on a missing eligibility', () => {
         expect(withoutUnreachableCashOut(undefined)).toBeUndefined();
+    });
+});
+
+describe('getAvailableAfterCashOut', () => {
+    const euro = (value: number) => ({ value, currency: 'EUR' });
+
+    test('should lower what is available by the amount cashed out, the fee being taken out of it', () => {
+        expect(getAvailableAfterCashOut(euro(22000), euro(10000))).toEqual(euro(12000));
+    });
+
+    test('should not go below 0', () => {
+        expect(getAvailableAfterCashOut(euro(5000), euro(10000))).toEqual(euro(0));
+    });
+
+    test('should keep what is available for a cashOut in another currency', () => {
+        expect(getAvailableAfterCashOut(euro(22000), { value: 10000, currency: 'USD' })).toEqual(euro(22000));
+    });
+});
+
+describe('withExpectedAmount', () => {
+    const euro = (value: number) => ({ value, currency: 'EUR' });
+
+    test('should be what is expected while the API still shows more, and what the API shows otherwise', () => {
+        expect(withExpectedAmount(euro(22000), euro(12000))).toEqual(euro(12000));
+        expect(withExpectedAmount(euro(10000), euro(12000))).toEqual(euro(10000));
+    });
+
+    test('should be what the API shows without an expected amount, or with one in another currency', () => {
+        expect(withExpectedAmount(euro(22000), undefined)).toEqual(euro(22000));
+        expect(withExpectedAmount(euro(22000), { value: 100, currency: 'USD' })).toEqual(euro(22000));
+        expect(withExpectedAmount(undefined, euro(100))).toBeUndefined();
+    });
+});
+
+describe('withExpectedAvailableForCashOut', () => {
+    const available = (value: number, overrides: Partial<ICashOutEligibility> = {}) =>
+        ({ ...eligibilityOf(true), availableForCashOutBalance: { value, currency: 'EUR' }, ...overrides }) as ICashOutEligibility;
+    const expected = (value: number) => ({ value, currency: 'EUR' });
+
+    test('should show what is expected when the API still shows more', () => {
+        expect(withExpectedAvailableForCashOut(available(22000), expected(12000))?.availableForCashOutBalance).toEqual(expected(12000));
+    });
+
+    test('should show what the API shows once it is no more than what is expected', () => {
+        const eligibility = available(10000);
+        expect(withExpectedAvailableForCashOut(eligibility, expected(12000))).toBe(eligibility);
+    });
+
+    test('should keep the unavailable reasons of the API', () => {
+        const eligibility = available(22000, { isCashoutAvailable: false, unavailableReasons: ['cashOutInProgress'] });
+        expect(withExpectedAvailableForCashOut(eligibility, expected(12000))).toEqual({
+            ...eligibility,
+            availableForCashOutBalance: expected(12000),
+        });
+    });
+
+    test('should make a cashOut unavailable when nothing is expected to be left', () => {
+        expect(withExpectedAvailableForCashOut(available(22000), expected(0))).toEqual({
+            ...available(22000),
+            availableForCashOutBalance: expected(0),
+            isCashoutAvailable: false,
+            unavailableReasons: ['zeroBalance'],
+        });
+    });
+
+    test('should keep the eligibility without an expected amount, or with one in another currency', () => {
+        const eligibility = available(22000);
+        expect(withExpectedAvailableForCashOut(eligibility, undefined)).toBe(eligibility);
+        expect(withExpectedAvailableForCashOut(eligibility, { value: 100, currency: 'USD' })).toBe(eligibility);
+        expect(withExpectedAvailableForCashOut(undefined, expected(100))).toBeUndefined();
+    });
+});
+
+describe('hasCaughtUpWithExpectedAmount', () => {
+    const usd = (value: number) => ({ value, currency: 'USD' });
+
+    // The API then has the cashOut: what it shows next counts again
+    test.each([
+        [usd(60), usd(60), true],
+        [usd(50), usd(60), true],
+        [usd(100), usd(60), false],
+        [{ value: 60, currency: 'EUR' }, usd(60), false],
+        [undefined, usd(60), false],
+        [usd(60), undefined, false],
+    ])('should tell whether %j has caught up with the expected %j', (amount, expected, caughtUp) => {
+        expect(hasCaughtUpWithExpectedAmount(amount, expected)).toBe(caughtUp);
     });
 });

@@ -1,5 +1,5 @@
 import type { TranslationKey } from '@integration-components/core';
-import type { ICashOutEligibility, ICashOutUnavailableReason } from '@integration-components/types';
+import type { ICashOutAmount, ICashOutEligibility, ICashOutUnavailableReason } from '@integration-components/types';
 
 const NOT_ALLOWED = 'cashOut.common.unavailableReasons.notAllowed';
 
@@ -48,4 +48,28 @@ export const getUnavailableReasonMessage = (eligibility: ICashOutEligibility): C
 export const withoutUnreachableCashOut = (eligibility: ICashOutEligibility | undefined): ICashOutEligibility | undefined => {
     if (!eligibility?.isCashoutAvailable || eligibility.transferInstruments.some(({ eligible }) => eligible)) return eligibility;
     return { ...eligibility, isCashoutAvailable: false, unavailableReasons: ['noInstantReachableTransferInstruments'] };
+};
+
+/** What is left to cash out after cashing out `cashedOut`, the fee being taken out of it; at least 0. */
+export const getAvailableAfterCashOut = (available: ICashOutAmount, cashedOut: ICashOutAmount): ICashOutAmount =>
+    cashedOut.currency === available.currency ? { ...available, value: Math.max(0, available.value - cashedOut.value) } : available;
+
+/** What is available to cash out: the lower of what the API shows and what is expected after cashOuts it may not show yet. */
+export const withExpectedAmount = (amount: ICashOutAmount | undefined, expected: ICashOutAmount | undefined): ICashOutAmount | undefined =>
+    amount && expected && expected.currency === amount.currency && expected.value < amount.value ? expected : amount;
+
+/** Whether the API shows no more than what is expected after a cashOut: it then has the cashOut, so what it shows counts again. */
+export const hasCaughtUpWithExpectedAmount = (amount: ICashOutAmount | undefined, expected: ICashOutAmount | undefined): boolean =>
+    !!amount && !!expected && amount.currency === expected.currency && amount.value <= expected.value;
+
+// Right after a cashOut the API still processes it and shows what was available before it, so what is expected is shown instead,
+// until the API shows no more than that. Its unavailable reasons stay, such as the cashOut in progress.
+export const withExpectedAvailableForCashOut = (
+    eligibility: ICashOutEligibility | undefined,
+    expected: ICashOutAmount | undefined
+): ICashOutEligibility | undefined => {
+    const availableForCashOutBalance = withExpectedAmount(eligibility?.availableForCashOutBalance, expected);
+    if (!eligibility || !availableForCashOutBalance || availableForCashOutBalance === eligibility.availableForCashOutBalance) return eligibility;
+    if (availableForCashOutBalance.value > 0 || !eligibility.isCashoutAvailable) return { ...eligibility, availableForCashOutBalance };
+    return { ...eligibility, availableForCashOutBalance, isCashoutAvailable: false, unavailableReasons: ['zeroBalance'] };
 };

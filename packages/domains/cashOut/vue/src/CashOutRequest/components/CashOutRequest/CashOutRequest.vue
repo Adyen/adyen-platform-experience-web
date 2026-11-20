@@ -16,19 +16,34 @@ const cashOutState = useCashOutState({
     initialBalanceAccountId: () => props.initialBalanceAccountId,
     eligibility: () => props.eligibility,
 });
-const { balanceAccountOptions, eligibility, isFetchingEligibility, lastUpdated, refreshEligibility, selectedAccountKey, selectedBalanceAccountId } =
-    cashOutState;
+const {
+    balanceAccountOptions,
+    eligibility,
+    isFetchingEligibility,
+    lastUpdated,
+    refresh,
+    refreshAvailableAmounts,
+    selectedAccountKey,
+    selectedBalanceAccountId,
+} = cashOutState;
 
 const feesError = ref<AdyenPlatformExperienceError>();
 
-// While the cashOut is sent, the refresh does nothing: loading another eligibility would replace the form before the cashOut is done.
+// While the cashOut is sent, nothing may replace the form: unmounting it cancels the cashOut in the browser while the server may
+// still make it, and then no result would be shown. So the refresh does nothing, the balance account can't be switched, and the
+// component showing this one is told, so a modal can't be closed meanwhile.
 const isInstructing = ref(false);
 const handleInstructingChange = (value: boolean) => {
     isInstructing.value = value;
+    props.onInstructingChange?.(value);
 };
 
-const refresh = () => {
-    if (!isInstructing.value) refreshEligibility();
+const refreshUnlessInstructing = () => {
+    if (!isInstructing.value) refresh();
+};
+
+const refreshAvailableAmountsUnlessInstructing = () => {
+    if (!isInstructing.value) refreshAvailableAmounts();
 };
 
 const errorInfo = computed(() => (feesError.value ? getCashOutErrorInfo(feesError.value) : cashOutState.errorInfo.value));
@@ -59,10 +74,12 @@ const handleResult = (cashOutResult: CashOutResult) => {
             v-model:selected-balance-account-id="selectedBalanceAccountId"
             :balance-account-options="balanceAccountOptions"
             :hide-title="props.hideTitle"
+            :disable-balance-account-selector="isInstructing"
             title-key="cashOut.request.title"
             :last-updated="lastUpdated"
             :is-refreshing="isFetchingEligibility"
-            :on-refresh="shellState === 'error' ? undefined : refresh"
+            :on-refresh="shellState === 'error' ? undefined : refreshUnlessInstructing"
+            :on-balance-account-selector-close="refreshAvailableAmountsUnlessInstructing"
         />
         <ComponentShell :state="shellState" :error-info="errorInfo">
             <template #loading>

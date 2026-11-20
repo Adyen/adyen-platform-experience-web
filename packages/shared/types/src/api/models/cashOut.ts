@@ -2,6 +2,8 @@ import { Schema } from '../utils';
 import { components as cashOutComponents } from '../resources/CashOutResourceV1';
 
 export type ICashOutAmount = Schema<cashOutComponents, 'Amount'>;
+export type ICashOutAvailableAmounts = Schema<cashOutComponents, 'CashOutAvailableAmountsResponseDTO'>;
+export type ICashOutBalanceAccountAvailableAmount = Schema<cashOutComponents, 'BalanceAccountAvailableAmountDTO'>;
 export type ICashOutCounterparty = Schema<cashOutComponents, 'CounterpartyDTO'>;
 export type ICashOutEligibility = Schema<cashOutComponents, 'CashOutEligibilityResponseDTO'>;
 export type ICashOutFees = Schema<cashOutComponents, 'CashOutFeesResponseDTO'>;

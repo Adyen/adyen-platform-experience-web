@@ -20,7 +20,7 @@ const ELIGIBILITY = {
 } as unknown as ICashOutEligibility;
 
 const formProps: { current?: Record<string, unknown> } = {};
-const headerProps: { reloadButton?: { state?: string; event?: () => void } } = {};
+const headerProps: { current?: Record<string, unknown> } = {};
 const resultProps: { current?: Record<string, unknown> } = {};
 
 vi.mock('@adyen/bento-vue3', async () => {
@@ -30,11 +30,28 @@ vi.mock('@adyen/bento-vue3', async () => {
 
     return {
         BentoDropdown: stub,
-        // Without declared props, the stub gets the attribute as the template writes it.
-        BentoHeader: (props: Record<string, unknown>, context: { slots: Record<string, (() => unknown) | undefined> }) => {
-            headerProps.reloadButton = props['reload-button'] as { state?: string; event?: () => void } | undefined;
-            return stub(props as { title?: string }, context);
-        },
+    };
+});
+
+vi.mock('../../../shared/CashOutHeader/CashOutHeader.vue', async () => {
+    const { defineComponent, h } = await import('vue');
+    return {
+        default: defineComponent({
+            props: {
+                titleKey: { type: String, required: true },
+                hideTitle: Boolean,
+                isRefreshing: Boolean,
+                disableBalanceAccountSelector: Boolean,
+                onRefresh: { type: Function, default: undefined },
+                onBalanceAccountSelectorClose: { type: Function, default: undefined },
+            },
+            setup(props) {
+                return () => {
+                    headerProps.current = { ...props };
+                    return props.hideTitle ? h('div') : h('h2', props.titleKey);
+                };
+            },
+        }),
     };
 });
 
@@ -113,7 +130,8 @@ const mockCashOutState = (shellState: ComponentShellState) => {
         shellState: ref(shellState),
         isFetchingEligibility: ref(false),
         lastUpdated: ref(Date.now()),
-        refreshEligibility: vi.fn(),
+        refresh: vi.fn(),
+        refreshAvailableAmounts: vi.fn(),
     };
     vi.mocked(useCashOutState).mockReturnValue(state as unknown as ReturnType<typeof useCashOutState>);
     return state;
@@ -130,6 +148,7 @@ describe('CashOutRequest', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         formProps.current = undefined;
+        headerProps.current = undefined;
         resultProps.current = undefined;
         vi.mocked(useCoreContext).mockReturnValue({
             i18n: { get: (key: string) => key },
@@ -145,14 +164,65 @@ describe('CashOutRequest', () => {
 
             setInstructing(true);
             await nextTick();
-            headerProps.reloadButton?.event?.();
-            expect(state.refreshEligibility).not.toHaveBeenCalled();
-            expect(headerProps.reloadButton?.state).toBe('start');
+            (headerProps.current?.onRefresh as () => void)();
+            expect(state.refresh).not.toHaveBeenCalled();
+            expect(headerProps.current?.isRefreshing).toBe(false);
 
             setInstructing(false);
             await nextTick();
-            headerProps.reloadButton?.event?.();
-            expect(state.refreshEligibility).toHaveBeenCalledOnce();
+            (headerProps.current?.onRefresh as () => void)();
+            expect(state.refresh).toHaveBeenCalledOnce();
+
+            unmount();
+        });
+
+        // Switching balance account would replace the form, cancelling the cashOut in the browser while the server may still make it
+        test('should not let another balance account be selected until the cashOut is sent', async () => {
+            mockCashOutState('ready');
+            const { unmount } = renderCashOutRequest();
+            const setInstructing = formProps.current?.onInstructingChange as (isInstructing: boolean) => void;
+
+            expect(headerProps.current?.disableBalanceAccountSelector).toBe(false);
+            setInstructing(true);
+            await nextTick();
+            expect(headerProps.current?.disableBalanceAccountSelector).toBe(true);
+
+            setInstructing(false);
+            await nextTick();
+            expect(headerProps.current?.disableBalanceAccountSelector).toBe(false);
+
+            unmount();
+        });
+
+        test('should not load what the balance accounts can cash out until the cashOut is sent', async () => {
+            const state = mockCashOutState('ready');
+            const { unmount } = renderCashOutRequest();
+            const setInstructing = formProps.current?.onInstructingChange as (isInstructing: boolean) => void;
+
+            setInstructing(true);
+            await nextTick();
+            (headerProps.current?.onBalanceAccountSelectorClose as () => void)();
+            expect(state.refreshAvailableAmounts).not.toHaveBeenCalled();
+
+            setInstructing(false);
+            await nextTick();
+            (headerProps.current?.onBalanceAccountSelectorClose as () => void)();
+            expect(state.refreshAvailableAmounts).toHaveBeenCalledOnce();
+
+            unmount();
+        });
+
+        // So the modal it is shown in can't be closed meanwhile
+        test('should tell the component showing it while the cashOut is sent', async () => {
+            mockCashOutState('ready');
+            const onInstructingChange = vi.fn();
+            const { unmount } = renderCashOutRequest({ onInstructingChange });
+            const setInstructing = formProps.current?.onInstructingChange as (isInstructing: boolean) => void;
+
+            setInstructing(true);
+            setInstructing(false);
+
+            expect(onInstructingChange.mock.calls).toEqual([[true], [false]]);
 
             unmount();
         });

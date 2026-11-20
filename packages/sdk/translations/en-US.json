@@ -187,6 +187,8 @@
     "cashOut.common.availableForCashOut.label": "Available to cash out",
     "cashOut.common.availableForCashOut.tooltips.default": "You can cash out up to your pending balance.",
     "cashOut.common.availableForCashOut.tooltips.withDailyLimit": "You can cash out up to your pending balance, subject to a %{dailyLimit} cap per rolling 24-hour period. Only the amount you receive counts toward this cap.",
+    "cashOut.common.balanceAccount.availableForCashOut": "%{amount} to cash out",
+    "cashOut.common.balanceAccount.availableForCashOutWithId": "%{balanceAccountId} · %{amount} to cash out",
     "cashOut.common.balanceAccount.label": "Balance account",
     "cashOut.common.contactSupport.label": "Reach out to support",
     "cashOut.common.copy.done": "Copied",

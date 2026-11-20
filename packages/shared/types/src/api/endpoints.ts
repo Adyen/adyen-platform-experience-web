@@ -1,3 +1,4 @@
+import { operations as accountsOps } from './resources/AccountsResourceV1';
 import { operations as balanceAccountsOps } from './resources/BalanceAccountsResourceV1';
 import { operations as payoutsOps } from './resources/PayoutsResourceV1';
 import { operations as transactionsV1Ops } from './resources/TransactionsResourceV1';
@@ -14,7 +15,8 @@ import { operations as payByLinkOps } from './resources/PayByLinkResourceV1';
 import { operations as onboardingConfigurationOps } from './resources/OnboardingConfigurationResourceV1';
 import { components as setupComponents } from './resources/SetupResourceV1';
 
-export type EndpointsOperations = analyticsOps &
+export type EndpointsOperations = accountsOps &
+    analyticsOps &
     balanceAccountsOps &
     capitalGrantOfferOps &
     capitalGrantsOps &

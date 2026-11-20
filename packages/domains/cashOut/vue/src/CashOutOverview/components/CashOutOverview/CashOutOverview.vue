@@ -27,6 +27,9 @@ const {
     errorInfo,
     isFetchingEligibility,
     lastUpdated,
+    recordCashOut,
+    refresh,
+    refreshAvailableAmounts,
     refreshEligibility,
     selectedBalanceAccountId,
     shellState,
@@ -42,6 +45,7 @@ const openRequestModal = () => {
 const handleSubmit = (cashOut: ICashOutResponse) => {
     hasInstructedCashOut = true;
     props.onSubmit?.(cashOut);
+    recordCashOut(cashOut);
 };
 
 // Refreshed on close rather than on success, so the success screen doesn't change while it's open.
@@ -62,7 +66,8 @@ const closeRequestModal = () => {
             title-key="cashOut.overview.title"
             :last-updated="lastUpdated"
             :is-refreshing="isFetchingEligibility"
-            :on-refresh="shellState === 'error' ? undefined : refreshEligibility"
+            :on-refresh="shellState === 'error' ? undefined : refresh"
+            :on-balance-account-selector-close="refreshAvailableAmounts"
         />
         <ComponentShell :state="shellState" :error-info="errorInfo">
             <template #loading>

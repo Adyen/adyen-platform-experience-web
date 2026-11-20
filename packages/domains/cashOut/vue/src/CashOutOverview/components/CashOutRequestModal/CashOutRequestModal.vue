@@ -25,16 +25,31 @@ const hideTitles = useShouldHideTitles();
 const isShowingResult = ref(false);
 const showTitle = computed(() => !hideTitles.value && !isShowingResult.value);
 
+// Closing the modal while the cashOut is sent would unmount the request, cancelling the cashOut in the browser while the server may
+// still make it, and no result would be shown.
+const isInstructing = ref(false);
+const handleClose = () => {
+    if (!isInstructing.value) props.onClose();
+};
+
 watch(
     () => props.isOpen,
     () => {
         isShowingResult.value = false;
+        isInstructing.value = false;
     }
 );
 </script>
 
 <template>
-    <BentoModal :is-open="props.isOpen" size="medium" :aria-label="i18n.get('cashOut.request.title')" @close-modal="props.onClose">
+    <BentoModal
+        :is-open="props.isOpen"
+        size="medium"
+        :aria-label="i18n.get('cashOut.request.title')"
+        :is-dismissible="!isInstructing"
+        :hide-close-button="isInstructing"
+        @close-modal="handleClose"
+    >
         <!-- In the modal header, so the title is on the same line as the close button. -->
         <template #default>
             <template v-if="showTitle">{{ i18n.get('cashOut.request.title') }}</template>
@@ -51,6 +66,7 @@ watch(
                 in-modal
                 :on-submit="props.onSubmit"
                 :on-result-shown="() => (isShowingResult = true)"
+                :on-instructing-change="(value: boolean) => (isInstructing = value)"
                 :on-contact-support="props.onContactSupport"
             />
         </template>
