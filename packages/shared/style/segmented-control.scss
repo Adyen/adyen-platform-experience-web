@@ -1,0 +1,10 @@
+@use '@integration-components/style' as style;
+
+// Bento rounds segmented control buttons with the next radius step down from the control's, which only matches the
+// control's padding for some roundness themes. Deriving the button radius from both keeps the corners concentric.
+// [TODO]: Drop this workaround once Bento derives the segmented control button radius from the control's radius and padding.
+@mixin adyen-pe-segmented-control-concentric-corners($control-radius: style.token(border-radius-l), $control-padding: style.token(spacer-020)) {
+    :global(.b-segmented-control .b-segmented-control-button) {
+        border-radius: calc(#{$control-radius} - #{$control-padding});
+    }
+}
