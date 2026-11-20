@@ -166,35 +166,40 @@ export const cashOutMocks = [
     ),
     http.post<{ accountKey: string }, Partial<ICashOutRequest>>(
         ENDPOINTS.instruct,
-        withDelay(async ({ params, request }) => {
-            const balanceAccountId = getBalanceAccountId(params.accountKey);
-            if (!balanceAccountId) return getInvalidAccountKeyResponse();
-            const { amount, counterparty, currency, description, referenceForBeneficiary } = await request.json();
-            const transferInstrumentId = counterparty?.transferInstrumentId;
-            const invalidFields = [
-                ...getAmountErrors(amount),
-                ...getCurrencyErrors(currency),
-                ...getTransferInstrumentIdErrors(transferInstrumentId),
-            ];
+        withDelay(
+            async ({ params, request }) => {
+                const balanceAccountId = getBalanceAccountId(params.accountKey);
+                if (!balanceAccountId) return getInvalidAccountKeyResponse();
+                const { amount, counterparty, currency, description, referenceForBeneficiary } = await request.json();
+                const transferInstrumentId = counterparty?.transferInstrumentId;
+                const invalidFields = [
+                    ...getAmountErrors(amount),
+                    ...getCurrencyErrors(currency),
+                    ...getTransferInstrumentIdErrors(transferInstrumentId),
+                ];
 
-            if (amount === undefined || currency === undefined || transferInstrumentId === undefined || invalidFields.length > 0) {
-                return getValidationErrorResponse(invalidFields);
-            }
+                if (amount === undefined || currency === undefined || transferInstrumentId === undefined || invalidFields.length > 0) {
+                    return getValidationErrorResponse(invalidFields);
+                }
 
-            const response: ICashOutResponse = {
-                id: uuid(),
-                balanceAccount: balanceAccountId,
-                amount: { currency, value: amount },
-                fee: calculateFees(amount, currency).fee,
-                counterparty: { transferInstrumentId },
-                ...(description === undefined ? {} : { description }),
-                ...(referenceForBeneficiary === undefined ? {} : { referenceForBeneficiary }),
-            };
+                const response: ICashOutResponse = {
+                    id: uuid(),
+                    balanceAccount: balanceAccountId,
+                    amount: { currency, value: amount },
+                    fee: calculateFees(amount, currency).fee,
+                    counterparty: { transferInstrumentId },
+                    ...(description === undefined ? {} : { description }),
+                    ...(referenceForBeneficiary === undefined ? {} : { referenceForBeneficiary }),
+                };
 
-            cashedOutByBalanceAccount.set(balanceAccountId, (cashedOutByBalanceAccount.get(balanceAccountId) ?? 0) + amount);
+                cashedOutByBalanceAccount.set(balanceAccountId, (cashedOutByBalanceAccount.get(balanceAccountId) ?? 0) + amount);
 
-            return HttpResponse.json(response);
-        })
+                return HttpResponse.json(response);
+            },
+            undefined,
+            // Also in tests, so specs can check what the components do while the cashOut is sent
+            500
+        )
     ),
 ];
 

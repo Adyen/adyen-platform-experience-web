@@ -41,6 +41,20 @@ test.describe('CashOut Overview - Default', () => {
             ]);
         });
 
+        // The header tells how long ago the last update was, and keeps counting while the page stays open.
+        test('should count how long ago the last update was, until refreshed', async ({ page }) => {
+            await page.clock.install();
+            await goToStory(page, { id: STORY_ID });
+            const root = getComponentRoot(page);
+            await expect(root.getByText('Last updated: less than a minute ago')).toBeVisible();
+
+            await page.clock.fastForward('02:00');
+            await expect(root.getByText('Last updated: 2 minutes ago')).toBeVisible();
+
+            await refreshFromHeader(page);
+            await expect(root.getByText('Last updated: less than a minute ago')).toBeVisible();
+        });
+
         test('should size the start button to its label, at the start of the component', async ({ page }) => {
             const root = getComponentRoot(page);
             const content = root.getByText('Available to cash out');
@@ -248,6 +262,47 @@ test.describe('CashOut Overview - Default', () => {
             await modal.getByRole('button', { name: 'Close' }).click();
 
             await Promise.all([expect(modal).toBeHidden(), expect(getComponentRoot(page).getByText('$120.00', { exact: true })).toBeVisible()]);
+        });
+
+        // The request can switch to another balance account than the one selected in the overview
+        test('should show what the balance account cashed out from has left, keeping the selected one as it is', async ({ page }) => {
+            const modal = await openRequestModal(page);
+
+            await modal.getByRole('combobox', { name: 'Balance account' }).click();
+            await modal.getByRole('option', { name: 'S. Hopper - Secondary Account' }).click();
+            await modal.getByRole('spinbutton', { name: 'Amount to cash out' }).fill('100');
+            await modal.getByRole('combobox', { name: 'Account to deposit into' }).click();
+            await modal.getByRole('option', { name: 'NL**ABNA******4300' }).click();
+            await modal.getByRole('button', { name: 'Cash out now' }).click();
+            await expect(modal.getByText('CashOut successful')).toBeVisible();
+            await modal.getByRole('button', { name: 'Close' }).click();
+
+            const root = getComponentRoot(page);
+            await Promise.all([
+                expect(modal).toBeHidden(),
+                expect(root.getByRole('combobox', { name: 'Balance account' })).toHaveText('S. Hopper - Main Account'),
+                expect(root.getByText('$220.00', { exact: true })).toBeVisible(),
+            ]);
+            await root.getByRole('combobox', { name: 'Balance account' }).click();
+            await expect(root.getByRole('option', { name: 'S. Hopper - Secondary Account' })).toContainText('€900.00 to cash out');
+        });
+
+        // Closing the modal or switching balance account would cancel the cashOut in the browser while the server may still make
+        // it, and then no result would be shown.
+        test('should keep the modal open and the balance account until the cashOut is sent', async ({ page }) => {
+            const modal = await openRequestModal(page);
+
+            await modal.getByRole('combobox', { name: 'Account to deposit into' }).click();
+            await modal.getByRole('option', { name: 'NL**ABNA******4300' }).click();
+            await modal.getByRole('button', { name: 'Cash out now' }).click();
+
+            await Promise.all([
+                expect(modal.getByRole('button', { name: 'Close' })).toHaveCount(0),
+                expect(modal.getByRole('combobox', { name: 'Balance account' })).toBeDisabled(),
+            ]);
+
+            await expect(modal.getByText('CashOut successful')).toBeVisible();
+            await expect(modal.getByRole('button', { name: 'Close' })).toHaveCount(1);
         });
 
         test('should show the result right under the header of the modal', async ({ page }) => {

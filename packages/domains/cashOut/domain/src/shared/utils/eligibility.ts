@@ -58,6 +58,10 @@ export const getAvailableAfterCashOut = (available: ICashOutAmount, cashedOut: I
 export const withExpectedAmount = (amount: ICashOutAmount | undefined, expected: ICashOutAmount | undefined): ICashOutAmount | undefined =>
     amount && expected && expected.currency === amount.currency && expected.value < amount.value ? expected : amount;
 
+/** Whether the API shows no more than what is expected after a cashOut: it then has the cashOut, so what it shows counts again. */
+export const hasCaughtUpWithExpectedAmount = (amount: ICashOutAmount | undefined, expected: ICashOutAmount | undefined): boolean =>
+    !!amount && !!expected && amount.currency === expected.currency && amount.value <= expected.value;
+
 // Right after a cashOut the API still processes it and shows what was available before it, so what is expected is shown instead,
 // until the API shows no more than that. Its unavailable reasons stay, such as the cashOut in progress.
 export const withExpectedAvailableForCashOut = (

@@ -3,6 +3,7 @@ import type { ICashOutEligibility, ICashOutUnavailableReason } from '@integratio
 import {
     getAvailableAfterCashOut,
     getUnavailableReasonMessage,
+    hasCaughtUpWithExpectedAmount,
     withExpectedAmount,
     withExpectedAvailableForCashOut,
     withoutUnreachableCashOut,
@@ -145,5 +146,21 @@ describe('withExpectedAvailableForCashOut', () => {
         expect(withExpectedAvailableForCashOut(eligibility, undefined)).toBe(eligibility);
         expect(withExpectedAvailableForCashOut(eligibility, { value: 100, currency: 'USD' })).toBe(eligibility);
         expect(withExpectedAvailableForCashOut(undefined, expected(100))).toBeUndefined();
+    });
+});
+
+describe('hasCaughtUpWithExpectedAmount', () => {
+    const usd = (value: number) => ({ value, currency: 'USD' });
+
+    // The API then has the cashOut: what it shows next counts again
+    test.each([
+        [usd(60), usd(60), true],
+        [usd(50), usd(60), true],
+        [usd(100), usd(60), false],
+        [{ value: 60, currency: 'EUR' }, usd(60), false],
+        [undefined, usd(60), false],
+        [usd(60), undefined, false],
+    ])('should tell whether %j has caught up with the expected %j', (amount, expected, caughtUp) => {
+        expect(hasCaughtUpWithExpectedAmount(amount, expected)).toBe(caughtUp);
     });
 });

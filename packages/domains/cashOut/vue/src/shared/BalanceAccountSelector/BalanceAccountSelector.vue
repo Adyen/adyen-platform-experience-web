@@ -7,6 +7,7 @@ import styles from './BalanceAccountSelector.module.scss';
 
 const props = defineProps<{
     options: { label: string; value: string; description?: string | undefined }[];
+    disabled?: boolean;
 }>();
 
 const selectedBalanceAccountId = defineModel<string | undefined>({ required: true });
@@ -38,6 +39,7 @@ watch(
 const { i18n } = useCoreContext();
 
 const onChange = (value: Parameters<typeof getDropdownValue>[0]) => {
+    if (props.disabled) return;
     const nextValue = getDropdownValue(value);
     if (nextValue !== undefined) selectedBalanceAccountId.value = nextValue;
 };
@@ -50,6 +52,7 @@ const onChange = (value: Parameters<typeof getDropdownValue>[0]) => {
             :placeholder="i18n.get('cashOut.common.balanceAccount.label')"
             :items="props.options"
             :model-value="selectedBalanceAccountId"
+            :disabled="props.disabled"
             @update:model-value="onChange"
         />
     </div>

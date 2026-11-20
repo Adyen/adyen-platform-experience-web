@@ -12,21 +12,27 @@ const TITLE = 'cashOut.request.title';
 const ELIGIBILITY = { isCashoutAvailable: true } as unknown as ICashOutEligibility;
 
 const requestProps: { current?: Record<string, unknown> } = {};
+const modal: { dismiss?: () => void; emitClose?: () => void } = {};
 
 vi.mock('@adyen/bento-vue3', async () => {
     const { defineComponent, h } = await import('vue');
 
     return {
         BentoModal: defineComponent({
-            props: { isOpen: Boolean },
+            props: { isOpen: Boolean, isDismissible: { type: Boolean, default: true }, hideCloseButton: Boolean },
             emits: ['close-modal'],
             setup(props, { emit, slots }) {
+                // Like the escape key or a click outside, which Bento only reports when the modal is dismissible
+                modal.dismiss = () => {
+                    if (props.isDismissible) emit('close-modal');
+                };
+                modal.emitClose = () => emit('close-modal');
                 return () =>
                     props.isOpen
                         ? h('div', [
                               h('div', { 'data-testid': 'header' }, [
                                   slots.default?.(),
-                                  h('button', { 'data-testid': 'close', onClick: () => emit('close-modal') }),
+                                  props.hideCloseButton ? null : h('button', { 'data-testid': 'close', onClick: () => emit('close-modal') }),
                               ]),
                               slots.content?.(),
                           ])
@@ -58,6 +64,7 @@ vi.mock('../../../CashOutRequest/components/CashOutRequest/CashOutRequest.vue', 
                 onSubmit: { type: Function, default: undefined },
                 onResultShown: { type: Function, default: undefined },
                 onContactSupport: { type: Function, default: undefined },
+                onInstructingChange: { type: Function, default: undefined },
             },
             setup(props) {
                 return () => {
@@ -178,5 +185,51 @@ describe('CashOutRequestModal', () => {
         expect(onClose).toHaveBeenCalledTimes(1);
 
         unmount();
+    });
+
+    // Closing it would unmount the request, cancelling the cashOut in the browser while the server may still make it, and no
+    // result would be shown
+    describe('While the cashOut is sent', () => {
+        const setInstructing = async (isInstructing: boolean) => {
+            (requestProps.current?.onInstructingChange as (value: boolean) => void)(isInstructing);
+            await nextTick();
+        };
+
+        test('should not offer to close the modal', async () => {
+            const { target, unmount } = renderModal();
+
+            await setInstructing(true);
+
+            expect(target.querySelector('[data-testid="close"]')).toBeNull();
+
+            unmount();
+        });
+
+        test('should not close when dismissed, nor when asked to close', async () => {
+            const onClose = vi.fn();
+            const { unmount } = renderModal({ onClose });
+
+            await setInstructing(true);
+            modal.dismiss?.();
+            modal.emitClose?.();
+
+            expect(onClose).not.toHaveBeenCalled();
+
+            unmount();
+        });
+
+        test('should close again once the cashOut is sent', async () => {
+            const onClose = vi.fn();
+            const { target, unmount } = renderModal({ onClose });
+
+            await setInstructing(true);
+            await setInstructing(false);
+            target.querySelector<HTMLButtonElement>('[data-testid="close"]')?.click();
+            modal.dismiss?.();
+
+            expect(onClose).toHaveBeenCalledTimes(2);
+
+            unmount();
+        });
     });
 });

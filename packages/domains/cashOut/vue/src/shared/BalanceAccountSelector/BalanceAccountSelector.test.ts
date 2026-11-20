@@ -20,13 +20,14 @@ vi.mock('@adyen/bento-vue3', async () => {
     return {
         // Like Bento's, its combobox tells whether the list is open through aria-expanded.
         BentoDropdown: defineComponent({
+            props: { disabled: Boolean },
             emits: ['update:model-value'],
-            setup(_, { emit }) {
+            setup(props, { emit }) {
                 const { ref } = vue;
                 const expanded = ref(false);
                 dropdown.emitChange = value => emit('update:model-value', value);
                 dropdown.setExpanded = value => (expanded.value = value);
-                return () => h('div', { role: 'combobox', 'aria-expanded': String(expanded.value) });
+                return () => h('div', { role: 'combobox', 'aria-expanded': String(expanded.value), 'aria-disabled': String(props.disabled) });
             },
         }),
     };
@@ -36,7 +37,7 @@ vi.mock('@integration-components/core/vue', () => ({
     useCoreContext: vi.fn(),
 }));
 
-const renderSelector = () => {
+const renderSelector = ({ disabled = false } = {}) => {
     const selected = ref<string | undefined>('BA1');
     const onClose = vi.fn();
     const target = document.createElement('div');
@@ -44,13 +45,15 @@ const renderSelector = () => {
         setup: () => () =>
             h(BalanceAccountSelector, {
                 options: OPTIONS,
+                disabled,
                 modelValue: selected.value,
                 'onUpdate:modelValue': (value: string | undefined) => (selected.value = value),
                 onClose,
             }),
     });
     app.mount(target);
-    return { onClose, selected, unmount: () => app.unmount() };
+    const combobox = () => target.querySelector('[role="combobox"]');
+    return { combobox, onClose, selected, unmount: () => app.unmount() };
 };
 
 // The attribute is observed, which reports a change after the current task.
@@ -110,6 +113,16 @@ describe('BalanceAccountSelector', () => {
         dropdown.emitChange?.(null);
         dropdown.emitChange?.({ value: null });
 
+        expect(selected.value).toBe('BA1');
+
+        unmount();
+    });
+
+    test('should not let another balance account be selected while disabled', () => {
+        const { combobox, selected, unmount } = renderSelector({ disabled: true });
+
+        expect(combobox()?.getAttribute('aria-disabled')).toBe('true');
+        dropdown.emitChange?.('BA2');
         expect(selected.value).toBe('BA1');
 
         unmount();

@@ -5,6 +5,20 @@ import { expectSelectorBesideTitle, refreshFromHeader, waitForCashOutRequest } f
 const STORY_ID = 'mocked-cashout-cashout-request--single-transfer-instrument';
 
 test.describe('CashOut Request - Single transfer instrument', () => {
+    // The clock is installed before the story loads, so the header counts by it.
+    test('should count how long ago the last update was, until refreshed', async ({ page }) => {
+        await page.clock.install();
+        await goToStory(page, { id: STORY_ID });
+        const root = getComponentRoot(page);
+        await expect(root.getByText('Last updated: less than a minute ago')).toBeVisible();
+
+        await page.clock.fastForward('02:00');
+        await expect(root.getByText('Last updated: 2 minutes ago')).toBeVisible();
+
+        await refreshFromHeader(page);
+        await expect(root.getByText('Last updated: less than a minute ago')).toBeVisible();
+    });
+
     test.describe('Render', () => {
         test.beforeEach(async ({ page }) => {
             await goToStory(page, { id: STORY_ID });

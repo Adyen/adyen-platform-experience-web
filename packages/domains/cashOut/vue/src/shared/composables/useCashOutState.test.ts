@@ -63,12 +63,13 @@ describe('useCashOutState', () => {
         endpoints.getAccounts = vi
             .fn()
             .mockResolvedValue({ data: [{ accountKey: 'BalanceAccountHolder.AH1', accountType: 'BalanceAccountHolder' }] });
-        endpoints.getCashOutAvailableAmounts = vi.fn().mockResolvedValue({
+        // A new response for every request, like the API's.
+        endpoints.getCashOutAvailableAmounts = vi.fn(async () => ({
             balanceAccounts: [
                 { balanceAccountId: 'BA1', availableForCashOut: { value: 100, currency: 'USD' } },
                 { balanceAccountId: 'BA2', availableForCashOut: { value: 200, currency: 'USD' } },
             ],
-        });
+        }));
         endpoints.getCashOutEligibility = vi.fn(async (_: unknown, { path }: { path: { accountKey: string } }) => {
             return ELIGIBILITY_BY_BALANCE_ACCOUNT[balanceAccountIdOf(path.accountKey)];
         });
@@ -290,7 +291,17 @@ describe('useCashOutState', () => {
     });
 
     describe('After a cashOut', () => {
-        const CASH_OUT = { amount: { value: 40, currency: 'USD' } } as ICashOutResponse;
+        const cashOutFrom = (balanceAccount: string) => ({ balanceAccount, amount: { value: 40, currency: 'USD' } }) as ICashOutResponse;
+        const CASH_OUT = cashOutFrom('BA1');
+        // While the API processes the cashOut it locks the balance account, and its eligibility tells so.
+        const inProgressEligibilityOf = (value: number) =>
+            ({ ...eligibilityOf(value), isCashoutAvailable: false, unavailableReasons: ['cashOutInProgress'] }) as unknown as ICashOutEligibility;
+        const settle = async (state: ReturnType<typeof useCashOutState>, calls: number) => {
+            await vi.waitFor(() => expect(endpoints.getCashOutEligibility).toHaveBeenCalledTimes(calls));
+            await vi.waitFor(() => expect(state.isFetchingEligibility.value).toBe(false));
+        };
+        const descriptionOf = (state: ReturnType<typeof useCashOutState>, id: string) =>
+            state.balanceAccountOptions.value.find(({ value }) => value === id)?.description;
 
         // Right after a cashOut the API still shows what was available before it.
         test('should show what is expected to be left, in the eligibility and next to the balance account, also once another is selected', async () => {
@@ -298,6 +309,7 @@ describe('useCashOutState', () => {
             await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
 
             state.recordCashOut(CASH_OUT);
+            ELIGIBILITY_BY_BALANCE_ACCOUNT.BA1 = inProgressEligibilityOf(100);
             state.refreshEligibility();
 
             await vi.waitFor(() => expect(state.eligibility.value?.availableForCashOutBalance).toEqual({ value: 60, currency: 'USD' }));
@@ -308,6 +320,147 @@ describe('useCashOutState', () => {
                 )
             );
 
+            stop();
+        });
+
+        // The request opened from the overview can cash out from another balance account than the one selected in the overview
+        test('should keep a cashOut from another balance account to that one, leaving the selected one as it is', async () => {
+            const { state, stop } = renderCashOutState();
+            await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
+            await vi.waitFor(() =>
+                expect(descriptionOf(state, 'BA2')).toBe('cashOut.common.balanceAccount.availableForCashOut {"amount":"200 USD"}')
+            );
+
+            state.recordCashOut(cashOutFrom('BA2'));
+            ELIGIBILITY_BY_BALANCE_ACCOUNT.BA2 = inProgressEligibilityOf(200);
+
+            expect(state.eligibility.value?.availableForCashOutBalance).toEqual({ value: 100, currency: 'USD' });
+            expect(descriptionOf(state, 'BA2')).toBe('cashOut.common.balanceAccount.availableForCashOut {"amount":"160 USD"}');
+            state.selectedBalanceAccountId.value = 'BA2';
+            await vi.waitFor(() => expect(state.eligibility.value?.availableForCashOutBalance).toEqual({ value: 160, currency: 'USD' }));
+
+            stop();
+        });
+
+        test('should not expect anything for another balance account whose amount is not known', async () => {
+            endpoints.getCashOutAvailableAmounts = vi.fn().mockResolvedValue({
+                balanceAccounts: [{ balanceAccountId: 'BA1', availableForCashOut: { value: 100, currency: 'USD' } }],
+            });
+            const { state, stop } = renderCashOutState();
+            await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
+
+            state.recordCashOut(cashOutFrom('BA2'));
+            state.selectedBalanceAccountId.value = 'BA2';
+
+            await vi.waitFor(() => expect(state.eligibility.value?.availableForCashOutBalance).toEqual({ value: 200, currency: 'USD' }));
+
+            stop();
+        });
+
+        // Once the API shows no more than expected, it has the cashOut, so what it shows next counts again, also when it grows.
+        test('should show what the API shows once it has caught up with the cashOut, also when it grows again', async () => {
+            const { state, stop } = renderCashOutState();
+            await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
+            state.recordCashOut(CASH_OUT);
+
+            ELIGIBILITY_BY_BALANCE_ACCOUNT.BA1 = inProgressEligibilityOf(60);
+            state.refreshEligibility();
+            await settle(state, 2);
+            ELIGIBILITY_BY_BALANCE_ACCOUNT.BA1 = inProgressEligibilityOf(150);
+            state.refreshEligibility();
+
+            await vi.waitFor(() => expect(state.eligibility.value?.availableForCashOutBalance).toEqual({ value: 150, currency: 'USD' }));
+
+            stop();
+        });
+
+        test('should keep showing what is expected while the API still processes the cashOut and shows more', async () => {
+            const { state, stop } = renderCashOutState();
+            await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
+            state.recordCashOut(CASH_OUT);
+
+            ELIGIBILITY_BY_BALANCE_ACCOUNT.BA1 = inProgressEligibilityOf(100);
+            state.refreshEligibility();
+            await settle(state, 2);
+
+            expect(state.eligibility.value?.availableForCashOutBalance).toEqual({ value: 60, currency: 'USD' });
+
+            stop();
+        });
+
+        // Once processed, the API has the cashOut: more than expected then is money that came in since.
+        test('should show what the API shows once it no longer processes the cashOut, also when that is more than expected', async () => {
+            const { state, stop } = renderCashOutState();
+            await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
+            state.recordCashOut(CASH_OUT);
+
+            ELIGIBILITY_BY_BALANCE_ACCOUNT.BA1 = inProgressEligibilityOf(100);
+            state.refreshEligibility();
+            await settle(state, 2);
+            expect(state.eligibility.value?.availableForCashOutBalance).toEqual({ value: 60, currency: 'USD' });
+            ELIGIBILITY_BY_BALANCE_ACCOUNT.BA1 = eligibilityOf(150);
+            state.refreshEligibility();
+
+            await vi.waitFor(() => expect(state.eligibility.value?.availableForCashOutBalance).toEqual({ value: 150, currency: 'USD' }));
+            expect(state.eligibility.value?.isCashoutAvailable).toBe(true);
+
+            stop();
+        });
+
+        test('should show what the API shows for another balance account once it has caught up, also when it grows again', async () => {
+            const { state, stop } = renderCashOutState();
+            await vi.waitFor(() =>
+                expect(descriptionOf(state, 'BA2')).toBe('cashOut.common.balanceAccount.availableForCashOut {"amount":"200 USD"}')
+            );
+            state.recordCashOut(cashOutFrom('BA2'));
+            const amountsOf = (value: number) => ({
+                balanceAccounts: [
+                    { balanceAccountId: 'BA1', availableForCashOut: { value: 100, currency: 'USD' } },
+                    { balanceAccountId: 'BA2', availableForCashOut: { value, currency: 'USD' } },
+                ],
+            });
+
+            endpoints.getCashOutAvailableAmounts!.mockResolvedValue(amountsOf(160));
+            state.refreshAvailableAmounts();
+            await vi.waitFor(() => expect(endpoints.getCashOutAvailableAmounts).toHaveBeenCalledTimes(2));
+            await vi.waitFor(() =>
+                expect(descriptionOf(state, 'BA2')).toBe('cashOut.common.balanceAccount.availableForCashOut {"amount":"160 USD"}')
+            );
+            endpoints.getCashOutAvailableAmounts!.mockResolvedValue(amountsOf(300));
+            state.refreshAvailableAmounts();
+
+            await vi.waitFor(() =>
+                expect(descriptionOf(state, 'BA2')).toBe('cashOut.common.balanceAccount.availableForCashOut {"amount":"300 USD"}')
+            );
+
+            stop();
+        });
+
+        // The available amounts don't tell whether the cashOut is processed, but the API locks the balance account for at most 10
+        // minutes while it processes it.
+        test('should show what the API shows for another balance account once its cashOut is surely processed', async () => {
+            const start = Date.now();
+            const now = vi.spyOn(Date, 'now').mockReturnValue(start);
+            const { state, stop } = renderCashOutState();
+            await vi.waitFor(() =>
+                expect(descriptionOf(state, 'BA2')).toBe('cashOut.common.balanceAccount.availableForCashOut {"amount":"200 USD"}')
+            );
+            state.recordCashOut(cashOutFrom('BA2'));
+            expect(descriptionOf(state, 'BA2')).toBe('cashOut.common.balanceAccount.availableForCashOut {"amount":"160 USD"}');
+
+            now.mockReturnValue(start + 10 * 60 * 1000 - 1);
+            state.refreshAvailableAmounts();
+            await vi.waitFor(() => expect(endpoints.getCashOutAvailableAmounts).toHaveBeenCalledTimes(2));
+            await new Promise(resolve => setTimeout(resolve));
+            expect(descriptionOf(state, 'BA2')).toBe('cashOut.common.balanceAccount.availableForCashOut {"amount":"160 USD"}');
+
+            now.mockReturnValue(start + 10 * 60 * 1000);
+            state.refreshAvailableAmounts();
+            await vi.waitFor(() =>
+                expect(descriptionOf(state, 'BA2')).toBe('cashOut.common.balanceAccount.availableForCashOut {"amount":"200 USD"}')
+            );
+
+            now.mockRestore();
             stop();
         });
 

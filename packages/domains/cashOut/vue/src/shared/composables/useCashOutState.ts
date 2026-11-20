@@ -1,8 +1,9 @@
-import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue';
+import { computed, ref, toValue, watch, type MaybeRefOrGetter } from 'vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import {
     getAvailableAfterCashOut,
     getCashOutErrorMessage,
+    hasCaughtUpWithExpectedAmount,
     withExpectedAmount,
     withExpectedAvailableForCashOut,
     withoutUnreachableCashOut,
@@ -26,6 +27,10 @@ type CashOutStateOptions = {
 };
 
 export const getCashOutErrorInfo = (error: AdyenPlatformExperienceError | undefined): ErrorMessageInfo => getCashOutErrorMessage(error);
+
+// How long the API locks a balance account at most while it processes a cashOut (getLockReleaseDate in cashout's
+// CashOutAccountLockService).
+const CASH_OUT_PROCESSING_LIMIT_MS = 10 * 60 * 1000;
 
 /** The balance accounts, the selected one and its eligibility, with the component shell state they result in. */
 export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEligibility }: CashOutStateOptions = {}) => {
@@ -58,6 +63,34 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
     const expectedAvailableForCashOut = ref<Record<string, ICashOutAmount>>({});
     const expectedOf = (balanceAccountId: string | undefined) => (balanceAccountId ? expectedAvailableForCashOut.value[balanceAccountId] : undefined);
 
+    // When each expectation was recorded, to tell when the API has surely processed its cashOut.
+    const expectedSince: Record<string, number> = {};
+    const forgetExpected = (balanceAccountId: string) => {
+        delete expectedAvailableForCashOut.value[balanceAccountId];
+        delete expectedSince[balanceAccountId];
+    };
+
+    // Once the API has the cashOut, what it shows counts again, also when that is more than expected: money that came in since. It has
+    // the cashOut once it shows no more than expected, or once it no longer processes it: the eligibility then no longer tells a
+    // cashOut is in progress, and the API locks the balance account for at most CASH_OUT_PROCESSING_LIMIT_MS meanwhile.
+    watch(fetchedEligibility, fetched => {
+        const balanceAccountId = selectedBalanceAccountId.value;
+        if (!balanceAccountId || !fetched || !expectedOf(balanceAccountId)) return;
+        const isProcessing = fetched.unavailableReasons.includes('cashOutInProgress');
+        if (!isProcessing || hasCaughtUpWithExpectedAmount(fetched.availableForCashOutBalance, expectedOf(balanceAccountId))) {
+            forgetExpected(balanceAccountId);
+        }
+    });
+    // The available amounts don't tell whether a cashOut is in progress.
+    watch(availableAmounts, amounts =>
+        amounts.forEach((amount, balanceAccountId) => {
+            const expected = expectedOf(balanceAccountId);
+            if (!expected) return;
+            const isSurelyProcessed = Date.now() - (expectedSince[balanceAccountId] ?? 0) >= CASH_OUT_PROCESSING_LIMIT_MS;
+            if (isSurelyProcessed || hasCaughtUpWithExpectedAmount(amount, expected)) forgetExpected(balanceAccountId);
+        })
+    );
+
     const eligibility = computed(() =>
         withExpectedAvailableForCashOut(
             withoutUnreachableCashOut(usesGivenEligibility.value ? toValue(givenEligibility) : fetchedEligibility.value),
@@ -65,11 +98,19 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
         )
     );
 
-    /** Remembers what the selected balance account is expected to have left after the cashOut. */
+    /**
+     * Remembers what the balance account of the cashOut is expected to have left after it. That may not be the selected one, as the
+     * request opened from the overview can switch balance account. Without knowing what it had, nothing is expected.
+     */
     const recordCashOut = (cashOut: ICashOutResponse) => {
-        const balanceAccountId = selectedBalanceAccountId.value;
-        if (!balanceAccountId || !eligibility.value) return;
-        expectedAvailableForCashOut.value[balanceAccountId] = getAvailableAfterCashOut(eligibility.value.availableForCashOutBalance, cashOut.amount);
+        const balanceAccountId = cashOut.balanceAccount;
+        const availableBefore =
+            balanceAccountId === selectedBalanceAccountId.value
+                ? eligibility.value?.availableForCashOutBalance
+                : withExpectedAmount(availableAmounts.value.get(balanceAccountId), expectedOf(balanceAccountId));
+        if (!availableBefore) return;
+        expectedAvailableForCashOut.value[balanceAccountId] = getAvailableAfterCashOut(availableBefore, cashOut.amount);
+        expectedSince[balanceAccountId] = Date.now();
     };
 
     /**
@@ -77,7 +118,7 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
      * `refreshAvailableAmounts` instead, once the list of balance accounts closes, so an open list keeps what it opened with.
      */
     const refresh = () => {
-        if (selectedBalanceAccountId.value) delete expectedAvailableForCashOut.value[selectedBalanceAccountId.value];
+        if (selectedBalanceAccountId.value) forgetExpected(selectedBalanceAccountId.value);
         refreshEligibility();
     };
 

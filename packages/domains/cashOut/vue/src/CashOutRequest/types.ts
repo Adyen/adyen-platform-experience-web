@@ -18,6 +18,8 @@ export type CashOutRequestComponentProps = Omit<CashOutRequestExternalProps, 'co
     inModal?: boolean;
     /** Called when the success or error screen replaces the form, so a modal can hide its own title. */
     onResultShown?: () => void;
+    /** Called when the cashOut starts and stops being sent, so a modal can't be closed meanwhile. */
+    onInstructingChange?: (isInstructing: boolean) => void;
     /** Passed on by the CashOut Overview when it opens this component in its modal. */
     onContactSupport?: () => void;
 };
