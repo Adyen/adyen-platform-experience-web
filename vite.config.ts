@@ -117,6 +117,7 @@ export default defineConfig(({ mode }) => {
                 'scripts/process-translations/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'scripts/upload-assets/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/domains/*/{domain,vue}/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/sdk/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/tools/*/scripts/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/tools/cli/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
