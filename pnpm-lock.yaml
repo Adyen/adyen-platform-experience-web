@@ -856,6 +856,9 @@ importers:
       storybook:
         specifier: 'catalog:'
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.6(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.9.0))
 
   packages/shared/types:
     dependencies:
@@ -4059,6 +4062,7 @@ packages:
   eslint@9.39.2:
     resolution: {}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -6540,7 +6544,7 @@ packages:
   vue-component-type-helpers@2.2.12:
     resolution: {}
 
-  vue-component-type-helpers@3.3.7:
+  vue-component-type-helpers@3.3.14:
     resolution: {}
 
   vue-demi@0.14.10:
@@ -8624,7 +8628,7 @@ snapshots:
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       type-fest: 2.19.0
       vue: 3.5.31(typescript@5.8.3)
-      vue-component-type-helpers: 3.3.7
+      vue-component-type-helpers: 3.3.14
 
   '@stylistic/stylelint-plugin@5.0.1(stylelint@17.5.0(typescript@5.8.3))':
     dependencies:
@@ -13373,7 +13377,7 @@ snapshots:
 
   vue-component-type-helpers@2.2.12: {}
 
-  vue-component-type-helpers@3.3.7: {}
+  vue-component-type-helpers@3.3.14: {}
 
   vue-demi@0.14.10(vue@3.5.31(typescript@5.8.3)):
     dependencies:
