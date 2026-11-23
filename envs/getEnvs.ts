@@ -14,6 +14,7 @@ const parseEnv = (env: Record<string, string | undefined>) => ({
             autoRefresh: env.SESSION_AUTO_REFRESH,
             maxAgeMs: env.SESSION_MAX_AGE_MS,
             permissions: env.SESSION_PERMISSIONS,
+            reauthThrottleMs: env.SESSION_REAUTH_THROTTLE_MS,
             url: env.SESSION_API_URL ?? '',
         },
     },
