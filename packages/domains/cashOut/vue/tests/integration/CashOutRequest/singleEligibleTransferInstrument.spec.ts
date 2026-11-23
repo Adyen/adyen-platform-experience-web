@@ -16,7 +16,7 @@ test.describe('CashOut Request - Single eligible transfer instrument', () => {
             // With other bank accounts that can't receive it, they are listed in a dropdown instead of shown as a detail.
             expect(root.getByRole('combobox', { name: 'Account to deposit into' })).toHaveText('NL**ABNA******4300'),
             expect(root.getByRole('status')).toContainText('You will receive €984.50'),
-            expect(root.getByRole('status')).toContainText('Your money usually arrives within 30 minutes. Some transfers may take longer.'),
+            expect(root.getByRole('status')).toContainText('Your money usually arrives within 5 minutes. Some transfers may take longer.'),
             expect(root.getByRole('button', { name: 'Cash out now' })).toBeEnabled(),
         ]);
     });

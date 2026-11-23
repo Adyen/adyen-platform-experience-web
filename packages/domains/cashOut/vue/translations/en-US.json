@@ -1,4 +1,11 @@
 {
+    "cashOut.common.arrivalTime.lessThanAMinute": "in less than a minute",
+    "cashOut.common.arrivalTime.withinDays": "within %{count} day",
+    "cashOut.common.arrivalTime.withinDays__plural": "within %{count} days",
+    "cashOut.common.arrivalTime.withinHours": "within %{count} hour",
+    "cashOut.common.arrivalTime.withinHours__plural": "within %{count} hours",
+    "cashOut.common.arrivalTime.withinMinutes": "within %{count} minute",
+    "cashOut.common.arrivalTime.withinMinutes__plural": "within %{count} minutes",
     "cashOut.common.availableForCashOut.label": "Available to cash out",
     "cashOut.common.availableForCashOut.tooltips.default": "You can cash out up to your pending balance.",
     "cashOut.common.availableForCashOut.tooltips.withDailyLimit": "You can cash out up to your pending balance, subject to a %{dailyLimit} cap per rolling 24-hour period. Only the amount you receive counts toward this cap.",
@@ -22,6 +29,7 @@
     "cashOut.common.unavailableReasons.dailyLimitReached": "You've reached the instant CashOut limit over a 24 hour period. Try again later.",
     "cashOut.common.unavailableReasons.noInstantReachableTransferInstruments": "Instant CashOut isn't available because you don't have a bank account that can receive instant payouts. Please add an additional bank account.",
     "cashOut.common.unavailableReasons.notAllowed": "Instant CashOut isn't available for this account. Contact support for help.",
+    "cashOut.common.unavailableReasons.notAllowedWithContactSupport": "Instant CashOut isn't available for this account.",
     "cashOut.common.unavailableReasons.riskRestricted": "Instant CashOut isn't available for this account due to risk restrictions.",
     "cashOut.overview.actions.start": "Start instant CashOut",
     "cashOut.overview.errors.unavailable": "We couldn't load Instant CashOut.",
@@ -46,9 +54,9 @@
     "cashOut.request.fields.transferInstrument.ineligibilityReasons.transferInstrumentCurrencyMismatch": "This account can't receive payouts in %{currency}",
     "cashOut.request.fields.transferInstrument.label": "Account to deposit into",
     "cashOut.request.fields.transferInstrument.placeholder": "Select a bank account",
-    "cashOut.request.success.description": "You can expect your money to be in your account within 30 minutes. Some transfers may take longer.",
+    "cashOut.request.success.description": "You can expect your money to be in your account %{arrivalTime}. Some transfers may take longer.",
     "cashOut.request.success.title": "CashOut successful",
-    "cashOut.request.summary.description": "Your money usually arrives within 30 minutes. Some transfers may take longer.",
+    "cashOut.request.summary.description": "Your money usually arrives %{arrivalTime}. Some transfers may take longer.",
     "cashOut.request.summary.title": "You will receive %{amount}",
     "cashOut.request.title": "Instant CashOut request"
 }

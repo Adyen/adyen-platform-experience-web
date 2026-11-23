@@ -109,7 +109,7 @@ vi.mock('../CashOutRequestResult/CashOutRequestResult.vue', async () => {
     const { defineComponent, h } = await import('vue');
     return {
         default: defineComponent({
-            props: { status: { type: String, required: true } },
+            props: { status: { type: String, required: true }, currency: { type: String, default: undefined } },
             setup(props) {
                 return () => {
                     resultProps.current = { ...props };
@@ -320,7 +320,7 @@ describe('CashOutRequest', () => {
     });
 
     describe('Result', () => {
-        const CASH_OUT = { id: 'CO1' };
+        const CASH_OUT = { id: 'CO1', amount: { value: 10000, currency: 'EUR' } };
         const reportResult = (result: unknown) => (formProps.current?.onResult as (result: unknown) => void)(result);
 
         test('should show the success screen instead of the title and form, and pass on the cashOut', async () => {
@@ -332,7 +332,8 @@ describe('CashOutRequest', () => {
             await nextTick();
 
             expect(target.textContent).toBe('result success');
-            expect(resultProps.current).toMatchObject({ status: 'success' });
+            // Its currency tells when the money usually arrives.
+            expect(resultProps.current).toMatchObject({ status: 'success', currency: 'EUR' });
             expect(onSubmit).toHaveBeenCalledWith(CASH_OUT);
 
             unmount();

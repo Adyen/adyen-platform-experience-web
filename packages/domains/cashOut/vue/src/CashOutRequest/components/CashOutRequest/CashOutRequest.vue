@@ -68,7 +68,12 @@ const handleResult = (cashOutResult: CashOutResult) => {
 </script>
 
 <template>
-    <CashOutRequestResult v-if="result" :status="result.status" :in-modal="props.inModal" />
+    <CashOutRequestResult
+        v-if="result"
+        :status="result.status"
+        :currency="result.status === 'success' ? result.cashOut.amount.currency : undefined"
+        :in-modal="props.inModal"
+    />
     <div v-else :class="styles.root">
         <CashOutHeader
             v-model:selected-balance-account-id="selectedBalanceAccountId"

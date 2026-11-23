@@ -1,0 +1,9 @@
+{
+    "defaultDuration": "PT30M",
+    "durationByCurrency": {
+        "AUD": "PT5M",
+        "EUR": "PT5M",
+        "GBP": "PT5M",
+        "USD": "PT5M"
+    }
+}

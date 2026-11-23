@@ -60,7 +60,7 @@ test.describe('CashOut Request - Single transfer instrument', () => {
                 expect(root.getByRole('definition')).toHaveText(['€15.50', 'GB**NWBK**********1234']),
                 expect(root.getByRole('combobox', { name: 'Account to deposit into' })).toHaveCount(0),
                 expect(root.getByRole('status')).toContainText('You will receive €984.50'),
-                expect(root.getByRole('status')).toContainText('Your money usually arrives within 30 minutes. Some transfers may take longer.'),
+                expect(root.getByRole('status')).toContainText('Your money usually arrives within 5 minutes. Some transfers may take longer.'),
                 expect(root.getByRole('button', { name: 'Cash out now' })).toBeEnabled(),
             ]);
         });
@@ -126,7 +126,7 @@ test.describe('CashOut Request - Single transfer instrument', () => {
             await Promise.all([
                 expect(root.getByText('CashOut successful')).toBeVisible(),
                 expect(
-                    root.getByText('You can expect your money to be in your account within 30 minutes. Some transfers may take longer.')
+                    root.getByText('You can expect your money to be in your account within 5 minutes. Some transfers may take longer.')
                 ).toBeVisible(),
                 expect(root.getByRole('heading', { name: 'Instant CashOut request' })).toHaveCount(0),
             ]);

@@ -13,6 +13,29 @@ test.describe('CashOut Overview - Default', () => {
     const AVAILABLE_TO_CASH_OUT_TOOLTIP =
         'You can cash out up to your pending balance, subject to a $25,000.00 cap per rolling 24-hour period. Only the amount you receive counts toward this cap.';
 
+    // Like /setup does, the CashOut endpoints are served by cashout-ui, the others by platform-components-external.
+    test('should call cashout-ui for the CashOut endpoints and platform-components-external for the others', async ({ page }) => {
+        const hosts: Record<string, string> = {};
+        page.on('request', request => {
+            const { host, pathname } = new URL(request.url());
+            const endpoint = pathname.match(/\/(setup|accounts|balanceAccounts|eligibility|availableAmounts)$/)?.[1];
+            if (endpoint) hosts[endpoint] = host;
+        });
+
+        await goToStory(page, { id: STORY_ID });
+        await expect(getComponentRoot(page).getByText('$220.00', { exact: true })).toBeVisible();
+
+        await expect
+            .poll(() => hosts)
+            .toEqual({
+                setup: 'platform-components-external-test.adyen.com',
+                accounts: 'platform-components-external-test.adyen.com',
+                balanceAccounts: 'platform-components-external-test.adyen.com',
+                eligibility: 'cashout-ui-test.adyen.com',
+                availableAmounts: 'cashout-ui-test.adyen.com',
+            });
+    });
+
     test.describe('Render', () => {
         test('should show what the selected balance account can cash out', async ({ page }) => {
             const root = getComponentRoot(page);
@@ -187,7 +210,7 @@ test.describe('CashOut Overview - Default', () => {
                 expect(modal.getByLabel('The fee is $0.50 plus 1.5% of the amount you cash out.')).toBeVisible(),
                 expect(modal.getByRole('definition')).toHaveText(['$3.80']),
                 expect(modal.getByRole('status')).toContainText('You will receive $216.20'),
-                expect(modal.getByRole('status')).toContainText('Your money usually arrives within 30 minutes. Some transfers may take longer.'),
+                expect(modal.getByRole('status')).toContainText('Your money usually arrives within 5 minutes. Some transfers may take longer.'),
                 expect(modal.getByRole('button', { name: 'Cash out now' })).toBeDisabled(),
             ]);
         });
@@ -252,7 +275,7 @@ test.describe('CashOut Overview - Default', () => {
             await Promise.all([
                 expect(modal.getByText('CashOut successful')).toBeVisible(),
                 expect(
-                    modal.getByText('You can expect your money to be in your account within 30 minutes. Some transfers may take longer.')
+                    modal.getByText('You can expect your money to be in your account within 5 minutes. Some transfers may take longer.')
                 ).toBeVisible(),
                 expect(modal.getByRole('button', { name: 'Cash out now' })).toBeHidden(),
                 // Only the close button of the modal: the request in the modal has no close button of its own.
