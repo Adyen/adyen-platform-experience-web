@@ -72,7 +72,7 @@ export const cdnModuleIntegrity = ({ entryFileName }: { entryFileName: string })
                               error: `${id} dynamically imports ${specifier === undefined ? 'a non-static specifier' : `"${specifier}"`}, which is not a bundled chunk`,
                           };
 
-                const marker = JSON.stringify(`${CALL_SITE_MARKER}:${targets.push(target) - 1}`);
+                const marker = `"${CALL_SITE_MARKER}:${targets.push(target) - 1}"`;
                 transformed = `${transformed.slice(0, start)}${IMPORTER_NAME}(() => ${code.slice(start, end)}, ${marker})${transformed.slice(end)}`;
             }
 
