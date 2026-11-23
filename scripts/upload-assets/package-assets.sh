@@ -19,19 +19,21 @@ if [[ ! "$RELEASE_LINE" =~ ^v(1|[2-9][0-9]*)$ ]]; then
 fi
 
 ARCHIVE_NAME="platform-components-${RELEASE_LINE}_cdn.tar.gz"
-BUILD_SCRIPT="build:umd"
+BUILD_SCRIPT="build:cdn"
 ASSETS_DIR="./packages/shared/assets/src"
 SDK_TRANSLATIONS_DIR="./packages/sdk/translations"
 DISPUTES_CONFIG_DIR="./packages/domains/disputes/domain/src/config"
 PAY_BY_LINK_CONFIG_DIR="./packages/domains/payByLink/domain/src/config"
 CAPITAL_CONFIG_DIR="./packages/domains/capital/domain/src/config"
-UMD_FILE="./dist/umd/index.js"
-CSS_FILE="./dist/adyen-platform-experience-web.css"
+CDN_DIR="./dist-cdn"
+ENTRY_FILE="$CDN_DIR/adyen-platform-experience-web.js"
+CHUNKS_DIR="$CDN_DIR/chunks"
+CSS_FILE="$CDN_DIR/adyen-platform-experience-web.css"
 STAGING_DIR=$(mktemp -d)
 
 echo "Running the build process from directory: $(pwd)"
-if [[ "${SKIP_UMD_BUILD:-false}" == "true" ]]; then
-  echo "Using the existing UMD build output"
+if [[ "${SKIP_CDN_BUILD:-false}" == "true" ]]; then
+  echo "Using the existing CDN build output"
 else
   pnpm run "$BUILD_SCRIPT"
   echo "Build complete"
@@ -46,10 +48,12 @@ if [[ ! -d "$SDK_TRANSLATIONS_DIR" ]]; then
   echo "Error: SDK translations directory not found at '$PROJECT_ROOT/$SDK_TRANSLATIONS_DIR'. Aborting" >&2
   exit 1
 fi
-if [[ ! -f "$UMD_FILE" ]]; then
-  echo "Error: UMD file not found at '$PROJECT_ROOT/$UMD_FILE'. Aborting" >&2
-  exit 1
-fi
+for REQUIRED_PATH in "$ENTRY_FILE" "$CHUNKS_DIR" "$CSS_FILE"; do
+  if [[ ! -e "$REQUIRED_PATH" ]]; then
+    echo "Error: CDN build output not found at '$PROJECT_ROOT/$REQUIRED_PATH'. Aborting" >&2
+    exit 1
+  fi
+done
 echo "All paths verified"
 
 echo "Preparing staging directory for archive"
@@ -61,18 +65,16 @@ echo "Building the CDN translations tree (keys, locale values, translator index)
 rm -rf "$STAGING_DIR/assets/translations"
 node "$SCRIPT_DIR/build-translations-tree.mjs" "$SDK_TRANSLATIONS_DIR" "$STAGING_DIR/assets/translations"
 
-# Conditionally copy the UMD file based on the environment
+# Conditionally copy the ES module bundle based on the environment
 if [[ "$DEPLOY_ENV" != "live" ]]; then
-  echo "Copying UMD file..."
-  cp "$UMD_FILE" "$STAGING_DIR/index.js"
+  echo "Copying ES module entry and chunks..."
+  cp "$ENTRY_FILE" "$STAGING_DIR/adyen-platform-experience-web.js"
+  cp -r "$CHUNKS_DIR" "$STAGING_DIR/chunks"
+  echo "export * from './adyen-platform-experience-web.js';" > "$STAGING_DIR/index.js"
   echo "Copying CSS file..."
-  if [[ ! -f "$CSS_FILE" ]]; then
-    echo "Error: CSS file not found at \"$PROJECT_ROOT/$CSS_FILE\". Aborting" >&2
-    exit 1
-  fi
   cp "$CSS_FILE" "$STAGING_DIR/adyen-platform-experience-web.css"
 else
-  echo "Skipping UMD and CSS files copy for LIVE environment."
+  echo "Skipping ES module bundle and CSS files copy for LIVE environment."
 fi
 
 echo "Copying capital domain config to staging area..."
