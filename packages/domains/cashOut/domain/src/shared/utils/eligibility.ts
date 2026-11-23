@@ -70,6 +70,20 @@ export const withExpectedAmount = (amount: ICashOutAmount | undefined, expected:
 export const hasCaughtUpWithExpectedAmount = (amount: ICashOutAmount | undefined, expected: ICashOutAmount | undefined): boolean =>
     !!amount && !!expected && amount.currency === expected.currency && amount.value <= expected.value;
 
+/**
+ * What is available to cash out as a newer amount tells it, such as the available amounts loaded after the eligibility, the rest of
+ * the eligibility staying as it is. Its fees, daily limit and bank accounts are in its currency, so an amount in another one doesn't
+ * replace it.
+ */
+export const withNewerAvailableAmount = (
+    eligibility: ICashOutEligibility | undefined,
+    newer: ICashOutAmount | undefined
+): ICashOutEligibility | undefined => {
+    const current = eligibility?.availableForCashOutBalance;
+    if (!eligibility || !newer || newer.currency !== current?.currency || newer.value === current.value) return eligibility;
+    return { ...eligibility, availableForCashOutBalance: newer };
+};
+
 // Right after a cashOut the API still processes it and shows what was available before it, so what is expected is shown instead,
 // until the API shows no more than that. Its unavailable reasons stay, such as the cashOut in progress.
 export const withExpectedAvailableForCashOut = (

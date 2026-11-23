@@ -1,11 +1,13 @@
 import { http, HttpResponse } from 'msw';
 import type {
+    IBalanceAccountBase,
     ICashOutAmount,
     ICashOutAvailableAmounts,
     ICashOutEligibility,
     ICashOutFees,
     ICashOutRequest,
     ICashOutResponse,
+    ICashOutState,
     ISessionAccount,
 } from '@integration-components/types';
 import { BALANCE_ACCOUNTS, BALANCE_ACCOUNTS_SINGLE, setupBasicResponse } from '@integration-components/testing/fixtures';
@@ -17,6 +19,9 @@ import {
     ELIGIBILITY_BY_BALANCE_ACCOUNT,
     ELIGIBILITY_UNAVAILABLE,
     ELIGIBILITY_UNAVAILABLE_WITH_SINGLE_ELIGIBLE_TRANSFER_INSTRUMENT,
+    MANY_BALANCE_ACCOUNTS,
+    STATE_RESTRICTED,
+    STATE_WITHOUT_RESTRICTIONS,
 } from '../mock-data/cashOut';
 
 const REQUEST_ID = '769ac4ce59f0f159ad672d38d3291e93';
@@ -120,6 +125,56 @@ const deductCashedOut = (accountKey: string, eligibility: ICashOutEligibility): 
 // Like a session for an account holder, whose balance accounts can be picked from.
 const SESSION_ACCOUNT_HOLDER: ISessionAccount = { accountKey: 'BalanceAccountHolder.AH32272223222B5CTDQPM6W2H', accountType: 'BalanceAccountHolder' };
 
+// Like the API, which tells the state for the account of the session: an account holder, or a balance account for its account holder.
+const isSessionAccountKey = (accountKey: string) => accountKey.startsWith('BalanceAccountHolder.') || !!getBalanceAccountId(accountKey);
+
+// The eligibility of a balance account: its own, or the default one.
+const eligibilityOf = (balanceAccountId: string) => ELIGIBILITY_BY_BALANCE_ACCOUNT[balanceAccountId] ?? ELIGIBILITY_AVAILABLE.default;
+
+// What it can cash out now, as its eligibility tells it once what it cashed out since the page loaded is deducted.
+const availableNowOf = (balanceAccountId: string) => deductCashedOut(balanceAccountId, eligibilityOf(balanceAccountId)).availableForCashOutBalance;
+
+// Balance accounts as the balance accounts endpoint returns them, with their account key.
+const withAccountKeys = (balanceAccounts: readonly IBalanceAccountBase[]) =>
+    balanceAccounts.map(account => ({ ...account, accountKey: `${BALANCE_ACCOUNT_KEY_PREFIX}${account.id}` }));
+
+// The available amounts of these balance accounts, like the API, which takes them from their eligibility.
+const availableAmountsOf = (balanceAccounts: readonly IBalanceAccountBase[], availableOf: (balanceAccountId: string) => ICashOutAmount) =>
+    ({
+        balanceAccounts: balanceAccounts.map(({ id }) => ({ balanceAccountId: id, availableForCashOut: availableOf(id) })),
+    }) satisfies ICashOutAvailableAmounts;
+
+// The eligibility of each balance account, with these bank accounts. Keeps the balances of each balance account, so multiple
+// balance accounts still differ from each other.
+const withTransferInstrumentsHandler = (transferInstruments: ICashOutEligibility['transferInstruments']) =>
+    http.get<{ accountKey: string }>(
+        ENDPOINTS.eligibility,
+        withDelay(({ params }) => {
+            const balanceAccountId = getBalanceAccountId(params.accountKey);
+            if (!balanceAccountId) return getInvalidAccountKeyResponse();
+            return HttpResponse.json(deductCashedOut(balanceAccountId, { ...eligibilityOf(balanceAccountId), transferInstruments }));
+        })
+    );
+
+// Every balance account with the same eligibility, and the available amounts as it tells them, like the API, so the component
+// and the list of balance accounts agree on what each one can cash out.
+const sameEligibilityHandlers = (eligibility: ICashOutEligibility) => [
+    http.get(
+        ENDPOINTS.eligibility,
+        withDelay(() => HttpResponse.json(eligibility))
+    ),
+    http.get(
+        ENDPOINTS.availableAmounts,
+        withDelay(() => HttpResponse.json(availableAmountsOf(BALANCE_ACCOUNTS, () => eligibility.availableForCashOutBalance)))
+    ),
+];
+
+const stateHandler = (state: ICashOutState) =>
+    http.get<{ accountKey: string }>(
+        ENDPOINTS.state,
+        withDelay(({ params }) => (isSessionAccountKey(params.accountKey) ? HttpResponse.json(state) : getInvalidAccountKeyResponse()))
+    );
+
 export const cashOutMocks = [
     http.get(
         ENDPOINTS.accounts,
@@ -128,24 +183,14 @@ export const cashOutMocks = [
     // What each balance account of the account holder can cash out, as its eligibility tells it.
     http.get(
         ENDPOINTS.availableAmounts,
-        withDelay(() =>
-            HttpResponse.json({
-                balanceAccounts: BALANCE_ACCOUNTS.map(({ id }) => ({
-                    balanceAccountId: id,
-                    availableForCashOut: deductCashedOut(id, ELIGIBILITY_BY_BALANCE_ACCOUNT[id] ?? ELIGIBILITY_AVAILABLE.default)
-                        .availableForCashOutBalance,
-                })),
-            } satisfies ICashOutAvailableAmounts)
-        )
+        withDelay(() => HttpResponse.json(availableAmountsOf(BALANCE_ACCOUNTS, availableNowOf)))
     ),
     http.get<{ accountKey: string }>(
         ENDPOINTS.eligibility,
         withDelay(({ params }) => {
             const balanceAccountId = getBalanceAccountId(params.accountKey);
             if (!balanceAccountId) return getInvalidAccountKeyResponse();
-            return HttpResponse.json(
-                deductCashedOut(balanceAccountId, ELIGIBILITY_BY_BALANCE_ACCOUNT[balanceAccountId] ?? ELIGIBILITY_AVAILABLE.default)
-            );
+            return HttpResponse.json(deductCashedOut(balanceAccountId, eligibilityOf(balanceAccountId)));
         })
     ),
     http.get(
@@ -164,6 +209,7 @@ export const cashOutMocks = [
             return HttpResponse.json(calculateFees(amount, currency));
         })
     ),
+    stateHandler(STATE_WITHOUT_RESTRICTIONS),
     http.post<{ accountKey: string }, Partial<ICashOutRequest>>(
         ENDPOINTS.instruct,
         withDelay(
@@ -203,8 +249,29 @@ export const cashOutMocks = [
     ),
 ];
 
+// What the available amounts tell after the first time, while the eligibility still tells what it told before.
+let availableAmountsRequests = 0;
+
 export const CASH_OUT_HANDLERS = {
     default: { handlers: cashOutMocks },
+    // The first balance account can cash out less once the amounts are loaded again, such as when the list of balance accounts closes.
+    availableAmountsChanged: {
+        handlers: [
+            http.get(
+                ENDPOINTS.availableAmounts,
+                withDelay(() => {
+                    const isFirst = availableAmountsRequests++ === 0;
+                    return HttpResponse.json(
+                        availableAmountsOf(BALANCE_ACCOUNTS, id =>
+                            !isFirst && id === BALANCE_ACCOUNTS[0].id
+                                ? { value: 15000, currency: 'USD' }
+                                : eligibilityOf(id).availableForCashOutBalance
+                        )
+                    );
+                })
+            ),
+        ],
+    },
     // The API has an amount for the first balance account only: none for the second, and the third is left out.
     someAvailableAmountsMissing: {
         handlers: [
@@ -233,7 +300,7 @@ export const CASH_OUT_HANDLERS = {
                 withDelay(({ params }) => {
                     const balanceAccountId = getBalanceAccountId(params.accountKey);
                     if (!balanceAccountId) return getInvalidAccountKeyResponse();
-                    const eligibility = ELIGIBILITY_BY_BALANCE_ACCOUNT[balanceAccountId] ?? ELIGIBILITY_AVAILABLE.default;
+                    const eligibility = eligibilityOf(balanceAccountId);
                     if (!cashedOutByBalanceAccount.has(balanceAccountId)) return HttpResponse.json(eligibility);
                     return HttpResponse.json({
                         ...eligibility,
@@ -259,151 +326,65 @@ export const CASH_OUT_HANDLERS = {
             ),
             http.get(
                 BALANCE_ACCOUNTS_ENDPOINT,
-                withDelay(() => {
-                    return HttpResponse.json({
-                        data: BALANCE_ACCOUNTS_SINGLE.map(account => ({ ...account, accountKey: `${BALANCE_ACCOUNT_KEY_PREFIX}${account.id}` })),
-                    });
-                })
+                withDelay(() => HttpResponse.json({ data: withAccountKeys(BALANCE_ACCOUNTS_SINGLE) }))
             ),
         ],
     },
     singleTransferInstrument: {
-        handlers: [
-            http.get(
-                ENDPOINTS.eligibility,
-                withDelay(() => {
-                    return HttpResponse.json(ELIGIBILITY_AVAILABLE.singleTransferInstrument);
-                })
-            ),
-        ],
+        handlers: sameEligibilityHandlers(ELIGIBILITY_AVAILABLE.singleTransferInstrument),
     },
     singleEligibleTransferInstrument: {
-        handlers: [
-            http.get(
-                ENDPOINTS.eligibility,
-                withDelay(() => {
-                    return HttpResponse.json(ELIGIBILITY_AVAILABLE.singleEligibleTransferInstrument);
-                })
-            ),
-        ],
+        handlers: sameEligibilityHandlers(ELIGIBILITY_AVAILABLE.singleEligibleTransferInstrument),
     },
     withIneligibleTransferInstruments: {
+        handlers: [withTransferInstrumentsHandler(ELIGIBILITY_AVAILABLE.withIneligibleTransferInstruments.transferInstruments)],
+    },
+    // Enough bank accounts for their dropdown to be searched.
+    manyTransferInstruments: {
+        handlers: [withTransferInstrumentsHandler(ELIGIBILITY_AVAILABLE.manyTransferInstruments.transferInstruments)],
+    },
+    // Enough balance accounts for their dropdown to be searched, each with what it can cash out.
+    manyBalanceAccounts: {
         handlers: [
-            // Keeps the balances of each balance account, so multiple balance accounts still differ from each other.
-            http.get<{ accountKey: string }>(
-                ENDPOINTS.eligibility,
-                withDelay(({ params }) => {
-                    const balanceAccountId = getBalanceAccountId(params.accountKey);
-                    if (!balanceAccountId) return getInvalidAccountKeyResponse();
-                    return HttpResponse.json(
-                        deductCashedOut(balanceAccountId, {
-                            ...(ELIGIBILITY_BY_BALANCE_ACCOUNT[balanceAccountId] ?? ELIGIBILITY_AVAILABLE.default),
-                            transferInstruments: ELIGIBILITY_AVAILABLE.withIneligibleTransferInstruments.transferInstruments,
-                        })
-                    );
-                })
+            http.get(
+                BALANCE_ACCOUNTS_ENDPOINT,
+                withDelay(() => HttpResponse.json({ data: withAccountKeys(MANY_BALANCE_ACCOUNTS) }))
+            ),
+            http.get(
+                ENDPOINTS.availableAmounts,
+                withDelay(() => HttpResponse.json(availableAmountsOf(MANY_BALANCE_ACCOUNTS, availableNowOf)))
             ),
         ],
     },
     zeroBalance: {
-        handlers: [
-            http.get(
-                ENDPOINTS.eligibility,
-                withDelay(() => {
-                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.zeroBalance);
-                })
-            ),
-        ],
+        handlers: sameEligibilityHandlers(ELIGIBILITY_UNAVAILABLE.zeroBalance),
     },
     unavailableSingleEligibleTransferInstrument: {
-        handlers: [
-            http.get(
-                ENDPOINTS.eligibility,
-                withDelay(() => {
-                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE_WITH_SINGLE_ELIGIBLE_TRANSFER_INSTRUMENT);
-                })
-            ),
-        ],
+        handlers: sameEligibilityHandlers(ELIGIBILITY_UNAVAILABLE_WITH_SINGLE_ELIGIBLE_TRANSFER_INSTRUMENT),
     },
     noInstantReachableTransferInstruments: {
-        handlers: [
-            http.get(
-                ENDPOINTS.eligibility,
-                withDelay(() => {
-                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.noInstantReachableTransferInstruments);
-                })
-            ),
-        ],
+        handlers: sameEligibilityHandlers(ELIGIBILITY_UNAVAILABLE.noInstantReachableTransferInstruments),
     },
     cashOutInProgress: {
-        handlers: [
-            http.get(
-                ENDPOINTS.eligibility,
-                withDelay(() => {
-                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.cashOutInProgress);
-                })
-            ),
-        ],
+        handlers: sameEligibilityHandlers(ELIGIBILITY_UNAVAILABLE.cashOutInProgress),
     },
     dailyLimitReached: {
-        handlers: [
-            http.get(
-                ENDPOINTS.eligibility,
-                withDelay(() => {
-                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.dailyLimitReached);
-                })
-            ),
-        ],
+        handlers: sameEligibilityHandlers(ELIGIBILITY_UNAVAILABLE.dailyLimitReached),
     },
     sendToBalanceAccountNotAllowed: {
-        handlers: [
-            http.get(
-                ENDPOINTS.eligibility,
-                withDelay(() => {
-                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.sendToBalanceAccountNotAllowed);
-                })
-            ),
-        ],
+        handlers: sameEligibilityHandlers(ELIGIBILITY_UNAVAILABLE.sendToBalanceAccountNotAllowed),
     },
     receiveFromBalanceAccountNotAllowed: {
-        handlers: [
-            http.get(
-                ENDPOINTS.eligibility,
-                withDelay(() => {
-                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.receiveFromBalanceAccountNotAllowed);
-                })
-            ),
-        ],
+        handlers: sameEligibilityHandlers(ELIGIBILITY_UNAVAILABLE.receiveFromBalanceAccountNotAllowed),
     },
     sendToTransferInstrumentNotAllowed: {
-        handlers: [
-            http.get(
-                ENDPOINTS.eligibility,
-                withDelay(() => {
-                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.sendToTransferInstrumentNotAllowed);
-                })
-            ),
-        ],
+        handlers: sameEligibilityHandlers(ELIGIBILITY_UNAVAILABLE.sendToTransferInstrumentNotAllowed),
     },
     riskRestricted: {
-        handlers: [
-            http.get(
-                ENDPOINTS.eligibility,
-                withDelay(() => {
-                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.riskRestricted);
-                })
-            ),
-        ],
+        handlers: sameEligibilityHandlers(ELIGIBILITY_UNAVAILABLE.riskRestricted),
     },
     cashOutNotConfigured: {
-        handlers: [
-            http.get(
-                ENDPOINTS.eligibility,
-                withDelay(() => {
-                    return HttpResponse.json(ELIGIBILITY_UNAVAILABLE.cashOutNotConfigured);
-                })
-            ),
-        ],
+        handlers: sameEligibilityHandlers(ELIGIBILITY_UNAVAILABLE.cashOutNotConfigured),
     },
     freeFees: {
         handlers: [
@@ -413,7 +394,7 @@ export const CASH_OUT_HANDLERS = {
                 withDelay(({ params }) => {
                     const balanceAccountId = getBalanceAccountId(params.accountKey);
                     if (!balanceAccountId) return getInvalidAccountKeyResponse();
-                    const eligibility = ELIGIBILITY_BY_BALANCE_ACCOUNT[balanceAccountId] ?? ELIGIBILITY_AVAILABLE.default;
+                    const eligibility = eligibilityOf(balanceAccountId);
                     const { currency } = eligibility.availableForCashOutBalance;
                     return HttpResponse.json({ ...eligibility, feeStructure: { fixedAmount: { currency, value: 0 }, variableBasisPoints: 0 } });
                 })
@@ -456,6 +437,9 @@ export const CASH_OUT_HANDLERS = {
         ],
     },
     feesInternalServerError: { handlers: [http.get(ENDPOINTS.fees, withDelay(getInternalServerErrorResponse))] },
+    // An account holder that can't cash out at all, for reasons of its own and of its platform.
+    stateRestricted: { handlers: [stateHandler(STATE_RESTRICTED)] },
+    stateInternalServerError: { handlers: [http.get(ENDPOINTS.state, withDelay(getInternalServerErrorResponse))] },
     instructInternalServerError: { handlers: [http.post(ENDPOINTS.instruct, withDelay(getInternalServerErrorResponse))] },
     instructNetworkError: {
         handlers: [

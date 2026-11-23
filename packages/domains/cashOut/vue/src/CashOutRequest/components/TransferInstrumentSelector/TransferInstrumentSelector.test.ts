@@ -17,6 +17,8 @@ const transferInstrumentOf = (id: string) =>
 
 const TRANSFER_INSTRUMENTS = [transferInstrumentOf('TI1'), transferInstrumentOf('TI2')];
 
+const transferInstrumentsOf = (count: number) => Array.from({ length: count }, (_, index) => transferInstrumentOf(`TI${index + 1}`));
+
 const dropdown: { emitChange?: (value: unknown) => void } = {};
 
 vi.mock('@adyen/bento-vue3', async () => {
@@ -24,10 +26,11 @@ vi.mock('@adyen/bento-vue3', async () => {
 
     return {
         BentoDropdown: defineComponent({
+            props: { dynamicFiltering: Boolean },
             emits: ['update:model-value'],
-            setup(_, { emit }) {
+            setup(props, { emit }) {
                 dropdown.emitChange = value => emit('update:model-value', value);
-                return () => h('div');
+                return () => h('div', { role: 'combobox', 'data-searchable': String(props.dynamicFiltering) });
             },
         }),
     };
@@ -37,20 +40,21 @@ vi.mock('@integration-components/core/vue', () => ({
     useCoreContext: vi.fn(),
 }));
 
-const renderSelector = () => {
+const renderSelector = (transferInstruments = TRANSFER_INSTRUMENTS) => {
     const selected = ref<string | undefined>('TI1');
     const target = document.createElement('div');
     const app = createApp({
         setup: () => () =>
             h(TransferInstrumentSelector, {
                 currency: 'EUR',
-                transferInstruments: TRANSFER_INSTRUMENTS,
+                transferInstruments,
                 modelValue: selected.value,
                 'onUpdate:modelValue': (value: string | undefined) => (selected.value = value),
             }),
     });
     app.mount(target);
-    return { selected, unmount: () => app.unmount() };
+    const combobox = () => target.querySelector('[role="combobox"]');
+    return { combobox, selected, unmount: () => app.unmount() };
 };
 
 describe('TransferInstrumentSelector', () => {
@@ -80,6 +84,30 @@ describe('TransferInstrumentSelector', () => {
         dropdown.emitChange?.(['TI2']);
 
         expect(selected.value).toBe('TI1');
+
+        unmount();
+    });
+
+    // From 10 accounts, so one can be found among many; the ones that can't receive the cashOut count too, as they are listed
+    test.each([
+        [9, 'false'],
+        [10, 'true'],
+        [25, 'true'],
+    ])('with %i accounts, should let them be searched: %s', (count, searchable) => {
+        const { combobox, unmount } = renderSelector(transferInstrumentsOf(count));
+
+        expect(combobox()?.getAttribute('data-searchable')).toBe(searchable);
+
+        unmount();
+    });
+
+    test('should count the accounts that cannot receive the cashOut, as they are listed', () => {
+        const transferInstruments = transferInstrumentsOf(10).map((transferInstrument, index) =>
+            index < 5 ? { ...transferInstrument, eligible: false } : transferInstrument
+        );
+        const { combobox, unmount } = renderSelector(transferInstruments);
+
+        expect(combobox()?.getAttribute('data-searchable')).toBe('true');
 
         unmount();
     });

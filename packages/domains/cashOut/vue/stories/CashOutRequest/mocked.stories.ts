@@ -35,6 +35,24 @@ export const IneligibleTransferInstruments: ElementStory = {
     },
 };
 
+// From 10 bank accounts, their dropdown can be searched; the ones that can't receive the cashOut count too, as they are listed.
+export const ManyTransferInstruments: ElementStory = {
+    name: 'Many transfer instruments',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.manyTransferInstruments },
+    },
+};
+
+// From 10 balance accounts, their dropdown can be searched.
+export const ManyBalanceAccounts: ElementStory = {
+    name: 'Many balance accounts',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.manyBalanceAccounts },
+    },
+};
+
 export const FreeFees: ElementStory = {
     name: 'Free fees',
     args: { mockedApi: true },

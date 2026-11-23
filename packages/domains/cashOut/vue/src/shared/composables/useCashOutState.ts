@@ -6,6 +6,7 @@ import {
     hasCaughtUpWithExpectedAmount,
     withExpectedAmount,
     withExpectedAvailableForCashOut,
+    withNewerAvailableAmount,
     withoutUnreachableCashOut,
     type CashOutBalanceAccount,
 } from '@integration-components/cashOut/domain';
@@ -91,9 +92,25 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
         })
     );
 
+    // What the available amounts tell for the selected balance account, when they arrive after its eligibility, so the component and
+    // the dropdown agree on what it can cash out as the newest of the two tells it. Its eligibility arriving again, also for another
+    // balance account, counts again.
+    const newerAvailableAmount = ref<{ balanceAccountId: string; amount: ICashOutAmount }>();
+    watch(availableAmounts, amounts => {
+        const balanceAccountId = selectedBalanceAccountId.value;
+        const amount = balanceAccountId ? amounts.get(balanceAccountId) : undefined;
+        newerAvailableAmount.value = balanceAccountId && amount ? { balanceAccountId, amount } : undefined;
+    });
+    watch([fetchedEligibility, () => toValue(givenEligibility), selectedBalanceAccountId], () => (newerAvailableAmount.value = undefined));
+    const newerAvailableAmountOfSelected = () =>
+        newerAvailableAmount.value?.balanceAccountId === selectedBalanceAccountId.value ? newerAvailableAmount.value?.amount : undefined;
+
     const eligibility = computed(() =>
         withExpectedAvailableForCashOut(
-            withoutUnreachableCashOut(usesGivenEligibility.value ? toValue(givenEligibility) : fetchedEligibility.value),
+            withNewerAvailableAmount(
+                withoutUnreachableCashOut(usesGivenEligibility.value ? toValue(givenEligibility) : fetchedEligibility.value),
+                newerAvailableAmountOfSelected()
+            ),
             expectedOf(selectedBalanceAccountId.value)
         )
     );
