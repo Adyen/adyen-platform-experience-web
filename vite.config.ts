@@ -14,7 +14,6 @@ const KYC_CUSTOM_ELEMENT_TAGS = ['adyen-business-financing', 'adyen-terms-of-ser
 export default defineConfig(({ mode }) => {
     const externalDependencies = Object.keys(packageJson.dependencies);
     const isAnalyseMode = mode === 'analyse';
-    const isUmdBuild = mode === 'umd';
     const isUnitCoverage = process.env.UNIT_LOGIC_COVERAGE === 'true';
     const coverageExtensions = isUnitCoverage ? 'ts' : '{ts,vue}';
 
@@ -26,7 +25,7 @@ export default defineConfig(({ mode }) => {
     const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
     const shouldExcludeAsset = (id: string) => {
-        if (!isUmdBuild && externalDependencies.includes(id)) {
+        if (externalDependencies.includes(id)) {
             return true;
         }
 
@@ -48,11 +47,7 @@ export default defineConfig(({ mode }) => {
             minify: true,
             lib: {
                 name: 'AdyenPlatformExperienceWeb',
-                // The UMD bundle must include every domain component (and its styles), so it uses the
-                // same barrel as the npm build (packages/sdk/src/index.ts). The root src/index.ts entry only
-                // pulls in core + global styles and cannot re-export the domains itself, because shared/lib
-                // re-exports root src/, which would create a circular re-export.
-                entry: resolve(__dirname, isUmdBuild ? './packages/sdk/src/index.ts' : './src/index.ts'),
+                entry: resolve(__dirname, './src/index.ts'),
                 fileName: (format, entryName) => {
                     return entryName.includes('node_modules')
                         ? `${format}/${entryName.replace('node_modules', 'external')}.js`
@@ -64,26 +59,16 @@ export default defineConfig(({ mode }) => {
                 output: [
                     {
                         format: 'es',
-                        preserveModules: !isUmdBuild,
+                        preserveModules: true,
                         preserveModulesRoot: 'src',
                         sourcemap: false,
                         indent: false,
                     },
-                    isUmdBuild
-                        ? {
-                              name: 'AdyenPlatformExperienceWeb',
-                              format: 'umd',
-                              sourcemap: true,
-                              indent: false,
-                              globals: {
-                                  'core-js': 'core',
-                              },
-                          }
-                        : { format: 'cjs', sourcemap: true, indent: false },
+                    { format: 'cjs', sourcemap: true, indent: false },
                 ],
             },
             outDir: resolve(__dirname, './dist'),
-            emptyOutDir: !isUmdBuild,
+            emptyOutDir: true,
         },
         css: {
             preprocessorOptions: {
