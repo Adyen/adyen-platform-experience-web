@@ -2,11 +2,11 @@
 import { computed } from 'vue';
 import { useCoreContext, useModalContext } from '@integration-components/core/vue';
 import type { TranslationKey } from '@integration-components/core';
-import { BentoTypography, BentoCard, BentoTag, BentoLink, BentoButtonActions, BentoStructuredList, BentoStructuredListItem } from '@adyen/bento-vue3';
+import { BentoTypography, BentoCard, BentoTag, BentoButtonActions, BentoStructuredList, BentoStructuredListItem } from '@adyen/bento-vue3';
 import type { IPayoutDetails } from '@integration-components/types';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '@integration-components/utils';
 import { formatAmountWithCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
-import { useShouldHideTitles } from '@integration-components/composables-vue';
+import { CustomDetailValue, useShouldHideTitles } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '@integration-components/payouts/domain';
 import type { PayoutDetailsCustomization } from '../types';
@@ -71,28 +71,12 @@ const fundsCaptured = computed<ListItem[] | undefined>(() => {
     return items;
 });
 
-function isCustomDataObject(value: unknown): value is { type: string; value: any; config?: any } {
-    return !!value && typeof value === 'object' && 'value' in value && 'type' in value;
-}
-
-interface ExtraDetailItem {
-    key: string;
-    value: any;
-    type: string;
-    config?: any;
-}
-
-const extraDetails = computed<ExtraDetailItem[]>(() => {
+const extraDetails = computed(() => {
     const fields = props.extraFields;
     if (!fields) return [];
     return Object.entries(fields)
         .filter(([, field]) => field?.type !== 'button' && field?.visibility !== 'hidden')
-        .map(([key, value]) => ({
-            key,
-            value: isCustomDataObject(value) ? value.value : value,
-            type: isCustomDataObject(value) ? value.type : 'text',
-            config: isCustomDataObject(value) ? value.config : undefined,
-        }));
+        .map(([key, value]) => ({ key, value }));
 });
 
 const buttonActions = computed(() => {
@@ -158,25 +142,7 @@ const formatAmount = (amount: { value: number; currency: string }) => formatAmou
                         :label="i18n.get(item.key as TranslationKey)"
                         :class="styles.extraDetailsLabel"
                     >
-                        <BentoLink
-                            v-if="item.type === 'link' && item.config"
-                            :class="item.config.className"
-                            :to="item.config.href"
-                            :target="item.config.target || '_blank'"
-                            rel="noopener noreferrer"
-                            external
-                        >
-                            {{ item.value }}
-                        </BentoLink>
-                        <div v-else-if="item.type === 'icon' && item.config" :class="[styles.extraDetailsIcon, item.config.className]">
-                            <img :src="item.config.src" :alt="item.config.alt || item.value" :class="item.config.className" />
-                            <BentoTypography variant="body">
-                                {{ item.value }}
-                            </BentoTypography>
-                        </div>
-                        <BentoTypography v-else variant="body" :class="item.config?.className">
-                            {{ item.value }}
-                        </BentoTypography>
+                        <CustomDetailValue :value="item.value" />
                     </BentoStructuredListItem>
                 </BentoStructuredList>
             </template>

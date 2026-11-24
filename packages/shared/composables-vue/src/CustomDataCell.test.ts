@@ -10,6 +10,10 @@ vi.mock('@adyen/bento-vue3', () => ({
     BentoLink: { name: 'BentoLink' },
 }));
 
+vi.mock('@integration-components/core/vue', () => ({
+    useCondensedDataGrid: () => ({ value: false }),
+}));
+
 describe('CustomDataCell', () => {
     const renderValue = (value: unknown, field?: string) => {
         const component = CustomDataCell as unknown as {

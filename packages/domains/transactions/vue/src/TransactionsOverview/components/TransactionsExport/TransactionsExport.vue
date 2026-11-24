@@ -206,6 +206,7 @@ const popoverActions = computed(() => [
         <BentoButton
             :id="exportButtonId"
             ref="targetElement"
+            condensed
             variant="secondary"
             :disabled="props.disabled || isFetching"
             :aria-label="i18n.get('transactions.overview.export.button.label')"

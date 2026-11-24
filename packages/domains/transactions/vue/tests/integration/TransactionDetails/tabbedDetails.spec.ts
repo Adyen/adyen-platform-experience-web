@@ -77,14 +77,13 @@ test.describe('Tabbed details', () => {
 
     const expectSamePaymentTimelineRendering = async (page: Page) => {
         const expectTimelineItems = async (count: number) => {
-            for (const text of ['Aug 29, 2022, 09:47', 'Amount', 'Status']) {
+            for (const text of ['Aug 29, 2022, 09:47 GMT-3', 'Amount', 'Status']) {
                 const elems = page.getByText(text, { exact: true });
-                const allElems = await elems.all();
 
                 await expect(elems).toHaveCount(count);
 
-                for (const label of allElems) {
-                    await expect(label).toBeVisible();
+                for (let index = 0; index < count; index++) {
+                    await expect(elems.nth(index)).toBeVisible();
                 }
             }
         };

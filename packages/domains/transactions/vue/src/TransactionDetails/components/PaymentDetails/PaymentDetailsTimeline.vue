@@ -4,8 +4,9 @@ import { useCoreContext } from '@integration-components/core/vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { BentoDateFormat, BentoTimeline, BentoTimelineItem, BentoTimelineShowMorePlacement } from '@adyen/bento-vue3';
 import { getTransactionTimelineTxStatus, getTransactionTimelineTxType } from '../../../../../domain/src';
-import { DATE_FORMAT_TRANSACTIONS } from '@integration-components/utils/datetime/formats';
+import { DATE_FORMAT_TRANSACTION_DETAILS_TIMELINE } from '@integration-components/utils/datetime/formats';
 import type { TransactionDetails } from '../../../../../domain/src';
+import styles from './PaymentDetails.module.scss';
 
 const props = defineProps<{
     transaction: TransactionDetails;
@@ -27,19 +28,19 @@ function getFixedType(status: string, formattedType: string): string {
 }
 
 function formatTimestamp(date: string): string {
-    return dateFormat(date, DATE_FORMAT_TRANSACTIONS);
+    return dateFormat(date, DATE_FORMAT_TRANSACTION_DETAILS_TIMELINE);
 }
 </script>
 
 <template>
-    <BentoTimeline v-if="events.length" :show-more="{ limit: 2, placement: BentoTimelineShowMorePlacement.BEFORE_LAST }">
+    <BentoTimeline v-if="events.length" :class="styles.timeline" :show-more="{ limit: 2, placement: BentoTimelineShowMorePlacement.BEFORE_LAST }">
         <BentoTimelineItem
             v-for="(event, index) in events"
             :key="`${event.createdAt}-${event.status}-${index}`"
             :title="getFixedType(event.status, getTransactionTimelineTxType(i18n, event.type) as string)"
             :timestamp="{
                 date: new Date(event.createdAt),
-                format: BentoDateFormat.FULL_DATE_TIME_WITHOUT_PERIOD,
+                format: BentoDateFormat.FULL_DATE_TIME_WITH_TIMEZONE_AND_WITHOUT_PERIOD,
                 value: formatTimestamp(event.createdAt),
             }"
             :data-list="[

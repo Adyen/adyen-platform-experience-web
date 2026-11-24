@@ -1,7 +1,9 @@
 @use '@integration-components/style' as style;
 @use '@integration-components/style/breakpoints' as breakpoints;
+@use '@integration-components/style/segmented-control';
 
 .header {
+    @include segmented-control.adyen-pe-segmented-control-concentric-corners;
     align-items: center;
     display: flex;
     justify-content: space-between;

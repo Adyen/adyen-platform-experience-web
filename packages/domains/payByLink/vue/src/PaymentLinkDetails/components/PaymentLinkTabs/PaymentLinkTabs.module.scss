@@ -5,6 +5,10 @@
     flex-direction: column;
     gap: style.token(spacer-090);
     padding-bottom: style.token(spacer-070);
+
+    :global(.b-tab) {
+        padding-top: style.token(spacer-080);
+    }
 }
 
 .listHeading {
