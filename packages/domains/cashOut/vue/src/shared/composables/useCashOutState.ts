@@ -3,6 +3,7 @@ import type { AdyenPlatformExperienceError } from '@integration-components/core'
 import {
     getAvailableAfterCashOut,
     getCashOutErrorMessage,
+    hasAvailableAmountComeFromNothing,
     hasCaughtUpWithExpectedAmount,
     withExpectedAmount,
     withExpectedAvailableForCashOut,
@@ -96,11 +97,6 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
     // the dropdown agree on what it can cash out as the newest of the two tells it. Its eligibility arriving again, also for another
     // balance account, counts again.
     const newerAvailableAmount = ref<{ balanceAccountId: string; amount: ICashOutAmount }>();
-    watch(availableAmounts, amounts => {
-        const balanceAccountId = selectedBalanceAccountId.value;
-        const amount = balanceAccountId ? amounts.get(balanceAccountId) : undefined;
-        newerAvailableAmount.value = balanceAccountId && amount ? { balanceAccountId, amount } : undefined;
-    });
     watch([fetchedEligibility, () => toValue(givenEligibility), selectedBalanceAccountId], () => (newerAvailableAmount.value = undefined));
     const newerAvailableAmountOfSelected = () =>
         newerAvailableAmount.value?.balanceAccountId === selectedBalanceAccountId.value ? newerAvailableAmount.value?.amount : undefined;
@@ -114,6 +110,23 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
             expectedOf(selectedBalanceAccountId.value)
         )
     );
+
+    // From nothing to cash out, the eligibility is loaded again instead, as an amount alone can't make a cashOut available; like a refresh,
+    // the component loads meanwhile. What is expected after a cashOut counts, as right after one that left nothing the API may still
+    // show what was available before it.
+    watch(availableAmounts, amounts => {
+        const balanceAccountId = selectedBalanceAccountId.value;
+        const amount = balanceAccountId ? amounts.get(balanceAccountId) : undefined;
+        if (
+            balanceAccountId &&
+            hasAvailableAmountComeFromNothing(eligibility.value?.availableForCashOutBalance, withExpectedAmount(amount, expectedOf(balanceAccountId)))
+        ) {
+            newerAvailableAmount.value = undefined;
+            refreshEligibility();
+            return;
+        }
+        newerAvailableAmount.value = balanceAccountId && amount ? { balanceAccountId, amount } : undefined;
+    });
 
     /**
      * Remembers what the balance account of the cashOut is expected to have left after it. That may not be the selected one, as the

@@ -424,6 +424,81 @@ describe('useCashOutState', () => {
 
             stop();
         });
+
+        test('should not load the eligibility again for a balance account with something to cash out', async () => {
+            const { state, stop } = await renderReady();
+
+            respondWithAmountForSelected(80);
+            state.refreshAvailableAmounts();
+            await vi.waitFor(() => expect(state.eligibility.value?.availableForCashOutBalance).toEqual({ value: 80, currency: 'USD' }));
+
+            expect(endpoints.getCashOutEligibility).toHaveBeenCalledOnce();
+
+            stop();
+        });
+
+        // An amount alone can't make a cashOut available: its bank accounts and the other checks of the API come with its eligibility
+        describe('For a balance account with nothing to cash out', () => {
+            const NOTHING_TO_CASH_OUT = {
+                ...eligibilityOf(0, []),
+                isCashoutAvailable: false,
+                unavailableReasons: ['zeroBalance'],
+            } as unknown as ICashOutEligibility;
+
+            beforeEach(() => {
+                ELIGIBILITY_BY_BALANCE_ACCOUNT.BA1 = NOTHING_TO_CASH_OUT;
+                respondWithAmountForSelected(0);
+            });
+
+            test('should load its eligibility again, instead of showing what they tell, once they tell more than nothing', async () => {
+                const { state, stop } = await renderReady();
+                expect(state.eligibility.value).toEqual(NOTHING_TO_CASH_OUT);
+                let resolveEligibility!: (eligibility: ICashOutEligibility) => void;
+                endpoints.getCashOutEligibility!.mockImplementationOnce(() => new Promise(resolve => (resolveEligibility = resolve)));
+
+                respondWithAmountForSelected(150);
+                state.refreshAvailableAmounts();
+
+                await vi.waitFor(() => expect(endpoints.getCashOutEligibility).toHaveBeenCalledTimes(2));
+                expect(requestedBalanceAccountIds()).toEqual(['BA1', 'BA1']);
+                // Like a refresh, it loads, so the amount it told isn't shown with a cashOut that can't be started
+                expect(state.eligibility.value).toBeUndefined();
+
+                resolveEligibility(eligibilityOf(150));
+                await vi.waitFor(() => expect(state.eligibility.value).toEqual(eligibilityOf(150)));
+
+                stop();
+            });
+
+            test('should not load its eligibility again while they still tell nothing', async () => {
+                const { state, stop } = await renderReady();
+
+                state.refreshAvailableAmounts();
+                await vi.waitFor(() => expect(endpoints.getCashOutAvailableAmounts).toHaveBeenCalledTimes(2));
+                await new Promise(resolve => setTimeout(resolve));
+
+                expect(endpoints.getCashOutEligibility).toHaveBeenCalledOnce();
+
+                stop();
+            });
+
+            // Right after a cashOut that left nothing, the API may still show what was available before it
+            test('should not load its eligibility again while a cashOut that left nothing is expected', async () => {
+                ELIGIBILITY_BY_BALANCE_ACCOUNT.BA1 = eligibilityOf(100);
+                respondWithAmountForSelected(100);
+                const { state, stop } = await renderReady();
+                state.recordCashOut({ balanceAccount: 'BA1', amount: { value: 100, currency: 'USD' } } as ICashOutResponse);
+                await vi.waitFor(() => expect(state.eligibility.value?.availableForCashOutBalance).toEqual({ value: 0, currency: 'USD' }));
+
+                state.refreshAvailableAmounts();
+                await vi.waitFor(() => expect(endpoints.getCashOutAvailableAmounts).toHaveBeenCalledTimes(2));
+                await new Promise(resolve => setTimeout(resolve));
+
+                expect(endpoints.getCashOutEligibility).toHaveBeenCalledOnce();
+
+                stop();
+            });
+        });
     });
 
     describe('After a cashOut', () => {

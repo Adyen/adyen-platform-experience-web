@@ -179,6 +179,11 @@ export interface components {
              */
             description?: string;
             /**
+             * Format: int64
+             * @description The fee shown for **amount**, as the fees endpoint returned it, in minor units of **currency**. The cashout is rejected when the fee configured for it is no longer this fee.
+             */
+            expectedFee: number;
+            /**
              * @description The reference sent to the recipient of the cashout, and in every webhook about it, so you can track the transfer by it. Maximum 80 characters. Supported characters: **a-z**, **A-Z**, **0-9**, hyphens and underscores.
              *
              *     When you leave this out, Adyen generates a reference, which is not returned in the response.

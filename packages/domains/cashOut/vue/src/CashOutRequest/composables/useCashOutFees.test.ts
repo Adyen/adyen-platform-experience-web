@@ -84,6 +84,70 @@ describe('useCashOutFees', () => {
         stop();
     });
 
+    // Such as when the available amounts are loaded again and tell the same amount: it is given again, as another object
+    test('should keep the fees, without fetching them again, when the same amount is given again', async () => {
+        const { amount, state, stop } = renderCashOutFees('BalanceAccount.BA1', { value: 1000, currency: 'USD' });
+        await vi.waitFor(() => expect(state.isFetchingFees.value).toBe(false));
+
+        amount.value = { value: 1000, currency: 'USD' };
+        await nextTick();
+        await vi.advanceTimersByTimeAsync(CASH_OUT_FEES_DEBOUNCE_MS);
+
+        expect(requestedFees()).toHaveLength(1);
+        expect(state.fees.value).toEqual(feesOf({ value: 1000, currency: 'USD' }));
+
+        stop();
+    });
+
+    test('should fetch the fees when the same value is given in another currency', async () => {
+        const { amount, state, stop } = renderCashOutFees('BalanceAccount.BA1', { value: 1000, currency: 'USD' });
+        await vi.waitFor(() => expect(state.isFetchingFees.value).toBe(false));
+
+        amount.value = { value: 1000, currency: 'EUR' };
+        await nextTick();
+        await vi.advanceTimersByTimeAsync(CASH_OUT_FEES_DEBOUNCE_MS);
+
+        expect(requestedFees()).toEqual([
+            { accountKey: 'BalanceAccount.BA1', amount: 1000, currency: 'USD' },
+            { accountKey: 'BalanceAccount.BA1', amount: 1000, currency: 'EUR' },
+        ]);
+
+        stop();
+    });
+
+    // The fees are gone once there is no amount, so the same amount entered again needs them again
+    test('should fetch the fees again for the same amount entered again after there was none', async () => {
+        const { amount, state, stop } = renderCashOutFees('BalanceAccount.BA1', { value: 1000, currency: 'USD' });
+        await vi.waitFor(() => expect(state.isFetchingFees.value).toBe(false));
+
+        amount.value = undefined;
+        await nextTick();
+        expect(state.fees.value).toBeUndefined();
+        amount.value = { value: 1000, currency: 'USD' };
+        await nextTick();
+        await vi.advanceTimersByTimeAsync(CASH_OUT_FEES_DEBOUNCE_MS);
+
+        expect(requestedFees()).toHaveLength(2);
+        await vi.waitFor(() => expect(state.fees.value).toEqual(feesOf({ value: 1000, currency: 'USD' })));
+
+        stop();
+    });
+
+    test('should fetch the fees for the same amount on another balance account', async () => {
+        const { accountKey, state, stop } = renderCashOutFees('BalanceAccount.BA1', { value: 1000, currency: 'USD' });
+        await vi.waitFor(() => expect(state.isFetchingFees.value).toBe(false));
+
+        accountKey.value = 'BalanceAccount.BA2';
+        await nextTick();
+
+        expect(requestedFees()).toEqual([
+            { accountKey: 'BalanceAccount.BA1', amount: 1000, currency: 'USD' },
+            { accountKey: 'BalanceAccount.BA2', amount: 1000, currency: 'USD' },
+        ]);
+
+        stop();
+    });
+
     test('should fetch the fees right away when another balance account is selected', async () => {
         const { amount, accountKey, state, stop } = renderCashOutFees('BalanceAccount.BA1', { value: 1000, currency: 'USD' });
         await vi.waitFor(() => expect(state.isFetchingFees.value).toBe(false));

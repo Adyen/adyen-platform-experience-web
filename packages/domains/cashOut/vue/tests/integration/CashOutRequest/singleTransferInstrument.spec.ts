@@ -119,6 +119,7 @@ test.describe('CashOut Request - Single transfer instrument', () => {
             expect((await cashOutRequest).postDataJSON()).toEqual({
                 amount: 100000,
                 currency: 'EUR',
+                expectedFee: 1550,
                 counterparty: { transferInstrumentId: 'SE322KT223222F5GXZFNM4C6K' },
                 description: 'Weekly',
                 referenceForBeneficiary: 'REF123',

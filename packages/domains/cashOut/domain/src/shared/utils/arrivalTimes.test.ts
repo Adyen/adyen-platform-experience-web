@@ -5,7 +5,7 @@ import { DEFAULT_ARRIVAL_DURATION, getArrivalTime, getArrivalTimes, type CashOut
 
 const ARRIVAL_TIMES: CashOutArrivalTimes = {
     defaultDuration: 'PT30M',
-    durationByCurrency: { AUD: 'PT5M', EUR: 'PT5M', GBP: 'PT5M', USD: 'PT5M' },
+    durationByCurrency: { AUD: 'PT30M', EUR: 'PT5M', GBP: 'PT5M', USD: 'PT5M' },
 };
 
 const MINUTES = 'cashOut.common.arrivalTime.withinMinutes';
@@ -35,14 +35,19 @@ describe('getArrivalTimes', () => {
     });
 
     // The CDN is updated without a release, so the bundled file is what applies until then.
-    test('should bundle 5 minutes for AUD, EUR, GBP and USD, and 30 minutes for the others', () => {
+    test('should bundle 5 minutes for EUR, GBP and USD, and 30 minutes for AUD and the others', () => {
         expect(localArrivalTimes).toEqual(ARRIVAL_TIMES);
     });
 });
 
 describe('getArrivalTime', () => {
-    test.each(['AUD', 'EUR', 'GBP', 'USD'])('should give the arrival time of %s', currency => {
-        expect(getArrivalTime(ARRIVAL_TIMES, currency)).toEqual({ key: MINUTES, count: 5 });
+    test.each([
+        ['AUD', 30],
+        ['EUR', 5],
+        ['GBP', 5],
+        ['USD', 5],
+    ])('should give the arrival time of %s', (currency, minutes) => {
+        expect(getArrivalTime(ARRIVAL_TIMES, currency)).toEqual({ key: MINUTES, count: minutes });
     });
 
     test('should give the default arrival time for a currency without its own', () => {

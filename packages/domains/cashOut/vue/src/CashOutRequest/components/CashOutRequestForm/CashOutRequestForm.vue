@@ -52,6 +52,11 @@ const arrivalTime = useArrivalTime(() => availableForCashOut.value.currency);
 
 // What is available stays in the field when the cashOut is unavailable, disabled, but it isn't an amount to request fees for or cash out.
 const amountValue = ref<number | undefined>(availableForCashOut.value.value);
+// What is available can change while the form is shown, such as once the available amounts are loaded again. The amount filled in is
+// what was available, so it follows; an amount the user entered stays, checked against what is available by the amount field.
+watch(availableForCashOut, (next, previous) => {
+    if (amountValue.value === previous.value && next.currency === previous.currency) amountValue.value = next.value;
+});
 const amount = computed(() =>
     !isCashOutAvailable.value || amountValue.value === undefined
         ? undefined
@@ -125,11 +130,13 @@ const isCashOutDisabled = computed(
 );
 
 const cashOut = async () => {
-    if (isCashOutDisabled.value || !amount.value || !transferInstrumentId.value) return;
+    if (isCashOutDisabled.value || !amount.value || !fees.value || !transferInstrumentId.value) return;
 
     const instructedCashOut = await instructCashOut({
         accountKey: props.accountKey,
         amount: amount.value,
+        // The fees are cleared once the amount changes, and the cashOut waits for those of the new amount, so these are of this amount.
+        expectedFee: fees.value.fee.value,
         transferInstrumentId: transferInstrumentId.value,
         referenceForBeneficiary: props.referenceForBeneficiary,
         transferDescription: props.transferDescription,

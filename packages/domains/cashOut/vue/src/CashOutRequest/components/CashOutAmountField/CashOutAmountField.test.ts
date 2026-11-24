@@ -42,13 +42,14 @@ vi.mock('@integration-components/core/vue', () => ({
 
 const renderAmountField = ({ amount, disabled = false }: { amount: number | undefined; disabled?: boolean }) => {
     const model = ref(amount);
+    const maxAmount = ref(MAX_AMOUNT);
     const target = document.createElement('div');
     const app = createApp(
         defineComponent({
             setup: () => () =>
                 h(CashOutAmountField, {
                     disabled,
-                    maxAmount: MAX_AMOUNT,
+                    maxAmount: maxAmount.value,
                     modelValue: model.value,
                     'onUpdate:modelValue': (value: number | undefined) => (model.value = value),
                 }),
@@ -73,7 +74,17 @@ const renderAmountField = ({ amount, disabled = false }: { amount: number | unde
     };
     const error = () => target.querySelector('[data-testid="error"]')?.textContent;
 
-    return { blur, error, input, model, target, type, typeIncompleteNumber, unmount: () => app.unmount() };
+    // Like the form when what is available to cash out changes
+    const setMaxAmount = async (value: number) => {
+        maxAmount.value = { ...MAX_AMOUNT, value };
+        await nextTick();
+    };
+    const setAmount = async (value: number) => {
+        model.value = value;
+        await nextTick();
+    };
+
+    return { blur, error, input, model, setAmount, setMaxAmount, target, type, typeIncompleteNumber, unmount: () => app.unmount() };
 };
 
 describe('CashOutAmountField', () => {
@@ -199,6 +210,58 @@ describe('CashOutAmountField', () => {
         expect(error()).toBeUndefined();
 
         unmount();
+    });
+
+    // Like the amount available filled in again by the form, once it changes
+    test('should show an amount set from outside, without an error', async () => {
+        const { error, input, setAmount, setMaxAmount, unmount } = renderAmountField({ amount: MAX_AMOUNT.value });
+
+        await setMaxAmount(15000);
+        await setAmount(15000);
+
+        expect(input.value).toBe('150.00');
+        expect(error()).toBeUndefined();
+
+        unmount();
+    });
+
+    describe('When what is available to cash out changes', () => {
+        test('should clear the amount entered and show an error once it is above what is available', async () => {
+            const { error, model, setMaxAmount, type, unmount } = renderAmountField({ amount: MAX_AMOUNT.value });
+            await type('200');
+
+            await setMaxAmount(15000);
+
+            expect(model.value).toBeUndefined();
+            expect(error()).toBe('cashOut.request.fields.amount.errors.excess 15000 USD');
+
+            unmount();
+        });
+
+        test('should keep the amount entered when it is still within what is available', async () => {
+            const { error, model, setMaxAmount, type, unmount } = renderAmountField({ amount: MAX_AMOUNT.value });
+            await type('100');
+
+            await setMaxAmount(15000);
+
+            expect(model.value).toBe(10000);
+            expect(error()).toBeUndefined();
+
+            unmount();
+        });
+
+        test('should take the amount entered again once what is available covers it', async () => {
+            const { error, model, setMaxAmount, type, unmount } = renderAmountField({ amount: MAX_AMOUNT.value });
+            await setMaxAmount(15000);
+            await type('200');
+
+            await setMaxAmount(22000);
+
+            expect(model.value).toBe(20000);
+            expect(error()).toBeUndefined();
+
+            unmount();
+        });
     });
 
     test('should be empty and disabled without an amount to cash out', () => {

@@ -66,6 +66,13 @@ export const getAvailableAfterCashOut = (available: ICashOutAmount, cashedOut: I
 export const withExpectedAmount = (amount: ICashOutAmount | undefined, expected: ICashOutAmount | undefined): ICashOutAmount | undefined =>
     amount && expected && expected.currency === amount.currency && expected.value < amount.value ? expected : amount;
 
+/**
+ * Whether what is available to cash out went from nothing to more than nothing. An amount alone can't make a cashOut available, as its
+ * bank accounts and the other checks of the API come with its eligibility, so the eligibility is loaded again then.
+ */
+export const hasAvailableAmountComeFromNothing = (current: ICashOutAmount | undefined, newer: ICashOutAmount | undefined): boolean =>
+    !!current && !!newer && newer.currency === current.currency && current.value === 0 && newer.value > 0;
+
 /** Whether the API shows no more than what is expected after a cashOut: it then has the cashOut, so what it shows counts again. */
 export const hasCaughtUpWithExpectedAmount = (amount: ICashOutAmount | undefined, expected: ICashOutAmount | undefined): boolean =>
     !!amount && !!expected && amount.currency === expected.currency && amount.value <= expected.value;
@@ -81,7 +88,9 @@ export const withNewerAvailableAmount = (
 ): ICashOutEligibility | undefined => {
     const current = eligibility?.availableForCashOutBalance;
     if (!eligibility || !newer || newer.currency !== current?.currency || newer.value === current.value) return eligibility;
-    return { ...eligibility, availableForCashOutBalance: newer };
+    // Like the API, which tells a balance account with nothing to cash out it can't cash out; reasons it can't already stay.
+    if (newer.value > 0 || !eligibility.isCashoutAvailable) return { ...eligibility, availableForCashOutBalance: newer };
+    return { ...eligibility, availableForCashOutBalance: newer, isCashoutAvailable: false, unavailableReasons: ['zeroBalance'] };
 };
 
 // Right after a cashOut the API still processes it and shows what was available before it, so what is expected is shown instead,

@@ -3,6 +3,7 @@ import type { ICashOutEligibility, ICashOutUnavailableReason } from '@integratio
 import {
     getAvailableAfterCashOut,
     getUnavailableReasonMessage,
+    hasAvailableAmountComeFromNothing,
     hasCaughtUpWithExpectedAmount,
     withExpectedAmount,
     withExpectedAvailableForCashOut,
@@ -187,12 +188,45 @@ describe('withNewerAvailableAmount', () => {
         expect(withNewerAvailableAmount(eligibility, eur(22000))).toBe(eligibility);
     });
 
+    // Like the API, which tells a balance account with nothing to cash out it can't cash out
+    test('should make a cashOut unavailable when the newer amount is nothing', () => {
+        expect(withNewerAvailableAmount(available(22000), eur(0))).toEqual({
+            ...available(22000),
+            availableForCashOutBalance: eur(0),
+            isCashoutAvailable: false,
+            unavailableReasons: ['zeroBalance'],
+        });
+    });
+
+    test('should keep the unavailable reasons of an unavailable cashOut when the newer amount is nothing', () => {
+        const eligibility = { ...available(22000), isCashoutAvailable: false, unavailableReasons: ['riskRestricted'] } as ICashOutEligibility;
+
+        expect(withNewerAvailableAmount(eligibility, eur(0))).toEqual({ ...eligibility, availableForCashOutBalance: eur(0) });
+    });
+
     // Its fees, daily limit and bank accounts are in the currency of the eligibility
     test('should keep the eligibility without a newer amount, or with one in another currency', () => {
         const eligibility = available(22000);
         expect(withNewerAvailableAmount(eligibility, undefined)).toBe(eligibility);
         expect(withNewerAvailableAmount(eligibility, { value: 15000, currency: 'USD' })).toBe(eligibility);
         expect(withNewerAvailableAmount(undefined, eur(15000))).toBeUndefined();
+    });
+});
+
+describe('hasAvailableAmountComeFromNothing', () => {
+    const eur = (value: number) => ({ value, currency: 'EUR' });
+
+    // Only then is the eligibility loaded again: an amount alone can't make a cashOut available
+    test.each([
+        [eur(0), eur(15000), true],
+        [eur(0), eur(0), false],
+        [eur(22000), eur(15000), false],
+        [eur(22000), eur(0), false],
+        [eur(0), { value: 15000, currency: 'USD' }, false],
+        [undefined, eur(15000), false],
+        [eur(0), undefined, false],
+    ])('should tell whether the amount went from %j to %j, more than nothing', (current, newer, cameFromNothing) => {
+        expect(hasAvailableAmountComeFromNothing(current, newer)).toBe(cameFromNothing);
     });
 });
 
