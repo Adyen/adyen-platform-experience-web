@@ -128,18 +128,6 @@ export const FirstTimeEligibleCashAdvance: ElementStory<typeof CapitalOverviewEl
     },
 };
 
-export const FirstTimeEligibleUnsupportedContract: ElementStory<typeof CapitalOverviewElement> = {
-    name: 'First-time eligible - Unsupported contract',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            handlers: capitalOverviewHandlers.firstTimeEligibleUnsupportedContract,
-        },
-    },
-};
-
 export const EarlyRenewalLoan: ElementStory<typeof CapitalOverviewElement> = {
     name: 'Early renewal - Loan',
     args: {
@@ -160,18 +148,6 @@ export const EarlyRenewalCashAdvance: ElementStory<typeof CapitalOverviewElement
     parameters: {
         msw: {
             handlers: capitalOverviewHandlers.earlyRenewalCashAdvance,
-        },
-    },
-};
-
-export const EarlyRenewalUnsupportedContract: ElementStory<typeof CapitalOverviewElement> = {
-    name: 'Early renewal - Unsupported contract',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            handlers: capitalOverviewHandlers.earlyRenewalUnsupportedContract,
         },
     },
 };
@@ -200,8 +176,8 @@ export const EligibleCashAdvance: ElementStory<typeof CapitalOverviewElement> = 
     },
 };
 
-export const GrantsLoan: ElementStory<typeof CapitalOverviewElement> = {
-    name: 'Grants - Loan',
+export const Loans: ElementStory<typeof CapitalOverviewElement> = {
+    name: 'Loans',
     args: {
         mockedApi: true,
     },
@@ -212,8 +188,8 @@ export const GrantsLoan: ElementStory<typeof CapitalOverviewElement> = {
     },
 };
 
-export const GrantsCashAdvance: ElementStory<typeof CapitalOverviewElement> = {
-    name: 'Grants - Cash advance',
+export const CashAdvances: ElementStory<typeof CapitalOverviewElement> = {
+    name: 'Cash advances',
     args: {
         mockedApi: true,
     },
@@ -296,50 +272,38 @@ export const SingleActionCashAdvance: ElementStory<typeof CapitalOverviewElement
     },
 };
 
-export const HostedActionsLoan: ElementStory<typeof CapitalOverviewElement> = {
-    name: 'Hosted actions - Loan',
+export const HostedActions: ElementStory<typeof CapitalOverviewElement> = {
+    name: 'Hosted actions',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOverviewHandlers.hostedActionsLoan,
+            handlers: capitalOverviewHandlers.hostedActions,
         },
     },
 };
 
-export const HostedActionsCashAdvance: ElementStory<typeof CapitalOverviewElement> = {
-    name: 'Hosted actions - Cash advance',
+export const SingleHostedAction: ElementStory<typeof CapitalOverviewElement> = {
+    name: 'Single hosted action',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOverviewHandlers.hostedActionsCashAdvance,
+            handlers: capitalOverviewHandlers.singleHostedAction,
         },
     },
 };
 
-export const SingleHostedActionLoan: ElementStory<typeof CapitalOverviewElement> = {
-    name: 'Single hosted action - Loan',
+export const RepaymentGB: ElementStory<typeof CapitalOverviewElement> = {
+    name: 'Repayment GB',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: capitalOverviewHandlers.singleHostedActionLoan,
-        },
-    },
-};
-
-export const SingleHostedActionCashAdvance: ElementStory<typeof CapitalOverviewElement> = {
-    name: 'Single hosted action cash advance',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            handlers: capitalOverviewHandlers.singleHostedActionCashAdvance,
+            handlers: capitalOverviewHandlers.repaymentGB,
         },
     },
 };

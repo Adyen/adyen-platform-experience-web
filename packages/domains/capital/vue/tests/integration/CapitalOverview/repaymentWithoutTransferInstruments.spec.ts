@@ -1,5 +1,5 @@
 import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
-import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
+import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 import {
     openRepaymentButtonAnalyticsEventProperties,
     sharedCapitalOverviewAnalyticsEventProperties,
@@ -12,7 +12,6 @@ const getRepaymentModal = (page: Page) => page.getByRole('dialog');
 
 test.describe('Repayment without transfer instruments', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
-        await setTime(page);
         await goToStory(page, { id: STORY_ID });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedCapitalOverviewAnalyticsEventProperties]]);
     });

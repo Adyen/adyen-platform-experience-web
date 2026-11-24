@@ -10,13 +10,13 @@ test.describe('Single action - Loan', () => {
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedCapitalOverviewAnalyticsEventProperties]]);
     });
 
-    test('should render pending grant with actions', async ({ page }) => {
+    test('should render pending loan with single action', async ({ page }) => {
         await Promise.all([
             expect(page.getByText('Requested funds')).toBeVisible(),
             expect(page.getByText('€20,000.00')).toBeVisible(),
             expect(page.getByText('Action needed')).toBeVisible(),
             expect(page.getByText('Grant ID')).toBeVisible(),
-            expect(page.getByTestId('grant-id-copy-text')).toBeVisible(),
+            expect(page.getByRole('button', { name: 'Copy grant ID' })).toBeVisible(),
             expect(
                 page.getByText(
                     "You're almost ready. To process your funds, we just need your input. Please complete this action by February 15, 2025."
@@ -24,7 +24,7 @@ test.describe('Single action - Loan', () => {
             ).toBeVisible(),
             expect(page.getByRole('button', { name: 'Sign terms of service' })).toBeVisible(),
             expect(page.getByRole('progressbar')).toHaveCount(0),
-            expect(page.getByRole('button', { name: 'Show grant details' })).toHaveCount(0),
+            expect(page.getByRole('button', { name: 'Show details' })).toHaveCount(0),
         ]);
     });
 });

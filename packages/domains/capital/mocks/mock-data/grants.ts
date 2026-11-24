@@ -1,5 +1,4 @@
 import { IGBCapitalFundsCollection, IGrant, INLCapitalFundsCollection, IUSCapitalFundsCollection } from '@integration-components/types';
-import { UNSUPPORTED_CONTRACT_TYPE } from './contractType';
 
 export const REPAYMENT_ACCOUNT_NL = {
     beneficiaryName: 'Adyen N.V.',
@@ -119,6 +118,12 @@ export const ACTIVE_CASH_ADVANCE: IGrant = {
     unscheduledRepaymentAccounts: [REPAYMENT_ACCOUNT_GB],
 };
 
+export const ACTIVE_REPAYMENT_GB: IGrant = {
+    ...ACTIVE_LOAN,
+    transferInstruments: [{ accountIdentifier: 'GB**ADYB**********0123' }, { accountIdentifier: 'GB**ADYB**********4151' }],
+    unscheduledRepaymentAccounts: [REPAYMENT_ACCOUNT_GB],
+};
+
 export const ACTIVE_REPAYMENT_US: IGrant = {
     ...ACTIVE_LOAN,
     transferInstruments: [{ accountIdentifier: '****8101' }, { accountIdentifier: '****4151' }],
@@ -161,11 +166,6 @@ export const RENEWABLE_CASH_ADVANCE: IGrant = {
             currency: 'GBP',
         },
     },
-};
-
-export const RENEWABLE_UNSUPPORTED_CONTRACT: IGrant = {
-    ...RENEWABLE_LOAN,
-    contractType: UNSUPPORTED_CONTRACT_TYPE,
 };
 
 export const REPAID_LOAN: IGrant = {
