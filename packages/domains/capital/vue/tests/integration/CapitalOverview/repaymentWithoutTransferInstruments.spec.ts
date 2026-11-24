@@ -34,7 +34,7 @@ test.describe('Repayment without transfer instruments', () => {
                 expect(getRepaymentModal(page).getByText('Manual bank transfer')).toBeVisible(),
                 expect(
                     getRepaymentModal(page).getByText(
-                        'Repay your loan early by transferring money to this bank account. Payments must be made from one of your verified bank accounts.'
+                        'Repay your loan early by transferring money to the provided bank account. Payments could be made from any of your preferred or one of your verified bank accounts.'
                     )
                 ).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('Adyen’s bank account details')).toBeVisible(),
@@ -48,7 +48,7 @@ test.describe('Repayment without transfer instruments', () => {
                 expect(getRepaymentModal(page).getByText('Your verified bank accounts', { exact: true })).toHaveCount(0),
                 expect(getRepaymentModal(page).getByText('How to send a manual repayment')).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('Add Adyen N.V. as a payee using your bank’s website or app.')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Send your payment.')).toBeVisible(),
+                expect(getRepaymentModal(page).getByText('Transfer up to €8,220.00 to the bank account provided below.')).toBeVisible(),
                 expect(getRepaymentModal(page).getByText('Wait 1-3 business days for the payment to be applied.')).toBeVisible(),
             ]);
         });
