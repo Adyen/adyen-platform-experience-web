@@ -1,3 +1,4 @@
+export * from './analytics';
 export * from './arrivalTimes';
 export * from './eligibility';
 export * from './errors';

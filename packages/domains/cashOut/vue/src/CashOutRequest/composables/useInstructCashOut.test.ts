@@ -124,12 +124,15 @@ describe('useInstructCashOut', () => {
         stop();
     });
 
-    test('should resolve without a cashOut when it fails', async () => {
-        endpoints.instructCashOut!.mockRejectedValue(new Error('failed'));
+    test('should resolve without a cashOut when it fails, and tell its error', async () => {
+        const error = new Error('failed');
+        endpoints.instructCashOut!.mockRejectedValue(error);
         const { state, stop } = renderInstructCashOut();
+        expect(state.instructError.value).toBeUndefined();
 
         await expect(state.instructCashOut(PARAMS)).resolves.toBeUndefined();
         expect(state.isInstructing.value).toBe(false);
+        expect(state.instructError.value).toBe(error);
 
         stop();
     });

@@ -63,3 +63,9 @@ export const loadAvailableAmountsAgain = async (page: Page, mainAccountAmount = 
     await page.keyboard.press('Escape');
     await expect(selector).toHaveAttribute('aria-expanded', 'false');
 };
+
+/** What every analytics event of each part of the components is sent with. */
+export const OVERVIEW_ANALYTICS = { componentName: 'cashOutOverview', category: 'CashOut overview component', subCategory: 'Overview' } as const;
+/** The request in the modal of the overview is part of the overview. */
+export const OVERVIEW_REQUEST_ANALYTICS = { ...OVERVIEW_ANALYTICS, subCategory: 'Request' } as const;
+export const REQUEST_ANALYTICS = { componentName: 'cashOutRequest', category: 'CashOut request component', subCategory: 'Request' } as const;

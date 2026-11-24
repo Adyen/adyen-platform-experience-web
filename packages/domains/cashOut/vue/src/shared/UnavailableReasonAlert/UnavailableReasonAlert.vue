@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { BentoAlert, BentoButton } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { getUnavailableReasonMessage } from '@integration-components/cashOut/domain';
+import { useCashOutAnalytics } from '../composables/useCashOutAnalytics';
 import type { ICashOutEligibility } from '@integration-components/types';
 import styles from './UnavailableReasonAlert.module.scss';
 
@@ -12,6 +13,12 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
+const { track } = useCashOutAnalytics();
+
+const contactSupport = () => {
+    track('Clicked button', { label: 'Contact support', unavailableReason: props.eligibility.unavailableReasons[0] });
+    props.onContactSupport?.();
+};
 
 const message = computed(() => getUnavailableReasonMessage(props.eligibility));
 const showContactSupport = computed(() => Boolean(message.value?.offersContactSupport && props.onContactSupport));
@@ -25,7 +32,7 @@ const messageKey = computed(() => (showContactSupport.value && message.value?.ke
             <span>{{ i18n.get(messageKey!) }}</span>
             <!-- Not in the actions slot, which a tip alert puts beside the message -->
             <div v-if="showContactSupport" :class="styles.actions">
-                <BentoButton variant="tertiary" @click="props.onContactSupport">
+                <BentoButton variant="tertiary" @click="contactSupport">
                     {{ i18n.get('cashOut.common.contactSupport.label') }}
                 </BentoButton>
             </div>

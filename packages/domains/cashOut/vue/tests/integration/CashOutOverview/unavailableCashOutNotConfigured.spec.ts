@@ -1,5 +1,6 @@
-import { test, expect } from '@playwright/test';
-import { getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
+import { OVERVIEW_ANALYTICS } from '../shared/utils';
 import { expectUnavailable } from './shared/utils';
 
 const STORY_ID = 'mocked-cashout-cashout-overview--cash-out-not-configured';
@@ -20,5 +21,18 @@ test.describe('CashOut Overview - Unavailable - CashOut not configured', () => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
 
         await expect(getComponentRoot(page).getByRole('status').getByRole('button', { name: 'Reach out to support' })).toBeVisible();
+    });
+
+    test('should tell the reach out button was clicked, with the reason', async ({ page, analyticsEvents }) => {
+        await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
+        await expectAnalyticsEvents(analyticsEvents, [
+            ['Landed on page', { ...OVERVIEW_ANALYTICS, isAvailable: false, unavailableReason: 'cashOutNotConfigured', currency: 'EUR' }],
+        ]);
+
+        await getComponentRoot(page).getByRole('status').getByRole('button', { name: 'Reach out to support' }).click();
+
+        await expectAnalyticsEvents(analyticsEvents, [
+            ['Clicked button', { ...OVERVIEW_ANALYTICS, label: 'Contact support', unavailableReason: 'cashOutNotConfigured' }],
+        ]);
     });
 });

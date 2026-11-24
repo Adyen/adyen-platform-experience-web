@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue';
 import { BentoHeader, type BentoHeaderReloadButton } from '@adyen/bento-vue3';
 import type { TranslationKey } from '@integration-components/core';
 import { useCoreContext } from '@integration-components/core/vue';
+import { useCashOutAnalytics } from '../composables/useCashOutAnalytics';
 import BalanceAccountSelector from '../BalanceAccountSelector/BalanceAccountSelector.vue';
 import styles from './CashOutHeader.module.scss';
 
@@ -27,11 +28,15 @@ const props = defineProps<{
 const selectedBalanceAccountId = defineModel<string | undefined>('selectedBalanceAccountId', { required: true });
 
 const { i18n } = useCoreContext();
+const { track } = useCashOutAnalytics();
+
+const refresh = () => {
+    track('Clicked button', { label: 'Refresh' });
+    props.onRefresh?.();
+};
 
 const reloadButton = computed<BentoHeaderReloadButton | undefined>(() =>
-    props.onRefresh
-        ? { title: i18n.get('cashOut.common.refresh.label'), event: props.onRefresh, state: props.isRefreshing ? 'loading' : 'start' }
-        : undefined
+    props.onRefresh ? { title: i18n.get('cashOut.common.refresh.label'), event: refresh, state: props.isRefreshing ? 'loading' : 'start' } : undefined
 );
 
 const isShowingLastUpdated = computed(() => !props.hideTitle && !!reloadButton.value && props.lastUpdated !== undefined);

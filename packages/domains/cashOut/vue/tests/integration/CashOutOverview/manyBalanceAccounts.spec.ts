@@ -1,6 +1,7 @@
-import { test, expect, type Page, type Request } from '@playwright/test';
-import { getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
-import { getBalanceAccountSelectorWidth, recordRequests } from '../shared/utils';
+import type { Page, Request } from '@playwright/test';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
+import { getBalanceAccountSelectorWidth, OVERVIEW_ANALYTICS, recordRequests } from '../shared/utils';
 
 const STORY_ID = 'mocked-cashout-cashout-overview--many-balance-accounts';
 
@@ -8,9 +9,10 @@ const STORY_ID = 'mocked-cashout-cashout-overview--many-balance-accounts';
 test.describe('CashOut Overview - Many balance accounts', () => {
     let availableAmountsRequests: Request[];
 
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         availableAmountsRequests = recordRequests(page, '/cashout/availableAmounts');
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', { ...OVERVIEW_ANALYTICS, balanceAccountCount: '10+' }]]);
     });
 
     test('should list the balance accounts whose name matches the search', async ({ page }) => {
@@ -152,5 +154,18 @@ test.describe('CashOut Overview - Many balance accounts', () => {
         await expect(selector).toHaveAttribute('aria-expanded', 'false');
 
         await expect.poll(() => availableAmountsRequests.length).toBe(2);
+    });
+
+    test('should tell a balance account was selected from a search', async ({ page, analyticsEvents }) => {
+        const root = getComponentRoot(page);
+        const selector = root.getByRole('combobox', { name: 'Balance account' });
+
+        await selector.click();
+        await selector.fill('sav');
+        await root.getByRole('option', { name: /^S\. Hopper - Savings/ }).click();
+
+        await expectAnalyticsEvents(analyticsEvents, [
+            ['Changed balance account', { ...OVERVIEW_ANALYTICS, usedSearch: true, balanceAccountCount: '10+' }],
+        ]);
     });
 });
