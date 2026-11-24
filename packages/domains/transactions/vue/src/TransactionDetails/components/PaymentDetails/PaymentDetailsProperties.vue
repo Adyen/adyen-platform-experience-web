@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
-import { CopyText } from '@integration-components/composables-vue';
-import { BentoStructuredList, BentoStructuredListItem, BentoTypography, BentoLink } from '@adyen/bento-vue3';
+import { CopyText, CustomDetailValue } from '@integration-components/composables-vue';
+import { BentoStructuredList, BentoStructuredListItem, BentoTypography } from '@adyen/bento-vue3';
 import {
     getPaymentDetailsItems,
     sharedTransactionDetailsEventProperties,
@@ -26,12 +26,7 @@ const standardItems = computed(() => getPaymentDetailsItems(i18n, props.transact
 const customItems = computed(() =>
     Object.entries(props.extraFields ?? {})
         .filter(([, value]) => (value as any)?.type !== 'button')
-        .map(([key, value]) => ({
-            key: key as TransactionsTranslationKey,
-            value: (value as any)?.value ?? value,
-            type: (value as any)?.type ?? 'text',
-            config: (value as any)?.config,
-        }))
+        .map(([key, value]) => ({ key: key as TransactionsTranslationKey, value }))
 );
 
 function trackCopy(trackingName?: string) {
@@ -47,7 +42,7 @@ function trackCopy(trackingName?: string) {
 </script>
 
 <template>
-    <BentoStructuredList :class="styles.list">
+    <BentoStructuredList>
         <BentoStructuredListItem v-for="item in standardItems" :key="item.id ?? item.key" :label="i18n.get(item.key)">
             <template v-if="item.copyable" #default>
                 <div :class="styles.copyableValue">
@@ -72,25 +67,7 @@ function trackCopy(trackingName?: string) {
         </BentoStructuredListItem>
 
         <BentoStructuredListItem v-for="item in customItems" :key="item.key" :label="i18n.get(item.key)">
-            <BentoLink
-                v-if="item.type === 'link' && item.config"
-                :class="item.config.className"
-                :to="item.config.href"
-                :target="item.config.target || '_blank'"
-                rel="noopener noreferrer"
-                external
-            >
-                {{ item.value }}
-            </BentoLink>
-            <div v-else-if="item.type === 'icon' && item.config" :class="item.config.className">
-                <img :src="item.config.src" :alt="item.config.alt || item.value" />
-                <BentoTypography variant="body">
-                    {{ item.value }}
-                </BentoTypography>
-            </div>
-            <BentoTypography v-else variant="body" :class="item.config?.className">
-                {{ item.value }}
-            </BentoTypography>
+            <CustomDetailValue :value="item.value" />
         </BentoStructuredListItem>
     </BentoStructuredList>
 </template>

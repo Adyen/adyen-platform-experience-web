@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue';
 import { BentoButton, BentoButtonActions, BentoCard, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import PlusIcon from '@adyen/ui-assets-icons-16/vue/plus';
 import BinIcon from '@adyen/ui-assets-icons-16/vue/bin';
+import { getBentoLoadingActionState } from '@integration-components/composables-vue';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import type { EndpointHttpCallables } from '@integration-components/core';
 import { getDefenseDocumentContent } from '@integration-components/disputes/domain';
@@ -179,9 +180,8 @@ async function submitDefenseDocuments() {
 const uploadActionButtons = computed(() => [
     {
         title: i18n.get('disputes.management.defend.submit'),
-        disabled: !canSubmitDocuments.value,
+        ...getBentoLoadingActionState(isSubmittingDefense.value, !canSubmitDocuments.value),
         event: () => void submitDefenseDocuments(),
-        state: isSubmittingDefense.value ? 'loading' : 'start',
     },
     {
         title: i18n.get('disputes.common.goBack.label'),

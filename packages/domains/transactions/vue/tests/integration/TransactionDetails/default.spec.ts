@@ -206,21 +206,20 @@ test.describe('Default', () => {
         test('should freeze interactions when refund is in progress', async ({ page }) => {
             const amountInput = page.getByRole('spinbutton', { name: 'Amount to refund', exact: true });
             const reasonSelect = page.getByRole('combobox', { name: 'Reason for refund', exact: true, expanded: false });
-            const disabledRefundButton = page.getByRole('button', { name: 'Refund €133.75', exact: true, disabled: true });
-            const enabledRefundButton = page.getByRole('button', { name: 'Refund €133.75', exact: true, disabled: false });
+            const refundButton = page.getByRole('button', { name: 'Refund €133.75', exact: true });
 
             await expect(amountInput).toBeEnabled();
             await expect(reasonSelect).toBeEnabled();
-            await expect(disabledRefundButton).toBeHidden();
-            await expect(enabledRefundButton).toBeVisible();
+            await expect(refundButton).toBeEnabled();
 
-            await enabledRefundButton.click();
+            await refundButton.click();
 
             await expect(amountInput).toBeDisabled();
             await expect(reasonSelect).toBeDisabled();
-            await expect(disabledRefundButton).toBeVisible();
-            await expect(disabledRefundButton.getByTestId('loading-indicator')).toBeVisible();
-            await expect(enabledRefundButton).toBeHidden();
+            await expect(page.getByRole('button', { name: 'Go back', exact: true })).toBeDisabled();
+            await expect(refundButton.getByTestId('loading-indicator')).toBeVisible();
+            await expect(refundButton).toBeEnabled();
+            await expect(refundButton).toBeFocused();
         });
 
         test('should refund payment', async ({ page, analyticsEvents }) => {

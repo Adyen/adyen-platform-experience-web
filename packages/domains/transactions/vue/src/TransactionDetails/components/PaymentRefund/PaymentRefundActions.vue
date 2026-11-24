@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue';
 import { useCoreContext, useConfigContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { BentoButtonActions } from '@adyen/bento-vue3';
+import { getBentoLoadingActionState } from '@integration-components/composables-vue';
 import { sharedTransactionDetailsEventProperties } from '../../../../../domain/src';
 import { isFunction } from '@integration-components/utils';
 import type { RefundReason, RefundResult } from '../../../../../domain/src';
@@ -72,11 +73,10 @@ async function handleRefund() {
 }
 
 const primaryAction = computed(() => ({
-    disabled: refundDisabled.value,
+    ...getBentoLoadingActionState(isLoading.value, refundDisabled.value),
     event: handleRefund,
     title: refundButtonLabel.value,
     variant: 'primary' as const,
-    state: isLoading.value ? ('loading' as const) : undefined,
 }));
 
 const secondaryAction = computed(() => ({

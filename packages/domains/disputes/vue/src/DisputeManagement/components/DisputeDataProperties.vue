@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { BentoAlert, BentoButton, BentoLink, BentoStructuredList, BentoStructuredListItem, BentoTag, BentoTypography } from '@adyen/bento-vue3';
+import { BentoAlert, BentoButton, BentoStructuredList, BentoStructuredListItem, BentoTag, BentoTypography } from '@adyen/bento-vue3';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
-import { CopyText } from '@integration-components/composables-vue';
+import { CopyText, CustomDetailValue } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import {
     DISPUTE_DETAILS_FIELDS_REMAPS,
@@ -24,13 +24,6 @@ type CustomDataValue = {
     type?: string;
     value?: unknown;
     visibility?: string;
-    config?: {
-        className?: string;
-        href?: string;
-        target?: string;
-        src?: string;
-        alt?: string;
-    };
 };
 
 // These three references sit next to each other, so a shared "Copy" name would
@@ -80,12 +73,7 @@ const items = computed(() => getDisputeDetailItems(i18n, props.dispute, props.de
 const extraDetails = computed(() =>
     Object.entries(props.extraFields ?? {})
         .filter(([key, value]) => !DISPUTE_DETAILS_RESERVED_FIELDS_SET.has(key as never) && !isHiddenCustomValue(value) && !isCustomButton(value))
-        .map(([key, value]) => ({
-            key,
-            value: isCustomDataObject(value) ? value.value : value,
-            type: isCustomDataObject(value) ? value.type : 'text',
-            config: isCustomDataObject(value) ? value.config : undefined,
-        }))
+        .map(([key, value]) => ({ key, value }))
 );
 
 function isCustomButton(value: unknown) {
@@ -174,25 +162,7 @@ async function downloadEvidence(documentType: string) {
         </BentoStructuredListItem>
 
         <BentoStructuredListItem v-for="item in extraDetails" :key="item.key" :label="i18n.get(item.key as never)">
-            <BentoLink
-                v-if="item.type === 'link' && item.config?.href"
-                :class="item.config.className"
-                :to="item.config.href"
-                :target="item.config.target || '_blank'"
-                rel="noopener noreferrer"
-                external
-            >
-                {{ item.value }}
-            </BentoLink>
-            <div v-else-if="item.type === 'icon' && item.config?.src" :class="item.config.className">
-                <img :src="item.config.src" :alt="item.config.alt || String(item.value ?? '')" />
-                <BentoTypography variant="body">
-                    {{ item.value }}
-                </BentoTypography>
-            </div>
-            <BentoTypography v-else variant="body" :class="item.config?.className">
-                {{ item.value }}
-            </BentoTypography>
+            <CustomDetailValue :value="item.value" />
         </BentoStructuredListItem>
     </BentoStructuredList>
 </template>

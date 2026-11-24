@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { BentoAlert, BentoButtonActions, BentoCheckbox, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import SuccessIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
-import { ResponsiveButtonActions } from '@integration-components/composables-vue';
+import { getBentoLoadingActionState, ResponsiveButtonActions } from '@integration-components/composables-vue';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { DISPUTE_TYPE } from '@integration-components/disputes/domain';
 import { isFunction } from '@integration-components/utils';
@@ -65,9 +65,8 @@ const canAcceptDispute = computed(
 const actionButtons = computed(() => [
     {
         title: acceptButtonTitle.value,
-        disabled: !canAcceptDispute.value,
+        ...getBentoLoadingActionState(isLoading.value, !canAcceptDispute.value),
         event: acceptDisputeCallback,
-        state: isLoading.value ? 'loading' : 'start',
     },
     {
         title: i18n.get('disputes.common.goBack.label'),

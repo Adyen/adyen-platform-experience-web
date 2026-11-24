@@ -1,6 +1,8 @@
 @use '@integration-components/style' as style;
+@use '@integration-components/style/data-grid';
 
 .root {
+    @include data-grid.adyen-pe-data-grid-centered-rows;
     position: relative;
 
     :global(.b-toast) {

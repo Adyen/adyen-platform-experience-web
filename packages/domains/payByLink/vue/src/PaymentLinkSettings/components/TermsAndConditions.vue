@@ -134,21 +134,6 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
 <template>
     <section :class="styles.root">
         <template v-if="!isShowingRequirements">
-            <BentoAlert v-if="hasValidationError" type="critical" :dismissible="false">
-                <template #description>
-                    {{ i18n.get('payByLink.settings.alerts.validation.error') }}
-                </template>
-            </BentoAlert>
-            <BentoAlert v-else-if="isSaveSuccess && !navigateBack" type="success" variant="tip" :dismissible="false">
-                <template #description>
-                    {{ i18n.get('payByLink.settings.alerts.save.success') }}
-                </template>
-            </BentoAlert>
-            <BentoAlert v-else-if="isSaveError" type="critical" variant="tip" :dismissible="false">
-                <template #description>
-                    {{ i18n.get('payByLink.settings.alerts.save.error') }}
-                </template>
-            </BentoAlert>
             <div :class="layoutStyles.contentHeader">
                 <BentoTypography variant="title" medium el="div">
                     {{ i18n.get('payByLink.settings.termsAndConditions.title') }}
@@ -198,6 +183,21 @@ const hasValidationError = computed(() => showInvalidURL.value || showNotChecked
                     </BentoCheckbox>
                 </div>
             </div>
+            <BentoAlert v-if="hasValidationError" type="critical" :dismissible="false">
+                <template #description>
+                    {{ i18n.get('payByLink.settings.alerts.validation.error') }}
+                </template>
+            </BentoAlert>
+            <BentoAlert v-else-if="isSaveSuccess && !navigateBack" type="success" :dismissible="false">
+                <template #description>
+                    {{ i18n.get('payByLink.settings.alerts.save.success') }}
+                </template>
+            </BentoAlert>
+            <BentoAlert v-else-if="isSaveError" type="critical" :dismissible="false">
+                <template #description>
+                    {{ i18n.get('payByLink.settings.alerts.save.error') }}
+                </template>
+            </BentoAlert>
         </template>
         <Requirements
             v-if="isShowingRequirements"
