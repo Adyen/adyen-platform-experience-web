@@ -34,6 +34,7 @@ export interface SessionContext<T, HttpParams extends any[] = any[]> {
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class SessionContext<T, HttpParams extends any[] = any[]> {
     private _session: T | undefined;
+    private _rejectedSession: { value: T | undefined } | undefined;
     private _deadlineRefresh: Promise<void> | undefined;
 
     // Neither successful requests nor regular refreshes reset this. A new session typically makes
@@ -58,6 +59,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
 
         this._refresher.on(INTERNAL_EVT_SESSION_READY, () => {
             this._session = this._refresher.session;
+            this._rejectedSession = undefined;
             this._deadlineRefresh = this._deadline.refresh(this._session).finally(() => this._eventEmitter.emit(EVT_SESSION_REFRESHED));
             this._eventEmitter.emit(EVT_SESSION_READY);
         });
@@ -68,6 +70,8 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     }
 
     get isExpired() {
+        // An expired-token response expires the session even if its deadline has not elapsed
+        if (this._rejectedSession && this._rejectedSession.value === this._session) return true;
         return this._deadline.elapsed;
     }
 
@@ -130,7 +134,11 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
                     if (now - this._lastReauthAt < this._reauthThrottleMs) throw ex;
 
                     this._lastReauthAt = now;
-                    if (!this._refresher.pending) this._deadline.elapse();
+                    this._rejectedSession = { value: session };
+
+                    // Requests in flight are not cancelled: cancelling a write cannot undo it on the server, and a
+                    // request that also gets an expired-token response joins this recovery and retries once.
+                    if (!this._refresher.pending) this._eventEmitter.emit(EVT_SESSION_EXPIRED);
 
                     // Refresh directly instead of relying on autofresh, which may be disabled
                     this._refresher.refresh().catch(noop);
