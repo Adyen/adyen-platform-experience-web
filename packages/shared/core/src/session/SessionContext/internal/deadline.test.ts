@@ -196,6 +196,50 @@ describe('createSessionDeadline', () => {
         expect(ctx.deadlineEventEmitted).toBe(true);
     });
 
+    test<DeadlineContext>('should replace the deadline of the previous session on refresh', async ctx => {
+        // first session expires in 5 seconds
+        await ctx.deadline.refresh(undefined);
+        vi.advanceTimersByTime(1000);
+
+        // next session expires in 10 seconds
+        ctx.patchSpecification('deadline', () => Date.now() + 10_000);
+        await ctx.deadline.refresh(undefined);
+        expect(ctx.deadline.elapsed).toBe(false);
+
+        // advance deadline clock past the deadline of the first session
+        ctx.advanceDeadlineClockBy(5000);
+        expect(ctx.deadline.elapsed).toBe(false);
+        expect(ctx.deadlineEventEmitted).toBe(false);
+
+        // advance deadline clock past the deadline of the next session
+        ctx.advanceDeadlineClockBy(5000);
+        expect(ctx.deadline.elapsed).toBe(true);
+        expect(ctx.deadlineEventEmitted).toBe(true);
+    });
+
+    for (const previousDeadline of ['timeout', 'signal'] as const) {
+        for (const nextDeadline of ['past timeout', 'aborted signal'] as const) {
+            test<DeadlineContext>(`should replace a live ${previousDeadline} with an elapsed ${nextDeadline}`, async ctx => {
+                const previous = new AbortController();
+                ctx.patchSpecification('deadline', () => (previousDeadline === 'timeout' ? Date.now() + 5000 : previous.signal));
+                await ctx.deadline.refresh(undefined);
+                expect(ctx.deadline.elapsed).toBe(false);
+
+                const next = new AbortController();
+                next.abort();
+                ctx.patchSpecification('deadline', () => async () => (nextDeadline === 'past timeout' ? Date.now() - 1 : next.signal));
+                await ctx.deadline.refresh(undefined);
+                expect(ctx.deadline.elapsed).toBe(true);
+
+                ctx.patchSpecification('deadline', () => Date.now() + 10_000);
+                await ctx.deadline.refresh(undefined);
+                expect(ctx.deadline.elapsed).toBe(false);
+                previous.abort();
+                expect(ctx.deadline.elapsed).toBe(false);
+            });
+        }
+    }
+
     test<DeadlineContext>('should not elapse deadline on new refresh call', async ctx => {
         // refresh deadline once
         await ctx.deadline.refresh(undefined);
