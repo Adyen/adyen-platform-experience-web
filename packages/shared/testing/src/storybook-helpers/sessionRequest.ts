@@ -15,8 +15,9 @@ interface SessionResponse {
 export const getMySessionToken = async (session?: SessionOptions): Promise<SessionResponse> => {
     const url = process.env.VITE_APP_URL;
     const allowOrigin = url?.endsWith('/') ? url.slice(0, -1) : url;
-    const normalizedUrl = url?.endsWith('/') ? url : `${url}/`;
-    const sessionUrl = new URL(`${normalizedUrl}api/authe/api/v1/sessions`);
+    // Same-origin keeps the request matchable by the relative MSW handler and still reaches the
+    // `/api` proxy (Vite locally, edge function on Netlify), whichever host Storybook is opened on.
+    const sessionUrl = new URL('/api/authe/api/v1/sessions', window.location.origin);
 
     const response = await fetch(sessionUrl, {
         method: 'POST',

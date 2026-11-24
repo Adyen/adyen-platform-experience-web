@@ -1,8 +1,8 @@
-import { ERR_SESSION_EXPIRED, SessionSpecification } from './SessionContext';
+import { asSessionExpiredError, SessionSpecification } from './SessionContext';
 import { abortSignalForAny, enumerable, isAbortSignal, isPlainObject, isString, isUndefined } from '@integration-components/utils';
 import { http as _http } from '../Http/http';
 import { ErrorTypes } from '../Http/utils';
-import { AUTO_REFRESH, MAX_AGE_MS } from './constants';
+import { AUTO_REFRESH, MAX_AGE_MS, REAUTH_THROTTLE_MS } from './constants';
 import type { SessionObject, SessionRequest } from '../ConfigContext.types';
 import type { HttpOptions } from '../Http/types';
 import type { onErrorHandler } from '../types';
@@ -41,6 +41,8 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
         throw undefined;
     };
 
+    public readonly reauthThrottleMs: _AuthSessionSpecification['reauthThrottleMs'] = REAUTH_THROTTLE_MS;
+
     public readonly deadline: _AuthSessionSpecification['deadline'] = session => {
         const deadlines = [];
         let issuedAt: number;
@@ -77,7 +79,7 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
             return await _http(sessionHttpOptions);
         } catch (ex: any) {
             if (ex?.type === ErrorTypes.EXPIRED_TOKEN) {
-                throw ERR_SESSION_EXPIRED;
+                throw asSessionExpiredError(ex);
             }
             throw ex;
         }

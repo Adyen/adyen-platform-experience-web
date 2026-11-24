@@ -3,6 +3,7 @@ export const ERR_SESSION_FACTORY_UNAVAILABLE: unique symbol = Symbol('Error<SESS
 export const ERR_SESSION_HTTP_UNAVAILABLE: unique symbol = Symbol('Error<SESSION_HTTP_UNAVAILABLE>');
 export const ERR_SESSION_INVALID: unique symbol = Symbol('Error<SESSION_INVALID>');
 export const ERR_SESSION_REFRESH_ABORTED: unique symbol = Symbol('Error<SESSION_REFRESH_ABORTED>');
+export const DEFAULT_SESSION_REAUTH_THROTTLE_MS = 30_000;
 export const EVT_SESSION_EXPIRED = '_sessionExpired';
 export const EVT_SESSION_READY = '_sessionReady';
 export const EVT_SESSION_REFRESHED = '_sessionRefreshed';

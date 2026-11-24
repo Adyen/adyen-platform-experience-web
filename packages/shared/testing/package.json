@@ -38,6 +38,7 @@
     },
     "devDependencies": {
         "@storybook/preact": "catalog:",
-        "storybook": "catalog:"
+        "storybook": "catalog:",
+        "vitest": "catalog:"
     }
 }
