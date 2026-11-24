@@ -3,6 +3,7 @@ import type { AdyenPlatformExperienceError } from '@integration-components/core'
 import {
     getAvailableAfterCashOut,
     getCashOutErrorMessage,
+    hasAvailableAmountComeFromNothing,
     hasCaughtUpWithExpectedAmount,
     withExpectedAmount,
     withExpectedAvailableForCashOut,
@@ -49,7 +50,22 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
         () => (balanceAccounts.value as CashOutBalanceAccount[] | undefined)?.find(({ id }) => id === selectedBalanceAccountId.value)?.accountKey
     );
 
-    const usesGivenEligibility = computed(() => !!toValue(givenEligibility) && selectedBalanceAccountId.value === toValue(initialBalanceAccountId));
+    // The eligibility given here can't be loaded again here, so once it is outdated, such as on refresh, it gives way to one loaded here,
+    // until another one is given.
+    const isGivenEligibilityOutdated = ref(false);
+    watch(
+        () => toValue(givenEligibility),
+        () => (isGivenEligibilityOutdated.value = false)
+    );
+    const usesGivenEligibility = computed(
+        () => !isGivenEligibilityOutdated.value && !!toValue(givenEligibility) && selectedBalanceAccountId.value === toValue(initialBalanceAccountId)
+    );
+    // Loads the eligibility of the selected balance account again: the given one is loaded here instead, as there is no account key to load
+    // it again with while it is used.
+    const loadEligibilityAgain = () => {
+        if (usesGivenEligibility.value) isGivenEligibilityOutdated.value = true;
+        else refreshEligibility();
+    };
 
     const {
         eligibility: fetchedEligibility,
@@ -96,11 +112,6 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
     // the dropdown agree on what it can cash out as the newest of the two tells it. Its eligibility arriving again, also for another
     // balance account, counts again.
     const newerAvailableAmount = ref<{ balanceAccountId: string; amount: ICashOutAmount }>();
-    watch(availableAmounts, amounts => {
-        const balanceAccountId = selectedBalanceAccountId.value;
-        const amount = balanceAccountId ? amounts.get(balanceAccountId) : undefined;
-        newerAvailableAmount.value = balanceAccountId && amount ? { balanceAccountId, amount } : undefined;
-    });
     watch([fetchedEligibility, () => toValue(givenEligibility), selectedBalanceAccountId], () => (newerAvailableAmount.value = undefined));
     const newerAvailableAmountOfSelected = () =>
         newerAvailableAmount.value?.balanceAccountId === selectedBalanceAccountId.value ? newerAvailableAmount.value?.amount : undefined;
@@ -114,6 +125,23 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
             expectedOf(selectedBalanceAccountId.value)
         )
     );
+
+    // From nothing to cash out, the eligibility is loaded again instead, as an amount alone can't make a cashOut available; like a refresh,
+    // the component loads meanwhile. What is expected after a cashOut counts, as right after one that left nothing the API may still
+    // show what was available before it.
+    watch(availableAmounts, amounts => {
+        const balanceAccountId = selectedBalanceAccountId.value;
+        const amount = balanceAccountId ? amounts.get(balanceAccountId) : undefined;
+        if (
+            balanceAccountId &&
+            hasAvailableAmountComeFromNothing(eligibility.value?.availableForCashOutBalance, withExpectedAmount(amount, expectedOf(balanceAccountId)))
+        ) {
+            newerAvailableAmount.value = undefined;
+            loadEligibilityAgain();
+            return;
+        }
+        newerAvailableAmount.value = balanceAccountId && amount ? { balanceAccountId, amount } : undefined;
+    });
 
     /**
      * Remembers what the balance account of the cashOut is expected to have left after it. That may not be the selected one, as the
@@ -136,7 +164,7 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
      */
     const refresh = () => {
         if (selectedBalanceAccountId.value) forgetExpected(selectedBalanceAccountId.value);
-        refreshEligibility();
+        loadEligibilityAgain();
     };
 
     // Shown only once the amounts arrived, so the selected balance account never has one while the others have none. The selected one

@@ -30,7 +30,7 @@ test.describe('CashOut Request - Ineligible transfer instruments', () => {
         await Promise.all([
             expect(options.nth(0)).toHaveAccessibleName('NL**ABNA******4300'),
             expect(options.nth(1)).toHaveAccessibleName('GB**NWBK**********1234'),
-            expect(options.nth(2)).toHaveAccessibleName('********5678'),
+            expect(options.nth(2)).toHaveAccessibleName('Citi ********5678'),
             expect(options.nth(2)).toBeEnabled(),
             expect(options.nth(3)).toHaveAccessibleName("GB**BARC**********5432 This account can't receive instant payouts"),
             expect(options.nth(3)).toBeDisabled(),
@@ -42,7 +42,7 @@ test.describe('CashOut Request - Ineligible transfer instruments', () => {
     test('should show the form for another balance account once it is selected', async ({ page }) => {
         const root = getComponentRoot(page);
         await root.getByRole('combobox', { name: 'Account to deposit into' }).click();
-        await root.getByRole('option', { name: '********5678' }).click();
+        await root.getByRole('option', { name: 'Citi ********5678' }).click();
 
         await root.getByRole('combobox', { name: 'Balance account' }).click();
         await root.getByRole('option', { name: 'S. Hopper - Secondary Account' }).click();
@@ -62,8 +62,8 @@ test.describe('CashOut Request - Ineligible transfer instruments', () => {
         const root = getComponentRoot(page);
 
         await root.getByRole('combobox', { name: 'Account to deposit into' }).click();
-        await root.getByRole('option', { name: '********5678' }).click();
-        await expect(root.getByRole('combobox', { name: 'Account to deposit into' })).toHaveText('********5678');
+        await root.getByRole('option', { name: 'Citi ********5678' }).click();
+        await expect(root.getByRole('combobox', { name: 'Account to deposit into' })).toHaveText('Citi ********5678');
 
         const cashOutRequest = waitForCashOutRequest(page);
         await root.getByRole('button', { name: 'Cash out now' }).click();

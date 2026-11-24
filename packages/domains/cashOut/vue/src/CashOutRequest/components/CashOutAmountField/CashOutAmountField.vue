@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { BentoInputField } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { formatAmount as formatInputAmount, normalizeAmountInput } from '@integration-components/core/Localization/amount/amount-util';
@@ -21,6 +21,26 @@ const currency = computed(() => props.maxAmount.currency);
 
 const inputValue = ref(amount.value === undefined ? '' : formatInputAmount(amount.value, currency.value));
 const validationError = ref<'excess' | 'positive' | 'required'>();
+// The amount the input holds, valid or not, or `undefined` while it holds no number.
+const enteredAmount = ref(amount.value);
+
+const validate = (value: number) => {
+    if (value <= 0) return 'positive';
+    if (value > props.maxAmount.value) return 'excess';
+    return undefined;
+};
+
+// What is available to cash out can change while the field is shown, such as once the available amounts are loaded again: the amount
+// entered is checked against it again, and an amount set from outside, such as what is available filled in again, is shown instead.
+watch([amount, () => props.maxAmount.value], ([value]) => {
+    if (value !== undefined && value !== enteredAmount.value) {
+        enteredAmount.value = value;
+        inputValue.value = formatInputAmount(value, currency.value);
+    }
+    if (enteredAmount.value === undefined) return;
+    validationError.value = validate(enteredAmount.value);
+    amount.value = validationError.value ? undefined : enteredAmount.value;
+});
 
 const errorMessage = computed(() => {
     switch (validationError.value) {
@@ -43,6 +63,7 @@ const hasIncompleteNumber = () => !!inputField.value?.inputFieldElement?.validit
 function onBlur() {
     if (!hasIncompleteNumber()) return;
     validationError.value = 'required';
+    enteredAmount.value = undefined;
     amount.value = undefined;
 }
 
@@ -58,17 +79,11 @@ function onInput(rawValue: string) {
         if (inputElement) inputElement.value = value;
     }
 
-    let error: typeof validationError.value;
-
-    if (isInvalid || value === '') {
-        error = 'required';
-    } else if (nextAmount <= 0) {
-        error = 'positive';
-    } else if (nextAmount > props.maxAmount.value) {
-        error = 'excess';
-    }
+    const hasNumber = !isInvalid && value !== '';
+    const error = hasNumber ? validate(nextAmount) : 'required';
 
     inputValue.value = value;
+    enteredAmount.value = hasNumber ? nextAmount : undefined;
     validationError.value = error;
     amount.value = error ? undefined : nextAmount;
 }

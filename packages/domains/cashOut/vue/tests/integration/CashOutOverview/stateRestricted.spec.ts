@@ -20,6 +20,7 @@ test.describe('CashOut Overview - State - Restricted', () => {
     test('should tell the component is available with all its restrictions, so a platform hiding it for any does not show it', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
+        // Not in Promise.all: hidden is true before the story decided whether to mount the component, which it does once getState() told
         await expectToldState(page, RESTRICTED);
         await expect(getComponentRoot(page)).toBeHidden();
     });
@@ -28,7 +29,6 @@ test.describe('CashOut Overview - State - Restricted', () => {
     test('should show the component when the platform mounts it despite the restrictions', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { mountIfRestricted: 'true' } });
 
-        await expectToldState(page, RESTRICTED);
-        await expect(getComponentRoot(page)).toBeVisible();
+        await Promise.all([expectToldState(page, RESTRICTED), expect(getComponentRoot(page)).toBeVisible()]);
     });
 });

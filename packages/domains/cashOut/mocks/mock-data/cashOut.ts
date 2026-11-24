@@ -33,8 +33,9 @@ const ELIGIBLE_TRANSFER_INSTRUMENTS = {
         ineligibilityReasons: [],
         transferInstrumentId: 'SE322KT223222F5GXZFNM4C6K',
     },
+    // With the name of its bank before its masked account number, as the API describes an account number whose bank is known
     usAccountNumber: {
-        description: '********5678',
+        description: 'Citi ********5678',
         eligible: true,
         ineligibilityReasons: [],
         transferInstrumentId: 'SE322LJ223222F5GXZFNM5D7M',

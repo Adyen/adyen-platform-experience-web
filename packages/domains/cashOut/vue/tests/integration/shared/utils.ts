@@ -50,3 +50,16 @@ export const refreshFromHeader = async (page: Page) => {
     await root.getByRole('button', { name: 'Refresh' }).click();
     return eligibilityRequest;
 };
+
+/**
+ * Opens and closes the list of balance accounts, after which the component loads what they can cash out again. Once the list shows what
+ * the selected one can cash out, `mainAccountAmount`, they have been loaded.
+ */
+export const loadAvailableAmountsAgain = async (page: Page, mainAccountAmount = '$220.00') => {
+    const root = getComponentRoot(page);
+    const selector = root.getByRole('combobox', { name: 'Balance account' });
+    await selector.click();
+    await expect(root.getByRole('option', { name: 'S. Hopper - Main Account' })).toContainText(`${mainAccountAmount} to cash out`);
+    await page.keyboard.press('Escape');
+    await expect(selector).toHaveAttribute('aria-expanded', 'false');
+};

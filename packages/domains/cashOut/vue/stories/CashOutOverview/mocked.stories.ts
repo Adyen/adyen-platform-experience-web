@@ -101,6 +101,24 @@ export const AvailableAmountsChanged: ElementStory = {
     },
 };
 
+// The available amounts loaded again tell the selected balance account has nothing left to cash out.
+export const AvailableAmountsChangedToNothing: ElementStory = {
+    name: 'Available amounts changed to nothing',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.availableAmountsChangedToNothing },
+    },
+};
+
+// The available amounts loaded again tell the selected balance account, which had nothing to cash out, has something to cash out again.
+export const AvailableAmountsChangedFromNothing: ElementStory = {
+    name: 'Available amounts changed from nothing',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.availableAmountsChangedFromNothing },
+    },
+};
+
 export const CashOutStillProcessing: ElementStory = {
     name: 'CashOut still processing',
     args: { mockedApi: true },

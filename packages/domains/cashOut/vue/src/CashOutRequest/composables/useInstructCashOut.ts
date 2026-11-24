@@ -8,6 +8,11 @@ type InstructCashOutParams = {
     /** The account key of the balance account, as the balance accounts endpoint returns it. */
     accountKey: string;
     amount: ICashOutAmount;
+    /**
+     * The fee the fees endpoint returned for `amount`, in its minor units. The API calculates the fee again, and rejects the cashOut when
+     * it differs: the fee configuration changed since, so the user would be charged another fee than the one shown.
+     */
+    expectedFee: number;
     transferInstrumentId: string;
     referenceForBeneficiary?: string;
     transferDescription?: string;
@@ -24,6 +29,7 @@ export const useInstructCashOut = () => {
     const instructCashOut = async ({
         accountKey,
         amount,
+        expectedFee,
         transferInstrumentId,
         referenceForBeneficiary,
         transferDescription,
@@ -36,6 +42,7 @@ export const useInstructCashOut = () => {
                     body: {
                         amount: amount.value,
                         currency: amount.currency,
+                        expectedFee,
                         counterparty: { transferInstrumentId },
                         // Left out of the request when not given (JSON drops undefined), so the API generates them.
                         description: transferDescription || undefined,

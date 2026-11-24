@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { createApp, nextTick, ref, toValue, type PropType } from 'vue';
+import { createApp, h, nextTick, ref, toValue, type PropType } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { ICashOutEligibility, ICashOutFees, ICashOutResponse, ICashOutTransferInstrument } from '@integration-components/types';
 import { useCashOutFees } from '../../composables/useCashOutFees';
@@ -184,6 +184,22 @@ const renderForm = ({ onResult = vi.fn(), onFeesError = vi.fn(), ...props }: For
     return { findAvailableForCashOut, findAvailableForCashOutTooltip, findButton, findDetail, findTooltip, target, unmount: () => app.unmount() };
 };
 
+// Like the component the form is in, whose eligibility tells another amount available once the available amounts are loaded again
+const renderFormWithEligibility = (initial: ICashOutEligibility) => {
+    const eligibility = ref(initial);
+    const target = document.createElement('div');
+    const app = createApp({
+        setup: () => () =>
+            h(CashOutRequestForm, { accountKey: 'BalanceAccount.BA1', onResult: vi.fn(), onFeesError: vi.fn(), eligibility: eligibility.value }),
+    });
+    app.mount(target);
+    const setAvailable = async (value: number) => {
+        eligibility.value = { ...eligibility.value, availableForCashOutBalance: { value, currency: 'USD' } };
+        await nextTick();
+    };
+    return { setAvailable, unmount: () => app.unmount() };
+};
+
 const requestedFeesAmount = () => toValue(vi.mocked(useCashOutFees).mock.calls[0]![0].amount);
 
 describe('CashOutRequestForm', () => {
@@ -306,6 +322,32 @@ describe('CashOutRequestForm', () => {
             unmount();
         });
 
+        // The amount filled in is what was available, so it follows what is available, unlike an amount the user entered
+        test('should fill in what is available to cash out once it changes, when the amount is still what was available', async () => {
+            mockFees();
+            const { setAvailable, unmount } = renderFormWithEligibility(SINGLE_TRANSFER_INSTRUMENT);
+            expect(amountField.value).toBe(22000);
+
+            await setAvailable(15000);
+
+            expect(amountField.value).toBe(15000);
+
+            unmount();
+        });
+
+        test('should keep the amount the user entered once what is available to cash out changes', async () => {
+            mockFees();
+            const { setAvailable, unmount } = renderFormWithEligibility(SINGLE_TRANSFER_INSTRUMENT);
+            amountField.setAmount?.(10000);
+            await nextTick();
+
+            await setAvailable(15000);
+
+            expect(amountField.value).toBe(10000);
+
+            unmount();
+        });
+
         test('should not request fees nor show the summary for an invalid amount', async () => {
             const fees = mockFees();
             fees.fees.value = feesOf(1101);
@@ -399,7 +441,8 @@ describe('CashOutRequestForm', () => {
             unmount();
         });
 
-        test('should instruct the cashOut of the amount to the selected account and report the cashOut', async () => {
+        // With the fee shown for the amount, so the API rejects the cashOut when the fee configuration changed since.
+        test('should instruct the cashOut of the amount, with the fee shown for it, to the selected account and report the cashOut', async () => {
             const fees = mockFees();
             fees.fees.value = feesOf(1101);
             const instruct = mockInstructCashOut();
@@ -412,9 +455,25 @@ describe('CashOutRequestForm', () => {
             expect(instruct.instructCashOut).toHaveBeenCalledWith({
                 accountKey: 'BalanceAccount.BA1',
                 amount: { value: 22000, currency: 'USD' },
+                expectedFee: 1101,
                 transferInstrumentId: 'TI1',
             });
             expect(onResult).toHaveBeenCalledWith({ status: 'success', cashOut: CASH_OUT_RESPONSE });
+
+            unmount();
+        });
+
+        test('should instruct the cashOut with a free fee as its expected fee', async () => {
+            const fees = mockFees();
+            fees.fees.value = feesOf(0);
+            const instruct = mockInstructCashOut();
+            const onResult = vi.fn();
+            const { findButton, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT, onResult });
+
+            findButton(CASH_OUT)?.click();
+            await vi.waitFor(() => expect(onResult).toHaveBeenCalled());
+
+            expect(instruct.instructCashOut).toHaveBeenCalledWith(expect.objectContaining({ expectedFee: 0 }));
 
             unmount();
         });
