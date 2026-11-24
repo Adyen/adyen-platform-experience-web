@@ -38,6 +38,7 @@
     },
     "devDependencies": {
         "@storybook/vue3": "catalog:",
-        "storybook": "catalog:"
+        "storybook": "catalog:",
+        "vitest": "catalog:"
     }
 }
