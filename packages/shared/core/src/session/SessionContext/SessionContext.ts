@@ -72,7 +72,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     get isExpired() {
         // An expired-token response expires the session even if its deadline has not elapsed
         if (this._rejectedSession && this._rejectedSession.value === this._session) return true;
-        return this._deadline.elapsed;
+        return this._deadline.elapsed ?? (this._session === undefined ? undefined : false);
     }
 
     get refreshing() {
