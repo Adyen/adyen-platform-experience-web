@@ -204,6 +204,19 @@ describe('SessionContext', () => {
             expect(ctx.refreshes).toBe(2);
         });
 
+        test<RecoveryTestContext>('should not report a session without a deadline as expired', async ctx => {
+            ctx.patchSpecification('deadline', () => () => []);
+            expect(ctx.session.isExpired).toBeUndefined();
+
+            await ctx.startSession();
+            expect(ctx.session.isExpired).toBe(false);
+
+            ctx.respondWith(ERR_SESSION_EXPIRED);
+            await expect(ctx.session.http(null)).resolves.toBe('data');
+            await waitForTicks(5);
+            expect(ctx.session.isExpired).toBe(false);
+        });
+
         test<RecoveryTestContext>('should recover when the session has no deadline', async ctx => {
             ctx.patchSpecification('deadline', () => () => []);
 
