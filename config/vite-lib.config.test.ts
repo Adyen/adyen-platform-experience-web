@@ -13,6 +13,7 @@ const expectedBuildEnvDefineKeys = [
     'process.env.SESSION_AUTO_REFRESH',
     'process.env.SESSION_MAX_AGE_MS',
     'process.env.SESSION_PERMISSIONS',
+    'process.env.SESSION_REAUTH_THROTTLE_MS',
     'process.env.TEST_ENV',
     'process.env.USE_CDN',
     'process.env.NODE_ENV',
