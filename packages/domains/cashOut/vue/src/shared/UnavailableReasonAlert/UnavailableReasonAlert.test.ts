@@ -7,6 +7,8 @@ import { useCoreContext } from '@integration-components/core/vue';
 import type { ICashOutEligibility, ICashOutUnavailableReason } from '@integration-components/types';
 import UnavailableReasonAlert from './UnavailableReasonAlert.vue';
 
+const { addEvent } = vi.hoisted(() => ({ addEvent: vi.fn() }));
+
 const REACH_OUT = 'cashOut.common.contactSupport.label';
 const NOT_ALLOWED = 'cashOut.common.unavailableReasons.notAllowed';
 const NOT_ALLOWED_WITH_CONTACT_SUPPORT = 'cashOut.common.unavailableReasons.notAllowedWithContactSupport';
@@ -27,6 +29,7 @@ vi.mock('@adyen/bento-vue3', async () => {
 });
 
 vi.mock('@integration-components/core/vue', () => ({
+    useEventDispatcherContext: () => ({ addEvent }),
     useCoreContext: vi.fn(),
 }));
 
@@ -132,6 +135,13 @@ describe('UnavailableReasonAlert', () => {
         reachOutButton()?.click();
 
         expect(onContactSupport).toHaveBeenCalledTimes(1);
+        // Without the context of a component, as the request
+        expect(addEvent).toHaveBeenCalledWith('Clicked button', {
+            category: 'CashOut request component',
+            subCategory: 'Request',
+            label: 'Contact support',
+            unavailableReason: 'cashOutNotConfigured',
+        });
 
         unmount();
     });

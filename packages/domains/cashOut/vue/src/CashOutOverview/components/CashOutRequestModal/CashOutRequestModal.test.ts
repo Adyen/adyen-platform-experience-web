@@ -8,6 +8,8 @@ import { useShouldHideTitles } from '@integration-components/composables-vue';
 import type { ICashOutEligibility } from '@integration-components/types';
 import CashOutRequestModal from './CashOutRequestModal.vue';
 
+const { addEvent } = vi.hoisted(() => ({ addEvent: vi.fn() }));
+
 const TITLE = 'cashOut.request.title';
 const ELIGIBILITY = { isCashoutAvailable: true } as unknown as ICashOutEligibility;
 
@@ -51,6 +53,7 @@ vi.mock('@adyen/bento-vue3', async () => {
 });
 
 vi.mock('@integration-components/core/vue', () => ({
+    useEventDispatcherContext: () => ({ addEvent }),
     useCoreContext: vi.fn(),
 }));
 
@@ -242,6 +245,44 @@ describe('CashOutRequestModal', () => {
             modal.dismiss?.();
 
             expect(onClose).toHaveBeenCalledTimes(2);
+
+            unmount();
+        });
+    });
+
+    describe('Analytics', () => {
+        const CLOSED = { category: 'CashOut request component', subCategory: 'Request', label: 'Close' };
+
+        test('should tell the request was closed from its form', () => {
+            const { target, unmount } = renderModal();
+
+            target.querySelector<HTMLElement>('[data-testid="close"]')?.click();
+
+            expect(addEvent).toHaveBeenCalledWith('Clicked button', { ...CLOSED, step: 'form' });
+
+            unmount();
+        });
+
+        test('should tell the request was closed from its result', async () => {
+            const { showResult, target, unmount } = renderModal();
+            showResult();
+            await nextTick();
+
+            target.querySelector<HTMLElement>('[data-testid="close"]')?.click();
+
+            expect(addEvent).toHaveBeenCalledWith('Clicked button', { ...CLOSED, step: 'result' });
+
+            unmount();
+        });
+
+        test('should not tell a close while the cashOut is sent, as it does not close', async () => {
+            const { unmount } = renderModal();
+            (requestProps.current?.onInstructingChange as (value: boolean) => void)(true);
+            await nextTick();
+
+            modal.emitClose?.();
+
+            expect(addEvent).not.toHaveBeenCalled();
 
             unmount();
         });

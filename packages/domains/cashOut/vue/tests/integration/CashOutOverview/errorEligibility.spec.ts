@@ -1,11 +1,16 @@
-import { test, expect } from '@playwright/test';
-import { getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
+import { OVERVIEW_ANALYTICS } from '../shared/utils';
 
 const STORY_ID = 'mocked-cashout-cashout-overview--eligibility-error';
 
 test.describe('CashOut Overview - Error - Eligibility', () => {
-    test.beforeEach(async ({ page }) => {
+    // Tells which request kept the overview from loading, with its error
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [
+            ['Encountered error', { ...OVERVIEW_ANALYTICS, returnType: 'backend', returnValue: '500', request: 'eligibility' }],
+        ]);
     });
 
     test('should show an error, keeping the balance account selector so another one can be selected', async ({ page }) => {

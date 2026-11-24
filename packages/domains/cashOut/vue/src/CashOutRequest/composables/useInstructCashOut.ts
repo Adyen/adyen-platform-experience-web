@@ -1,4 +1,5 @@
 import { computed } from 'vue';
+import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useAsyncRequest } from '@integration-components/composables-vue/useAsyncRequest';
 import type { ICashOutAmount, ICashOutResponse } from '@integration-components/types';
@@ -59,6 +60,8 @@ export const useInstructCashOut = () => {
     return {
         canInstructCashOut: computed(() => !!instructCashOutEndpoint.value),
         instructCashOut,
+        // The HTTP layer throws AdyenPlatformExperienceError at runtime, whatever type the request composable declares.
+        instructError: computed(() => request.error.value as AdyenPlatformExperienceError | undefined),
         isInstructing: request.isLoading,
     } as const;
 };

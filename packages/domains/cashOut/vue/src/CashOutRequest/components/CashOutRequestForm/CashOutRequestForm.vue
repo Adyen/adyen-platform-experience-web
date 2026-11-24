@@ -11,10 +11,12 @@ import {
 } from '@adyen/bento-vue3';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import { useCoreContext } from '@integration-components/core/vue';
+import { getAmountAnalyticsProperties } from '@integration-components/cashOut/domain';
 import type { ICashOutEligibility } from '@integration-components/types';
 import type { CashOutResult } from '../../types';
 import { useCashOutFees } from '../../composables/useCashOutFees';
 import { useArrivalTime } from '../../../shared/composables/useArrivalTime';
+import { useCashOutAnalytics } from '../../../shared/composables/useCashOutAnalytics';
 import { useFormatAmount } from '../../../shared/composables/useFormatAmount';
 import { useCashOutTooltips } from '../../../shared/composables/useCashOutTooltips';
 import { useInstructCashOut } from '../../composables/useInstructCashOut';
@@ -45,6 +47,7 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const formatAmount = useFormatAmount();
+const analytics = useCashOutAnalytics();
 
 const isCashOutAvailable = computed(() => props.eligibility.isCashoutAvailable);
 const availableForCashOut = computed(() => props.eligibility.availableForCashOutBalance);
@@ -118,7 +121,11 @@ const detailItems = computed<DetailItem[]>(() => [
 // The fee never exceeds the amount, so a fee that reaches it takes all of it and leaves nothing to receive.
 const isAmountBelowFee = computed(() => fees.value?.payoutAmount.value === 0);
 
-const { canInstructCashOut, instructCashOut, isInstructing } = useInstructCashOut();
+watch(isAmountBelowFee, isBelowFee => {
+    if (isBelowFee) analytics.trackValidationError('amountBelowFee');
+});
+
+const { canInstructCashOut, instructCashOut, instructError, isInstructing } = useInstructCashOut();
 
 watch(isInstructing, value => props.onInstructingChange?.(value));
 
@@ -132,6 +139,9 @@ const isCashOutDisabled = computed(
 const cashOut = async () => {
     if (isCashOutDisabled.value || !amount.value || !fees.value || !transferInstrumentId.value) return;
 
+    const amountProperties = getAmountAnalyticsProperties(amount.value, availableForCashOut.value);
+    analytics.track('Clicked button', { label: 'Cash out now', ...amountProperties, isFeeFree: fees.value.fee.value === 0 });
+
     const instructedCashOut = await instructCashOut({
         accountKey: props.accountKey,
         amount: amount.value,
@@ -141,6 +151,15 @@ const cashOut = async () => {
         referenceForBeneficiary: props.referenceForBeneficiary,
         transferDescription: props.transferDescription,
     });
+    if (instructedCashOut) {
+        analytics.track('Completed cashOut', {
+            ...amountProperties,
+            currency: instructedCashOut.amount.currency,
+            secondsToCashOut: analytics.getSecondsSinceStart(),
+        });
+    } else {
+        analytics.trackBackendError('instruct', instructError.value);
+    }
     props.onResult(instructedCashOut ? { status: 'success', cashOut: instructedCashOut } : { status: 'error' });
 };
 

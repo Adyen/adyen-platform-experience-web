@@ -4,11 +4,13 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createApp, nextTick, ref, toValue } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import type { ComponentShellState } from '@integration-components/composables-vue';
+import { useLandedPageEvent, type ComponentShellState } from '@integration-components/composables-vue';
 import type { ICashOutEligibility } from '@integration-components/types';
 import { useCashOutState } from '../../../shared/composables/useCashOutState';
 import type { CashOutRequestComponentProps } from '../../types';
 import CashOutRequest from './CashOutRequest.vue';
+
+const { addEvent } = vi.hoisted(() => ({ addEvent: vi.fn() }));
 
 const TITLE = 'cashOut.request.title';
 const SKELETON = 'skeleton';
@@ -19,7 +21,10 @@ const ELIGIBILITY = {
     unavailableReasons: [],
 } as unknown as ICashOutEligibility;
 
-const formProps: { current?: Record<string, unknown> } = {};
+const formProps: {
+    current?: Record<string, unknown>;
+    analytics?: { getProperties: () => Record<string, unknown>; getSecondsSinceStart: () => number | undefined };
+} = {};
 const headerProps: { current?: Record<string, unknown> } = {};
 const resultProps: { current?: Record<string, unknown> } = {};
 
@@ -56,6 +61,7 @@ vi.mock('../../../shared/CashOutHeader/CashOutHeader.vue', async () => {
 });
 
 vi.mock('@integration-components/core/vue', () => ({
+    useEventDispatcherContext: () => ({ addEvent }),
     useCoreContext: vi.fn(),
 }));
 
@@ -68,6 +74,7 @@ vi.mock('@integration-components/composables-vue', async () => {
             if (props.state === 'error') return h('div', 'error');
             return h('div', ['ready', slots.default?.()] as never);
         },
+        useLandedPageEvent: vi.fn(),
     };
 });
 
@@ -83,6 +90,7 @@ vi.mock('../CashOutRequestSkeleton/CashOutRequestSkeleton.vue', async () => {
 
 vi.mock('../CashOutRequestForm/CashOutRequestForm.vue', async () => {
     const { defineComponent, h } = await import('vue');
+    const { useCashOutAnalytics } = await import('../../../shared/composables/useCashOutAnalytics');
     return {
         default: defineComponent({
             props: {
@@ -96,6 +104,7 @@ vi.mock('../CashOutRequestForm/CashOutRequestForm.vue', async () => {
                 onInstructingChange: { type: Function, default: undefined },
             },
             setup(props) {
+                formProps.analytics = useCashOutAnalytics();
                 return () => {
                     formProps.current = { ...props };
                     return h('div', 'form');
@@ -130,6 +139,7 @@ const mockCashOutState = (shellState: ComponentShellState) => {
         shellState: ref(shellState),
         isFetchingEligibility: ref(false),
         lastUpdated: ref(Date.now()),
+        loadingError: ref<unknown>(),
         refresh: vi.fn(),
         refreshAvailableAmounts: vi.fn(),
     };
@@ -386,5 +396,85 @@ describe('CashOutRequest', () => {
         expect(formProps.current).toMatchObject({ referenceForBeneficiary: 'REF123', transferDescription: 'Weekly cashOut' });
 
         unmount();
+    });
+
+    describe('Analytics', () => {
+        const REQUEST = { category: 'CashOut request component', subCategory: 'Request' };
+        const landedPageEvent = () => {
+            const [properties, enabled] = vi.mocked(useLandedPageEvent).mock.calls[0]!;
+            return { properties: toValue(properties), enabled: toValue(enabled) };
+        };
+
+        test('should tell the landing of the standalone request once the eligibility is known', () => {
+            mockCashOutState('ready');
+            const { unmount } = renderCashOutRequest();
+
+            expect(landedPageEvent()).toEqual({
+                properties: { ...REQUEST, isAvailable: true, unavailableReason: undefined, currency: 'USD', balanceAccountCount: '0' },
+                enabled: true,
+            });
+
+            unmount();
+        });
+
+        // In the modal, the request is part of the overview, which tells its own landing
+        test('should not tell a landing in the modal of the overview, and tell its events as the overview', () => {
+            mockCashOutState('ready');
+            const { unmount } = renderCashOutRequest({ inModal: true });
+
+            expect(landedPageEvent().enabled).toBe(false);
+            expect(formProps.analytics?.getProperties()).toEqual({ category: 'CashOut overview component', subCategory: 'Request' });
+
+            unmount();
+        });
+
+        test('should start timing the request once its form is first shown', async () => {
+            vi.useFakeTimers();
+            const state = mockCashOutState('loading');
+            const { unmount } = renderCashOutRequest();
+            await vi.advanceTimersByTimeAsync(30_000);
+
+            state.shellState.value = 'ready';
+            state.eligibility.value = ELIGIBILITY;
+            await nextTick();
+            await vi.advanceTimersByTimeAsync(12_000);
+
+            expect(formProps.analytics?.getProperties()).toEqual(REQUEST);
+            expect(formProps.analytics?.getSecondsSinceStart()).toBe(12);
+            vi.useRealTimers();
+
+            unmount();
+        });
+
+        test('should tell the fees failed to load, with their error', async () => {
+            mockCashOutState('ready');
+            const { unmount } = renderCashOutRequest();
+
+            (formProps.current?.onFeesError as (error: unknown) => void)({ type: 'HTTP_ERROR', errorCode: '00_500' });
+            await nextTick();
+
+            expect(addEvent).toHaveBeenCalledWith('Encountered error', { ...REQUEST, returnType: 'backend', returnValue: '00_500', request: 'fees' });
+
+            unmount();
+        });
+
+        test('should tell which request kept the standalone request from loading, but leave it to the overview in its modal', async () => {
+            for (const inModal of [false, true]) {
+                addEvent.mockClear();
+                const state = mockCashOutState('loading');
+                const { unmount } = renderCashOutRequest({ inModal });
+
+                state.loadingError.value = { request: 'balanceAccounts', error: { type: 'NETWORK_ERROR' } };
+                await nextTick();
+
+                expect(addEvent.mock.calls).toEqual(
+                    inModal
+                        ? []
+                        : [['Encountered error', { ...REQUEST, returnType: 'backend', returnValue: 'NETWORK_ERROR', request: 'balanceAccounts' }]]
+                );
+
+                unmount();
+            }
+        });
     });
 });

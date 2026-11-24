@@ -1,13 +1,14 @@
-import { test, expect } from '@playwright/test';
-import { getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
-import { waitForCashOutRequest } from '../shared/utils';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
+import { REQUEST_ANALYTICS, waitForCashOutRequest } from '../shared/utils';
 
 const STORY_ID = 'mocked-cashout-cashout-request--many-transfer-instruments';
 
 // From 10 bank accounts, their dropdown can be searched; the ones that can't receive the cashOut count too, as they are listed
 test.describe('CashOut Request - Many transfer instruments', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', REQUEST_ANALYTICS]]);
     });
 
     test('should list the bank accounts that match the search, the ones that cannot receive the cashOut still disabled', async ({ page }) => {
@@ -54,5 +55,16 @@ test.describe('CashOut Request - Many transfer instruments', () => {
 
         expect((await cashOutRequest).postDataJSON()).toMatchObject({ counterparty: { transferInstrumentId: 'SE322QG223222F5GXZFNM9H3X' } });
         await expect(root.getByText('CashOut successful')).toBeVisible();
+    });
+
+    test('should tell a bank account was selected from a search', async ({ page, analyticsEvents }) => {
+        const root = getComponentRoot(page);
+        const selector = root.getByRole('combobox', { name: 'Account to deposit into' });
+
+        await selector.click();
+        await selector.fill('GB');
+        await root.getByRole('option', { name: 'GB**NWBK**********1234' }).click();
+
+        await expectAnalyticsEvents(analyticsEvents, [['Changed bank account', { ...REQUEST_ANALYTICS, usedSearch: true, bankAccountCount: '10+' }]]);
     });
 });

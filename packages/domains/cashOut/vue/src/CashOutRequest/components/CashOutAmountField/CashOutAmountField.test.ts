@@ -6,6 +6,8 @@ import { createApp, defineComponent, h, nextTick, ref } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import CashOutAmountField from './CashOutAmountField.vue';
 
+const { addEvent } = vi.hoisted(() => ({ addEvent: vi.fn() }));
+
 const MAX_AMOUNT = { value: 22000, currency: 'USD' };
 
 vi.mock('@adyen/bento-vue3', async () => {
@@ -37,6 +39,7 @@ vi.mock('@adyen/bento-vue3', async () => {
 });
 
 vi.mock('@integration-components/core/vue', () => ({
+    useEventDispatcherContext: () => ({ addEvent }),
     useCoreContext: vi.fn(),
 }));
 
@@ -272,5 +275,81 @@ describe('CashOutAmountField', () => {
         expect(error()).toBeUndefined();
 
         unmount();
+    });
+
+    describe('Analytics', () => {
+        const REQUEST = { category: 'CashOut request component', subCategory: 'Request' };
+        const changedAmountEvents = () => addEvent.mock.calls.filter(([event]) => event === 'Changed amount');
+
+        test('should tell the amount changed once the field is left, with how much of what is available it is', async () => {
+            const { blur, type, unmount } = renderAmountField({ amount: MAX_AMOUNT.value });
+
+            await type('5');
+            await type('50');
+            expect(changedAmountEvents()).toEqual([]);
+            await blur();
+
+            expect(changedAmountEvents()).toEqual([['Changed amount', { ...REQUEST, isWholeAmount: false, amountShare: '<25%', isValid: true }]]);
+
+            unmount();
+        });
+
+        test('should not tell the amount changed when it is the one told before, or filled in', async () => {
+            const { blur, type, unmount } = renderAmountField({ amount: MAX_AMOUNT.value });
+
+            await blur();
+            await type('220');
+            await blur();
+            await type('100');
+            await blur();
+            await blur();
+
+            expect(changedAmountEvents()).toEqual([['Changed amount', { ...REQUEST, isWholeAmount: false, amountShare: '25-50%', isValid: true }]]);
+
+            unmount();
+        });
+
+        // Such as what is available filled in again by the form, once it changes: the user didn't change it
+        test('should not tell the amount changed when only an amount set from outside is in the field', async () => {
+            const { blur, setAmount, setMaxAmount, unmount } = renderAmountField({ amount: MAX_AMOUNT.value });
+
+            await setMaxAmount(15000);
+            await setAmount(15000);
+            await blur();
+
+            expect(changedAmountEvents()).toEqual([]);
+
+            unmount();
+        });
+
+        test('should tell an amount changed to one that is not valid', async () => {
+            const { blur, type, unmount } = renderAmountField({ amount: MAX_AMOUNT.value });
+
+            await type('300');
+            await blur();
+
+            expect(changedAmountEvents()).toEqual([['Changed amount', { ...REQUEST, isWholeAmount: false, amountShare: undefined, isValid: false }]]);
+
+            unmount();
+        });
+
+        test('should tell each error the field starts showing', async () => {
+            const { setMaxAmount, type, unmount } = renderAmountField({ amount: MAX_AMOUNT.value });
+
+            await type('300');
+            await type('400');
+            await type('0');
+            await type('100');
+            await setMaxAmount(5000);
+
+            expect(addEvent.mock.calls.filter(([event]) => event === 'Encountered error')).toEqual(
+                ['excess', 'positive', 'excess'].map(returnValue => [
+                    'Encountered error',
+                    { ...REQUEST, returnType: 'validation', returnValue, field: 'amount' },
+                ])
+            );
+
+            unmount();
+        });
     });
 });

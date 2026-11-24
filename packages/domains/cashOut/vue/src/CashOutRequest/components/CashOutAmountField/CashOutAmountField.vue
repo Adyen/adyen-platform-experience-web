@@ -3,8 +3,10 @@ import { computed, ref, watch } from 'vue';
 import { BentoInputField } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import { formatAmount as formatInputAmount, normalizeAmountInput } from '@integration-components/core/Localization/amount/amount-util';
+import { getAmountAnalyticsProperties } from '@integration-components/cashOut/domain';
 import type { ICashOutAmount } from '@integration-components/types';
 import { useFormatAmount } from '../../../shared/composables/useFormatAmount';
+import { useCashOutAnalytics } from '../../../shared/composables/useCashOutAnalytics';
 
 const props = defineProps<{
     disabled?: boolean;
@@ -16,6 +18,7 @@ const amount = defineModel<number | undefined>({ required: true });
 
 const { i18n } = useCoreContext();
 const formatAmount = useFormatAmount();
+const { track, trackValidationError } = useCashOutAnalytics();
 
 const currency = computed(() => props.maxAmount.currency);
 
@@ -23,6 +26,8 @@ const inputValue = ref(amount.value === undefined ? '' : formatInputAmount(amoun
 const validationError = ref<'excess' | 'positive' | 'required'>();
 // The amount the input holds, valid or not, or `undefined` while it holds no number.
 const enteredAmount = ref(amount.value);
+// The amount last told as changed, or filled in: only another one the user leaves in the field is told.
+let lastToldAmount = enteredAmount.value;
 
 const validate = (value: number) => {
     if (value <= 0) return 'positive';
@@ -34,7 +39,8 @@ const validate = (value: number) => {
 // entered is checked against it again, and an amount set from outside, such as what is available filled in again, is shown instead.
 watch([amount, () => props.maxAmount.value], ([value]) => {
     if (value !== undefined && value !== enteredAmount.value) {
-        enteredAmount.value = value;
+        // Filled in, not changed by the user
+        enteredAmount.value = lastToldAmount = value;
         inputValue.value = formatInputAmount(value, currency.value);
     }
     if (enteredAmount.value === undefined) return;
@@ -60,11 +66,26 @@ const inputField = ref<InstanceType<typeof BentoInputField> | null>(null);
 // A number input reports an unfinished number, like "434." or "-", as an empty value with `validity.badInput`.
 const hasIncompleteNumber = () => !!inputField.value?.inputFieldElement?.validity.badInput;
 
+// Each error the field starts showing, whether from what was entered or from what is available changing.
+watch(validationError, error => {
+    if (error) trackValidationError(error);
+});
+
+// Told once the user leaves the field, not while typing, and only when the amount differs from the last one told, or filled in.
+const tellChangedAmount = () => {
+    if (enteredAmount.value === lastToldAmount) return;
+    lastToldAmount = enteredAmount.value;
+    const entered = enteredAmount.value === undefined ? undefined : { value: enteredAmount.value, currency: currency.value };
+    track('Changed amount', { ...getAmountAnalyticsProperties(entered, props.maxAmount), isValid: !validationError.value });
+};
+
 function onBlur() {
-    if (!hasIncompleteNumber()) return;
-    validationError.value = 'required';
-    enteredAmount.value = undefined;
-    amount.value = undefined;
+    if (hasIncompleteNumber()) {
+        validationError.value = 'required';
+        enteredAmount.value = undefined;
+        amount.value = undefined;
+    }
+    tellChangedAmount();
 }
 
 function onInput(rawValue: string) {

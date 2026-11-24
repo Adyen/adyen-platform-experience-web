@@ -2,11 +2,13 @@
  * @vitest-environment jsdom
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { computed, createApp, nextTick, ref } from 'vue';
+import { computed, createApp, nextTick, ref, toValue } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
+import { useLandedPageEvent, useShouldHideTitles, type ComponentShellState } from '@integration-components/composables-vue';
 import { useCashOutState } from '../../../shared/composables/useCashOutState';
 import CashOutOverview from './CashOutOverview.vue';
+
+const { addEvent } = vi.hoisted(() => ({ addEvent: vi.fn() }));
 
 const LABEL = 'cashOut.common.availableForCashOut.label';
 const AMOUNT = '22000 USD';
@@ -42,6 +44,7 @@ vi.mock('@adyen/bento-vue3', async () => {
 });
 
 vi.mock('@integration-components/core/vue', () => ({
+    useEventDispatcherContext: () => ({ addEvent }),
     useCoreContext: vi.fn(),
 }));
 
@@ -54,6 +57,7 @@ vi.mock('@integration-components/composables-vue', async () => {
             if (props.state === 'error') return h('div', 'error');
             return h('div', slots.default?.() as never);
         },
+        useLandedPageEvent: vi.fn(),
         useShouldHideTitles: vi.fn(),
     };
 });
@@ -96,6 +100,7 @@ vi.mock('../CashOutRequestModal/CashOutRequestModal.vue', async () => {
 const mockCashOutState = ({ eligibility, shellState = 'ready' }: { eligibility?: unknown; shellState?: ComponentShellState }) => {
     const state = {
         eligibility: ref(eligibility),
+        loadingError: ref<unknown>(),
         recordCashOut: vi.fn(),
         refresh: vi.fn(),
         refreshEligibility: vi.fn(),
@@ -320,6 +325,77 @@ describe('CashOutOverview', () => {
             await nextTick();
 
             expect(state.refreshEligibility).toHaveBeenCalledTimes(1);
+
+            unmount();
+        });
+    });
+
+    describe('Analytics', () => {
+        const OVERVIEW = { category: 'CashOut overview component', subCategory: 'Overview' };
+        const findStartButton = (target: HTMLElement) => [...target.querySelectorAll('div')].find(element => element.textContent === START);
+        const landedPageEvent = () => {
+            const [properties, enabled] = vi.mocked(useLandedPageEvent).mock.calls[0]!;
+            return { properties: toValue(properties), enabled: toValue(enabled) };
+        };
+
+        test('should tell the landing once the eligibility is known, with whether the balance account can cash out', async () => {
+            const state = mockCashOutState({ shellState: 'loading' });
+            const { unmount } = renderCashOutOverview();
+            expect(landedPageEvent().enabled).toBe(false);
+
+            state.eligibility.value = unavailableEligibility('dailyLimitReached');
+            await nextTick();
+
+            expect(landedPageEvent()).toEqual({
+                properties: { ...OVERVIEW, isAvailable: false, unavailableReason: 'dailyLimitReached', currency: 'USD', balanceAccountCount: '0' },
+                enabled: true,
+            });
+
+            unmount();
+        });
+
+        test('should tell the cashOut was started', () => {
+            mockCashOutState({ eligibility: ELIGIBILITY });
+            const { target, unmount } = renderCashOutOverview();
+
+            findStartButton(target)?.click();
+
+            expect(addEvent).toHaveBeenCalledWith('Clicked button', { ...OVERVIEW, label: 'Start instant CashOut' });
+
+            unmount();
+        });
+
+        test('should tell which request kept the overview from loading, with its error', async () => {
+            const state = mockCashOutState({ shellState: 'loading' });
+            const { unmount } = renderCashOutOverview();
+
+            state.loadingError.value = { request: 'eligibility', error: { type: 'HTTP_ERROR', status: '500' } };
+            await nextTick();
+
+            expect(addEvent).toHaveBeenCalledWith('Encountered error', {
+                ...OVERVIEW,
+                returnType: 'backend',
+                returnValue: '500',
+                request: 'eligibility',
+            });
+
+            unmount();
+        });
+
+        test('should tell the reach out button was clicked, with the reason', () => {
+            mockCashOutState({ eligibility: unavailableEligibility('cashOutNotConfigured') });
+            const { target, unmount } = renderCashOutOverview({ onContactSupport: vi.fn() });
+
+            [...target.querySelectorAll('div')]
+                .filter(element => element.textContent === REACH_OUT)
+                .at(-1)
+                ?.click();
+
+            expect(addEvent).toHaveBeenCalledWith('Clicked button', {
+                ...OVERVIEW,
+                label: 'Contact support',
+                unavailableReason: 'cashOutNotConfigured',
+            });
 
             unmount();
         });

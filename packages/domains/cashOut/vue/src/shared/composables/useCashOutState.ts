@@ -186,6 +186,12 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
     const hasNoBalanceAccounts = computed(() => !isFetchingBalanceAccounts.value && !balanceAccountsError.value && !balanceAccounts.value?.length);
 
     const errorInfo = computed(() => getCashOutErrorInfo(error.value));
+    // Which request failed with which error, so the components can tell what kept them from loading.
+    const loadingError = computed(() => {
+        if (balanceAccountsError.value) return { request: 'balanceAccounts', error: error.value } as const;
+        if (eligibilityError.value) return { request: 'eligibility', error: error.value } as const;
+        return undefined;
+    });
 
     const shellState = computed<ComponentShellState>(() => {
         if (error.value || hasNoBalanceAccounts.value) return 'error';
@@ -199,6 +205,7 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
         errorInfo,
         isFetchingEligibility,
         lastUpdated,
+        loadingError,
         recordCashOut,
         refresh,
         refreshAvailableAmounts,

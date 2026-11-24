@@ -3,6 +3,12 @@ import { computed, ref, watch } from 'vue';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import { ComponentShell, type ComponentShellState } from '@integration-components/composables-vue';
 import type { CashOutRequestComponentProps, CashOutResult } from '../../types';
+import {
+    CASH_OUT_OVERVIEW_ANALYTICS_CATEGORY,
+    CASH_OUT_REQUEST_ANALYTICS_CATEGORY,
+    provideCashOutAnalytics,
+} from '../../../shared/composables/useCashOutAnalytics';
+import { useCashOutLoadAnalytics } from '../../../shared/composables/useCashOutLoadAnalytics';
 import { getCashOutErrorInfo, useCashOutState } from '../../../shared/composables/useCashOutState';
 import CashOutHeader from '../../../shared/CashOutHeader/CashOutHeader.vue';
 import CashOutRequestForm from '../CashOutRequestForm/CashOutRequestForm.vue';
@@ -21,11 +27,34 @@ const {
     eligibility,
     isFetchingEligibility,
     lastUpdated,
+    loadingError,
     refresh,
     refreshAvailableAmounts,
     selectedAccountKey,
     selectedBalanceAccountId,
 } = cashOutState;
+
+// In the modal of the overview, the request is part of the overview, which tells its own landing and what kept it from loading.
+const analytics = provideCashOutAnalytics({
+    category: props.inModal ? CASH_OUT_OVERVIEW_ANALYTICS_CATEGORY : CASH_OUT_REQUEST_ANALYTICS_CATEGORY,
+    subCategory: 'Request',
+});
+
+useCashOutLoadAnalytics(analytics, {
+    eligibility,
+    balanceAccountCount: () => balanceAccountOptions.value.length,
+    loadingError,
+    enabled: () => !props.inModal,
+});
+
+// The request starts once its form is first shown, so a completed cashOut tells how long it took from there.
+watch(
+    () => !!eligibility.value,
+    isShown => {
+        if (isShown) analytics.markStarted();
+    },
+    { immediate: true }
+);
 
 const feesError = ref<AdyenPlatformExperienceError>();
 
@@ -51,6 +80,7 @@ const shellState = computed<ComponentShellState>(() => (feesError.value ? 'error
 
 const handleFeesError = (error: AdyenPlatformExperienceError) => {
     feesError.value = error;
+    analytics.trackBackendError('fees', error);
 };
 
 // The fees error belongs to the balance account it happened on, so selecting another one shows that account's form again.

@@ -86,6 +86,7 @@ describe('useCashOutState', () => {
 
         await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
         expect(core.externalErrorHandler).not.toHaveBeenCalled();
+        expect(state.loadingError.value).toBeUndefined();
 
         stop();
     });
@@ -732,6 +733,7 @@ describe('useCashOutState', () => {
         await vi.waitFor(() => expect(state.shellState.value).toBe('error'));
         expect(state.errorInfo.value.refreshComponent).toBe(true);
         expect(core.externalErrorHandler).toHaveBeenCalledExactlyOnceWith(error);
+        expect(state.loadingError.value).toEqual({ request: 'eligibility', error });
 
         stop();
     });
@@ -743,6 +745,7 @@ describe('useCashOutState', () => {
 
         await vi.waitFor(() => expect(state.shellState.value).toBe('error'));
         expect(core.externalErrorHandler).toHaveBeenCalledExactlyOnceWith(error);
+        expect(state.loadingError.value).toEqual({ request: 'balanceAccounts', error });
 
         stop();
     });

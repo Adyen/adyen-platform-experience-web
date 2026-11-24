@@ -7,7 +7,10 @@ import { useCoreContext } from '@integration-components/core/vue';
 import type { ICashOutEligibility, ICashOutFees, ICashOutResponse, ICashOutTransferInstrument } from '@integration-components/types';
 import { useCashOutFees } from '../../composables/useCashOutFees';
 import { useInstructCashOut } from '../../composables/useInstructCashOut';
+import { provideCashOutAnalytics } from '../../../shared/composables/useCashOutAnalytics';
 import CashOutRequestForm from './CashOutRequestForm.vue';
+
+const { addEvent } = vi.hoisted(() => ({ addEvent: vi.fn() }));
 
 const CASH_OUT = 'cashOut.request.actions.cashOut.labels.default';
 const SUMMARY_TITLE = 'cashOut.request.summary.title';
@@ -103,6 +106,7 @@ vi.mock('@adyen/bento-vue3', async () => {
 });
 
 vi.mock('@integration-components/core/vue', () => ({
+    useEventDispatcherContext: () => ({ addEvent }),
     useCoreContext: vi.fn(),
 }));
 
@@ -145,6 +149,7 @@ const mockInstructCashOut = ({ canInstructCashOut = true } = {}) => {
     const state = {
         canInstructCashOut: ref(canInstructCashOut),
         instructCashOut: vi.fn(async (): Promise<ICashOutResponse | undefined> => CASH_OUT_RESPONSE),
+        instructError: ref<unknown>(),
         isInstructing: ref(false),
     };
     vi.mocked(useInstructCashOut).mockReturnValue(state as unknown as ReturnType<typeof useInstructCashOut>);
@@ -708,6 +713,111 @@ describe('CashOutRequestForm', () => {
             const { target, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT });
 
             expect([...target.querySelectorAll('button')].map(button => button.textContent)).toEqual([CASH_OUT]);
+
+            unmount();
+        });
+    });
+
+    describe('Analytics', () => {
+        const REQUEST = { category: 'CashOut request component', subCategory: 'Request' } as const;
+
+        // Like the request the form is in, which started some time ago
+        const renderFormStartedAgo = (seconds: number) => {
+            const target = document.createElement('div');
+            const app = createApp({
+                setup() {
+                    provideCashOutAnalytics({ ...REQUEST, startedAt: Date.now() - seconds * 1000 });
+                    return () =>
+                        h(CashOutRequestForm, {
+                            accountKey: 'BalanceAccount.BA1',
+                            eligibility: SINGLE_TRANSFER_INSTRUMENT,
+                            onResult,
+                            onFeesError: vi.fn(),
+                        });
+                },
+            });
+            const onResult = vi.fn();
+            app.mount(target);
+            const findButton = (title: string) => [...target.querySelectorAll('button')].find(button => button.textContent === title);
+            return { findButton, onResult, unmount: () => app.unmount() };
+        };
+
+        test('should tell the cashOut was sent, then completed, with how much of what is available and how long it took', async () => {
+            mockFees().fees.value = feesOf(1101);
+            mockInstructCashOut();
+            const { findButton, onResult, unmount } = renderFormStartedAgo(90);
+
+            findButton(CASH_OUT)?.click();
+            await vi.waitFor(() => expect(onResult).toHaveBeenCalled());
+
+            expect(addEvent.mock.calls).toEqual([
+                ['Clicked button', { ...REQUEST, label: 'Cash out now', isWholeAmount: true, amountShare: '75-100%', isFeeFree: false }],
+                ['Completed cashOut', { ...REQUEST, isWholeAmount: true, amountShare: '75-100%', currency: 'USD', secondsToCashOut: 90 }],
+            ]);
+
+            unmount();
+        });
+
+        test('should tell part of what is available cashed out for free, without an amount', async () => {
+            mockFees().fees.value = feesOf(0);
+            mockInstructCashOut();
+            const onResult = vi.fn();
+            const { findButton, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT, onResult });
+            amountField.setAmount?.(5000);
+            await nextTick();
+
+            findButton(CASH_OUT)?.click();
+            await vi.waitFor(() => expect(onResult).toHaveBeenCalled());
+
+            expect(addEvent).toHaveBeenCalledWith('Clicked button', {
+                ...REQUEST,
+                label: 'Cash out now',
+                isWholeAmount: false,
+                amountShare: '<25%',
+                isFeeFree: true,
+            });
+
+            unmount();
+        });
+
+        test('should tell the cashOut failed, with its error', async () => {
+            mockFees().fees.value = feesOf(1101);
+            const instruct = mockInstructCashOut();
+            instruct.instructCashOut.mockImplementation(async () => {
+                instruct.instructError.value = { type: 'HTTP_ERROR', errorCode: '29_001', status: '422' };
+                return undefined;
+            });
+            const onResult = vi.fn();
+            const { findButton, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT, onResult });
+
+            findButton(CASH_OUT)?.click();
+            await vi.waitFor(() => expect(onResult).toHaveBeenCalled());
+
+            expect(addEvent).toHaveBeenLastCalledWith('Encountered error', {
+                ...REQUEST,
+                returnType: 'backend',
+                returnValue: '29_001',
+                request: 'instruct',
+            });
+            expect(addEvent).not.toHaveBeenCalledWith('Completed cashOut', expect.anything());
+
+            unmount();
+        });
+
+        test('should tell the fee takes all of the amount', async () => {
+            const fees = mockFees();
+            fees.fees.value = feesOf(1101);
+            const { unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT });
+
+            fees.fees.value = feesOf(22000);
+            await nextTick();
+
+            expect(addEvent).toHaveBeenCalledWith('Encountered error', {
+                ...REQUEST,
+                returnType: 'validation',
+                returnValue: 'amountBelowFee',
+                field: 'amount',
+            });
 
             unmount();
         });
