@@ -9,8 +9,8 @@ export const CONTRACT_KEYS = {
         CashAdvance: 'capital.overview.repayment.steps.cashAdvance.title',
         Loan: 'capital.overview.repayment.steps.loan.title',
     },
-    transferStep: {
-        CashAdvance: 'capital.overview.repayment.steps.cashAdvance.transfer',
-        Loan: 'capital.overview.repayment.steps.loan.transfer',
+    waitStep: {
+        CashAdvance: 'capital.overview.repayment.steps.cashAdvance.wait',
+        Loan: 'capital.overview.repayment.steps.loan.wait',
     },
 } satisfies ContractTypeKeyMap;
