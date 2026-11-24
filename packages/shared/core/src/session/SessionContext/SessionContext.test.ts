@@ -255,19 +255,43 @@ describe('SessionContext', () => {
                 ctx.patchSpecification('deadline', () => () => []);
 
                 await ctx.startSession();
-                const startedAt = Date.now();
                 ctx.respondWith(unauthorized, unauthorized);
                 await expect(ctx.session.http(null)).rejects.toBe(unauthorized);
 
-                vi.setSystemTime(startedAt + expectedThrottleMs - 1);
+                vi.advanceTimersByTime(expectedThrottleMs - 1);
                 ctx.respondWith(unauthorized);
                 await expect(ctx.session.http(null)).rejects.toBe(unauthorized);
                 expect(ctx.refreshes).toBe(2);
 
-                vi.setSystemTime(startedAt + expectedThrottleMs);
+                vi.advanceTimersByTime(1);
                 ctx.respondWith(unauthorized);
                 await expect(ctx.session.http(null)).resolves.toBe('data');
                 expect(ctx.refreshes).toBe(3);
+            });
+        }
+
+        for (const clockOffsetMs of [-5 * 60_000, 5 * 60_000]) {
+            test<RecoveryTestContext>(`should preserve the reauth throttle when the wall clock shifts by ${clockOffsetMs} ms`, async ctx => {
+                const unauthorized = asSessionExpiredError(new Error('401'));
+                ctx.patchSpecification('deadline', () => () => []);
+
+                await ctx.startSession();
+                const startedAt = Date.now();
+                ctx.respondWith(unauthorized, unauthorized);
+                await expect(ctx.session.http(null)).rejects.toBe(unauthorized);
+                expect(ctx.refreshes).toBe(2);
+
+                vi.advanceTimersByTime(29_999);
+                vi.setSystemTime(startedAt + 29_999 + clockOffsetMs);
+                ctx.respondWith(unauthorized);
+                await expect(ctx.session.http(null)).rejects.toBe(unauthorized);
+                expect(ctx.refreshes).toBe(2);
+
+                vi.advanceTimersByTime(1);
+                ctx.respondWith(unauthorized);
+                await expect(ctx.session.http(null)).resolves.toBe('data');
+                expect(ctx.refreshes).toBe(3);
+                expect(ctx.httpCalls).toBe(5);
             });
         }
 

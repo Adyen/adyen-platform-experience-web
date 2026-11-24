@@ -126,7 +126,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
                 // Skip when another request already replaced (or is replacing) the session,
                 // otherwise concurrent expired-token responses would each create a session.
                 if (session === this._session && !this._refresher.refreshing) {
-                    const now = Date.now();
+                    const now = performance.now();
                     if (now - this._lastReauthAt < this._reauthThrottleMs) throw ex;
 
                     this._lastReauthAt = now;
