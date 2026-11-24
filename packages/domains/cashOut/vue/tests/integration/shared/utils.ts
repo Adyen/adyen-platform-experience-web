@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page, type Request } from '@playwright/test';
 import { getComponentRoot } from '@integration-components/testing/playwright/utils';
 
 /** Resolves with the request that instructs the cashOut, once it is sent. */
@@ -8,6 +8,25 @@ export const waitForCashOutRequest = (page: Page) =>
 /** Resolves with the next request for the eligibility of a balance account. */
 export const waitForEligibilityRequest = (page: Page) =>
     page.waitForRequest(request => request.method() === 'GET' && new URL(request.url()).pathname.endsWith('/cashout/eligibility'));
+
+/**
+ * Records the requests whose path ends with `path`, such as `/cashout/availableAmounts`, from before the story loads. Unlike
+ * waiting for them, it has no timeout to run out while the story loads.
+ */
+export const recordRequests = (page: Page, path: string) => {
+    const requests: Request[] = [];
+    page.on('request', request => {
+        if (new URL(request.url()).pathname.endsWith(path)) requests.push(request);
+    });
+    return requests;
+};
+
+/** The width of the balance account selector, which it keeps while its balance accounts are searched. */
+export const getBalanceAccountSelectorWidth = async (root: Locator) => (await root.getByTestId('balance-account-selector').boundingBox())?.width;
+
+/** What getState() told the state stories, shown once they decided whether to show the component. */
+export const expectToldState = (page: Page, state: { isAvailable: boolean; restrictions?: string[] }) =>
+    expect(page.getByRole('status', { name: 'getState() result' })).toHaveText(JSON.stringify(state));
 
 /** The balance account selector is on the line of the title, to its right. */
 export const expectSelectorBesideTitle = async (root: Locator, title: string) => {

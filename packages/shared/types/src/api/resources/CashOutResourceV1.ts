@@ -84,6 +84,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    '/v1/{accountKey}/cashout/state': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get CashOut state
+         * @description Provides all the reasons the account holder cannot cash out at all, to decide which of them hide the CashOut components
+         */
+        get: operations['getCashOutState'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -180,6 +200,10 @@ export interface components {
             id: string;
             /** @description The reference sent to the recipient of the cashout. Returned only when you provided one. */
             referenceForBeneficiary?: string;
+        };
+        CashOutStateResponseDTO: {
+            /** @description All the reasons the account holder cannot cash out, the most blocking first. Empty when it can. Only those of the balance platform and of the account holder itself, the same for each of its balance accounts; the eligibility of a balance account tells those of that one. The same values as the **unavailableReasons** of the eligibility. More reasons may be told in the future, so decide which of them hide the CashOut components instead of hiding them for any. */
+            unavailableReasons: components['schemas']['CashOutUnavailableReason'][];
         };
         /** @enum {string} */
         CashOutUnavailableReason:
@@ -323,6 +347,28 @@ export interface operations {
                 };
                 content: {
                     'application/json': components['schemas']['CashOutFeesResponseDTO'];
+                };
+            };
+        };
+    };
+    getCashOutState: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                accountKey: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['CashOutStateResponseDTO'];
                 };
             };
         };

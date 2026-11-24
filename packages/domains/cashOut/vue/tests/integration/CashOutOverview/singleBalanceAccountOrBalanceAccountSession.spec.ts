@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
+import { recordRequests } from '../shared/utils';
 import { openRequestModal } from './shared/utils';
 
 const STORY_ID = 'mocked-cashout-cashout-overview--single-balance-account';
@@ -22,10 +23,7 @@ test.describe('CashOut Overview - Single balance account (or balance account ses
 
     // They're only shown in the list of balance accounts to pick from, which a single balance account doesn't have.
     test('should not request what the balance accounts can cash out', async ({ page }) => {
-        const requests: string[] = [];
-        page.on('request', request => {
-            if (request.url().includes('/cashout/availableAmounts')) requests.push(request.url());
-        });
+        const requests = recordRequests(page, '/cashout/availableAmounts');
 
         await goToStory(page, { id: STORY_ID });
         await expect(getComponentRoot(page).getByText('$220.00', { exact: true })).toBeVisible();

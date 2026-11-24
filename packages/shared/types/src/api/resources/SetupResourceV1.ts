@@ -55,6 +55,7 @@ export interface components {
             | 'getCashOutAvailableAmounts'
             | 'getCashOutEligibility'
             | 'getCashOutFees'
+            | 'getCashOutState'
             | 'getTermsOfService'
             | 'getOnboardingConfiguration'
             | 'getNetworkTokenActivationData'

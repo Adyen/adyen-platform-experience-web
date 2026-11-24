@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
-import { expectSelectorBesideTitle, refreshFromHeader, waitForCashOutRequest } from '../shared/utils';
+import { expectSelectorBesideTitle, recordRequests, refreshFromHeader, waitForCashOutRequest } from '../shared/utils';
 import { openRequestModal } from './shared/utils';
 
 const STORY_ID = 'mocked-cashout-cashout-overview--default';
@@ -115,13 +115,7 @@ test.describe('CashOut Overview - Default', () => {
 
     test.describe('Balance account selector', () => {
         // Asked for the account of the session, so it doesn't wait for the balance accounts to arrive first.
-        const countAvailableAmountsRequests = (page: Page) => {
-            const requests: string[] = [];
-            page.on('request', request => {
-                if (request.url().includes('/cashout/availableAmounts')) requests.push(request.url());
-            });
-            return requests;
-        };
+        const countAvailableAmountsRequests = (page: Page) => recordRequests(page, '/cashout/availableAmounts');
 
         test('should request what the balance accounts can cash out once, when the component loads', async ({ page }) => {
             const requests = countAvailableAmountsRequests(page);

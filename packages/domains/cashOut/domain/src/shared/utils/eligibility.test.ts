@@ -6,6 +6,7 @@ import {
     hasCaughtUpWithExpectedAmount,
     withExpectedAmount,
     withExpectedAvailableForCashOut,
+    withNewerAvailableAmount,
     withoutUnreachableCashOut,
 } from './eligibility';
 
@@ -170,6 +171,28 @@ describe('withExpectedAvailableForCashOut', () => {
         expect(withExpectedAvailableForCashOut(eligibility, undefined)).toBe(eligibility);
         expect(withExpectedAvailableForCashOut(eligibility, { value: 100, currency: 'USD' })).toBe(eligibility);
         expect(withExpectedAvailableForCashOut(undefined, expected(100))).toBeUndefined();
+    });
+});
+
+describe('withNewerAvailableAmount', () => {
+    const available = (value: number) => ({ ...eligibilityOf(true), availableForCashOutBalance: { value, currency: 'EUR' } }) as ICashOutEligibility;
+    const eur = (value: number) => ({ value, currency: 'EUR' });
+
+    test('should show what the newer amount tells, keeping the rest of the eligibility', () => {
+        expect(withNewerAvailableAmount(available(22000), eur(15000))).toEqual({ ...available(22000), availableForCashOutBalance: eur(15000) });
+    });
+
+    test('should keep the eligibility as it is when the newer amount tells the same', () => {
+        const eligibility = available(22000);
+        expect(withNewerAvailableAmount(eligibility, eur(22000))).toBe(eligibility);
+    });
+
+    // Its fees, daily limit and bank accounts are in the currency of the eligibility
+    test('should keep the eligibility without a newer amount, or with one in another currency', () => {
+        const eligibility = available(22000);
+        expect(withNewerAvailableAmount(eligibility, undefined)).toBe(eligibility);
+        expect(withNewerAvailableAmount(eligibility, { value: 15000, currency: 'USD' })).toBe(eligibility);
+        expect(withNewerAvailableAmount(undefined, eur(15000))).toBeUndefined();
     });
 });
 

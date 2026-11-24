@@ -124,6 +124,12 @@ export const cashOutComponentView = {
         versions: [1],
         baseUrl: CASH_OUT_UI_BASE_URL,
     },
+    getCashOutState: {
+        method: 'GET' as HttpMethod,
+        url: '{accountKey}/cashout/state',
+        versions: [1],
+        baseUrl: CASH_OUT_UI_BASE_URL,
+    },
     ...analyticsEndpoints,
 };
 

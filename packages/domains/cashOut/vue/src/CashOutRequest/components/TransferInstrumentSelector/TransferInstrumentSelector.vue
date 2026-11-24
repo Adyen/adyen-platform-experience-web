@@ -5,6 +5,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 import { getTransferInstrumentOptions } from '@integration-components/cashOut/domain';
 import type { ICashOutTransferInstrument } from '@integration-components/types';
 import { getDropdownValue } from '../../../shared/utils/getDropdownValue';
+import { isSearchable } from '../../../shared/utils/isSearchable';
 
 const props = defineProps<{
     /** The currency of the cashOut, named in the reason of accounts that can't receive it. */
@@ -41,6 +42,7 @@ const onChange = (value: Parameters<typeof getDropdownValue>[0]) => {
 <template>
     <BentoDropdown
         :disabled="props.disabled"
+        :dynamic-filtering="isSearchable(options)"
         :is-option-disabled="isOptionDisabled"
         :items="options"
         :label="i18n.get('cashOut.request.fields.transferInstrument.label')"
