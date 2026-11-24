@@ -20,17 +20,19 @@ const { getContractCopy } = useContractCopy(() => props.grant.contractType);
 const bankAccount = computed(() => getBankAccount(props.grant));
 const transferInstrumentItems = computed(() => getTransferInstrumentIds(props.grant));
 
-const instructionItems = computed(() => [
-    bankAccount.value
-        ? i18n.get('capital.overview.repayment.steps.addBeneficiary', {
-              values: { beneficiaryName: bankAccount.value.beneficiaryName },
-          })
-        : undefined,
-    getContractCopy(CONTRACT_KEYS.transferStep, {
-        values: { amount: i18n.amount(props.grant.remainingTotalAmount.value, props.grant.remainingTotalAmount.currency) },
-    }),
-    i18n.get('capital.overview.repayment.steps.wait'),
-]);
+const instructionItems = computed(() =>
+    [
+        bankAccount.value
+            ? i18n.get('capital.overview.repayment.steps.addBeneficiary', {
+                  values: { beneficiaryName: bankAccount.value.beneficiaryName },
+              })
+            : undefined,
+        i18n.get('capital.overview.repayment.steps.transfer', {
+            values: { amount: i18n.amount(props.grant.remainingTotalAmount.value, props.grant.remainingTotalAmount.currency) },
+        }),
+        getContractCopy(CONTRACT_KEYS.waitStep),
+    ].filter((item): item is string => Boolean(item))
+);
 </script>
 
 <template>
@@ -41,38 +43,36 @@ const instructionItems = computed(() => [
                 <BentoTypography variant="body">
                     {{ getContractCopy(CONTRACT_KEYS.repaymentIntro) }}
                 </BentoTypography>
-                <div :class="styles.notice">
-                    <template v-if="transferInstrumentItems.length">
-                        <div>
-                            <BentoTypography el="span" variant="caption" stronger>
-                                {{ i18n.get('capital.overview.repayment.transferInstrumentsTitle') }}
-                            </BentoTypography>
-                            <ul :class="styles.transferInstrumentList">
-                                <li
-                                    v-for="transferInstrumentId in transferInstrumentItems"
-                                    :key="transferInstrumentId"
-                                    :class="styles.transferInstrumentListItem"
-                                >
-                                    <BentoTypography el="span" variant="caption">
-                                        {{ transferInstrumentId }}
-                                    </BentoTypography>
-                                </li>
-                            </ul>
-                        </div>
-                        <BentoDivider />
-                    </template>
-                    <div>
+                <template v-if="transferInstrumentItems.length">
+                    <div :class="styles.titledContainer">
                         <BentoTypography el="span" variant="caption" stronger>
-                            {{ getContractCopy(CONTRACT_KEYS.stepsTitle) }}
+                            {{ i18n.get('capital.overview.repayment.transferInstrumentsTitle') }}
                         </BentoTypography>
-                        <ul :class="styles.list">
-                            <li v-for="item in instructionItems" :key="item" :class="styles.instructionListItem">
+                        <ul :class="styles.transferInstrumentList">
+                            <li
+                                v-for="transferInstrumentId in transferInstrumentItems"
+                                :key="transferInstrumentId"
+                                :class="styles.transferInstrumentListItem"
+                            >
                                 <BentoTypography el="span" variant="caption">
-                                    {{ item }}
+                                    {{ transferInstrumentId }}
                                 </BentoTypography>
                             </li>
                         </ul>
                     </div>
+                    <BentoDivider />
+                </template>
+                <div :class="styles.titledContainer">
+                    <BentoTypography el="span" variant="caption" stronger>
+                        {{ getContractCopy(CONTRACT_KEYS.stepsTitle) }}
+                    </BentoTypography>
+                    <ul :class="styles.instructionList">
+                        <li v-for="item in instructionItems" :key="item" :class="styles.instructionListItem">
+                            <BentoTypography el="span" variant="caption">
+                                {{ item }}
+                            </BentoTypography>
+                        </li>
+                    </ul>
                 </div>
                 <BentoCard>
                     {{ i18n.get('capital.overview.repayment.accountTitle') }}
