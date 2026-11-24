@@ -43,26 +43,9 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
 
     public readonly reauthThrottleMs: _AuthSessionSpecification['reauthThrottleMs'] = REAUTH_THROTTLE_MS;
 
-    public readonly deadline: _AuthSessionSpecification['deadline'] = session => {
-        const deadlines = [];
-        let issuedAt: number;
-        let expiresAt: number;
-
-        try {
-            ({ iat: issuedAt, exp: expiresAt } = JSON.parse(atob(session!.token.split('.')[1]!)));
-            deadlines.push(expiresAt);
-        } catch {
-            /* ignore malformed token errors */
-            issuedAt = Date.now();
-        }
-
-        if (!isUndefined(MAX_AGE_MS)) {
-            const issuedAtDate = new Date(issuedAt);
-            deadlines.push(issuedAtDate.setMilliseconds(issuedAtDate.getMilliseconds() + MAX_AGE_MS));
-        }
-
-        return deadlines;
-    };
+    // The token is opaque (it may be encrypted), so expiry is detected from expired-token responses.
+    // The deadline is computed when a session is received, so the max age counts from that moment.
+    public readonly deadline: _AuthSessionSpecification['deadline'] = () => (isUndefined(MAX_AGE_MS) ? [] : [Date.now() + MAX_AGE_MS]);
 
     public http: _AuthSessionSpecification['http'] = async (session, sessionSignal, httpOptions: HttpOptions) => {
         const { headers, signal, ...restOptions } = httpOptions;
