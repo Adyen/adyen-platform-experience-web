@@ -16,6 +16,7 @@ export const getBaseEnvDefines = (mode: string) => {
         'process.env.SESSION_AUTO_REFRESH': JSON.stringify(isDevelopment ? session.autoRefresh === 'true' || null : undefined),
         'process.env.SESSION_MAX_AGE_MS': JSON.stringify(isDevelopment ? session.maxAgeMs || null : undefined),
         'process.env.SESSION_PERMISSIONS': JSON.stringify(session.permissions || null),
+        'process.env.SESSION_REAUTH_THROTTLE_MS': JSON.stringify(isDevelopment ? session.reauthThrottleMs || null : undefined),
         'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
         'process.env.USE_CDN': JSON.stringify(app.useCdn ?? null),
         'process.env.VITE_APP_LOADING_CONTEXT': JSON.stringify(isDevelopment ? app.loadingContext || null : null),
