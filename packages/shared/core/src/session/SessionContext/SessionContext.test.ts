@@ -7,6 +7,7 @@ import { asSessionExpiredError } from './errors';
 import { augmentSpecificationContext, SpecificationContext } from './__testing__/fixtures';
 import { waitForTicks } from './__testing__/utils';
 import { noop } from '@integration-components/utils';
+import { AuthSessionSpecification } from '../AuthSessionSpecification';
 import type { SessionEventType } from './types';
 
 describe('SessionContext', () => {
@@ -148,6 +149,41 @@ describe('SessionContext', () => {
             expect(ctx.refreshes).toBe(2);
         });
 
+        test<RecoveryTestContext>('should release the rejected session after each successful recovery', async ctx => {
+            ctx.patchSpecification('reauthThrottleMs', () => 0);
+            await ctx.startSession();
+
+            for (let i = 0; i < 2; i++) {
+                ctx.respondWith(ERR_SESSION_EXPIRED);
+                await expect(ctx.session.http(null)).resolves.toBe('data');
+                expect(ctx.session).toHaveProperty('_rejectedSession', undefined);
+                expect(ctx.session.isExpired).toBe(false);
+            }
+            expect(ctx.refreshes).toBe(3);
+        });
+
+        for (const reuseSessionObject of [true, false]) {
+            test<RecoveryTestContext>(`should retain rejection after failed refresh and clear it after successful explicit refresh (reuse object: ${reuseSessionObject})`, async ctx => {
+                const originalSession = { id: 'session-id', token: 'token' };
+                ctx.patchSpecification('onRefresh', () => () => originalSession);
+                await ctx.startSession();
+
+                const refreshError = new Error('session refresh failed');
+                ctx.patchSpecification('onRefresh', () => () => {
+                    throw refreshError;
+                });
+                ctx.respondWith(ERR_SESSION_EXPIRED);
+                await expect(ctx.session.http(null)).rejects.toBe(refreshError);
+                expect(ctx.session.isExpired).toBe(true);
+                expect(ctx.session).toHaveProperty('_rejectedSession.value', originalSession);
+
+                ctx.patchSpecification('onRefresh', () => () => (reuseSessionObject ? originalSession : { id: 'replacement', token: 'token' }));
+                await ctx.startSession();
+                expect(ctx.session).toHaveProperty('_rejectedSession', undefined);
+                expect(ctx.session.isExpired).toBe(false);
+            });
+        }
+
         test<RecoveryTestContext>('should reject with the original error when the retry is also unauthorized', async ctx => {
             const unauthorized = asSessionExpiredError(new Error('401'));
 
@@ -178,6 +214,89 @@ describe('SessionContext', () => {
             await expect(ctx.session.http(null)).resolves.toBe('data');
             expect(ctx.refreshes).toBe(2);
         });
+
+        for (const method of ['GET', 'POST'] as const) {
+            for (const withDeadline of [true, false]) {
+                for (const siblingResponse of ['success', 'unauthorized'] as const) {
+                    test<RecoveryTestContext>(`should not cancel an in-flight ${method} request when another request starts recovery (sibling response: ${siblingResponse}, deadline: ${withDeadline})`, async ctx => {
+                        const specification = new AuthSessionSpecification();
+                        ctx.patchSpecification('http', () => specification.http);
+                        ctx.patchSpecification('onRefresh', () => () => ({ id: 'session-id', token: `token-${++ctx.refreshes}` }));
+                        ctx.patchSpecification('deadline', () => () => (withDeadline ? Date.now() + 60_000 : []));
+                        await ctx.startSession();
+
+                        const requests: { path: string; token: string | null }[] = [];
+                        const requestsTo = (path: string) => requests.filter(request => request.path === path);
+                        let respondToSibling!: (response: Response) => void;
+
+                        vi.stubGlobal(
+                            'fetch',
+                            vi.fn<typeof fetch>((input, init) => {
+                                const path = new URL(String(input)).pathname;
+                                const token = new Headers(init?.headers).get('Authorization');
+                                requests.push({ path, token });
+
+                                if (path === '/v1/sibling' && requestsTo(path).length === 1) {
+                                    return new Promise<Response>((resolve, reject) => {
+                                        respondToSibling = resolve;
+                                        init!.signal!.addEventListener('abort', () => reject(init!.signal!.reason), { once: true });
+                                    });
+                                }
+                                if (path === '/v1/trigger' && requestsTo(path).length === 1) {
+                                    return Promise.resolve(Response.json({ status: 401 }, { status: 401 }));
+                                }
+                                return Promise.resolve(Response.json({ data: path, token }));
+                            })
+                        );
+
+                        try {
+                            const loadingContext = 'https://example.test';
+                            const sibling = ctx.session.http(null, { loadingContext, method, path: '/sibling', body: { value: 1 } });
+                            await waitForTicks(10);
+
+                            await expect(ctx.session.http(null, { loadingContext, path: '/trigger' })).resolves.toEqual({
+                                data: '/v1/trigger',
+                                token: 'Bearer token-2',
+                            });
+
+                            if (siblingResponse === 'success') {
+                                respondToSibling(Response.json({ data: 'first response' }));
+                                await expect(sibling).resolves.toEqual({ data: 'first response' });
+                                expect(requestsTo('/v1/sibling')).toEqual([{ path: '/v1/sibling', token: 'Bearer token-1' }]);
+                            } else {
+                                respondToSibling(Response.json({ status: 401 }, { status: 401 }));
+                                await expect(sibling).resolves.toEqual({ data: '/v1/sibling', token: 'Bearer token-2' });
+                                expect(requestsTo('/v1/sibling')).toEqual([
+                                    { path: '/v1/sibling', token: 'Bearer token-1' },
+                                    { path: '/v1/sibling', token: 'Bearer token-2' },
+                                ]);
+                            }
+
+                            expect(ctx.refreshes).toBe(2);
+                        } finally {
+                            vi.unstubAllGlobals();
+                        }
+                    });
+                }
+            }
+        }
+
+        for (const withDeadline of [true, false]) {
+            test<RecoveryTestContext>(`should report the session as expired when recovery fails (deadline: ${withDeadline})`, async ctx => {
+                ctx.patchSpecification('deadline', () => () => (withDeadline ? Date.now() + 60_000 : []));
+                await ctx.startSession();
+                expect(ctx.session.isExpired).not.toBe(true);
+
+                const refreshError = new Error('session refresh failed');
+                ctx.patchSpecification('onRefresh', () => () => {
+                    throw refreshError;
+                });
+                ctx.respondWith(ERR_SESSION_EXPIRED);
+
+                await expect(ctx.session.http(null)).rejects.toBe(refreshError);
+                expect(ctx.session.isExpired).toBe(true);
+            });
+        }
 
         test<RecoveryTestContext>('should not keep replacing a session that was created to recover from an expired-token response', async ctx => {
             const unauthorized = asSessionExpiredError(new Error('401'));

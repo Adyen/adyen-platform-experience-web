@@ -47,6 +47,12 @@ export const createSessionDeadline = <T>(emitter: Emitter<SessionEventType>, spe
 
         if (_refreshPromisorSignal !== signal) return;
 
+        // Discard the deadline of the previous session, so that its clock and signal cannot elapse this one
+        _deadlineSignal?.removeEventListener('abort', _clearDeadline);
+        _deadlineSignal = undefined;
+        _deadlineTimestamp = Infinity;
+        _stopDeadlineClock?.();
+
         const _deadlines = (Array.isArray(deadline) ? deadline : [deadline]).filter(deadline => deadline || deadline === 0);
 
         if (_deadlines.length > 0) {
