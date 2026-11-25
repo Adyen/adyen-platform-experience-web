@@ -31,11 +31,14 @@ const TRANSFER_INSTRUMENT_ID_PATTERN = /^[A-Za-z0-9]+$/;
 
 const NOT_NULL_MESSAGE = 'Required parameter. Must not be null';
 const POSITIVE_MESSAGE = 'Must be a positive number';
+const POSITIVE_OR_ZERO_MESSAGE = 'Must be a non-negative number';
 const CURRENCY_CODE_MESSAGE = 'Must be a valid ISO 4217 currency code';
 
 type InvalidField = { name: string; value: string; message: string };
 
-const calculateFees = (value: number, currency: string): ICashOutFees => {
+type FeesOf = (value: number, currency: string) => ICashOutFees;
+
+const calculateFees: FeesOf = (value, currency) => {
     // An arbitrary rule (0.50 + 1.5%): the component only reads the response, never how the fee was derived.
     const feeValue = Math.min(value, 50 + Math.round((value * 150) / 10_000));
 
@@ -44,6 +47,19 @@ const calculateFees = (value: number, currency: string): ICashOutFees => {
         fee: { currency, value: feeValue },
         payoutAmount: { currency, value: value - feeValue },
     };
+};
+
+// Like a fee configuration without a fixed amount nor a percentage.
+const freeFeesOf: FeesOf = (value, currency) => ({
+    amount: { currency, value },
+    fee: { currency, value: 0 },
+    payoutAmount: { currency, value },
+});
+
+// The fee configuration once changed: 1.00 instead of 0.50, plus 1.5%.
+const changedFeesOf: FeesOf = (value, currency) => {
+    const feeValue = Math.min(value, 100 + Math.round((value * 150) / 10_000));
+    return { amount: { currency, value }, fee: { currency, value: feeValue }, payoutAmount: { currency, value: value - feeValue } };
 };
 
 const getAmountErrors = (amount: number | undefined): InvalidField[] => {
@@ -55,6 +71,13 @@ const getAmountErrors = (amount: number | undefined): InvalidField[] => {
 const getCurrencyErrors = (currency: string | undefined): InvalidField[] => {
     if (currency === undefined) return [{ name: 'currency', value: '', message: NOT_NULL_MESSAGE }];
     if (!CURRENCY_CODE_PATTERN.test(currency)) return [{ name: 'currency', value: currency, message: CURRENCY_CODE_MESSAGE }];
+    return [];
+};
+
+const getExpectedFeeErrors = (expectedFee: number | undefined): InvalidField[] => {
+    if (expectedFee === undefined) return [{ name: 'expectedFee', value: '', message: NOT_NULL_MESSAGE }];
+    if (!Number.isInteger(expectedFee) || expectedFee < 0)
+        return [{ name: 'expectedFee', value: String(expectedFee), message: POSITIVE_OR_ZERO_MESSAGE }];
     return [];
 };
 
@@ -175,6 +198,58 @@ const stateHandler = (state: ICashOutState) =>
         withDelay(({ params }) => (isSessionAccountKey(params.accountKey) ? HttpResponse.json(state) : getInvalidAccountKeyResponse()))
     );
 
+// Cashes out what the request tells, its fee being what `feesOf` tells for its amount.
+const instructHandler = (feesOf: FeesOf = calculateFees) =>
+    http.post<{ accountKey: string }, Partial<ICashOutRequest>>(
+        ENDPOINTS.instruct,
+        withDelay(
+            async ({ params, request }) => {
+                const balanceAccountId = getBalanceAccountId(params.accountKey);
+                if (!balanceAccountId) return getInvalidAccountKeyResponse();
+                const { amount, counterparty, currency, description, expectedFee, referenceForBeneficiary } = await request.json();
+                const transferInstrumentId = counterparty?.transferInstrumentId;
+                const invalidFields = [
+                    ...getAmountErrors(amount),
+                    ...getCurrencyErrors(currency),
+                    ...getExpectedFeeErrors(expectedFee),
+                    ...getTransferInstrumentIdErrors(transferInstrumentId),
+                ];
+
+                if (
+                    amount === undefined ||
+                    currency === undefined ||
+                    expectedFee === undefined ||
+                    transferInstrumentId === undefined ||
+                    invalidFields.length > 0
+                ) {
+                    return getValidationErrorResponse(invalidFields);
+                }
+
+                // Like the API, which calculates the fee again and rejects the cashOut when it is not the one shown for the amount: the fee
+                // configuration changed since. cashout-ui answers it like the other cashOuts it can't carry out, without telling why.
+                const { fee } = feesOf(amount, currency);
+                if (fee.value !== expectedFee) return getValidationErrorResponse([]);
+
+                const response: ICashOutResponse = {
+                    id: uuid(),
+                    balanceAccount: balanceAccountId,
+                    amount: { currency, value: amount },
+                    fee,
+                    counterparty: { transferInstrumentId },
+                    ...(description === undefined ? {} : { description }),
+                    ...(referenceForBeneficiary === undefined ? {} : { referenceForBeneficiary }),
+                };
+
+                cashedOutByBalanceAccount.set(balanceAccountId, (cashedOutByBalanceAccount.get(balanceAccountId) ?? 0) + amount);
+
+                return HttpResponse.json(response);
+            },
+            undefined,
+            // Also in tests, so specs can check what the components do while the cashOut is sent
+            500
+        )
+    );
+
 export const cashOutMocks = [
     http.get(
         ENDPOINTS.accounts,
@@ -210,68 +285,63 @@ export const cashOutMocks = [
         })
     ),
     stateHandler(STATE_WITHOUT_RESTRICTIONS),
-    http.post<{ accountKey: string }, Partial<ICashOutRequest>>(
-        ENDPOINTS.instruct,
-        withDelay(
-            async ({ params, request }) => {
-                const balanceAccountId = getBalanceAccountId(params.accountKey);
-                if (!balanceAccountId) return getInvalidAccountKeyResponse();
-                const { amount, counterparty, currency, description, referenceForBeneficiary } = await request.json();
-                const transferInstrumentId = counterparty?.transferInstrumentId;
-                const invalidFields = [
-                    ...getAmountErrors(amount),
-                    ...getCurrencyErrors(currency),
-                    ...getTransferInstrumentIdErrors(transferInstrumentId),
-                ];
-
-                if (amount === undefined || currency === undefined || transferInstrumentId === undefined || invalidFields.length > 0) {
-                    return getValidationErrorResponse(invalidFields);
-                }
-
-                const response: ICashOutResponse = {
-                    id: uuid(),
-                    balanceAccount: balanceAccountId,
-                    amount: { currency, value: amount },
-                    fee: calculateFees(amount, currency).fee,
-                    counterparty: { transferInstrumentId },
-                    ...(description === undefined ? {} : { description }),
-                    ...(referenceForBeneficiary === undefined ? {} : { referenceForBeneficiary }),
-                };
-
-                cashedOutByBalanceAccount.set(balanceAccountId, (cashedOutByBalanceAccount.get(balanceAccountId) ?? 0) + amount);
-
-                return HttpResponse.json(response);
-            },
-            undefined,
-            // Also in tests, so specs can check what the components do while the cashOut is sent
-            500
-        )
-    ),
+    instructHandler(),
 ];
 
-// What the available amounts tell after the first time, while the eligibility still tells what it told before.
-let availableAmountsRequests = 0;
+// The first balance account can cash out `changedTo` once the amounts are loaded again, such as when the list of balance accounts closes,
+// while its eligibility still tells what it told before. At first, it can cash out `initially`, or what its eligibility tells.
+const availableAmountsChangedHandlers = (changedTo: ICashOutAmount, initially?: ICashOutAmount) => {
+    let requests = 0;
+    return [
+        http.get(
+            ENDPOINTS.availableAmounts,
+            withDelay(() => {
+                const isFirst = requests++ === 0;
+                return HttpResponse.json(
+                    availableAmountsOf(BALANCE_ACCOUNTS, id => {
+                        if (id !== BALANCE_ACCOUNTS[0].id) return eligibilityOf(id).availableForCashOutBalance;
+                        return isFirst ? (initially ?? eligibilityOf(id).availableForCashOutBalance) : changedTo;
+                    })
+                );
+            })
+        ),
+    ];
+};
+
+// The first balance account has nothing to cash out at first, as its eligibility and the amounts tell; once the amounts are loaded again,
+// it can cash out what its eligibility tells by then.
+const availableAmountsChangedFromNothingHandlers = () => {
+    const balanceAccountId = BALANCE_ACCOUNTS[0].id;
+    const available = eligibilityOf(balanceAccountId);
+    const nothing: ICashOutEligibility = {
+        ...available,
+        availableForCashOutBalance: { ...available.availableForCashOutBalance, value: 0 },
+        isCashoutAvailable: false,
+        transferInstruments: [],
+        unavailableReasons: ['zeroBalance'],
+    };
+    let eligibilityRequests = 0;
+    return [
+        ...availableAmountsChangedHandlers(available.availableForCashOutBalance, nothing.availableForCashOutBalance),
+        http.get<{ accountKey: string }>(
+            ENDPOINTS.eligibility,
+            withDelay(({ params }) => {
+                const id = getBalanceAccountId(params.accountKey);
+                if (!id) return getInvalidAccountKeyResponse();
+                if (id !== balanceAccountId) return HttpResponse.json(eligibilityOf(id));
+                return HttpResponse.json(eligibilityRequests++ === 0 ? nothing : available);
+            })
+        ),
+    ];
+};
 
 export const CASH_OUT_HANDLERS = {
     default: { handlers: cashOutMocks },
-    // The first balance account can cash out less once the amounts are loaded again, such as when the list of balance accounts closes.
-    availableAmountsChanged: {
-        handlers: [
-            http.get(
-                ENDPOINTS.availableAmounts,
-                withDelay(() => {
-                    const isFirst = availableAmountsRequests++ === 0;
-                    return HttpResponse.json(
-                        availableAmountsOf(BALANCE_ACCOUNTS, id =>
-                            !isFirst && id === BALANCE_ACCOUNTS[0].id
-                                ? { value: 15000, currency: 'USD' }
-                                : eligibilityOf(id).availableForCashOutBalance
-                        )
-                    );
-                })
-            ),
-        ],
-    },
+    availableAmountsChanged: { handlers: availableAmountsChangedHandlers({ value: 15000, currency: 'USD' }) },
+    // Nothing left to cash out, such as after a cashOut from somewhere else
+    availableAmountsChangedToNothing: { handlers: availableAmountsChangedHandlers({ value: 0, currency: 'USD' }) },
+    // Something to cash out again, such as once money came in
+    availableAmountsChangedFromNothing: { handlers: availableAmountsChangedFromNothingHandlers() },
     // The API has an amount for the first balance account only: none for the second, and the third is left out.
     someAvailableAmountsMissing: {
         handlers: [
@@ -403,16 +473,15 @@ export const CASH_OUT_HANDLERS = {
                 ENDPOINTS.fees,
                 withDelay(({ request }) => {
                     const { searchParams } = new URL(request.url);
-                    const value = Number(searchParams.get('amount'));
-                    const currency = searchParams.get('currency') ?? '';
-                    return HttpResponse.json({
-                        amount: { currency, value },
-                        fee: { currency, value: 0 },
-                        payoutAmount: { currency, value },
-                    } satisfies ICashOutFees);
+                    return HttpResponse.json(freeFeesOf(Number(searchParams.get('amount')), searchParams.get('currency') ?? ''));
                 })
             ),
+            instructHandler(freeFeesOf),
         ],
+    },
+    // The fee configuration changes after the fee of the amount is shown, so the cashOut is rejected.
+    feeChanged: {
+        handlers: [instructHandler(changedFeesOf)],
     },
     // A session with the view role only, so it can't instruct a cashOut.
     instructRoleNotAssigned: {

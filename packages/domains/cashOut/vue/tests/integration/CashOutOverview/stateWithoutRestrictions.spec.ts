@@ -21,7 +21,9 @@ test.describe('CashOut Overview - State - Without restrictions', () => {
     });
 
     test('should tell the component is available without restrictions, so the platform shows it', async ({ page }) => {
-        await expectToldState(page, { isAvailable: true, restrictions: [] });
-        await expect(getComponentRoot(page).getByRole('button', { name: 'Start instant CashOut' })).toBeEnabled();
+        await Promise.all([
+            expectToldState(page, { isAvailable: true, restrictions: [] }),
+            expect(getComponentRoot(page).getByRole('button', { name: 'Start instant CashOut' })).toBeEnabled(),
+        ]);
     });
 });

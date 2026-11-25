@@ -22,7 +22,6 @@ test.describe('CashOut Overview - State - Balance account session', () => {
     });
 
     test('should tell the component is available without restrictions, so the platform shows it', async ({ page }) => {
-        await expectToldState(page, { isAvailable: true, restrictions: [] });
-        await expect(getComponentRoot(page)).toBeVisible();
+        await Promise.all([expectToldState(page, { isAvailable: true, restrictions: [] }), expect(getComponentRoot(page)).toBeVisible()]);
     });
 });

@@ -219,7 +219,7 @@ test.describe('CashOut Overview - Default', () => {
             await Promise.all([
                 expect(options.nth(0)).toHaveAccessibleName('NL**ABNA******4300'),
                 expect(options.nth(1)).toHaveAccessibleName('GB**NWBK**********1234'),
-                expect(options.nth(2)).toHaveAccessibleName('********5678'),
+                expect(options.nth(2)).toHaveAccessibleName('Citi ********5678'),
                 expect(options.nth(2)).toBeEnabled(),
                 expect(options.nth(3)).toHaveAccessibleName("GB**BARC**********5432 This account can't receive instant payouts"),
                 expect(options.nth(3)).toBeDisabled(),
@@ -260,10 +260,11 @@ test.describe('CashOut Overview - Default', () => {
             const cashOutRequest = waitForCashOutRequest(page);
             await modal.getByRole('button', { name: 'Cash out now' }).click();
 
-            // The fees are shown, but not sent: the API calculates them itself.
+            // With the fee shown as the expected fee: the API calculates it again, and rejects the cashOut when it is another one.
             expect((await cashOutRequest).postDataJSON()).toEqual({
                 amount: 10000,
                 currency: 'USD',
+                expectedFee: 200,
                 counterparty: { transferInstrumentId: 'SE322KH223222F5GXZFNM3BGP' },
             });
             await Promise.all([

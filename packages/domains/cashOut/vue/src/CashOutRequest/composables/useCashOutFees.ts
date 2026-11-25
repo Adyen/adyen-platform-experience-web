@@ -35,9 +35,12 @@ export const useCashOutFees = ({ accountKey, amount }: CashOutFeesOptions) => {
         void request.execute(signal => endpoint({ signal }, { path: { accountKey: key }, query: { amount: value, currency } }));
     };
 
+    // By its value and currency, as the same amount can be given again as another object, such as when the available amounts are
+    // loaded again and tell the same: its fees are already known then.
     watch(
-        [() => toValue(accountKey), () => toValue(amount)],
-        ([key, nextAmount]) => {
+        [() => toValue(accountKey), () => toValue(amount)?.value, () => toValue(amount)?.currency],
+        ([key]) => {
+            const nextAmount = toValue(amount);
             cancel();
             // Fees of a previous amount must not show while the next ones load.
             request.data.value = undefined;

@@ -11,6 +11,33 @@ const meta: Meta<ElementProps<typeof CashOutRequestElement>> = {
     title: 'Mocked/CashOut/CashOut Request',
 };
 
+// The available amounts loaded again, once the list of balance accounts closes, tell the selected one can cash out less.
+export const AvailableAmountsChanged: ElementStory = {
+    name: 'Available amounts changed',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.availableAmountsChanged },
+    },
+};
+
+// The available amounts loaded again tell the selected balance account has nothing left to cash out.
+export const AvailableAmountsChangedToNothing: ElementStory = {
+    name: 'Available amounts changed to nothing',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.availableAmountsChangedToNothing },
+    },
+};
+
+// The available amounts loaded again tell the selected balance account, which had nothing to cash out, has something to cash out again.
+export const AvailableAmountsChangedFromNothing: ElementStory = {
+    name: 'Available amounts changed from nothing',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.availableAmountsChangedFromNothing },
+    },
+};
+
 export const SingleTransferInstrument: ElementStory = {
     name: 'Single transfer instrument',
     args: { mockedApi: true },
@@ -154,6 +181,15 @@ export const FeesError: ElementStory = {
     args: { mockedApi: true },
     parameters: {
         msw: { ...CASH_OUT_HANDLERS.feesInternalServerError },
+    },
+};
+
+// The fee configuration changes after the fee of the amount is shown, so the cashOut is rejected.
+export const FeeChanged: ElementStory = {
+    name: 'Error - Fee changed',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.feeChanged },
     },
 };
 

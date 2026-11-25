@@ -19,7 +19,7 @@ const CASH_OUT: ICashOutResponse = {
     counterparty: { transferInstrumentId: 'TI1' },
 };
 
-const PARAMS = { accountKey: 'BalanceAccount.BA1', amount: { value: 1000, currency: 'EUR' }, transferInstrumentId: 'TI1' };
+const PARAMS = { accountKey: 'BalanceAccount.BA1', amount: { value: 1000, currency: 'EUR' }, expectedFee: 65, transferInstrumentId: 'TI1' };
 
 const renderInstructCashOut = () => {
     const scope = effectScope();
@@ -33,7 +33,8 @@ describe('useInstructCashOut', () => {
         core.externalErrorHandler = vi.fn();
     });
 
-    test('should instruct the cashOut of the amount to the transfer instrument and return it', async () => {
+    // With the fee shown for the amount, so the API rejects the cashOut when the fee configuration changed since.
+    test('should instruct the cashOut of the amount, with its expected fee, to the transfer instrument and return it', async () => {
         const { state, stop } = renderInstructCashOut();
 
         const pending = state.instructCashOut(PARAMS);
@@ -43,7 +44,7 @@ describe('useInstructCashOut', () => {
         expect(state.isInstructing.value).toBe(false);
         expect(endpoints.instructCashOut).toHaveBeenCalledWith(
             {
-                body: { amount: 1000, currency: 'EUR', counterparty: { transferInstrumentId: 'TI1' } },
+                body: { amount: 1000, currency: 'EUR', expectedFee: 65, counterparty: { transferInstrumentId: 'TI1' } },
                 contentType: 'application/json',
                 signal: expect.any(AbortSignal),
             },
@@ -63,6 +64,7 @@ describe('useInstructCashOut', () => {
                 body: {
                     amount: 1000,
                     currency: 'EUR',
+                    expectedFee: 65,
                     counterparty: { transferInstrumentId: 'TI1' },
                     description: 'Weekly cashOut',
                     referenceForBeneficiary: 'REF123',
@@ -112,7 +114,12 @@ describe('useInstructCashOut', () => {
         await state.instructCashOut({ ...PARAMS, referenceForBeneficiary: '', transferDescription: '' });
 
         const [[{ body }]] = endpoints.instructCashOut!.mock.calls as [[{ body: Record<string, unknown> }]];
-        expect(JSON.parse(JSON.stringify(body))).toEqual({ amount: 1000, currency: 'EUR', counterparty: { transferInstrumentId: 'TI1' } });
+        expect(JSON.parse(JSON.stringify(body))).toEqual({
+            amount: 1000,
+            currency: 'EUR',
+            expectedFee: 65,
+            counterparty: { transferInstrumentId: 'TI1' },
+        });
 
         stop();
     });

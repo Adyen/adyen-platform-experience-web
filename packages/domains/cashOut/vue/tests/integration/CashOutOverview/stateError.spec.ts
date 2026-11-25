@@ -17,6 +17,7 @@ test.describe('CashOut Overview - State - Error', () => {
         await expectToldState(page, { isAvailable: false });
 
         await expect.poll(() => Promise.all(stateRequests.map(async request => (await request.response())?.status()))).toEqual([500]);
+        // Not in Promise.all with the state told: hidden is true before the story decided whether to mount the component
         await expect(getComponentRoot(page)).toBeHidden();
     });
 });
