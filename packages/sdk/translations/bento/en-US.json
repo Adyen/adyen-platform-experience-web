@@ -102,5 +102,6 @@
     "bento.timeline.cancel": "Cancel",
     "bento.timelineItem.showLess": "Show less",
     "bento.timelineItem.showMore": "Show %{items} more",
+    "bento.titleDetails.lastUpdated": "Last updated: %{date}",
     "bento.toastItem.dismiss": "Dismiss"
 }
