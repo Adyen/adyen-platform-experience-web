@@ -12,7 +12,7 @@ import {
     useBentoToastController,
     useClickOutside,
 } from '@adyen/bento-vue3';
-import { useDownload, useUniqueId } from '@integration-components/composables-vue';
+import { getBentoLoadingActionState, useDownload, useUniqueId } from '@integration-components/composables-vue';
 import { isFunction, downloadBlob, EMPTY_ARRAY } from '@integration-components/utils';
 import { useTransactionsOverviewContext } from '../../composables/useTransactionsOverviewState';
 import { EXPORT_COLUMNS, DEFAULT_EXPORT_COLUMNS } from '../../constants';
@@ -189,10 +189,9 @@ function startExport() {
 
 const popoverActions = computed(() => [
     {
-        disabled: !exportColumns.value.length,
+        ...getBentoLoadingActionState(isFetching.value, !exportColumns.value.length),
         event: startExport,
         title: i18n.get('transactions.overview.export.download.label'),
-        ...(isFetching.value ? ({ state: 'loading' } as const) : {}),
     },
     {
         event: dismissPopover,

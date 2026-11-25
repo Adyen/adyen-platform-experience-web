@@ -18,6 +18,7 @@ test.describe('Payment link creation - Stepper navigation', () => {
         // Complete the store step and advance to the payment step.
         await page.getByTestId('form-field-store').getByRole('combobox').click();
         await page.getByRole('option', { name: 'NY001' }).click();
+        await expect(continueButton.getByTestId('loading-indicator')).toBeHidden();
         await continueButton.click();
 
         // We are now on the payment step (store field no longer rendered).

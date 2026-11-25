@@ -1,13 +1,27 @@
 import type { Meta } from '@storybook/vue3';
+import { getWorker } from 'msw-storybook-addon';
 import { paymentLinkCreationMeta } from './meta';
-import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, ElementStory, type DelayedEndpoints, provisionDelayedEndpoints } from '@integration-components/testing/storybook-helpers';
 import type { PaymentLinkCreationExternalProps } from '../../src';
 import { payByLinkOverviewMockedResponses, paymentLinkCreationMockedResponses } from '../../../mocks/mock-server/payByLink';
 import { PAYMENT_LINKS_FIELDS_CONFIG } from '../utils/constants/paymentLinks';
+import { PAY_BY_LINK_ENDPOINTS } from '../../../mocks/endpoints';
 
-const meta: Meta<ElementProps<PaymentLinkCreationExternalProps>> = {
+type PaymentLinkCreationStoryArgs = PaymentLinkCreationExternalProps & {
+    delayedEndpoints?: DelayedEndpoints<typeof PAY_BY_LINK_ENDPOINTS>;
+};
+
+const meta: Meta<ElementProps<PaymentLinkCreationStoryArgs>> = {
     ...paymentLinkCreationMeta,
     title: 'Mocked/Pay by Link/Payment Link Creation',
+    argTypes: {
+        ...paymentLinkCreationMeta.argTypes,
+        delayedEndpoints: {
+            control: false,
+            table: { disable: true },
+        },
+    },
+    loaders: [context => provisionDelayedEndpoints(getWorker(), PAY_BY_LINK_ENDPOINTS, context.args.delayedEndpoints)],
 };
 
 const defaultArgs = { mockedApi: true } as const;
