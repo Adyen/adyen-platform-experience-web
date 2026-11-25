@@ -1,4 +1,4 @@
-import type { CoreOptions, CustomTheme, SupportedLocales, ThemeMode } from '@adyen/adyen-platform-experience-web';
+import type { CoreOptions, CustomTheme, SupportedLocales, ThemeMode, ThemeVariables } from '@adyen/adyen-platform-experience-web';
 import { getDefaultValues, optional, presetControl, toVisibility, visibilityControl, type Presets } from './controls';
 import type { ControlSection, ControlValues } from './types';
 
@@ -50,6 +50,18 @@ const THEME_PRESETS: Presets<CustomTheme> = {
     },
 };
 
+type Roundness = NonNullable<ThemeVariables['roundness']>;
+
+const ROUNDNESS_OPTIONS = ['small', 'medium', 'large'] as const satisfies readonly Roundness[];
+
+const applyRoundness = (theme: CustomTheme | undefined, roundness: Roundness | undefined): CustomTheme | undefined => {
+    if (!roundness) return theme;
+    return {
+        light: { ...theme?.light, roundness },
+        dark: { ...theme?.dark, roundness },
+    };
+};
+
 export const GLOBAL_SECTIONS: readonly ControlSection[] = [
     {
         title: 'core',
@@ -73,6 +85,14 @@ export const GLOBAL_SECTIONS: readonly ControlSection[] = [
             },
             presetControl('customTheme', 'customTheme', THEME_PRESETS),
             {
+                key: 'roundness',
+                label: 'customTheme.roundness',
+                type: 'radio',
+                defaultValue: 'default',
+                options: [{ label: 'Default', value: 'default' }, ...ROUNDNESS_OPTIONS.map(roundness => ({ label: roundness, value: roundness }))],
+                hint: 'Border radius applied as customTheme.light/dark.roundness.',
+            },
+            {
                 ...presetControl('translations', 'translations', TRANSLATION_PRESETS),
                 defaultValue: 'columnLabels',
                 hint: 'Custom columns from dataCustomization take their header labels from translations.',
@@ -89,7 +109,10 @@ export const toCoreOptions = (values: ControlValues) =>
     ({
         locale: values.locale as SupportedLocales,
         themeMode: optional<ThemeMode>(values.themeMode),
-        customTheme: THEME_PRESETS[values.customTheme]?.value,
+        customTheme: applyRoundness(
+            THEME_PRESETS[values.customTheme]?.value,
+            optional<Roundness>(values.roundness === 'default' ? '' : values.roundness)
+        ),
         translations: TRANSLATION_PRESETS[values.translations]?.value,
         appearance: toVisibility(values),
     }) satisfies Partial<CoreOptions>;

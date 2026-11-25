@@ -26,7 +26,7 @@ export type EmitterEvents = string | Record<string, any>;
 export type EmitterEventsMap<T> = T extends string
     ? { [K in T]: null }
     : T extends Record<string, any>
-    ? { [K in keyof T]: NonNullable<T[K]> | null }
-    : never;
+      ? { [K in keyof T]: NonNullable<T[K]> | null }
+      : never;
 
 export type EmitterEventType<Events> = Events extends Events ? keyof EmitterEventsMap<Events> : never;
