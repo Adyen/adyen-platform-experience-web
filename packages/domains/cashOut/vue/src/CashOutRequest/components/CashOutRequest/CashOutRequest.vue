@@ -21,6 +21,7 @@ const props = defineProps<CashOutRequestComponentProps>();
 const cashOutState = useCashOutState({
     initialBalanceAccountId: () => props.initialBalanceAccountId,
     eligibility: () => props.eligibility,
+    isLoadingEligibility: () => props.isLoadingEligibility,
 });
 const {
     balanceAccountOptions,
@@ -95,6 +96,15 @@ const handleResult = (cashOutResult: CashOutResult) => {
     props.onResultShown?.();
     if (cashOutResult.status === 'success') props.onSubmit?.(cashOutResult.cashOut);
 };
+
+// What is available changed since it was shown, so the form is shown again with what is available by then: loaded again here, and by
+// the component that gave the eligibility, such as the overview for its modal.
+const tryAgain = () => {
+    analytics.track('Clicked button', { label: 'Try again', step: 'result' });
+    result.value = undefined;
+    refresh();
+    props.onTryAgain?.();
+};
 </script>
 
 <template>
@@ -103,6 +113,7 @@ const handleResult = (cashOutResult: CashOutResult) => {
         :status="result.status"
         :currency="result.status === 'success' ? result.cashOut.amount.currency : undefined"
         :in-modal="props.inModal"
+        :on-try-again="tryAgain"
     />
     <div v-else :class="styles.root">
         <CashOutHeader

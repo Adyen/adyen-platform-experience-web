@@ -104,10 +104,12 @@ const closeRequestModal = () => {
             :reference-for-beneficiary="props.referenceForBeneficiary"
             :transfer-description="props.transferDescription"
             :eligibility="eligibility"
+            :is-loading-eligibility="isFetchingEligibility"
             :is-open="isRequestModalOpen"
             :on-submit="handleSubmit"
             :on-close="closeRequestModal"
             :on-contact-support="props.onContactSupport"
+            :on-try-again="refresh"
         />
     </div>
 </template>

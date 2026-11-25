@@ -12,7 +12,7 @@ export const CASH_OUT_REQUEST_ANALYTICS_CATEGORY = 'CashOut request component';
 type Properties = Record<string, MixpanelProperty>;
 
 /** The buttons whose clicks are told, so a typo can't make up another event in Mixpanel. */
-export type CashOutButtonLabel = 'Start instant CashOut' | 'Cash out now' | 'Close' | 'Refresh' | 'Contact support';
+export type CashOutButtonLabel = 'Start instant CashOut' | 'Cash out now' | 'Close' | 'Refresh' | 'Contact support' | 'Try again';
 
 /** The requests whose failures are told. */
 export type CashOutFailedRequest = 'balanceAccounts' | 'eligibility' | 'fees' | 'instruct';

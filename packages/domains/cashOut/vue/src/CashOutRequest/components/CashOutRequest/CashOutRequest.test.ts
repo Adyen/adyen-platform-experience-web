@@ -118,7 +118,11 @@ vi.mock('../CashOutRequestResult/CashOutRequestResult.vue', async () => {
     const { defineComponent, h } = await import('vue');
     return {
         default: defineComponent({
-            props: { status: { type: String, required: true }, currency: { type: String, default: undefined } },
+            props: {
+                status: { type: String, required: true },
+                currency: { type: String, default: undefined },
+                onTryAgain: { type: Function, default: undefined },
+            },
             setup(props) {
                 return () => {
                     resultProps.current = { ...props };
@@ -380,11 +384,13 @@ describe('CashOutRequest', () => {
 
     test('should start from the given balance account and its eligibility', () => {
         mockCashOutState('ready');
-        const { unmount } = renderCashOutRequest({ initialBalanceAccountId: 'BA2', eligibility: ELIGIBILITY });
+        const { unmount } = renderCashOutRequest({ initialBalanceAccountId: 'BA2', eligibility: ELIGIBILITY, isLoadingEligibility: true });
 
         const [options] = vi.mocked(useCashOutState).mock.calls[0]!;
         expect(toValue(options?.initialBalanceAccountId)).toBe('BA2');
         expect(toValue(options?.eligibility)).toBe(ELIGIBILITY);
+        // So it is waited for while the component that gave it loads it again
+        expect(toValue(options?.isLoadingEligibility)).toBe(true);
 
         unmount();
     });
@@ -396,6 +402,34 @@ describe('CashOutRequest', () => {
         expect(formProps.current).toMatchObject({ referenceForBeneficiary: 'REF123', transferDescription: 'Weekly cashOut' });
 
         unmount();
+    });
+
+    // What is available changed since it was shown, so the form is shown again with what is available by then
+    describe('Balance changed', () => {
+        test('should show the form again once tried again, loading what is available again, and tell the component showing it', async () => {
+            const state = mockCashOutState('ready');
+            const onTryAgain = vi.fn();
+            const { target, unmount } = renderCashOutRequest({ onTryAgain });
+            (formProps.current?.onResult as (result: unknown) => void)({ status: 'balanceChanged' });
+            await nextTick();
+            expect(target.textContent).toContain('result balanceChanged');
+
+            (resultProps.current?.onTryAgain as () => void)();
+            await nextTick();
+
+            expect(target.textContent).not.toContain('result');
+            expect(target.textContent).toContain('form');
+            expect(state.refresh).toHaveBeenCalledTimes(1);
+            expect(onTryAgain).toHaveBeenCalledTimes(1);
+            expect(addEvent).toHaveBeenCalledWith('Clicked button', {
+                category: 'CashOut request component',
+                subCategory: 'Request',
+                label: 'Try again',
+                step: 'result',
+            });
+
+            unmount();
+        });
     });
 
     describe('Analytics', () => {

@@ -193,6 +193,15 @@ export const FeeChanged: ElementStory = {
     },
 };
 
+// The balance changed since what is available was shown, so the cashOut is rejected, and can be tried again with what is available by then.
+export const BalanceChanged: ElementStory = {
+    name: 'Error - Balance changed',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...CASH_OUT_HANDLERS.balanceChanged },
+    },
+};
+
 export const CashOutError: ElementStory = {
     name: 'Error - Cash out',
     args: { mockedApi: true },

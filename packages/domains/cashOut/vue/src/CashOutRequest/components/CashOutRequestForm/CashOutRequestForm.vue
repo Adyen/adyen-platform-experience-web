@@ -11,7 +11,7 @@ import {
 } from '@adyen/bento-vue3';
 import type { AdyenPlatformExperienceError } from '@integration-components/core';
 import { useCoreContext } from '@integration-components/core/vue';
-import { getAmountAnalyticsProperties } from '@integration-components/cashOut/domain';
+import { getAmountAnalyticsProperties, isAmountAboveAvailableBalanceError } from '@integration-components/cashOut/domain';
 import type { ICashOutEligibility } from '@integration-components/types';
 import type { CashOutResult } from '../../types';
 import { useCashOutFees } from '../../composables/useCashOutFees';
@@ -160,7 +160,9 @@ const cashOut = async () => {
     } else {
         analytics.trackBackendError('instruct', instructError.value);
     }
-    props.onResult(instructedCashOut ? { status: 'success', cashOut: instructedCashOut } : { status: 'error' });
+    if (instructedCashOut) props.onResult({ status: 'success', cashOut: instructedCashOut });
+    // An amount above what can be cashed out by then means the balance changed since it was shown
+    else props.onResult({ status: isAmountAboveAvailableBalanceError(instructError.value) ? 'balanceChanged' : 'error' });
 };
 
 // Without the endpoint, the cashOut can be previewed but not sent, so the button is left out like other components' actions.

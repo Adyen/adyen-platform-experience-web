@@ -10,11 +10,21 @@ vi.mock('@integration-components/composables-vue', async () => {
     const { defineComponent, h } = await import('vue');
     return {
         EmptyState: defineComponent({
-            props: { title: { type: String, required: true }, type: { type: String, required: true } },
+            props: {
+                actions: { type: Array, default: () => [] },
+                title: { type: String, required: true },
+                type: { type: String, required: true },
+            },
             setup:
                 (props, { slots }) =>
                 () =>
-                    h('div', { 'data-type': props.type }, [h('h2', props.title), h('p', slots.default?.())]),
+                    h('div', { 'data-type': props.type }, [
+                        h('h2', props.title),
+                        h('p', slots.default?.()),
+                        ...(props.actions as { title: string; event: () => void }[]).map(({ title, event }) =>
+                            h('button', { onClick: event }, title)
+                        ),
+                    ]),
         }),
     };
 });
@@ -23,7 +33,7 @@ vi.mock('@integration-components/core/vue', () => ({
     useCoreContext: vi.fn(),
 }));
 
-const renderResult = (props: { status: 'success' | 'error'; currency?: string }) => {
+const renderResult = (props: { status: 'success' | 'balanceChanged' | 'error'; currency?: string; onTryAgain?: () => void }) => {
     const target = document.createElement('div');
     const app = createApp(CashOutRequestResult, props);
     app.mount(target);
@@ -76,5 +86,40 @@ describe('CashOutRequestResult', () => {
         );
 
         unmount();
+    });
+
+    describe('Balance changed', () => {
+        test('should tell what is available changed, and offer to try again', () => {
+            const onTryAgain = vi.fn();
+            const { emptyStateType, target, unmount } = renderResult({ status: 'balanceChanged', onTryAgain });
+
+            expect(emptyStateType()).toBe('error');
+            expect(target.querySelector('[role="alert"] h2')?.textContent).toBe('cashOut.request.errors.balanceChanged.title');
+            expect(target.querySelector('[role="alert"] p')?.textContent).toBe('cashOut.request.errors.balanceChanged.description');
+
+            target.querySelector('button')?.click();
+
+            expect(target.querySelector('button')?.textContent).toBe('cashOut.request.actions.tryAgain');
+            expect(onTryAgain).toHaveBeenCalledTimes(1);
+
+            unmount();
+        });
+
+        test('should not offer to try again without a way to', () => {
+            const { target, unmount } = renderResult({ status: 'balanceChanged' });
+
+            expect(target.querySelector('button')).toBeNull();
+
+            unmount();
+        });
+
+        // Any other error can't be tried again from the screen, which tells to try again later
+        test('should not offer to try again after another error', () => {
+            const { target, unmount } = renderResult({ status: 'error', onTryAgain: vi.fn() });
+
+            expect(target.querySelector('button')).toBeNull();
+
+            unmount();
+        });
     });
 });

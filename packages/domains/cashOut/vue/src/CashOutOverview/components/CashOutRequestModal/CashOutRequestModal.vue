@@ -11,12 +11,16 @@ const props = defineProps<{
     /** The balance account selected in the overview, which the request starts from. */
     initialBalanceAccountId?: string;
     eligibility?: ICashOutEligibility;
+    /** Whether the overview is loading `eligibility` again, which the request then waits for. */
+    isLoadingEligibility?: boolean;
     isOpen: boolean;
     referenceForBeneficiary?: string;
     transferDescription?: string;
     onSubmit: (cashOut: ICashOutResponse) => void;
     onClose: () => void;
     onContactSupport?: () => void;
+    /** Called when the user tries again from the result of the request, so the overview loads its eligibility again. */
+    onTryAgain?: () => void;
 }>();
 
 const { i18n } = useCoreContext();
@@ -34,6 +38,12 @@ const handleClose = () => {
     if (isInstructing.value) return;
     track('Clicked button', { label: 'Close', subCategory: 'Request', step: isShowingResult.value ? 'result' : 'form' });
     props.onClose();
+};
+
+// The form is shown again, with its title
+const handleTryAgain = () => {
+    isShowingResult.value = false;
+    props.onTryAgain?.();
 };
 
 watch(
@@ -66,10 +76,12 @@ watch(
                 :reference-for-beneficiary="props.referenceForBeneficiary"
                 :transfer-description="props.transferDescription"
                 :eligibility="props.eligibility"
+                :is-loading-eligibility="props.isLoadingEligibility"
                 hide-title
                 in-modal
                 :on-submit="props.onSubmit"
                 :on-result-shown="() => (isShowingResult = true)"
+                :on-try-again="handleTryAgain"
                 :on-instructing-change="(value: boolean) => (isInstructing = value)"
                 :on-contact-support="props.onContactSupport"
             />
