@@ -28,3 +28,10 @@ export const getCashOutErrorMessage = (error: AdyenPlatformExperienceError | und
             return UNKNOWN_ERROR;
     }
 };
+
+/**
+ * Whether the cashOut was rejected for an amount above what the balance account can cash out by then: what is available changed since it
+ * was shown, so the user can cash out what is available by then.
+ */
+export const isAmountAboveAvailableBalanceError = (error: AdyenPlatformExperienceError | undefined): boolean =>
+    !!error?.invalidFields?.some(({ name, message }) => name === 'amount' && message === 'exceedsAvailableBalance');

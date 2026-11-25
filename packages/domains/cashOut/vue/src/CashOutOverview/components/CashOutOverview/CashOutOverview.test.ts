@@ -74,15 +74,17 @@ vi.mock('../CashOutRequestModal/CashOutRequestModal.vue', async () => {
             props: {
                 initialBalanceAccountId: { type: String, default: undefined },
                 eligibility: { type: Object, default: undefined },
+                isLoadingEligibility: Boolean,
                 isOpen: Boolean,
                 referenceForBeneficiary: { type: String, default: undefined },
                 transferDescription: { type: String, default: undefined },
                 onSubmit: { type: Function, default: undefined },
                 onClose: { type: Function, default: undefined },
+                onTryAgain: { type: Function, default: undefined },
             },
             setup: props => () =>
                 props.isOpen
-                    ? h('div', { 'data-testid': 'request-modal' }, [
+                    ? h('div', { 'data-testid': 'request-modal', 'data-loading-eligibility': String(props.isLoadingEligibility) }, [
                           h('span', `${props.initialBalanceAccountId} ${JSON.stringify(props.eligibility)}`),
                           h(
                               'span',
@@ -91,6 +93,7 @@ vi.mock('../CashOutRequestModal/CashOutRequestModal.vue', async () => {
                           ),
                           h('button', { 'data-testid': 'close', onClick: props.onClose }),
                           h('button', { 'data-testid': 'cash-out', onClick: () => props.onSubmit?.(CASH_OUT) }),
+                          h('button', { 'data-testid': 'try-again', onClick: () => props.onTryAgain?.() }),
                       ])
                     : null,
         }),
@@ -100,6 +103,7 @@ vi.mock('../CashOutRequestModal/CashOutRequestModal.vue', async () => {
 const mockCashOutState = ({ eligibility, shellState = 'ready' }: { eligibility?: unknown; shellState?: ComponentShellState }) => {
     const state = {
         eligibility: ref(eligibility),
+        isFetchingEligibility: ref(false),
         loadingError: ref<unknown>(),
         recordCashOut: vi.fn(),
         refresh: vi.fn(),
@@ -328,6 +332,37 @@ describe('CashOutOverview', () => {
 
             unmount();
         });
+    });
+
+    // The request in the modal waits for it, instead of fetching it too
+    test('should tell the request in the modal when it loads the eligibility again', async () => {
+        const state = mockCashOutState({ eligibility: ELIGIBILITY });
+        const { target, unmount } = renderCashOutOverview();
+        [...target.querySelectorAll('div')].find(element => element.textContent === START)?.click();
+        await nextTick();
+        const modal = () => target.querySelector('[data-testid="request-modal"]');
+        expect(modal()?.getAttribute('data-loading-eligibility')).toBe('false');
+
+        state.isFetchingEligibility.value = true;
+        await nextTick();
+
+        expect(modal()?.getAttribute('data-loading-eligibility')).toBe('true');
+
+        unmount();
+    });
+
+    // The request in the modal shows the eligibility of the overview, which is loaded again once the user tries again
+    test('should load the eligibility again when the cashOut is tried again after what is available changed', async () => {
+        const state = mockCashOutState({ eligibility: ELIGIBILITY });
+        const { target, unmount } = renderCashOutOverview();
+        [...target.querySelectorAll('div')].find(element => element.textContent === START)?.click();
+        await nextTick();
+
+        target.querySelector<HTMLElement>('[data-testid="try-again"]')?.click();
+
+        expect(state.refresh).toHaveBeenCalledTimes(1);
+
+        unmount();
     });
 
     describe('Analytics', () => {

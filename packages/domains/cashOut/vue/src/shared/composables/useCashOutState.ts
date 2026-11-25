@@ -26,6 +26,8 @@ type CashOutStateOptions = {
     initialBalanceAccountId?: MaybeRefOrGetter<string | undefined>;
     /** The eligibility of `initialBalanceAccountId`, already loaded elsewhere, so it isn't fetched again. */
     eligibility?: MaybeRefOrGetter<ICashOutEligibility | undefined>;
+    /** Whether `eligibility` is being loaded again elsewhere, such as on refresh: it is waited for then, instead of fetched here too. */
+    isLoadingEligibility?: MaybeRefOrGetter<boolean | undefined>;
 };
 
 export const getCashOutErrorInfo = (error: AdyenPlatformExperienceError | undefined): ErrorMessageInfo => getCashOutErrorMessage(error);
@@ -35,7 +37,7 @@ export const getCashOutErrorInfo = (error: AdyenPlatformExperienceError | undefi
 const CASH_OUT_PROCESSING_LIMIT_MS = 10 * 60 * 1000;
 
 /** The balance accounts, the selected one and its eligibility, with the component shell state they result in. */
-export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEligibility }: CashOutStateOptions = {}) => {
+export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEligibility, isLoadingEligibility }: CashOutStateOptions = {}) => {
     const { i18n } = useCoreContext();
     const formatAmount = useFormatAmount();
     const { balanceAccounts, error: balanceAccountsError, isFetching: isFetchingBalanceAccounts } = useBalanceAccounts();
@@ -50,7 +52,10 @@ export const useCashOutState = ({ initialBalanceAccountId, eligibility: givenEli
         () => (balanceAccounts.value as CashOutBalanceAccount[] | undefined)?.find(({ id }) => id === selectedBalanceAccountId.value)?.accountKey
     );
 
-    const usesGivenEligibility = computed(() => !!toValue(givenEligibility) && selectedBalanceAccountId.value === toValue(initialBalanceAccountId));
+    // While it is loaded again elsewhere, it is waited for; once gone without being loaded, such as when it failed, it is fetched here.
+    const usesGivenEligibility = computed(
+        () => (!!toValue(givenEligibility) || !!toValue(isLoadingEligibility)) && selectedBalanceAccountId.value === toValue(initialBalanceAccountId)
+    );
 
     const {
         eligibility: fetchedEligibility,

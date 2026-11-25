@@ -119,6 +119,42 @@ describe('useCashOutState', () => {
         stop();
     });
 
+    // Like the overview, which loads its eligibility again, such as on refresh, while the request in its modal shows it
+    test('should wait for the given eligibility while it is loaded again, without fetching it', async () => {
+        endpoints.getCashOutAvailableAmounts = vi.fn(() => new Promise(() => {}));
+        const eligibility = ref<ICashOutEligibility | undefined>(eligibilityOf(300));
+        const isLoadingEligibility = ref(false);
+        const { state, stop } = renderCashOutState({ initialBalanceAccountId: 'BA2', eligibility, isLoadingEligibility });
+        await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
+
+        eligibility.value = undefined;
+        isLoadingEligibility.value = true;
+        await new Promise(resolve => setTimeout(resolve));
+        expect(state.shellState.value).toBe('loading');
+
+        eligibility.value = eligibilityOf(150);
+        isLoadingEligibility.value = false;
+
+        await vi.waitFor(() => expect(state.eligibility.value).toEqual(eligibilityOf(150)));
+        expect(endpoints.getCashOutEligibility).not.toHaveBeenCalled();
+
+        stop();
+    });
+
+    // Like the overview, which failed to load it again
+    test('should fetch the eligibility once the given one is gone without being loaded', async () => {
+        const eligibility = ref<ICashOutEligibility | undefined>(eligibilityOf(300));
+        const { state, stop } = renderCashOutState({ initialBalanceAccountId: 'BA2', eligibility, isLoadingEligibility: false });
+        await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));
+
+        eligibility.value = undefined;
+
+        await vi.waitFor(() => expect(state.eligibility.value).toEqual(ELIGIBILITY_BY_BALANCE_ACCOUNT.BA2));
+        expect(requestedBalanceAccountIds()).toEqual(['BA2']);
+
+        stop();
+    });
+
     test('should fetch the eligibility when another balance account is selected', async () => {
         const { state, stop } = renderCashOutState({ initialBalanceAccountId: 'BA2', eligibility: eligibilityOf(300) });
         await vi.waitFor(() => expect(state.shellState.value).toBe('ready'));

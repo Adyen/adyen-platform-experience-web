@@ -505,6 +505,25 @@ describe('CashOutRequestForm', () => {
             unmount();
         });
 
+        // Like cashout-ui, which rejects an amount above what can be cashed out by then, as what is available changed since it was shown
+        test('should report the balance changed when the cashOut is rejected for an amount above what is available', async () => {
+            mockFees().fees.value = feesOf(1101);
+            const instruct = mockInstructCashOut();
+            instruct.instructCashOut.mockImplementation(async () => {
+                instruct.instructError.value = { invalidFields: [{ name: 'amount', message: 'exceedsAvailableBalance', value: '' }] };
+                return undefined;
+            });
+            const onResult = vi.fn();
+            const { findButton, unmount } = renderForm({ eligibility: SINGLE_TRANSFER_INSTRUMENT, onResult });
+
+            findButton(CASH_OUT)?.click();
+            await vi.waitFor(() => expect(onResult).toHaveBeenCalled());
+
+            expect(onResult).toHaveBeenCalledWith({ status: 'balanceChanged' });
+
+            unmount();
+        });
+
         test('should report an error when the cashOut fails', async () => {
             const fees = mockFees();
             fees.fees.value = feesOf(1101);

@@ -335,6 +335,39 @@ const availableAmountsChangedFromNothingHandlers = () => {
     ];
 };
 
+// The balance changed since what is available was shown: the cashOut is rejected for an amount above what is available by then, as
+// cashout-ui tells it, and the first balance account can cash out less from then on.
+const balanceChangedHandlers = () => {
+    const balanceAccountId = BALANCE_ACCOUNTS[0].id;
+    let hasChanged = false;
+    const availableOf = (id: string): ICashOutAmount => {
+        const { availableForCashOutBalance } = eligibilityOf(id);
+        return hasChanged && id === balanceAccountId ? { ...availableForCashOutBalance, value: 15000 } : availableForCashOutBalance;
+    };
+    return [
+        http.post<{ accountKey: string }, Partial<ICashOutRequest>>(
+            ENDPOINTS.instruct,
+            withDelay(async ({ request }) => {
+                const { amount } = await request.json();
+                hasChanged = true;
+                return getValidationErrorResponse([{ name: 'amount', value: String(amount ?? ''), message: 'exceedsAvailableBalance' }]);
+            })
+        ),
+        http.get<{ accountKey: string }>(
+            ENDPOINTS.eligibility,
+            withDelay(({ params }) => {
+                const id = getBalanceAccountId(params.accountKey);
+                if (!id) return getInvalidAccountKeyResponse();
+                return HttpResponse.json({ ...eligibilityOf(id), availableForCashOutBalance: availableOf(id) });
+            })
+        ),
+        http.get(
+            ENDPOINTS.availableAmounts,
+            withDelay(() => HttpResponse.json(availableAmountsOf(BALANCE_ACCOUNTS, availableOf)))
+        ),
+    ];
+};
+
 export const CASH_OUT_HANDLERS = {
     default: { handlers: cashOutMocks },
     availableAmountsChanged: { handlers: availableAmountsChangedHandlers({ value: 15000, currency: 'USD' }) },
@@ -479,6 +512,7 @@ export const CASH_OUT_HANDLERS = {
             instructHandler(freeFeesOf),
         ],
     },
+    balanceChanged: { handlers: balanceChangedHandlers() },
     // The fee configuration changes after the fee of the amount is shown, so the cashOut is rejected.
     feeChanged: {
         handlers: [instructHandler(changedFeesOf)],

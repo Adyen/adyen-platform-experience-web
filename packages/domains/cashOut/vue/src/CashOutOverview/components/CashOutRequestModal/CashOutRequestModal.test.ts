@@ -69,11 +69,13 @@ vi.mock('../../../CashOutRequest/components/CashOutRequest/CashOutRequest.vue', 
             props: {
                 initialBalanceAccountId: { type: String, default: undefined },
                 eligibility: { type: Object, default: undefined },
+                isLoadingEligibility: Boolean,
                 hideTitle: Boolean,
                 referenceForBeneficiary: { type: String, default: undefined },
                 transferDescription: { type: String, default: undefined },
                 onSubmit: { type: Function, default: undefined },
                 onResultShown: { type: Function, default: undefined },
+                onTryAgain: { type: Function, default: undefined },
                 onContactSupport: { type: Function, default: undefined },
                 onInstructingChange: { type: Function, default: undefined },
             },
@@ -93,6 +95,8 @@ type ModalProps = {
     onSubmit?: () => void;
     onClose?: () => void;
     onContactSupport?: () => void;
+    onTryAgain?: () => void;
+    isLoadingEligibility?: boolean;
 };
 
 const renderModal = ({ onSubmit = vi.fn(), onClose = vi.fn(), ...props }: ModalProps = {}) => {
@@ -138,6 +142,14 @@ describe('CashOutRequestModal', () => {
             onSubmit,
             onContactSupport,
         });
+
+        unmount();
+    });
+
+    test('should tell the request when the overview loads the eligibility again', () => {
+        const { unmount } = renderModal({ isLoadingEligibility: true });
+
+        expect(requestProps.current?.isLoadingEligibility).toBe(true);
 
         unmount();
     });
@@ -286,5 +298,22 @@ describe('CashOutRequestModal', () => {
 
             unmount();
         });
+    });
+
+    // The form is shown again, with the title of the modal, and the overview loads its eligibility again
+    test('should show its title again and tell the overview when the cashOut is tried again after what is available changed', async () => {
+        const onTryAgain = vi.fn();
+        const { headerTitle, showResult, unmount } = renderModal({ onTryAgain });
+        showResult();
+        await nextTick();
+        expect(headerTitle()).toBe('');
+
+        (requestProps.current?.onTryAgain as () => void)();
+        await nextTick();
+
+        expect(headerTitle()).toBe(TITLE);
+        expect(onTryAgain).toHaveBeenCalledTimes(1);
+
+        unmount();
     });
 });
