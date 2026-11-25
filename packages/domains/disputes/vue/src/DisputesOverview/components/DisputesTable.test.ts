@@ -58,7 +58,7 @@ vi.mock('@adyen/bento-vue3', async () => {
                                                         { field: column.field, direction: BentoDatagridSortDirection.ASCENDING },
                                                     ]),
                                             },
-                                            'Sort'
+                                            ''
                                         ),
                                     activeSort && h('span', { 'data-sort-direction': activeSort.direction }),
                                 ]);
@@ -194,6 +194,21 @@ describe('DisputesTable', () => {
     });
 
     describe('Sorting', () => {
+        test.each([
+            ['CHARGEBACKS', 'dueDate', { statusGroup: 'CHARGEBACKS', sort: 'dueDate', sortDirection: 'desc' }],
+            ['FRAUD_ALERTS', 'createdAt', { statusGroup: 'FRAUD_ALERTS', sort: 'createdAt', sortDirection: 'desc' }],
+            ['ONGOING_AND_CLOSED', 'createdAt', { statusGroup: 'ONGOING_AND_CLOSED', sort: 'createdAt', sortDirection: 'desc' }],
+        ] as const)('should map the mobile date column to %s sorting', (statusGroup, sortField, sort) => {
+            const onSortChange = vi.fn();
+            mountMobileTable({ statusGroup, sort, onSortChange });
+
+            expect(target.querySelector('[role="grid"]')?.getAttribute('data-sort-by')).toBe(
+                '[{"field":"dateAndPaymentMethod","direction":"descending"}]'
+            );
+            target.querySelector<HTMLButtonElement>('[data-sort-field="dateAndPaymentMethod"]')?.click();
+            expect(onSortChange).toHaveBeenCalledWith({ statusGroup, sort: sortField, sortDirection: 'asc' });
+        });
+
         test.each<IDisputeStatusGroup>(['CHARGEBACKS', 'FRAUD_ALERTS', 'ONGOING_AND_CLOSED'])(
             'should allow sorting by createdAt for %s',
             statusGroup => {

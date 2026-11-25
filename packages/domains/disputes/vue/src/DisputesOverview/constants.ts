@@ -31,8 +31,18 @@ export type OtherStatusGroupsSortParams = {
 };
 export type DisputesSortParams = ChargebacksSortParams | OtherStatusGroupsSortParams;
 
-/** Table columns mapped to the `sort` API parameter. `respondBy` is only available for chargebacks. */
+/** Maps sortable columns to API fields for each status group and responsive layout. */
 export const SORTABLE_COLUMN_SORT_FIELDS = {
-    respondBy: 'dueDate',
-    createdAt: 'createdAt',
-} as const satisfies Record<string, DisputesSortField>;
+    CHARGEBACKS: {
+        desktop: { respondBy: 'dueDate', createdAt: 'createdAt' },
+        mobile: { dateAndPaymentMethod: 'dueDate' },
+    },
+    FRAUD_ALERTS: {
+        desktop: { createdAt: 'createdAt' },
+        mobile: { dateAndPaymentMethod: 'createdAt' },
+    },
+    ONGOING_AND_CLOSED: {
+        desktop: { createdAt: 'createdAt' },
+        mobile: { dateAndPaymentMethod: 'createdAt' },
+    },
+} as const satisfies Record<IDisputeStatusGroup, { desktop: Record<string, DisputesSortField>; mobile: Record<string, DisputesSortField> }>;

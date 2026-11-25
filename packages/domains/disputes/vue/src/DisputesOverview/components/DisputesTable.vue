@@ -35,6 +35,7 @@ import {
     EMPTY_TABLE_MESSAGE_KEYS,
     FIELD_KEYS,
     SORTABLE_COLUMN_SORT_FIELDS,
+    type DisputesSortField,
     type DisputesSortParams,
     type DisputesTableFields,
 } from '../constants';
@@ -110,6 +111,7 @@ const columns = computed<BentoColumn[]>(() => {
             label: i18n.get(props.statusGroup === 'CHARGEBACKS' ? FIELD_KEYS.respondBy : FIELD_KEYS.createdAt),
             flex: 2,
             minWidth: customColumnWidths.value.dateAndPaymentMethod,
+            sortable: true,
         },
         { field: amountField, label: i18n.get(FIELD_KEYS[amountField]), flex: 1, minWidth: customColumnWidths.value[amountField], numeric: true },
     ];
@@ -118,16 +120,23 @@ const columns = computed<BentoColumn[]>(() => {
 const sortBy = computed<BentoDatagridSortByColumn[]>(() => {
     const { sort } = props;
     if (!sort || sort.statusGroup !== props.statusGroup) return [];
-    const field = (Object.keys(SORTABLE_COLUMN_SORT_FIELDS) as Array<keyof typeof SORTABLE_COLUMN_SORT_FIELDS>).find(
-        key => SORTABLE_COLUMN_SORT_FIELDS[key] === sort.sort
-    );
+
+    const direction = sort.sortDirection === 'asc' ? BentoDatagridSortDirection.ASCENDING : BentoDatagridSortDirection.DESCENDING;
+    const sortFields: Record<string, DisputesSortField> = SORTABLE_COLUMN_SORT_FIELDS[props.statusGroup][isMobile.value ? 'mobile' : 'desktop'];
+    const field = Object.keys(sortFields).find(key => sortFields[key] === sort.sort);
     if (!field) return [];
-    return [{ field, direction: sort.sortDirection === 'asc' ? BentoDatagridSortDirection.ASCENDING : BentoDatagridSortDirection.DESCENDING }];
+    return [{ field, direction }];
 });
+
+function getSortField(column: BentoDatagridSortByColumn | undefined): DisputesSortField | undefined {
+    if (!column) return undefined;
+    const sortFields: Record<string, DisputesSortField> = SORTABLE_COLUMN_SORT_FIELDS[props.statusGroup][isMobile.value ? 'mobile' : 'desktop'];
+    return sortFields[column.field];
+}
 
 function handleSortBy(next: BentoDatagridSortByColumn[]) {
     const column = next[0];
-    const sortField = column ? SORTABLE_COLUMN_SORT_FIELDS[column.field as keyof typeof SORTABLE_COLUMN_SORT_FIELDS] : undefined;
+    const sortField = getSortField(column);
     const sortDirection = column?.direction === BentoDatagridSortDirection.ASCENDING ? 'asc' : 'desc';
 
     if (sortField && props.statusGroup === 'CHARGEBACKS') {
