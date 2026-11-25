@@ -21,3 +21,20 @@
 .date {
     color: style.token(color-label-tertiary);
 }
+
+.transactionType {
+    text-decoration-color: style.token(color-outline-tertiary);
+    text-decoration-line: none;
+    text-decoration-style: dashed;
+    text-decoration-thickness: style.token(border-width-s);
+    text-underline-offset: style.token(spacer-020);
+    width: fit-content;
+
+    &:hover {
+        text-decoration-color: style.token(color-outline-tertiary-active);
+    }
+
+    :global([role='gridcell']):hover & {
+        text-decoration-line: underline;
+    }
+}

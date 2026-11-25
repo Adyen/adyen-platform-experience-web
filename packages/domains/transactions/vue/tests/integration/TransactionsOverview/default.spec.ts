@@ -160,6 +160,62 @@ test.describe('Default', () => {
             await expect(firstRowCells.nth(5)).toHaveText('220.00 USD');
         });
 
+        test('should underline transaction types only while their cell is hovered', async ({ page }) => {
+            const cell = page
+                .getByRole('grid')
+                .getByRole('gridcell')
+                .filter({ has: page.getByText('Payment', { exact: true }) })
+                .first();
+            const transactionType = cell.getByText('Payment', { exact: true });
+            await expect(transactionType).toBeVisible();
+            await Promise.all([
+                expect(transactionType).toHaveCSS('text-decoration-line', 'none'),
+                expect(transactionType).toHaveCSS('text-decoration-style', 'dashed'),
+            ]);
+            const initialColor = await transactionType.evaluate(element => getComputedStyle(element).textDecorationColor);
+
+            await cell.hover();
+            await expect(transactionType).toHaveCSS('text-decoration-line', 'underline');
+
+            await transactionType.hover();
+
+            await Promise.all([
+                expect(page.getByText('Money received to your account from a sales transaction', { exact: true })).toBeVisible(),
+                expect(transactionType).toHaveCSS('text-decoration-line', 'underline'),
+                expect(transactionType).not.toHaveCSS('text-decoration-color', initialColor),
+            ]);
+
+            await page.getByRole('columnheader', { name: 'Transaction type', exact: true }).hover();
+            await Promise.all([
+                expect(transactionType).toHaveCSS('text-decoration-line', 'none'),
+                expect(transactionType).toHaveCSS('text-decoration-color', initialColor),
+            ]);
+        });
+
+        test('should limit the transaction-type tooltip hover area to the text width', async ({ page }) => {
+            const cell = page
+                .getByRole('grid')
+                .getByRole('gridcell')
+                .filter({ has: page.getByText('Payment', { exact: true }) })
+                .first();
+            const transactionType = cell.getByText('Payment', { exact: true });
+            await expect(transactionType).toBeVisible();
+            const bounds = await transactionType.evaluate(element => {
+                const range = document.createRange();
+                range.selectNodeContents(element);
+                const text = range.getBoundingClientRect();
+                return { targetWidth: element.getBoundingClientRect().width, textWidth: text.width };
+            });
+            expect(bounds.targetWidth).toBeCloseTo(bounds.textWidth, 0);
+
+            await transactionType.hover();
+            const tooltip = page.getByText('Money received to your account from a sales transaction', { exact: true });
+            await expect(tooltip).toBeVisible();
+
+            await page.getByRole('columnheader', { name: 'Transaction type', exact: true }).hover();
+            await expect(tooltip).toBeHidden();
+        });
+
         test('should render pagination controls', async ({ page }) => {
             const pagination = page.getByRole('navigation', { name: /Pagination/i });
             const pageLimitSelect = pagination.getByRole('combobox', { name: /Items/i, disabled: false, expanded: false });
