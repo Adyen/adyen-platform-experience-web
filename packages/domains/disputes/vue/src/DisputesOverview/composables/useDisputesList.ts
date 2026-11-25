@@ -6,6 +6,7 @@ import { isFunction, listFrom } from '@integration-components/utils';
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 import { DISPUTES_PAGE_LIMITS } from '../../../../domain/src';
 import type { DisputesOverviewComponentProps } from '../types';
+import type { DisputesSortParams } from '../constants';
 
 interface UseDisputesListProps {
     fetchEnabled: boolean;
@@ -15,6 +16,7 @@ interface UseDisputesListProps {
     schemeCodes: string | undefined;
     createdSince: string | undefined;
     createdUntil: string | undefined;
+    sort?: DisputesSortParams;
     pagination?: DisputesOverviewComponentProps['pagination'];
     refreshToken?: number;
 }
@@ -32,14 +34,25 @@ export function useDisputesList(props: () => UseDisputesListProps) {
     return useCursorPaginatedRecords<IDisputeListItem>({
         getFetchKey: () => {
             if (!canFetch.value) return null;
-            const { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil, refreshToken } = props();
-            return JSON.stringify({ balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil, refreshToken });
+            const { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil, sort, refreshToken } = props();
+            const activeSort = sort?.statusGroup === statusGroup ? sort : undefined;
+            return JSON.stringify({
+                balanceAccountId,
+                statusGroup,
+                reasonCategories,
+                schemeCodes,
+                createdSince,
+                createdUntil,
+                sort: activeSort,
+                refreshToken,
+            });
         },
         fetchPage: async ({ cursor, limit, signal }) => {
             const fn = getDisputeList.value;
             if (!isFunction(fn)) return { records: undefined };
 
-            const { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil } = props();
+            const { balanceAccountId, statusGroup, reasonCategories, schemeCodes, createdSince, createdUntil, sort } = props();
+            const activeSort = sort?.statusGroup === statusGroup ? sort : undefined;
 
             const query: NonNullable<Parameters<NonNullable<typeof config.endpoints.getDisputeList>>[1]>['query'] = {
                 statusGroup,
@@ -49,6 +62,7 @@ export function useDisputesList(props: () => UseDisputesListProps) {
                 schemeCodes: listFrom(schemeCodes) as NonNullable<typeof query.schemeCodes>,
                 ...(createdSince ? { createdSince } : {}),
                 ...(createdUntil ? { createdUntil } : {}),
+                ...(activeSort ? { sort: activeSort.sort, sortDirection: activeSort.sortDirection } : {}),
                 ...(cursor ? { cursor } : {}),
             };
 

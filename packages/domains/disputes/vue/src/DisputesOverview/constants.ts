@@ -14,3 +14,25 @@ export const LIMIT_SELECT_ARIA_LABEL_KEYS = {
     FRAUD_ALERTS: 'disputes.overview.fraudAlerts.limitSelect.a11yLabel',
     ONGOING_AND_CLOSED: 'disputes.overview.ongoingAndClosed.limitSelect.a11yLabel',
 } as const satisfies Record<IDisputeStatusGroup, DisputesTranslationKey>;
+
+export type ChargebacksSortField = 'dueDate' | 'createdAt';
+export type OtherStatusGroupsSortField = 'createdAt';
+export type DisputesSortField = ChargebacksSortField | OtherStatusGroupsSortField;
+export type DisputesSortDirection = 'asc' | 'desc';
+export type ChargebacksSortParams = {
+    statusGroup: 'CHARGEBACKS';
+    sort: ChargebacksSortField;
+    sortDirection: DisputesSortDirection;
+};
+export type OtherStatusGroupsSortParams = {
+    statusGroup: Exclude<IDisputeStatusGroup, 'CHARGEBACKS'>;
+    sort: OtherStatusGroupsSortField;
+    sortDirection: DisputesSortDirection;
+};
+export type DisputesSortParams = ChargebacksSortParams | OtherStatusGroupsSortParams;
+
+/** Table columns mapped to the `sort` API parameter. `respondBy` is only available for chargebacks. */
+export const SORTABLE_COLUMN_SORT_FIELDS = {
+    respondBy: 'dueDate',
+    createdAt: 'createdAt',
+} as const satisfies Record<string, DisputesSortField>;

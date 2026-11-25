@@ -10,7 +10,7 @@ import DisputesFilters from './DisputesFilters.vue';
 import DisputesTable from './DisputesTable.vue';
 import DisputeManagementModal from './DisputeManagementModal.vue';
 import { useDisputesList } from '../composables/useDisputesList';
-import { DEFAULT_DISPUTE_STATUS_GROUP } from '../constants';
+import { DEFAULT_DISPUTE_STATUS_GROUP, type DisputesSortParams } from '../constants';
 import type { DisputesOverviewComponentProps } from '../types';
 import styles from './DisputesOverview.module.scss';
 
@@ -44,6 +44,7 @@ const getFallbackStatusGroup = () =>
 const statusGroup = ref<IDisputeStatusGroup>(getFallbackStatusGroup());
 
 const refreshToken = ref(0);
+const sortParams = ref<DisputesSortParams | undefined>(undefined);
 const selectedDisputeId = ref<string | undefined>(undefined);
 const filtersInitialized = ref(false);
 
@@ -80,6 +81,15 @@ function onStatusGroupChange(index: number) {
     statusGroup.value = visibleStatusGroups.value[index] ?? getFallbackStatusGroup();
 }
 
+function onSortChange(params: DisputesSortParams | undefined) {
+    sortParams.value = params;
+}
+
+// Reset sorting when switching views because not every status group supports the same sort fields.
+watch(statusGroup, () => {
+    sortParams.value = undefined;
+});
+
 watch(visibleStatusGroups, groups => {
     if (!groups.includes(statusGroup.value)) statusGroup.value = getFallbackStatusGroup();
 });
@@ -97,6 +107,7 @@ const disputesListResult = useDisputesList(() => ({
     reasonCategories: filterParams.value.reasonCategories,
     createdSince: filterParams.value.createdSince,
     createdUntil: filterParams.value.createdUntil,
+    sort: sortParams.value,
     pagination: props.pagination,
     refreshToken: refreshToken.value,
 }));
@@ -169,6 +180,8 @@ function closeModal() {
                 :on-refresh="disputesListResult.refresh"
                 :on-row-click="onRowClick"
                 :on-contact-support="props.onContactSupport"
+                :sort="sortParams"
+                :on-sort-change="onSortChange"
                 :custom-columns="props.dataCustomization?.dataGrid?.fields"
                 :on-data-retrieve="props.dataCustomization?.dataGrid?.onDataRetrieve"
                 :has-next="disputesListResult.hasNext.value"

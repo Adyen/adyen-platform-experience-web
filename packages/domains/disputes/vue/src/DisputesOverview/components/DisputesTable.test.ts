@@ -2,6 +2,7 @@
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { computed, createApp, nextTick, type App } from 'vue';
+import { BentoDatagridSortDirection } from '@adyen/bento-vue3';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { containerQueries, useResponsiveContainer } from '@integration-components/composables-vue';
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
@@ -17,6 +18,7 @@ vi.mock('@adyen/bento-vue3', async () => {
     const { defineComponent, h } = await import('vue');
     return {
         BentoPaymentMethod: () => null,
+        BentoDatagridSortDirection: { ASCENDING: 'ascending', DESCENDING: 'descending' },
         BentoTag: () => null,
         BentoTooltipDirective: {},
         BentoTypography: () => null,
@@ -25,21 +27,42 @@ vi.mock('@adyen/bento-vue3', async () => {
                 columns: { type: Array, default: () => [] },
                 data: { type: Array, default: () => [] },
                 pagination: { type: Object, default: undefined },
+                sortBy: { type: Array, default: () => [] },
             },
-            emits: ['items-page'],
+            emits: ['items-page', 'update:sort-by'],
             setup:
                 (props, { emit, slots }) =>
                 () => {
-                    const columns = (props.columns as { field: string; label: string; visible?: boolean }[]).filter(
+                    const columns = (props.columns as { field: string; label: string; visible?: boolean; sortable?: boolean }[]).filter(
                         column => column.visible !== false
                     );
                     const pagination = props.pagination as { hidePageSize?: boolean; pageSizeItems?: number[] } | undefined;
+                    const sortBy = props.sortBy as { field: string; direction: string }[];
 
-                    return h('div', { role: 'grid' }, [
+                    return h('div', { role: 'grid', 'data-sort-by': JSON.stringify(sortBy) }, [
                         h(
                             'div',
                             { role: 'row' },
-                            columns.map(column => h('div', { role: 'columnheader' }, column.label))
+                            columns.map(column => {
+                                const activeSort = sortBy.find(sort => sort.field === column.field);
+                                return h('div', { role: 'columnheader', 'data-sortable': column.sortable === true }, [
+                                    column.label,
+                                    column.sortable &&
+                                        h(
+                                            'button',
+                                            {
+                                                type: 'button',
+                                                'data-sort-field': column.field,
+                                                onClick: () =>
+                                                    emit('update:sort-by', [
+                                                        { field: column.field, direction: BentoDatagridSortDirection.ASCENDING },
+                                                    ]),
+                                            },
+                                            'Sort'
+                                        ),
+                                    activeSort && h('span', { 'data-sort-direction': activeSort.direction }),
+                                ]);
+                            })
                         ),
                         ...(props.data as Record<string, unknown>[]).map(item =>
                             h(
@@ -87,7 +110,7 @@ const dispute = {
     amount: { value: 1000, currency: 'EUR' },
 } as IDisputeListItem;
 
-describe('DisputesTable on mobile', () => {
+describe('DisputesTable', () => {
     let app: App | undefined;
     let target: HTMLDivElement;
 
@@ -105,7 +128,7 @@ describe('DisputesTable on mobile', () => {
         target?.remove();
     });
 
-    const mountMobileTable = (props: Partial<InstanceType<typeof DisputesTable>['$props']> = {}) => {
+    const mountTable = (props: Partial<InstanceType<typeof DisputesTable>['$props']> = {}) => {
         const rootProps = {
             statusGroup: 'CHARGEBACKS',
             loading: false,
@@ -121,6 +144,16 @@ describe('DisputesTable on mobile', () => {
         app = createApp(DisputesTable, rootProps);
         target = document.body.appendChild(document.createElement('div'));
         app.mount(target);
+    };
+
+    const mountMobileTable = (props: Partial<InstanceType<typeof DisputesTable>['$props']> = {}) => {
+        vi.mocked(useResponsiveContainer).mockImplementation(query => computed(() => query === containerQueries.down.xs));
+        mountTable(props);
+    };
+
+    const mountDesktopTable = (props: Partial<InstanceType<typeof DisputesTable>['$props']> = {}) => {
+        vi.mocked(useResponsiveContainer).mockImplementation(() => computed(() => false));
+        mountTable(props);
     };
 
     const getColumnHeaders = () => Array.from(target.querySelectorAll('[role="columnheader"]'), header => header.textContent);
@@ -157,6 +190,43 @@ describe('DisputesTable on mobile', () => {
             mountMobileTable({ statusGroup, data: [{ ...dispute, dueDate: DUE_DATE }] });
 
             expect(getCellDates()).toEqual([dispute.createdAt]);
+        });
+    });
+
+    describe('Sorting', () => {
+        test.each<IDisputeStatusGroup>(['CHARGEBACKS', 'FRAUD_ALERTS', 'ONGOING_AND_CLOSED'])(
+            'should allow sorting by createdAt for %s',
+            statusGroup => {
+                const onSortChange = vi.fn();
+                mountDesktopTable({ statusGroup, onSortChange });
+
+                target.querySelector<HTMLButtonElement>('[data-sort-field="createdAt"]')?.click();
+
+                expect(onSortChange).toHaveBeenCalledWith({ statusGroup, sort: 'createdAt', sortDirection: 'asc' });
+            }
+        );
+
+        test('should allow sorting by dueDate only for chargebacks', () => {
+            const onSortChange = vi.fn();
+            mountDesktopTable({ statusGroup: 'CHARGEBACKS', onSortChange });
+
+            target.querySelector<HTMLButtonElement>('[data-sort-field="respondBy"]')?.click();
+
+            expect(onSortChange).toHaveBeenCalledWith({ statusGroup: 'CHARGEBACKS', sort: 'dueDate', sortDirection: 'asc' });
+        });
+
+        test.each<IDisputeStatusGroup>(['FRAUD_ALERTS', 'ONGOING_AND_CLOSED'])('should expose only createdAt sorting for %s', statusGroup => {
+            mountDesktopTable({ statusGroup });
+
+            expect(Array.from(target.querySelectorAll<HTMLButtonElement>('[data-sort-field]'), button => button.dataset.sortField)).toEqual([
+                'createdAt',
+            ]);
+        });
+
+        test('should ignore a dueDate sort in status groups that do not support it', () => {
+            mountDesktopTable({ statusGroup: 'FRAUD_ALERTS', sort: { statusGroup: 'CHARGEBACKS', sort: 'dueDate', sortDirection: 'desc' } });
+
+            expect(target.querySelector('[role="grid"]')?.getAttribute('data-sort-by')).toBe('[]');
         });
     });
 

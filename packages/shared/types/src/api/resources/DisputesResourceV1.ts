@@ -402,6 +402,10 @@ export interface components {
         /** @enum {string} */
         StatusGroup: 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_CLOSED';
         /** @enum {string} */
+        DisputeSort: 'dueDate' | 'createdAt';
+        /** @enum {string} */
+        SortDirection: 'asc' | 'desc';
+        /** @enum {string} */
         SchemeCodes: 'visa' | 'mc' | 'sepadirectdebit' | 'pulse' | 'discover' | 'ach' | 'amex' | 'elo' | 'jcb' | 'others';
     };
     responses: never;
@@ -559,6 +563,8 @@ export interface operations {
                 createdUntil?: string;
                 limit?: number;
                 cursor?: string;
+                sort?: components['schemas']['DisputeSort'];
+                sortDirection?: components['schemas']['SortDirection'];
             };
             header?: {
                 'SDK-Version'?: string;
