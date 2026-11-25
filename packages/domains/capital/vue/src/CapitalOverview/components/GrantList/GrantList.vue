@@ -52,7 +52,7 @@ const displayedGrants = computed(() => {
                 <BentoSegmentedControl
                     v-if="hasGrantGroups"
                     v-model="selectedGrantGroup"
-                    :aria-label="i18n.get('capital.overview.grantList.a11yLabel')"
+                    :aria-label="i18n.get('capital.overview.grantList.statusFilter.a11yLabel')"
                     :items="grantGroupItems"
                 />
                 <ul :class="styles.list">

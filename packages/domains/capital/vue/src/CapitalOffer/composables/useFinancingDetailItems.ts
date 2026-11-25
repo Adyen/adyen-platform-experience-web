@@ -46,10 +46,14 @@ const CONTRACT_KEYS = {
     },
 } satisfies ContractTypeKeyMap;
 
-export function useFinancingDetailItems(getContractType: () => IContractType) {
+type FinancingDetailItemsOptions = {
+    hasEstPrefix?: boolean;
+};
+
+export function useFinancingDetailItems(getContractType: () => IContractType, options: FinancingDetailItemsOptions = {}) {
     const { i18n } = useCoreContext();
     const { getContractCopy } = useContractCopy(getContractType);
-    const formatTermLabel = useFormatTerm(getContractType);
+    const formatTermLabel = useFormatTerm(getContractType, { hasEstPrefix: options.hasEstPrefix });
     const formatMaxRepaymentDate = useFormatMaxRepaymentDate();
 
     const getItem = (financingDetails: FinancingDetails, key: FinancingDetailItemKey): FinancingDetailItemWithOptionalLabel | undefined => {

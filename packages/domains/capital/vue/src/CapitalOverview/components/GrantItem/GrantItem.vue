@@ -154,7 +154,7 @@ const closeRepaymentModal = () => {
                         </div>
                         <div v-if="grantConfig.isGrantIdVisible" :class="styles.grantID">
                             <CopyText
-                                copy-button-aria-label-key="capital.overview.grantItem.copy.grantID"
+                                :copy-button-aria-label-key="CONTRACT_KEYS.copyGrantId[props.grant.contractType]"
                                 data-testid="grant-id-copy-text"
                                 is-underline-visible
                                 :text-to-copy="props.grant.id"
