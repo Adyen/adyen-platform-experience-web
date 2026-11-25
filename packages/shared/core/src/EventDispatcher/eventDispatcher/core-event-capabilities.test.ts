@@ -9,7 +9,7 @@ it('matches the tracked props declared by each component external props type', (
         capitalOffer: { callbackProps: ['onContactSupport', 'onSubmit'] },
         capitalOverview: { callbackProps: ['onContactSupport'] },
         cashOutOverview: { callbackProps: ['onContactSupport', 'onSubmit'] },
-        cashOutRequest: { callbackProps: ['onSubmit'] },
+        cashOutRequest: { callbackProps: ['onContactSupport', 'onSubmit'] },
         disputes: {
             callbackProps: ['onContactSupport', 'onRecordSelection'],
             dataCustomization: ['dataGrid', 'details'],

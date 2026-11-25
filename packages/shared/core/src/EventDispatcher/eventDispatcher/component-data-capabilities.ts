@@ -11,9 +11,8 @@ export const COMPONENT_DATA_EVENT_CAPABILITIES = {
     cashOutOverview: {
         callbackProps: ['onContactSupport', 'onSubmit'],
     },
-    // The standalone CashOut Request doesn't offer contact support.
     cashOutRequest: {
-        callbackProps: ['onSubmit'],
+        callbackProps: ['onContactSupport', 'onSubmit'],
     },
     disputes: {
         callbackProps: ['onContactSupport', 'onRecordSelection'],
