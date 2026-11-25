@@ -15,6 +15,7 @@ test.describe('Payment link creation - Submit invalid fields', () => {
         await page.getByRole('option', { name: 'NY001' }).click();
 
         // Prefilled fields let us advance straight through to the summary
+        await expect(continueButton.getByTestId('loading-indicator')).toBeHidden();
         await continueButton.click();
         await continueButton.click();
         await continueButton.click();

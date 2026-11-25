@@ -4,9 +4,11 @@ import { goToStory } from '@integration-components/testing/playwright/utils';
 const STORY_ID = 'mocked-pay-by-link-payment-link-creation--prefilled';
 
 test.describe('Payment link creation - Link creation success', () => {
-    test('Should successfully create a payment link without changing any prefilled fields', async ({ page }) => {
-        await goToStory(page, { id: STORY_ID });
+    test.beforeEach(async ({ page }) => {
+        await goToStory(page, { id: STORY_ID, args: { 'delayedEndpoints.list': '1000' } });
+    });
 
+    test('Should successfully create a payment link without changing any prefilled fields', async ({ page }) => {
         const continueButton = page.getByRole('button', { name: 'Continue' });
         const createPaymentLinkButton = page.getByRole('button', { name: 'Create payment link' });
 
@@ -55,11 +57,21 @@ test.describe('Payment link creation - Link creation success', () => {
         await expect(page.getByRole('alert')).toBeVisible();
 
         // Submit the form
+        let createRequests = 0;
+        page.on('request', request => {
+            if (request.method() === 'POST' && request.url().includes('/paybylink/paymentLinks')) createRequests++;
+        });
         await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+        await createPaymentLinkButton.click();
+        await expect(createPaymentLinkButton.getByTestId('loading-indicator')).toBeVisible();
+        await expect(createPaymentLinkButton).toBeEnabled();
+        await expect(createPaymentLinkButton).toBeFocused();
+        await expect(page.getByRole('button', { name: 'Go back', exact: true })).toBeDisabled();
         await createPaymentLinkButton.click();
 
         // Verify success
         await expect(page.getByText('Payment link created')).toBeVisible();
+        expect(createRequests).toBe(1);
         await expect(page.getByText('Copy the unique link below', { exact: false })).toBeVisible();
     });
 });

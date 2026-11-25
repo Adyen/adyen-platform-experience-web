@@ -12,7 +12,7 @@ import {
     BentoTypography,
     type BentoButtonActionsList,
 } from '@adyen/bento-vue3';
-import { useShouldHideTitles } from '@integration-components/composables-vue';
+import { getBentoLoadingActionState, useShouldHideTitles } from '@integration-components/composables-vue';
 import type { PaymentLinkSettingsItem } from '../../../../../domain/src';
 import type { PaymentLinkCreationComponentProps } from '../../types';
 import type { usePaymentLinkFormData } from './usePaymentLinkFormData';
@@ -171,7 +171,7 @@ const buttonActions = computed<BentoButtonActionsList>(() => {
     const actions: BentoButtonActionsList = [
         {
             title: wizard.isLastStep.value ? i18n.get('payByLink.creation.steps.submit') : i18n.get('payByLink.creation.steps.continue'),
-            disabled: nextButtonDisabled.value || isNextStepLoading.value,
+            ...getBentoLoadingActionState(isNextStepLoading.value, nextButtonDisabled.value),
             event: wizard.isLastStep.value ? handleSubmit : handleContinue,
             variant: 'primary',
             iconRight: wizard.isLastStep.value ? undefined : ArrowRightIcon,

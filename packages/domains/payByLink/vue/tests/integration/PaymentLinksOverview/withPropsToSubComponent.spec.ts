@@ -15,6 +15,7 @@ test.describe('PayByLinkOverview - With props to sub-components', () => {
 
         await dialog.getByTestId('form-field-store').getByRole('combobox').click();
         await page.getByRole('option', { name: PREFILLED_STORE }).click();
+        await expect(dialog.getByRole('button', { name: 'Continue' }).getByTestId('loading-indicator')).toBeHidden();
         await dialog.getByRole('button', { name: 'Continue' }).click();
 
         await expect(dialog.getByTestId('form-field-reference').getByRole('textbox')).toHaveValue(PREFILLED_MERCHANT_REFERENCE);

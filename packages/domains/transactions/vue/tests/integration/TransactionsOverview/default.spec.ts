@@ -524,6 +524,20 @@ test.describe('Default', () => {
             await expect(popover.getByRole('switch', { checked: true })).toHaveCount(11);
             await downloadTransactions(page, analyticsEvents, 'All');
         });
+
+        test('should keep the "Download" button enabled and focused while loading', async ({ page, analyticsEvents }) => {
+            await goToStory(page, { id: STORY_ID, args: { 'delayedEndpoints.downloadTransactions': '1000' } });
+            await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedTransactionsListAnalyticsEventProperties]]);
+            await openExportPopover(page, analyticsEvents);
+
+            const popover = getExportDialog(page);
+            const downloadButton = popover.getByRole('button', { name: 'Download', exact: true });
+            const downloadPromise = downloadTransactions(page, analyticsEvents, 'Default');
+
+            await expect(downloadButton.getByTestId('loading-indicator')).toBeVisible();
+            await Promise.all([expect(downloadButton).toBeEnabled(), expect(downloadButton).toBeFocused()]);
+            await downloadPromise;
+        });
     });
 
     test.describe('Export: With modified filters', () => {
