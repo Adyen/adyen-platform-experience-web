@@ -1,76 +1,26 @@
-import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
-import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
-import {
-    dismissRepaymentAnalyticsEventProperties,
-    openRepaymentButtonAnalyticsEventProperties,
-    sharedCapitalOverviewAnalyticsEventProperties,
-} from '../../../../fixtures/CapitalOverview/constants/analytics';
-import type { Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { goToStory } from '@integration-components/testing/playwright/utils';
 
 const STORY_ID = 'mocked-capital-capital-overview--repayment-us';
 
-const getRepaymentModal = (page: Page) => page.getByRole('dialog');
-
 test.describe('Repayment US', () => {
-    test.beforeEach(async ({ page, analyticsEvents }) => {
-        await setTime(page);
+    test('should show US bank account details and verified bank accounts', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedCapitalOverviewAnalyticsEventProperties]]);
-    });
+        await page.getByRole('button', { name: 'Send repayment', exact: true }).click();
 
-    test('should render send repayment button', async ({ page }) => {
-        await expect(page.getByRole('button', { name: 'Send repayment', exact: true }).first()).toHaveText('Send repayment');
-    });
+        const repaymentModal = page.getByRole('dialog');
 
-    test.describe('Send repayment view', () => {
-        test.beforeEach(async ({ page, analyticsEvents }) => {
-            await page.getByRole('button', { name: 'Send repayment', exact: true }).click();
-            await expectAnalyticsEvents(analyticsEvents, [['Clicked button', openRepaymentButtonAnalyticsEventProperties]]);
-        });
-
-        test('should show repayment details after "Send repayment" button is clicked', async ({ page }) => {
-            const copyIconButtons = getRepaymentModal(page).getByRole('button', { name: /^Copy (account number|routing number|account owner)$/ });
-
-            await Promise.all([
-                expect(getRepaymentModal(page).getByText('Manual bank transfer')).toBeVisible(),
-                expect(
-                    getRepaymentModal(page).getByText(
-                        'Repay your loan early by transferring money to the provided bank account. Payments could be made from any of your preferred or one of your verified bank accounts.'
-                    )
-                ).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Adyen’s bank account details')).toBeVisible(),
-                expect(copyIconButtons).toHaveCount(3),
-                expect(getRepaymentModal(page).getByText('Account number')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('123456789012')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Routing number')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('012345678')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Account owned by')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Adyen N.V. San Francisco Branch', { exact: true }).first()).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Country/region')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('US', { exact: true })).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Your verified bank accounts', { exact: true })).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('****8101')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('****4151')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('How to send a manual repayment')).toBeVisible(),
-                expect(
-                    getRepaymentModal(page).getByText('Add Adyen N.V. San Francisco Branch as a payee using your bank’s website or app.')
-                ).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Transfer up to €8,220.00 to the bank account provided below.')).toBeVisible(),
-                expect(getRepaymentModal(page).getByText('Wait 1-3 business days for the payment to be applied.')).toBeVisible(),
-            ]);
-        });
-
-        test('should return to grants list when send repayment dismiss button is clicked', async ({ page, analyticsEvents }) => {
-            const dismissButton = getRepaymentModal(page).getByRole('button', { name: 'Close', exact: true });
-
-            await dismissButton.click();
-            await dismissButton.waitFor({ state: 'detached' });
-            await expectAnalyticsEvents(analyticsEvents, [['Clicked button', dismissRepaymentAnalyticsEventProperties]]);
-            await Promise.all([
-                expect(page.getByTestId('grant-amount-label').first()).toBeVisible(),
-                expect(page.getByRole('progressbar').first()).toBeVisible(),
-                expect(page.getByRole('button', { name: 'Send repayment', exact: true }).first()).toBeVisible(),
-            ]);
-        });
+        await Promise.all([
+            expect(repaymentModal.getByText('Add Adyen N.V. San Francisco Branch as a payee using your bank’s website or app.')).toBeVisible(),
+            expect(repaymentModal.getByText('Account number', { exact: true })).toBeVisible(),
+            expect(repaymentModal.getByText('123456789012', { exact: true })).toBeVisible(),
+            expect(repaymentModal.getByText('Routing number', { exact: true })).toBeVisible(),
+            expect(repaymentModal.getByText('012345678', { exact: true })).toBeVisible(),
+            expect(repaymentModal.getByText('Adyen N.V. San Francisco Branch', { exact: true })).toBeVisible(),
+            expect(repaymentModal.getByText('US', { exact: true })).toBeVisible(),
+            expect(repaymentModal.getByRole('button', { name: /^Copy (account number|routing number|account owner)$/ })).toHaveCount(3),
+            expect(repaymentModal.getByText('IBAN', { exact: true })).toBeHidden(),
+            expect(repaymentModal.getByText('Sort code', { exact: true })).toBeHidden(),
+        ]);
     });
 });

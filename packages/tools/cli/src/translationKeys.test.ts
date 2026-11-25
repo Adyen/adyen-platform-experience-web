@@ -59,6 +59,7 @@ describe('translation-keys.tsv', () => {
         ],
         ['common.actions.copy.labels.default', { transactions: 'transactions.common.copy.label' }],
         ['capital.offer.common.noOfferTitle', { capital: 'capital.common.emptyStates.noOffer.title' }],
+        ['capital.overview.grants.list.tabs.a11y.label', { capital: 'capital.overview.grantList.statusFilter.a11yLabel' }],
     ])('maps %s', (v1Key, expected) => {
         expect(lookUp(v1Key)).toMatchObject(expected);
     });
@@ -69,6 +70,10 @@ describe('translation-keys.tsv', () => {
             ['capital.common.fields.cashAdvance.dailyRepaymentRate.label', 'capital.common.fields.loan.dailyRepaymentRate.label'],
         ],
         ['capital.howMuchMoneyDoYouNeed', ['capital.offer.selection.cashAdvance.amountTitle', 'capital.offer.selection.loan.amountTitle']],
+        [
+            'capital.overview.grants.item.actions.copyGrantID',
+            ['capital.overview.grantItem.cashAdvance.copyGrantID.a11yLabel', 'capital.overview.grantItem.loan.copyGrantID.a11yLabel'],
+        ],
     ])('maps %s to both its loan and cash advance keys', (v1Key, expected) => {
         expect(
             rows

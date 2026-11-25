@@ -40,10 +40,11 @@ test.describe('Early renewal - Loan', () => {
         await expectPageLoadAnalyticsEvents(analyticsEvents);
     });
 
-    test('should render early renewal info in offer selection screen', async ({ page }) => {
-        const newLoanField = page.getByText('New loan').locator('..');
-        const currentLoanBalanceField = page.getByText('Current loan balance').locator('..');
-        const amountToReceiveField = page.getByText("Amount you'll receive").locator('..');
+    test('should render loan renewal info in offer selection screen', async ({ page }) => {
+        const selection = page.getByTestId('capital-offer-selection');
+        const newLoanField = selection.getByText('New loan').locator('..');
+        const currentLoanBalanceField = selection.getByText('Current loan balance').locator('..');
+        const amountToReceiveField = selection.getByText("Amount you'll receive").locator('..');
 
         await Promise.all([
             expect(newLoanField).toBeVisible(),
@@ -55,7 +56,7 @@ test.describe('Early renewal - Loan', () => {
         ]);
     });
 
-    test('should render early renewal info in offer summary screen', async ({ page, analyticsEvents }) => {
+    test('should render loan renewal info in offer summary screen', async ({ page, analyticsEvents }) => {
         await goToOfferSummary(page, analyticsEvents);
         const offerSummary = page.getByTestId('capital-offer-summary');
         const newLoanField = offerSummary.getByText('New loan').first().locator('..');

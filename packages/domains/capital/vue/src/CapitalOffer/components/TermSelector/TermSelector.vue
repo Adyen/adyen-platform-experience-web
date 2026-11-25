@@ -35,7 +35,7 @@ const { i18n } = useCoreContext();
 const { getContractCopy } = useContractCopy(() => props.contractType);
 const userEvents = useEventDispatcherContext();
 const hasEmittedInitialChangeEvent = ref(false);
-const formatTermLabel = useFormatTerm(() => props.contractType, true);
+const formatTermLabel = useFormatTerm(() => props.contractType, { hasAsterisk: true, hasEstPrefix: true });
 const availableTerms = computed(() => getAvailableTerms(props.offersByTerm));
 const isWideContainer = useContainerQuery(['up', BREAKPOINTS.sm]);
 
