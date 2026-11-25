@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { BentoAlert, BentoButtonActions, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
+import { getBentoLoadingActionState } from '@integration-components/composables-vue';
 import { useConfigContext, useCoreContext, useModalContext } from '@integration-components/core/vue';
 import { isFunction } from '@integration-components/utils';
 import type { IPaymentLinkDetails } from '@integration-components/types';
@@ -40,8 +41,7 @@ const actionButtons = computed<BentoButtonActionsList>(() => [
         title: i18n.get('payByLink.details.expiration.confirmExpiration'),
         event: handleConfirmExpire,
         variant: 'primary',
-        disabled: isLoading.value,
-        state: isLoading.value ? 'loading' : undefined,
+        ...getBentoLoadingActionState(isLoading.value),
     },
     {
         title: i18n.get('payByLink.common.goBack.label'),

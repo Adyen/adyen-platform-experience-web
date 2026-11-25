@@ -26,7 +26,7 @@ import useTimezoneAwareDateFormatting from '@integration-components/composables-
 import { asPageSizeItems } from '@integration-components/composables-vue/usePageLimit';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IPayout, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
-import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '@integration-components/utils';
+import { DATE_FORMAT_PAYOUTS } from '@integration-components/utils';
 import styles from './PayoutsTable.module.scss';
 
 const props = defineProps<{
@@ -61,7 +61,7 @@ const isMobile = useResponsiveContainer(containerQueries.down.xs);
 const mobileColumns = new Set(['createdAt', 'payoutAmount']);
 
 function formatPayoutDate(dateStr: string): string {
-    return dateFormat(dateStr, isMobile.value ? DATE_FORMAT_PAYOUTS_MOBILE : DATE_FORMAT_PAYOUTS);
+    return dateFormat(dateStr, DATE_FORMAT_PAYOUTS);
 }
 
 // ── Custom columns ──

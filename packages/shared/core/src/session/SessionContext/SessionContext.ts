@@ -1,5 +1,5 @@
 import {
-    ERR_SESSION_EXPIRED,
+    DEFAULT_SESSION_REAUTH_THROTTLE_MS,
     ERR_SESSION_HTTP_UNAVAILABLE,
     EVT_SESSION_EXPIRED,
     EVT_SESSION_READY,
@@ -16,6 +16,7 @@ import {
 import { createSessionAutofresher } from './internal/autofresher';
 import { createSessionDeadline } from './internal/deadline';
 import { createSessionRefresher } from './internal/refresher';
+import { isSessionExpiredError } from './errors';
 import { createEventEmitter, isFunction, noop } from '@integration-components/utils';
 import type { SessionEventType, SessionSpecification } from './types';
 
@@ -33,6 +34,13 @@ export interface SessionContext<T, HttpParams extends any[] = any[]> {
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class SessionContext<T, HttpParams extends any[] = any[]> {
     private _session: T | undefined;
+    private _rejectedSession: { value: T | undefined } | undefined;
+    private _deadlineRefresh: Promise<void> | undefined;
+
+    // Neither successful requests nor regular refreshes reset this. A new session typically makes
+    // components request again (e.g. after the setup endpoints refresh), so resetting it would let an
+    // endpoint that keeps responding with an expired-token error loop again.
+    private _lastReauthAt = -Infinity;
 
     private readonly _autofresh;
     private readonly _deadline;
@@ -51,7 +59,8 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
 
         this._refresher.on(INTERNAL_EVT_SESSION_READY, () => {
             this._session = this._refresher.session;
-            this._deadline.refresh(this._session).finally(() => this._eventEmitter.emit(EVT_SESSION_REFRESHED));
+            this._rejectedSession = undefined;
+            this._deadlineRefresh = this._deadline.refresh(this._session).finally(() => this._eventEmitter.emit(EVT_SESSION_REFRESHED));
             this._eventEmitter.emit(EVT_SESSION_READY);
         });
 
@@ -61,11 +70,18 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     }
 
     get isExpired() {
-        return this._deadline.elapsed;
+        // An expired-token response expires the session even if its deadline has not elapsed
+        if (this._rejectedSession && this._rejectedSession.value === this._session) return true;
+        return this._deadline.elapsed ?? (this._session === undefined ? undefined : false);
     }
 
     get refreshing() {
         return this._refresher.refreshing;
+    }
+
+    private get _reauthThrottleMs() {
+        const throttleMs = this._specification.reauthThrottleMs;
+        return Number.isFinite(throttleMs) && throttleMs! >= 0 ? throttleMs! : DEFAULT_SESSION_REAUTH_THROTTLE_MS;
     }
 
     private _assertSessionHttp(value: any): asserts value is NonNullable<SessionSpecification<T, HttpParams>['http']> {
@@ -77,22 +93,56 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         ...args: HttpParams
     ) {
         this._autofresh(true);
+
+        let canRetry = true;
+        let expiredSession: { value: T | undefined } | undefined;
+
         while (true) {
+            let session: T | undefined;
+
             try {
-                // a no-op catch callback is used here (`noop`),
-                // to silence unnecessary unhandled promise rejection warnings
-                await this._refresher.promise.catch(noop);
+                // Capturing the rejection also silences unnecessary unhandled promise rejection warnings
+                const refreshFailure = await this._refresher.promise.then(noop, (reason: unknown) => ({ reason }));
+
+                // A failed refresh leaves the expired session in place. Retrying with it would only
+                // get another expired-token response and hide why the session could not be recovered.
+                if (refreshFailure && expiredSession && expiredSession.value === this._session) throw refreshFailure.reason;
+
+                // A deadline refresh replaces an elapsed deadline signal. Without waiting for it,
+                // a retry could reuse the aborted signal of the session that just expired.
+                await this._deadlineRefresh?.catch(noop);
 
                 const { signal } = this._deadline;
 
                 await beforeHttp?.(this._session, signal, ...args);
                 this._assertSessionHttp(this._specification.http);
 
-                return await this._specification.http(this._session, signal, ...args);
+                session = this._session;
+                return await this._specification.http(session, signal, ...args);
             } catch (ex) {
-                if (ex !== ERR_SESSION_EXPIRED) throw ex;
-                if (this._refresher.pending) continue;
-                this._deadline.elapse();
+                if (!isSessionExpiredError(ex) || !canRetry) throw ex;
+
+                // Retry at most once per request, so that a session which keeps getting
+                // expired-token responses (e.g. 401) fails the request instead of looping.
+                canRetry = false;
+                expiredSession = { value: session };
+
+                // Skip when another request already replaced (or is replacing) the session,
+                // otherwise concurrent expired-token responses would each create a session.
+                if (session === this._session && !this._refresher.refreshing) {
+                    const now = performance.now();
+                    if (now - this._lastReauthAt < this._reauthThrottleMs) throw ex;
+
+                    this._lastReauthAt = now;
+                    this._rejectedSession = { value: session };
+
+                    // Requests in flight are not cancelled: cancelling a write cannot undo it on the server, and a
+                    // request that also gets an expired-token response joins this recovery and retries once.
+                    if (!this._refresher.pending) this._eventEmitter.emit(EVT_SESSION_EXPIRED);
+
+                    // Refresh directly instead of relying on autofresh, which may be disabled
+                    this._refresher.refresh().catch(noop);
+                }
             }
         }
     }

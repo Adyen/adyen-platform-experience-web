@@ -22,3 +22,12 @@ export const MAX_AGE_MS = (() => {
         return maxAgeMs;
     }
 })();
+
+export const REAUTH_THROTTLE_MS = (() => {
+    // Value provisioned in `SESSION_REAUTH_THROTTLE_MS` env variable (`0` is valid: it disables the throttle)
+    const value = process.env.SESSION_REAUTH_THROTTLE_MS;
+    if (value == null || String(value).trim() === '') return;
+
+    const throttleMs = Number(value);
+    if (Number.isFinite(throttleMs) && throttleMs >= 0) return throttleMs;
+})();

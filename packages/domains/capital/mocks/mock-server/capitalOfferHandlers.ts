@@ -6,8 +6,7 @@ import {
     CAPITAL_STATE_SINGLE_TERM_LOAN,
     CAPITAL_STATE_SINGLE_TERM_CASH_ADVANCE,
     CAPITAL_STATE_ELIGIBLE_LOAN,
-    CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN,
-    CAPITAL_STATE_ELIGIBLE_AND_ONGOING_CASH_ADVANCE,
+    CAPITAL_STATE_ELIGIBLE_WITH_ONGOING,
     CAPITAL_STATE_ELIGIBLE_UNSUPPORTED_CONTRACT,
 } from '../mock-data';
 import { http, HttpResponse } from 'msw';
@@ -19,19 +18,11 @@ import { withDelay } from '@integration-components/testing/msw';
 
 export const capitalOfferHandlers = {
     ...commonHandlers,
-    eligibleWithOngoingLoan: [
+    eligibleWithOngoing: [
         http.get(
             CAPITAL_ENDPOINTS.capitalState,
             withDelay(() => {
-                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN);
-            })
-        ),
-    ],
-    eligibleWithOngoingCashAdvance: [
-        http.get(
-            CAPITAL_ENDPOINTS.capitalState,
-            withDelay(() => {
-                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_AND_ONGOING_CASH_ADVANCE);
+                return HttpResponse.json(CAPITAL_STATE_ELIGIBLE_WITH_ONGOING);
             })
         ),
     ],
@@ -99,7 +90,7 @@ export const capitalOfferHandlers = {
         ),
         ...defaultHandlersCashAdvance,
     ],
-    errorOfferLoan: [
+    errorOffer: [
         http.get(
             CAPITAL_ENDPOINTS.dynamicOffer,
             withDelay(({ request }) => {
@@ -107,15 +98,6 @@ export const capitalOfferHandlers = {
             })
         ),
         ...defaultHandlersLoan,
-    ],
-    errorOfferCashAdvance: [
-        http.get(
-            CAPITAL_ENDPOINTS.dynamicOffer,
-            withDelay(({ request }) => {
-                return getDynamicOfferResponse(request, 'CashAdvance', 10);
-            })
-        ),
-        ...defaultHandlersCashAdvance,
     ],
     errorTemporaryOffer: [
         http.get(
@@ -132,7 +114,7 @@ export const capitalOfferHandlers = {
         ),
         ...defaultHandlersLoan,
     ],
-    errorReviewLoan: [
+    errorReview: [
         http.post(
             CAPITAL_ENDPOINTS.createOffer,
             withDelay(() => {
@@ -141,16 +123,7 @@ export const capitalOfferHandlers = {
         ),
         ...defaultHandlersLoan,
     ],
-    errorReviewCashAdvance: [
-        http.post(
-            CAPITAL_ENDPOINTS.createOffer,
-            withDelay(() => {
-                return getErrorResponse(getGenericError(), 500);
-            })
-        ),
-        ...defaultHandlersCashAdvance,
-    ],
-    errorSubmitLoan: [
+    errorSubmit: [
         http.post(
             CAPITAL_ENDPOINTS.requestFunds,
             withDelay(() => {
@@ -159,16 +132,7 @@ export const capitalOfferHandlers = {
         ),
         ...defaultHandlersLoan,
     ],
-    errorSubmitCashAdvance: [
-        http.post(
-            CAPITAL_ENDPOINTS.requestFunds,
-            withDelay(() => {
-                return getErrorResponse(getGenericError(), 500);
-            })
-        ),
-        ...defaultHandlersCashAdvance,
-    ],
-    errorWithCodeSubmitLoan: [
+    errorWithCodeSubmit: [
         http.post(
             CAPITAL_ENDPOINTS.requestFunds,
             withDelay(() => {
@@ -178,17 +142,7 @@ export const capitalOfferHandlers = {
         ),
         ...defaultHandlersLoan,
     ],
-    errorWithCodeSubmitCashAdvance: [
-        http.post(
-            CAPITAL_ENDPOINTS.requestFunds,
-            withDelay(() => {
-                const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '226ac4ce59f0f159ad672d38d3291e93', 'Message', '30_600');
-                return getErrorResponse(error, 500);
-            })
-        ),
-        ...defaultHandlersCashAdvance,
-    ],
-    errorBalanceAccountLoan: [
+    errorBalanceAccount: [
         http.post(
             CAPITAL_ENDPOINTS.requestFunds,
             withDelay(() => {
@@ -197,15 +151,5 @@ export const capitalOfferHandlers = {
             })
         ),
         ...defaultHandlersLoan,
-    ],
-    errorBalanceAccountCashAdvance: [
-        http.post(
-            CAPITAL_ENDPOINTS.requestFunds,
-            withDelay(() => {
-                const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingPrimaryBalanceAccountException', 'Message', '30_013');
-                return getErrorResponse(error, 422);
-            })
-        ),
-        ...defaultHandlersCashAdvance,
     ],
 };

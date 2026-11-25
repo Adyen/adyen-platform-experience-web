@@ -1,8 +1,8 @@
-import { ERR_SESSION_EXPIRED, SessionSpecification } from './SessionContext';
+import { asSessionExpiredError, SessionSpecification } from './SessionContext';
 import { abortSignalForAny, enumerable, isAbortSignal, isPlainObject, isString, isUndefined } from '@integration-components/utils';
 import { http as _http } from '../Http/http';
 import { ErrorTypes } from '../Http/utils';
-import { AUTO_REFRESH, MAX_AGE_MS } from './constants';
+import { AUTO_REFRESH, MAX_AGE_MS, REAUTH_THROTTLE_MS } from './constants';
 import type { SessionObject, SessionRequest } from '../ConfigContext.types';
 import type { HttpOptions } from '../Http/types';
 import type { OnErrorHandler } from '../types';
@@ -41,26 +41,11 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
         throw undefined;
     };
 
-    public readonly deadline: _AuthSessionSpecification['deadline'] = session => {
-        const deadlines = [];
-        let issuedAt: number;
-        let expiresAt: number;
+    public readonly reauthThrottleMs: _AuthSessionSpecification['reauthThrottleMs'] = REAUTH_THROTTLE_MS;
 
-        try {
-            ({ iat: issuedAt, exp: expiresAt } = JSON.parse(atob(session!.token.split('.')[1]!)));
-            deadlines.push(expiresAt);
-        } catch {
-            /* ignore malformed token errors */
-            issuedAt = Date.now();
-        }
-
-        if (!isUndefined(MAX_AGE_MS)) {
-            const issuedAtDate = new Date(issuedAt);
-            deadlines.push(issuedAtDate.setMilliseconds(issuedAtDate.getMilliseconds() + MAX_AGE_MS));
-        }
-
-        return deadlines;
-    };
+    // The token is opaque (it may be encrypted), so expiry is detected from expired-token responses.
+    // The deadline is computed when a session is received, so the max age counts from that moment.
+    public readonly deadline: _AuthSessionSpecification['deadline'] = () => (isUndefined(MAX_AGE_MS) ? [] : [Date.now() + MAX_AGE_MS]);
 
     public http: _AuthSessionSpecification['http'] = async (session, sessionSignal, httpOptions: HttpOptions) => {
         const { headers, signal, ...restOptions } = httpOptions;
@@ -77,7 +62,7 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
             return await _http(sessionHttpOptions);
         } catch (ex: any) {
             if (ex?.type === ErrorTypes.EXPIRED_TOKEN) {
-                throw ERR_SESSION_EXPIRED;
+                throw asSessionExpiredError(ex);
             }
             throw ex;
         }

@@ -1,4 +1,10 @@
 @use '@integration-components/style' as style;
+@use '@integration-components/style/data-grid';
+
+.root {
+    @include data-grid.adyen-pe-data-grid-centered-rows;
+    @include data-grid.adyen-pe-data-grid-payment-method-icons;
+}
 
 .paymentMethod {
     align-items: center;

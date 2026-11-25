@@ -17,6 +17,7 @@ export * from './useCustomDataCells';
 export { default as useCustomDataCells } from './useCustomDataCells';
 
 export { CustomDataCell } from './CustomDataCell';
+export { default as CustomDetailValue } from './CustomDetailValue.vue';
 
 export {
     createDomainErrorResolver,
@@ -34,6 +35,7 @@ export { ComponentAvailabilityGate } from '@integration-components/core/vue';
 export { useShouldHideTitles, useCondensedDataGrid } from '@integration-components/core/vue';
 export { CopyText } from './CopyText';
 export { LiveAnnouncement } from './LiveAnnouncement';
+export { getBentoLoadingActionState } from './getBentoLoadingActionState';
 export { default as ResponsiveButtonActions } from './ResponsiveButtonActions.vue';
 
 export { default as useTimezoneAwareDateFormatting } from './useTimezoneAwareDateFormatting';

@@ -32,7 +32,7 @@ test.describe('Eligible - Loan', () => {
         await expectPageLoadAnalyticsEvents(analyticsEvents);
     });
 
-    test('should render offer selection screen', async ({ page }) => {
+    test('should render loan offer selection screen', async ({ page }) => {
         await Promise.all([
             expect(page.getByText('Business financing request')).toBeVisible(),
             expect(page.getByText('Adyen Capital is provided by Adyen N.V.')).toBeVisible(),
@@ -152,7 +152,7 @@ test.describe('Eligible - Loan', () => {
         ]);
     });
 
-    test('should render offer summary screen', async ({ page, analyticsEvents }) => {
+    test('should render loan offer summary screen', async ({ page, analyticsEvents }) => {
         await goToOfferSummary(page, analyticsEvents);
         const offerSummary = page.getByTestId('capital-offer-summary');
 

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
-const STORY_ID = 'mocked-capital-capital-offer--error-offer-loan';
+const STORY_ID = 'mocked-capital-capital-offer--error-offer';
 
 test.describe('Error - Offer', () => {
     test.beforeEach(async ({ page }) => {
@@ -9,6 +9,8 @@ test.describe('Error - Offer', () => {
     });
 
     test('should render an error message', async ({ page }) => {
+        await expect(page.getByText('Business financing request')).toBeVisible();
+        await expect(page.getByText('Adyen Capital is provided by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('Something went wrong.')).toBeVisible();
         await expect(page.getByText("We couldn't load your Adyen Capital offers.")).toBeVisible();
         await expect(page.getByText('Try refreshing the page or come back later.')).toBeVisible();

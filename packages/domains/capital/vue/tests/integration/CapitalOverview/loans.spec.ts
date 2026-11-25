@@ -4,30 +4,32 @@ import { expectAnalyticsEvents, goToStory, setTime } from '@integration-componen
 import {
     sharedCapitalOverviewAnalyticsEventProperties,
     openRepaymentButtonAnalyticsEventProperties,
+    dismissRepaymentAnalyticsEventProperties,
 } from '../../../../fixtures/CapitalOverview/constants/analytics';
 
-const STORY_ID = 'mocked-capital-capital-overview--grants-loan';
+const STORY_ID = 'mocked-capital-capital-overview--loans';
 
-const getGrantDetailsToggle = (page: Page) => page.getByLabel('Show grant details').first();
+const getDetailsToggle = (page: Page) => page.getByLabel('Show details').first();
 
-test.describe('Grants - Loan', () => {
+test.describe('Loans', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedCapitalOverviewAnalyticsEventProperties]]);
     });
 
-    test('should render grants screen with tabs', async ({ page }) => {
+    test('should render loans screen with tabs', async ({ page }) => {
         await Promise.all([
             expect(page.getByText('Adyen Capital', { exact: true })).toBeVisible(),
             expect(page.getByText('Adyen Capital is provided by Adyen N.V.')).toBeVisible(),
+            expect(page.getByRole('group', { name: 'Filter by status' })).toBeVisible(),
             expect(page.getByRole('radio', { name: 'In progress' })).toBeVisible(),
             expect(page.getByRole('radio', { name: 'Closed' })).toBeVisible(),
             expect(page.getByRole('button', { name: 'Send repayment', exact: true }).first()).toHaveText('Send repayment'),
         ]);
     });
 
-    test('should render in-progress grants when in-progress tab is clicked', async ({ page }) => {
+    test('should render in-progress loans when in-progress tab is clicked', async ({ page }) => {
         await page.getByRole('radio', { name: 'Closed' }).click();
         await page.getByRole('radio', { name: 'In progress' }).click();
 
@@ -41,12 +43,12 @@ test.describe('Grants - Loan', () => {
             expect(progressBar).toHaveAttribute('aria-valuenow', '59.34718100890207'),
             expect(progressBar).toHaveAttribute('aria-valuemax', '100'),
             expect(page.getByRole('button', { name: 'Send repayment', exact: true }).first()).toBeVisible(),
-            expect(getGrantDetailsToggle(page)).toBeVisible(),
+            expect(getDetailsToggle(page)).toBeVisible(),
         ]);
     });
 
-    test('should show grant details when grant card is expanded', async ({ page }) => {
-        await getGrantDetailsToggle(page).click();
+    test('should show loan details when loan card is expanded', async ({ page }) => {
+        await getDetailsToggle(page).click();
 
         await Promise.all([
             expect(page.getByText('Your requested funds were: €20,000.00')).toBeVisible(),
@@ -79,15 +81,15 @@ test.describe('Grants - Loan', () => {
         ]);
     });
 
-    test('should hide grant details when grant card is collapsed', async ({ page }) => {
-        await getGrantDetailsToggle(page).click();
-        await getGrantDetailsToggle(page).click();
+    test('should hide loan details when loan card is collapsed', async ({ page }) => {
+        await getDetailsToggle(page).click();
+        await getDetailsToggle(page).click();
 
         await expect(page.getByText('Your requested funds were: €20,000.00')).toBeHidden();
     });
 
     test('should show a tooltip when repayment-threshold info icon is hovered', async ({ page }) => {
-        await getGrantDetailsToggle(page).click();
+        await getDetailsToggle(page).click();
         await page.getByLabel('Minimum repayment every 30 days to repay the financing on time').hover();
 
         await expect(page.getByRole('tooltip', { name: 'Minimum repayment every 30 days to repay the financing on time' })).toBeVisible();
@@ -104,7 +106,7 @@ test.describe('Grants - Loan', () => {
             expect(repaymentModal.getByText('Manual bank transfer')).toBeVisible(),
             expect(
                 repaymentModal.getByText(
-                    'Repay your loan early by transferring money to this bank account. Payments must be made from one of your verified bank accounts.'
+                    'Repay your loan early by transferring money to the provided bank account. Payments could be made from any of your preferred or one of your verified bank accounts.'
                 )
             ).toBeVisible(),
             expect(repaymentModal.getByText('Adyen’s bank account details')).toBeVisible(),
@@ -120,12 +122,12 @@ test.describe('Grants - Loan', () => {
             expect(repaymentModal.getByText('NL**INGB******4151')).toBeVisible(),
             expect(repaymentModal.getByText('How to send a manual repayment')).toBeVisible(),
             expect(repaymentModal.getByText('Add Adyen N.V. as a payee using your bank’s website or app.')).toBeVisible(),
-            expect(repaymentModal.getByText('Send your payment.')).toBeVisible(),
+            expect(repaymentModal.getByText('Transfer up to €8,220.00 to the bank account provided below.')).toBeVisible(),
             expect(repaymentModal.getByText('Wait 1-3 business days for the payment to be applied.')).toBeVisible(),
         ]);
     });
 
-    test('should return to grants list when send repayment dismiss button is clicked', async ({ page, analyticsEvents }) => {
+    test('should return to loans list when send repayment dismiss button is clicked', async ({ page, analyticsEvents }) => {
         await page.getByRole('button', { name: 'Send repayment', exact: true }).click();
         await expectAnalyticsEvents(analyticsEvents, [['Clicked button', openRepaymentButtonAnalyticsEventProperties]]);
 
@@ -133,6 +135,7 @@ test.describe('Grants - Loan', () => {
 
         await dismissButton.click();
         await dismissButton.waitFor({ state: 'detached' });
+        await expectAnalyticsEvents(analyticsEvents, [['Clicked button', dismissRepaymentAnalyticsEventProperties]]);
         await Promise.all([
             expect(page.getByTestId('grant-amount-label').first()).toBeVisible(),
             expect(page.getByRole('progressbar').first()).toBeVisible(),
@@ -140,47 +143,53 @@ test.describe('Grants - Loan', () => {
         ]);
     });
 
-    test('should render closed grants when closed tab is clicked', async ({ page }) => {
+    test('should render closed loans when closed tab is clicked', async ({ page }) => {
         await page.getByRole('radio', { name: 'Closed' }).click();
         await Promise.all([
             expect(page.getByText('Requested funds', { exact: true })).toHaveCount(4),
             expect(page.getByText('€20,000.00')).toHaveCount(4),
             expect(page.getByText('Grant ID')).toHaveCount(4),
-            expect(page.getByTestId('grant-id-copy-text')).toHaveCount(4),
+            expect(page.getByRole('button', { name: 'Copy grant ID' })).toHaveCount(4),
             expect(page.getByText('Fully repaid')).toBeVisible(),
             expect(page.getByText('Canceled')).toBeVisible(),
             expect(page.getByText('Defaulted')).toBeVisible(),
             expect(page.getByText('Failed', { exact: true })).toBeVisible(),
             expect(page.getByRole('progressbar')).toBeHidden(),
-            expect(page.getByRole('button', { name: 'Show grant details' })).toBeHidden(),
+            expect(page.getByRole('button', { name: 'Show details' })).toBeHidden(),
         ]);
     });
 
-    test('should render a tooltip with the grant ID when "Grant ID" label is hovered', async ({ page }) => {
+    test('should render a tooltip with the loan ID when the id label is hovered', async ({ page }) => {
         await page.getByRole('radio', { name: 'Closed' }).click();
         await page.getByText('Grant ID').last().hover();
 
         await expect(page.getByText('6d9d171783ba')).toBeVisible();
     });
 
-    test('should render a tooltip when failed status tag is hovered', async ({ page }) => {
+    test('should not render a tooltip when repaid status tag is hovered', async ({ page }) => {
         await page.getByRole('radio', { name: 'Closed' }).click();
-        await page.getByLabel('Failed').hover();
-
-        await expect(page.getByText("This offer expired or we couldn't process the request. You can try again with a new offer.")).toBeVisible();
+        await page.getByText('Fully repaid', { exact: true }).hover();
+        await expect(page.getByRole('tooltip')).toBeHidden();
     });
 
-    test('should render a tooltip when revoked status tag is hovered', async ({ page }) => {
+    test('should render the relevant tooltip when revoked status tag is hovered', async ({ page }) => {
         await page.getByRole('radio', { name: 'Closed' }).click();
         await page.getByText('Canceled').hover();
 
         await expect(page.getByText('You returned the loan amount, so this loan was canceled.')).toBeVisible();
     });
 
-    test('should render a tooltip when written-off status tag is hovered', async ({ page }) => {
+    test('should render the relevant tooltip when written-off status tag is hovered', async ({ page }) => {
         await page.getByRole('radio', { name: 'Closed' }).click();
         await page.getByText('Defaulted').hover();
 
         await expect(page.getByText('This loan was not repaid as agreed.')).toBeVisible();
+    });
+
+    test('should render the relevant tooltip when failed status tag is hovered', async ({ page }) => {
+        await page.getByRole('radio', { name: 'Closed' }).click();
+        await page.getByLabel('Failed').hover();
+
+        await expect(page.getByText("This offer expired or we couldn't process the request. You can try again with a new offer.")).toBeVisible();
     });
 });

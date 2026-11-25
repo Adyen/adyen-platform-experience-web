@@ -10,7 +10,7 @@ test.describe('Error - Onboarding config', () => {
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedCapitalOverviewAnalyticsEventProperties]]);
     });
 
-    test('should render pending grant with actions', async ({ page }) => {
+    test('should render pending loan with actions', async ({ page }) => {
         const informationSubmitButton = page.getByRole('button', { name: 'Submit information' });
         const signingButton = page.getByRole('button', { name: 'Sign terms of service' });
 

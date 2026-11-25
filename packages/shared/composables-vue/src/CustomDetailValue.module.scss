@@ -1,0 +1,17 @@
+@use '@integration-components/style' as style;
+
+// The minimum height keeps icon rows as tall as plain-text rows and centers the icon on the text line.
+.icon {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-030);
+    min-height: style.token(text-body-line-height);
+}
+
+.iconImage {
+    flex-shrink: 0;
+    height: style.token(spacer-070);
+    max-width: style.token(spacer-100);
+    object-fit: contain;
+    object-position: center;
+}

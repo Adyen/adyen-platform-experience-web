@@ -12,6 +12,7 @@ const THEME_VARIABLE_CONTROLS = {
     themeNeutral: { label: 'Neutral', variable: 'neutral' },
     themeBackground: { label: 'Background', variable: 'background' },
     themeLabel: { label: 'Label', variable: 'label' },
+    themeRoundness: { label: 'Roundness', variable: 'roundness' },
 } as const satisfies Record<string, { label: string; variable: keyof ThemeVariables }>;
 
 const THEME_DARK_CONTROL = 'themeDark';
@@ -98,12 +99,13 @@ const preview: Preview = {
             table: { category: 'Theme' },
         },
         ...Object.fromEntries(
-            Object.entries(THEME_VARIABLE_CONTROLS).map(([arg, { label }]) => [
+            Object.entries(THEME_VARIABLE_CONTROLS).map(([arg, { label, variable }]) => [
                 arg,
                 {
                     name: label,
-                    description: `Override the ${label.toLowerCase()} theme color`,
-                    control: { type: 'color' },
+                    description: `Override the ${label.toLowerCase()} theme ${variable === 'roundness' ? 'roundness' : 'color'}`,
+                    control: { type: variable === 'roundness' ? 'select' : 'color' },
+                    ...(variable === 'roundness' && { options: ['small', 'medium', 'large'] satisfies ThemeVariables['roundness'][] }),
                     table: { category: 'Theme' },
                 },
             ])

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoButtonActions, type BentoButtonActionsList } from '@adyen/bento-vue3';
+import { getBentoLoadingActionState } from '@integration-components/composables-vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { usePaymentLinkSettingsContext } from '../composables/context';
 import { useSettingsPermission } from '../composables/useSettingsPermission';
@@ -28,9 +29,8 @@ const actionButtons = computed<BentoButtonActionsList>(() => {
     const buttons: BentoButtonActionsList = [
         {
             title: i18n.get('payByLink.settings.actions.save'),
-            disabled: isSaveDisabled.value,
+            ...getBentoLoadingActionState(isSaving.value && !(props.navigateBack && isSaveSuccess.value), isSaveDisabled.value),
             event: onSave,
-            state: isSaving.value && !(props.navigateBack && isSaveSuccess.value) ? 'loading' : 'start',
         },
     ];
     if (props.navigateBack || props.closeContent) {

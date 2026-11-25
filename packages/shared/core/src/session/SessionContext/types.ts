@@ -18,4 +18,12 @@ export interface SessionSpecification<T, HttpParams extends any[] = any[]> {
     deadline?: _SessionDeadline | ((currentSession: T | undefined, signal: AbortSignal) => Promised<_SessionDeadline>);
     http?: (currentSession: T | undefined, signal: AbortSignal, ...args: HttpParams) => Promised<any>;
     onRefresh: (currentSession: T | undefined, signal: AbortSignal) => Promised<T>;
+
+    /**
+     * Minimum interval (in milliseconds) between session refreshes triggered by expired-token
+     * responses (e.g. 401). Within the interval, such responses are rejected without refreshing.
+     * Does not affect deadline-driven or explicit refreshes. `0` disables the throttle; invalid
+     * values fall back to `DEFAULT_SESSION_REAUTH_THROTTLE_MS`.
+     */
+    reauthThrottleMs?: number;
 }

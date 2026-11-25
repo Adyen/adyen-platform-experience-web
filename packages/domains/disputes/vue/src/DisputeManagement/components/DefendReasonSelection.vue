@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoAlert, BentoButtonActions, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
+import { getBentoLoadingActionState } from '@integration-components/composables-vue';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { DISPUTE_TYPE, getDefenseReasonContent } from '@integration-components/disputes/domain';
 import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
@@ -94,9 +95,8 @@ function onDefenseReasonChange(reason: string) {
 const reasonActionButtons = computed(() => [
     {
         title: i18n.get('disputes.management.defend.continue'),
-        disabled: isReasonSubmitting.value,
+        ...getBentoLoadingActionState(isReasonSubmitting.value),
         event: () => void submitDefenseReason(),
-        state: isReasonSubmitting.value ? 'loading' : 'start',
     },
     {
         title: i18n.get('disputes.common.goBack.label'),

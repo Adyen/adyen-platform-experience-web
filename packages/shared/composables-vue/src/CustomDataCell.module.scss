@@ -17,14 +17,21 @@
 
 .root {
     align-items: center;
-    display: inline-flex;
+    display: flex;
     gap: style.token(spacer-030);
+    width: fit-content;
 
+    // Payment method logos only fill part of their image box, so these sizes sit between a logo's visible artwork and its full box.
     img {
         flex-shrink: 0;
-        height: style.token(spacer-090);
-        max-width: style.token(spacer-100);
+        height: style.token(spacer-080);
+        max-width: style.token(spacer-110);
         object-fit: contain;
         object-position: center;
+    }
+
+    &.condensed img {
+        height: style.token(spacer-060);
+        max-width: style.token(spacer-090);
     }
 }
