@@ -49,7 +49,8 @@ export const useFormatTerm = (
         const { months, remainingDays } = calculateMonthsAndDaysFromDays(days);
         const monthsPart = getMonthsPart(months);
         const daysPart = getDaysPart(remainingDays);
-        const base = [monthsPart, daysPart].filter(Boolean).join(', ');
+        const parts = [monthsPart, daysPart].filter((part): part is string => !!part);
+        const base = new Intl.ListFormat(i18n.locale, { type: 'unit', style: 'short' }).format(parts);
         const suffix = toValue(contractType) === 'CashAdvance' && hasAsterisk ? '*' : '';
         return `${base}${suffix}`;
     };

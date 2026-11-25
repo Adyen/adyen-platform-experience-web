@@ -2,8 +2,8 @@ import type { ContractTypeKeyMap } from '@integration-components/capital/domain'
 
 export const CONTRACT_KEYS = {
     copyGrantId: {
-        CashAdvance: 'capital.overview.grantItem.cashAdvance.copy.grantID',
-        Loan: 'capital.overview.grantItem.loan.copy.grantID',
+        CashAdvance: 'capital.overview.grantItem.cashAdvance.copyGrantID.a11yLabel',
+        Loan: 'capital.overview.grantItem.loan.copyGrantID.a11yLabel',
     },
     repaymentRatio: {
         CashAdvance: 'capital.overview.grantItem.cashAdvance.repaymentRatio',
