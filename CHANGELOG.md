@@ -1,5 +1,12 @@
 # @adyen/adyen-platform-experience-web
 
+## 2.0.0-beta.1
+
+### Patch Changes
+
+- 8b36cb8: - Keep session tokens opaque and reuse sessions without a configured deadline across component mounts.
+- 9819ae5: - Fixed components repeatedly refreshing the session and retrying requests when an endpoint kept responding with `401 Unauthorized`. Each request now retries at most once with a refreshed session. Otherwise, it fails with the original error, or with the session refresh error if the refresh itself failed.
+
 ## 2.0.0-beta.0
 
 ### Minor Changes
