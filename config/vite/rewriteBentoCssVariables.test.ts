@@ -1,7 +1,7 @@
 /**
  * @vitest-environment node
  */
-import type { Rollup } from 'vite';
+import type { Plugin, Rollup } from 'vite';
 import { describe, expect, test } from 'vitest';
 import { rewriteBentoCssVariables } from './rewriteBentoCssVariables';
 
@@ -10,8 +10,10 @@ const DARK = "[data-adyen-pe-theme='dark']";
 /** A Bento variable reference after the rewrite: the public variable first, then the Bento default. */
 const read = (name: string, fallback = '') => `var(--adyen-sdk-${name}, var(--adyen-pe-bento-${name}${fallback}))`;
 
-const plugin = rewriteBentoCssVariables();
-const transform = plugin.transform as (code: string, id: string) => { code: string; map: null } | null;
+const [scopePlugin, plugin] = rewriteBentoCssVariables() as [Plugin, Plugin];
+type Transform = (code: string, id: string) => { code: string; map: null } | null;
+const transform = plugin.transform as Transform;
+const scopeTransform = (scopePlugin.transform as unknown as { handler: Transform }).handler;
 const generateBundle = plugin.generateBundle as (options: unknown, bundle: Rollup.OutputBundle) => void;
 
 /** Runs the bundle hook on one CSS asset and returns its source. */
@@ -57,6 +59,40 @@ describe('rewriteBentoCssVariables', () => {
             expect(transform.call({}, ':root{--b-a:red}', id)).toEqual({ code: `${ROOT}{--adyen-pe-bento-a:red}`, map: null });
         }
     );
+
+    describe('scoping Bento component rules', () => {
+        const BENTO_ID = '/node_modules/@adyen/bento-vue3/dist/assets/segmented-control.css';
+        const SCOPE = `:where(${ROOT})`;
+        const scope = (source: string, id = BENTO_ID) => scopeTransform.call({}, source, id)?.code ?? source;
+
+        test.each([
+            ['class rules', '.b-tab[data-v-1]{color:red}', `${SCOPE} .b-tab[data-v-1]{color:red}`],
+            ['scope-id-only rules', '.inner[data-v-1]{color:red}', `${SCOPE} .inner[data-v-1]{color:red}`],
+            ['each selector of a list', '.a,.b>.c{x:y}', `${SCOPE} .a,${SCOPE} .b>.c{x:y}`],
+            ['rules inside media queries', '@media(hover:hover){.a:hover{x:y}}', `@media(hover:hover){${SCOPE} .a:hover{x:y}}`],
+            ['dark rules on the root itself or on a descendant', `.b-dark-theme .a{x:y}`, `${SCOPE}${DARK} .a,${SCOPE} ${DARK} .a{x:y}`],
+        ])('scopes %s to theme roots', (_name, source, expected) => {
+            expect(scope(source)).toBe(expected);
+        });
+
+        test('leaves keyframes, font faces and :host rules alone', () => {
+            const source = '@keyframes spin{from{opacity:0}to{opacity:1}}@font-face{font-family:x}[data-v-1]:host{display:block}';
+            expect(scope(source)).toBe(source);
+        });
+
+        test('is idempotent', () => {
+            const once = scope('.a{x:y}');
+            expect(scope(once)).toBe(once);
+        });
+
+        test('does not scope styles outside Bento', () => {
+            expect(scope('.a{x:y}', 'src/Component.vue?vue&type=style&index=0&lang.css')).toBe('.a{x:y}');
+        });
+
+        test('keeps comments, strings and braces in values intact', () => {
+            expect(scope('/* .x{} */.a::after{content:"}{,"}')).toBe(`/* .x{} */${SCOPE} .a::after{content:"}{,"}`);
+        });
+    });
 
     test('does not transform non-style modules while serving', () => {
         expect(transform.call({}, 'const variable = "--b-a";', 'library.ts')).toBeNull();
