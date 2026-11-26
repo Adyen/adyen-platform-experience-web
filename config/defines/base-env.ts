@@ -6,7 +6,7 @@ import { SDK_VERSION } from '../version.ts';
  * the bundle format, so the value stays stable if the script build moves away from UMD.
  */
 export const getBundleType = (mode: string) => {
-    if (mode === 'umd') return 'script-tag';
+    if (mode === 'cdn') return 'script-tag';
     if (mode === 'production') return 'npm';
     return mode;
 };
