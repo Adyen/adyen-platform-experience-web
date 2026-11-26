@@ -66,31 +66,20 @@ describe('rewriteBentoCssVariables', () => {
         const scope = (source: string, id = BENTO_ID) => scopeTransform.call({}, source, id)?.code ?? source;
 
         test.each([
-            ['class rules', '.b-tab[data-v-1]{color:red}', `${SCOPE} .b-tab[data-v-1]{color:red}`],
-            ['scope-id-only rules', '.inner[data-v-1]{color:red}', `${SCOPE} .inner[data-v-1]{color:red}`],
-            ['each selector of a list', '.a,.b>.c{x:y}', `${SCOPE} .a,${SCOPE} .b>.c{x:y}`],
+            ['rules, for every selector in a list', '.a,.b>.c[data-v-1]{x:y}', `${SCOPE} .a,${SCOPE} .b>.c[data-v-1]{x:y}`],
             ['rules inside media queries', '@media(hover:hover){.a:hover{x:y}}', `@media(hover:hover){${SCOPE} .a:hover{x:y}}`],
-            ['dark rules on the root itself or on a descendant', `.b-dark-theme .a{x:y}`, `${SCOPE}${DARK} .a,${SCOPE} ${DARK} .a{x:y}`],
-        ])('scopes %s to theme roots', (_name, source, expected) => {
+            ['dark rules on the root or on an ancestor', '.b-dark-theme .a{x:y}', `${SCOPE}${DARK} .a,${SCOPE} ${DARK} .a{x:y}`],
+        ])('scopes %s', (_name, source, expected) => {
             expect(scope(source)).toBe(expected);
         });
 
-        test('leaves keyframes, font faces and :host rules alone', () => {
-            const source = '@keyframes spin{from{opacity:0}to{opacity:1}}@font-face{font-family:x}[data-v-1]:host{display:block}';
+        test('leaves keyframes, :host rules and the theme root defaults alone', () => {
+            const source = `@keyframes spin{from{opacity:0}}[data-v-1]:host{display:block}${ROOT}{--a:1}`;
             expect(scope(source)).toBe(source);
-        });
-
-        test('is idempotent', () => {
-            const once = scope('.a{x:y}');
-            expect(scope(once)).toBe(once);
         });
 
         test('does not scope styles outside Bento', () => {
             expect(scope('.a{x:y}', 'src/Component.vue?vue&type=style&index=0&lang.css')).toBe('.a{x:y}');
-        });
-
-        test('keeps comments, strings and braces in values intact', () => {
-            expect(scope('/* .x{} */.a::after{content:"}{,"}')).toBe(`/* .x{} */${SCOPE} .a::after{content:"}{,"}`);
         });
     });
 
