@@ -1,6 +1,7 @@
 import type { Meta } from '@storybook/vue3';
+import { getWorker } from 'msw-storybook-addon';
 import { transactionsOverviewMeta } from './meta';
-import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, ElementStory, type DelayedEndpoints, provisionDelayedEndpoints } from '@integration-components/testing/storybook-helpers';
 import type { TransactionsOverviewExternalProps } from '../../src';
 import { http, HttpResponse } from 'msw';
 import { TRANSACTIONS_ENDPOINTS } from '../../../mocks/endpoints';
@@ -13,9 +14,21 @@ import {
 } from '../../../fixtures/data/TransactionsOverview';
 import { withDelay } from '@integration-components/testing/msw';
 
-const meta: Meta<ElementProps<TransactionsOverviewExternalProps>> = {
+type TransactionsOverviewStoryArgs = TransactionsOverviewExternalProps & {
+    delayedEndpoints?: DelayedEndpoints<typeof TRANSACTIONS_ENDPOINTS>;
+};
+
+const meta: Meta<ElementProps<TransactionsOverviewStoryArgs>> = {
     ...transactionsOverviewMeta,
     title: 'Mocked/Transactions/Transactions Overview',
+    argTypes: {
+        ...transactionsOverviewMeta.argTypes,
+        delayedEndpoints: {
+            control: false,
+            table: { disable: true },
+        },
+    },
+    loaders: [context => provisionDelayedEndpoints(getWorker(), TRANSACTIONS_ENDPOINTS, context.args.delayedEndpoints)],
 };
 
 const sharedArgs = { mockedApi: true } as const;

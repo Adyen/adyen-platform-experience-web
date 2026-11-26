@@ -160,6 +160,62 @@ test.describe('Default', () => {
             await expect(firstRowCells.nth(5)).toHaveText('220.00 USD');
         });
 
+        test('should underline transaction types only while their cell is hovered', async ({ page }) => {
+            const cell = page
+                .getByRole('grid')
+                .getByRole('gridcell')
+                .filter({ has: page.getByText('Payment', { exact: true }) })
+                .first();
+            const transactionType = cell.getByText('Payment', { exact: true });
+            await expect(transactionType).toBeVisible();
+            await Promise.all([
+                expect(transactionType).toHaveCSS('text-decoration-line', 'none'),
+                expect(transactionType).toHaveCSS('text-decoration-style', 'dashed'),
+            ]);
+            const initialColor = await transactionType.evaluate(element => getComputedStyle(element).textDecorationColor);
+
+            await cell.hover();
+            await expect(transactionType).toHaveCSS('text-decoration-line', 'underline');
+
+            await transactionType.hover();
+
+            await Promise.all([
+                expect(page.getByText('Money received to your account from a sales transaction', { exact: true })).toBeVisible(),
+                expect(transactionType).toHaveCSS('text-decoration-line', 'underline'),
+                expect(transactionType).not.toHaveCSS('text-decoration-color', initialColor),
+            ]);
+
+            await page.getByRole('columnheader', { name: 'Transaction type', exact: true }).hover();
+            await Promise.all([
+                expect(transactionType).toHaveCSS('text-decoration-line', 'none'),
+                expect(transactionType).toHaveCSS('text-decoration-color', initialColor),
+            ]);
+        });
+
+        test('should limit the transaction-type tooltip hover area to the text width', async ({ page }) => {
+            const cell = page
+                .getByRole('grid')
+                .getByRole('gridcell')
+                .filter({ has: page.getByText('Payment', { exact: true }) })
+                .first();
+            const transactionType = cell.getByText('Payment', { exact: true });
+            await expect(transactionType).toBeVisible();
+            const bounds = await transactionType.evaluate(element => {
+                const range = document.createRange();
+                range.selectNodeContents(element);
+                const text = range.getBoundingClientRect();
+                return { targetWidth: element.getBoundingClientRect().width, textWidth: text.width };
+            });
+            expect(bounds.targetWidth).toBeCloseTo(bounds.textWidth, 0);
+
+            await transactionType.hover();
+            const tooltip = page.getByText('Money received to your account from a sales transaction', { exact: true });
+            await expect(tooltip).toBeVisible();
+
+            await page.getByRole('columnheader', { name: 'Transaction type', exact: true }).hover();
+            await expect(tooltip).toBeHidden();
+        });
+
         test('should render pagination controls', async ({ page }) => {
             const pagination = page.getByRole('navigation', { name: /Pagination/i });
             const pageLimitSelect = pagination.getByRole('combobox', { name: /Items/i, disabled: false, expanded: false });
@@ -523,6 +579,20 @@ test.describe('Default', () => {
             await popover.getByText('All 10 columns', { exact: true }).click();
             await expect(popover.getByRole('switch', { checked: true })).toHaveCount(11);
             await downloadTransactions(page, analyticsEvents, 'All');
+        });
+
+        test('should keep the "Download" button enabled and focused while loading', async ({ page, analyticsEvents }) => {
+            await goToStory(page, { id: STORY_ID, args: { 'delayedEndpoints.downloadTransactions': '1000' } });
+            await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedTransactionsListAnalyticsEventProperties]]);
+            await openExportPopover(page, analyticsEvents);
+
+            const popover = getExportDialog(page);
+            const downloadButton = popover.getByRole('button', { name: 'Download', exact: true });
+            const downloadPromise = downloadTransactions(page, analyticsEvents, 'Default');
+
+            await expect(downloadButton.getByTestId('loading-indicator')).toBeVisible();
+            await Promise.all([expect(downloadButton).toBeEnabled(), expect(downloadButton).toBeFocused()]);
+            await downloadPromise;
         });
     });
 

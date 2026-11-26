@@ -257,7 +257,11 @@ const errorInfo = computed(() =>
             </template>
 
             <template #item-transactionType="{ item }">
-                <BentoTypography v-bento-tooltip="getTransactionCategoryDescription(i18n, item.transactionType) ?? ''" variant="body">
+                <BentoTypography
+                    v-bento-tooltip="getTransactionCategoryDescription(i18n, item.transactionType) ?? ''"
+                    :class="getTransactionCategoryDescription(i18n, item.transactionType) && styles.transactionType"
+                    variant="body"
+                >
                     {{ getTransactionCategory(i18n, item.transactionType) }}
                 </BentoTypography>
             </template>

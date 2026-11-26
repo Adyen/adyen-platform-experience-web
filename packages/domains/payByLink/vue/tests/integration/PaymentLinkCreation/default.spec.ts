@@ -24,6 +24,25 @@ test.describe('Payment link creation - Standalone title', () => {
     });
 });
 
+test.describe('Payment link creation - Store data in progress', () => {
+    test.beforeEach(async ({ page }) => {
+        await goToStory(page, { id: STORY_ID, args: { 'delayedEndpoints.configuration': '1000' } });
+    });
+
+    test('should show an enabled loading Continue button while store data is fetched', async ({ page }) => {
+        await page.getByTestId('form-field-store').getByRole('combobox').click();
+        const configurationRequest = page.waitForRequest(request => request.url().includes('/configuration'));
+        await page.getByRole('option', { name: 'NY001' }).click();
+        await configurationRequest;
+
+        const continueButton = page.getByRole('button', { name: 'Continue', exact: true });
+        await expect(continueButton.getByTestId('loading-indicator')).toBeVisible();
+        await expect(continueButton).toBeEnabled();
+        await expect(continueButton.getByTestId('loading-indicator')).toBeHidden();
+        await expect(continueButton).toBeEnabled();
+    });
+});
+
 test('should track landing on the payment link creation page', async ({ page, analyticsEvents }) => {
     await goToStory(page, { id: STORY_ID });
 
@@ -49,6 +68,7 @@ test.describe('Payment link creation - Link creation success', () => {
         // Step 1: Store Selection
         await page.getByTestId('form-field-store').getByRole('combobox').click();
         await page.getByRole('option', { name: 'NY001' }).click();
+        await expect(page.getByRole('button', { name: 'Continue' }).getByTestId('loading-indicator')).toBeHidden();
         await page.getByRole('button', { name: 'Continue' }).click();
 
         // Step 2: Payment Details
@@ -164,6 +184,7 @@ test.describe('Payment link creation - Link creation validation', () => {
         // Step 1: Store Selection
         await page.getByTestId('form-field-store').getByRole('combobox').click();
         await page.getByRole('option', { name: 'NY001' }).click();
+        await expect(page.getByRole('button', { name: 'Continue' }).getByTestId('loading-indicator')).toBeHidden();
         await page.getByRole('button', { name: 'Continue' }).click();
 
         // Step 2: Payment Details
@@ -181,6 +202,7 @@ test.describe('Payment link creation - Link creation validation', () => {
         // Step 1: Store Selection
         await page.getByTestId('form-field-store').getByRole('combobox').click();
         await page.getByRole('option', { name: 'NY001' }).click();
+        await expect(page.getByRole('button', { name: 'Continue' }).getByTestId('loading-indicator')).toBeHidden();
         await page.getByRole('button', { name: 'Continue' }).click();
 
         // Step 2: Payment Details
@@ -199,6 +221,7 @@ test.describe('Payment link creation - Link creation validation', () => {
 
         await page.getByTestId('form-field-store').getByRole('combobox').click();
         await page.getByRole('option', { name: 'NY001' }).click();
+        await expect(page.getByRole('button', { name: 'Continue' }).getByTestId('loading-indicator')).toBeHidden();
         await page.getByRole('button', { name: 'Continue' }).click();
 
         await page.getByRole('combobox', { name: 'Validity' }).click();
@@ -231,6 +254,7 @@ test.describe('Payment link creation - Link creation validation', () => {
             await goToStory(page, { id: STORY_ID });
             await page.getByTestId('form-field-store').getByRole('combobox').click();
             await page.getByRole('option', { name: 'NY001' }).click();
+            await expect(page.getByRole('button', { name: 'Continue' }).getByTestId('loading-indicator')).toBeHidden();
             await page.getByRole('button', { name: 'Continue' }).click();
             await page.getByRole('combobox', { name: 'Validity' }).click();
             await page.getByRole('option', { name: 'Custom' }).click();
@@ -296,6 +320,7 @@ test.describe('Payment link creation - Link creation validation', () => {
         // Step 1: Store Selection
         await page.getByTestId('form-field-store').getByRole('combobox').click();
         await page.getByRole('option', { name: 'NY001' }).click();
+        await expect(page.getByRole('button', { name: 'Continue' }).getByTestId('loading-indicator')).toBeHidden();
         await page.getByRole('button', { name: 'Continue' }).click();
 
         // Step 2: Payment Details
