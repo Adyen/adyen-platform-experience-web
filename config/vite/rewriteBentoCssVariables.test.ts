@@ -58,8 +58,45 @@ describe('rewriteBentoCssVariables', () => {
         }
     );
 
-    test('does not transform non-style modules while serving', () => {
-        expect(transform.call({}, 'const variable = "--b-a";', 'library.ts')).toBeNull();
+    test('does not transform modules that are neither styles nor scripts', () => {
+        expect(transform.call({}, '{"variable":"--b-a"}', 'data.json')).toBeNull();
+    });
+
+    test.each([
+        '/node_modules/some-library/dist/index.js',
+        '/node_modules/.vite/deps/some-library.js?v=1a2b3c4d',
+        'library.ts',
+        'library.mjs',
+        'Component.vue',
+        'Component.vue?vue&type=script&setup=true&lang.ts',
+    ])('rewrites Bento variable names in string literals of %s', id => {
+        const code = [
+            'floating.style.setProperty("--b-dropdown-available-height", height);',
+            "getComputedStyle(floating).getPropertyValue('--b-spacer-040');",
+            'const color = `var(--b-color)`;',
+            'const style = "border: 1px solid var(--b-color-outline-primary, red)";',
+        ].join('');
+
+        expect(transform.call({}, code, id)).toEqual({
+            code: [
+                'floating.style.setProperty("--adyen-pe-bento-dropdown-available-height", height);',
+                "getComputedStyle(floating).getPropertyValue('--adyen-pe-bento-spacer-040');",
+                `const color = \`${read('color')}\`;`,
+                `const style = "border: 1px solid ${read('color-outline-primary', ', red')}";`,
+            ].join(''),
+            map: null,
+        });
+    });
+
+    test('only rewrites Bento variable names in scripts, not theme class names or selectors', () => {
+        expect(transform.call({}, 'const theme = "b-dark-theme";const root = ":root";const variable = "--b-a";', 'library.js')).toEqual({
+            code: 'const theme = "b-dark-theme";const root = ":root";const variable = "--adyen-pe-bento-a";',
+            map: null,
+        });
+    });
+
+    test('does not transform scripts without Bento variable names in string literals', () => {
+        expect(transform.call({}, 'let b = 2, c = 1, x = --b-c;const theme = "b-dark-theme";const other = "--my--b-a";', 'library.js')).toBeNull();
     });
 
     test('leaves CSS it has already rewritten unchanged, so serving and bundling can both run', () => {
