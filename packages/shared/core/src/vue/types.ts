@@ -4,6 +4,7 @@ import type { CoreOptions, CoreUpdateOptions } from '../types';
 import type { I18n } from './Context/types';
 import type { GlobalAppearance } from '@integration-components/types';
 import type Localization from '../Localization';
+import type { VersionNotice } from '../versionNotice/types';
 
 export type {
     AnalyticsConfig,
@@ -37,6 +38,7 @@ export interface CoreInstance {
     getCdnDataset: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
     getImageAsset: (props: AssetOptions) => string;
     update: (options: CoreUpdateOptions) => Promise<CoreInstance>;
+    getVersionNotice: () => Promise<VersionNotice | null>;
     registerThemeRoot: (root: Element) => void;
     unregisterThemeRoot: (root: Element) => void;
 }

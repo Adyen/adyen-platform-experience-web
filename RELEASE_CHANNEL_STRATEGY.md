@@ -65,3 +65,12 @@ After the transition:
 If more than one previous major remains supported, keep a separate maintenance route and npm tag for each one.
 
 Do not use `v2`, `v3`, or similar values as npm dist-tags. npm interprets them as semantic-version ranges. Use `v<major>-latest`.
+
+## Version notice
+
+Outside the live environment, components show a notice to platforms that run an SDK version they should upgrade:
+
+- **Deprecated**: the running version has an npm deprecation. Deprecate versions with `npm deprecate @adyen/adyen-platform-experience-web@"<range>" "<message>"`, and lift a deprecation with an empty message. The message itself is not shown.
+- **Newer prerelease**: the running prerelease is behind the `v<major>-<channel>` dist-tag, or the `<channel>` dist-tag when the major has no dedicated one. The tag must point to a version of the same major.
+
+The notice reads the npm registry from the browser, so keep the dist-tags in this document accurate.

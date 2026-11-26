@@ -8,8 +8,10 @@ import { SDK_BENTO_TRANSLATION_SOURCES, SDK_TRANSLATION_SOURCES } from '../../..
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
 import { ThemeManager } from './theme/ThemeManager';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
+import { getVersionNotice } from './versionNotice/getVersionNotice';
 import type { CoreOptions, CoreUpdateOptions, OnErrorHandler, ResolvedEnvironment } from './types';
 import type { I18n } from './Localization/types';
+import type { VersionNotice } from './versionNotice/types';
 
 /**
  * Minimal contract that UI element classes must satisfy so Core can manage them uniformly.
@@ -53,6 +55,7 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
     private readyCustomTranslationsAnalytics = false;
     private coreInitiatedAnalyticsSent = false;
     private themeInitialized = false;
+    private versionNotice?: Promise<VersionNotice | null>;
     private readonly themeManager = new ThemeManager();
 
     constructor(options: CoreOptions<CustomTranslations>) {
@@ -147,6 +150,16 @@ export class Core<CustomTranslations extends object = Record<never, never>> {
 
     public get i18n(): I18n {
         return this.localization.i18n;
+    }
+
+    /**
+     * @internal
+     * Whether platforms should be told to upgrade the SDK. Never checked in the live environment, so end users
+     * never see the notice; elsewhere the registry is queried once, on first request, and shared by every component.
+     */
+    public getVersionNotice(): Promise<VersionNotice | null> {
+        if (this.options.environment === 'live') return Promise.resolve(null);
+        return (this.versionNotice ??= getVersionNotice(Core.version));
     }
 
     /**

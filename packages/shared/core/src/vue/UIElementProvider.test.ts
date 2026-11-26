@@ -8,6 +8,9 @@ import { useConfigContext } from './ConfigContext';
 import { DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
 import type { DomainTranslationBinding } from './Context/types';
 import type { CoreInstance } from './types';
+import { VERSION_NOTICE_STORAGE_KEY } from '../versionNotice/constants';
+import { getVersionNoticeId } from '../versionNotice/dismissal';
+import type { VersionNotice } from '../versionNotice/types';
 import styles from './UIElement.module.scss';
 import UIElementProvider from './UIElementProvider.vue';
 
@@ -33,7 +36,22 @@ vi.mock('@adyen/bento-vue3', async () => {
             name: 'BentoLoadingIndicator',
             setup: () => () => h('div', { 'data-testid': 'loading-indicator', 'aria-hidden': 'true' }),
         }),
+        BentoAlert: defineComponent({
+            name: 'BentoAlert',
+            emits: ['close-alert'],
+            setup:
+                (_props, { emit, slots }) =>
+                () =>
+                    h('div', [slots.default?.(), h('button', { 'aria-label': 'Close', onClick: () => emit('close-alert') })]),
+        }),
     };
+});
+
+const { bannerModuleLoads } = vi.hoisted(() => ({ bannerModuleLoads: { count: 0 } }));
+
+vi.mock('./versionNotice/VersionNoticeBanner.vue', async importOriginal => {
+    bannerModuleLoads.count++;
+    return importOriginal();
 });
 
 vi.mock('./Context', () => ({
@@ -89,16 +107,19 @@ const setContext = ({ componentUnavailable = false, permissionPending = false } 
     } as unknown as ReturnType<typeof useCoreContext>);
 };
 
-const createCoreStub = () =>
+const createCoreStub = (versionNotice: VersionNotice | null = null) =>
     ({
         loadingContext: {},
         getCdnConfig: vi.fn(),
         getCdnDataset: vi.fn(),
         getImageAsset: vi.fn(() => 'error.svg'),
+        getVersionNotice: vi.fn(async () => versionNotice),
         session: {},
         analyticsEnabled: true,
         options: { appearance: undefined, onError: vi.fn(), environment: 'test' },
     }) as unknown as CoreInstance;
+
+const VERSION_NOTICE_SELECTOR = '[data-testid="version-notice"]';
 
 describe('UIElementProvider', () => {
     let mounted: Array<{ app: App; target: HTMLDivElement }> = [];
@@ -113,14 +134,14 @@ describe('UIElementProvider', () => {
         coreProviderBindings.length = 0;
     });
 
-    const mountProvider = (slotProps: Record<string, unknown> = reactive({})) => {
+    const mountProvider = (slotProps: Record<string, unknown> = reactive({}), versionNotice: VersionNotice | null = null) => {
         const SlotComponent = defineComponent({
             name: 'SlotComponent',
             props: { onContactSupport: { type: Function, default: undefined } },
             setup: () => () => h('div', { 'data-testid': CONTENT_TEST_ID }, 'domain component'),
         });
 
-        core = createCoreStub();
+        core = createCoreStub(versionNotice);
 
         const target = document.createElement('div');
         // Mirrors UIElement: props are read in the outer render, so the slot only closes over a plain copy.
@@ -244,5 +265,94 @@ describe('UIElementProvider', () => {
         setContext({});
         mountProvider();
         expect(coreProviderBindings[0]?.externalErrorHandler).toBe(core.options.onError);
+    });
+
+    describe('version notice', () => {
+        // The banner module is cached once loaded, so the test that asserts it is never loaded must run first.
+        const settle = async () => {
+            await core.getVersionNotice();
+            await new Promise(resolve => setTimeout(resolve));
+            await nextTick();
+        };
+
+        afterEach(() => {
+            window.localStorage.clear();
+            vi.restoreAllMocks();
+        });
+
+        test('does not load the banner when there is nothing to report', async () => {
+            setContext({});
+
+            const target = mountProvider(reactive({}), null);
+            await settle();
+
+            expect(target.querySelector(VERSION_NOTICE_SELECTOR)).toBeNull();
+            expect(bannerModuleLoads.count).toBe(0);
+        });
+
+        test('shows the notice above the component', async () => {
+            setContext({});
+
+            const target = mountProvider(reactive({}), { kind: 'deprecated', currentVersion: '1.10.0' });
+
+            await vi.waitFor(() => expect(target.querySelector(VERSION_NOTICE_SELECTOR)).toBeTruthy());
+            const content = target.querySelector(`[data-testid="${CONTENT_TEST_ID}"]`)!;
+            expect(target.querySelector(VERSION_NOTICE_SELECTOR)!.compareDocumentPosition(content) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        });
+
+        test('hides the notice in every component once it is dismissed in one of them', async () => {
+            setContext({});
+            const notice: VersionNotice = { kind: 'outdated', currentVersion: '2.0.0-beta.1', latestVersion: '2.0.0-beta.2' };
+
+            const first = mountProvider(reactive({}), notice);
+            const second = mountProvider(reactive({}), notice);
+            await vi.waitFor(() => expect(second.querySelector(VERSION_NOTICE_SELECTOR)).toBeTruthy());
+
+            first.querySelector<HTMLButtonElement>(`${VERSION_NOTICE_SELECTOR} button[aria-label="Close"]`)!.click();
+            await nextTick();
+
+            expect(first.querySelector(VERSION_NOTICE_SELECTOR)).toBeNull();
+            expect(second.querySelector(VERSION_NOTICE_SELECTOR)).toBeNull();
+            expect(window.localStorage.getItem(VERSION_NOTICE_STORAGE_KEY)).toBe(getVersionNoticeId(notice));
+        });
+
+        test('keeps a notice hidden when it was dismissed on an earlier visit', async () => {
+            setContext({});
+            const notice: VersionNotice = { kind: 'deprecated', currentVersion: '1.11.0' };
+            window.localStorage.setItem(VERSION_NOTICE_STORAGE_KEY, getVersionNoticeId(notice));
+
+            const target = mountProvider(reactive({}), notice);
+            await settle();
+
+            expect(target.querySelector(VERSION_NOTICE_SELECTOR)).toBeNull();
+        });
+
+        test('shows a notice again when a newer prerelease follows the dismissed one', async () => {
+            setContext({});
+            const dismissed: VersionNotice = { kind: 'outdated', currentVersion: '2.0.0-beta.1', latestVersion: '2.0.0-beta.3' };
+            window.localStorage.setItem(VERSION_NOTICE_STORAGE_KEY, getVersionNoticeId(dismissed));
+
+            const target = mountProvider(reactive({}), { ...dismissed, latestVersion: '2.0.0-beta.4' });
+
+            await vi.waitFor(() => expect(target.querySelector(VERSION_NOTICE_SELECTOR)).toBeTruthy());
+        });
+
+        test('dismisses the notice for the session when storage is unavailable', async () => {
+            setContext({});
+            vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+                throw new DOMException('Blocked', 'SecurityError');
+            });
+            vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+                throw new DOMException('Blocked', 'SecurityError');
+            });
+
+            const target = mountProvider(reactive({}), { kind: 'deprecated', currentVersion: '1.12.0' });
+            await vi.waitFor(() => expect(target.querySelector(VERSION_NOTICE_SELECTOR)).toBeTruthy());
+
+            target.querySelector<HTMLButtonElement>(`${VERSION_NOTICE_SELECTOR} button[aria-label="Close"]`)!.click();
+            await nextTick();
+
+            expect(target.querySelector(VERSION_NOTICE_SELECTOR)).toBeNull();
+        });
     });
 });
