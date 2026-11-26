@@ -102,5 +102,6 @@
     "bento.timeline.cancel": "Label for a button that cancels the current action",
     "bento.timelineItem.showLess": "Used as label for a button which hides parts of a large block of content.",
     "bento.timelineItem.showMore": "Used as label for a button which reveals a specific amount of hidden content.",
+    "bento.titleDetails.lastUpdated": "Label shown under a title, next to when the shown data was last updated. %{date} is how long ago that was, such as \"5 minutes ago\" or \"less than a minute ago\"; it is written by the design system in its own language and is not part of this translation.",
     "bento.toastItem.dismiss": "Label for a button that lets the user dismiss the current toast."
 }
