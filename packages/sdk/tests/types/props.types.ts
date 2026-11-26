@@ -6,6 +6,8 @@ import type * as SDK from '../../src';
 import type {
     CapitalOfferProps,
     CapitalOverviewProps,
+    CashOutOverviewProps,
+    CashOutRequestProps,
     CoreOptions,
     DisputeManagementProps,
     DisputesOverviewProps,
@@ -31,6 +33,8 @@ type AcceptsDataGridAppearance<TProps> = TProps extends { appearance?: infer TAp
 type PropsAliases = {
     CapitalOffer: CapitalOfferProps;
     CapitalOverview: CapitalOverviewProps;
+    CashOutOverview: CashOutOverviewProps;
+    CashOutRequest: CashOutRequestProps;
     DisputeManagement: DisputeManagementProps;
     DisputesOverview: DisputesOverviewProps;
     PaymentLinkCreation: PaymentLinkCreationProps;
@@ -88,6 +92,7 @@ export type _OtherComponentsRejectDataGridAppearance = Assert<
 
 type InternalOnlyProps = {
     CapitalOffer: 'capitalState' | 'hideSubtitle' | 'hideTitle' | 'onTitleChange';
+    CashOutRequest: 'eligibility' | 'hideTitle' | 'initialBalanceAccountId' | 'inModal' | 'onInstructingChange' | 'onResultShown';
     PaymentLinkCreation: 'embeddedInOverview' | 'onShowDetails';
     PaymentLinkDetails: 'onTitleChange' | 'onUpdate';
     PaymentLinkSettings: 'embeddedInOverview' | 'hideTitle' | 'navigateBack' | 'settingsItems';
@@ -152,7 +157,7 @@ type ExpectNever<T extends never> = T;
 type Drift<C extends string, TPublic, TTracked> = `${C}:${(Exclude<TPublic, TTracked> | Exclude<TTracked, TPublic>) & string}`;
 
 /** Components that exist but are not exported from the SDK yet. Remove an entry once its component is published. */
-type UnpublishedComponentType = 'cashOutOverview' | 'cashOutRequest';
+type UnpublishedComponentType = never;
 type PublishedComponentType = Exclude<ExternalComponentType, UnpublishedComponentType>;
 
 /** Fails once an unpublished component is exported, so its entry above gets removed. */

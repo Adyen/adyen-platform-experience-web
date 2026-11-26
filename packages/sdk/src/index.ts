@@ -9,6 +9,15 @@ export {
 
 // prettier-ignore
 export {
+    CashOutOverview,
+    CashOutRequest,
+    type CashOutOverviewProps,
+    type CashOutRequestProps,
+    type CashOutState,
+} from '../../domains/cashOut/publish/src';
+
+// prettier-ignore
+export {
     DisputeManagement,
     DisputesOverview,
     type DisputeManagementProps,
