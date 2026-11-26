@@ -4,7 +4,7 @@ import localSupportedRegions from '../../config/supportedRegions.json';
 import {
     ACTIVE_LOAN,
     CAPITAL_STATE_ACTIVE,
-    CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN,
+    CAPITAL_STATE_ELIGIBLE_WITH_ONGOING,
     CAPITAL_STATE_ELIGIBLE_CASH_ADVANCE,
     CAPITAL_STATE_ELIGIBLE_LOAN,
     CAPITAL_STATE_FIRST_TIME_ELIGIBLE_LOAN,
@@ -38,7 +38,7 @@ describe('getEnhancedCapitalState', () => {
     });
 
     test('returns no offer when there are ongoing grants and no renewal', () => {
-        expect(getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_AND_ONGOING_LOAN, localSupportedRegions)).toMatchObject({
+        expect(getEnhancedCapitalState(CAPITAL_STATE_ELIGIBLE_WITH_ONGOING, localSupportedRegions)).toMatchObject({
             dynamicOfferConfig: undefined,
         });
     });

@@ -25,12 +25,10 @@ import {
     RENEWABLE_CASH_ADVANCE,
     PENDING_LOAN,
     PENDING_CASH_ADVANCE,
+    ACTIVE_REPAYMENT_GB,
     ACTIVE_REPAYMENT_US,
     ACTIVE_WITHOUT_TRANSFER_INSTRUMENTS,
     ACTIVE_WITHOUT_REPAYMENT_ACCOUNT,
-    CAPITAL_STATE_FIRST_TIME_ELIGIBLE_UNSUPPORTED_CONTRACT,
-    CAPITAL_STATE_RENEWABLE_UNSUPPORTED_CONTRACT,
-    RENEWABLE_UNSUPPORTED_CONTRACT,
 } from '../mock-data';
 import { http, HttpResponse } from 'msw';
 import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
@@ -77,20 +75,6 @@ export const capitalOverviewHandlers = {
         ),
         ...defaultHandlersCashAdvance,
     ],
-    firstTimeEligibleUnsupportedContract: [
-        http.get(
-            CAPITAL_ENDPOINTS.capitalState,
-            withDelay(() => {
-                return HttpResponse.json(CAPITAL_STATE_FIRST_TIME_ELIGIBLE_UNSUPPORTED_CONTRACT);
-            })
-        ),
-        http.get(
-            CAPITAL_ENDPOINTS.grants,
-            withDelay(() => {
-                return HttpResponse.json({ data: [] });
-            })
-        ),
-    ],
     earlyRenewalLoan: [
         http.get(
             CAPITAL_ENDPOINTS.capitalState,
@@ -120,20 +104,6 @@ export const capitalOverviewHandlers = {
             })
         ),
         ...defaultHandlersCashAdvance,
-    ],
-    earlyRenewalUnsupportedContract: [
-        http.get(
-            CAPITAL_ENDPOINTS.capitalState,
-            withDelay(() => {
-                return HttpResponse.json(CAPITAL_STATE_RENEWABLE_UNSUPPORTED_CONTRACT);
-            })
-        ),
-        http.get(
-            CAPITAL_ENDPOINTS.grants,
-            withDelay(() => {
-                return HttpResponse.json({ data: [RENEWABLE_UNSUPPORTED_CONTRACT] });
-            })
-        ),
     ],
     eligibleLoan: [
         http.get(
@@ -289,7 +259,7 @@ export const capitalOverviewHandlers = {
             })
         ),
     ],
-    hostedActionsLoan: [
+    hostedActions: [
         http.get(
             CAPITAL_ENDPOINTS.capitalState,
             withDelay(({ request }) => {
@@ -321,40 +291,7 @@ export const capitalOverviewHandlers = {
             })
         ),
     ],
-    hostedActionsCashAdvance: [
-        http.get(
-            CAPITAL_ENDPOINTS.capitalState,
-            withDelay(({ request }) => {
-                return getAsyncCapitalStateCashAdvanceResponse(request.url);
-            })
-        ),
-        http.get(
-            CAPITAL_ENDPOINTS.grants,
-            withDelay(({ request }) => {
-                return getAsyncGrantsCashAdvanceResponse(request.url);
-            })
-        ),
-        http.get(
-            CAPITAL_ENDPOINTS.onboardingConfiguration,
-            withDelay(() => {
-                return new HttpResponse(null, { status: 204 });
-            })
-        ),
-        http.get(
-            CAPITAL_ENDPOINTS.signToS,
-            withDelay(() => {
-                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
-            })
-        ),
-        http.get(
-            CAPITAL_ENDPOINTS.anaCredit,
-            withDelay(() => {
-                return HttpResponse.json(ANACREDIT_ACTION_DETAILS);
-            })
-        ),
-        ...defaultHandlersCashAdvance,
-    ],
-    singleHostedActionLoan: [
+    singleHostedAction: [
         http.get(
             CAPITAL_ENDPOINTS.capitalState,
             withDelay(() => {
@@ -380,32 +317,19 @@ export const capitalOverviewHandlers = {
             })
         ),
     ],
-    singleHostedActionCashAdvance: [
+    repaymentGB: [
         http.get(
             CAPITAL_ENDPOINTS.capitalState,
             withDelay(() => {
-                return HttpResponse.json(CAPITAL_STATE_SINGLE_ACTION_CASH_ADVANCE);
+                return HttpResponse.json(CAPITAL_STATE_ACTIVE);
             })
         ),
         http.get(
             CAPITAL_ENDPOINTS.grants,
             withDelay(() => {
-                return HttpResponse.json({ data: [SINGLE_ACTION_CASH_ADVANCE] });
+                return HttpResponse.json({ data: [ACTIVE_REPAYMENT_GB] });
             })
         ),
-        http.get(
-            CAPITAL_ENDPOINTS.onboardingConfiguration,
-            withDelay(() => {
-                return new HttpResponse(null, { status: 204 });
-            })
-        ),
-        http.get(
-            CAPITAL_ENDPOINTS.signToS,
-            withDelay(() => {
-                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS);
-            })
-        ),
-        ...defaultHandlersCashAdvance,
     ],
     repaymentUS: [
         http.get(

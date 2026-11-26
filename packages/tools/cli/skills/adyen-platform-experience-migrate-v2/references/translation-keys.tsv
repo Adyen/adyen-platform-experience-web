@@ -119,7 +119,8 @@ capital.overview.grants.common.statuses.writtenOff	capital	capital.overview.gran
 capital.overview.grants.common.statuses.writtenOff	capital	capital.overview.grantStatuses.cashAdvance.writtenOff.label
 capital.overview.grants.common.statuses.writtenOff.description	capital	capital.overview.grantStatuses.loan.writtenOff.description
 capital.overview.grants.common.statuses.writtenOff.description	capital	capital.overview.grantStatuses.cashAdvance.writtenOff.description
-capital.overview.grants.item.actions.copyGrantID	capital	capital.overview.grantItem.copy.grantID
+capital.overview.grants.item.actions.copyGrantID	capital	capital.overview.grantItem.loan.copyGrantID.a11yLabel
+capital.overview.grants.item.actions.copyGrantID	capital	capital.overview.grantItem.cashAdvance.copyGrantID.a11yLabel
 capital.overview.grants.item.actions.sendRepayment	capital	capital.overview.grantItem.loan.sendRepayment
 capital.overview.grants.item.actions.sendRepayment	capital	capital.overview.grantItem.cashAdvance.sendRepayment
 capital.overview.grants.item.actions.submitInformation	capital	capital.overview.grantItem.submitInformation.label
@@ -149,7 +150,7 @@ capital.overview.grants.item.details.requestedFunds	capital	capital.overview.gra
 capital.overview.grants.item.details.requestedFunds	capital	capital.overview.grantItem.cashAdvance.requestedFunds
 capital.overview.grants.item.progressBar.a11y.label	-	(no match)
 capital.overview.grants.item.termEnds	capital	capital.overview.grantItem.loan.termEnds
-capital.overview.grants.list.tabs.a11y.label	capital	capital.overview.grantList.a11yLabel
+capital.overview.grants.list.tabs.a11y.label	capital	capital.overview.grantList.statusFilter.a11yLabel
 capital.overview.grants.list.tabs.labels.closed	capital	capital.overview.closed
 capital.overview.grants.list.tabs.labels.inProgress	capital	capital.overview.inProgress
 capital.overview.grants.newGrant.actions.newGrant	capital	capital.overview.loan.requestNewGrant

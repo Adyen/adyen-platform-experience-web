@@ -59,9 +59,8 @@ test.describe('Eligible - Loan', () => {
         ]);
     });
 
-    test('should render new loan alert in grants screen', async ({ page }) => {
+    test('should render new loan alert in loans screen', async ({ page }) => {
         await Promise.all([
-            expect(page.getByText('Adyen Capital', { exact: true })).toBeVisible(),
             expect(page.getByText('You are now eligible to request a new loan up to €25,000')).toBeVisible(),
             expect(getOfferButton(page)).toBeVisible(),
         ]);
@@ -99,6 +98,7 @@ test.describe('Eligible - Loan', () => {
         ]);
 
         await expect(getOfferModal(page)).toBeHidden();
+        await expect(page.getByText('You are now eligible to request a new loan up to €25,000')).toBeHidden();
         await expect(page.getByRole('button', { name: 'Request a new loan' })).toBeHidden();
         await expect(page.getByText('In progress')).toBeVisible();
         await expect(page.getByText('Pending')).toBeVisible();

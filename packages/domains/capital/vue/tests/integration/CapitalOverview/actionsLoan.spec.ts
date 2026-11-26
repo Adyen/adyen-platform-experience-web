@@ -60,13 +60,13 @@ test.describe('Actions - Loan', () => {
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedCapitalOverviewAnalyticsEventProperties]]);
     });
 
-    test('should render pending grant with actions', async ({ page }) => {
+    test('should render pending loan with actions', async ({ page }) => {
         await Promise.all([
             expect(page.getByText('Requested funds')).toBeVisible(),
             expect(page.getByText('€20,000.00')).toBeVisible(),
             expect(page.getByText('Action needed')).toBeVisible(),
             expect(page.getByText('Grant ID')).toBeVisible(),
-            expect(page.getByTestId('grant-id-copy-text')).toBeVisible(),
+            expect(page.getByRole('button', { name: 'Copy grant ID' })).toBeVisible(),
             expect(
                 page.getByText(
                     "You're almost ready. To process your funds, we just need your input. Please complete these actions by February 15, 2025."

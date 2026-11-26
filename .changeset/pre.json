@@ -2,8 +2,10 @@
   "mode": "pre",
   "tag": "beta",
   "changesets": [
+    "bounded-session-recovery",
     "bright-vue-future",
     "calm-alpha-refresh",
-    "quiet-skills-cli"
+    "quiet-skills-cli",
+    "steady-session-retry"
   ]
 }
