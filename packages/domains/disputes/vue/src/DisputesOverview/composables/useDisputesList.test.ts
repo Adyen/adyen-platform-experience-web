@@ -41,3 +41,31 @@ test('fetches the next page when paginating', async () => {
     await vi.waitFor(() => expect(getDisputeList).toHaveBeenCalledTimes(2));
     scope.stop();
 });
+
+test.each(['CHARGEBACKS', 'FRAUD_ALERTS', 'ONGOING_AND_CLOSED'] as const)('passes createdAt sorting for %s', async statusGroup => {
+    getDisputeList.mockReset().mockResolvedValue({ data: [] });
+
+    const scope = effectScope();
+    scope.run(() =>
+        useDisputesList(() => ({
+            fetchEnabled: true,
+            balanceAccountId: 'balance-account-id',
+            statusGroup,
+            reasonCategories: undefined,
+            schemeCodes: undefined,
+            createdSince: undefined,
+            createdUntil: undefined,
+            sort: { statusGroup, sort: 'createdAt', sortDirection: 'asc' },
+        }))
+    );
+
+    await vi.waitFor(() => expect(getDisputeList).toHaveBeenCalled());
+    expect(getDisputeList).toHaveBeenCalledWith(expect.anything(), {
+        query: expect.objectContaining({
+            statusGroup,
+            sort: 'createdAt',
+            sortDirection: 'asc',
+        }),
+    });
+    scope.stop();
+});

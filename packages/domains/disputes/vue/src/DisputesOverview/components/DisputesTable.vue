@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { BentoDataGrid, BentoTag, BentoTooltipDirective as vBentoTooltip, BentoTypography } from '@adyen/bento-vue3';
+import { BentoDataGrid, BentoDatagridSortDirection, BentoTag, BentoTooltipDirective as vBentoTooltip, BentoTypography } from '@adyen/bento-vue3';
 import WarningFilledIcon from '@adyen/ui-assets-icons-16/vue/warning-filled';
 import RefreshIcon from '@adyen/ui-assets-icons-16/vue/refresh';
-import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
+import type { BentoColumn, BentoDatagridDataItem, BentoDatagridSortByColumn } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import {
     useCustomColumnsData,
@@ -30,7 +30,15 @@ import type { StringWithAutocompleteOptions } from '@integration-components/util
 import type { IDisputeListItem, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 import DisputeStatusTag from './DisputeStatusTag.vue';
 import DisputePaymentMethod from './DisputePaymentMethod.vue';
-import { DISPUTES_TABLE_FIELDS, EMPTY_TABLE_MESSAGE_KEYS, FIELD_KEYS, type DisputesTableFields } from '../constants';
+import {
+    DISPUTES_TABLE_FIELDS,
+    EMPTY_TABLE_MESSAGE_KEYS,
+    FIELD_KEYS,
+    SORTABLE_COLUMN_SORT_FIELDS,
+    type DisputesSortField,
+    type DisputesSortParams,
+    type DisputesTableFields,
+} from '../constants';
 import styles from './DisputesTable.module.scss';
 
 const props = defineProps<{
@@ -43,6 +51,8 @@ const props = defineProps<{
     onContactSupport?: () => void;
     onRefresh?: () => void;
     onRowClick?: (dispute: IDisputeListItem) => void;
+    sort?: DisputesSortParams;
+    onSortChange?: (sort: DisputesSortParams | undefined) => void;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<DisputesTableFields>>[];
     onDataRetrieve?: OnDataRetrievedCallback<IDisputeListItem[], CustomDataRetrieved[]>;
     hasNext?: boolean;
@@ -77,8 +87,8 @@ const {
         const statusGroup = props.statusGroup;
         return {
             status: { visible: statusGroup === 'ONGOING_AND_CLOSED', flex: 1 },
-            respondBy: { visible: statusGroup === 'CHARGEBACKS', flex: 1 },
-            createdAt: { visible: true, flex: 1 },
+            respondBy: { visible: statusGroup === 'CHARGEBACKS', flex: 1, sortable: statusGroup === 'CHARGEBACKS' },
+            createdAt: { visible: true, flex: 1, sortable: true },
             paymentMethod: { visible: true, flex: 1.2 },
             disputeReason: { visible: statusGroup !== 'FRAUD_ALERTS', flex: 1.5 },
             reason: { visible: statusGroup === 'FRAUD_ALERTS', flex: 2 },
@@ -101,10 +111,42 @@ const columns = computed<BentoColumn[]>(() => {
             label: i18n.get(props.statusGroup === 'CHARGEBACKS' ? FIELD_KEYS.respondBy : FIELD_KEYS.createdAt),
             flex: 2,
             minWidth: customColumnWidths.value.dateAndPaymentMethod,
+            sortable: true,
         },
         { field: amountField, label: i18n.get(FIELD_KEYS[amountField]), flex: 1, minWidth: customColumnWidths.value[amountField], numeric: true },
     ];
 });
+
+const sortBy = computed<BentoDatagridSortByColumn[]>(() => {
+    const { sort } = props;
+    if (!sort || sort.statusGroup !== props.statusGroup) return [];
+
+    const direction = sort.sortDirection === 'asc' ? BentoDatagridSortDirection.ASCENDING : BentoDatagridSortDirection.DESCENDING;
+    const sortFields: Record<string, DisputesSortField> = SORTABLE_COLUMN_SORT_FIELDS[props.statusGroup][isMobile.value ? 'mobile' : 'desktop'];
+    const field = Object.keys(sortFields).find(key => sortFields[key] === sort.sort);
+    if (!field) return [];
+    return [{ field, direction }];
+});
+
+function getSortField(column: BentoDatagridSortByColumn | undefined): DisputesSortField | undefined {
+    if (!column) return undefined;
+    const sortFields: Record<string, DisputesSortField> = SORTABLE_COLUMN_SORT_FIELDS[props.statusGroup][isMobile.value ? 'mobile' : 'desktop'];
+    return sortFields[column.field];
+}
+
+function handleSortBy(next: BentoDatagridSortByColumn[]) {
+    const column = next[0];
+    const sortField = getSortField(column);
+    const sortDirection = column?.direction === BentoDatagridSortDirection.ASCENDING ? 'asc' : 'desc';
+
+    if (sortField && props.statusGroup === 'CHARGEBACKS') {
+        props.onSortChange?.({ statusGroup: 'CHARGEBACKS', sort: sortField, sortDirection });
+    } else if (props.statusGroup !== 'CHARGEBACKS' && sortField === 'createdAt') {
+        props.onSortChange?.({ statusGroup: props.statusGroup, sort: sortField, sortDirection });
+    } else {
+        props.onSortChange?.(undefined);
+    }
+}
 
 const { customRecords, loadingCustomRecords } = useCustomColumnsData<IDisputeListItem>({
     records: () => props.data ?? [],
@@ -249,6 +291,8 @@ const errorInfo = computed(() =>
             :loading="isLoading"
             :pagination="paginationProps"
             :allow-column-drag-and-drop="false"
+            :sort-by="sortBy"
+            @update:sort-by="handleSortBy"
             @row-click="handleRowClick"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"

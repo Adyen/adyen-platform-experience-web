@@ -121,6 +121,16 @@ export const disputesMocks = [
                 );
             }
 
+            const sort = searchParams.get('sort');
+            if (sort === 'dueDate' || sort === 'createdAt') {
+                const direction = searchParams.get('sortDirection') === 'asc' ? 1 : -1;
+                disputes = [...disputes].sort((a, b) => {
+                    const aValue = a[sort] ? new Date(a[sort]!).getTime() : 0;
+                    const bValue = b[sort] ? new Date(b[sort]!).getTime() : 0;
+                    return (aValue - bValue) * direction;
+                });
+            }
+
             const data = disputes.slice(cursor, cursor + limit);
             return HttpResponse.json({ data, _links: getPaginationLinks(cursor, limit, disputes.length) });
         })
