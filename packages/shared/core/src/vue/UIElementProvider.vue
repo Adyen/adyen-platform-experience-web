@@ -9,6 +9,8 @@ import EventDispatcherProvider from './Context/eventDispatcher/EventDispatcherPr
 import type { ExternalComponentType } from '@integration-components/types';
 import { COMPONENT_REF_KEY, DOMAIN_TRANSLATION_BINDING_KEY } from './Context/constants';
 import ComponentAvailabilityGate from './componentAvailability/ComponentAvailabilityGate';
+import { LazyVersionNoticeBanner } from './versionNotice/LazyVersionNoticeBanner';
+import { useVersionNotice } from './versionNotice/useVersionNotice';
 import styles from './UIElement.module.scss';
 import './UIElement.scss';
 
@@ -39,6 +41,8 @@ const getOnContactSupport = () => {
     return componentProps?.onContactSupport as (() => void) | undefined;
 };
 
+const { notice: versionNotice, dismiss: dismissVersionNotice } = useVersionNotice(props.core);
+
 provide(COMPONENT_REF_KEY, componentRef);
 useBentoTranslationOverrides(props.bentoOverrides);
 </script>
@@ -63,6 +67,7 @@ useBentoTranslationOverrides(props.bentoOverrides);
                         data-testid="component-container"
                         :class="[styles.container, appearance?.container === 'hidden' ? styles.containerHidden : '']"
                     >
+                        <LazyVersionNoticeBanner v-if="versionNotice" :notice="versionNotice" @dismiss="dismissVersionNotice" />
                         <ComponentAvailabilityGate :key="props.refreshKey" :type="props.componentName" :on-contact-support="getOnContactSupport()">
                             <slot />
                         </ComponentAvailabilityGate>

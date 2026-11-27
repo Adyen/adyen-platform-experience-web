@@ -87,7 +87,8 @@ i18n.fullDate(date)                      // Date with time
 ### Translation Workflow
 
 - Translation source catalogs live under `packages/domains/<domain>/vue/translations/`; the SDK catalogs under `packages/sdk/translations/` (including `bento/`) are the committed delivery artifacts kept in sync by the pre-commit hook (`pnpm run translations:sync`)
-- Keep translation JSON sorted: `pnpm run translations:sort`
+- Keep translation JSON sorted: `pnpm run translations:sort -- <files>` (the script only sorts the files passed to it)
+- New English keys also need an entry in `packages/sdk/translations/en-US.instructions.json`; CI checks this with `node scripts/process-translations/validate-sdk-instructions.mjs origin/develop`
 
 ### Bug fixes
 

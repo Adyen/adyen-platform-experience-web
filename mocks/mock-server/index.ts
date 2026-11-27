@@ -10,6 +10,7 @@ import { reportsMock } from '../../packages/domains/reports/mocks/mock-server/re
 import { sessionsMock } from './sessions';
 import { setupMock } from './setup';
 import { transactionsMocks } from '../../packages/domains/transactions/mocks/mock-server/transactions';
+import { versionNoticeMock } from './versionNotice';
 
 export const mocks = [
     analyticsMock,
@@ -22,5 +23,6 @@ export const mocks = [
     sessionsMock,
     setupMock,
     transactionsMocks,
+    versionNoticeMock,
 ];
 export const mockWorker = setupWorker(...getMockHandlers(mocks));

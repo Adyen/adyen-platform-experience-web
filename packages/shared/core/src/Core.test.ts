@@ -419,4 +419,53 @@ describe('Core', () => {
             expect(themeEvents[0]!.properties.components).toEqual(['transactions', 'capitalOffer']);
         });
     });
+
+    describe('version notice', () => {
+        const stubDeprecatingRegistry = () => {
+            const registry = vi.fn<typeof fetch>(async input =>
+                String(input).endsWith(`/${Core.version}`)
+                    ? Response.json({ version: Core.version, deprecated: 'Upgrade' })
+                    : new Response(null, { status: 404 })
+            );
+            vi.stubGlobal('fetch', registry);
+            return registry;
+        };
+
+        it('reports a deprecated SDK version outside the live environment', async () => {
+            stubDeprecatingRegistry();
+            const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn(), environment: 'test' });
+
+            await expect(core.getVersionNotice()).resolves.toEqual({ kind: 'deprecated', currentVersion: Core.version });
+        });
+
+        it('never queries the registry in the live environment', async () => {
+            const registry = stubDeprecatingRegistry();
+            const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn(), environment: 'live' });
+
+            await expect(core.getVersionNotice()).resolves.toBeNull();
+            expect(registry).not.toHaveBeenCalled();
+        });
+
+        it('queries the registry once for every component that asks', async () => {
+            const registry = stubDeprecatingRegistry();
+            const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn(), environment: 'test' });
+
+            await core.getVersionNotice();
+            const requestCount = registry.mock.calls.length;
+            await Promise.all([core.getVersionNotice(), core.getVersionNotice()]);
+
+            expect(requestCount).toBeGreaterThan(0);
+            expect(registry).toHaveBeenCalledTimes(requestCount);
+        });
+
+        it('stops reporting the notice after switching to the live environment', async () => {
+            stubDeprecatingRegistry();
+            const core = new Core({ locale: 'en-US', onSessionCreate: vi.fn(), environment: 'test' });
+
+            await core.getVersionNotice();
+            await core.update({ environment: 'live' });
+
+            await expect(core.getVersionNotice()).resolves.toBeNull();
+        });
+    });
 });
