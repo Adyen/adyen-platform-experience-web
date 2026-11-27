@@ -7,6 +7,7 @@ export type PayoutDetailsCustomization = DetailsDataCustomizationObject<PayoutDe
 export interface PayoutDetailsProps {
     id: string;
     date: string;
+    currencyCode?: string;
     dataCustomization?: {
         details?: PayoutDetailsCustomization;
     };

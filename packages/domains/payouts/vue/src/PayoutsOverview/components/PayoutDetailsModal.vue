@@ -7,6 +7,7 @@ import type { PayoutsOverviewComponentProps } from '../types';
 const props = defineProps<{
     id: string;
     date: string;
+    currencyCode: string;
     balanceAccountDescription?: string;
     dataCustomization?: PayoutsOverviewComponentProps['dataCustomization'];
     onContactSupport?: PayoutsOverviewComponentProps['onContactSupport'];
@@ -31,6 +32,7 @@ const PayoutDetailsContainer = defineAsyncComponent({
                     :id="props.id"
                     :balance-account-description="props.balanceAccountDescription"
                     :date="props.date"
+                    :currency-code="props.currencyCode"
                     :data-customization="props.dataCustomization"
                     :on-contact-support="props.onContactSupport"
                 />

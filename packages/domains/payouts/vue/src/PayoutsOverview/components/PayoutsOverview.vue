@@ -96,6 +96,7 @@ function onRowClick(payout: IPayout) {
         props.onRecordSelection({
             id: balanceAccountId,
             date: payout.createdAt ?? '',
+            currencyCode: payout.payoutAmount.currency,
             showDetails: showPayoutDetailsModal,
         });
     } else {
@@ -151,6 +152,7 @@ function closeModal() {
             :id="selectedBalanceAccount.id"
             :balance-account-description="selectedBalanceAccount.description"
             :date="selectedPayout.createdAt ?? ''"
+            :currency-code="selectedPayout.payoutAmount.currency"
             :data-customization="props.dataCustomization"
             :on-contact-support="props.onContactSupport"
             :on-close="closeModal"

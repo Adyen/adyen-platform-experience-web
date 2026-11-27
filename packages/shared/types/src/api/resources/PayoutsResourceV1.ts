@@ -96,6 +96,7 @@ export interface operations {
             query: {
                 balanceAccountId: string;
                 createdAt?: string;
+                currencyCode?: string;
             };
         };
         responses: {

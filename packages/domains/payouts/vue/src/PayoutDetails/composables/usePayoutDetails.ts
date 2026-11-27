@@ -2,17 +2,19 @@ import { ref, computed, watch, onUnmounted } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { isFunction } from '@integration-components/utils';
 import type { IPayoutDetails } from '@integration-components/types';
+import type { OperationParameters } from '@integration-components/types/api/endpoints';
 
 interface UsePayoutDetailsProps {
     fetchEnabled: boolean;
     balanceAccountId: string | undefined;
     createdAt: string | undefined;
+    currencyCode?: string;
 }
 
 /**
  * Fetches a single payout's details via `config.endpoints.getPayout` and exposes
  * reactive `data / error / isFetching` refs. Automatically re-fetches when
- * `balanceAccountId` or `createdAt` change and aborts in-flight requests on
+ * `balanceAccountId`, `createdAt`, or `currencyCode` change and aborts in-flight requests on
  * update or unmount.
  */
 export function usePayoutDetails(props: () => UsePayoutDetailsProps) {
@@ -28,7 +30,7 @@ export function usePayoutDetails(props: () => UsePayoutDetailsProps) {
 
     async function runFetch() {
         const fn = getPayout.value;
-        const { balanceAccountId, createdAt } = props();
+        const { balanceAccountId, createdAt, currencyCode } = props();
         if (!isFunction(fn) || !canFetch.value || !balanceAccountId || !createdAt) return;
 
         if (abortController) abortController.abort();
@@ -39,7 +41,12 @@ export function usePayoutDetails(props: () => UsePayoutDetailsProps) {
         error.value = undefined;
 
         try {
-            const json = await fn({ signal }, { query: { balanceAccountId, createdAt } });
+            const query: OperationParameters<'getPayout'>['query'] = {
+                balanceAccountId,
+                createdAt,
+                ...(currencyCode ? { currencyCode } : {}),
+            };
+            const json = await fn({ signal }, { query });
             if (!signal.aborted) {
                 data.value = json as IPayoutDetails;
             }
@@ -56,8 +63,8 @@ export function usePayoutDetails(props: () => UsePayoutDetailsProps) {
 
     const fetchKey = computed(() => {
         if (!canFetch.value) return null;
-        const { balanceAccountId, createdAt } = props();
-        return JSON.stringify({ balanceAccountId, createdAt });
+        const { balanceAccountId, createdAt, currencyCode } = props();
+        return JSON.stringify({ balanceAccountId, createdAt, currencyCode });
     });
 
     watch(

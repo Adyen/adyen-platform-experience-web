@@ -24,6 +24,7 @@ const { data, error, isFetching } = usePayoutDetails(() => ({
     fetchEnabled: !!props.id && !!props.date,
     balanceAccountId: props.id,
     createdAt: props.date,
+    currencyCode: props.currencyCode,
 }));
 
 const analyticsProps = { category: PAYOUTS_ANALYTICS_CATEGORY, subCategory: PAYOUTS_ANALYTICS_SUBCATEGORY_DETAILS } as const;

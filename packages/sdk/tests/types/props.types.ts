@@ -2,6 +2,7 @@ import type { COMPONENT_DATA_EVENT_CAPABILITIES } from '@integration-components/
 import type { ComponentDataEventCapabilityConfiguration } from '@integration-components/core/EventDispatcher/eventDispatcher/core-events';
 import type { UIElementProps } from '@integration-components/core/vue';
 import type { ExternalComponentType } from '@integration-components/types';
+import type { OperationParameters } from '@integration-components/types/api/endpoints';
 import type * as SDK from '../../src';
 import type {
     CapitalOfferProps,
@@ -112,6 +113,10 @@ type RemovedProps = {
 export type _NoComponentPublishesRemovedProps = Assert<Every<{ [K in keyof RemovedProps]: LacksKey<PublishedProps[K], RemovedProps[K]> }, true>>;
 export type _PaymentLinkCreationTakesOnCreate = Assert<HasKey<PaymentLinkCreationProps, 'onCreate'>>;
 export type _PayoutDetailsKeepsRequiredIdAndDate = Assert<Same<Pick<PayoutDetailsProps, 'id' | 'date'>, { id: string; date: string }>>;
+export type _PayoutDetailsAcceptsOptionalCurrencyCode = Assert<Same<Pick<PayoutDetailsProps, 'currencyCode'>, { currencyCode?: string }>>;
+export type _GetPayoutQueryAcceptsCurrencyCode = Assert<
+    Same<OperationParameters<'getPayout'>['query'], { balanceAccountId: string; createdAt?: string; currencyCode?: string }>
+>;
 export type _CapitalOfferPropsDoNotRequireSubmit = Assert<Pick<CapitalOfferProps, never> extends Pick<CapitalOfferProps, 'onSubmit'> ? true : false>;
 export type _CapitalOfferDoesNotPublishFundsRequest = Assert<LacksKey<CapitalOfferProps, 'onFundsRequest'>>;
 
@@ -174,6 +179,6 @@ export type _SelectionPayloadsCarryIdAndShowDetails = Assert<
     >
 >;
 
-export type _PayoutsSelectionPayloadAlsoCarriesDate = Assert<
-    Same<SelectionPayload<PayoutsOverviewProps>, { id: string; date: string; showDetails: () => void }>
+export type _PayoutsSelectionPayloadAlsoCarriesDateAndCurrency = Assert<
+    Same<SelectionPayload<PayoutsOverviewProps>, { id: string; date: string; currencyCode: string; showDetails: () => void }>
 >;
