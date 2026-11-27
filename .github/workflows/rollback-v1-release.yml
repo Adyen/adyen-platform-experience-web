@@ -1,3 +1,5 @@
+# Legacy rollback workflow for the platform-components GitHub Release CDN channel only.
+# Rollbacks for the new platform-integration-exp CDN run via @fe-sdk/bot + GitLab.
 name: Roll back V1 release
 
 on:

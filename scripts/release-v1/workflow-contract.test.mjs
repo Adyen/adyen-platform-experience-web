@@ -140,6 +140,9 @@ test('V1 and mainline npm publishes use one trusted top-level workflow', () => {
     assert.match(trustedPublisher, /github\.event\.pull_request\.base\.ref == 'main'/);
     assert.match(v1Release, /^on:\n\s+workflow_call:/m);
     assert.doesNotMatch(v1Release, /^on:\n\s+pull_request:/m);
+    assert.doesNotMatch(v1Release, /^\s+approve-publication:/m);
+    assert.doesNotMatch(v1Release, /^\s+publish-npm:/m);
+    assert.doesNotMatch(v1Release, /^\s+publish-cdn:/m);
 });
 
 test('V1 and mainline releases use strict npm channels', () => {
@@ -150,9 +153,13 @@ test('V1 and mainline releases use strict npm channels', () => {
 
     assert.equal(releaseConfig.npmTag, 'v1-latest');
     assert.match(npmPublish, /@adyen\/adyen-platform-experience-web@v1-latest/);
+    assert.match(npmPublish, /^\s+workflow_dispatch:/m);
+    assert.match(npmPublish, /^\s+npm-publish-dispatch:/m);
+    assert.match(npmPublish, /environment: publish-package/);
     assert.match(trustedPublisher, /node scripts\/npm-publish\/determine-release\.mjs determine[\s\S]*--release-line mainline/);
     assert.match(trustedPublisher, /@adyen\/adyen-platform-experience-web@v1-latest/);
-    assert.match(trustedPublisher, /release_line: mainline/);
+    assert.doesNotMatch(trustedPublisher, /^\s+trigger-npm-publish:/m);
+    assert.doesNotMatch(trustedPublisher, /^\s+upload-assets:/m);
     assert.match(cutover, /v1-latest/);
     assert.match(cutover, /Publish the planned stable V1 maintenance release through the V1 pipeline before V2 GA/);
     assert.doesNotMatch(cutover, /Assign the npm v1-latest/);
@@ -169,6 +176,8 @@ test('CDN publishing isolates V1 and all mainline majors', () => {
     assert.match(workflow, /Mainline prereleases may publish only to test CDN channels/);
     assert.match(packageScript, /RELEASE_LINE must be v1 or a mainline major/);
     assert.match(coreConstants, /process\.env\.SDK_VERSION/);
+    assert.match(coreConstants, /https:\/\/cdf6519016\.cdn\.adyen\.com\/platform-integration-exp\/\$\{CDN_RELEASE_LINE\}-cdn-test/);
+    assert.match(coreConstants, /https:\/\/bae81f955b\.cdn\.adyen\.com\/platform-integration-exp\/\$\{CDN_RELEASE_LINE\}-cdn-live/);
     assert.doesNotMatch(coreConstants, /platform-components\/v1-cdn/);
 });
 
