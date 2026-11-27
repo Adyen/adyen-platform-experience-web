@@ -11,3 +11,5 @@ export type IDisputeStatus = Schema<components, 'DisputeStatus'>;
 export type IDisputeDefensibility = Schema<components, 'Defensibility'>;
 export type IDisputeType = Schema<components, 'DisputeType'>;
 export type IDisputeDefenseDocument = Schema<components, 'ApplicableDefenseDocument'>;
+export type IDisputeSortField = Schema<components, 'DisputeSortField'>;
+export type IDisputeSortDirection = Schema<components, 'DisputeSortDirection'>;

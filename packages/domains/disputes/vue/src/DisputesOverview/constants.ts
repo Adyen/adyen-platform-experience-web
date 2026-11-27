@@ -1,5 +1,5 @@
 import { FIELD_KEYS, type DisputesTableFields, type DisputesTranslationKey } from '@integration-components/disputes/domain';
-import type { IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
+import type { IDisputeSortDirection, IDisputeSortField, IDisputeStatusGroup } from '@integration-components/types/api/models/disputes';
 
 export { EMPTY_TABLE_MESSAGE_KEYS, FIELD_KEYS, type DisputesTableFields } from '@integration-components/disputes/domain';
 
@@ -15,10 +15,10 @@ export const LIMIT_SELECT_ARIA_LABEL_KEYS = {
     ONGOING_AND_CLOSED: 'disputes.overview.ongoingAndClosed.limitSelect.a11yLabel',
 } as const satisfies Record<IDisputeStatusGroup, DisputesTranslationKey>;
 
-export type ChargebacksSortField = 'dueDate' | 'createdAt';
-export type OtherStatusGroupsSortField = 'createdAt';
+export type ChargebacksSortField = IDisputeSortField;
+export type OtherStatusGroupsSortField = Extract<IDisputeSortField, 'createdAt'>;
 export type DisputesSortField = ChargebacksSortField | OtherStatusGroupsSortField;
-export type DisputesSortDirection = 'asc' | 'desc';
+export type DisputesSortDirection = IDisputeSortDirection;
 export type ChargebacksSortParams = {
     statusGroup: 'CHARGEBACKS';
     sort: ChargebacksSortField;
