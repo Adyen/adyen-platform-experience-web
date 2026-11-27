@@ -128,7 +128,7 @@ test('V1 GitHub releases expose exactly one deployable CDN archive', () => {
 test('V1 and mainline npm publishes use one trusted top-level workflow', () => {
     const trustedPublisher = readRepositoryFile('.github/workflows/tag-and-release.yml');
     const v1Release = readRepositoryFile('.github/workflows/release-v1.yml');
-    const v1Route = trustedPublisher.match(/^  release-v1:[\s\S]*?(?=^  create-github-release:)/m)?.[0] ?? '';
+    const v1Route = trustedPublisher.match(/^ {2}release-v1:[\s\S]*?(?=^ {2}create-github-release:)/m)?.[0] ?? '';
 
     assert.match(trustedPublisher, /branches:.*version\/v1\.x/);
     assert.match(v1Route, /github\.event\.pull_request\.merged == true/);
@@ -178,4 +178,12 @@ test('integration-test deduplication requires a successful test job', () => {
     assert.match(workflow, /gh run view "\$RUN_ID" --repo "\$REPOSITORY" --json jobs/);
     assert.match(workflow, /startswith\("e2e-local-mocked-api"\)/);
     assert.match(workflow, /SUCCESSFUL_RUNS_FOR_HEAD=1/);
+});
+
+test('npm-publish reusable and dispatch jobs select by inputs rather than workflow_call event name', () => {
+    const npmPublish = readRepositoryFile('.github/workflows/npm-publish.yml');
+
+    assert.match(npmPublish, /^\s+if: inputs\.source_run_id != ''$/m);
+    assert.match(npmPublish, /^\s+if: github\.event_name == 'workflow_dispatch' && inputs\.tag != '' && inputs\.source_run_id == ''$/m);
+    assert.doesNotMatch(npmPublish, /github\.event_name == 'workflow_call'/);
 });

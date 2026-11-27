@@ -2,8 +2,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { dirname } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { determineNpmRelease, validateStableV1Tag } from './determine-release.mjs';
@@ -58,6 +57,36 @@ test('determines mainline publication metadata and V2 GA prerequisite', () => {
         const packageVersion = `2.0.0-${prereleaseTag}.0`;
         const release = determine({ packageVersion, releaseVersion: packageVersion, npmTag: prereleaseTag, releaseLine: 'mainline' });
         assert.equal(release.requiresStableV1Tag, false);
+    }
+});
+
+test('accepts specific mainline major release lines and preserves V2 GA prerequisite', () => {
+    assert.deepEqual(determine({ packageVersion: '2.0.0', releaseVersion: '2.0.0', releaseLine: 'v2', npmTag: 'latest' }), {
+        packageVersion: '2.0.0',
+        packageTarball: '/tmp/npm-publish-runner/artifact/adyen-adyen-platform-experience-web-2.0.0.tgz',
+        requiresStableV1Tag: true,
+    });
+    assert.equal(
+        determine({ packageVersion: '2.0.0-beta.1', releaseVersion: '2.0.0-beta.1', releaseLine: 'v2', npmTag: 'beta' }).requiresStableV1Tag,
+        false
+    );
+    assert.equal(determine({ packageVersion: '3.1.0', releaseVersion: '3.1.0', releaseLine: 'v3', npmTag: 'latest' }).requiresStableV1Tag, false);
+    assert.equal(determine({ packageVersion: '10.0.0', releaseVersion: '10.0.0', releaseLine: 'v10', npmTag: 'latest' }).requiresStableV1Tag, false);
+    assert.equal(
+        determine({ packageVersion: '10.0.0-rc.2', releaseVersion: '10.0.0-rc.2', releaseLine: 'v10', npmTag: 'rc' }).requiresStableV1Tag,
+        false
+    );
+
+    assert.throws(
+        () => determine({ packageVersion: '3.0.0', releaseVersion: '3.0.0', releaseLine: 'v2', npmTag: 'latest' }),
+        /Release line v2 requires major version 2/
+    );
+    assert.throws(
+        () => determine({ packageVersion: '1.13.2', releaseVersion: '1.13.2', releaseLine: 'v2', npmTag: 'latest' }),
+        /Release line v2 requires major version 2/
+    );
+    for (const invalidLine of ['v0', 'v02', 'v9007199254740992']) {
+        assert.throws(() => determine({ releaseLine: invalidLine }), /Release line must be mainline or v1/);
     }
 });
 
