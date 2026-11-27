@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { BentoDropdown } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
+import { useCashOutAnalytics } from '../composables/useCashOutAnalytics';
 import { useBentoDropdown } from '../composables/useBentoDropdown';
 import { getDropdownValue } from '../utils/getDropdownValue';
 import { isSearchable } from '../utils/isSearchable';
@@ -21,11 +22,19 @@ const root = ref<HTMLElement>();
 const { showSelectedFromStart } = useBentoDropdown(root, { onClose: () => emit('close') });
 
 const { i18n } = useCoreContext();
+const { trackSelection } = useCashOutAnalytics();
 
 const onChange = (value: Parameters<typeof getDropdownValue>[0]) => {
     if (props.disabled) return;
     const nextValue = getDropdownValue(value);
     if (nextValue === undefined) return;
+    trackSelection('Changed balance account', {
+        countProperty: 'balanceAccountCount',
+        nextValue,
+        options: props.options,
+        previousValue: selectedBalanceAccountId.value,
+        root: root.value,
+    });
     selectedBalanceAccountId.value = nextValue;
     if (isSearchable(props.options)) void showSelectedFromStart();
 };

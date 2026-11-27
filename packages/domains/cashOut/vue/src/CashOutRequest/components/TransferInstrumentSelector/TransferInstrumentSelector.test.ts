@@ -7,6 +7,8 @@ import { useCoreContext } from '@integration-components/core/vue';
 import type { ICashOutTransferInstrument } from '@integration-components/types';
 import TransferInstrumentSelector from './TransferInstrumentSelector.vue';
 
+const { addEvent } = vi.hoisted(() => ({ addEvent: vi.fn() }));
+
 const transferInstrumentOf = (id: string) =>
     ({
         description: `Account ${id}`,
@@ -30,13 +32,15 @@ vi.mock('@adyen/bento-vue3', async () => {
             emits: ['update:model-value'],
             setup(props, { emit }) {
                 dropdown.emitChange = value => emit('update:model-value', value);
-                return () => h('div', { role: 'combobox', 'data-searchable': String(props.dynamicFiltering) });
+                // An input, like Bento's, which holds what is typed to search
+                return () => h('input', { role: 'combobox', 'data-searchable': String(props.dynamicFiltering) });
             },
         }),
     };
 });
 
 vi.mock('@integration-components/core/vue', () => ({
+    useEventDispatcherContext: () => ({ addEvent }),
     useCoreContext: vi.fn(),
 }));
 
@@ -110,5 +114,40 @@ describe('TransferInstrumentSelector', () => {
         expect(combobox()?.getAttribute('data-searchable')).toBe('true');
 
         unmount();
+    });
+
+    describe('Analytics', () => {
+        const CHANGED = { category: 'CashOut request component', subCategory: 'Request' };
+
+        test('should tell another bank account was selected, with how many are listed', () => {
+            const { unmount } = renderSelector();
+
+            dropdown.emitChange?.('TI2');
+
+            expect(addEvent).toHaveBeenCalledWith('Changed bank account', { ...CHANGED, usedSearch: false, bankAccountCount: '2-9' });
+
+            unmount();
+        });
+
+        test('should not tell the selected bank account selected again', () => {
+            const { unmount } = renderSelector();
+
+            dropdown.emitChange?.('TI1');
+
+            expect(addEvent).not.toHaveBeenCalled();
+
+            unmount();
+        });
+
+        test('should tell a bank account selected from a search', () => {
+            const { combobox, unmount } = renderSelector(transferInstrumentsOf(10));
+            (combobox() as HTMLInputElement).value = 'Account TI7';
+
+            dropdown.emitChange?.('TI7');
+
+            expect(addEvent).toHaveBeenCalledWith('Changed bank account', { ...CHANGED, usedSearch: true, bankAccountCount: '10+' });
+
+            unmount();
+        });
     });
 });

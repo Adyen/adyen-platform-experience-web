@@ -6,6 +6,8 @@ import { createApp, h, ref } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import CashOutHeader from './CashOutHeader.vue';
 
+const { addEvent } = vi.hoisted(() => ({ addEvent: vi.fn() }));
+
 const TITLE = 'cashOut.request.title';
 const OPTIONS = [
     { label: 'Main', value: 'BA1' },
@@ -14,15 +16,15 @@ const OPTIONS = [
 
 const selector: { disabled?: boolean; options?: unknown; select?: (value: string) => void } = {};
 // Each time the header renders, with the time of the last update it gets.
-const headerRenders: { lastUpdated?: Date | number }[] = [];
+const headerRenders: { lastUpdated?: Date | number; reloadButton?: { event: () => void } }[] = [];
 
 vi.mock('@adyen/bento-vue3', async () => {
     const { h } = await import('vue');
     return {
         // Declared props, so they arrive camelCased instead of as attributes
         BentoHeader: Object.assign(
-            (props: { title: string; lastUpdated?: Date | number }) => {
-                headerRenders.push({ lastUpdated: props.lastUpdated });
+            (props: { title: string; lastUpdated?: Date | number; reloadButton?: { event: () => void } }) => {
+                headerRenders.push({ lastUpdated: props.lastUpdated, reloadButton: props.reloadButton });
                 return h('h2', props.title);
             },
             { props: ['title', 'lastUpdated', 'reloadButton'] }
@@ -31,6 +33,7 @@ vi.mock('@adyen/bento-vue3', async () => {
 });
 
 vi.mock('@integration-components/core/vue', () => ({
+    useEventDispatcherContext: () => ({ addEvent }),
     useCoreContext: vi.fn(),
 }));
 
@@ -194,5 +197,17 @@ describe('CashOutHeader', () => {
 
             unmount();
         });
+    });
+
+    test('should tell the refresh was clicked, and refresh', () => {
+        const onRefresh = vi.fn();
+        const { unmount } = renderHeader({ lastUpdated: Date.now(), onRefresh });
+
+        headerRenders.at(-1)?.reloadButton?.event();
+
+        expect(onRefresh).toHaveBeenCalledTimes(1);
+        expect(addEvent).toHaveBeenCalledWith('Clicked button', { category: 'CashOut request component', subCategory: 'Request', label: 'Refresh' });
+
+        unmount();
     });
 });

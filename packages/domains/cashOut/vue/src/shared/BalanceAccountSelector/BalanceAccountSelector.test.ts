@@ -6,6 +6,8 @@ import { createApp, h, nextTick, ref } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import BalanceAccountSelector from './BalanceAccountSelector.vue';
 
+const { addEvent } = vi.hoisted(() => ({ addEvent: vi.fn() }));
+
 const OPTIONS = [
     { label: 'Main', value: 'BA1' },
     { label: 'Secondary', value: 'BA2' },
@@ -42,6 +44,7 @@ vi.mock('@adyen/bento-vue3', async () => {
 });
 
 vi.mock('@integration-components/core/vue', () => ({
+    useEventDispatcherContext: () => ({ addEvent }),
     useCoreContext: vi.fn(),
 }));
 
@@ -170,5 +173,42 @@ describe('BalanceAccountSelector', () => {
         expect(selected.value).toBe('BA1');
 
         unmount();
+    });
+
+    describe('Analytics', () => {
+        const CHANGED = { category: 'CashOut request component', subCategory: 'Request' };
+
+        test('should tell another balance account was selected, with how many there are', () => {
+            const { unmount } = renderSelector();
+
+            dropdown.emitChange?.('BA2');
+
+            expect(addEvent).toHaveBeenCalledWith('Changed balance account', { ...CHANGED, usedSearch: false, balanceAccountCount: '2-9' });
+
+            unmount();
+        });
+
+        test('should not tell the selected balance account selected again', () => {
+            const { unmount } = renderSelector();
+
+            dropdown.emitChange?.('BA1');
+
+            expect(addEvent).not.toHaveBeenCalled();
+
+            unmount();
+        });
+
+        test('should tell a balance account selected from a search', async () => {
+            const { combobox, unmount } = renderSelector({ options: optionsOf(10) });
+            dropdown.setExpanded?.(true);
+            await nextTick();
+            (combobox() as HTMLInputElement).value = 'Account 7';
+
+            dropdown.emitChange?.('BA7');
+
+            expect(addEvent).toHaveBeenCalledWith('Changed balance account', { ...CHANGED, usedSearch: true, balanceAccountCount: '10+' });
+
+            unmount();
+        });
     });
 });

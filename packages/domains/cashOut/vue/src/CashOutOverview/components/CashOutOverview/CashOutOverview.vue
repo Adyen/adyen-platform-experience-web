@@ -5,6 +5,8 @@ import { useCoreContext } from '@integration-components/core/vue';
 import { ComponentShell, useShouldHideTitles } from '@integration-components/composables-vue';
 import type { ICashOutResponse } from '@integration-components/types';
 import type { CashOutOverviewComponentProps } from '../../types';
+import { CASH_OUT_OVERVIEW_ANALYTICS_CATEGORY, provideCashOutAnalytics } from '../../../shared/composables/useCashOutAnalytics';
+import { useCashOutLoadAnalytics } from '../../../shared/composables/useCashOutLoadAnalytics';
 import { useCashOutState } from '../../../shared/composables/useCashOutState';
 import { useFormatAmount } from '../../../shared/composables/useFormatAmount';
 import { useCashOutTooltips } from '../../../shared/composables/useCashOutTooltips';
@@ -27,6 +29,7 @@ const {
     errorInfo,
     isFetchingEligibility,
     lastUpdated,
+    loadingError,
     recordCashOut,
     refresh,
     refreshAvailableAmounts,
@@ -35,10 +38,14 @@ const {
     shellState,
 } = useCashOutState();
 
+const analytics = provideCashOutAnalytics({ category: CASH_OUT_OVERVIEW_ANALYTICS_CATEGORY, subCategory: 'Overview' });
+useCashOutLoadAnalytics(analytics, { eligibility, balanceAccountCount: () => balanceAccountOptions.value.length, loadingError });
+
 const isRequestModalOpen = ref(false);
 let hasInstructedCashOut = false;
 
 const openRequestModal = () => {
+    analytics.track('Clicked button', { label: 'Start instant CashOut' });
     isRequestModalOpen.value = true;
 };
 
