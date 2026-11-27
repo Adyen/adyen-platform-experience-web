@@ -13,12 +13,12 @@ echo "Changing working directory to project root..."
 cd "$PROJECT_ROOT"
 
 RELEASE_LINE=${RELEASE_LINE:-v1}
-if [[ ! "$RELEASE_LINE" =~ ^v(1|[2-9][0-9]*)$ ]]; then
+if [[ ! "$RELEASE_LINE" =~ ^v(1|[2-9]|[1-9][0-9]+)$ ]]; then
   echo "Error: RELEASE_LINE must be v1 or a mainline major (v2 or higher). Received '$RELEASE_LINE'." >&2
   exit 1
 fi
 
-ARCHIVE_NAME="platform-components-${RELEASE_LINE}_cdn.tar.gz"
+ARCHIVE_NAME="${FE_SDK_ARCHIVE:-platform-components-${RELEASE_LINE}_cdn.tar.gz}"
 BUILD_SCRIPT="build:umd"
 ASSETS_DIR="./packages/shared/assets/src"
 SDK_TRANSLATIONS_DIR="./packages/sdk/translations"
@@ -89,10 +89,17 @@ cp "$PAY_BY_LINK_CONFIG_DIR"/*.json "$STAGING_DIR/config/payByLink/"
 
 echo "Creating archive: $ARCHIVE_NAME"
 
+mkdir -p "$(dirname "$ARCHIVE_NAME")"
 tar -czvf "$ARCHIVE_NAME" -C "$STAGING_DIR" .
 
 echo "Cleaning up staging directory..."
 
+if [[ "$ARCHIVE_NAME" == /* ]]; then
+  OUTPUT_PATH="$ARCHIVE_NAME"
+else
+  OUTPUT_PATH="$PROJECT_ROOT/$ARCHIVE_NAME"
+fi
+
 echo "✅ Archive created successfully!"
-echo "    -> $PROJECT_ROOT/$ARCHIVE_NAME"
+echo "    -> $OUTPUT_PATH"
 
