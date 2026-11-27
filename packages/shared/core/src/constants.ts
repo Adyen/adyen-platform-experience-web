@@ -6,6 +6,6 @@ export const API_ENVIRONMENTS = {
 const CDN_RELEASE_LINE = `v${process.env.SDK_VERSION?.split('.')[0] || '1'}`;
 
 export const CDN_ENVIRONMENTS = {
-    test: `https://18e8543875.cdn.adyen.com/platform-components/${CDN_RELEASE_LINE}-cdn-test`,
-    live: `https://bae81f955b.cdn.adyen.com/platform-components/${CDN_RELEASE_LINE}-cdn-live`,
+    test: `https://cdf6519016.cdn.adyen.com/platform-integration-exp/${CDN_RELEASE_LINE}-cdn-test`,
+    live: `https://bae81f955b.cdn.adyen.com/platform-integration-exp/${CDN_RELEASE_LINE}-cdn-live`,
 } as const;

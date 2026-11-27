@@ -18,7 +18,7 @@ permissions:
   contents: read
 
 env:
-  BASE_URL: "https://bae81f955b.cdn.adyen.com/platform-components"
+  BASE_URL: "https://bae81f955b.cdn.adyen.com/platform-integration-exp"
   VERSION: ${{ inputs.version }}
 
 jobs:
@@ -27,6 +27,8 @@ jobs:
     steps:
       - name: Generate SRI Hashes
         run: |
+          set -euo pipefail
+
           if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Error: Invalid version format '$VERSION'. Expected semver like v1.9.0"
             exit 1
@@ -36,10 +38,10 @@ jobs:
           CSS_URL="${BASE_URL}/${VERSION}/adyen-platform-experience-web.css"
 
           echo "Fetching JavaScript file..."
-          JS_HASH=$(curl -s "$JS_URL" | openssl dgst -sha384 -binary | openssl base64 -A)
+          JS_HASH=$(curl -fsSL "$JS_URL" | openssl dgst -sha384 -binary | openssl base64 -A)
 
           echo "Fetching CSS file..."
-          CSS_HASH=$(curl -s "$CSS_URL" | openssl dgst -sha384 -binary | openssl base64 -A)
+          CSS_HASH=$(curl -fsSL "$CSS_URL" | openssl dgst -sha384 -binary | openssl base64 -A)
 
           # Print to logs
           echo "================================"
