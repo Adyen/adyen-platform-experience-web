@@ -43,6 +43,7 @@ concurrency:
 jobs:
   replace-asset:
     name: Replace Release Asset
+    if: github.event_name != 'workflow_dispatch' || vars.FE_SDK_BOT_ACTOR == '' || github.triggering_actor != vars.FE_SDK_BOT_ACTOR
     runs-on: ubuntu-latest
 
     permissions:

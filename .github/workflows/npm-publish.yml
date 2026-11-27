@@ -29,9 +29,36 @@ on:
         required: false
         type: boolean
         default: false
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to publish (e.g., v2.1.0 or v1.18.0-beta.1)'
+        required: true
+        type: string
+      dist_tag:
+        description: 'Validated npm dist-tag (e.g., latest, beta, v1-latest, v1-beta)'
+        required: true
+        type: string
+      release_line:
+        description: 'Release line that owns the version (v1, mainline, or v2+)'
+        required: true
+        type: string
+      source_sha:
+        description: 'Exact 40-character commit SHA to publish'
+        required: true
+        type: string
+      release_version:
+        description: 'Exact package version matching package.json and tag'
+        required: true
+        type: string
+
+concurrency:
+  group: npm-publish-${{ inputs.release_version }}
+  cancel-in-progress: false
 
 jobs:
   npm-publish:
+    if: inputs.source_run_id != ''
     runs-on: ubuntu-latest
 
     permissions:
@@ -123,6 +150,211 @@ jobs:
             npm view @adyen/adyen-platform-experience-web name >/dev/null
             npm publish "$PACKAGE_TARBALL" --provenance --access public --tag="$NPM_TAG"
           fi
+
+      - name: Archive npm failure logs
+        uses: ./.github/actions/publish-npm-logs
+        if: failure()
+
+  npm-publish-dispatch:
+    if: github.event_name == 'workflow_dispatch' && inputs.tag != '' && inputs.source_run_id == ''
+    runs-on: ubuntu-latest
+    environment: publish-package
+
+    permissions:
+      contents: read
+      actions: write
+      id-token: write
+
+    steps:
+      - name: Validate dispatch actor, repository, ref, and inputs
+        env:
+          REPOSITORY: ${{ github.repository }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          BOT_ACTOR: ${{ vars.FE_SDK_BOT_ACTOR }}
+          GITHUB_REF_VALUE: ${{ github.ref }}
+          TAG: ${{ inputs.tag }}
+          DIST_TAG: ${{ inputs.dist_tag }}
+          RELEASE_LINE: ${{ inputs.release_line }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+          RELEASE_VERSION: ${{ inputs.release_version }}
+        run: |
+          set -euo pipefail
+
+          if [[ "${REPOSITORY,,}" != "adyen/adyen-platform-experience-web" ]]; then
+            echo "::error::npm-publish workflow_dispatch is only allowed in adyen/adyen-platform-experience-web."
+            exit 1
+          fi
+
+          if [[ -z "$BOT_ACTOR" || "${TRIGGERING_ACTOR,,}" != "${BOT_ACTOR,,}" ]]; then
+            echo "::error::npm-publish workflow_dispatch must be triggered by the configured FE_SDK_BOT_ACTOR."
+            exit 1
+          fi
+
+          if [[ ! "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::source_sha must be a 40-character lowercase hexadecimal SHA."
+            exit 1
+          fi
+
+          if [[ ! "$RELEASE_VERSION" =~ ^([1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|beta|rc|next)\.(0|[1-9][0-9]*))?$ ]]; then
+            echo "::error::release_version must be a supported stable or prerelease semver version."
+            exit 1
+          fi
+
+          if [[ "$TAG" != "v${RELEASE_VERSION}" ]]; then
+            echo "::error::tag must match v${RELEASE_VERSION}."
+            exit 1
+          fi
+
+          if [[ ! "$RELEASE_LINE" =~ ^(v1|mainline|v([2-9]|[1-9][0-9]+))$ ]]; then
+            echo "::error::release_line must be v1, mainline, or a mainline major (v2 or higher)."
+            exit 1
+          fi
+
+          if [[ "$RELEASE_LINE" == "v1" ]]; then
+            EXPECTED_REF="refs/heads/version/v1.x"
+          else
+            EXPECTED_REF="refs/heads/main"
+          fi
+
+          if [[ "$GITHUB_REF_VALUE" != "$EXPECTED_REF" ]]; then
+            echo "::error::Dispatch ref ${GITHUB_REF_VALUE} does not match expected ref ${EXPECTED_REF} for release line ${RELEASE_LINE}."
+            exit 1
+          fi
+
+      - name: Checkout trusted dispatch ref
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Stage trusted scripts and verify tag and branch ancestry
+        env:
+          TAG: ${{ inputs.tag }}
+          RELEASE_LINE: ${{ inputs.release_line }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+        run: |
+          set -euo pipefail
+
+          rm -rf "$RUNNER_TEMP/trusted-scripts"
+          mkdir -p "$RUNNER_TEMP/trusted-scripts"
+          cp -R scripts "$RUNNER_TEMP/trusted-scripts/scripts"
+
+          git fetch --no-tags origin "refs/tags/${TAG}:refs/tags/${TAG}"
+          TAG_SHA=$(git rev-parse --verify "refs/tags/${TAG}^{commit}")
+          if [[ "$TAG_SHA" != "$SOURCE_SHA" ]]; then
+            echo "::error::Tag ${TAG} resolves to ${TAG_SHA}, expected ${SOURCE_SHA}."
+            exit 1
+          fi
+
+          if [[ "$RELEASE_LINE" == "v1" ]]; then
+            git fetch --no-tags origin version/v1.x:refs/remotes/origin/version/v1.x
+            if ! git merge-base --is-ancestor "$SOURCE_SHA" origin/version/v1.x; then
+              echo "::error::Commit ${SOURCE_SHA} is not an ancestor of origin/version/v1.x."
+              exit 1
+            fi
+          else
+            git fetch --no-tags origin main:refs/remotes/origin/main
+            if ! git merge-base --is-ancestor "$SOURCE_SHA" origin/main; then
+              echo "::error::Commit ${SOURCE_SHA} is not an ancestor of origin/main."
+              exit 1
+            fi
+          fi
+
+      - name: Checkout source commit
+        uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ inputs.source_sha }}
+          clean: true
+
+      - name: Set up Node
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: 24.18.0
+
+      - name: Determine the release version
+        env:
+          RELEASE_VERSION: ${{ inputs.release_version }}
+          DIST_TAG: ${{ inputs.dist_tag }}
+          RELEASE_LINE: ${{ inputs.release_line }}
+        run: |
+          set -euo pipefail
+          node "$RUNNER_TEMP/trusted-scripts/scripts/npm-publish/determine-release.mjs" determine \
+            --package-json package.json \
+            --release-version "$RELEASE_VERSION" \
+            --npm-tag "$DIST_TAG" \
+            --release-line "$RELEASE_LINE" \
+            --runner-temp "$RUNNER_TEMP" \
+            >> "$GITHUB_ENV"
+
+      - name: Verify V2 GA prerequisite
+        if: env.REQUIRES_STABLE_V1_TAG == 'true'
+        run: |
+          set -euo pipefail
+          V1_LATEST_VERSION=$(npm view @adyen/adyen-platform-experience-web@v1-latest version)
+          node "$RUNNER_TEMP/trusted-scripts/scripts/npm-publish/determine-release.mjs" validate-stable-v1 \
+            --version "$V1_LATEST_VERSION"
+
+      - name: Check if package version is already published
+        env:
+          NPM_TAG: ${{ inputs.dist_tag }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+        run: |
+          set -euo pipefail
+          rm -f .npmrc
+          if REMOTE_VERSION=$(npm view "@adyen/adyen-platform-experience-web@${PACKAGE_VERSION}" version 2>"$RUNNER_TEMP/npm-view-error") && [[ -n "$REMOTE_VERSION" ]]; then
+            if [[ "$REMOTE_VERSION" != "$PACKAGE_VERSION" ]]; then
+              echo "::error::Unexpected npm version response '${REMOTE_VERSION}' for ${PACKAGE_VERSION}."
+              exit 1
+            fi
+            ACTIVE_TAG_VERSION=$(npm view "@adyen/adyen-platform-experience-web@${NPM_TAG}" version)
+            if [[ "$ACTIVE_TAG_VERSION" != "$PACKAGE_VERSION" ]]; then
+              echo "::error::Existing npm version ${PACKAGE_VERSION} is not active on ${NPM_TAG} (found '${ACTIVE_TAG_VERSION}')."
+              exit 1
+            fi
+            REMOTE_GIT_HEAD=$(npm view "@adyen/adyen-platform-experience-web@${PACKAGE_VERSION}" gitHead 2>/dev/null || true)
+            if [[ -n "$REMOTE_GIT_HEAD" && "$REMOTE_GIT_HEAD" != "$SOURCE_SHA" ]]; then
+              echo "::error::Existing npm version ${PACKAGE_VERSION} gitHead (${REMOTE_GIT_HEAD}) does not match source_sha (${SOURCE_SHA})."
+              exit 1
+            fi
+            echo "ALREADY_PUBLISHED=true" >> "$GITHUB_ENV"
+            echo "Package version ${PACKAGE_VERSION} is already published on ${NPM_TAG}; skipping rebuild and publish."
+          else
+            npm view @adyen/adyen-platform-experience-web name >/dev/null
+            echo "ALREADY_PUBLISHED=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: Run the preliminary setup steps
+        if: env.ALREADY_PUBLISHED != 'true'
+        uses: ./.github/actions/setup-env
+        with:
+          NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
+
+      - name: Build and verify package artifact
+        if: env.ALREADY_PUBLISHED != 'true'
+        run: |
+          set -euo pipefail
+          pnpm run build:publish
+          mkdir -p "$(dirname "$PACKAGE_TARBALL")"
+          mv "./adyen-adyen-platform-experience-web-${PACKAGE_VERSION}.tgz" "$PACKAGE_TARBALL"
+
+          PACKED_PACKAGE_JSON=$(tar -xOf "$PACKAGE_TARBALL" package/package.json)
+          PACKED_NAME=$(jq -r '.name' <<< "$PACKED_PACKAGE_JSON")
+          PACKED_VERSION=$(jq -r '.version' <<< "$PACKED_PACKAGE_JSON")
+
+          if [[ "$PACKED_NAME" != "@adyen/adyen-platform-experience-web" ]] ||
+             [[ "$PACKED_VERSION" != "$PACKAGE_VERSION" ]]; then
+            echo "::error::Package artifact identity does not match the release."
+            exit 1
+          fi
+
+      - name: Publish to the NPM registry
+        if: env.ALREADY_PUBLISHED != 'true'
+        env:
+          NPM_TAG: ${{ inputs.dist_tag }}
+        run: |
+          set -euo pipefail
+          rm -f .npmrc
+          npm publish "$PACKAGE_TARBALL" --provenance --access public --tag="$NPM_TAG"
 
       - name: Archive npm failure logs
         uses: ./.github/actions/publish-npm-logs
