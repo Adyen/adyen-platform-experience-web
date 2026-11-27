@@ -6,6 +6,23 @@ import { pathToFileURL } from 'node:url';
 import { parseSupportedReleaseVersion, STABLE_V1_NPM_TAG, V1_PRERELEASE_NPM_TAGS } from '../release/version.mjs';
 
 const PACKAGE_TARBALL_PREFIX = 'adyen-adyen-platform-experience-web';
+const MAINLINE_MAJOR_RELEASE_LINE = /^v([2-9]|[1-9][0-9]+)$/;
+
+const normalizeReleaseLine = releaseLine => {
+    if (releaseLine === 'v1' || releaseLine === 'mainline') {
+        return { normalizedReleaseLine: releaseLine, expectedMajor: null };
+    }
+
+    const match = MAINLINE_MAJOR_RELEASE_LINE.exec(releaseLine);
+    if (match) {
+        const expectedMajor = Number(match[1]);
+        if (Number.isSafeInteger(expectedMajor)) {
+            return { normalizedReleaseLine: 'mainline', expectedMajor };
+        }
+    }
+
+    throw new Error('Release line must be mainline or v1, or a mainline major (v2 or higher).');
+};
 
 const validateV1Release = ({ packageVersion, npmTag, parsedVersion }) => {
     if (parsedVersion.major !== 1) {
@@ -22,7 +39,11 @@ const validateV1Release = ({ packageVersion, npmTag, parsedVersion }) => {
     }
 };
 
-const validateMainlineRelease = ({ packageVersion, npmTag, parsedVersion }) => {
+const validateMainlineRelease = ({ packageVersion, npmTag, parsedVersion, releaseLine, expectedMajor }) => {
+    if (expectedMajor !== null && parsedVersion.major !== expectedMajor) {
+        throw new Error(`Release line ${releaseLine} requires major version ${expectedMajor}, received ${packageVersion}.`);
+    }
+
     if (parsedVersion.major < 2) {
         throw new Error('Mainline publishing requires major version 2 or higher.');
     }
@@ -36,18 +57,13 @@ const validateMainlineRelease = ({ packageVersion, npmTag, parsedVersion }) => {
     }
 };
 
-const validateRelease = ({ packageVersion, npmTag, parsedVersion, releaseLine }) => {
-    if (releaseLine === 'v1') {
+const validateRelease = ({ packageVersion, npmTag, parsedVersion, releaseLine, normalizedReleaseLine, expectedMajor }) => {
+    if (normalizedReleaseLine === 'v1') {
         validateV1Release({ packageVersion, npmTag, parsedVersion });
         return;
     }
 
-    if (releaseLine === 'mainline') {
-        validateMainlineRelease({ packageVersion, npmTag, parsedVersion });
-        return;
-    }
-
-    throw new Error('Release line must be mainline or v1.');
+    validateMainlineRelease({ packageVersion, npmTag, parsedVersion, releaseLine, expectedMajor });
 };
 
 export const determineNpmRelease = ({ packageVersion, releaseVersion, npmTag, releaseLine, runnerTemp }) => {
@@ -56,12 +72,13 @@ export const determineNpmRelease = ({ packageVersion, releaseVersion, npmTag, re
     }
 
     const parsedVersion = parseSupportedReleaseVersion(packageVersion);
-    validateRelease({ packageVersion, npmTag, parsedVersion, releaseLine });
+    const { normalizedReleaseLine, expectedMajor } = normalizeReleaseLine(releaseLine);
+    validateRelease({ packageVersion, npmTag, parsedVersion, releaseLine, normalizedReleaseLine, expectedMajor });
 
     return {
         packageVersion,
         packageTarball: join(runnerTemp, 'artifact', `${PACKAGE_TARBALL_PREFIX}-${packageVersion}.tgz`),
-        requiresStableV1Tag: releaseLine === 'mainline' && parsedVersion.major === 2 && !parsedVersion.isPrerelease,
+        requiresStableV1Tag: normalizedReleaseLine === 'mainline' && parsedVersion.major === 2 && !parsedVersion.isPrerelease,
     };
 };
 

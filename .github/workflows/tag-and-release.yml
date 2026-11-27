@@ -37,7 +37,7 @@ jobs:
       is_prerelease: ${{ steps.determine_version.outputs.is_prerelease }}
       release_line: ${{ steps.determine_version.outputs.release_line }}
       source_sha: ${{ steps.determine_version.outputs.source_sha }}
-    if: (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    if: (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && (vars.FE_SDK_BOT_ACTOR == '' || github.triggering_actor != vars.FE_SDK_BOT_ACTOR))
       || (github.event.pull_request.merged == true
       && github.event.pull_request.base.ref == 'main'
       && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))

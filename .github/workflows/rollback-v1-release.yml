@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
     rollback:
-        if: github.repository == 'adyen/adyen-platform-experience-web' && github.ref == 'refs/heads/version/v1.x'
+        if: github.repository == 'adyen/adyen-platform-experience-web' && github.ref == 'refs/heads/version/v1.x' && (vars.FE_SDK_BOT_ACTOR == '' || github.triggering_actor != vars.FE_SDK_BOT_ACTOR)
         runs-on: ubuntu-latest
         environment: v1-release
         permissions:
