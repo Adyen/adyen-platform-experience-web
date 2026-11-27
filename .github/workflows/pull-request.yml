@@ -332,6 +332,13 @@ jobs:
           git fetch --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
           node scripts/process-translations/keyspace-report.mjs "origin/${BASE_REF}"
 
+      - name: Validate commit messages
+        if: steps.skip-check.outcome != 'success'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: pnpm exec commitlint --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
+
       - name: Run lint checks
         if: steps.skip-check.outcome != 'success' && (github.event.pull_request.base.ref == 'develop' || startsWith(github.event.pull_request.base.ref, 'group/'))
         run: pnpm run lint
